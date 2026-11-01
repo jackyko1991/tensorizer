@@ -25,6 +25,20 @@ first convert to the tensor notation form:
 
 Here $b$ indexes a batch of balls and $i, j$ are spatial components. The repeated index $j$ is summed, which is exactly `torch.einsum('bj,bj->b', v, v)`. The trajectory solution is integrated via RK4 with animated visualization.
 
+## Try it
+
+**Live site: <https://jackyko1991.github.io/tensorizer/>**. It shows every problem's equations, code and prebuilt animation. Re-running with your own parameters or edited code needs the Python backend, so run it locally for that (see [Quick start](#quick-start)).
+
+The app has three tabs:
+
+| Tab | What it is |
+|---|---|
+| **Problems** | The workspace: problem library, equations and setup sketch, five code files, parameters, terminal and plot/animation |
+| **Concept** | How every problem works, step by step, using the simple pendulum (its real code is shown) |
+| **Coding Skills** | The PyTorch techniques behind the library (broadcasting, einsum, RK4, eigh, FFT, autograd, …), each with an example and links to problems |
+
+The interface and all problem text are available in 10 languages: English, 繁體中文, 简体中文, Français, Deutsch, Español, 日本語, Русский, 한국어 and हिन्दी. Equations and code stay the same in every language. Check translation coverage with `pixi run i18n-status`; [scripts/i18n.py](scripts/i18n.py) exports what needs translating and validates imports.
+
 ## Problem library
 
 <!-- library:start -->
@@ -373,7 +387,7 @@ Here $b$ indexes a batch of balls and $i, j$ are spatial components. The repeate
 </details>
 
 <details>
-<summary><b>Others</b> (1 problems)</summary>
+<summary><b>Others</b> (1 problem)</summary>
 
 <details>
 <summary>🟢 Beginner (1)</summary>

@@ -34,7 +34,7 @@ def animate(orbit: dict, plunge: dict, M: float, path: Path) -> Path:
     ax.add_patch(plt.Circle((0, 0), 2 * M, color="black", zorder=4))
     ax.add_patch(plt.Circle((0, 0), photon_sphere_radius(M), fill=False, ls=":", color="#f59e0b", lw=1.2))
     ax.add_patch(plt.Circle((0, 0), isco_radius(M), fill=False, ls="--", color="#9ca3af", lw=1))
-    ax.text(0, -isco_radius(M) - 2.5, "ISCO 6M", ha="center", fontsize=7, color="#6b7280")
+    ax.text(isco_radius(M) * 0.72, isco_radius(M) * 0.72, "ISCO", fontsize=7, color="#6b7280")
     ax.plot(nw[:, 0], nw[:, 1], color="#9ca3af", lw=1, label="Newton (closed ellipse)")
     trail = ax.plot([], [], color=ACCENT[0], lw=1.3, label="geodesic (GR)")[0]
     dot = ax.plot([], [], "o", color=ACCENT[0], ms=5)[0]
@@ -47,10 +47,12 @@ def animate(orbit: dict, plunge: dict, M: float, path: Path) -> Path:
 
     # --- effective potential ---
     rr = torch.linspace(2.2 * M, 1.3 * r.max(), 400, dtype=torch.float64)
-    ax_v.plot(rr, effective_potential(rr, L, M), color=ACCENT[0], lw=1.5, label="GR")
-    ax_v.plot(rr, effective_potential(rr, L, M, relativistic=False), color="#9ca3af", lw=1, label="Newton")
-    L_isco = (12**0.5) * M
-    ax_v.plot(rr, effective_potential(rr, L_isco, M), color=ACCENT[3], lw=1, ls="--", label="L = √12 M (ISCO)")
+    V_gr, V_newton = effective_potential(rr, L, M).numpy(), effective_potential(rr, L, M, relativistic=False).numpy()
+    V_isco = effective_potential(rr, (12**0.5) * M, M).numpy()
+    rr = rr.numpy()
+    ax_v.plot(rr, V_gr, color=ACCENT[0], lw=1.5, label="GR")
+    ax_v.plot(rr, V_newton, color="#9ca3af", lw=1, label="Newton")
+    ax_v.plot(rr, V_isco, color=ACCENT[3], lw=1, ls="--", label="L = √12 M (ISCO)")
     level = 0.5 * (E**2 - 1)
     ax_v.axhline(level, color=ACCENT[1], lw=1)
     ax_v.axvline(isco_radius(M), color="#9ca3af", ls="--", lw=0.8)

@@ -72,7 +72,7 @@ def render(library: dict[str, dict[str, list[dict]]]) -> str:
     for cat, title in CATEGORIES.items():
         levels = library[cat]
         count = sum(len(p) for p in levels.values())
-        out += ["<details>", f"<summary><b>{title}</b> ({count} problems)</summary>", ""]
+        out += ["<details>", f"<summary><b>{title}</b> ({count} problem{'s' if count != 1 else ''})</summary>", ""]
         for level, label in LEVELS.items():
             problems = levels[level]
             if not problems:

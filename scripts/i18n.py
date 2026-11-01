@@ -3,6 +3,9 @@
     python scripts/i18n.py status
     python scripts/i18n.py export --lang ja --out ja.json     # missing or outdated items, English text
     python scripts/i18n.py import --lang ja ja.json           # validate and write problems/*/*/i18n/ja.yaml
+    python scripts/i18n.py pages-status                       # the same three commands for the Concept /
+    python scripts/i18n.py pages-export --lang ja --out p.json  # Coding Skills page text
+    python scripts/i18n.py pages-import --lang ja p.json      # (frontend/src/content/pages.<lang>.json)
 
 Each translation file stores `source_hash`, a hash of the English fields it was made from, so editing the
 English marks it outdated. Import refuses a translation whose inline math ($...$ spans) differs from the
@@ -22,7 +25,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 PROBLEMS = ROOT / "problems"
-LANGS = ["zh-Hant", "zh-Hans", "fr", "de", "es", "ja", "ru", "ko"]
+LANGS = ["zh-Hant", "zh-Hans", "fr", "de", "es", "ja", "ru", "ko", "hi"]
 FILES = ["meta.yaml", "main.py", "equation.py", "tensors.py", "solve.py", "plot.py"]
 MATH = re.compile(r"(?<!\\)\$(.+?)(?<!\\)\$", re.S)
 
@@ -130,10 +133,86 @@ def cmd_import(args) -> None:
         sys.exit(1)
 
 
+# --- Concept / Coding Skills page text: frontend/src/content/pages.<lang>.json -------------------------
+
+CONTENT = ROOT / "frontend" / "src" / "content"
+CODE = re.compile(r"`[^`]+`")
+
+
+def _page_files(lang: str) -> tuple[Path, Path]:
+    return CONTENT / f"pages.{lang}.json", CONTENT / "sources" / f"pages.{lang}.json"
+
+
+def _key_hash(text: str) -> str:
+    return hashlib.sha256(text.encode()).hexdigest()[:12]
+
+
+def pages_todo(lang: str) -> dict[str, str]:
+    """English text of page keys that are missing in `lang` or whose English changed since translation."""
+    en = json.loads((CONTENT / "pages.en.json").read_text(encoding="utf-8"))
+    tr_file, src_file = _page_files(lang)
+    tr = json.loads(tr_file.read_text(encoding="utf-8")) if tr_file.is_file() else {}
+    src = json.loads(src_file.read_text(encoding="utf-8")) if src_file.is_file() else {}
+    return {k: v for k, v in en.items() if k not in tr or src.get(k) != _key_hash(v)}
+
+
+def cmd_pages_status(_args) -> None:
+    total = len(json.loads((CONTENT / "pages.en.json").read_text(encoding="utf-8")))
+    print(f"{total} page strings")
+    for lang in LANGS:
+        missing = pages_todo(lang)
+        print(f"  {lang:8s} {total - len(missing):3d} up to date, {len(missing):3d} missing/outdated")
+
+
+def cmd_pages_export(args) -> None:
+    items = pages_todo(args.lang)
+    Path(args.out).write_text(json.dumps(items, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"exported {len(items)} page string(s) for {args.lang} -> {args.out}")
+
+
+def cmd_pages_import(args) -> None:
+    en = json.loads((CONTENT / "pages.en.json").read_text(encoding="utf-8"))
+    data = json.loads(Path(args.file).read_text(encoding="utf-8"))
+    tr_file, src_file = _page_files(args.lang)
+    tr = json.loads(tr_file.read_text(encoding="utf-8")) if tr_file.is_file() else {}
+    src = json.loads(src_file.read_text(encoding="utf-8")) if src_file.is_file() else {}
+    failed = 0
+    for key, text in data.items():
+        if key not in en:
+            print(f"skip {key}: unknown key")
+            failed += 1
+        elif sorted(MATH.findall(en[key])) != sorted(MATH.findall(text)):
+            print(f"FAIL {key}: inline math differs from English")
+            failed += 1
+        elif sorted(CODE.findall(en[key])) != sorted(CODE.findall(text)):
+            print(f"FAIL {key}: `code` spans differ from English")
+            failed += 1
+        else:
+            tr[key], src[key] = text, _key_hash(en[key])
+    src_file.parent.mkdir(exist_ok=True)
+    order = list(en)  # keep the English key order
+    tr_file.write_text(
+        json.dumps({k: tr[k] for k in order if k in tr}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    src_file.write_text(json.dumps({k: src[k] for k in order if k in src}, indent=2) + "\n", encoding="utf-8")
+    print(f"{args.lang}: page strings {len(data) - failed} imported, {failed} failed")
+    if failed:
+        sys.exit(1)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(required=True)
     sub.add_parser("status").set_defaults(fn=cmd_status)
+    sub.add_parser("pages-status").set_defaults(fn=cmd_pages_status)
+    pe = sub.add_parser("pages-export")
+    pe.add_argument("--lang", required=True, choices=LANGS)
+    pe.add_argument("--out", required=True)
+    pe.set_defaults(fn=cmd_pages_export)
+    pi = sub.add_parser("pages-import")
+    pi.add_argument("--lang", required=True, choices=LANGS)
+    pi.add_argument("file")
+    pi.set_defaults(fn=cmd_pages_import)
     e = sub.add_parser("export")
     e.add_argument("--lang", required=True, choices=LANGS)
     e.add_argument("--out", required=True)
