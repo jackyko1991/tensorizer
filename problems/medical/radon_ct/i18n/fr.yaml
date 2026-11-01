@@ -1,0 +1,17 @@
+source_hash: 8d871084eacb
+title: Transformée de Radon et reconstruction tomographique
+summary: 'Un scanner (tomodensitomètre) enregistre les intégrales de ligne $p(\theta, s)$ de la carte d''atténuation sous tous les angles. Le fantôme de tête de Shepp–Logan est projeté en faisant tourner et en sommant un tenseur, puis reconstruit par rétroprojection filtrée : un filtre rampe $|\nu|$ dans l''espace de Fourier, puis un seul einsum sur les angles.'
+notes: 'Chaque projection conserve la masse totale, $\int p\,ds = \iint f\,dA$, pour chaque angle. Rétroprojeter les projections brutes (rétroprojection simple) transforme un point en un halo en $1/r$, si bien que l''image est une version floue de $f$ ; le filtre rampe $|\nu|$ annule exactement ce flou (théorème de la coupe centrale). Trop peu d''angles produisent des stries ; l''erreur diminue quand le nombre d''angles augmente, jusqu''à ce que la grille de pixels la limite. La fenêtre de Shepp–Logan adoucit la rampe aux hautes fréquences, échangeant un peu de netteté contre moins de bruit — essayez-la avec le bruit activé. Simplifications : géométrie en faisceau parallèle, rayons monochromatiques, interpolation bilinéaire, bruit de détecteur gaussien au lieu de statistiques de photons. Modèle pédagogique, non à usage clinique.'
+meanings:
+- 'carte d''atténuation (Shepp–Logan modifié : somme de 10 ellipses)'
+- image échantillonnée le long du rayon à la distance $s$, position $t$, angle $\theta$
+- '$t$ répété ⇒ sommé : le sinogramme'
+- rampe $|\nu|$ (Ram-Lak), éventuellement multipliée par $\mathrm{sinc}(\nu\,\Delta s)$ (Shepp–Logan), sur un détecteur complété par des zéros
+- projections filtrées
+- 'chaque projection rétroprojetée le long de ses rayons : $q_\theta(x\cos\theta + y\sin\theta)$'
+- '$\theta$ répété ⇒ sommé : la rétroprojection'
+labels:
+  n_pixels: Taille de l'image $N$
+  n_angles: Angles de projection
+  filter: Fenêtre du filtre rampe
+  noise: Bruit du détecteur (fraction du max)

@@ -1,0 +1,22 @@
+source_hash: 2ae828bc3a14
+title: Ajustar medidas experimentales con tensores
+summary: Una medida de laboratorio (sintética) de un oscilador amortiguado, con una barra de error $\sigma_i$ en cada punto, se ajusta por máxima verosimilitud. El modelo de medida tiene un término de error explícito $\varepsilon_i$ cuya dispersión incluye una dispersión extra desconocida $s$; autograd minimiza $-2\ln L$, el jacobiano y el hessiano dan las incertidumbres de los parámetros, y un subproblema lineal muestra los mínimos cuadrados como una sola resolución lstsq.
+notes: 'Una medida nunca es exactamente el modelo: $x_i = f(t_i;\theta) + \varepsilon_i$, y la estadística trata del término de error $\varepsilon_i$. Si las barras de error declaradas lo dijeran todo, $\varepsilon_i \sim N(0, \sigma_i^2)$ y maximizar la verosimilitud sería lo mismo que minimizar $\chi^2 = \sum_i ((x_i - f_i)/\sigma_i)^2$ (mínimos cuadrados ponderados). Los experimentos reales a menudo dispersan más de lo que dicen sus barras de error (vibraciones, una deriva no modelada), así que aquí la dispersión es $\sigma_{tot,i}^2 = \sigma_i^2 + s^2$ con una dispersión extra («jitter») $s$ desconocida que se ajusta junto con los cinco parámetros físicos. El término $\ln 2\pi\sigma_{tot,i}^2$ en $-2\ln L$ impide que el ajuste lo explique todo con un $s$ enorme. Los datos de measurements.csv son sintéticos, generados con $s = 0.8$ mm además de barras de error de 0,5–1 mm: un ajuste de $\chi^2$ simple termina con $\chi^2/\mathrm{dof} \approx 2.5$, señal de errores subestimados, mientras
+  que con $s$ ajustado los residuos normalizados $r_i = (x_i - f_i)/\sigma_{tot,i}$ siguen $N(0,1)$ y $\chi^2/\mathrm{dof} \approx 1$. Autograd da el gradiente de $-2\ln L$ a Adam (las iteraciones animadas) y a L-BFGS (el pulido final). Las incertidumbres provienen de la curvatura de $-2\ln L$ en el mínimo: $C = (J^TJ)^{-1}$ con el jacobiano $J_{ip} = \partial r_i/\partial\theta_p$, o $C = 2H^{-1}$ con el hessiano completo cuando se incluye $s$. Mínimos cuadrados lineales frente a no lineales: con $\gamma$ y $\omega$ fijos el modelo es lineal en $(A\cos\varphi, A\sin\varphi, c)$, así que los mejores valores salen de una sola resolución lstsq (sin iteraciones, respuesta única), y así se construye el punto de partida a partir de $\omega_0, \gamma_0$; $\gamma$ y $\omega$ entran de forma no lineal y requieren una búsqueda iterativa que puede atascarse en un mínimo local. Pruebe un $\omega_0$ malo (el ajuste puede engancharse a una frecuencia equivocada), una tasa de aprendizaje grande, o desactive
+  el jitter. Simplificaciones: errores gaussianos independientes, sin error en $t$, y covarianzas solo a partir de la curvatura local.'
+meanings:
+- tiempo, posición medida y barra de error declarada del punto $i$, leídos de measurements.csv
+- $(A, \gamma, \omega, \varphi, c, \ln s)$; ajustar $\ln s$ mantiene positivo el jitter $s$
+- el modelo del oscilador amortiguado en cada instante medido
+- 'dispersión del término de error $\varepsilon_i$: barra de error y dispersión extra sumadas en cuadratura'
+- $i$ repetido ⇒ sumado; con $s = 0$ es $\chi^2$ más una constante
+- cómo cambia cada residuo normalizado con cada parámetro
+- 'covarianza de Gauss–Newton $C$: incertidumbres $\sqrt{C_{pp}}$ ($i$ sumado)'
+- covarianza incluyendo $\ln s$, a partir del hessiano de $-2\ln L$
+- con $\gamma, \omega$ fijos el modelo es lineal en $\beta = (A\cos\varphi, A\sin\varphi, c)$
+labels:
+  omega0: Estimación inicial $\omega_0$
+  gamma0: Estimación inicial $\gamma_0$
+  lr: Tasa de aprendizaje de Adam
+  iterations: Iteraciones de Adam
+  jitter: Ajustar la dispersión extra $s$

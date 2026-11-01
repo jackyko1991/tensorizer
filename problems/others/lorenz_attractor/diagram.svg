@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Lorenz attractor sketch: a butterfly-shaped double loop around two fixed points C plus and C minus, above x, y and z axes, with two nearby starting points that peel apart">
+  <defs>
+    <marker id="axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#111827">
+    <!-- axes from the origin -->
+    <line x1="120" y1="146" x2="120" y2="14" stroke="#374151" stroke-width="2" marker-end="url(#axis)"/>
+    <line x1="120" y1="146" x2="214" y2="146" stroke="#374151" stroke-width="2" marker-end="url(#axis)"/>
+    <line x1="120" y1="146" x2="62" y2="156" stroke="#374151" stroke-width="2" marker-end="url(#axis)"/>
+    <text x="126" y="22" font-style="italic">z</text>
+    <text x="204" y="140" font-style="italic">x</text>
+    <text x="48" y="156" font-style="italic">y</text>
+    <!-- the two wings of the butterfly -->
+    <g fill="none" stroke="#2563eb" stroke-width="1.6">
+      <path d="M120,96 C100,40 52,38 50,72 C48,104 88,112 108,90 C124,72 96,52 78,62 C64,72 76,92 96,86"/>
+      <path d="M120,96 C140,40 188,38 190,72 C192,104 152,112 132,90 C116,72 144,52 162,62 C176,72 164,92 144,86"/>
+    </g>
+    <path d="M120,96 C104,56 64,48 60,74 C58,98 92,106 110,88" fill="none" stroke="#93c5fd" stroke-width="1.2"/>
+    <!-- fixed points at the centres of the wings -->
+    <circle cx="80" cy="74" r="3" fill="#374151"/>
+    <circle cx="160" cy="74" r="3" fill="#374151"/>
+    <text x="68" y="94" font-style="italic" fill="#374151">C₋</text>
+    <text x="158" y="94" font-style="italic" fill="#374151">C₊</text>
+    <!-- two nearby starts that peel apart -->
+    <path d="M186,120 C200,108 206,90 200,70" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <path d="M190,121 C214,114 226,100 226,80" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <circle cx="186" cy="120" r="3" fill="#dc2626"/>
+    <circle cx="190" cy="121" r="3" fill="#f59e0b"/>
+  </g>
+</svg>

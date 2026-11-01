@@ -1,0 +1,21 @@
+source_hash: 8944aa9bc162
+title: Atractor de Lorenz y efecto mariposa
+summary: Tres ecuaciones acopladas de un modelo de convección nunca se estabilizan y nunca se repiten. Escritas como una parte lineal $A_{ij}x_j$ más una parte cuadrática $Q_{ijk}x_j x_k$ con un tensor de rango 3, un solo einsum hace avanzar todo un lote de trayectorias que empiezan a menos de $10^{-6}$ unas de otras; se separan exponencialmente, al ritmo marcado por el mayor exponente de Lyapunov $\lambda \approx 0.9$, hasta repartirse por toda la mariposa.
+notes: 'Lorenz (1963) redujo un modelo de un fluido calentado desde abajo a tres números: $x$ es la intensidad del rollo de convección, $y$ y $z$ describen el perfil de temperatura. Con $\sigma = 10$, $\rho = 28$ y $\beta = 8/3$ el movimiento gira alrededor de uno de los dos puntos fijos $C_\pm = (\pm\sqrt{\beta(\rho-1)}, \pm\sqrt{\beta(\rho-1)}, \rho-1)$ y luego salta de forma impredecible al otro ala. Trayectorias cercanas se separan como $e^{\lambda t}$ con $\lambda \approx 0.906$: un error de $10^{-6}$ crece hasta el tamaño del atractor en unas $15$ unidades de tiempo, por eso un pronóstico tiene un horizonte (el efecto mariposa). Al mismo tiempo, todo volumen de estados se contrae como $e^{-(\sigma+1+\beta)t}$, así que las trayectorias se amontonan sobre un conjunto delgado y fractal: el atractor extraño. La forma tensorial hace explícita la estructura: $A$ contiene todos los acoplamientos lineales y toda la no linealidad son las dos entradas de $Q$. Antes del cálculo se integra una
+  trayectoria desde $(1, 1, 1)$ durante $10$ unidades de tiempo para que la bola empiece sobre el atractor; RK4 con paso fijo $0.005$ basta aquí. Prueba $\rho < 1$: el origen se vuelve estable y todas las trayectorias decaen hacia él; para $1 < \rho < 24.74$ caen en espiral hacia $C_+$ o $C_-$; cerca de $\rho = 28$ y por encima vuelve el caos.'
+meanings:
+- estado $(x, y, z)$ de la trayectoria $b$
+- 'parte lineal: filas $(-\sigma, \sigma, 0)$, $(\rho, -1, 0)$, $(0, 0, -\beta)$'
+- 'parte cuadrática, un tensor de rango 3 con dos entradas no nulas: $-xz$ en $\dot y$ y $+xy$ en $\dot z$'
+- $j$ repetido ⇒ sumado
+- '$j$ y $k$ repetidos ⇒ sumados: la no linealidad que produce el caos'
+- 'traza del jacobiano: los volúmenes de estados se contraen a la tasa constante $\sigma + 1 + \beta$'
+- distancia cuadrática media de las trayectorias a su media
+- pendiente de $\ln s$ frente a $t$ mientras la dispersión crece de $10\,s(0)$ a $1$
+labels:
+  sigma: Número de Prandtl $\sigma$
+  rho: Número de Rayleigh $\rho$
+  beta: Factor geométrico $\beta$
+  t_max: Tiempo simulado
+  log10_radius: Radio de la bola inicial $\log_{10} r$
+  n_traj: Número de trayectorias

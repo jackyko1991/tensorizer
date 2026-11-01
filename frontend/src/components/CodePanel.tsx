@@ -42,7 +42,7 @@ export default function CodePanel({ files, edits, editable, onEdit, onReset, sid
               title={t(ROLE[f.name])}
               className={`shrink-0 rounded-t-md border border-b-0 px-3 py-1.5 font-mono text-xs ${
                 f.name === file.name
-                  ? "border-gray-200 bg-white text-gray-900"
+                  ? "border-blue-200 bg-blue-50 font-medium text-blue-700"
                   : "border-transparent text-gray-500 hover:text-gray-800"
               }`}
             >
@@ -55,7 +55,7 @@ export default function CodePanel({ files, edits, editable, onEdit, onReset, sid
 
         <div className="flex h-7 shrink-0 items-center justify-between gap-3 border-b border-gray-100 px-3 text-xs text-gray-500">
           <span className="truncate">
-            {t(ROLE[file.name])} · {t(editable ? "code.editable" : "code.readonly")}
+            {t(ROLE[file.name])} ({t(editable ? "code.editable" : "code.readonly")})
             {edited && (
               <button onClick={onReset} className="ml-3 text-blue-600 hover:underline">
                 {t("code.reset")}

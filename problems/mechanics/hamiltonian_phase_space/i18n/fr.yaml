@@ -1,0 +1,21 @@
+source_hash: c92568d7c613
+title: 'Mécanique hamiltonienne : espace des phases et intégration symplectique'
+summary: On écrit une seule fois le hamiltonien du pendule $H(q, p)$ et torch.autograd fournit les équations de Hamilton $\dot z_a = J_{ab}\,\partial H/\partial z_b$. Tout un éventail d'orbites et une tache de Liouville évoluent comme un seul tenseur, et le schéma saute-mouton symplectique est mis en compétition avec Euler explicite et RK4 sur de nombreuses périodes.
+notes: 'La séparatrice $H = mgL$, c''est-à-dire $p = \pm 2mL\sqrt{gL}\cos(q/2)$, sépare les librations (boucles fermées) des rotations (lignes ondulées qui sortent à droite et reviennent par la gauche). À son voisinage la période croît sans limite, si bien que le bord intérieur de la tache rattrape et dépasse son bord extérieur : elle s''étire en une fine spirale, mais son aire reste la même (théorème de Liouville). Le saute-mouton n''est que d''ordre deux, et pourtant son erreur d''énergie reste bornée indéfiniment, car il conserve exactement un hamiltonien « fantôme » voisin ; RK4 est bien plus précis à chaque pas, mais son erreur augmente régulièrement, et Euler explicite multiplie l''aire dans l''espace des phases par environ $1 + \omega^2\Delta t^2$ à chaque pas, si bien que l''énergie explose. Essayez un $\Delta t$ plus grand, ou le système harmonique, où la tache tourne simplement comme un solide.'
+meanings:
+- 'point $b$ de l''espace des phases : angle $q$ et moment cinétique $p$ ; chaque point d''orbite et de la tache est une ligne'
+- le hamiltonien, la seule physique saisie à la main
+- le gradient de la somme donne à chaque point indépendant son propre gradient
+- 'matrice symplectique $[[0, I], [-I, 0]]$ : fait tourner le gradient de 90°'
+- '$c$ répété ⇒ sommé : équations de Hamilton pour tous les points à la fois'
+- 'coup–dérive–coup (Störmer–Verlet) : chaque sous-pas est un cisaillement, donc l''aire est conservée exactement'
+- 'Euler explicite, pour comparaison : étire l''espace des phases à chaque pas'
+- aire du polygone de la tache ; d'après Liouville, elle reste constante
+labels:
+  system: système
+  m: Masse $m$
+  length: Longueur $L$
+  amplitude: Amplitude de l'orbite test $q_0$
+  n_orbits: Orbites dans le portrait
+  dt: Pas de temps $\Delta t$
+  t_max: Durée simulée

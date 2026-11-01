@@ -1,0 +1,21 @@
+source_hash: 2ee80d9bf824
+title: Ecuaciones de Bloch y el eco de espín
+summary: 'La ecuación de Bloch es un producto vectorial, $\varepsilon_{ijk} M_j \Omega_k$, más relajación. Cientos de isocromatos con frecuencias fuera de resonancia $\Delta\omega_n$ ligeramente distintas avanzan juntos en una sola actualización RK4 por lotes: tras un pulso de 90° se abren en abanico y la señal se extingue con $T_2^*$; luego un pulso de 180° en $TE/2$ los refocaliza en un eco en $TE$ cuya altura solo decae con el $T_2$ verdadero.'
+notes: 'Los tiempos están en ms y las frecuencias en rad/ms. Cada isocromato por separado mantiene $\lvert\mathbf M\rvert$ fijo salvo por la relajación, pero el promedio del conjunto pierde la coherencia de fase: con una dispersión lorentziana, la caída libre de la inducción sigue $e^{-t/T_2^*}$ con $1/T_2^* = 1/T_2 + 1/T_2^{\prime}$. El pulso de 180° refleja cada fase, de modo que los espines que iban adelantados ahora van retrasados y todos vuelven a alinearse en $TE$; esto cancela la inhomogeneidad estática pero no la pérdida aleatoria por $T_2$, así que las alturas de los ecos siguen $e^{-TE/T_2}$. Varios pulsos de refocalización (un tren CPMG, 180° alrededor de $y$) dan una serie de ecos que permite medir $T_2$. Los pulsos son pulsos rectangulares cortos «duros» calculados con la misma ecuación de Bloch; los espines lejos de la resonancia se refocalizan de forma imperfecta. Los valores son ilustrativos, solo con fines educativos, no para uso clínico. Prueba la dispersión gaussiana,
+  un $T_2^{\prime}$ más largo o un único eco.'
+meanings:
+- magnetización del isocromato $n$, componente $i \in \{x, y, z\}$, en el sistema de referencia rotatorio
+- 'símbolo de Levi-Civita: el producto vectorial, exactamente como en la fuerza de Lorentz'
+- '$\gamma\mathbf B$ en el sistema rotatorio: campo de RF $\omega_1$ en el plano $xy$ durante un pulso, desplazamiento de resonancia $\Delta\omega_n$ a lo largo de $z$'
+- '$j, k$ repetidos ⇒ sumados: precesión $\mathbf M\times\boldsymbol\Omega$ de cada isocromato'
+- $\mathrm{diag}(1/T_2, 1/T_2, 1/T_1)$; contraída con $M_{nj} - M^0_j$ sobre $j$
+- dispersión de las frecuencias de precesión por la inhomogeneidad del campo, de anchura $1/T_2^{\prime}$
+- 'lo que ve la bobina receptora: la magnetización transversal media, sumada sobre $n$'
+labels:
+  T1: Relajación longitudinal $T_1$
+  T2: Relajación transversal $T_2$
+  t2_prime: Tiempo de inhomogeneidad $T_2^{\prime}$
+  TE: Tiempo de eco $TE$
+  n_echoes: Número de ecos (pulsos de 180°)
+  n_spins: Isocromatos
+  spread: Forma de línea fuera de resonancia

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Matrix mechanics: an evenly spaced ladder of oscillator energy levels with the raising operator a-dagger and the lowering operator a moving between rungs, next to the matrix of a with entries on its superdiagonal">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- parabola guide behind the ladder -->
+    <path d="M15.5,24 Q58,248 100.5,24" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- evenly spaced energy levels n + 1/2 -->
+    <g stroke="#374151" stroke-width="2">
+      <line x1="44.7" y1="125" x2="71.3" y2="125"/>
+      <line x1="34.9" y1="103" x2="81.1" y2="103"/>
+      <line x1="28.2" y1="81" x2="87.8" y2="81"/>
+      <line x1="22.7" y1="59" x2="93.3" y2="59"/>
+      <line x1="18" y1="37" x2="98" y2="37"/>
+    </g>
+    <text x="30" y="130" font-size="12" font-style="italic">½</text>
+    <!-- raising and lowering operators between two rungs -->
+    <line x1="53" y1="79" x2="53" y2="62" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="31" y="76" font-style="italic" fill="#b91c1c">a†</text>
+    <line x1="69" y1="61" x2="69" y2="78" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+    <text x="75" y="76" font-style="italic" fill="#1e40af">a</text>
+    <!-- the matrix a_mn: entries √n on the superdiagonal -->
+    <text x="120" y="88" font-style="italic">a</text>
+    <text x="131" y="88">=</text>
+    <path d="M152,38 h-4 v90 h4 M234,38 h4 v90 h-4" fill="none" stroke="#374151" stroke-width="2"/>
+    <g fill="none" stroke="#9ca3af" stroke-width="1">
+      <rect x="153" y="40" width="80" height="86"/>
+      <line x1="169" y1="40" x2="169" y2="126"/><line x1="185" y1="40" x2="185" y2="126"/>
+      <line x1="201" y1="40" x2="201" y2="126"/><line x1="217" y1="40" x2="217" y2="126"/>
+      <line x1="153" y1="57.2" x2="233" y2="57.2"/><line x1="153" y1="74.4" x2="233" y2="74.4"/>
+      <line x1="153" y1="91.6" x2="233" y2="91.6"/><line x1="153" y1="108.8" x2="233" y2="108.8"/>
+    </g>
+    <g stroke="#1e40af" stroke-width="1">
+      <rect x="169" y="40" width="16" height="17.2" fill="#93c5fd"/>
+      <rect x="185" y="57.2" width="16" height="17.2" fill="#60a5fa"/>
+      <rect x="201" y="74.4" width="16" height="17.2" fill="#3b82f6"/>
+      <rect x="217" y="91.6" width="16" height="17.2" fill="#2563eb"/>
+    </g>
+    <text x="178" y="148" font-size="13" font-style="italic">√n</text>
+    <line x1="190" y1="136" x2="206" y2="104" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+  </g>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Proton beam of energy E0 enters a water tank; the depth-dose curve D(z) rises to a sharp Bragg peak near the end of the range">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- water tank -->
+    <rect x="60" y="22" width="166" height="118" fill="#93c5fd" fill-opacity="0.45" stroke="#374151" stroke-width="2"/>
+    <!-- tumour region -->
+    <rect x="150" y="22" width="30" height="118" fill="#f59e0b" fill-opacity="0.18" stroke="none"/>
+    <!-- incoming beam -->
+    <line x1="8" y1="50" x2="56" y2="50" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <text x="14" y="40" font-style="italic" fill="#b91c1c">E<tspan font-size="10" dy="3">0</tspan></text>
+    <!-- protons slowing down -->
+    <line x1="60" y1="50" x2="172" y2="50" stroke="#2563eb" stroke-width="2"/>
+    <circle cx="100" cy="50" r="4" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="140" cy="50" r="4" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="172" cy="50" r="4" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <!-- depth-dose curve with Bragg peak -->
+    <path d="M60,124 C100,121 135,116 155,104 C164,98 168,74 172,72 C175,72 177,100 182,132 L184,134" fill="none" stroke="#f59e0b" stroke-width="2.2"/>
+    <text x="102" y="108" font-style="italic" fill="#b45309">D(z)</text>
+    <!-- depth axis -->
+    <line x1="60" y1="148" x2="210" y2="148" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="214" y="153" font-style="italic">z</text>
+  </g>
+</svg>

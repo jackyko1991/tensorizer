@@ -1,0 +1,14 @@
+source_hash: a88c161966b6
+title: 'Monte Carlo: $\pi$ mit zufälligen Dartpfeilen schätzen'
+summary: 'Werfen Sie zufällige Dartpfeile auf ein Einheitsquadrat und zählen Sie, wie viele im Viertelkreis landen: Der Anteil strebt gegen $\pi/4$. Viele unabhängige Experimente laufen nebeneinander in einem $(B, N)$-Tensor, was das bestimmende Gesetz von Monte Carlo zeigt: einen Fehler, der nur wie $1/\sqrt N$ schrumpft. Buffons Nadelproblem liefert eine zweite Schätzung aus dem 18. Jahrhundert.'
+notes: 'Jede Schätzung ist im Mittel richtig, aber verrauscht, und das Rauschen fällt nur wie $1/\sqrt N$: hundertmal mehr Pfeile für eine weitere korrekte Ziffer. Diese Rate hängt nicht von der Dimension ab, weshalb Monte Carlo die Methode der Wahl für Integrale über viele Variablen ist, vom Neutronentransport und dem Ising-Modell bis zur Optionsbewertung und zu Photonenbahnen in der medizinischen Dosimetrie. Die grauen Kurven sind einzelne Experimente: Jede schweift umher, aber alle bleiben in dem durch $\sigma_N$ gesetzten Band. Feste Seeds machen jeden Lauf reproduzierbar; probieren Sie mehr Experimente, um die Streuung enger an der Theorie zu sehen.'
+meanings:
+- Pfeil $n$ von Experiment $b$, Koordinate $i$, gleichverteilt in $[0, 1)$
+- 'wiederholtes $i$ ⇒ summiert: quadrierter Abstand zur Ecke; 1, wenn der Pfeil im Viertelkreis liegt'
+- 'kumulative Summe geteilt durch $n$: die Schätzung nach jedem Pfeil, für jedes Experiment'
+- Streuung über die Experimente; Theorie $\sqrt{\pi(4-\pi)/n}$ aus der Binomialvarianz
+- 'Buffons Nadel: kreuzt eine Linie mit Wahrscheinlichkeit $2\ell/(\pi d)$, also $\hat\pi = 2\ell N/(d\,\text{crossings})$'
+labels:
+  n_darts: Pfeile pro Experiment $N$
+  n_experiments: Experimente $B$
+  needle_length: Nadellänge $\ell/d$

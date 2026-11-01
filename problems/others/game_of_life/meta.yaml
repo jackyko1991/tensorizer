@@ -1,0 +1,31 @@
+title: "Conway's Game of Life as a convolution"
+category: others
+level: beginner
+order: 2
+summary: >
+  Not physics, just for fun: a grid of live and dead cells where every cell looks at its eight neighbours. Counting
+  them is a $3\times3$ convolution, written as one einsum over unfolded patches, and the birth/survival rule is a
+  comparison of tensors, so every cell of several boards updates at once. Watch gliders, a glider gun and random soups.
+animated: true
+vector_form: 'N(\mathbf r) = \sum_{\mathbf d \in \text{8 neighbours}} X(\mathbf r + \mathbf d),\qquad X''(\mathbf r) = \begin{cases} 1 & N = 3 \\ X(\mathbf r) & N = 2 \\ 0 & \text{otherwise} \end{cases}'
+index_form: 'N_{bp} = K_k\,P_{bkp},\qquad P_{bkp} = X_{b,\,i_p + a_k - 1,\,j_p + b_k - 1},\qquad X''_{bp} = [N_{bp} = 3] + X_{bp}\,[N_{bp} = 2]'
+translation:
+  - {symbol: 'X_{bij}', code: 'board(pattern, size, ...)', shape: '(B, H, W)', meaning: 'cell $(i, j)$ of board $b$: 1 alive, 0 dead'}
+  - {symbol: 'K_{ab}', code: 'kernel(device)', shape: '(3, 3)', meaning: 'ones around the cell and 0 in the middle: a cell is not its own neighbour'}
+  - {symbol: 'P_{bkp}', code: 'F.unfold(x[:, None], 3, padding=1)', shape: '(B, 9, H·W)', meaning: 'the $3\times3$ patch around every cell $p$ laid out as a column; cells outside the board count as dead'}
+  - {symbol: 'N_{bp} = K_k P_{bkp}', code: "einsum('k,bkp->bp', K.flatten(), P)", shape: '(B, H·W)', meaning: 'repeated $k$ ⇒ summed: live neighbours of every cell, the same as a convolution with $K$'}
+  - {symbol: "X'_{bp}", code: '(N == 3) | (X & (N == 2))', shape: '(B, H, W)', meaning: 'B3/S23: born with exactly 3 neighbours, survives with 2 or 3, otherwise dies'}
+  - {symbol: '\sum_{ij} X_{bij}', code: 'history.sum(dim=(-2, -1))', shape: '(G+1, B)', meaning: 'population of every board in every generation'}
+notes: >
+  Three numbers (born with 3, survive with 2 or 3) are enough for gliders that walk diagonally one cell every
+  4 generations, oscillators such as the pulsar (period 3) and the Gosper glider gun, which fires a new glider every
+  30 generations so its population grows by 5 each period. The $R$-pentomino, only 5 cells, keeps changing for
+  1103 generations on an unbounded grid; on a finite board the edge cuts this short. Random soups burn out into
+  still lifes, blinkers and escaping gliders; the grey curves show how similar this decay is from soup to soup.
+  The same unfold-and-einsum pattern is how a convolutional neural network layer is computed.
+params:
+  pattern: {default: gosper_gun, type: choice, options: [gosper_gun, glider, r_pentomino, pulsar, random], label: Starting pattern}
+  size: {default: 64, min: 24, max: 160, step: 8, type: int, label: Board size}
+  generations: {default: 240, min: 20, max: 1000, step: 20, type: int, label: Generations}
+  n_boards: {default: 6, min: 1, max: 16, step: 1, type: int, label: 'Random boards $B$'}
+  density: {default: 0.3, min: 0.05, max: 0.8, step: 0.05, label: Random fill density}

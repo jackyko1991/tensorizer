@@ -1,0 +1,22 @@
+source_hash: 2ae828bc3a14
+title: Ajuster des mesures expérimentales avec des tenseurs
+summary: Une mesure de laboratoire (synthétique) d'un oscillateur amorti, avec une barre d'erreur $\sigma_i$ sur chaque point, est ajustée par maximum de vraisemblance. Le modèle de mesure contient un terme d'erreur explicite $\varepsilon_i$ dont la dispersion inclut une dispersion supplémentaire inconnue $s$ ; l'autograd minimise $-2\ln L$, la jacobienne et la hessienne donnent les incertitudes des paramètres, et un sous-problème linéaire montre les moindres carrés comme une seule résolution lstsq.
+notes: 'Une mesure n''est jamais exactement le modèle : $x_i = f(t_i;\theta) + \varepsilon_i$, et c''est le terme d''erreur $\varepsilon_i$ qui fait l''objet de la statistique. Si les barres d''erreur annoncées disaient tout, $\varepsilon_i \sim N(0, \sigma_i^2)$ et maximiser la vraisemblance reviendrait à minimiser $\chi^2 = \sum_i ((x_i - f_i)/\sigma_i)^2$ (moindres carrés pondérés). Les vraies expériences dispersent souvent plus que leurs barres d''erreur ne l''indiquent (vibrations, dérive non modélisée) ; ici la dispersion est donc $\sigma_{tot,i}^2 = \sigma_i^2 + s^2$, avec une dispersion supplémentaire (« jitter ») $s$ inconnue ajustée en même temps que les cinq paramètres physiques. Le terme $\ln 2\pi\sigma_{tot,i}^2$ dans $-2\ln L$ empêche l''ajustement de tout expliquer par un $s$ énorme. Les données de measurements.csv sont synthétiques, générées avec $s = 0.8$ mm en plus de barres d''erreur de 0,5 à 1 mm : un ajustement du $\chi^2$ seul finit avec $\chi^2/\mathrm{dof} \approx
+  2.5$, signe d''erreurs sous-estimées, alors qu''avec $s$ ajusté les résidus normalisés $r_i = (x_i - f_i)/\sigma_{tot,i}$ suivent $N(0,1)$ et $\chi^2/\mathrm{dof} \approx 1$. L''autograd fournit le gradient de $-2\ln L$ à Adam (les itérations animées) et à L-BFGS (le polissage final). Les incertitudes viennent de la courbure de $-2\ln L$ au minimum : $C = (J^TJ)^{-1}$ avec la jacobienne $J_{ip} = \partial r_i/\partial\theta_p$, ou $C = 2H^{-1}$ avec la hessienne complète quand $s$ est inclus. Moindres carrés linéaires ou non linéaires : pour $\gamma$ et $\omega$ fixés, le modèle est linéaire en $(A\cos\varphi, A\sin\varphi, c)$, donc les meilleures valeurs découlent d''une seule résolution lstsq (sans itérations, réponse unique) ; c''est ainsi qu''on construit le point de départ à partir de $\omega_0, \gamma_0$. $\gamma$ et $\omega$ interviennent de façon non linéaire et demandent une recherche itérative qui peut rester bloquée dans un minimum local. Essayez un mauvais $\omega_0$ (l''ajustement
+  peut se caler sur une mauvaise fréquence), un grand taux d''apprentissage, ou désactivez le jitter. Simplifications : erreurs gaussiennes indépendantes, aucune erreur sur $t$, et covariances issues de la seule courbure locale.'
+meanings:
+- temps, position mesurée et barre d'erreur annoncée du point $i$, lus dans measurements.csv
+- $(A, \gamma, \omega, \varphi, c, \ln s)$ ; ajuster $\ln s$ garde le jitter $s$ positif
+- le modèle d'oscillateur amorti à chaque instant de mesure
+- 'dispersion du terme d''erreur $\varepsilon_i$ : barre d''erreur et dispersion supplémentaire additionnées en quadrature'
+- $i$ répété ⇒ sommé ; avec $s = 0$ c'est $\chi^2$ plus une constante
+- comment chaque résidu normalisé varie avec chaque paramètre
+- 'covariance de Gauss–Newton $C$ : incertitudes $\sqrt{C_{pp}}$ ($i$ sommé)'
+- covariance incluant $\ln s$, tirée de la hessienne de $-2\ln L$
+- pour $\gamma, \omega$ fixés, le modèle est linéaire en $\beta = (A\cos\varphi, A\sin\varphi, c)$
+labels:
+  omega0: Estimation initiale $\omega_0$
+  gamma0: Estimation initiale $\gamma_0$
+  lr: Taux d'apprentissage d'Adam
+  iterations: Itérations d'Adam
+  jitter: Ajuster la dispersion supplémentaire $s$

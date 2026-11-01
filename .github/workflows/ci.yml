@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        topic: [mechanics, optics, waves, thermodynamics, em, fluids, quantum, astro, nuclear, others]
+        topic: [mechanics, optics, waves, thermodynamics, em, fluids, quantum, astro, nuclear, medical, others]
     env:
       TENSORIZER_CATEGORIES: ${{ matrix.topic }}
     steps:
@@ -36,7 +36,7 @@ jobs:
       - uses: prefix-dev/setup-pixi@v0.11.2
         with:
           cache: true
-      - run: pixi run pytest -q tests/test_physics_${{ matrix.topic }}.py tests/test_smoke.py
+      - run: pixi run pytest -q tests/test_physics_${{ matrix.topic }}*.py tests/test_smoke.py
 
   web:
     runs-on: ubuntu-latest

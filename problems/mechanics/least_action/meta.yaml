@@ -1,0 +1,37 @@
+title: 'Principle of least action: finding the path by gradient descent'
+category: mechanics
+level: advanced
+order: 5
+summary: >
+  Chop a path into points $q_n$ with fixed ends, write the action $S = \sum_n L\,\Delta t$ as one tensor expression and let autograd and an optimiser
+  slide a batch of wrong guesses downhill until $\partial S/\partial q_n = 0$. They settle on the parabola of a thrown ball or the sine of an oscillator.
+animated: true
+vector_form: 'S[q] = \int_0^T \Big(\tfrac12 m\dot q^2 - V(q)\Big)\,dt,\qquad \frac{\delta S}{\delta q(t)} = 0 \;\Leftrightarrow\; m\ddot q = -V''(q)'
+index_form: 'S_b = \sum_{n=0}^{N-1}\Big[\tfrac12 m\,v_{bn}v_{bn} - V(q_{bn})\Big]\Delta t,\quad v_{bn} = \frac{D_{nk}\,q_{bk}}{\Delta t},\qquad \frac{\partial S_b}{\partial q_{bn}} = -\Delta t\Big[m\,\frac{q_{b,n+1} - 2q_{bn} + q_{b,n-1}}{\Delta t^2} + V''(q_{bn})\Big]'
+translation:
+  - {symbol: 'q_{bn}', code: 'q[b, n]', shape: '(B, N+1)', meaning: 'trial path $b$ at time $t_n = n\,\Delta t$; $q_{b0}$ and $q_{bN}$ are fixed'}
+  - {symbol: 'D_{nk}', code: 'difference_matrix(N)', shape: '(N, N+1)', meaning: '$-1$ on the diagonal, $+1$ right of it: $(Dq)_n = q_{n+1} - q_n$'}
+  - {symbol: 'v_{bn} = D_{nk} q_{bk}/\Delta t', code: "einsum('nk,bk->bn', D, q) / dt", shape: '(B, N)', meaning: 'repeated $k$ ⇒ summed: velocity on every step of every path'}
+  - {symbol: 'S_b', code: 'action(q, D, dt, m, V)', shape: '(B,)', meaning: 'kinetic minus potential, summed over the steps; $V$ taken at the left end of each step'}
+  - {symbol: '\partial S_b/\partial q_{bn}', code: 'autograd.grad(S.sum(), x)', shape: '(B, N-1)', meaning: 'gradient for the free interior points; the paths are independent so one backward pass serves all'}
+  - {symbol: 'x \leftarrow x - \eta\,\partial S/\partial x', code: 'optim.SGD([x], lr, momentum=0.9)', shape: '(B, N-1)', meaning: 'gradient descent with momentum, $\eta = 0.8\,\Delta t/m$'}
+  - {symbol: '\partial^2 S_b/\partial q_{bn}\partial q_{bm}', code: "einsum('bnbm->bnm', hessian(S))", shape: '(B, N-1, N-1)', meaning: 'Hessian: tridiagonal, $2m/\Delta t - V''''\Delta t$ on the diagonal and $-m/\Delta t$ beside it'}
+  - {symbol: 'r_{bn}', code: 'euler_lagrange_residual(q, dt, m, dV)', shape: '(B, N-1)', meaning: 'discrete Euler–Lagrange equation $m(q_{n+1} - 2q_n + q_{n-1})/\Delta t^2 + V''(q_n)$, the Verlet scheme; $\partial S/\partial q_n = -\Delta t\,r_n$'}
+notes: >
+  Nature does not integrate forward step by step here: the whole path is adjusted at once, knowing where it must start and end.
+  Setting $\partial S/\partial q_n = 0$ gives $m(q_{n+1} - 2q_n + q_{n-1})/\Delta t^2 = -V'(q_n)$, the discrete Euler–Lagrange equation, which is exactly the Verlet scheme;
+  for constant gravity it reproduces the parabola to rounding error, for the oscillator to $O(\Delta t^2)$.
+  The principle is really one of stationary action: for the oscillator the Hessian's lowest eigenvalue is about $m\Delta t\,(\pi^2/T^2 - \omega^2)$, so once $T$ exceeds half a period $\pi/\omega$
+  the true path is a saddle of $S$, gradient descent would run away, and the code switches to Newton steps $x \leftarrow x - \alpha H^{-1}\nabla S$, which find any stationary point.
+  Smooth, long wiggles relax slowest (the smallest Hessian eigenvalues); short wiggles vanish within a few iterations.
+params:
+  system: {default: gravity, type: choice, options: [gravity, oscillator]}
+  method: {default: gradient, type: choice, options: [gradient, newton]}
+  T: {default: 1.2, min: 0.2, max: 4, step: 0.1, label: 'Total time $T$', unit: s}
+  omega: {default: 2.0, min: 0.5, max: 6, step: 0.1, label: 'Oscillator frequency $\omega$', unit: rad/s}
+  q_start: {default: 0.0, min: -3, max: 3, step: 0.1, label: 'Start $q_0$', unit: m}
+  q_end: {default: 1.0, min: -3, max: 3, step: 0.1, label: 'End $q_N$', unit: m}
+  n_steps: {default: 30, min: 8, max: 80, step: 1, type: int, label: 'Time steps $N$'}
+  n_paths: {default: 4, min: 1, max: 6, step: 1, type: int, label: Trial paths}
+  wiggle: {default: 1.0, min: 0, max: 3, step: 0.1, label: Wiggle of the trial paths, unit: m}
+  n_iter: {default: 400, min: 20, max: 2000, step: 10, type: int, label: Iterations}

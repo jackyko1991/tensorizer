@@ -1,0 +1,20 @@
+source_hash: 5a26364d7c17
+title: 'Mécanique matricielle : l''oscillateur de Heisenberg par les opérateurs d''échelle'
+summary: 'Ni fonction d''onde ni grille : dans la base des nombres d''occupation $|0\rangle, \dots, |N-1\rangle$, l''opérateur d''annihilation est la matrice $a_{mn} = \sqrt n\,\delta_{m,n-1}$, et $X$, $P$ et $H = \tfrac12(P^2 + X^2)$ s''obtiennent par produits matriciels. Ses valeurs propres sont $n + \tfrac12$ et $[X, P] = i$. Avec torch.linalg.matrix_exp, c''est l''opérateur $X(t) = U^\dagger X U$ qui évolue (représentation de Heisenberg) ou l''état $U|\alpha\rangle$ (représentation de Schrödinger) ; les deux donnent le même $\langle X\rangle(t)$, et un état cohérent tourne dans l''espace des phases comme une masse classique sur un ressort.'
+notes: 'Unités $\hbar = m = \omega = 1$. C''est la mécanique quantique telle que Heisenberg, Born et Jordan l''ont écrite en 1925 : les observables sont des matrices et leurs produits ne commutent pas. La troncature à $N$ états est la seule approximation. Elle brise $[X, P] = i$ dans le dernier élément diagonal, qui doit valoir $i(1 - N)$ car la trace d''un commutateur de matrices finies est nulle, et elle donne au dernier état de base l''énergie $(N-1)/2$ au lieu de $N - \tfrac12$ ; les états bien en dessous de $N$ sont exacts. En représentation de Heisenberg, chaque élément $X(t)_{mn} = X_{mn}e^{i(E_m - E_n)t}$ tourne à une fréquence de Bohr ; pour l''oscillateur $X(t) = X\cos t + P\sin t$, la solution classique écrite pour des matrices. L''état cohérent $|\alpha\rangle$ a $\langle X\rangle(t) = \sqrt2\,\mathrm{Re}(\alpha e^{-it})$ et décrit dans l''espace des phases un cercle de rayon $\sqrt2\,\alpha$. Le calcul sur grille de Oscillateur harmonique quantique donne la même échelle et la
+  même oscillation dans une représentation complètement différente. Essayez $\lambda > 0$ : les niveaux ne sont plus équidistants, les fréquences de Bohr s''étalent et le cercle s''enroule vers l''intérieur à mesure que le paquet se déphase. Pour $\lambda$ petit, les énergies suivent la théorie des perturbations au premier ordre, $\lambda\langle n|X^4|n\rangle = \lambda\,\tfrac34(2n^2 + 2n + 1)$.'
+meanings:
+- '$\sqrt1, \sqrt2, \dots$ sur la surdiagonale : $a|n\rangle = \sqrt n\,|n-1\rangle$'
+- $(a + a^\dagger)/\sqrt2$ et $i(a^\dagger - a)/\sqrt2$, toutes deux hermitiennes
+- '$k$ répété ⇒ sommé : produits matriciels ; égal à $a^\dagger a + \tfrac12$ sauf le dernier élément'
+- '$i\,\delta_{mn}$, mais $i(1 - N)$ dans le coin : une matrice finie ne peut pas avoir $[X, P] = i$ (sa trace est nulle)'
+- $n + \tfrac12$ ; avec $\lambda X^4$ décalées de $\approx \lambda\,\tfrac34(2n^2 + 2n + 1)$
+- opérateur d'évolution $e^{-iHt}$ pour tous les instants à la fois
+- '$k, l$ répétés ⇒ sommés : représentation de Heisenberg, l''opérateur évolue'
+- '$e^{-|\alpha|^2/2}\alpha^n/\sqrt{n!}$ : un état fondamental déplacé'
+- 'représentation de Schrödinger avec $c(t) = Uc$ : les mêmes nombres qu''en représentation de Heisenberg'
+labels:
+  alpha: Amplitude de l'état cohérent $\alpha$
+  lam: Anharmonicité $\lambda$ (ajoute $\lambda X^4$)
+  periods: Temps simulé
+  n_states: Taille de la base $N$

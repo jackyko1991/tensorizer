@@ -1,0 +1,21 @@
+source_hash: c92568d7c613
+title: 'Hamiltonsche Mechanik: Phasenraum und symplektische Integration'
+summary: Schreibe die Hamilton-Funktion des Pendels $H(q, p)$ einmal hin, und torch.autograd liefert die Hamiltonschen Gleichungen $\dot z_a = J_{ab}\,\partial H/\partial z_b$. Ein ganzer Fächer von Bahnen und ein Liouville-Fleck bewegen sich als ein einziger Tensor, und das symplektische Leapfrog-Verfahren tritt über viele Perioden gegen das explizite Euler-Verfahren und RK4 an.
+notes: 'Die Separatrix $H = mgL$, also $p = \pm 2mL\sqrt{gL}\cos(q/2)$, trennt Librationen (geschlossene Schleifen) von Rotationen (Wellenlinien, die rechts hinauslaufen und links wieder hereinkommen). In ihrer Nähe wächst die Periode unbeschränkt, sodass der innere Rand des Flecks seinen äußeren Rand überrundet: Er wird zu einer dünnen Spirale gestreckt, doch seine Fläche bleibt gleich (Satz von Liouville). Leapfrog ist nur von zweiter Ordnung, trotzdem bleibt sein Energiefehler für alle Zeiten beschränkt, weil es eine benachbarte „Schatten“-Hamilton-Funktion exakt erhält; RK4 ist pro Schritt viel genauer, aber sein Fehler wächst stetig an, und das explizite Euler-Verfahren vervielfacht die Phasenraumfläche pro Schritt um etwa $1 + \omega^2\Delta t^2$, sodass die Energie explodiert. Probiere ein größeres $\Delta t$ oder das harmonische System, in dem sich der Fleck einfach starr dreht.'
+meanings:
+- 'Phasenraumpunkt $b$: Winkel $q$ und Drehimpuls $p$; jeder Bahn- und Fleckpunkt ist eine Zeile'
+- die Hamilton-Funktion, die einzige von Hand eingegebene Physik
+- der Gradient der Summe liefert jedem unabhängigen Punkt seinen eigenen Gradienten
+- 'symplektische Matrix $[[0, I], [-I, 0]]$: dreht den Gradienten um 90°'
+- 'wiederholtes $c$ ⇒ summiert: Hamiltonsche Gleichungen für alle Punkte auf einmal'
+- 'Kick–Drift–Kick (Störmer–Verlet): Jeder Teilschritt ist eine Scherung, daher bleibt die Fläche exakt erhalten'
+- 'explizites Euler-Verfahren zum Vergleich: streckt den Phasenraum bei jedem Schritt'
+- Fläche des Fleck-Polygons; nach Liouville bleibt sie konstant
+labels:
+  system: System
+  m: Masse $m$
+  length: Länge $L$
+  amplitude: Amplitude der Testbahn $q_0$
+  n_orbits: Bahnen im Phasenporträt
+  dt: Zeitschritt $\Delta t$
+  t_max: Simulierte Zeit

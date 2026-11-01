@@ -1,0 +1,20 @@
+source_hash: fa6ec3302fec
+title: Le bruit et l'équation de Langevin
+summary: Une particule brownienne dans un piège harmonique reçoit des chocs aléatoires des molécules qui l'entourent. L'équation de Langevin ajoute ce terme de bruit, $\sqrt{2\gamma k_BT}\,dW$, à la loi de Newton ; la méthode d'Euler–Maruyama fait avancer tout un ensemble de particules à la fois dans un seul tenseur de lot, et la dispersion des positions converge vers la distribution de Boltzmann $N(0, k_BT/k)$ (équipartition).
+notes: 'Avec le seul frottement, la loi de Newton laisserait la particule s''immobiliser au fond du piège (la courbe rouge épaisse). Les vraies particules dans un fluide ne s''arrêtent jamais : des molécules les frappent de tous côtés, et cette force aléatoire est le terme de bruit, ou terme d''erreur, de l''équation de Langevin. Sa taille n''est pas libre. Le théorème de fluctuation–dissipation la fixe à $\sqrt{2\gamma k_BT}$ : les mêmes collisions qui causent le frottement $\gamma$ donnent aussi des chocs à la particule, et l''ensemble s''équilibre à la température $T$ : $\tfrac12 k\langle x^2\rangle = \tfrac12 m\langle v^2\rangle = \tfrac12 k_BT$ (équipartition), avec des positions distribuées selon $N(0, k_BT/k)$. L''incrément de Wiener $dW$ a une variance $dt$ ; sur un pas fini il devient $\sqrt{\Delta t}\,\xi$ avec $\xi \sim N(0,1)$, et le choc de vitesse par pas a une variance $2\gamma k_BT\Delta t/m^2$. Si le bruit était proportionnel à $\Delta t$, il disparaîtrait quand le pas diminue
+  : des chocs aléatoires s''additionnent comme une marche aléatoire, donc leur dispersion croît comme $\sqrt{t}$. L''équation étant linéaire, la moyenne d''ensemble $\langle x\rangle$ suit exactement l''oscillateur amorti sans bruit (pointillés noirs sur le rouge), tandis que chaque trajectoire individuelle erre. Essayez $T = 0$ (oscillateur amorti pur), un grand $\gamma$ avec une petite $m$ (mouvement brownien suramorti : $\langle x^2\rangle$ relaxe au taux $2k/\gamma$ sans osciller), ou un petit $\gamma$ (approche lente de l''équilibre). Simplifications : unités réduites avec $k_B = 1$, une seule dimension, bruit blanc (non corrélé), et un schéma du premier ordre dont les variances d''équilibre ont un biais en $O(\Delta t)$.'
+meanings:
+- 'position et vitesse de la particule $b$ au pas $n$ : tout l''ensemble forme un seul lot'
+- 'le tenseur de bruit, une ligne par pas : des normales centrées réduites indépendantes (graine fixe)'
+- taille du choc aléatoire par pas ; elle varie comme $\sqrt{\Delta t}$, pas comme $\Delta t$
+- 'accélération déterministe : frottement plus ressort'
+- pas d'Euler–Maruyama ; la position utilise la nouvelle vitesse (Euler symplectique)
+- 'moyenne d''ensemble : $b$ répété ⇒ sommé sur les particules'
+- '$\langle x^2\rangle$ et $\langle v^2\rangle$ à l''équilibre : $\tfrac12 k\langle x^2\rangle = \tfrac12 m\langle v^2\rangle = \tfrac12 k_BT$'
+labels:
+  temperature: Température $k_BT$
+  gamma: Frottement $\gamma$
+  k: Raideur $k$
+  m: Masse $m$
+  n_particles: Nombre de particules $B$
+  t_max: Durée $t_{max}$

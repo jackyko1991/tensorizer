@@ -1,0 +1,24 @@
+source_hash: 492f2e3f4bf6
+title: 'PET: Positronenvernichtung und Bildrekonstruktion'
+summary: Ein Tracer wie FDG sendet Positronen aus; jedes zerstrahlt mit einem Elektron in zwei 511-keV-Photonen, die in entgegengesetzte Richtungen fliegen. Ein Stapel simulierter Zerfälle wird bis zum Detektorring verfolgt, jede Koinzidenz wird nach ihrer Line of Response in ein Sinogramm einsortiert, und das Bild wird mit MLEM rekonstruiert, $\lambda \leftarrow \lambda\,A^{\mathsf T}(y / A\lambda) / A^{\mathsf T}1$, wobei der ganze Scanner eine einzige Systemmatrix $A$ ist und jede Iteration aus zwei Matrix-Vektor-Produkten besteht.
+notes: 'Die beiden Photonen fliegen in entgegengesetzte Richtungen, also liegt der Zerfall irgendwo auf der Verbindungslinie der beiden gleichzeitig ansprechenden Detektoren: einer Line of Response (LOR). Millionen davon ergeben das Sinogramm (jeder Punkt des Körpers zeichnet darin eine Sinuskurve in $(\theta, s)$). MLEM behandelt die Zählraten als Poisson-verteilt mit Mittelwert $\bar y = A\lambda + r$ und steigt die Log-Likelihood $\sum_b y_b \log \bar y_b - \bar y_b$ hinauf: Jede Iteration projiziert das aktuelle Bild vorwärts, vergleicht mit den Daten und projiziert das Verhältnis zurück. Das Bild wird nie negativ, die Gesamtzahl der Ereignisse bleibt erhalten ($\sum_b (A\lambda)_b = \sum_b y_b$ ohne Untergrund), und die Likelihood nimmt nie ab. Frühe Iterationen sind glatt, spätere schärfer, verstärken aber das Poisson-Rauschen, sodass der Fehler erst sinkt und dann wieder steigt (mit den Standardwerten liegt das Minimum bei etwa 50 Iterationen; probieren Sie 150 Iterationen oder weniger
+  Zerfälle, um den Anstieg zu sehen): Klinische Scanner brechen früh ab (oder nutzen OSEM-Teilmengen und einen Nachfilter). FBP filtert jede Projektion mit einer Rampe und projiziert in einem Schritt zurück; sie ist schnell, aber verrauschter und kann negativ werden. Photonen, die den Körper durchqueren, werden um $e^{-\int \mu\, dl}$ geschwächt, mit $\mu \approx 0.096$ cm$^{-1}$ für Wasser bei 511 keV; dieser Faktor hängt nur von der LOR ab, nicht vom Ort des Zerfalls, und wird deshalb in $A$ eingebaut. Vereinfachungen: nur 2D, gaußförmige Positronenreichweite (F-18 hat eine mittlere Reichweite von etwa 0,6 mm, Ga-68 etwa 3 mm, sie verschwindet also in den 6-mm-Pixeln, wenn man sie nicht erhöht), keine Akollinearität der Photonen, ideale Kristalle (jedes LOR-Ende liegt an einem zufälligen Punkt des ansprechenden Kristalls) ohne Wechselwirkungstiefe oder Totzeit, und ein bekannter, glatter Untergrund aus Zufallskoinzidenzen und Streuung. Alle Werte sind Näherungen und nur für die Lehre gedacht,
+  nicht für den klinischen Einsatz.'
+meanings:
+- Zerfallsorte, gezogen aus der Aktivitätsverteilung (heiße Läsionen zerfallen häufiger)
+- 'Vernichtungsort: Das Positron fliegt zuerst etwa einen Millimeter'
+- zwei Photonen $p = 1, 2$ in entgegengesetzte Richtungen, je $511$ keV
+- 'wo jedes Photon den Ring trifft: löse $|a + t u| = R$ für $t > 0$'
+- 'Sinogramm: nachgewiesene Koinzidenzen pro Line of Response $(\theta, s)$'
+- Wahrscheinlichkeit, dass ein Zerfall in Pixel $j$ im Bin $b$ gezählt wird (mal Schwächung)
+- 'wiederholtes $j$ ⇒ summiert: Vorwärtsprojektion plus Zufalls-/Streuuntergrund'
+- 'wiederholtes $b$ ⇒ summiert: Rückprojektion entlang jeder LOR'
+- 'multiplikatives Update: bleibt positiv und erhält die Gesamtzahl der Ereignisse'
+labels:
+  kilo_decays: Simulierte Zerfälle (Tausend)
+  n_iter: MLEM-Iterationen
+  positron_range: Positronenreichweite $\sigma_+$
+  attenuation: Schwächung im Körper
+  background: Anteil Zufalls- + Streukoinzidenzen
+  grid: Bildgitter $n \times n$
+  n_detectors: Detektorkristalle auf dem Ring

@@ -1,0 +1,56 @@
+title: 'Fourier neural operator: learning the Burgers solution operator'
+category: others
+level: advanced
+order: 2
+summary: >
+  Instead of solving one equation, a Fourier neural operator (FNO) learns the whole map $u_0(x) \mapsto u(x, T)$ of
+  the viscous Burgers equation $u_t + u\,u_x = \nu\,u_{xx}$ from pairs produced by a spectral solver. Its key layer is
+  a spectral convolution: Fourier transform, mix channels mode by mode with complex weights
+  $R_{iok}$, keep only the lowest $m$ modes, transform back. Because the weights live on Fourier modes, the
+  trained model also runs on a finer grid than it was trained on.
+animated: true
+vector_form: 'G_\theta : u_0(\cdot) \mapsto u(\cdot, T),\quad u_t + u\,u_x = \nu\,u_{xx},\qquad v^{(l+1)} = \sigma\big(W v^{(l)} + \mathcal F^{-1}[R\cdot\mathcal F v^{(l)}]\big),\qquad \min_\theta \tfrac1B\textstyle\sum_b \frac{\lVert G_\theta(u_0^b) - u_T^b\rVert}{\lVert u_T^b\rVert}'
+index_form: '\hat v_{bik} = \textstyle\sum_x v_{bix}\,e^{-ikx},\qquad \hat w_{bok} = R_{iok}\,\hat v_{bik}\ \ (k < m),\qquad v^{(l+1)}_{box} = \sigma\big(W_{oi}\,v^{(l)}_{bix} + b_o + \mathcal F^{-1}_{k\to x}[\hat w_{bok}]\big)'
+translation:
+  - {symbol: 'a_{bfx}', code: 'stack([u0, x / 2π], dim=1)', shape: '(B, 2, N)', meaning: 'input function: $u_0$ and the position at each of the $N$ grid points of sample $b$'}
+  - {symbol: 'v_{bcx} = P_{cf}\,a_{bfx} + p_c', code: "einsum('cf,bfx->bcx', P, a) + p", shape: '(B, C, N)', meaning: 'lift: $f$ summed, 2 features become $C$ channels at every point'}
+  - {symbol: '\hat v_{bik}', code: 'torch.fft.rfft(v)', shape: '(B, C, N/2+1)', meaning: 'complex Fourier coefficients of every channel $i$, wavenumber $k$'}
+  - {symbol: 'R_{iok}', code: 'w["R"][l]', shape: '(C, C, m)', meaning: 'complex weights, one $C\times C$ matrix per kept mode $k < m$: they do not depend on $N$'}
+  - {symbol: 'R_{iok}\,\hat v_{bik}', code: "einsum('bik,iok->bok', v_hat[..., :m], R)", shape: '(B, C, m)', meaning: 'repeated $i$ ⇒ summed; $k$ is NOT summed: each mode is mixed separately'}
+  - {symbol: '\hat w_{bok} = 0,\ k \ge m', code: 'out_hat = zeros_like(v_hat)', shape: '(B, C, N/2+1)', meaning: 'truncation: only the lowest $m$ Fourier modes pass the spectral convolution'}
+  - {symbol: '\mathcal F^{-1}_{k\to x}', code: 'torch.fft.irfft(out_hat, n=N)', shape: '(B, C, N)', meaning: 'back to any number $N$ of grid points: this is where the resolution is chosen'}
+  - {symbol: 'W_{oi}\,v_{bix} + b_o', code: "einsum('oi,bix->box', W, v) + b", shape: '(B, C, N)', meaning: 'local path, the same $C\times C$ matrix at every point; $\sigma$ = GELU'}
+  - {symbol: 'u_{bx}', code: 'project(v, Q1, q1, Q2, q2)', shape: '(B, N)', meaning: 'pointwise two-layer projection from $C$ channels to the predicted $u(x, T)$'}
+  - {symbol: '\lVert G_\theta(u_0) - u_T\rVert / \lVert u_T\rVert', code: 'relative_l2(pred, true)', shape: '()', meaning: 'relative $L^2$ error per sample, averaged over the batch: the loss minimised by Adam'}
+  - {symbol: '\partial_t\hat u_k = -\nu k^2\hat u_k - \tfrac{ik}{2}\,\widehat{u^2}_k', code: 'solve_burgers(u0, nu, t_final, dx)', shape: '(B, N)', meaning: 'the data: pseudo-spectral solver, integrating-factor RK4 with the 2/3 dealiasing rule, all samples at once'}
+notes: >
+  The training data are pairs $(u_0, u(\cdot, T))$: random smooth initial conditions (sums of Fourier modes
+  $k \le 5$ with amplitudes falling like $1/k$) and their solutions, computed on 256 points by a pseudo-spectral
+  solver and subsampled to 64 points for training. The network never sees the equation, only solver data.
+  The tensor lesson is the spectral convolution: after rfft each channel $i$ of each sample $b$ becomes Fourier
+  coefficients $\hat v_{bik}$, and einsum('bik,iok->bok') sums over the input channel $i$ but keeps the
+  wavenumber $k$ as a free index, so each mode gets its own $C\times C$ complex matrix $R_{\cdot\cdot k}$. That is a
+  convolution with a global, learned kernel, computed as a product in Fourier space. Higher modes $k \ge m$ are
+  cut off; the local path $W_{oi}v_{bix}$ and the nonlinearity $\sigma$ put fine detail back. Nothing in
+  $R_{iok}$, $W_{oi}$, $P$ or $Q$ refers to the number of grid points, so the trained operator runs on any grid with more
+  than $2m$ points: the bottom-right panel feeds the SAME weights 256 points (zero-shot super-resolution) for the
+  test case with the steepest front. The 64-point predictions (dots) lie on the 256-point curve: this
+  discretisation invariance is approximate, because $\sigma$ creates harmonics that alias differently on different
+  grids, but the error on 256 points equals the 64-point error. What limits the accuracy is the model, not the grid:
+  near-shocks need modes above $m$ and are the hardest cases. Compare the PINN in this topic: a PINN solves ONE
+  problem by putting the equation in the loss, and must be retrained for every new initial condition; a neural
+  operator learns a whole family of problems from solver data, after which each new prediction is a single forward
+  pass. The console prints the time of that forward pass against the solver: tens of times faster here, but for
+  1D Burgers the solver is already cheap and the data generation and training cost far more. Neural operators pay
+  off where one simulation takes hours (weather, turbulence, porous-media flow) and many queries are needed, and
+  only inside the distribution they were trained on. Try fewer modes $m$, a smaller training set, or a larger
+  $\nu$ (smoother solutions, easier to learn). Simplifications: one output time $T$, a fixed seed, the grid
+  position as a plain input channel and no padding (the domain is periodic anyway).
+params:
+  nu: {default: 0.05, min: 0.05, max: 0.3, step: 0.01, label: 'Viscosity $\nu$'}
+  t_final: {default: 1.0, min: 0.25, max: 2.0, step: 0.25, label: 'Output time $T$'}
+  n_train: {default: 800, min: 100, max: 2000, step: 100, type: int, label: Training samples (initial conditions)}
+  modes: {default: 12, min: 2, max: 24, step: 1, type: int, label: 'Kept Fourier modes $m$'}
+  width: {default: 24, min: 8, max: 48, step: 4, type: int, label: 'Channels $C$'}
+  epochs: {default: 40, min: 5, max: 200, step: 5, type: int, label: Training epochs}
+  lr: {default: 0.003, min: 0.0005, max: 0.01, step: 0.0005, label: Adam learning rate}

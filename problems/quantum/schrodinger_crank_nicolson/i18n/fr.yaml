@@ -1,0 +1,20 @@
+source_hash: d9c269ec5e13
+title: 'Équation de Schrödinger : pas de temps de Crank–Nicolson'
+summary: 'L''équation de Schrödinger dépendante du temps $i\,\partial_t\psi = H\psi$ est intégrée sur une grille avec le schéma implicite de Crank–Nicolson $(I + \tfrac{i\Delta t}{2}H)\,\psi^{n+1} = (I - \tfrac{i\Delta t}{2}H)\,\psi^n$. La matrice de gauche est factorisée LU une seule fois, puis chaque pas n''est qu''un torch.linalg.lu_solve peu coûteux pour trois paquets d''ondes à la fois (les colonnes de $\psi_{xb}$). Le pas est exactement unitaire : la norme reste égale à 1, tandis qu''Euler explicite avec le même $\Delta t$ explose.'
+notes: 'Unités $\hbar = m = 1$. Pourquoi cela marche : $U = (I + \tfrac{i\Delta t}{2}H)^{-1}(I - \tfrac{i\Delta t}{2}H)$ est la transformée de Cayley de la matrice hermitienne $H$. Sur un vecteur propre d''énergie $E$, elle multiplie par $(1 - iE\Delta t/2)/(1 + iE\Delta t/2)$, un nombre de module exactement 1 ; $U$ est donc unitaire pour tout $\Delta t$ : ni croissance ni décroissance, et comme $U$ est une fonction de $H$, $\langle H\rangle$ est aussi conservé. Sa phase $2\arctan(E\Delta t/2)$ coïncide avec la phase exacte $E\Delta t$ à $\mathcal O(E^3\Delta t^3)$ près par pas : le schéma est d''ordre deux, et, étant implicite, il est stable pour tout $\Delta t$ (de grands pas sont seulement moins précis, jamais instables). Euler explicite multiplie au contraire par $1 - iE\Delta t$, de module $\sqrt{1 + E^2\Delta t^2} > 1$ ; les modes raides de la grille avec $E \sim 2/dx^2$ explosent en quelques dizaines de pas (courbe rouge). Les trois paquets ont des amplitudes différentes ; le ressort
+  plus raide $g\,x^4$ fait osciller le grand plus vite, et comme ses niveaux d''énergie ne sont plus équidistants il se déphase — il s''étale et perd sa forme — tandis que le petit paquet sent à peine l''anharmonicité. Essayez $g = 0$ : les trois oscillent ensemble avec la période $2\pi$ sans jamais s''étaler (états cohérents). Comparez avec la méthode split-step FFT de Effet tunnel quantique, l''autre schéma unitaire d''ordre deux.'
+meanings:
+- 'puits anharmonique $\tfrac12x^2 + g\,x^4$ : la période d''oscillation dépend de l''amplitude'
+- cinétique $-\tfrac12\,D2$ plus $V$ sur la diagonale ; des murs aux bords de la boîte
+- une gaussienne par colonne $b$, lâchée au repos depuis $x_{0,b}$
+- $I \pm \tfrac{i\Delta t}{2}H$, construites une seule fois avant la boucle
+- factoriser une fois ($\mathcal O(N^3)$) ; chaque pas ne coûte ensuite que $\mathcal O(N^2)$
+- '$y$ répété ⇒ sommé : second membre, puis deux résolutions triangulaires pour toutes les colonnes'
+- 'Euler explicite pour comparaison : chaque composante propre croît d''un facteur $\sqrt{1 + E^2\Delta t^2}$ par pas'
+- '$x, y$ répétés ⇒ sommés : énergie de chaque paquet, exactement conservée'
+labels:
+  g: Intensité quartique $g$
+  x0: Plus grande position de départ $x_0$
+  t_max: Temps simulé
+  dt: Pas de temps $\Delta t$
+  n_grid: Points de grille

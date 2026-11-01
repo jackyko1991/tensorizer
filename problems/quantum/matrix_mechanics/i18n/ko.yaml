@@ -1,0 +1,19 @@
+source_hash: 5a26364d7c17
+title: '행렬 역학: 사다리 연산자로 만든 하이젠베르크의 진동자'
+summary: '파동함수도 격자도 없습니다: 수 기저 $|0\rangle, \dots, |N-1\rangle$ 에서 내림 연산자는 행렬 $a_{mn} = \sqrt n\,\delta_{m,n-1}$ 이고, $X$, $P$, $H = \tfrac12(P^2 + X^2)$ 는 행렬 곱으로 얻어집니다. 그 고윳값은 $n + \tfrac12$ 이고 $[X, P] = i$ 입니다. torch.linalg.matrix_exp 로 연산자 $X(t) = U^\dagger X U$ 를 움직이거나(하이젠베르크 묘사) 상태 $U|\alpha\rangle$ 를 움직이면(슈뢰딩거 묘사) 둘 다 같은 $\langle X\rangle(t)$ 를 주며, 결맞음 상태는 용수철에 매달린 고전 질점처럼 위상 공간에서 원을 그립니다.'
+notes: '단위 $\hbar = m = \omega = 1$. 이것이 하이젠베르크, 보른, 요르단이 1925년에 처음 쓴 양자역학입니다: 관측량은 행렬이며 그 곱은 교환되지 않습니다. $N$ 개 상태로 자르는 것이 유일한 근사입니다. 이 절단은 마지막 대각 원소에서 $[X, P] = i$ 를 깨뜨리는데, 유한 행렬의 교환자의 대각합은 0이므로 그 원소는 $i(1 - N)$ 이어야 합니다. 또한 마지막 기저 상태의 에너지를 $N - \tfrac12$ 대신 $(N-1)/2$ 로 만듭니다; $N$ 보다 충분히 낮은 상태는 정확합니다. 하이젠베르크 묘사에서 각 원소 $X(t)_{mn} = X_{mn}e^{i(E_m - E_n)t}$ 는 보어 진동수로 회전하므로, 진동자에서는 $X(t) = X\cos t + P\sin t$, 즉 행렬로 쓴 고전 해입니다. 결맞음 상태 $|\alpha\rangle$ 는 $\langle X\rangle(t) = \sqrt2\,\mathrm{Re}(\alpha e^{-it})$ 이며 반지름 $\sqrt2\,\alpha$ 로 위상 공간을 돕니다. 양자 조화 진동자의 격자 계산은 전혀 다른 표현에서 같은 사다리와 같은 진동을 줍니다. $\lambda > 0$ 를 시도해 보세요: 준위가 더 이상 등간격이 아니고 보어 진동수가 퍼지며, 묶음의 위상이 어긋나면서 원이 안쪽으로 나선을 그립니다. 작은 $\lambda$ 에서는 에너지가 1차 섭동 이론 $\lambda\langle n|X^4|n\rangle = \lambda\,\tfrac34(2n^2 + 2n + 1)$ 와 일치합니다.'
+meanings:
+- '위쪽 부대각선의 $\sqrt1, \sqrt2, \dots$: $a|n\rangle = \sqrt n\,|n-1\rangle$'
+- $(a + a^\dagger)/\sqrt2$ 와 $i(a^\dagger - a)/\sqrt2$, 둘 다 에르미트
+- '반복된 $k$ ⇒ 합: 행렬 곱; 마지막 원소를 제외하면 $a^\dagger a + \tfrac12$ 와 같음'
+- '$i\,\delta_{mn}$, 단 모서리는 $i(1 - N)$: 유한 행렬은 $[X, P] = i$ 를 만족할 수 없음(대각합이 0)'
+- $n + \tfrac12$; $\lambda X^4$ 을 더하면 $\approx \lambda\,\tfrac34(2n^2 + 2n + 1)$ 만큼 이동
+- 시간 진화 연산자 $e^{-iHt}$ 를 모든 시각에 대해 한꺼번에
+- '반복된 $k, l$ ⇒ 합: 하이젠베르크 묘사, 연산자가 움직임'
+- '$e^{-|\alpha|^2/2}\alpha^n/\sqrt{n!}$: 이동된 바닥 상태'
+- '$c(t) = Uc$ 인 슈뢰딩거 묘사: 하이젠베르크 묘사와 같은 수치'
+labels:
+  alpha: 결맞음 상태 진폭 $\alpha$
+  lam: 비조화성 $\lambda$ ($\lambda X^4$ 추가)
+  periods: 시뮬레이션 시간
+  n_states: 기저 크기 $N$

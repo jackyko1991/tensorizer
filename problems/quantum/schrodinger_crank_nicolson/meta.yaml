@@ -1,0 +1,40 @@
+title: 'Schrödinger equation: Crank–Nicolson time stepping'
+category: quantum
+level: intermediate
+order: 4
+summary: >
+  The time-dependent Schrödinger equation $i\,\partial_t\psi = H\psi$ is marched on a grid with the implicit
+  Crank–Nicolson scheme $(I + \tfrac{i\Delta t}{2}H)\,\psi^{n+1} = (I - \tfrac{i\Delta t}{2}H)\,\psi^n$. The left matrix
+  is LU-factorised once and every step is a cheap torch.linalg.lu_solve for three wave packets at once (the columns
+  of $\psi_{xb}$). The step is exactly unitary, so the norm stays 1 while explicit Euler with the same $\Delta t$ explodes.
+animated: true
+vector_form: 'i\,\partial_t\psi = \Big(-\tfrac12\,\partial_x^2 + \tfrac12 x^2 + g\,x^4\Big)\psi,\qquad \Big(1 + \frac{i\Delta t}{2}\hat H\Big)\psi^{n+1} = \Big(1 - \frac{i\Delta t}{2}\hat H\Big)\psi^{n}'
+index_form: 'H_{xy} = -\tfrac12\,D2_{xy} + V_x\,\delta_{xy},\qquad A_{xy} = \delta_{xy} + \tfrac{i\Delta t}{2}H_{xy},\qquad A_{xy}\,\psi^{n+1}_{yb} = \big(\delta_{xy} - \tfrac{i\Delta t}{2}H_{xy}\big)\,\psi^{n}_{yb}'
+translation:
+  - {symbol: 'V_x', code: 'potential(x, g)', shape: '(N,)', meaning: 'anharmonic well $\tfrac12x^2 + g\,x^4$: the oscillation period depends on the amplitude'}
+  - {symbol: 'H_{xy}', code: 'hamiltonian(x, dx, V)', shape: '(N, N)', meaning: 'kinetic $-\tfrac12\,D2$ plus $V$ on the diagonal; walls at the box edges'}
+  - {symbol: '\psi^0_{xb}', code: 'packets(x, x0s)', shape: '(N, B) complex', meaning: 'one Gaussian per column $b$, released at rest from $x_{0,b}$'}
+  - {symbol: 'A_{xy},\ B_{xy}', code: 'cayley_matrices(H, dt)', shape: '(N, N), (N, N)', meaning: '$I \pm \tfrac{i\Delta t}{2}H$, built once before the loop'}
+  - {symbol: 'A = PLU', code: 'torch.linalg.lu_factor(A)', shape: '(N, N), (N,)', meaning: 'factorise once ($\mathcal O(N^3)$); each step then costs only $\mathcal O(N^2)$'}
+  - {symbol: '\psi^{n+1}_{xb}', code: "lu_solve(lu, piv, einsum('xy,yb->xb', B, psi))", shape: '(N, B) complex', meaning: 'repeated $y$ ⇒ summed: right-hand side, then two triangular solves for all columns'}
+  - {symbol: '\psi^{n+1} = (I - i\Delta t H)\psi^n', code: 'euler_step(H, psi, dt)', shape: '(N, B) complex', meaning: 'explicit Euler for comparison: each eigen-component grows by $\sqrt{1 + E^2\Delta t^2}$ per step'}
+  - {symbol: '\langle H\rangle_b', code: "einsum('xb,xy,yb->b', psi.conj(), H, psi) * dx", shape: '(B,)', meaning: 'repeated $x, y$ ⇒ summed: energy of each packet, conserved exactly'}
+notes: >
+  Units $\hbar = m = 1$. Why it works: $U = (I + \tfrac{i\Delta t}{2}H)^{-1}(I - \tfrac{i\Delta t}{2}H)$ is the Cayley
+  transform of the Hermitian matrix $H$. On an eigenvector with energy $E$ it multiplies by
+  $(1 - iE\Delta t/2)/(1 + iE\Delta t/2)$, a number of modulus exactly 1, so $U$ is unitary for any $\Delta t$: no
+  growth, no decay, and because $U$ is a function of $H$, $\langle H\rangle$ is conserved too. Its phase
+  $2\arctan(E\Delta t/2)$ matches the exact $E\Delta t$ up to $\mathcal O(E^3\Delta t^3)$ per step, so the scheme is
+  second-order accurate, and being implicit it is stable for any $\Delta t$ (large steps are only less accurate,
+  never unstable). Explicit Euler instead multiplies by $1 - iE\Delta t$, of modulus $\sqrt{1 + E^2\Delta t^2} > 1$;
+  the stiff grid modes with $E \sim 2/dx^2$ blow up within a few dozen steps (red curve). The three packets have
+  different amplitudes; the stiffer $g\,x^4$ spring makes the big one swing faster, and because its energy levels are
+  no longer evenly spaced it dephases — spreads out and loses its shape — while the small packet barely feels the
+  anharmonicity. Try $g = 0$: all three swing together with period $2\pi$ and never spread (coherent states). Compare
+  with the split-step FFT in Quantum tunnelling, the other unitary second-order scheme.
+params:
+  g: {default: 0.05, min: 0.0, max: 0.5, step: 0.01, label: 'Quartic strength $g$'}
+  x0: {default: 2.5, min: 1.0, max: 4.0, step: 0.1, label: 'Largest start position $x_0$'}
+  t_max: {default: 20.0, min: 2.0, max: 40.0, step: 1.0, label: Simulated time}
+  dt: {default: 0.005, min: 0.001, max: 0.05, step: 0.001, label: 'Time step $\Delta t$'}
+  n_grid: {default: 400, min: 100, max: 800, step: 10, type: int, label: Grid points}

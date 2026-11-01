@@ -1,0 +1,47 @@
+title: Fitting experimental measurements with tensors
+category: others
+level: intermediate
+order: 3
+summary: >
+  A (synthetic) lab measurement of a damped oscillator, with an error bar $\sigma_i$ on every point, is fitted
+  by maximum likelihood. The measurement model has an explicit error term $\varepsilon_i$ whose spread includes an
+  unknown extra scatter $s$; autograd minimises $-2\ln L$, the Jacobian and Hessian give the parameter
+  uncertainties, and a linear sub-problem shows least squares as a single lstsq solve.
+animated: true
+vector_form: 'x_i = f(t_i;\boldsymbol\theta) + \varepsilon_i,\quad \varepsilon_i \sim N(0, \sigma_i^2 + s^2),\quad f = A\,e^{-\gamma t}\cos(\omega t + \varphi) + c,\qquad -2\ln L = \sum_i \left[\frac{(x_i - f_i)^2}{\sigma_i^2 + s^2} + \ln 2\pi(\sigma_i^2 + s^2)\right]'
+index_form: 'r_i = \frac{x_i - f(t_i;\theta)}{\sigma_{tot,i}},\ \ \sigma_{tot,i}^2 = \sigma_i^2 + s^2 \qquad -2\ln L = r_i\,r_i + \textstyle\sum_i \ln 2\pi\sigma_{tot,i}^2 \qquad J_{ip} = \frac{\partial r_i}{\partial \theta_p} \qquad C_{pq} = (J_{ip}J_{iq})^{-1} \qquad f_i = D_{ik}\,\beta_k'
+translation:
+  - {symbol: 't_i,\ x_i,\ \sigma_i', code: 'load_measurements(dev)', shape: '(N,) each', meaning: 'time, measured position and quoted error bar of point $i$, read from measurements.csv'}
+  - {symbol: '\theta_p,\ \ln s', code: 'p', shape: '(6,)', meaning: '$(A, \gamma, \omega, \varphi, c, \ln s)$; fitting $\ln s$ keeps the jitter $s$ positive'}
+  - {symbol: 'f(t_i;\theta)', code: 'model(t, p)', shape: '(N,)', meaning: 'the damped-oscillator model at every measured time'}
+  - {symbol: '\sigma_{tot,i}', code: 'total_sigma(sigma, p[5])', shape: '(N,)', meaning: 'spread of the error term $\varepsilon_i$: error bar and extra scatter added in quadrature'}
+  - {symbol: 'r_i\,r_i + \sum_i \ln 2\pi\sigma_{tot,i}^2', code: 'neg2_log_likelihood(p, t, x, sigma)', shape: 'scalar', meaning: 'repeated $i$ ⇒ summed; with $s = 0$ it is $\chi^2$ plus a constant'}
+  - {symbol: 'J_{ip}', code: 'autograd.functional.jacobian(residuals, p[:5])', shape: '(N, 5)', meaning: 'how each normalised residual changes with each parameter'}
+  - {symbol: '(J_{ip}J_{iq})^{-1}', code: "inv(einsum('ip,iq->pq', J, J))", shape: '(5, 5)', meaning: 'Gauss–Newton covariance $C$: uncertainties $\sqrt{C_{pp}}$ ($i$ summed)'}
+  - {symbol: '2\,H^{-1}', code: 'covariance_from_hessian(p, t, x, sigma)', shape: '(6, 6)', meaning: 'covariance including $\ln s$, from the Hessian of $-2\ln L$'}
+  - {symbol: 'D_{ik}\,\beta_k', code: 'lstsq(D / sigma[:, None], x / sigma)', shape: '(N, 3) → (3,)', meaning: 'for fixed $\gamma, \omega$ the model is linear in $\beta = (A\cos\varphi, A\sin\varphi, c)$'}
+notes: >
+  A measurement is never exactly the model: $x_i = f(t_i;\theta) + \varepsilon_i$, and the error term $\varepsilon_i$ is
+  what the statistics are about. If the quoted error bars were the whole story, $\varepsilon_i \sim N(0, \sigma_i^2)$
+  and maximising the likelihood would be the same as minimising $\chi^2 = \sum_i ((x_i - f_i)/\sigma_i)^2$ (weighted
+  least squares). Real experiments often scatter more than their error bars say (vibrations, an unmodelled drift),
+  so here the spread is $\sigma_{tot,i}^2 = \sigma_i^2 + s^2$ with an unknown jitter $s$ fitted along with the five
+  physical parameters. The term $\ln 2\pi\sigma_{tot,i}^2$ in $-2\ln L$ stops the fit from explaining everything away
+  with a huge $s$. The data in measurements.csv are synthetic, generated with $s = 0.8$ mm on top of error bars of
+  0.5–1 mm: a plain $\chi^2$ fit ends with $\chi^2/\mathrm{dof} \approx 2.5$, the sign of underestimated errors, while
+  with $s$ fitted the normalised residuals $r_i = (x_i - f_i)/\sigma_{tot,i}$ follow $N(0,1)$ and $\chi^2/\mathrm{dof} \approx 1$.
+  Autograd gives the gradient of $-2\ln L$ for Adam (the animated iterations) and L-BFGS (the final polish). The
+  uncertainties come from the curvature of $-2\ln L$ at the minimum: $C = (J^TJ)^{-1}$ with the Jacobian
+  $J_{ip} = \partial r_i/\partial\theta_p$, or $C = 2H^{-1}$ with the full Hessian when $s$ is included. Linear vs
+  nonlinear least squares: for fixed $\gamma$ and $\omega$ the model is linear in $(A\cos\varphi, A\sin\varphi, c)$,
+  so the best values follow from one lstsq solve (no iterations, a unique answer), which is how the starting
+  guess is made from $\omega_0, \gamma_0$; $\gamma$ and $\omega$ enter nonlinearly, so they need an iterative
+  search that can get stuck in a local minimum. Try a poor $\omega_0$ (the fit may lock on a wrong frequency), a
+  large learning rate, or switch the jitter off. Simplifications: independent Gaussian errors, no error on $t$,
+  and covariances from the local curvature only.
+params:
+  omega0: {default: 4.6, min: 3.5, max: 6.5, step: 0.05, label: 'Initial guess $\omega_0$', unit: rad/s}
+  gamma0: {default: 0.5, min: 0.05, max: 1.0, step: 0.05, label: 'Initial guess $\gamma_0$', unit: 1/s}
+  lr: {default: 0.03, min: 0.002, max: 0.2, step: 0.002, label: Adam learning rate}
+  iterations: {default: 300, min: 20, max: 2000, step: 10, type: int, label: Adam iterations}
+  jitter: {default: 'on', type: choice, options: ['on', 'off'], label: 'Fit the extra scatter $s$'}

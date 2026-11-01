@@ -1,0 +1,37 @@
+title: Bloch equations and the spin echo
+category: medical
+level: intermediate
+order: 2
+summary: >
+  The Bloch equation is a cross product, $\varepsilon_{ijk} M_j \Omega_k$, plus relaxation. Hundreds of isochromats with
+  slightly different off-resonance frequencies $\Delta\omega_n$ are stepped together in one batched RK4 update: after a
+  90° pulse they fan out and the signal dies with $T_2^*$, then a 180° pulse at $TE/2$ makes them refocus into an echo
+  at $TE$ whose height decays only with the true $T_2$.
+animated: true
+vector_form: '\frac{d\mathbf M}{dt} = \gamma\,\mathbf M\times\mathbf B - \frac{M_x\hat{\mathbf x} + M_y\hat{\mathbf y}}{T_2} - \frac{(M_z - M_0)\,\hat{\mathbf z}}{T_1},\quad s = \langle M_x + iM_y\rangle'
+index_form: '\dot M_{ni} = \varepsilon_{ijk}\,M_{nj}\,\Omega_{nk} - R_{ij}\,(M_{nj} - M^0_j),\qquad \Omega_{nk} = (\omega_1\cos\phi,\ \omega_1\sin\phi,\ \Delta\omega_n),\qquad s = \tfrac1N\textstyle\sum_n (M_{nx} + iM_{ny})'
+translation:
+  - {symbol: 'M_{ni}', code: 'M', shape: '(N, 3)', meaning: 'magnetisation of isochromat $n$, component $i \in \{x, y, z\}$, in the rotating frame'}
+  - {symbol: '\varepsilon_{ijk}', code: 'levi_civita()', shape: '(3, 3, 3)', meaning: 'Levi-Civita symbol: the cross product, exactly as in the Lorentz force'}
+  - {symbol: '\Omega_{nk}', code: 'omega(dw, w1, phase)', shape: '(N, 3)', meaning: '$\gamma\mathbf B$ in the rotating frame: RF field $\omega_1$ in the $xy$-plane during a pulse, off-resonance $\Delta\omega_n$ along $z$'}
+  - {symbol: '\varepsilon_{ijk} M_{nj}\Omega_{nk}', code: "einsum('ijk,nj,nk->ni', eps, M, Om)", shape: '(N, 3)', meaning: 'repeated $j, k$ ⇒ summed: precession $\mathbf M\times\boldsymbol\Omega$ of every isochromat'}
+  - {symbol: 'R_{ij}', code: 'relaxation(T1, T2)', shape: '(3, 3)', meaning: '$\mathrm{diag}(1/T_2, 1/T_2, 1/T_1)$; contracted with $M_{nj} - M^0_j$ over $j$'}
+  - {symbol: '\Delta\omega_n', code: 'off_resonance(N, T2p, kind)', shape: '(N,)', meaning: 'spread of precession frequencies from field inhomogeneity, width $1/T_2^{\prime}$'}
+  - {symbol: 's', code: 'signal(M)', shape: '(T,) complex', meaning: 'what the receive coil sees: the mean transverse magnetisation, summed over $n$'}
+notes: >
+  Times are in ms and frequencies in rad/ms. Each isochromat alone keeps $\lvert\mathbf M\rvert$ fixed apart from relaxation,
+  but the ensemble average loses phase coherence: with a Lorentzian spread the free induction decay follows
+  $e^{-t/T_2^*}$ with $1/T_2^* = 1/T_2 + 1/T_2^{\prime}$. The 180° pulse mirrors every phase, so spins that ran ahead are now
+  behind and all line up again at $TE$; this cancels the static inhomogeneity but not the random $T_2$ loss, so the echo
+  heights trace $e^{-TE/T_2}$. Several refocusing pulses (a CPMG train, 180° about $y$) give a row of echoes that maps
+  out $T_2$. Pulses are short rectangular "hard" pulses run through the same Bloch equation; spins far off resonance
+  are refocused imperfectly. Values are illustrative, for education only, not for clinical use. Try the Gaussian
+  spread, a longer $T_2^{\prime}$ or a single echo.
+params:
+  T1: {default: 800.0, min: 100, max: 3000, step: 50, label: 'Longitudinal relaxation $T_1$', unit: ms}
+  T2: {default: 80.0, min: 10, max: 300, step: 5, label: 'Transverse relaxation $T_2$', unit: ms}
+  t2_prime: {default: 4.0, min: 1, max: 20, step: 0.5, label: 'Inhomogeneity time $T_2^{\prime}$', unit: ms}
+  TE: {default: 24.0, min: 8, max: 60, step: 2, label: 'Echo time $TE$', unit: ms}
+  n_echoes: {default: 4, min: 1, max: 8, step: 1, type: int, label: Number of echoes (180° pulses)}
+  n_spins: {default: 400, min: 20, max: 2000, step: 20, type: int, label: Isochromats}
+  spread: {default: lorentzian, type: choice, options: [lorentzian, gaussian], label: Off-resonance line shape}

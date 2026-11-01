@@ -1,0 +1,18 @@
+source_hash: 27367fbd090e
+title: 'Diffusions-Tensor-Bildgebung: Nervenfasern kartieren'
+summary: Wasser diffundiert entlang der Axone schneller als quer zu ihnen, daher besitzt jedes Voxel einen Diffusionstensor $D_{ij}$. Das Stejskal-Tanner-Signal $S = S_0\,e^{-b\,\hat g_i D_{ij}\hat g_j}$ ist ein einziges einsum über Voxel und Gradientenrichtungen; eine gebündelte Kleinste-Quadrate-Anpassung der logarithmierten Signale liefert $D_{ij}$ zurück, seine Eigenzerlegung ergibt mittlere Diffusivität, fraktionelle Anisotropie und Faserrichtung, und das Verfolgen dieser Richtung mit RK2 zeichnet die Nervenbündel nach (Traktografie).
+notes: 'Diffusivitäten sind in $10^{-3}\,\mathrm{mm^2/s}$ und $b$ in $\mathrm{s/mm^2}$ angegeben: grob $\lambda_\parallel = 1.7$, $\lambda_\perp = 0.3$ in einem Bündel (FA ≈ 0,8), 3,0 für freies Wasser (Liquor) und 0,8 für graue Substanz. Das sind Näherungswerte für die Lehre, nicht für den klinischen Einsatz. Das Rauschen ist Rice-verteilt (Betrag eines komplexen Signals), daher überschätzen verrauschte Anpassungen die FA in isotropen Regionen. Wo sich zwei Bündel kreuzen, kann ein einzelner Tensor nur ihren Mittelwert darstellen, einen flachen (planaren) Tensor mit geringerer FA, und ein hineinlaufender Trakt kann stoppen oder fälschlich in das andere Bündel abbiegen: die klassische Einschränkung der DTI, die Mehrfasermodelle angehen. Jede Ellipse zeigt die Form des angepassten Tensors in der Ebene. Stromlinien starten an Saatpunkten und folgen dem Haupteigenvektor des bilinear interpolierten Tensorfelds mit der Mittelpunktsregel (RK2), bis die FA unter 0,2 fällt. Probiere mehr Rauschen,
+  weniger Gradientenrichtungen oder ein kleineres $b$.'
+meanings:
+- Einheitsrichtungen der Diffusionsgradienten, über eine Halbkugel verteilt
+- 'wahrer Diffusionstensor jedes Voxels: Bündel $\lambda_\parallel e_ie_j + \lambda_\perp(\delta_{ij} - e_ie_j)$, isotroper Liquor und graue Substanz'
+- 'wiederholte $i, j$ ⇒ summiert: diffusionsgewichtetes Signal jedes Voxels für jede Richtung'
+- Zeilen $(g_x^2, g_y^2, g_z^2, 2g_xg_y, 2g_xg_z, 2g_yg_z)$, sodass $\hat g_i D_{ij}\hat g_j = B_{gm}d_m$
+- Kleinste-Quadrate-Anpassung der sechs unabhängigen Tensorkomponenten, alle Voxel auf einmal
+- Eigenwerte und Eigenvektoren; der Eigenvektor zum größten Eigenwert zeigt entlang der Faser
+- mittlere Diffusivität (Spur/3) und fraktionelle Anisotropie (0 isotrop, 1 eine einzige Richtung)
+labels:
+  b: Diffusionswichtung $b$
+  n_dirs: Gradientenrichtungen
+  noise: Rauschpegel $\sigma/S_0$
+  size: Voxel pro Seite

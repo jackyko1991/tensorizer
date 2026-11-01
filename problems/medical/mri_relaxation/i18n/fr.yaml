@@ -1,0 +1,19 @@
+source_hash: 160447300c99
+title: 'IRM : relaxation T1 et T2 et contraste d''image'
+summary: Après une impulsion radiofréquence, l'aimantation de chaque tissu repousse le long du champ avec la constante de temps $T_1$ et sa partie transversale décroît avec $T_2$. Évaluer le signal d'écho de spin comme un seul tenseur sur (tissu, $TR$, $TE$) et le contracter avec une carte d'étiquettes de tissus d'un cerveau schématique montre comment le choix de $TR$ et $TE$ rend une image pondérée en T1, en DP ou en T2.
+notes: 'Un $TR$ court et un $TE$ court donnent une pondération T1 : la graisse et la substance blanche sont claires, le LCR est sombre, car son long $T_1$ n''a pas eu le temps de récupérer. Un $TR$ long avec un $TE$ court supprime le facteur $T_1$ et laisse une pondération en densité de protons (DP). Un $TR$ long et un $TE$ long donnent une pondération T2 : le LCR, avec son très long $T_2$, devient le tissu le plus clair. La formule simple néglige l''effet de l''impulsion de refocalisation sur $M_z$ et suppose $TR \gg TE$. Chaque image est fenêtrée sur son propre pixel le plus clair, comme le fait l''affichage d''un scanner. Les valeurs des tissus sont des ordres de grandeur de manuel à 1,5 T, à but pédagogique uniquement, non à usage clinique. Essayez de déplacer les $TR$/$TE$ courts et longs et observez l''inversion du contraste entre substance grise et blanche.'
+meanings:
+- temps de relaxation et densité de protons des $S = 5$ tissus (valeurs approximatives à 1,5 T)
+- récupération longitudinale, diffusée sur le tissu $s$ et le temps $t$
+- décroissance transversale de chaque tissu
+- signal d'écho de spin pour chaque tissu, temps de répétition $TR_a$ et temps d'écho $TE_b$ (aucun indice sommé)
+- 'carte d''étiquettes one-hot : quel tissu occupe le pixel $(x, y)$'
+- '$s$ répété ⇒ sommé : l''image pour chaque $(TR, TE)$'
+- temps d'inversion où $M_0(1 - 2e^{-t/T_1})$ s'annule, utilisé pour supprimer la graisse (STIR) ou le LCR (FLAIR)
+labels:
+  tr_short: Temps de répétition court $TR$
+  tr_long: Temps de répétition long $TR$
+  te_short: Temps d'écho court $TE$
+  te_long: Temps d'écho long $TE$
+  size: Taille du fantôme
+  n_frames: Images de l'animation

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="PET: a positron annihilates inside the patient and two 511 keV photons fly back to back to a ring of detectors, defining a line of response">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- detector ring made of crystals -->
+    <circle cx="120" cy="80" r="64" fill="none" stroke="#374151" stroke-width="8" stroke-dasharray="6 2"/>
+    <!-- patient -->
+    <ellipse cx="120" cy="82" rx="36" ry="26" fill="#93c5fd" fill-opacity="0.6" stroke="#374151" stroke-width="1.5"/>
+    <!-- line of response -->
+    <line x1="60.4" y1="97.1" x2="171.4" y2="45.3" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- fired crystals -->
+    <circle cx="173.2" cy="44.4" r="5" fill="#f59e0b"/>
+    <circle cx="58.6" cy="97.9" r="5" fill="#f59e0b"/>
+    <!-- back-to-back photons -->
+    <line x1="115.4" y1="71.5" x2="149.9" y2="55.4" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="104.6" y1="76.5" x2="77.4" y2="89.2" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="128" y="58" font-style="italic" fill="#b91c1c">γ</text>
+    <text x="70" y="82" font-style="italic" fill="#b91c1c">γ</text>
+    <!-- annihilation point -->
+    <circle cx="110" cy="74" r="4.5" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="104" y="98" font-size="13">e⁺e⁻</text>
+    <text x="184" y="28" font-size="13" fill="#374151">LOR</text>
+    <text x="8" y="156" font-size="13">511 keV each</text>
+  </g>
+</svg>

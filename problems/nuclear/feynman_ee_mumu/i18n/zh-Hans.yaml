@@ -1,0 +1,16 @@
+source_hash: f068882719e2
+title: 费曼图：由狄拉克迹计算 $e^+e^- \to \mu^+\mu^-$
+summary: 最简单的 QED 费曼图：电子和正电子湮灭成一个虚光子，再产生一对 μ 子。费曼规则把这张图转化为振幅，自旋求和再把它转化为 $4\times4$ 狄拉克矩阵 $\gamma^\mu$ 的迹，而每个迹都是一次 einsum。扫描能量可以看到角分布从阈值处的各向同性变为 $1 + \cos^2\theta$，截面则按 $4\pi\alpha^2/3s$ 下降。
+notes: 图只画一次，但代码从不构造旋量：对自旋求和把 $u\bar u$ 换成 $\not p + m$，因此整个计算只是 $\gamma$ 矩阵的乘积和迹，einsum 能同时对每个能量和角度完成。在 $m_e \to 0$ 下结果为 $\overline{|\mathcal M|^2} = e^4\big[1 + 4m^2/s + (1 - 4m^2/s)\cos^2\theta\big]$：在阈值处，慢速 μ 子各向同性地出射；远高于阈值时，光子的自旋 1 和螺旋度守恒给出 $1 + \cos^2\theta$。总截面 $\sigma$ 从 $\sqrt s = 2m$ 起急剧上升，然后按 $1/s$ 下降，在 1 GeV 时约为 $86.8$ nb。PETRA 和 LEP 的实验数据一直沿着这条曲线，直到 $\sqrt s \approx 30$ GeV，此时用 $Z$ 玻色子代替光子的第二张图开始干涉，使前后不对称性 $A_{FB}$ 不为零；纯 QED 给出 $A_{FB} = 0$。试试 $\tau$ 轻子对，它于 1975 年在 SPEAR 恰好高于其 3.55 GeV 阈值处被发现。
+meanings:
+- 狄拉克矩阵：指标 $\mu$ 为时空指标，$a, b$ 为旋量指标；$\{\gamma^\mu, \gamma^\nu\} = 2\eta^{\mu\nu}$
+- 闵可夫斯基度规 diag(1, −1, −1, −1)，采用 $\hbar = c = 1$ 的单位制
+- 每个能量 $\sqrt s$ 和角度 $\theta$ 下，$e^-$、$e^+$、$\ell^-$、$\ell^+$ 的质心系四动量
+- 费曼斜线记号：自旋求和 $\sum u\bar u = \not p + m$ 和 $\sum v\bar v = \not p - m$
+- 重复的 $a, b, c, d$ ⇒ 求和：电子线的迹（μ 子线使用同一个函数）
+- 用 $\eta$ 降低 μ 子的指标并缩并：光子传播子连接两条线
+- 通量和相空间因子；$(\hbar c)^2$ 把 GeV$^{-2}$ 换算成 nb
+- 总截面；与 $\frac{4\pi\alpha^2}{3s}\beta\,(1 + 2m^2/s)$ 比较，$\beta = \sqrt{1 - 4m^2/s}$
+labels:
+  final: 末态
+  sqrt_s_max: 最高能量 $\sqrt s$

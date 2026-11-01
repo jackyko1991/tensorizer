@@ -1,0 +1,17 @@
+source_hash: 9753ed59836b
+title: Röntgenschwächung und Bildkontrast
+summary: Röntgenstrahlen werden im Körper exponentiell geschwächt, $I = I_0\,e^{-\int\mu\,dl}$. Ein Thoraxphantom aus Lunge, Weichgewebe, Knochen und jodhaltigem Kontrastmittel wird Strahl für Strahl mit einem einzigen einsum projiziert; das zeigt, warum Knochen bei niedriger Energie hervorsticht und wie sich das Spektrum einer echten Röhre mit der Tiefe aufhärtet.
+notes: 'Im Logarithmus ist die Projektion additiv: $-\ln(I/I_0)$ ist die Summe von $\mu\,L$ über die Materialien, daher ist ein monochromatisches Bild eine lineare Abbildung der Materiallängen. Eine homogene Platte halbiert den Strahl mit jeder Halbwertsschicht $\ln 2/\mu$. Die Photoabsorption wächst etwa wie $Z^3/E^3$, daher ist der Knochenkontrast bei 30–50 keV groß und verblasst bei höheren Energien; Jod springt oberhalb seiner K-Kante bei 33 keV an, weshalb es als Kontrastmittel dient. Eine echte Röhre sendet ein Spektrum aus: Weiche Photonen werden zuerst absorbiert, die mittlere Energie steigt und das effektive $\mu$ sinkt mit der Tiefe (Strahlaufhärtung). Vereinfachungen: gerade, parallele Strahlen, keine Streuung, kein Detektoransprechverhalten, acht tabellierte Energien mit gerundeten $\mu$-Werten. Alle Zahlen sind Näherungen und nur für die Lehre gedacht, nicht für den klinischen Einsatz.'
+meanings:
+- 'One-Hot-Phantom: 1, wo das Pixel $(y, x)$ aus Material $m$ besteht'
+- Weglänge eines Strahls innerhalb der Pixelzeile $y$
+- 'wiederholtes $y$ ⇒ summiert: vom Strahl $x$ durchquerte Länge an Material $m$'
+- linearer Schwächungskoeffizient von Material $m$ bei Energie $E_e$ (1/cm)
+- 'wiederholtes $m$ ⇒ summiert: Linienintegral $\int \mu\, dl$ für jede Energie und jeden Strahl'
+- Röhrenspektrum (Kramerssches Gesetz, Aluminiumfilter), $\sum_e S_e = 1$
+- 'wiederholtes $e$ ⇒ summiert: transmittierter Anteil eines polychromatischen Strahls'
+labels:
+  energy_kev: Photonenenergie $E$
+  kvp: Röhrenspannung
+  iodine_mg_ml: Jodkonzentration
+  n_pixels: Pixel in der Breite

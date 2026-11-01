@@ -1,0 +1,40 @@
+title: "Matrix mechanics: Heisenberg's oscillator from ladder operators"
+category: quantum
+level: intermediate
+order: 5
+summary: >
+  No wavefunctions, no grid: in the number basis $|0\rangle, \dots, |N-1\rangle$ the lowering operator is the matrix
+  $a_{mn} = \sqrt n\,\delta_{m,n-1}$, and $X$, $P$ and $H = \tfrac12(P^2 + X^2)$ follow by matrix products. Its
+  eigenvalues are $n + \tfrac12$ and $[X, P] = i$. With torch.linalg.matrix_exp the operator $X(t) = U^\dagger X U$
+  moves (Heisenberg picture) or the state $U|\alpha\rangle$ moves (Schrödinger picture); both give the same
+  $\langle X\rangle(t)$, and a coherent state circles phase space like a classical mass on a spring.
+animated: true
+vector_form: 'X = \frac{a + a^\dagger}{\sqrt2},\quad P = \frac{i(a^\dagger - a)}{\sqrt2},\quad H = \tfrac12(P^2 + X^2) + \lambda X^4,\quad [X, P] = i,\quad X(t) = e^{iHt}\,X\,e^{-iHt}'
+index_form: 'a_{mn} = \sqrt n\,\delta_{m,n-1},\qquad H_{mn} = \tfrac12\big(P_{mk}P_{kn} + X_{mk}X_{kn}\big),\qquad \langle X\rangle(t) = c^*_m\,U^*_{km}X_{kl}U_{ln}\,c_n = \big(U_{km}c_m\big)^*X_{kl}\big(U_{ln}c_n\big)'
+translation:
+  - {symbol: 'a_{mn}', code: 'lowering(N)', shape: '(N, N)', meaning: '$\sqrt1, \sqrt2, \dots$ on the superdiagonal: $a|n\rangle = \sqrt n\,|n-1\rangle$'}
+  - {symbol: 'X_{mn},\ P_{mn}', code: 'position(a), momentum(a)', shape: '(N, N), (N, N)', meaning: '$(a + a^\dagger)/\sqrt2$ and $i(a^\dagger - a)/\sqrt2$, both Hermitian'}
+  - {symbol: 'H_{mn}', code: "0.5*(einsum('mk,kn->mn', P, P) + einsum('mk,kn->mn', X, X))", shape: '(N, N)', meaning: 'repeated $k$ ⇒ summed: matrix products; equals $a^\dagger a + \tfrac12$ except the last entry'}
+  - {symbol: '[X, P]_{mn}', code: 'X @ P - P @ X', shape: '(N, N)', meaning: '$i\,\delta_{mn}$, but $i(1 - N)$ in the corner: a finite matrix cannot have $[X, P] = i$ (its trace is 0)'}
+  - {symbol: 'E_n', code: 'torch.linalg.eigvalsh(H)', shape: '(N,)', meaning: '$n + \tfrac12$; with $\lambda X^4$ shifted by $\approx \lambda\,\tfrac34(2n^2 + 2n + 1)$'}
+  - {symbol: 'U_{mn}(t)', code: 'torch.linalg.matrix_exp(-1j * t * H)', shape: '(T, N, N)', meaning: 'time-evolution operator $e^{-iHt}$ for all times at once'}
+  - {symbol: 'X(t)_{mn}', code: "einsum('tkm,kl,tln->tmn', U.conj(), X, U)", shape: '(T, N, N)', meaning: 'repeated $k, l$ ⇒ summed: Heisenberg picture, the operator moves'}
+  - {symbol: 'c_n', code: 'coherent_state(alpha, N)', shape: '(N,)', meaning: '$e^{-|\alpha|^2/2}\alpha^n/\sqrt{n!}$: a displaced ground state'}
+  - {symbol: '\langle X\rangle(t)', code: "einsum('tm,mn,tn->t', c_t.conj(), X, c_t)", shape: '(T,)', meaning: 'Schrödinger picture with $c(t) = Uc$: the same numbers as the Heisenberg picture'}
+notes: >
+  Units $\hbar = m = \omega = 1$. This is quantum mechanics as Heisenberg, Born and Jordan first wrote it in 1925:
+  observables are matrices and their products do not commute. Truncating to $N$ states is the only approximation.
+  It breaks $[X, P] = i$ in the last diagonal entry, which must equal $i(1 - N)$ because the trace of a commutator of
+  finite matrices is 0, and it gives the last basis state the energy $(N-1)/2$ instead of $N - \tfrac12$; states well
+  below $N$ are exact. In the Heisenberg picture each entry $X(t)_{mn} = X_{mn}e^{i(E_m - E_n)t}$ rotates at a Bohr frequency,
+  so for the oscillator $X(t) = X\cos t + P\sin t$, the classical solution written for matrices. The coherent state
+  $|\alpha\rangle$ has $\langle X\rangle(t) = \sqrt2\,\mathrm{Re}(\alpha e^{-it})$ and circles phase space with radius $\sqrt2\,\alpha$.
+  The grid calculation in Quantum harmonic oscillator gives the same ladder and the same swing from a completely
+  different representation. Try $\lambda > 0$: the levels are no longer evenly spaced, the Bohr frequencies spread,
+  and the circle spirals inwards as the packet dephases. For small $\lambda$ the energies match first-order
+  perturbation theory, $\lambda\langle n|X^4|n\rangle = \lambda\,\tfrac34(2n^2 + 2n + 1)$.
+params:
+  alpha: {default: 2.0, min: 0.0, max: 3.0, step: 0.1, label: 'Coherent-state amplitude $\alpha$'}
+  lam: {default: 0.0, min: 0.0, max: 0.1, step: 0.005, label: 'Anharmonicity $\lambda$ (adds $\lambda X^4$)'}
+  periods: {default: 3.0, min: 1.0, max: 10.0, step: 1.0, label: Simulated time, unit: periods}
+  n_states: {default: 40, min: 10, max: 80, step: 1, type: int, label: 'Basis size $N$'}

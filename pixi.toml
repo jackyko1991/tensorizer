@@ -32,6 +32,8 @@ readme = "python scripts/update_readme.py"
 notebooks = "python scripts/notebooks.py"
 # Problem-content translations: coverage per language (see scripts/i18n.py for export/import)
 i18n-status = "python scripts/i18n.py status"
+# Every problem has its files, setup diagram, rendered animation, notebook and all translations
+audit = "python scripts/audit.py"
 lint = "ruff check . && ruff format --check ."
 format = "ruff format . && ruff check --fix ."
 

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Pendulum phase plane: angle q across, momentum p up; closed libration orbits around the origin, the separatrix H = mgL through q = ±π, wavy rotation orbits above and below, and a small blob of phase-space points of area A carried along an orbit">
+  <defs>
+    <marker id="axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="flow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- axes -->
+    <line x1="22" y1="80" x2="222" y2="80" stroke="#374151" stroke-width="1.5" marker-end="url(#axis)"/>
+    <line x1="120" y1="152" x2="120" y2="8" stroke="#374151" stroke-width="1.5" marker-end="url(#axis)"/>
+    <text x="214" y="96" font-style="italic">q</text>
+    <text x="126" y="18" font-style="italic">p</text>
+    <!-- q = ±π guides -->
+    <line x1="35" y1="12" x2="35" y2="150" stroke="#9ca3af" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <line x1="205" y1="12" x2="205" y2="150" stroke="#9ca3af" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <!-- librations: closed orbits -->
+    <ellipse cx="120" cy="80" rx="26" ry="15" fill="none" stroke="#374151" stroke-width="1.5"/>
+    <ellipse cx="120" cy="80" rx="54" ry="31" fill="none" stroke="#374151" stroke-width="1.5"/>
+    <!-- rotations: wavy orbits over the top -->
+    <polyline fill="none" stroke="#374151" stroke-width="1.5" points="35.0,38.3 42.1,37.9 49.2,36.6 56.2,34.7 63.3,32.4 70.4,29.8 77.5,27.1 84.6,24.6 91.7,22.3 98.8,20.4 105.8,19.1 112.9,18.2 120.0,17.9 127.1,18.2 134.2,19.1 141.2,20.4 148.3,22.3 155.4,24.6 162.5,27.1 169.6,29.8 176.7,32.4 183.8,34.7 190.8,36.6 197.9,37.9 205.0,38.3"/>
+    <polyline fill="none" stroke="#374151" stroke-width="1.5" points="35.0,121.7 42.1,122.1 49.2,123.4 56.2,125.3 63.3,127.6 70.4,130.2 77.5,132.9 84.6,135.4 91.7,137.7 98.8,139.6 105.8,140.9 112.9,141.8 120.0,142.1 127.1,141.8 134.2,140.9 141.2,139.6 148.3,137.7 155.4,135.4 162.5,132.9 169.6,130.2 176.7,127.6 183.8,125.3 190.8,123.4 197.9,122.1 205.0,121.7"/>
+    <!-- separatrix H = mgL -->
+    <polyline fill="none" stroke="#f59e0b" stroke-width="2.5" points="35.0,80.0 42.1,74.0 49.2,68.1 56.2,62.4 63.3,57.0 70.4,52.0 77.5,47.5 84.6,43.5 91.7,40.2 98.8,37.5 105.8,35.6 112.9,34.4 120.0,34.0 127.1,34.4 134.2,35.6 141.2,37.5 148.3,40.2 155.4,43.5 162.5,47.5 169.6,52.0 176.7,57.0 183.8,62.4 190.8,68.1 197.9,74.0 205.0,80.0"/>
+    <polyline fill="none" stroke="#f59e0b" stroke-width="2.5" points="35.0,80.0 42.1,86.0 49.2,91.9 56.2,97.6 63.3,103.0 70.4,108.0 77.5,112.5 84.6,116.5 91.7,119.8 98.8,122.5 105.8,124.4 112.9,125.6 120.0,126.0 127.1,125.6 134.2,124.4 141.2,122.5 148.3,119.8 155.4,116.5 162.5,112.5 169.6,108.0 176.7,103.0 183.8,97.6 190.8,91.9 197.9,86.0 205.0,80.0"/>
+    <text x="164" y="44" font-size="13" fill="#b45309"><tspan font-style="italic">H</tspan> = <tspan font-style="italic">mgL</tspan></text>
+    <!-- Liouville blob of area A, carried clockwise -->
+    <ellipse cx="96" cy="44" rx="9" ry="5" transform="rotate(-14 96 44)" fill="#93c5fd" stroke="#2563eb" stroke-width="1.5"/>
+    <path d="M108,40 Q122,37 136,41" fill="none" stroke="#2563eb" stroke-width="1.5" marker-end="url(#flow)"/>
+    <text x="78" y="62" font-style="italic" fill="#1e40af">A</text>
+  </g>
+</svg>

@@ -1,0 +1,19 @@
+source_hash: 160447300c99
+title: 'MRT: T1- und T2-Relaxation und Bildkontrast'
+summary: Nach einem Hochfrequenzpuls baut sich die Magnetisierung jedes Gewebes mit der Zeitkonstante $T_1$ entlang des Feldes wieder auf, und ihr transversaler Anteil zerfällt mit $T_2$. Berechnet man das Spinecho-Signal als einen Tensor über (Gewebe, $TR$, $TE$) und kontrahiert ihn mit einer Gewebe-Labelkarte eines schematischen Gehirns, sieht man, wie die Wahl von $TR$ und $TE$ ein Bild T1-, PD- oder T2-gewichtet macht.
+notes: 'Kurzes $TR$ und kurzes $TE$ ergeben T1-Wichtung: Fett und weiße Substanz sind hell, Liquor ist dunkel, weil sein langes $T_1$ keine Zeit zur Erholung hatte. Langes $TR$ mit kurzem $TE$ beseitigt den $T_1$-Faktor und lässt eine Protonendichte-Wichtung (PD) übrig. Langes $TR$ und langes $TE$ ergeben T2-Wichtung: Liquor mit seinem sehr langen $T_2$ wird zum hellsten Gewebe. Die einfache Formel vernachlässigt die Wirkung des Refokussierungspulses auf $M_z$ und setzt $TR \gg TE$ voraus. Jedes Bild wird auf sein eigenes hellstes Pixel gefenstert, wie es eine Scanner-Anzeige tut. Die Gewebewerte sind grobe Lehrbuchzahlen bei 1,5 T, nur für die Lehre, nicht für den klinischen Einsatz. Verschiebe die kurzen und langen $TR$/$TE$ und beobachte, wie sich der Kontrast zwischen grauer und weißer Substanz umkehrt.'
+meanings:
+- Relaxationszeiten und Protonendichte der $S = 5$ Gewebe (Näherungswerte bei 1,5 T)
+- longitudinale Erholung, über Gewebe $s$ und Zeit $t$ gebroadcastet
+- transversaler Zerfall jedes Gewebes
+- Spinecho-Signal für jedes Gewebe, Repetitionszeit $TR_a$ und Echozeit $TE_b$ (kein Index summiert)
+- 'One-Hot-Labelkarte: welches Gewebe das Pixel $(x, y)$ ausfüllt'
+- 'wiederholtes $s$ ⇒ summiert: das Bild für jedes $(TR, TE)$'
+- Inversionszeit, bei der $M_0(1 - 2e^{-t/T_1})$ null wird; dient zur Unterdrückung von Fett (STIR) oder Liquor (FLAIR)
+labels:
+  tr_short: Kurze Repetitionszeit $TR$
+  tr_long: Lange Repetitionszeit $TR$
+  te_short: Kurze Echozeit $TE$
+  te_long: Lange Echozeit $TE$
+  size: Phantomgröße
+  n_frames: Animationsbilder

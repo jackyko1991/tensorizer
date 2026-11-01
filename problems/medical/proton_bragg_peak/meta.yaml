@@ -1,0 +1,37 @@
+title: 'Proton therapy: the Bragg peak'
+category: medical
+level: advanced
+order: 1
+summary: >
+  The Bethe–Bloch stopping power $-dE/dz \propto 1/\beta^2$ is integrated with RK4 for a whole batch of
+  proton energies at once. The dose piles up just before each proton stops (the Bragg peak), and a
+  weighted sum of energy layers gives a flat dose over a tumour with almost nothing behind it.
+animated: true
+vector_form: '-\frac{dE}{dz} = K\rho\,\frac{Z}{A}\,\frac{1}{\beta^2}\left[\tfrac12\ln\frac{2m_ec^2\beta^2\gamma^2T_{\max}}{I^2} - \beta^2\right] \qquad D^{\rm SOBP}(z) = \sum_k w_k\,D_k(z)'
+index_form: '\frac{dE_b}{dz} = -S(E_b) \qquad D_{bz} = G_{bzk}\,d_{bk} \qquad D^{\rm SOBP}_z = D_{kz}\,w_k,\; w_k \ge 0'
+translation:
+  - {symbol: 'E_b', code: 'E[:, b]', shape: '(Z+1, B)', meaning: 'kinetic energy of beam $b$ at every depth step (RK4, all beams together)'}
+  - {symbol: 'S(E_b)', code: 'stopping_power(E, I)', shape: '(B,)', meaning: 'Bethe–Bloch $-dE/dz$ in MeV/cm, elementwise over the batch'}
+  - {symbol: 'd_{bk}', code: '-diff(E, dim=0) / dz', shape: '(B, Z)', meaning: 'pristine dose: energy lost per cm in depth bin $k$'}
+  - {symbol: 'G_{bzk}', code: 'exp(-0.5 * (diff / sigma) ** 2)', shape: '(B, Z, Z)', meaning: 'Gaussian range straggling + energy spread, rows normalised'}
+  - {symbol: 'G_{bzk}\,d_{bk}', code: "einsum('bzk,bk->bz', G, d)", shape: '(B, Z)', meaning: 'repeated $k$ ⇒ summed: blurred Bragg curve'}
+  - {symbol: 'D_{kz}\,w_k', code: "einsum('kz,k->z', layers, w)", shape: '(Z,)', meaning: 'repeated $k$ ⇒ summed: spread-out Bragg peak from $K$ energy layers'}
+  - {symbol: 'w_k', code: 'sobp_weights(layers, z, z1, z2)', shape: '(K,)', meaning: 'non-negative least squares (projected gradient) for a flat target dose'}
+notes: >
+  Constants for water: $K = 0.307$ MeV cm²/mol, $Z/A = 0.555$, $I \approx 75$ eV, $\rho = 1$ g/cm³; shell and
+  density corrections are ignored. The integrated range (150 MeV → about 15.8 cm) agrees with NIST PSTAR to
+  about 1 %, and fits the Bragg–Kleeman rule $R = \alpha E^p$ with $p \approx 1.75$. Range straggling
+  ($\sigma \approx 1.2\,\%$ of $R$) and the beam energy spread round the peak; nuclear reactions are modelled only as a
+  1 %/cm loss of primaries, so the peak-to-entrance ratio is higher than in a real beam. A megavoltage X-ray
+  beam (build-up, then $e^{-\mu z}$) normalised to the same tumour dose deposits more at the entrance and keeps
+  going beyond the tumour; protons stop. All numbers are approximate and for education only, not for
+  clinical use or treatment planning.
+params:
+  e_min: {default: 70, min: 30, max: 150, step: 5, label: Lowest beam energy, unit: MeV}
+  e_max: {default: 230, min: 100, max: 250, step: 5, label: Highest beam energy, unit: MeV}
+  n_energies: {default: 7, min: 2, max: 12, step: 1, type: int, label: Beams in the sweep}
+  target_start: {default: 10.0, min: 2, max: 25, step: 0.5, label: Tumour start depth, unit: cm}
+  target_end: {default: 15.0, min: 4, max: 30, step: 0.5, label: Tumour end depth, unit: cm}
+  n_layers: {default: 16, min: 6, max: 30, step: 1, type: int, label: SOBP energy layers}
+  energy_spread: {default: 1.0, min: 0.0, max: 3.0, step: 0.1, label: 'Beam energy spread $\sigma_E/E$', unit: '%'}
+  i_ev: {default: 75, min: 60, max: 90, step: 1, label: 'Mean excitation energy $I$', unit: eV}

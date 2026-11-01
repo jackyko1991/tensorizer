@@ -1,0 +1,19 @@
+source_hash: 5a26364d7c17
+title: 矩陣力學：由階梯算符建構海森堡的諧振子
+summary: 沒有波函數，也沒有網格：在粒子數基底 $|0\rangle, \dots, |N-1\rangle$ 中，降算符就是矩陣 $a_{mn} = \sqrt n\,\delta_{m,n-1}$，而 $X$、$P$ 與 $H = \tfrac12(P^2 + X^2)$ 都由矩陣乘積得到。它的本徵值是 $n + \tfrac12$，且 $[X, P] = i$。透過 torch.linalg.matrix_exp，可以讓算符 $X(t) = U^\dagger X U$ 演化（海森堡繪景），或讓態 $U|\alpha\rangle$ 演化（薛丁格繪景）；兩者給出相同的 $\langle X\rangle(t)$，而同調態會像彈簧上的古典質點一樣在相空間中繞圈。
+notes: 單位 $\hbar = m = \omega = 1$。這正是海森堡、玻恩與約旦在 1925 年最初寫下的量子力學：可觀測量是矩陣，而它們的乘積不可交換。截斷到 $N$ 個態是唯一的近似。它在最後一個對角元素上破壞了 $[X, P] = i$，該元素必須等於 $i(1 - N)$，因為有限矩陣的對易子的跡為 0；它也使最後一個基底態的能量變成 $(N-1)/2$ 而非 $N - \tfrac12$；遠低於 $N$ 的態都是精確的。在海森堡繪景中，每個元素 $X(t)_{mn} = X_{mn}e^{i(E_m - E_n)t}$ 以一個玻爾頻率旋轉，所以對諧振子 $X(t) = X\cos t + P\sin t$，正是寫成矩陣形式的古典解。同調態 $|\alpha\rangle$ 滿足 $\langle X\rangle(t) = \sqrt2\,\mathrm{Re}(\alpha e^{-it})$，並以半徑 $\sqrt2\,\alpha$ 在相空間中繞圈。「量子諧振子」中的網格計算從完全不同的表示得到相同的能階梯和相同的擺動。試試 $\lambda > 0$：能階不再等間距，玻爾頻率散開，波包退相干時圓圈會向內螺旋。對小的 $\lambda$，能量符合一階微擾理論 $\lambda\langle n|X^4|n\rangle = \lambda\,\tfrac34(2n^2 + 2n + 1)$。
+meanings:
+- 超對角線上的 $\sqrt1, \sqrt2, \dots$：$a|n\rangle = \sqrt n\,|n-1\rangle$
+- $(a + a^\dagger)/\sqrt2$ 與 $i(a^\dagger - a)/\sqrt2$，兩者都是厄米的
+- 重複的 $k$ ⇒ 求和：矩陣乘積；除最後一個元素外等於 $a^\dagger a + \tfrac12$
+- $i\,\delta_{mn}$，但角落是 $i(1 - N)$：有限矩陣不可能有 $[X, P] = i$（其跡為 0）
+- $n + \tfrac12$；加上 $\lambda X^4$ 後平移 $\approx \lambda\,\tfrac34(2n^2 + 2n + 1)$
+- 時間演化算符 $e^{-iHt}$，一次算出所有時刻
+- 重複的 $k, l$ ⇒ 求和：海森堡繪景，算符在動
+- $e^{-|\alpha|^2/2}\alpha^n/\sqrt{n!}$：平移後的基態
+- 薛丁格繪景，$c(t) = Uc$：與海森堡繪景數值完全相同
+labels:
+  alpha: 同調態振幅 $\alpha$
+  lam: 非諧性 $\lambda$（加上 $\lambda X^4$）
+  periods: 模擬時間
+  n_states: 基底大小 $N$

@@ -1,0 +1,16 @@
+source_hash: f068882719e2
+title: 'Diagrama de Feynman: $e^+e^- \to \mu^+\mu^-$ a partir de trazas de Dirac'
+summary: 'El diagrama de QED más sencillo: un electrón y un positrón se aniquilan en un fotón virtual que crea un par de muones. Las reglas de Feynman convierten el dibujo en una amplitud, las sumas sobre espines la convierten en trazas de matrices de Dirac $4\times4$ $\gamma^\mu$, y cada traza es un único einsum. Un barrido en energía muestra cómo la distribución angular pasa de isótropa en el umbral a $1 + \cos^2\theta$, y cómo la sección eficaz cae como $4\pi\alpha^2/3s$.'
+notes: 'El diagrama se dibuja una vez, pero el código nunca construye un espinor: la suma sobre espines sustituye $u\bar u$ por $\not p + m$, así que todo el cálculo son productos y trazas de matrices $\gamma$, que einsum realiza para todas las energías y ángulos a la vez. El resultado es $\overline{|\mathcal M|^2} = e^4\big[1 + 4m^2/s + (1 - 4m^2/s)\cos^2\theta\big]$ para $m_e \to 0$: en el umbral los muones lentos salen de forma isótropa; muy por encima, el espín 1 del fotón y la conservación de la helicidad dan $1 + \cos^2\theta$. La sección eficaz total $\sigma$ crece bruscamente a partir de $\sqrt s = 2m$ y luego cae como $1/s$, unos $86.8$ nb a 1 GeV. Los datos reales de PETRA y LEP siguen esta curva hasta $\sqrt s \approx 30$ GeV, donde un segundo diagrama con un bosón $Z$ en lugar del fotón interfiere y hace que la asimetría adelante–atrás $A_{FB}$ no sea nula; la QED pura da $A_{FB} = 0$. Prueba el par $\tau$, descubierto en SPEAR en 1975 justo por encima de su umbral de 3,55 GeV.'
+meanings:
+- 'matrices de Dirac: el índice $\mu$ es de espaciotiempo, $a, b$ son índices espinoriales; $\{\gamma^\mu, \gamma^\nu\} = 2\eta^{\mu\nu}$'
+- métrica de Minkowski diag(1, −1, −1, −1), unidades con $\hbar = c = 1$
+- cuadrimomentos en el centro de masas de $e^-$, $e^+$, $\ell^-$, $\ell^+$ para cada energía $\sqrt s$ y cada ángulo $\theta$
+- 'slash de Feynman: las sumas sobre espines $\sum u\bar u = \not p + m$ y $\sum v\bar v = \not p - m$'
+- '$a, b, c, d$ repetidos ⇒ sumados: la traza de la línea del electrón (la misma función para la línea del muon)'
+- 'bajar los índices del muon con $\eta$ y contraer: el propagador del fotón une las dos líneas'
+- factores de flujo y de espacio de fases; $(\hbar c)^2$ convierte GeV$^{-2}$ en nb
+- sección eficaz total; comparada con $\frac{4\pi\alpha^2}{3s}\beta\,(1 + 2m^2/s)$, $\beta = \sqrt{1 - 4m^2/s}$
+labels:
+  final: Estado final
+  sqrt_s_max: Energía máxima $\sqrt s$

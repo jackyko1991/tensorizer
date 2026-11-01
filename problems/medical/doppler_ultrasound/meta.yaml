@@ -1,0 +1,41 @@
+title: 'Doppler ultrasound: measuring blood flow'
+category: medical
+level: beginner
+order: 3
+summary: >
+  An ultrasound probe listens to the echoes of red blood cells. Each moving cell shifts the echo by
+  $f_D = 2 f_0 v \cos\theta / c$, and hundreds of cells in a pulsing artery are simulated at once as one
+  batch of phasors. A short-time FFT turns their summed echo into the Doppler spectrogram a scanner shows:
+  the spread of blood velocities across the cardiac cycle.
+animated: true
+vector_form: 'f_D = \frac{2 f_0\, \mathbf v\cdot\hat{\mathbf k}}{c} = \frac{2 f_0\, v\cos\theta}{c},\qquad v(r, t) = v_{\max}(t)\Big(1 - \frac{r^2}{R^2}\Big)'
+index_form: 'v_{tn} = v_{\max,t}\,\big(1 - r_n^2/R^2\big),\qquad s_t = a_n\, e^{i\phi_{tn}},\quad \phi_{tn} = \phi_n + 2\pi \textstyle\sum_{t''\le t} f_{D,t''n}\,\Delta t,\qquad P_{fk} = \big|\textstyle\sum_t w_{t-kH}\, s_t\, e^{-2\pi i f t}\big|^2'
+translation:
+  - {symbol: 'v_{\max,t}', code: 'cardiac_waveform(t, v_peak, heart_rate)', shape: '(T,)', meaning: 'centreline velocity over two heartbeats: systolic peak, brief backflow, slow diastolic flow'}
+  - {symbol: 'r_n,\ \phi_n,\ a_n', code: 'scatterers(n, R, length, dev)', shape: '(N,)', meaning: 'random red blood cells: radius in the vessel, echo phase and strength'}
+  - {symbol: 'v_{tn}', code: "einsum('t,n->tn', v_max, profile)", shape: '(T, N)', meaning: 'parabolic (laminar) profile times the waveform: an outer product, no index summed'}
+  - {symbol: 'f_{D,tn}', code: 'doppler_shift(v, f0, theta)', shape: '(T, N)', meaning: 'Doppler shift $2 f_0 v \cos\theta / c$ of every cell at every pulse'}
+  - {symbol: 's_t', code: "einsum('n,tn->t', a, exp(1j*phi))", shape: '(T,)', meaning: 'repeated $n$ ⇒ summed: the received echo, one complex (IQ) sample per pulse at $\Delta t = 1/\mathrm{PRF}$'}
+  - {symbol: 'P_{fk}', code: 'torch.stft(s, n_fft, hop, window)', shape: '(F, K)', meaning: 'spectrogram: power at frequency $f$ in time window $k$'}
+  - {symbol: '\tilde f', code: 'alias(f, prf)', shape: '(…)', meaning: 'pulsed Doppler only sees $f$ wrapped into $[-\mathrm{PRF}/2, \mathrm{PRF}/2)$'}
+notes: >
+  The factor 2 appears because the shift happens twice: the moving cell receives a shifted wave and re-emits it while moving.
+  Only the velocity component along the beam counts, so at $\theta = 90°$ there is no shift at all; scanners ask the
+  operator for the angle and compute $v = f_D c / (2 f_0 \cos\theta)$, which becomes very uncertain above about 60°.
+  With the defaults ($f_0 = 5$ MHz, $\theta = 60°$, peak 1 m/s) the systolic shift is about 3.2 kHz, in the audible range,
+  which is why Doppler machines also play the signal as sound. In laminar flow the profile is parabolic: cells near
+  the wall barely move and the centreline moves fastest. Because equal areas of the cross-section hold equal numbers of cells,
+  every speed between 0 and $v_{\max}$ is equally common, the spectrum is a flat band ("filled-in" window), and the mean
+  frequency is exactly half the maximum. Disturbed or stenotic flow would broaden the spectrum instead. Pulsed Doppler
+  samples the echo once per pulse, so by Nyquist it can only measure $|f_D| < \mathrm{PRF}/2$: lower the PRF (or raise
+  the velocity) and the systolic peak wraps around to the negative side (aliasing). Real scanners need a high PRF for
+  fast jets but a low PRF to reach deep vessels, since each pulse must return before the next is sent. Simplifications:
+  the sample volume covers the whole vessel, the beam is uniform, the IQ signal is simulated directly at baseband, and
+  there is no wall filter or tissue clutter. All values are approximate and for education only, not for clinical use.
+params:
+  f0: {default: 5.0, min: 2.0, max: 10.0, step: 0.5, label: 'Transmit frequency $f_0$', unit: MHz}
+  theta: {default: 60.0, min: 0.0, max: 90.0, step: 5, label: 'Beam–flow angle $\theta$', unit: °}
+  v_peak: {default: 1.0, min: 0.2, max: 2.5, step: 0.1, label: 'Peak systolic velocity', unit: m/s}
+  prf: {default: 10.0, min: 2.0, max: 20.0, step: 0.5, label: Pulse repetition frequency PRF, unit: kHz}
+  heart_rate: {default: 72.0, min: 45, max: 150, step: 1, label: Heart rate, unit: bpm}
+  n_scatterers: {default: 300, min: 20, max: 1000, step: 20, type: int, label: Red blood cells simulated}

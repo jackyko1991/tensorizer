@@ -1,0 +1,20 @@
+source_hash: fa6ec3302fec
+title: El ruido y la ecuación de Langevin
+summary: Una partícula browniana en una trampa armónica recibe golpes aleatorios de las moléculas que la rodean. La ecuación de Langevin añade este término de ruido, $\sqrt{2\gamma k_BT}\,dW$, a la ley de Newton; el método de Euler–Maruyama hace avanzar todo un conjunto de partículas a la vez en un único tensor de lote, y la dispersión de las posiciones se asienta en la distribución de Boltzmann $N(0, k_BT/k)$ (equipartición).
+notes: 'Con solo rozamiento, la ley de Newton dejaría la partícula en reposo en el fondo de la trampa (la curva roja gruesa). Las partículas reales en un fluido nunca se detienen: las moléculas las golpean por todos lados, y esa fuerza aleatoria es el término de ruido, o término de error, de la ecuación de Langevin. Su tamaño no es libre. El teorema de fluctuación–disipación lo fija en $\sqrt{2\gamma k_BT}$: las mismas colisiones que causan el rozamiento $\gamma$ también golpean la partícula, y el conjunto se equilibra a la temperatura $T$: $\tfrac12 k\langle x^2\rangle = \tfrac12 m\langle v^2\rangle = \tfrac12 k_BT$ (equipartición), con posiciones distribuidas según $N(0, k_BT/k)$. El incremento de Wiener $dW$ tiene varianza $dt$; en un paso finito se convierte en $\sqrt{\Delta t}\,\xi$ con $\xi \sim N(0,1)$, y el golpe de velocidad por paso tiene varianza $2\gamma k_BT\Delta t/m^2$. Si el ruido se escalara con $\Delta t$, desaparecería al reducir el paso: los golpes aleatorios se suman
+  como un paseo aleatorio, así que su dispersión crece como $\sqrt{t}$. Como la ecuación es lineal, la media del conjunto $\langle x\rangle$ sigue exactamente al oscilador amortiguado sin ruido (negro discontinuo sobre rojo), mientras cada trayectoria individual vaga. Pruebe $T = 0$ (oscilador amortiguado puro), un $\gamma$ grande con una $m$ pequeña (movimiento browniano sobreamortiguado: $\langle x^2\rangle$ se relaja con tasa $2k/\gamma$ sin oscilar), o un $\gamma$ pequeño (aproximación lenta al equilibrio). Simplificaciones: unidades reducidas con $k_B = 1$, una dimensión, ruido blanco (no correlacionado) y un esquema de primer orden cuyas varianzas de equilibrio tienen un sesgo $O(\Delta t)$.'
+meanings:
+- 'posición y velocidad de la partícula $b$ en el paso $n$: todo el conjunto es un único lote'
+- 'el tensor de ruido, una fila por paso: normales estándar independientes (semilla fija)'
+- tamaño del golpe aleatorio por paso; escala como $\sqrt{\Delta t}$, no como $\Delta t$
+- 'aceleración determinista: rozamiento más muelle'
+- paso de Euler–Maruyama; la posición usa la nueva velocidad (Euler simpléctico)
+- 'media del conjunto: $b$ repetido ⇒ sumado sobre las partículas'
+- '$\langle x^2\rangle$ y $\langle v^2\rangle$ en equilibrio: $\tfrac12 k\langle x^2\rangle = \tfrac12 m\langle v^2\rangle = \tfrac12 k_BT$'
+labels:
+  temperature: Temperatura $k_BT$
+  gamma: Rozamiento $\gamma$
+  k: Rigidez $k$
+  m: Masa $m$
+  n_particles: Número de partículas $B$
+  t_max: Duración $t_{max}$

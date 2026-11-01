@@ -1,0 +1,19 @@
+source_hash: 3ad16fadfd42
+title: 'MRT-k-Raum: Bildgebung mit Gradienten und Fourier-Transformationen'
+summary: 'Magnetfeldgradienten geben jedem Pixel seine eigene Präzessionsphase, sodass die Spule die Fourier-Transformierte des Bildes aufzeichnet: $s(\mathbf k) = \sum_x \rho(x)\,e^{-2\pi i\,\mathbf k\cdot\mathbf x}$ mit $\mathbf k(t) = \tfrac{\gamma}{2\pi}\int \mathbf G\,dt$. Als einsum mit einer Kodiermatrix geschrieben, stimmt das mit der FFT überein. Füllt man den k-Raum Zeile für Zeile und transformiert zurück, wird das Bild schärfer; lässt man Zeilen aus, faltet es sich über (Aliasing), behält man nur das Zentrum, verschwimmt es mit Gibbs-Ringing.'
+notes: 'Jede zweite Zeile ($R = 2$) halbiert das Sichtfeld: Das mit Nullen aufgefüllte Bild ist exakt $\tfrac12[\rho(p) + \rho(p + N/2)]$, eine um $\mathrm{FOV}/2$ verschobene Kopie, die am Rand umklappt. Behält man nur die zentralen Zeilen, bleibt der Gleichanteil und damit die Gesamtintensität erhalten, doch die Kanten gehen verloren: Das Bild verschwimmt und zeigt Überschwinger (Gibbs). Die regularisierte Rekonstruktion löst für jede Bildspalte ein kleines Kleinste-Quadrate-Problem mit einem Strafterm für Signal außerhalb einer Kopfmaske, die aus den zentralen Zeilen geschätzt wird; sie verringert den Fehler des Zufallsschemas etwas, kann regelmäßiges Aliasing aber nicht rückgängig machen, wenn beide gefalteten Kopien im Kopf landen. Echte Scanner verwenden zusätzlich mehrere Spulen (parallele Bildgebung) oder Sparsity-Annahmen (Compressed Sensing). Das Phantom ist der klassische Shepp-Logan-Kopf; nur zur Veranschaulichung, nicht für den klinischen Einsatz.'
+meanings:
+- 'Protonendichtebild: Pixelzeile $p$ (Phasenkodierrichtung), Spalte $r$ (Ausleserichtung)'
+- k-Raum-Position als laufendes Integral des Gradienten, $\tfrac{\gamma}{2\pi}\int G\,dt$; Schrittweite $\Delta k = 1/\mathrm{FOV}$
+- Phase $e^{-2\pi i\,up/N}$ des Pixels $p$ in k-Raum-Zeile $u$; die 2D-Matrix $E_{kx}$ faktorisiert als $E_{up}E_{vr}$
+- 'wiederholte $p, r$ ⇒ summiert: das gemessene k-Raum-Signal, identisch mit fft2(rho)'
+- 'Abtastmaske: 1 auf den aufgenommenen Phasenkodierzeilen'
+- mit Nullen aufgefüllte Rekonstruktion
+- Tikhonov-Kleinste-Quadrate pro Bildspalte $r$, mit Strafterm für Signal außerhalb des Kopfes
+labels:
+  size: Bildgröße $N$
+  R: Auslassfaktor $R$ (jede $R$-te Zeile)
+  lowpass: Behaltener zentraler Anteil des k-Raums
+  random_frac: Behaltener zufälliger Anteil der Zeilen
+  lam: Tikhonov-Gewicht $\lambda$
+  n_frames: Einzelbilder beim Füllen

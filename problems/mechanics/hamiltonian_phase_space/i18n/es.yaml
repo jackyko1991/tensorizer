@@ -1,0 +1,21 @@
+source_hash: c92568d7c613
+title: 'Mecánica hamiltoniana: espacio de fases e integración simpléctica'
+summary: Escribe una sola vez el hamiltoniano del péndulo $H(q, p)$ y deja que torch.autograd proporcione las ecuaciones de Hamilton $\dot z_a = J_{ab}\,\partial H/\partial z_b$. Todo un abanico de órbitas y una mancha de Liouville evolucionan como un único tensor, y el método simpléctico de salto de rana compite con Euler explícito y RK4 durante muchos períodos.
+notes: 'La separatriz $H = mgL$, es decir, $p = \pm 2mL\sqrt{gL}\cos(q/2)$, separa las libraciones (curvas cerradas) de las rotaciones (líneas onduladas que salen por la derecha y vuelven a entrar por la izquierda). Cerca de ella el período crece sin límite, de modo que el borde interior de la mancha adelanta a su borde exterior: se estira en una espiral fina, pero su área no cambia (teorema de Liouville). El salto de rana es solo de segundo orden y, sin embargo, su error de energía permanece acotado para siempre, porque conserva exactamente un hamiltoniano «sombra» cercano; RK4 es mucho más preciso en cada paso, pero su error crece de forma constante, y Euler explícito multiplica el área en el espacio de fases por aproximadamente $1 + \omega^2\Delta t^2$ en cada paso, así que la energía se dispara. Prueba un $\Delta t$ mayor, o el sistema armónico, en el que la mancha simplemente gira como un sólido rígido.'
+meanings:
+- 'punto $b$ del espacio de fases: ángulo $q$ y momento angular $p$; cada punto de órbita y de la mancha es una fila'
+- el hamiltoniano, la única física escrita a mano
+- el gradiente de la suma da a cada punto independiente su propio gradiente
+- 'matriz simpléctica $[[0, I], [-I, 0]]$: gira el gradiente 90°'
+- '$c$ repetido ⇒ sumado: ecuaciones de Hamilton para todos los puntos a la vez'
+- 'impulso–deriva–impulso (Störmer–Verlet): cada subpaso es una cizalla, así que el área se conserva exactamente'
+- 'Euler explícito, para comparar: estira el espacio de fases en cada paso'
+- área del polígono de la mancha; según Liouville, permanece constante
+labels:
+  system: sistema
+  m: Masa $m$
+  length: Longitud $L$
+  amplitude: Amplitud de la órbita de prueba $q_0$
+  n_orbits: Órbitas en el retrato
+  dt: Paso de tiempo $\Delta t$
+  t_max: Tiempo simulado

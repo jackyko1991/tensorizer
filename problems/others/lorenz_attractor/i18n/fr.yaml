@@ -1,0 +1,21 @@
+source_hash: 8944aa9bc162
+title: Attracteur de Lorenz et effet papillon
+summary: Trois équations couplées issues d'un modèle de convection ne se stabilisent jamais et ne se répètent jamais. Écrites comme une partie linéaire $A_{ij}x_j$ plus une partie quadratique $Q_{ijk}x_j x_k$ avec un tenseur de rang 3, un seul einsum fait avancer tout un lot de trajectoires parties à moins de $10^{-6}$ les unes des autres ; elles se séparent exponentiellement, au rythme fixé par le plus grand exposant de Lyapunov $\lambda \approx 0.9$, jusqu'à se répartir sur tout le papillon.
+notes: 'Lorenz (1963) a réduit un modèle de fluide chauffé par le bas à trois nombres : $x$ est l''intensité du rouleau de convection, $y$ et $z$ décrivent le profil de température. Avec $\sigma = 10$, $\rho = 28$ et $\beta = 8/3$, le mouvement tourne autour de l''un des deux points fixes $C_\pm = (\pm\sqrt{\beta(\rho-1)}, \pm\sqrt{\beta(\rho-1)}, \rho-1)$, puis saute de façon imprévisible vers l''autre aile. Des trajectoires voisines s''écartent comme $e^{\lambda t}$ avec $\lambda \approx 0.906$ : une erreur de $10^{-6}$ atteint la taille de l''attracteur après environ $15$ unités de temps, c''est pourquoi une prévision a un horizon (l''effet papillon). En même temps, tout volume d''états se contracte comme $e^{-(\sigma+1+\beta)t}$, si bien que les trajectoires s''entassent sur un ensemble mince et fractal : l''attracteur étrange. La forme tensorielle rend la structure explicite : $A$ contient tous les couplages linéaires et toute la non-linéarité tient dans les deux composantes de $Q$.
+  Avant le calcul, une trajectoire partie de $(1, 1, 1)$ est intégrée pendant $10$ unités de temps pour que la boule démarre sur l''attracteur ; RK4 avec un pas fixe de $0.005$ est assez précis ici. Essayez $\rho < 1$ : l''origine devient stable et toutes les trajectoires y décroissent ; pour $1 < \rho < 24.74$ elles spiralent vers $C_+$ ou $C_-$ ; vers $\rho = 28$ et au-delà, le chaos revient.'
+meanings:
+- état $(x, y, z)$ de la trajectoire $b$
+- 'partie linéaire : lignes $(-\sigma, \sigma, 0)$, $(\rho, -1, 0)$, $(0, 0, -\beta)$'
+- 'partie quadratique, un tenseur de rang 3 avec deux composantes non nulles : $-xz$ dans $\dot y$ et $+xy$ dans $\dot z$'
+- $j$ répété ⇒ sommé
+- '$j$ et $k$ répétés ⇒ sommés : la non-linéarité qui crée le chaos'
+- 'trace de la jacobienne : les volumes d''états se contractent au taux constant $\sigma + 1 + \beta$'
+- distance quadratique moyenne des trajectoires à leur moyenne
+- pente de $\ln s$ en fonction de $t$ tant que l'écart croît de $10\,s(0)$ à $1$
+labels:
+  sigma: Nombre de Prandtl $\sigma$
+  rho: Nombre de Rayleigh $\rho$
+  beta: Facteur géométrique $\beta$
+  t_max: Durée simulée
+  log10_radius: Rayon de la boule initiale $\log_{10} r$
+  n_traj: Nombre de trajectoires

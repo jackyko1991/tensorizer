@@ -1,0 +1,21 @@
+source_hash: adf3aca0e79d
+title: 'Protonterapia: el pico de Bragg'
+summary: El poder de frenado de Bethe–Bloch $-dE/dz \propto 1/\beta^2$ se integra con RK4 para todo un lote de energías de protones a la vez. La dosis se acumula justo antes de que cada protón se detenga (el pico de Bragg), y una suma ponderada de capas de energía da una dosis uniforme sobre un tumor sin casi nada detrás.
+notes: 'Constantes para el agua: $K = 0.307$ MeV cm²/mol, $Z/A = 0.555$, $I \approx 75$ eV, $\rho = 1$ g/cm³; se desprecian las correcciones de capa y de densidad. El alcance integrado (150 MeV → unos 15,8 cm) coincide con NIST PSTAR en torno al 1 % y se ajusta a la regla de Bragg–Kleeman $R = \alpha E^p$ con $p \approx 1.75$. La dispersión del alcance ($\sigma \approx 1.2\,\%$ de $R$) y la dispersión en energía del haz redondean el pico; las reacciones nucleares solo se modelan como una pérdida del 1 %/cm de los primarios, por lo que la relación pico/entrada es mayor que en un haz real. Un haz de rayos X de megavoltaje (zona de acumulación, luego $e^{-\mu z}$) normalizado a la misma dosis tumoral deposita más a la entrada y sigue más allá del tumor; los protones se detienen. Todas las cifras son aproximadas y solo con fines educativos, no para uso clínico ni planificación de tratamientos.'
+meanings:
+- energía cinética del haz $b$ en cada paso de profundidad (RK4, todos los haces juntos)
+- $-dE/dz$ de Bethe–Bloch en MeV/cm, elemento a elemento sobre el lote
+- 'dosis prístina: energía perdida por cm en el intervalo de profundidad $k$'
+- dispersión gaussiana del alcance + dispersión en energía, filas normalizadas
+- '$k$ repetido ⇒ sumado: curva de Bragg suavizada'
+- '$k$ repetido ⇒ sumado: pico de Bragg ensanchado a partir de $K$ capas de energía'
+- mínimos cuadrados no negativos (gradiente proyectado) para una dosis objetivo uniforme
+labels:
+  e_min: Energía mínima del haz
+  e_max: Energía máxima del haz
+  n_energies: Haces en el barrido
+  target_start: Profundidad de inicio del tumor
+  target_end: Profundidad final del tumor
+  n_layers: Capas de energía del SOBP
+  energy_spread: Dispersión en energía del haz $\sigma_E/E$
+  i_ev: Energía media de excitación $I$

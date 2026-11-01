@@ -1,0 +1,25 @@
+source_hash: 31fa57e56a24
+title: 'Principe de moindre action : trouver la trajectoire par descente de gradient'
+summary: On découpe une trajectoire en points $q_n$ aux extrémités fixées, on écrit l'action $S = \sum_n L\,\Delta t$ comme une seule expression tensorielle, et l'autograd associé à un optimiseur fait glisser un lot de mauvaises estimations vers le bas jusqu'à ce que $\partial S/\partial q_n = 0$. Elles se stabilisent sur la parabole d'une balle lancée ou la sinusoïde d'un oscillateur.
+notes: 'Ici, la nature n''intègre pas pas à pas vers l''avant : toute la trajectoire est ajustée d''un coup, en sachant où elle doit commencer et finir. Poser $\partial S/\partial q_n = 0$ donne $m(q_{n+1} - 2q_n + q_{n-1})/\Delta t^2 = -V''(q_n)$, l''équation d''Euler–Lagrange discrète, qui est exactement le schéma de Verlet ; pour une pesanteur constante elle reproduit la parabole aux erreurs d''arrondi près, pour l''oscillateur à $O(\Delta t^2)$ près. Le principe est en réalité celui d''une action stationnaire : pour l''oscillateur, la plus petite valeur propre de la hessienne vaut environ $m\Delta t\,(\pi^2/T^2 - \omega^2)$, donc dès que $T$ dépasse une demi-période $\pi/\omega$, la vraie trajectoire est un point selle de $S$, la descente de gradient divergerait, et le code passe à des pas de Newton $x \leftarrow x - \alpha H^{-1}\nabla S$, qui trouvent n''importe quel point stationnaire. Les ondulations lisses et longues relaxent le plus lentement (les plus petites valeurs propres de
+  la hessienne) ; les ondulations courtes disparaissent en quelques itérations.'
+meanings:
+- trajectoire d'essai $b$ à l'instant $t_n = n\,\Delta t$ ; $q_{b0}$ et $q_{bN}$ sont fixés
+- '$-1$ sur la diagonale, $+1$ juste à droite : $(Dq)_n = q_{n+1} - q_n$'
+- '$k$ répété ⇒ sommé : vitesse sur chaque pas de chaque trajectoire'
+- énergie cinétique moins potentielle, sommée sur les pas ; $V$ pris à l'extrémité gauche de chaque pas
+- gradient pour les points intérieurs libres ; les trajectoires sont indépendantes, donc une seule rétropropagation suffit pour toutes
+- descente de gradient avec inertie, $\eta = 0.8\,\Delta t/m$
+- 'hessienne : tridiagonale, $2m/\Delta t - V''''\Delta t$ sur la diagonale et $-m/\Delta t$ à côté'
+- équation d'Euler–Lagrange discrète $m(q_{n+1} - 2q_n + q_{n-1})/\Delta t^2 + V'(q_n)$, le schéma de Verlet ; $\partial S/\partial q_n = -\Delta t\,r_n$
+labels:
+  system: système
+  method: méthode
+  T: Durée totale $T$
+  omega: Pulsation de l'oscillateur $\omega$
+  q_start: Départ $q_0$
+  q_end: Arrivée $q_N$
+  n_steps: Pas de temps $N$
+  n_paths: Trajectoires d'essai
+  wiggle: Ondulation des trajectoires d'essai
+  n_iter: Itérations

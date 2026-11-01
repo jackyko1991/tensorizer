@@ -1,0 +1,19 @@
+source_hash: 5a26364d7c17
+title: 矩阵力学：由阶梯算符构建海森堡的谐振子
+summary: 没有波函数，也没有网格：在粒子数基 $|0\rangle, \dots, |N-1\rangle$ 中，降算符就是矩阵 $a_{mn} = \sqrt n\,\delta_{m,n-1}$，而 $X$、$P$ 和 $H = \tfrac12(P^2 + X^2)$ 都由矩阵乘积得到。它的本征值是 $n + \tfrac12$，并且 $[X, P] = i$。借助 torch.linalg.matrix_exp，可以让算符 $X(t) = U^\dagger X U$ 演化（海森堡绘景），或让态 $U|\alpha\rangle$ 演化（薛定谔绘景）；两者给出相同的 $\langle X\rangle(t)$，而相干态会像弹簧上的经典质点一样在相空间中绕圈。
+notes: 单位 $\hbar = m = \omega = 1$。这正是海森堡、玻恩和约旦在 1925 年最初写下的量子力学：可观测量是矩阵，它们的乘积不可交换。截断到 $N$ 个态是唯一的近似。它在最后一个对角元上破坏了 $[X, P] = i$，该元必须等于 $i(1 - N)$，因为有限矩阵的对易子的迹为 0；它还使最后一个基态的能量变为 $(N-1)/2$ 而不是 $N - \tfrac12$；远低于 $N$ 的态都是精确的。在海森堡绘景中，每个矩阵元 $X(t)_{mn} = X_{mn}e^{i(E_m - E_n)t}$ 以一个玻尔频率旋转，所以对谐振子 $X(t) = X\cos t + P\sin t$，正是写成矩阵形式的经典解。相干态 $|\alpha\rangle$ 满足 $\langle X\rangle(t) = \sqrt2\,\mathrm{Re}(\alpha e^{-it})$，并以半径 $\sqrt2\,\alpha$ 在相空间中绕圈。“量子谐振子”中的网格计算从完全不同的表象得到相同的能级阶梯和相同的摆动。试试 $\lambda > 0$：能级不再等间距，玻尔频率散开，波包退相干时圆圈向内螺旋。对于小的 $\lambda$，能量符合一阶微扰论 $\lambda\langle n|X^4|n\rangle = \lambda\,\tfrac34(2n^2 + 2n + 1)$。
+meanings:
+- 超对角线上的 $\sqrt1, \sqrt2, \dots$：$a|n\rangle = \sqrt n\,|n-1\rangle$
+- $(a + a^\dagger)/\sqrt2$ 和 $i(a^\dagger - a)/\sqrt2$，两者都是厄米的
+- 重复的 $k$ ⇒ 求和：矩阵乘积；除最后一个元外等于 $a^\dagger a + \tfrac12$
+- $i\,\delta_{mn}$，但角上是 $i(1 - N)$：有限矩阵不可能满足 $[X, P] = i$（其迹为 0）
+- $n + \tfrac12$；加上 $\lambda X^4$ 后移动 $\approx \lambda\,\tfrac34(2n^2 + 2n + 1)$
+- 时间演化算符 $e^{-iHt}$，一次算出所有时刻
+- 重复的 $k, l$ ⇒ 求和：海森堡绘景，算符在动
+- $e^{-|\alpha|^2/2}\alpha^n/\sqrt{n!}$：平移后的基态
+- 薛定谔绘景，$c(t) = Uc$：与海森堡绘景数值完全相同
+labels:
+  alpha: 相干态振幅 $\alpha$
+  lam: 非谐性 $\lambda$（加上 $\lambda X^4$）
+  periods: 模拟时间
+  n_states: 基大小 $N$

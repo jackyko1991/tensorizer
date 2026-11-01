@@ -1,0 +1,19 @@
+source_hash: 3ad16fadfd42
+title: 'Espacio k en RM: imágenes con gradientes y transformadas de Fourier'
+summary: 'Los gradientes de campo magnético dan a cada píxel su propia fase de precesión, así que la bobina registra la transformada de Fourier de la imagen: $s(\mathbf k) = \sum_x \rho(x)\,e^{-2\pi i\,\mathbf k\cdot\mathbf x}$ con $\mathbf k(t) = \tfrac{\gamma}{2\pi}\int \mathbf G\,dt$. Escrito como un einsum con una matriz de codificación, coincide con la FFT. Rellenar el espacio k línea a línea e invertirlo muestra cómo la imagen se vuelve nítida; saltarse líneas la pliega (aliasing), y conservar solo el centro la emborrona con oscilaciones de Gibbs.'
+notes: 'Una línea de cada dos ($R = 2$) reduce a la mitad el campo de visión: la imagen rellenada con ceros es exactamente $\tfrac12[\rho(p) + \rho(p + N/2)]$, una copia desplazada $\mathrm{FOV}/2$ que se pliega por el otro lado. Conservar solo las líneas centrales mantiene el término de continua, de modo que la intensidad total se conserva, pero se pierden los bordes: la imagen se emborrona y oscila (Gibbs). La reconstrucción regularizada resuelve un pequeño problema de mínimos cuadrados para cada columna de la imagen, con una penalización sobre la señal fuera de una máscara de la cabeza estimada a partir de las líneas centrales; reduce un poco el error del esquema aleatorio, pero no puede deshacer el aliasing regular cuando ambas copias plegadas caen dentro de la cabeza. Los escáneres reales añaden varias bobinas (imagen en paralelo) o supuestos de dispersidad (compressed sensing). El maniquí es la clásica cabeza de Shepp–Logan; solo ilustrativo, no para uso clínico.'
+meanings:
+- 'imagen de densidad protónica: fila de píxeles $p$ (dirección de codificación de fase), columna $r$ (lectura)'
+- posición en el espacio k como integral acumulada del gradiente, $\tfrac{\gamma}{2\pi}\int G\,dt$; paso $\Delta k = 1/\mathrm{FOV}$
+- fase $e^{-2\pi i\,up/N}$ del píxel $p$ en la línea $u$ del espacio k; la matriz 2D $E_{kx}$ se factoriza como $E_{up}E_{vr}$
+- '$p, r$ repetidos ⇒ sumados: la señal medida en el espacio k, idéntica a fft2(rho)'
+- 'máscara de muestreo: 1 en las líneas de codificación de fase adquiridas'
+- reconstrucción rellenada con ceros
+- mínimos cuadrados de Tikhonov por columna de imagen $r$, penalizando la señal fuera de la cabeza
+labels:
+  size: Tamaño de la imagen $N$
+  R: Factor de salto $R$ (una línea de cada $R$)
+  lowpass: Fracción central del espacio k conservada
+  random_frac: Fracción aleatoria de líneas conservada
+  lam: Peso de Tikhonov $\lambda$
+  n_frames: Fotogramas del llenado

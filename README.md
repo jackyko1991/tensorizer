@@ -46,10 +46,10 @@ The interface and all problem text are available in 10 languages: English, 繁�
 ## Problem library
 
 <!-- library:start -->
-82 problems in 10 topics, three per difficulty level. Click a topic to expand it.
+105 problems in 11 topics by difficulty level. Click a topic to expand it.
 
 <details>
-<summary><b>Mechanics</b> (9 problems)</summary>
+<summary><b>Mechanics</b> (12 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -63,24 +63,27 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🟠 Intermediate (3)</summary>
+<summary>🟠 Intermediate (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Coupled oscillators and normal modes](problems/mechanics/coupled_oscillators) | $m\,\ddot x_i = -K_{ij}\,x_j$ |
 | [Double pendulum and chaos](problems/mechanics/double_pendulum) | $M_{bij}(q)\,\ddot q_{bj} = f_{bi}(q, \dot q)$ |
 | [Free rigid-body rotation (tennis-racket effect)](problems/mechanics/rigid_body_rotation) | $I_{ij}\,\dot\omega_j + \varepsilon_{ijk}\,\omega_j\,I_{kl}\,\omega_l = 0$ |
+| [Hamiltonian mechanics: phase space and symplectic integration](problems/mechanics/hamiltonian_phase_space) | $\dot z_{ba} = J_{ac}\,\frac{\partial H}{\partial z_{bc}}$ |
 
 </details>
 
 <details>
-<summary>🔴 Advanced (3)</summary>
+<summary>🔴 Advanced (5)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [N-body gravity in 3D](problems/mechanics/n_body_gravity) | $\ddot x_{ai} = G\,m_b\,(r_{abj}r_{abj} + \varepsilon^2)^{-3/2}\,r_{abi}$ |
 | [Equations of motion from a Lagrangian by autograd](problems/mechanics/lagrangian_autograd) | $\ddot q_i = H^{-1}_{ij}\Big(\frac{\partial L}{\partial q_j} - C_{jk}\,\dot q_k\Big)$ |
 | [Mass–spring cloth](problems/mechanics/mass_spring_cloth) | $m\,\ddot x_{ai} = -k\,D_{ea}\,(\lVert d_e\rVert - \ell_0)\,\hat d_{ei} + m\,g_i$ |
+| [Three-body chaos: the Pythagorean problem](problems/mechanics/three_body_chaos) | $\ddot x_{kai} = G\,m_b\,(r_{kabj}r_{kabj})^{-3/2}\,r_{kabi},\;\; \lVert\Delta\rVert \propto e^{\lambda t}$ |
+| [Principle of least action: finding the path by gradient descent](problems/mechanics/least_action) | $S_b = \sum_{n=0}^{N-1}\Big[\tfrac12 m\,v_{bn}v_{bn} - V(q_{bn})\Big]\Delta t$ |
 
 </details>
 
@@ -277,7 +280,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary><b>Quantum</b> (9 problems)</summary>
+<summary><b>Quantum</b> (11 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -291,13 +294,15 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🟠 Intermediate (3)</summary>
+<summary>🟠 Intermediate (5)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Spin precession and Rabi flopping](problems/quantum/spin_precession) | $H_{ab} = -\tfrac{\gamma}{2}\,B_k\,\sigma_{kab}$ |
 | [Hydrogen atom orbitals](problems/quantum/hydrogen_radial) | $H_{lij}\,u_{ljn} = E_{ln}\,u_{lin}$ |
 | [Tunnelling in a double well](problems/quantum/double_well) | $H_{xy}\,\varphi_{yn} = E_n\,\varphi_{xn}$ |
+| [Schrödinger equation: Crank–Nicolson time stepping](problems/quantum/schrodinger_crank_nicolson) | $H_{xy} = -\tfrac12\,D2_{xy} + V_x\,\delta_{xy}$ |
+| [Matrix mechanics: Heisenberg's oscillator from ladder operators](problems/quantum/matrix_mechanics) | $a_{mn} = \sqrt n\,\delta_{m,n-1}$ |
 
 </details>
 
@@ -353,7 +358,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary><b>Nuclear & Particle</b> (9 problems)</summary>
+<summary><b>Nuclear & Particle</b> (10 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -378,27 +383,90 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (3)</summary>
+<summary>🔴 Advanced (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Nuclear shell model](problems/nuclear/shell_model) | $H_{kij} = -\frac{\hbar^2}{2m}D_{ij} + \Big[V_k(r_i) + \frac{\hbar^2 l_k(l_k+1)}{2m r_i^2}\Big]\delta_{ij}$ |
 | [Reactor criticality](problems/nuclear/reactor_criticality) | $M_{ij}\,\phi_j = \frac1k\,F_{ij}\,\phi_j$ |
 | [Electromagnetic shower](problems/nuclear/em_shower) | $(E_p, s_p) \to \big(\tfrac{E_p}{2}, 1\big),\ \big(\tfrac{E_p}{2}, 1 - s_p\big)\ \text{ if } \tfrac{E_p}{2} \ge E_c$ |
+| [Feynman diagram: $e^+e^- \to \mu^+\mu^-$ from Dirac traces](problems/nuclear/feynman_ee_mumu) | $\overline{\vert \mathcal M\vert ^2} = \frac{e^4}{4s^2}\,L^{\mu\nu}M_{\mu\nu}$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Others</b> (1 problem)</summary>
+<summary><b>Medical Physics</b> (9 problems)</summary>
 
 <details>
-<summary>🟢 Beginner (1)</summary>
+<summary>🟢 Beginner (3)</summary>
 
 | Problem | Key equation |
 |---|---|
-| [Receptor–ligand binding (k_on, k_off)](problems/others/receptor_binding) | $J_{bc} = k^{\mathrm{on}}_b\,R_{bc}\,L_{bc} - k^{\mathrm{off}}_b\,C_{bc}$ |
+| [X-ray attenuation and image contrast](problems/medical/xray_attenuation) | $L_{mx} = M_{myx}\,\Delta l_y$ |
+| [MRI: T1 and T2 relaxation and image contrast](problems/medical/mri_relaxation) | $S_{sab} = PD_s\,\bigl(1 - e^{-TR_a/T_{1,s}}\bigr)\,e^{-TE_b/T_{2,s}}$ |
+| [Doppler ultrasound: measuring blood flow](problems/medical/doppler_ultrasound) | $v_{tn} = v_{\max,t}\,\big(1 - r_n^2/R^2\big)$ |
+
+</details>
+
+<details>
+<summary>🟠 Intermediate (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Radon transform and CT reconstruction](problems/medical/radon_ct) | $p_{\theta s} = f_{\theta t s}\,\Delta t$ |
+| [Bloch equations and the spin echo](problems/medical/bloch_spin_echo) | $\dot M_{ni} = \varepsilon_{ijk}\,M_{nj}\,\Omega_{nk} - R_{ij}\,(M_{nj} - M^0_j)$ |
+| [PET: positron annihilation and image reconstruction](problems/medical/pet_mlem) | $a_{ei} = d_{ei} + \sigma_+\xi_{ei}$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Proton therapy: the Bragg peak](problems/medical/proton_bragg_peak) | $\frac{dE_b}{dz} = -S(E_b)$ |
+| [MRI k-space: imaging with gradients and Fourier transforms](problems/medical/mri_kspace) | $s_{uv} = E_{up}\,E_{vr}\,\rho_{pr}$ |
+| [Diffusion tensor imaging: mapping nerve fibres](problems/medical/diffusion_tensor_imaging) | $S_{vg} = S_{0v}\,e^{-b\,\hat g_{gi}\,D_{vij}\,\hat g_{gj}}$ |
+
+</details>
+
+</details>
+
+<details>
+<summary><b>Others</b> (9 problems)</summary>
+
+<details>
+<summary>🟢 Beginner (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Receptor–ligand binding ($k_{\mathrm{on}}$, $k_{\mathrm{off}}$)](problems/others/receptor_binding) | $J_{bc} = k^{\mathrm{on}}_b\,R_{bc}\,L_{bc} - k^{\mathrm{off}}_b\,C_{bc}$ |
+| [Conway's Game of Life as a convolution](problems/others/game_of_life) | $N_{bp} = K_k\,P_{bkp}$ |
+| [Monte Carlo: estimating $\pi$ with random darts](problems/others/monte_carlo_pi) | $h_{bn} = [x_{bni}\,x_{bni} \le 1]$ |
+
+</details>
+
+<details>
+<summary>🟠 Intermediate (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Lorenz attractor and the butterfly effect](problems/others/lorenz_attractor) | $\dot x_{bi} = A_{ij}\,x_{bj} + Q_{ijk}\,x_{bj}\,x_{bk}$ |
+| [Noise and the Langevin equation](problems/others/langevin_noise) | $v_{b,n+1} = v_{bn} + \frac{-\gamma\,v_{bn} - k\,x_{bn}}{m}\,\Delta t + \frac{\sqrt{2\gamma k_BT\,\Delta t}}{m}\,\xi_{nb}$ |
+| [Fitting experimental measurements with tensors](problems/others/measurement_fitting) | $r_i = \frac{x_i - f(t_i;\theta)}{\sigma_{tot,i}},\ \ \sigma_{tot,i}^2 = \sigma_i^2 + s^2$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Physics-informed neural network (PINN): damped oscillator](problems/others/pinn_oscillator) | $h^{(l+1)}_{ni} = \tanh\!\big(W^{(l)}_{ij}\,h^{(l)}_{nj} + b^{(l)}_i\big)$ |
+| [Fourier neural operator: learning the Burgers solution operator](problems/others/neural_operator) | $\hat w_{bok} = R_{iok}\,\hat v_{bik}$ |
+| [AlphaGo in miniature: tree search on a $5\times5$ Go board](problems/others/alphago_mini) | $r_{bp} \leftarrow r_{bp} \lor \big(s_{bp} \land [A_{pq}\,r_{bq} > 0]\big)$ |
 
 </details>
 

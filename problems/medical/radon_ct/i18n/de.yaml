@@ -1,0 +1,17 @@
+source_hash: 8d871084eacb
+title: Radon-Transformation und CT-Rekonstruktion
+summary: 'Ein CT-Scanner zeichnet Linienintegrale $p(\theta, s)$ der Schwächungskarte aus allen Winkeln auf. Das Shepp-Logan-Kopfphantom wird durch Drehen und Aufsummieren eines Tensors projiziert und durch gefilterte Rückprojektion wiederhergestellt: ein Rampenfilter $|\nu|$ im Fourier-Raum, dann ein einziges einsum über die Winkel.'
+notes: 'Jede Projektion erhält für jeden Winkel die Gesamtmasse, $\int p\,ds = \iint f\,dA$. Verschmiert man die rohen Projektionen zurück (einfache Rückprojektion), wird aus einem Punkt ein $1/r$-Halo, sodass das Bild eine unscharfe Version von $f$ ist; der Rampenfilter $|\nu|$ macht diese Unschärfe exakt rückgängig (Zentralschnitt-Theorem). Zu wenige Winkel erzeugen Streifen; der Fehler sinkt mit zunehmender Zahl der Winkel, bis das Pixelraster ihn begrenzt. Das Shepp-Logan-Fenster dämpft die Rampe bei hohen Frequenzen und tauscht etwas Schärfe gegen weniger Rauschen – probiere es mit eingeschaltetem Rauschen aus. Vereinfachungen: Parallelstrahlgeometrie, monochromatische Strahlen, bilineare Interpolation, Gaußsches Detektorrauschen statt Photonenstatistik. Lehrmodell, nicht für den klinischen Einsatz.'
+meanings:
+- 'Schwächungskarte (modifiziertes Shepp-Logan: Summe von 10 Ellipsen)'
+- entlang des Strahls abgetastetes Bild bei Abstand $s$, Position $t$, Winkel $\theta$
+- 'wiederholtes $t$ ⇒ summiert: das Sinogramm'
+- Rampe $|\nu|$ (Ram-Lak), optional mal $\mathrm{sinc}(\nu\,\Delta s)$ (Shepp-Logan), auf einem mit Nullen aufgefüllten Detektor
+- gefilterte Projektionen
+- 'jede Projektion entlang ihrer Strahlen zurückverteilt: $q_\theta(x\cos\theta + y\sin\theta)$'
+- 'wiederholtes $\theta$ ⇒ summiert: die Rückprojektion'
+labels:
+  n_pixels: Bildgröße $N$
+  n_angles: Projektionswinkel
+  filter: Fenster des Rampenfilters
+  noise: Detektorrauschen (Anteil am Maximum)

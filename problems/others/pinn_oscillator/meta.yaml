@@ -1,0 +1,53 @@
+title: 'Physics-informed neural network (PINN): damped oscillator'
+category: others
+level: advanced
+order: 1
+summary: >
+  A small neural network $\hat x(t; w)$ learns the motion of a damped mass on a spring from only ten noisy
+  measurements in the first 40% of the interval. Adding the equation of motion $m\ddot x + \mu\dot x + kx = 0$ to the
+  loss, evaluated with automatic differentiation at collocation points, lets it extrapolate where a plain network
+  fails, and in inverse mode it also infers the unknown damping $\mu$.
+animated: true
+vector_form: 'm\,\ddot x + \mu\,\dot x + k\,x = 0,\qquad \mathcal L(w, \mu) = \frac{1}{D}\sum_d \big(\hat x(t_d) - x_d\big)^2 + \lambda\,\frac{1}{C}\sum_c \big(m\,\ddot{\hat x}(t_c) + \mu\,\dot{\hat x}(t_c) + k\,\hat x(t_c)\big)^2 + \mathcal L_{0}'
+index_form: 'h^{(l+1)}_{ni} = \tanh\!\big(W^{(l)}_{ij}\,h^{(l)}_{nj} + b^{(l)}_i\big) \qquad \hat x_n = W^{(L)}_{1j}\,h^{(L)}_{nj} + b^{(L)}_1 \qquad r_c = m\,\frac{\partial^2 \hat x_c}{\partial t_c^2} + \mu\,\frac{\partial \hat x_c}{\partial t_c} + k\,\hat x_c'
+translation:
+  - {symbol: 't_n', code: 't_all = cat([t_c, t_d, 0])', shape: '(N,)', meaning: 'one batch of input times: collocation points, measurement times and $t = 0$'}
+  - {symbol: 'W^{(l)}_{ij},\ b^{(l)}_i', code: 'weights[l] = (W, b)', shape: '(I, J), (I,)', meaning: 'trainable weights $w$ of layer $l$: sizes $1 \to 32 \to 32 \to 32 \to 1$'}
+  - {symbol: 'W^{(l)}_{ij}\,h^{(l)}_{nj} + b^{(l)}_i', code: "einsum('ij,nj->ni', W, h) + b", shape: '(N, I)', meaning: 'repeated $j$ ⇒ summed over the neurons of the previous layer'}
+  - {symbol: 'h^{(l+1)}_{ni}', code: 'torch.tanh(layer(h, W, b))', shape: '(N, I)', meaning: 'hidden activations; a smooth activation so that $\hat x$ has second derivatives'}
+  - {symbol: '\partial \hat x_n / \partial t_n', code: 'autograd.grad(x, t, ones, create_graph=True)', shape: '(N,)', meaning: 'gives $\dot{\hat x}$; called again on it gives $\ddot{\hat x}$ (exact derivatives of the network, no finite differences)'}
+  - {symbol: 'r_c', code: 'm * x_tt + mu * x_t + k * x', shape: '(C,)', meaning: 'ODE residual at the collocation points: zero where $\hat x$ obeys the physics'}
+  - {symbol: '\mathcal L_{\mathrm{data}},\ \mathcal L_{\mathrm{phys}},\ \mathcal L_0', code: 'loss_terms(weights, mu, t_d, x_d, t_c, m, k)', shape: '()', meaning: 'data misfit, mean $r_c^2$, and the initial condition $(\hat x(0) - 1)^2 + (\dot{\hat x}(0)/\omega_0)^2$'}
+  - {symbol: '\mu', code: 'torch.tensor(mu_start, requires_grad=True)', shape: '()', meaning: 'inverse mode: the damping is one more trainable parameter, updated by Adam with the weights'}
+notes: >
+  A plain neural network is a flexible curve fitter: trained only on the measurements it can pass through them, but
+  beyond the last data point nothing tells it what to do, so its prediction (dashed) drifts off. A
+  physics-informed neural network (PINN) adds a second loss term, the mean squared residual $r_c = m\hat x'' +
+  \mu\hat x' + k\hat x$ at collocation points $t_c$ that cover the whole interval, including where there is no data.
+  The derivatives are exact derivatives of the network with respect to its input, computed by
+  torch.autograd.grad with create_graph=True so that the loss can be backpropagated through them into the weights.
+  Driving $r_c \to 0$ forces $\hat x$ to be a solution of the equation of motion everywhere; the data and the
+  initial condition $x(0) = 1$, $\dot x(0) = 0$ then pick out the one solution that matches, so the network
+  extrapolates correctly. The physics acts as a regulariser that replaces missing data. In the inverse problem the
+  damping $\mu$ is unknown: it becomes a trainable parameter and the optimiser finds the value for which the data
+  and the physics agree (watch it overshoot and settle). The exact answer is $x = e^{-\delta t}(\cos\omega t +
+  \tfrac{\delta}{\omega}\sin\omega t)$ with $\delta = \mu/2m$ and $\omega = \sqrt{k/m - \delta^2}$. Practical
+  points: the residual is of order $k$ times the error, so the weight $\lambda \approx 10^{-4}$ balances it against
+  the data term (too large and the network settles on the trivial solution $\hat x = 0$, which also has zero
+  residual); higher frequencies (larger $k$) need more iterations, because a network learns low frequencies first.
+  Here the forward problem is solved only to illustrate the method: an ODE solver would be far faster. PINNs pay
+  off for inverse problems, sparse and noisy data, and PDEs on awkward domains. Simplifications: a fixed mass
+  $m = 1$, a fixed seed, and Adam with a cosine-decaying learning rate (no L-BFGS refinement).
+params:
+  mode: {default: inverse, type: choice, options: [inverse, forward], label: 'Mode: learn $\mu$ (inverse) or know it (forward)'}
+  k: {default: 225.0, min: 50, max: 400, step: 25, label: 'Spring constant $k$', unit: N/m}
+  mu: {default: 3.0, min: 0.5, max: 8, step: 0.5, label: 'True damping $\mu$', unit: kg/s}
+  mu_guess: {default: 1.0, min: 0, max: 10, step: 0.5, label: 'Initial guess for $\mu$ (inverse mode)', unit: kg/s}
+  n_data: {default: 10, min: 3, max: 30, step: 1, type: int, label: Number of measurements}
+  data_fraction: {default: 0.4, min: 0.1, max: 1.0, step: 0.05, label: Measurements cover this fraction of the interval}
+  noise: {default: 0.02, min: 0, max: 0.2, step: 0.01, label: Measurement noise}
+  n_colloc: {default: 40, min: 5, max: 100, step: 5, type: int, label: 'Collocation points $t_c$'}
+  log10_lambda: {default: -4.0, min: -7, max: -2, step: 0.5, label: 'Physics weight $\log_{10}\lambda$'}
+  n_iter: {default: 4000, min: 500, max: 20000, step: 500, type: int, label: Training iterations}
+  lr: {default: 0.01, min: 0.0005, max: 0.05, step: 0.0005, label: Adam learning rate}
+  compare: {default: 'on', type: choice, options: ['on', 'off'], label: Train a network without physics too}

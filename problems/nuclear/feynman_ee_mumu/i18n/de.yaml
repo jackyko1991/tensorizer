@@ -1,0 +1,17 @@
+source_hash: f068882719e2
+title: 'Feynman-Diagramm: $e^+e^- \to \mu^+\mu^-$ aus Dirac-Spuren'
+summary: 'Das einfachste QED-Diagramm: Ein Elektron und ein Positron annihilieren zu einem virtuellen Photon, das ein Myonenpaar erzeugt. Die Feynman-Regeln machen aus dem Bild eine Amplitude, die Spinsummen machen daraus Spuren von $4\times4$-Dirac-Matrizen $\gamma^\mu$, und jede Spur ist ein einziges einsum. Ein Energiedurchlauf zeigt, wie sich die Winkelverteilung von isotrop an der Schwelle zu $1 + \cos^2\theta$ wandelt und der Wirkungsquerschnitt wie $4\pi\alpha^2/3s$ abfällt.'
+notes: 'Das Diagramm wird einmal gezeichnet, doch der Code baut nie einen Spinor: Die Summe über die Spins ersetzt $u\bar u$ durch $\not p + m$, sodass die gesamte Rechnung aus Produkten und Spuren von $\gamma$-Matrizen besteht, die einsum für alle Energien und Winkel auf einmal erledigt. Das Ergebnis ist $\overline{|\mathcal M|^2} = e^4\big[1 + 4m^2/s + (1 - 4m^2/s)\cos^2\theta\big]$ für $m_e \to 0$: An der Schwelle treten die langsamen Myonen isotrop aus, weit darüber ergeben der Spin 1 des Photons und die Helizitätserhaltung $1 + \cos^2\theta$. Der totale Wirkungsquerschnitt $\sigma$ steigt ab $\sqrt s = 2m$ steil an und fällt dann wie $1/s$, etwa $86.8$ nb bei 1 GeV. Echte Daten von PETRA und LEP folgen dieser Kurve bis $\sqrt s \approx 30$ GeV, wo ein zweites Diagramm mit einem $Z$-Boson statt des Photons interferiert und die Vorwärts-Rückwärts-Asymmetrie $A_{FB}$ von null verschieden macht; reine QED ergibt $A_{FB} = 0$. Probiere das $\tau$-Paar, das 1975 an SPEAR knapp oberhalb seiner
+  Schwelle von 3,55 GeV entdeckt wurde.'
+meanings:
+- 'Dirac-Matrizen: Index $\mu$ ist ein Raumzeit-Index, $a, b$ sind Spinor-Indizes; $\{\gamma^\mu, \gamma^\nu\} = 2\eta^{\mu\nu}$'
+- Minkowski-Metrik diag(1, −1, −1, −1), Einheiten mit $\hbar = c = 1$
+- Viererimpulse von $e^-$, $e^+$, $\ell^-$, $\ell^+$ im Schwerpunktsystem für jede Energie $\sqrt s$ und jeden Winkel $\theta$
+- 'Feynman-Slash: die Spinsummen $\sum u\bar u = \not p + m$ und $\sum v\bar v = \not p - m$'
+- 'wiederholte $a, b, c, d$ ⇒ summiert: die Spur der Elektronenlinie (dieselbe Funktion für die Myonenlinie)'
+- 'Myon-Indizes mit $\eta$ herunterziehen und kontrahieren: Der Photonpropagator verbindet die beiden Linien'
+- Fluss- und Phasenraumfaktoren; $(\hbar c)^2$ rechnet GeV$^{-2}$ in nb um
+- totaler Wirkungsquerschnitt; verglichen mit $\frac{4\pi\alpha^2}{3s}\beta\,(1 + 2m^2/s)$, $\beta = \sqrt{1 - 4m^2/s}$
+labels:
+  final: Endzustand
+  sqrt_s_max: Höchste Energie $\sqrt s$

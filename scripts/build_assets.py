@@ -23,6 +23,8 @@ from pathlib import Path
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import pixi_project  # noqa: E402
+
 import notebooks  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +41,7 @@ CATEGORIES = {
     "quantum": "Quantum",
     "astro": "Astrophysics & Relativity",
     "nuclear": "Nuclear & Particle",
+    "medical": "Medical Physics",
     "others": "Others",
 }
 
@@ -97,6 +100,15 @@ def load_translations(problem: Path) -> dict:
         except yaml.YAMLError as e:
             print(f"warning: skipping {f}: {e}")
     return out
+
+
+def write_pixi_zip(problem: Path, target: Path) -> str:
+    """The problem as a standalone pixi project (zip) next to its output; return its manifest path."""
+    data = pixi_project.zip_bytes(problem)
+    out = target / f"{problem.name}-pixi.zip"
+    if not out.is_file() or out.read_bytes() != data:
+        out.write_bytes(data)
+    return f"{problem.parent.name}/{problem.name}/{out.name}"
 
 
 def write_notebook(problem: Path, target: Path) -> str:
@@ -180,6 +192,8 @@ def main() -> None:
                 (target / ".source_hash").write_text(source_hash(d), encoding="utf-8")
                 print(f"{d.parent.name}/{d.name}: {output.name} in {seconds:.1f}s", flush=True)
 
+    wiki_file = ROOT / "content" / "wiki.json"  # problem id -> Wikipedia titles by language (see docs)
+    wiki = json.loads(wiki_file.read_text(encoding="utf-8")) if wiki_file.is_file() else {}
     problems = []
     for d in dirs:
         cat, slug = d.parent.name, d.name
@@ -199,8 +213,10 @@ def main() -> None:
                 "output": f"{cat}/{slug}/{existing[0].name}?v={int(existing[0].stat().st_mtime)}" if existing else None,
                 "console": console_file.read_text(encoding="utf-8") if console_file.exists() else "",
                 "diagram": copy_diagram(d, target),
+                "wiki": wiki.get(f"{cat}/{slug}"),
                 "i18n": load_translations(d),
                 "notebook": write_notebook(d, target),
+                "pixi_zip": write_pixi_zip(d, target),
             }
         )
 

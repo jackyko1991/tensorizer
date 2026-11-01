@@ -1,0 +1,19 @@
+source_hash: d9c269ec5e13
+title: 薛丁格方程：Crank–Nicolson 時間步進
+summary: 含時薛丁格方程 $i\,\partial_t\psi = H\psi$ 在網格上以隱式 Crank–Nicolson 格式 $(I + \tfrac{i\Delta t}{2}H)\,\psi^{n+1} = (I - \tfrac{i\Delta t}{2}H)\,\psi^n$ 逐步推進。左邊的矩陣只做一次 LU 分解，之後每一步都只是一次便宜的 torch.linalg.lu_solve，同時處理三個波包（$\psi_{xb}$ 的各行）。這一步是嚴格么正的，所以範數始終保持為 1，而用相同 $\Delta t$ 的顯式 Euler 法則會爆炸。
+notes: 單位 $\hbar = m = 1$。為什麼可行：$U = (I + \tfrac{i\Delta t}{2}H)^{-1}(I - \tfrac{i\Delta t}{2}H)$ 是厄米矩陣 $H$ 的 Cayley 變換。作用在能量為 $E$ 的本徵向量上，它乘以 $(1 - iE\Delta t/2)/(1 + iE\Delta t/2)$，一個模恰為 1 的數，所以對任何 $\Delta t$，$U$ 都是么正的：不增長也不衰減；又因為 $U$ 是 $H$ 的函數，$\langle H\rangle$ 也守恆。其相位 $2\arctan(E\Delta t/2)$ 與精確的 $E\Delta t$ 每步只差 $\mathcal O(E^3\Delta t^3)$，所以此格式是二階精度；而且由於是隱式的，它對任何 $\Delta t$ 都穩定（大步長只是較不準確，絕不會不穩定）。顯式 Euler 法則乘以 $1 - iE\Delta t$，其模為 $\sqrt{1 + E^2\Delta t^2} > 1$；$E \sim 2/dx^2$ 的剛性網格模態在幾十步之內就會爆炸（紅色曲線）。三個波包的振幅不同；較硬的 $g\,x^4$ 彈簧使大波包擺得更快，而且因為其能階不再等間距，它會退相干——擴散開來並失去形狀——而小波包幾乎感受不到非諧性。試試 $g = 0$：三個波包以週期 $2\pi$ 一起擺動且永不擴散（同調態）。可與「量子穿隧」中的分步 FFT 比較，那是另一種么正的二階格式。
+meanings:
+- 非諧位能井 $\tfrac12x^2 + g\,x^4$：振盪週期取決於振幅
+- 動能 $-\tfrac12\,D2$ 加上對角線上的 $V$；盒子邊緣是牆
+- 每一行 $b$ 一個高斯波包，從 $x_{0,b}$ 靜止釋放
+- $I \pm \tfrac{i\Delta t}{2}H$，在迴圈之前只建立一次
+- 只分解一次（$\mathcal O(N^3)$）；之後每一步只需 $\mathcal O(N^2)$
+- 重複的 $y$ ⇒ 求和：先算右端項，再對所有行做兩次三角求解
+- 用於比較的顯式 Euler 法：每個本徵分量每步增長 $\sqrt{1 + E^2\Delta t^2}$ 倍
+- 重複的 $x, y$ ⇒ 求和：每個波包的能量，精確守恆
+labels:
+  g: 四次項強度 $g$
+  x0: 最大起始位置 $x_0$
+  t_max: 模擬時間
+  dt: 時間步長 $\Delta t$
+  n_grid: 格點數

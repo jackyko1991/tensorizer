@@ -1,0 +1,26 @@
+source_hash: 4e46f39a529c
+title: 'Operador neuronal de Fourier: aprender el operador solución de Burgers'
+summary: 'En lugar de resolver una sola ecuación, un operador neuronal de Fourier (FNO) aprende toda la aplicación $u_0(x) \mapsto u(x, T)$ de la ecuación de Burgers viscosa $u_t + u\,u_x = \nu\,u_{xx}$ a partir de pares generados por un solucionador espectral. Su capa clave es una convolución espectral: transformada de Fourier, mezcla de canales modo a modo con pesos complejos $R_{iok}$, conservar solo los $m$ modos más bajos y transformar de vuelta. Como los pesos viven en los modos de Fourier, el modelo entrenado también funciona en una malla más fina que la del entrenamiento.'
+notes: 'Los datos de entrenamiento son pares $(u_0, u(\cdot, T))$: condiciones iniciales suaves aleatorias (sumas de modos de Fourier $k \le 5$ con amplitudes que decaen como $1/k$) y sus soluciones, calculadas en 256 puntos con un solucionador pseudoespectral y submuestreadas a 64 puntos para el entrenamiento. La red nunca ve la ecuación, solo datos del solucionador. La lección tensorial es la convolución espectral: tras rfft, cada canal $i$ de cada muestra $b$ se convierte en coeficientes de Fourier $\hat v_{bik}$, y einsum(''bik,iok->bok'') suma sobre el canal de entrada $i$ pero mantiene el número de onda $k$ como índice libre, de modo que cada modo recibe su propia matriz compleja $C\times C$ $R_{\cdot\cdot k}$. Es una convolución con un núcleo global aprendido, calculada como un producto en el espacio de Fourier. Los modos más altos $k \ge m$ se cortan; el camino local $W_{oi}v_{bix}$ y la no linealidad $\sigma$ devuelven el detalle fino. Nada en $R_{iok}$, $W_{oi}$, $P$ o $Q$ se refiere
+  al número de puntos de malla, así que el operador entrenado funciona en cualquier malla de más de $2m$ puntos: el panel inferior derecho aplica los MISMOS pesos a 256 puntos (superresolución sin reentrenamiento) para el caso de prueba con el frente más empinado. Las predicciones en 64 puntos (puntos) caen sobre la curva de 256 puntos: esta invariancia a la discretización es aproximada, porque $\sigma$ crea armónicos que se solapan (aliasing) de forma distinta en mallas distintas, pero el error en 256 puntos es igual al error en 64 puntos. Lo que limita la precisión es el modelo, no la malla: los casi choques necesitan modos por encima de $m$ y son los casos más difíciles. Compárese con la PINN de este tema: una PINN resuelve UN problema poniendo la ecuación en la función de pérdida, y debe reentrenarse para cada nueva condición inicial; un operador neuronal aprende toda una familia de problemas a partir de datos de un solucionador, y después cada nueva predicción es una sola pasada hacia
+  delante. La consola imprime el tiempo de esa pasada frente al del solucionador: decenas de veces más rápido aquí, pero para Burgers en 1D el solucionador ya es barato, y generar los datos y entrenar cuesta mucho más. Los operadores neuronales compensan cuando una simulación tarda horas (meteorología, turbulencia, flujo en medios porosos) y se necesitan muchas consultas, y solo dentro de la distribución con la que se entrenaron. Pruebe menos modos $m$, un conjunto de entrenamiento más pequeño o un $\nu$ mayor (soluciones más suaves, más fáciles de aprender). Simplificaciones: un único tiempo de salida $T$, una semilla fija, la posición en la malla como canal de entrada simple y sin relleno (el dominio es periódico de todos modos).'
+meanings:
+- 'función de entrada: $u_0$ y la posición en cada uno de los $N$ puntos de malla de la muestra $b$'
+- 'elevación: $f$ sumado, 2 características se convierten en $C$ canales en cada punto'
+- coeficientes de Fourier complejos de cada canal $i$, número de onda $k$
+- 'pesos complejos, una matriz $C\times C$ por cada modo conservado $k < m$: no dependen de $N$'
+- '$i$ repetido ⇒ sumado; $k$ NO se suma: cada modo se mezcla por separado'
+- 'truncamiento: solo los $m$ modos de Fourier más bajos atraviesan la convolución espectral'
+- 'de vuelta a cualquier número $N$ de puntos de malla: aquí se elige la resolución'
+- camino local, la misma matriz $C\times C$ en cada punto; $\sigma$ = GELU
+- proyección puntual de dos capas, de $C$ canales a la predicción $u(x, T)$
+- 'error $L^2$ relativo por muestra, promediado sobre el lote: la pérdida que minimiza Adam'
+- 'los datos: solucionador pseudoespectral, RK4 con factor integrante y la regla 2/3 contra el aliasing, todas las muestras a la vez'
+labels:
+  nu: Viscosidad $\nu$
+  t_final: Tiempo de salida $T$
+  n_train: Muestras de entrenamiento (condiciones iniciales)
+  modes: Modos de Fourier conservados $m$
+  width: Canales $C$
+  epochs: Épocas de entrenamiento
+  lr: Tasa de aprendizaje de Adam

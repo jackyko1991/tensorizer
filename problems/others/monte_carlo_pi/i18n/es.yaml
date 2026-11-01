@@ -1,0 +1,14 @@
+source_hash: a88c161966b6
+title: 'Monte Carlo: estimar $\pi$ con dardos aleatorios'
+summary: 'Lanza dardos al azar sobre un cuadrado unidad y cuenta cuántos caen dentro del cuarto de círculo: la fracción tiende a $\pi/4$. Muchos experimentos independientes se ejecutan lado a lado en un solo tensor $(B, N)$, lo que muestra la ley característica de Monte Carlo: un error que solo se reduce como $1/\sqrt N$. La aguja de Buffon da una segunda estimación, del siglo XVIII.'
+notes: 'Cada estimación es correcta en promedio pero ruidosa, y el ruido solo cae como $1/\sqrt N$: cien veces más dardos por cada dígito correcto adicional. Esa tasa no depende de la dimensión, por eso Monte Carlo es el método preferido para integrales sobre muchas variables, desde el transporte de neutrones y el modelo de Ising hasta la valoración de opciones y las trayectorias de fotones en dosimetría médica. Las curvas grises son experimentos individuales: cada una deambula, pero todas permanecen en la banda fijada por $\sigma_N$. Las semillas fijas hacen reproducible cada ejecución; prueba más experimentos para ver cómo la dispersión se ajusta mejor a la teoría.'
+meanings:
+- dardo $n$ del experimento $b$, coordenada $i$, uniforme en $[0, 1)$
+- '$i$ repetido ⇒ sumado: distancia al cuadrado desde la esquina; 1 si el dardo está dentro del cuarto de círculo'
+- 'suma acumulada dividida entre $n$: la estimación tras cada dardo, para cada experimento'
+- dispersión entre experimentos; teoría $\sqrt{\pi(4-\pi)/n}$ a partir de la varianza binomial
+- 'aguja de Buffon: cruza una línea con probabilidad $2\ell/(\pi d)$, así que $\hat\pi = 2\ell N/(d\,\text{crossings})$'
+labels:
+  n_darts: Dardos por experimento $N$
+  n_experiments: Experimentos $B$
+  needle_length: Longitud de la aguja $\ell/d$

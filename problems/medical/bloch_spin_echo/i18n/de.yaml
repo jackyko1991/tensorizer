@@ -1,0 +1,21 @@
+source_hash: 2ee80d9bf824
+title: Bloch-Gleichungen und das Spinecho
+summary: 'Die Bloch-Gleichung ist ein Kreuzprodukt, $\varepsilon_{ijk} M_j \Omega_k$, plus Relaxation. Hunderte Isochromaten mit leicht unterschiedlichen Off-Resonanz-Frequenzen $\Delta\omega_n$ werden gemeinsam in einem gebündelten RK4-Schritt fortgeschrieben: Nach einem 90°-Puls fächern sie auf und das Signal zerfällt mit $T_2^*$, dann lässt ein 180°-Puls bei $TE/2$ sie zu einem Echo bei $TE$ refokussieren, dessen Höhe nur mit dem wahren $T_2$ abnimmt.'
+notes: 'Zeiten sind in ms und Frequenzen in rad/ms angegeben. Jeder einzelne Isochromat behält $\lvert\mathbf M\rvert$ abgesehen von der Relaxation bei, doch der Ensemblemittelwert verliert seine Phasenkohärenz: Bei einer Lorentz-Verteilung folgt der freie Induktionszerfall $e^{-t/T_2^*}$ mit $1/T_2^* = 1/T_2 + 1/T_2^{\prime}$. Der 180°-Puls spiegelt jede Phase, sodass vorausgeeilte Spins nun hinterherlaufen und sich bei $TE$ alle wieder ausrichten; das hebt die statische Inhomogenität auf, nicht aber den zufälligen $T_2$-Verlust, sodass die Echohöhen $e^{-TE/T_2}$ nachzeichnen. Mehrere Refokussierungspulse (ein CPMG-Zug, 180° um $y$) ergeben eine Reihe von Echos, aus der sich $T_2$ bestimmen lässt. Die Pulse sind kurze rechteckige „harte“ Pulse, die mit derselben Bloch-Gleichung berechnet werden; weit von der Resonanz entfernte Spins werden unvollständig refokussiert. Die Werte sind illustrativ, nur für Lehrzwecke und nicht für den klinischen Einsatz. Probiere die Gauß-Verteilung, ein längeres
+  $T_2^{\prime}$ oder ein einzelnes Echo.'
+meanings:
+- Magnetisierung des Isochromaten $n$, Komponente $i \in \{x, y, z\}$, im rotierenden Bezugssystem
+- 'Levi-Civita-Symbol: das Kreuzprodukt, genau wie in der Lorentzkraft'
+- '$\gamma\mathbf B$ im rotierenden Bezugssystem: HF-Feld $\omega_1$ in der $xy$-Ebene während eines Pulses, Off-Resonanz $\Delta\omega_n$ entlang $z$'
+- 'wiederholte $j, k$ ⇒ summiert: Präzession $\mathbf M\times\boldsymbol\Omega$ jedes Isochromaten'
+- $\mathrm{diag}(1/T_2, 1/T_2, 1/T_1)$; mit $M_{nj} - M^0_j$ über $j$ kontrahiert
+- Streuung der Präzessionsfrequenzen durch Feldinhomogenität, Breite $1/T_2^{\prime}$
+- 'was die Empfangsspule sieht: die mittlere transversale Magnetisierung, über $n$ summiert'
+labels:
+  T1: Longitudinale Relaxation $T_1$
+  T2: Transversale Relaxation $T_2$
+  t2_prime: Inhomogenitätszeit $T_2^{\prime}$
+  TE: Echozeit $TE$
+  n_echoes: Anzahl der Echos (180°-Pulse)
+  n_spins: Isochromaten
+  spread: Off-Resonanz-Linienform

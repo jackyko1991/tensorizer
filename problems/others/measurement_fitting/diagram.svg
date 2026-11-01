@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Measured points x_i with error bars sigma_i at times t_i, and a fitted damped-oscillation curve f(t; theta) with its error band">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- axes -->
+    <line x1="24" y1="80" x2="226" y2="80" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="24" y1="14" x2="24" y2="146" stroke="#374151" stroke-width="2"/>
+    <line x1="24" y1="146" x2="226" y2="146" stroke="#374151" stroke-width="2"/>
+    <text x="214" y="140" font-style="italic">t</text>
+    <text x="30" y="24" font-style="italic">x</text>
+    <!-- error band and fitted damped oscillation -->
+    <path d="M28,28 C44,28 52,128 70,128 C88,128 92,46 110,46 C126,46 132,108 148,108 C162,108 166,64 180,64 C192,64 196,94 208,94 L220,86"
+          fill="none" stroke="#93c5fd" stroke-width="12" stroke-linejoin="round" stroke-linecap="round" opacity="0.6"/>
+    <path d="M28,28 C44,28 52,128 70,128 C88,128 92,46 110,46 C126,46 132,108 148,108 C162,108 166,64 180,64 C192,64 196,94 208,94 L220,86"
+          fill="none" stroke="#dc2626" stroke-width="2"/>
+    <!-- data points with error bars -->
+    <g stroke="#374151" stroke-width="1.5">
+      <line x1="36" y1="30" x2="36" y2="52"/><line x1="52" y1="86" x2="52" y2="112"/><line x1="68" y1="112" x2="68" y2="136"/>
+      <line x1="86" y1="94" x2="86" y2="112"/><line x1="102" y1="40" x2="102" y2="64"/><line x1="120" y1="56" x2="120" y2="74"/>
+      <line x1="136" y1="94" x2="136" y2="120"/><line x1="152" y1="96" x2="152" y2="112"/><line x1="168" y1="62" x2="168" y2="86"/>
+      <line x1="184" y1="58" x2="184" y2="74"/><line x1="200" y1="82" x2="200" y2="104"/><line x1="216" y1="80" x2="216" y2="96"/>
+    </g>
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1">
+      <circle cx="36" cy="41" r="3.5"/><circle cx="52" cy="99" r="3.5"/><circle cx="68" cy="124" r="3.5"/>
+      <circle cx="86" cy="103" r="3.5"/><circle cx="102" cy="52" r="3.5"/><circle cx="120" cy="65" r="3.5"/>
+      <circle cx="136" cy="107" r="3.5"/><circle cx="152" cy="104" r="3.5"/><circle cx="168" cy="74" r="3.5"/>
+      <circle cx="184" cy="66" r="3.5"/><circle cx="200" cy="93" r="3.5"/><circle cx="216" cy="88" r="3.5"/>
+    </g>
+    <!-- labels -->
+    <text x="140" y="132" font-style="italic" fill="#374151" font-size="13">σ</text>
+    <text x="147" y="136" font-style="italic" fill="#374151" font-size="10">i</text>
+    <text x="112" y="34" font-style="italic" fill="#b91c1c" font-size="13">f(t; θ)</text>
+    <text x="176" y="40" font-style="italic" fill="#1e40af" font-size="13">x</text>
+    <text x="183" y="44" font-style="italic" fill="#1e40af" font-size="10">i</text>
+    <line x1="182" y1="46" x2="184" y2="58" stroke="#9ca3af" stroke-width="1"/>
+  </g>
+</svg>

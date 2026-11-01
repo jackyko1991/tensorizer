@@ -1,0 +1,20 @@
+source_hash: d9c269ec5e13
+title: 'Ecuación de Schrödinger: pasos de tiempo de Crank–Nicolson'
+summary: La ecuación de Schrödinger dependiente del tiempo $i\,\partial_t\psi = H\psi$ se avanza en una malla con el esquema implícito de Crank–Nicolson $(I + \tfrac{i\Delta t}{2}H)\,\psi^{n+1} = (I - \tfrac{i\Delta t}{2}H)\,\psi^n$. La matriz de la izquierda se factoriza LU una sola vez y cada paso es un barato torch.linalg.lu_solve para tres paquetes de ondas a la vez (las columnas de $\psi_{xb}$). El paso es exactamente unitario, así que la norma se mantiene en 1, mientras que Euler explícito con el mismo $\Delta t$ explota.
+notes: 'Unidades $\hbar = m = 1$. Por qué funciona: $U = (I + \tfrac{i\Delta t}{2}H)^{-1}(I - \tfrac{i\Delta t}{2}H)$ es la transformada de Cayley de la matriz hermítica $H$. Sobre un vector propio de energía $E$ multiplica por $(1 - iE\Delta t/2)/(1 + iE\Delta t/2)$, un número de módulo exactamente 1, así que $U$ es unitaria para cualquier $\Delta t$: ni crecimiento ni decaimiento, y como $U$ es función de $H$, también se conserva $\langle H\rangle$. Su fase $2\arctan(E\Delta t/2)$ coincide con la exacta $E\Delta t$ salvo $\mathcal O(E^3\Delta t^3)$ por paso, así que el esquema es de segundo orden, y al ser implícito es estable para cualquier $\Delta t$ (los pasos grandes solo son menos precisos, nunca inestables). Euler explícito, en cambio, multiplica por $1 - iE\Delta t$, de módulo $\sqrt{1 + E^2\Delta t^2} > 1$; los modos rígidos de la malla con $E \sim 2/dx^2$ explotan en unas pocas decenas de pasos (curva roja). Los tres paquetes tienen amplitudes distintas; el resorte más rígido
+  $g\,x^4$ hace oscilar más rápido al grande y, como sus niveles de energía ya no están equiespaciados, se desfasa —se ensancha y pierde su forma—, mientras que el paquete pequeño apenas nota la anarmonicidad. Pruebe $g = 0$: los tres oscilan juntos con período $2\pi$ y nunca se ensanchan (estados coherentes). Compare con el split-step FFT de Efecto túnel cuántico, el otro esquema unitario de segundo orden.'
+meanings:
+- 'pozo anarmónico $\tfrac12x^2 + g\,x^4$: el período de oscilación depende de la amplitud'
+- cinética $-\tfrac12\,D2$ más $V$ en la diagonal; paredes en los bordes de la caja
+- una gaussiana por columna $b$, soltada en reposo desde $x_{0,b}$
+- $I \pm \tfrac{i\Delta t}{2}H$, construidas una vez antes del bucle
+- factorizar una vez ($\mathcal O(N^3)$); cada paso cuesta luego solo $\mathcal O(N^2)$
+- '$y$ repetido ⇒ sumado: lado derecho, luego dos resoluciones triangulares para todas las columnas'
+- 'Euler explícito para comparar: cada componente propia crece un factor $\sqrt{1 + E^2\Delta t^2}$ por paso'
+- '$x, y$ repetidos ⇒ sumados: energía de cada paquete, conservada exactamente'
+labels:
+  g: Intensidad cuártica $g$
+  x0: Mayor posición inicial $x_0$
+  t_max: Tiempo simulado
+  dt: Paso de tiempo $\Delta t$
+  n_grid: Puntos de malla

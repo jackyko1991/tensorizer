@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Crank-Nicolson time stepping: a Gaussian wave packet displaced in an anharmonic potential well, and the implicit stencil that links three grid points at time level n to three at level n+1">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- potential well V(x) -->
+    <path d="M14,22 C34,150 106,150 126,22" fill="none" stroke="#374151" stroke-width="2"/>
+    <text x="128" y="44" font-style="italic">V</text>
+    <!-- energy level and the displaced wave packet -->
+    <line x1="27" y1="88" x2="113" y2="88" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <path d="M30,88 C42,88 44,56 50,56 C56,56 58,88 70,88 Z" fill="#93c5fd" stroke="#2563eb" stroke-width="2"/>
+    <text x="32" y="58" font-style="italic" fill="#1e40af">ψ</text>
+    <!-- packet slides towards the centre -->
+    <line x1="62" y1="66" x2="90" y2="66" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)"/>
+    <!-- Crank–Nicolson stencil: three points at level n and three at level n+1 -->
+    <line x1="168" y1="56" x2="218" y2="56" stroke="#374151" stroke-width="2"/>
+    <line x1="168" y1="112" x2="218" y2="112" stroke="#374151" stroke-width="2"/>
+    <g stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3">
+      <line x1="168" y1="56" x2="168" y2="112"/><line x1="193" y1="56" x2="193" y2="112"/><line x1="218" y1="56" x2="218" y2="112"/>
+    </g>
+    <g fill="#93c5fd" stroke="#1e40af" stroke-width="1.5">
+      <circle cx="168" cy="56" r="5.5"/><circle cx="193" cy="56" r="5.5"/><circle cx="218" cy="56" r="5.5"/>
+    </g>
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1.5">
+      <circle cx="168" cy="112" r="5.5"/><circle cx="193" cy="112" r="5.5"/><circle cx="218" cy="112" r="5.5"/>
+    </g>
+    <text x="144" y="117" font-style="italic">n</text>
+    <text x="134" y="61" font-style="italic">n+1</text>
+    <!-- time arrow -->
+    <line x1="232" y1="124" x2="232" y2="40" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="222" y="34" font-style="italic" fill="#b91c1c">t</text>
+  </g>
+</svg>

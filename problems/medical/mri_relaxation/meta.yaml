@@ -1,0 +1,34 @@
+title: 'MRI: T1 and T2 relaxation and image contrast'
+category: medical
+level: beginner
+order: 2
+summary: >
+  After a radio-frequency pulse, the magnetisation of each tissue grows back along the field with time constant $T_1$
+  and its transverse part decays with $T_2$. Evaluating the spin-echo signal as one tensor over (tissue, $TR$, $TE$)
+  and contracting it with a tissue-label map of a cartoon brain shows how the choice of $TR$ and $TE$ makes an image
+  T1-, PD- or T2-weighted.
+animated: true
+vector_form: 'M_z(t) = M_0\,(1 - e^{-t/T_1}),\quad M_{xy}(t) = M_0\,e^{-t/T_2},\quad S \propto PD\,(1 - e^{-TR/T_1})\,e^{-TE/T_2}'
+index_form: 'S_{sab} = PD_s\,\bigl(1 - e^{-TR_a/T_{1,s}}\bigr)\,e^{-TE_b/T_{2,s}},\qquad I_{xyab} = L_{xys}\,S_{sab},\qquad TI_{0,s} = T_{1,s}\ln 2'
+translation:
+  - {symbol: 'T_{1,s},\ T_{2,s},\ PD_s', code: 'tissue_parameters()', shape: '(S,)', meaning: 'relaxation times and proton density of the $S = 5$ tissues (approximate values at 1.5 T)'}
+  - {symbol: 'M_{z,st}', code: 'longitudinal(t, T1, M0)', shape: '(S, T)', meaning: 'longitudinal recovery, broadcast over tissue $s$ and time $t$'}
+  - {symbol: 'M_{xy,st}', code: 'transverse(t, T2, M0)', shape: '(S, T)', meaning: 'transverse decay of each tissue'}
+  - {symbol: 'S_{sab}', code: "einsum('s,sa,sb->sab', PD, recovery, decay)", shape: '(S, A, B)', meaning: 'spin-echo signal for every tissue, repetition time $TR_a$ and echo time $TE_b$ (no index summed)'}
+  - {symbol: 'L_{xys}', code: 'phantom(n)', shape: '(N, N, S)', meaning: 'one-hot label map: which tissue fills pixel $(x, y)$'}
+  - {symbol: 'I_{xyab}', code: "einsum('xys,s...->xy...', L, S)", shape: '(N, N, ...)', meaning: 'repeated $s$ ⇒ summed: the image for each $(TR, TE)$'}
+  - {symbol: 'TI_{0,s}', code: 'null_point(T1)', shape: '(S,)', meaning: 'inversion time where $M_0(1 - 2e^{-t/T_1})$ crosses zero, used to null fat (STIR) or CSF (FLAIR)'}
+notes: >
+  Short $TR$ and short $TE$ give T1 weighting: fat and white matter are bright, CSF is dark, because its long $T_1$
+  has had no time to recover. Long $TR$ with short $TE$ removes the $T_1$ factor, leaving proton density (PD) weighting.
+  Long $TR$ and long $TE$ give T2 weighting: CSF, with its very long $T_2$, becomes the brightest tissue. The simple
+  formula ignores the refocusing pulse's effect on $M_z$ and assumes $TR \gg TE$. Each image is windowed to its own
+  brightest pixel, as a scanner display does. The tissue values are rough textbook numbers at 1.5 T, for teaching only,
+  not for clinical use. Try moving the short and long $TR$/$TE$ and watch the grey/white matter contrast flip.
+params:
+  tr_short: {default: 500.0, min: 100, max: 1500, step: 50, label: 'Short repetition time $TR$', unit: ms}
+  tr_long: {default: 4500.0, min: 1500, max: 5000, step: 50, label: 'Long repetition time $TR$', unit: ms}
+  te_short: {default: 15.0, min: 5, max: 40, step: 1, label: 'Short echo time $TE$', unit: ms}
+  te_long: {default: 100.0, min: 60, max: 200, step: 1, label: 'Long echo time $TE$', unit: ms}
+  size: {default: 96, min: 32, max: 192, step: 16, type: int, label: Phantom size, unit: px}
+  n_frames: {default: 90, min: 12, max: 120, step: 6, type: int, label: Animation frames}

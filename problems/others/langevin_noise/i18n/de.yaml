@@ -1,0 +1,20 @@
+source_hash: fa6ec3302fec
+title: Rauschen und die Langevin-Gleichung
+summary: Ein Brownsches Teilchen in einer harmonischen Falle wird von den umgebenden Molekülen zufällig angestoßen. Die Langevin-Gleichung ergänzt das Newtonsche Gesetz um diesen Rauschterm, $\sqrt{2\gamma k_BT}\,dW$; das Euler–Maruyama-Verfahren bewegt ein ganzes Ensemble von Teilchen auf einmal in einem Batch-Tensor, und die Streuung der Positionen stellt sich auf die Boltzmann-Verteilung $N(0, k_BT/k)$ ein (Gleichverteilungssatz).
+notes: 'Mit Reibung allein würde das Newtonsche Gesetz das Teilchen am Boden der Falle zur Ruhe kommen lassen (die dicke rote Kurve). Echte Teilchen in einer Flüssigkeit kommen nie zur Ruhe: Moleküle stoßen sie von allen Seiten, und diese Zufallskraft ist der Rausch- oder Fehlerterm der Langevin-Gleichung. Seine Größe ist nicht frei wählbar. Das Fluktuations-Dissipations-Theorem legt sie auf $\sqrt{2\gamma k_BT}$ fest: Dieselben Stöße, die die Reibung $\gamma$ verursachen, stoßen auch das Teilchen an, und das Ensemble kommt bei der Temperatur $T$ ins Gleichgewicht: $\tfrac12 k\langle x^2\rangle = \tfrac12 m\langle v^2\rangle = \tfrac12 k_BT$ (Gleichverteilungssatz), mit Positionen verteilt nach $N(0, k_BT/k)$. Das Wiener-Inkrement $dW$ hat die Varianz $dt$; in einem endlichen Schritt wird es zu $\sqrt{\Delta t}\,\xi$ mit $\xi \sim N(0,1)$, und der Geschwindigkeitsstoß pro Schritt hat die Varianz $2\gamma k_BT\Delta t/m^2$. Würde das Rauschen mit $\Delta t$ skaliert, verschwände es bei kleiner
+  werdendem Schritt: Zufallsstöße addieren sich wie eine Irrfahrt, ihre Streuung wächst also wie $\sqrt{t}$. Da die Gleichung linear ist, folgt der Ensemble-Mittelwert $\langle x\rangle$ exakt dem rauschfreien gedämpften Oszillator (schwarz gestrichelt auf Rot), während jede einzelne Bahn umherirrt. Probieren Sie $T = 0$ (reiner gedämpfter Oszillator), ein großes $\gamma$ mit kleinem $m$ (überdämpfte Brownsche Bewegung: $\langle x^2\rangle$ relaxiert mit der Rate $2k/\gamma$, ohne zu schwingen) oder ein kleines $\gamma$ (langsame Annäherung an das Gleichgewicht). Vereinfachungen: reduzierte Einheiten mit $k_B = 1$, eine Dimension, weißes (unkorreliertes) Rauschen und ein Verfahren erster Ordnung, dessen Gleichgewichtsvarianzen einen Fehler der Ordnung $O(\Delta t)$ haben.'
+meanings:
+- 'Ort und Geschwindigkeit von Teilchen $b$ im Schritt $n$: das ganze Ensemble ist ein Batch'
+- 'der Rauschtensor, eine Zeile pro Schritt: unabhängige Standardnormalverteilte (fester Seed)'
+- Größe des Zufallsstoßes pro Schritt; sie skaliert mit $\sqrt{\Delta t}$, nicht mit $\Delta t$
+- 'deterministische Beschleunigung: Reibung plus Feder'
+- Euler–Maruyama-Schritt; der Ort verwendet die neue Geschwindigkeit (symplektischer Euler)
+- 'Ensemble-Mittel: wiederholtes $b$ ⇒ Summe über die Teilchen'
+- '$\langle x^2\rangle$ und $\langle v^2\rangle$ im Gleichgewicht: $\tfrac12 k\langle x^2\rangle = \tfrac12 m\langle v^2\rangle = \tfrac12 k_BT$'
+labels:
+  temperature: Temperatur $k_BT$
+  gamma: Reibung $\gamma$
+  k: Steifigkeit $k$
+  m: Masse $m$
+  n_particles: Anzahl der Teilchen $B$
+  t_max: Dauer $t_{max}$

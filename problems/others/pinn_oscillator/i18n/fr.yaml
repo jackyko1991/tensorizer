@@ -1,0 +1,28 @@
+source_hash: cf2636b6ae13
+title: 'Réseau de neurones informé par la physique (PINN) : oscillateur amorti'
+summary: Un petit réseau de neurones $\hat x(t; w)$ apprend le mouvement d'une masse amortie sur un ressort à partir de seulement dix mesures bruitées prises dans les premiers 40 % de l'intervalle. Ajouter l'équation du mouvement $m\ddot x + \mu\dot x + kx = 0$ à la fonction de perte, évaluée par différentiation automatique en des points de collocation, lui permet d'extrapoler là où un réseau ordinaire échoue ; en mode inverse, il déduit aussi l'amortissement inconnu $\mu$.
+notes: 'Un réseau de neurones ordinaire est un ajusteur de courbes souple : entraîné uniquement sur les mesures, il peut passer par elles, mais au-delà du dernier point de données rien ne lui dit quoi faire, et sa prédiction (en tirets) dérive. Un réseau de neurones informé par la physique (PINN) ajoute un second terme à la perte : la moyenne du carré du résidu $r_c = m\hat x'''' + \mu\hat x'' + k\hat x$ en des points de collocation $t_c$ qui couvrent tout l''intervalle, y compris là où il n''y a pas de données. Les dérivées sont les dérivées exactes du réseau par rapport à son entrée, calculées par torch.autograd.grad avec create_graph=True afin que la perte puisse être rétropropagée à travers elles jusqu''aux poids. Imposer $r_c \to 0$ force $\hat x$ à être une solution de l''équation du mouvement partout ; les données et la condition initiale $x(0) = 1$, $\dot x(0) = 0$ sélectionnent ensuite l''unique solution compatible, si bien que le réseau extrapole correctement. La physique joue
+  le rôle d''un régulariseur qui remplace les données manquantes. Dans le problème inverse, l''amortissement $\mu$ est inconnu : il devient un paramètre entraînable et l''optimiseur trouve la valeur pour laquelle données et physique s''accordent (regardez-le dépasser puis se stabiliser). La solution exacte est $x = e^{-\delta t}(\cos\omega t + \tfrac{\delta}{\omega}\sin\omega t)$ avec $\delta = \mu/2m$ et $\omega = \sqrt{k/m - \delta^2}$. Points pratiques : le résidu vaut environ $k$ fois l''erreur, d''où le poids $\lambda \approx 10^{-4}$ qui l''équilibre avec le terme de données (trop grand, le réseau se fige sur la solution triviale $\hat x = 0$, dont le résidu est aussi nul) ; les fréquences plus élevées ($k$ plus grand) demandent plus d''itérations, car un réseau apprend d''abord les basses fréquences. Ici le problème direct n''est résolu que pour illustrer la méthode : un solveur d''EDO serait bien plus rapide. Les PINN sont rentables pour les problèmes inverses, les données rares
+  et bruitées, et les EDP sur des domaines de forme compliquée. Simplifications : une masse fixe $m = 1$, une graine fixe et Adam avec un taux d''apprentissage à décroissance cosinus (sans raffinement L-BFGS).'
+meanings:
+- 'un seul lot de temps d''entrée : points de collocation, instants de mesure et $t = 0$'
+- 'poids entraînables $w$ de la couche $l$ : tailles $1 \to 32 \to 32 \to 32 \to 1$'
+- $j$ répété ⇒ sommé sur les neurones de la couche précédente
+- activations cachées ; une activation lisse pour que $\hat x$ ait des dérivées secondes
+- donne $\dot{\hat x}$ ; un second appel dessus donne $\ddot{\hat x}$ (dérivées exactes du réseau, sans différences finies)
+- 'résidu de l''EDO aux points de collocation : nul là où $\hat x$ obéit à la physique'
+- écart aux données, moyenne de $r_c^2$, et condition initiale $(\hat x(0) - 1)^2 + (\dot{\hat x}(0)/\omega_0)^2$
+- 'mode inverse : l''amortissement est un paramètre entraînable de plus, mis à jour par Adam avec les poids'
+labels:
+  mode: 'Mode : apprendre $\mu$ (inverse) ou le connaître (direct)'
+  k: Constante de raideur $k$
+  mu: Amortissement réel $\mu$
+  mu_guess: Valeur initiale de $\mu$ (mode inverse)
+  n_data: Nombre de mesures
+  data_fraction: Fraction de l'intervalle couverte par les mesures
+  noise: Bruit de mesure
+  n_colloc: Points de collocation $t_c$
+  log10_lambda: Poids de la physique $\log_{10}\lambda$
+  n_iter: Itérations d'entraînement
+  lr: Taux d'apprentissage d'Adam
+  compare: Entraîner aussi un réseau sans physique

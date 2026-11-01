@@ -1,0 +1,18 @@
+source_hash: 27367fbd090e
+title: 'Imagerie du tenseur de diffusion : cartographier les fibres nerveuses'
+summary: L'eau diffuse plus vite le long des axones qu'en travers, donc chaque voxel possède un tenseur de diffusion $D_{ij}$. Le signal de Stejskal–Tanner $S = S_0\,e^{-b\,\hat g_i D_{ij}\hat g_j}$ est un seul einsum sur les voxels et les directions de gradient ; un ajustement par moindres carrés en lot des logarithmes du signal retrouve $D_{ij}$, sa décomposition propre donne la diffusivité moyenne, l'anisotropie fractionnelle et la direction des fibres, et suivre cette direction avec RK2 trace les faisceaux nerveux (tractographie).
+notes: 'Les diffusivités sont en $10^{-3}\,\mathrm{mm^2/s}$ et $b$ en $\mathrm{s/mm^2}$ : environ $\lambda_\parallel = 1.7$, $\lambda_\perp = 0.3$ dans un faisceau (FA ≈ 0,8), 3,0 pour l''eau libre (LCR) et 0,8 pour la substance grise. Ce sont des valeurs approximatives à but pédagogique, non à usage clinique. Le bruit est ricien (le module d''un signal complexe), si bien que les ajustements bruités surestiment la FA dans les régions isotropes. Là où deux faisceaux se croisent, un seul tenseur ne peut représenter que leur moyenne, un tenseur aplati (planaire) de FA plus faible, et un tract qui y entre peut s''arrêter ou bifurquer à tort dans l''autre faisceau : c''est la limitation classique de la DTI que traitent les modèles multi-fibres. Chaque ellipse montre la forme dans le plan du tenseur ajusté. Les lignes de courant partent de points d''amorçage et suivent le vecteur propre principal du champ de tenseurs interpolé bilinéairement avec la méthode du point milieu (RK2) jusqu''à ce que
+  la FA passe sous 0,2. Essayez plus de bruit, moins de directions de gradient ou un $b$ plus petit.'
+meanings:
+- directions unitaires des gradients de diffusion réparties sur un hémisphère
+- 'vrai tenseur de diffusion de chaque voxel : faisceaux $\lambda_\parallel e_ie_j + \lambda_\perp(\delta_{ij} - e_ie_j)$, LCR et substance grise isotropes'
+- '$i, j$ répétés ⇒ sommés : signal pondéré en diffusion de chaque voxel pour chaque direction'
+- lignes $(g_x^2, g_y^2, g_z^2, 2g_xg_y, 2g_xg_z, 2g_yg_z)$ de sorte que $\hat g_i D_{ij}\hat g_j = B_{gm}d_m$
+- ajustement par moindres carrés des six composantes indépendantes du tenseur, pour tous les voxels à la fois
+- valeurs propres et vecteurs propres ; le vecteur propre de la plus grande valeur propre pointe le long de la fibre
+- diffusivité moyenne (trace/3) et anisotropie fractionnelle (0 isotrope, 1 une seule direction)
+labels:
+  b: Pondération en diffusion $b$
+  n_dirs: Directions de gradient
+  noise: Niveau de bruit $\sigma/S_0$
+  size: Voxels par côté

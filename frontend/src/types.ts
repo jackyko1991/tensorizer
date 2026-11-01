@@ -50,7 +50,10 @@ export interface Problem {
   output: string | null;
   console: string;
   diagram: string | null;
+  /** Wikipedia article titles by wiki language code (en, zh, fr, …), from content/wiki.json. */
+  wiki?: { wikidata: string; titles: Record<string, string> } | null;
   notebook?: string;
+  pixi_zip?: string;
   /** Translations by language code; any missing field falls back to English. */
   i18n?: Record<string, ProblemTranslation>;
 }

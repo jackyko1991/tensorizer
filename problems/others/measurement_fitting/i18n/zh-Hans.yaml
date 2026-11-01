@@ -1,0 +1,21 @@
+source_hash: 2ae828bc3a14
+title: 用张量拟合实验测量数据
+summary: 一组（合成的）阻尼振子实验室测量数据，每个点都带有误差棒 $\sigma_i$，用最大似然法拟合。测量模型包含一个显式的误差项 $\varepsilon_i$，其分散程度包括一个未知的额外散布 $s$；autograd 最小化 $-2\ln L$，雅可比矩阵与黑塞矩阵给出参数的不确定度，而一个线性子问题把最小二乘法呈现为一次 lstsq 求解。
+notes: 测量值从不恰好等于模型：$x_i = f(t_i;\theta) + \varepsilon_i$，统计学处理的正是误差项 $\varepsilon_i$。如果标示的误差棒就是全部，那么 $\varepsilon_i \sim N(0, \sigma_i^2)$，最大化似然函数就等同于最小化 $\chi^2 = \sum_i ((x_i - f_i)/\sigma_i)^2$（加权最小二乘）。真实实验的散布常常比误差棒所说的更大（振动、未建模的漂移），因此这里的散布取为 $\sigma_{tot,i}^2 = \sigma_i^2 + s^2$，其中未知的额外散布（jitter）$s$ 与五个物理参数一起拟合。 $-2\ln L$ 中的 $\ln 2\pi\sigma_{tot,i}^2$ 项防止拟合用一个巨大的 $s$ 把一切都解释掉。measurements.csv 中的数据是合成的，在 0.5–1 mm 的误差棒之外再加上 $s = 0.8$ mm 生成：只用 $\chi^2$ 拟合的结果是 $\chi^2/\mathrm{dof} \approx 2.5$，这是误差被低估的征兆；而拟合 $s$ 之后，标准化残差 $r_i = (x_i - f_i)/\sigma_{tot,i}$ 服从 $N(0,1)$，且 $\chi^2/\mathrm{dof} \approx 1$。 autograd 为 Adam（动画中的迭代）和 L-BFGS（最后的精修）提供 $-2\ln L$ 的梯度。不确定度来自 $-2\ln L$ 在极小值处的曲率： $C = (J^TJ)^{-1}$，其中雅可比矩阵 $J_{ip} = \partial r_i/\partial\theta_p$；或包含 $s$ 时用完整黑塞矩阵 $C = 2H^{-1}$。线性与非线性最小二乘：固定 $\gamma$ 与 $\omega$ 时，模型对 $(A\cos\varphi, A\sin\varphi, c)$ 是线性的，所以最佳值只需一次 lstsq 求解（无需迭代，答案唯一），初始猜测就是这样由 $\omega_0, \gamma_0$ 得到的； $\gamma$ 与 $\omega$ 以非线性方式出现，需要迭代搜索，可能陷入局部极小值。试试一个差的 $\omega_0$（拟合可能锁定错误的频率）、大的学习率，或关闭
+  jitter。简化：独立的高斯误差、$t$ 没有误差，协方差只来自局部曲率。
+meanings:
+- 点 $i$ 的时间、测得位置与标示的误差棒，从 measurements.csv 读入
+- $(A, \gamma, \omega, \varphi, c, \ln s)$；拟合 $\ln s$ 可让 jitter $s$ 保持为正
+- 每个测量时刻的阻尼振子模型
+- 误差项 $\varepsilon_i$ 的散布：误差棒与额外散布按平方和相加
+- 重复的 $i$ ⇒ 求和；当 $s = 0$ 时就是 $\chi^2$ 加一个常数
+- 每个标准化残差如何随每个参数变化
+- 高斯–牛顿协方差 $C$：不确定度 $\sqrt{C_{pp}}$（对 $i$ 求和）
+- 包含 $\ln s$ 的协方差，来自 $-2\ln L$ 的黑塞矩阵
+- 固定 $\gamma, \omega$ 时模型对 $\beta = (A\cos\varphi, A\sin\varphi, c)$ 是线性的
+labels:
+  omega0: 初始猜测 $\omega_0$
+  gamma0: 初始猜测 $\gamma_0$
+  lr: Adam 学习率
+  iterations: Adam 迭代次数
+  jitter: 拟合额外散布 $s$

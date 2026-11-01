@@ -1,0 +1,21 @@
+source_hash: adf3aca0e79d
+title: 'Protonthérapie : le pic de Bragg'
+summary: Le pouvoir d'arrêt de Bethe–Bloch $-dE/dz \propto 1/\beta^2$ est intégré par RK4 pour tout un lot d'énergies de protons à la fois. La dose s'accumule juste avant l'arrêt de chaque proton (le pic de Bragg), et une somme pondérée de couches d'énergie donne une dose uniforme sur une tumeur, presque sans rien derrière.
+notes: 'Constantes pour l''eau : $K = 0.307$ MeV cm²/mol, $Z/A = 0.555$, $I \approx 75$ eV, $\rho = 1$ g/cm³ ; les corrections de couche et de densité sont négligées. Le parcours intégré (150 MeV → environ 15,8 cm) concorde avec NIST PSTAR à environ 1 % près et suit la loi de Bragg–Kleeman $R = \alpha E^p$ avec $p \approx 1.75$. La dispersion du parcours ($\sigma \approx 1.2\,\%$ de $R$) et la dispersion en énergie du faisceau arrondissent le pic ; les réactions nucléaires ne sont modélisées que par une perte de 1 %/cm des particules primaires, si bien que le rapport pic/entrée est plus élevé que dans un faisceau réel. Un faisceau de rayons X de haute énergie (mise en équilibre, puis $e^{-\mu z}$) normalisé à la même dose tumorale dépose davantage à l''entrée et continue au-delà de la tumeur ; les protons s''arrêtent. Tous les chiffres sont approximatifs et à but éducatif uniquement, non destinés à un usage clinique ni à la planification de traitement.'
+meanings:
+- énergie cinétique du faisceau $b$ à chaque pas en profondeur (RK4, tous les faisceaux ensemble)
+- $-dE/dz$ de Bethe–Bloch en MeV/cm, élément par élément sur le lot
+- 'dose primitive : énergie perdue par cm dans l''intervalle de profondeur $k$'
+- dispersion gaussienne du parcours + dispersion en énergie, lignes normalisées
+- '$k$ répété ⇒ sommé : courbe de Bragg lissée'
+- '$k$ répété ⇒ sommé : pic de Bragg étalé à partir de $K$ couches d''énergie'
+- moindres carrés non négatifs (gradient projeté) pour une dose cible uniforme
+labels:
+  e_min: Énergie de faisceau la plus basse
+  e_max: Énergie de faisceau la plus haute
+  n_energies: Faisceaux du balayage
+  target_start: Profondeur de début de la tumeur
+  target_end: Profondeur de fin de la tumeur
+  n_layers: Couches d'énergie du SOBP
+  energy_spread: Dispersion en énergie du faisceau $\sigma_E/E$
+  i_ev: Énergie moyenne d'excitation $I$

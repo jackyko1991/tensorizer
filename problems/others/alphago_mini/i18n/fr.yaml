@@ -1,0 +1,18 @@
+source_hash: f0ace6f81d9f
+title: 'AlphaGo en miniature : recherche arborescente sur un goban $5\times5$'
+summary: 'Une partie de go en auto-jeu sur un tout petit goban, dont chaque coup est choisi par la même recherche qu''AlphaGo : la recherche arborescente Monte-Carlo avec la règle PUCT. Les règles du go sont elles-mêmes des opérations tensorielles : les captures et le décompte par zone sont des remplissages par diffusion, un einsum avec la matrice d''adjacence du goban par étape. Chaque nouvelle position est évaluée par tout un lot de parties aléatoires jouées simultanément. Observez les nombres de visites se concentrer sur le coup auquel la recherche croit.'
+notes: 'Chaque simulation descend l''arbre en choisissant le maximum PUCT, ajoute une nouvelle position, l''évalue avec le lot de playouts aléatoires et ajoute ce résultat à chaque coup du chemin. Les bons coups accumulent des visites, si bien que la recherche se concentre là où c''est important sans examiner chaque variante. AlphaGo utilisait la même boucle, mais remplaçait l''a priori uniforme $P_a$ par un réseau de politique et les playouts aléatoires par un réseau de valeur, tous deux entraînés sur des parties ; AlphaGo Zero a appris les deux uniquement par auto-jeu. Sur $5\times5$, l''ouverture au centre est forte pour noir ; avec peu de simulations, la recherche commet des erreurs visibles ; augmentez les simulations et la partie devient plus précise mais plus lente. Règles : Tromp–Taylor (le suicide retire son propre groupe, décompte par zone) avec une vérification simple du ko.'
+meanings:
+- 'intersection $p$ du goban : $+1$ noir, $-1$ blanc, 0 vide'
+- 'le goban vu comme un graphe : 1 quand $p$ et $q$ sont voisins horizontalement ou verticalement'
+- 'remplissage par diffusion : depuis les points vides à travers une couleur, on trouve les groupes ayant une liberté ; le reste est capturé'
+- 'décompte par zone : pierres plus points vides que seule cette couleur peut atteindre, noir moins blanc moins le komi $k$'
+- $R$ parties aléatoires jouées comme un seul tenseur $(R, n^2)$ ; résultat moyen pour noir ; on ne remplit jamais son propre œil
+- 'PUCT : valeur $Q_a$ plus un bonus d''exploration qui diminue à mesure que le coup $a$ est visité ; a priori uniforme $P_a$'
+- 'nombres de visites après toutes les simulations (dernière entrée : passe) ; le coup le plus visité est joué'
+labels:
+  board_size: Taille du goban $n$
+  simulations: Simulations par coup
+  rollouts: Playouts aléatoires par feuille $R$
+  c_puct: Exploration $c$
+  komi: Komi $k$

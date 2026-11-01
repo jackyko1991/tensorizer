@@ -1,0 +1,19 @@
+source_hash: 160447300c99
+title: 'RM: relajación T1 y T2 y contraste de la imagen'
+summary: Tras un pulso de radiofrecuencia, la magnetización de cada tejido se recupera a lo largo del campo con la constante de tiempo $T_1$ y su parte transversal decae con $T_2$. Evaluar la señal de eco de espín como un único tensor sobre (tejido, $TR$, $TE$) y contraerlo con un mapa de etiquetas de tejido de un cerebro esquemático muestra cómo la elección de $TR$ y $TE$ hace que una imagen esté potenciada en T1, en DP o en T2.
+notes: 'Un $TR$ corto y un $TE$ corto dan potenciación T1: la grasa y la sustancia blanca son brillantes, el LCR es oscuro, porque su largo $T_1$ no ha tenido tiempo de recuperarse. Un $TR$ largo con un $TE$ corto elimina el factor $T_1$ y deja una potenciación en densidad protónica (DP). Un $TR$ largo y un $TE$ largo dan potenciación T2: el LCR, con su $T_2$ muy largo, se convierte en el tejido más brillante. La fórmula sencilla ignora el efecto del pulso de refocalización sobre $M_z$ y supone $TR \gg TE$. Cada imagen se ajusta en ventana a su propio píxel más brillante, como hace la pantalla de un escáner. Los valores de los tejidos son cifras aproximadas de libro de texto a 1,5 T, solo para la docencia, no para uso clínico. Prueba a mover los $TR$/$TE$ cortos y largos y observa cómo se invierte el contraste entre sustancia gris y blanca.'
+meanings:
+- tiempos de relajación y densidad protónica de los $S = 5$ tejidos (valores aproximados a 1,5 T)
+- recuperación longitudinal, difundida (broadcast) sobre el tejido $s$ y el tiempo $t$
+- decaimiento transversal de cada tejido
+- señal de eco de espín para cada tejido, tiempo de repetición $TR_a$ y tiempo de eco $TE_b$ (ningún índice sumado)
+- 'mapa de etiquetas one-hot: qué tejido ocupa el píxel $(x, y)$'
+- '$s$ repetido ⇒ sumado: la imagen para cada $(TR, TE)$'
+- tiempo de inversión en el que $M_0(1 - 2e^{-t/T_1})$ se anula, usado para suprimir la grasa (STIR) o el LCR (FLAIR)
+labels:
+  tr_short: Tiempo de repetición corto $TR$
+  tr_long: Tiempo de repetición largo $TR$
+  te_short: Tiempo de eco corto $TE$
+  te_long: Tiempo de eco largo $TE$
+  size: Tamaño del maniquí
+  n_frames: Fotogramas de la animación

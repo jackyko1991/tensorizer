@@ -5,6 +5,13 @@ import type { Params, Problem } from "./types";
 export const REPO = "jackyko1991/tensorizer";
 export const REPO_URL = `https://github.com/${REPO}`;
 
+/** VS Code for the web, opened on the problem's main.py in the GitHub repository (no install needed). */
+export const vscodeWebUrl = (problem: Problem) =>
+  `https://vscode.dev/github/${REPO}/blob/main/problems/${problem.category}/${problem.slug}/main.py`;
+
+/** Desktop VS Code: clone the repository (VS Code asks where to put it). */
+export const vscodeCloneUrl = `vscode://vscode.git/clone?url=${encodeURIComponent(`${REPO_URL}.git`)}`;
+
 export const colabUrl = (problem: Problem) =>
   `https://colab.research.google.com/github/${REPO}/blob/main/notebooks/${problem.category}/${problem.slug}.ipynb`;
 
@@ -32,10 +39,26 @@ export async function downloadNotebook(problem: Problem, edits: Record<string, s
       cell.source = lines(cell.source.join("").replace(/params = \{\n[\s\S]*?\n\}\n/, `params = {\n${body}\n}\n`));
     }
   }
-  const blob = new Blob([JSON.stringify(nb, null, 1) + "\n"], { type: "application/x-ipynb+json" });
+  save(new Blob([JSON.stringify(nb, null, 1) + "\n"], { type: "application/x-ipynb+json" }), `${problem.slug}.ipynb`);
+}
+
+/** Download the standalone pixi project, with the user's edited files and parameter values patched in. */
+export async function downloadPixiProject(problem: Problem, edits: Record<string, string>, params: Params) {
+  if (!problem.pixi_zip) return;
+  const { unzipSync, zipSync, strToU8 } = await import("fflate");
+  const files = unzipSync(new Uint8Array(await (await fetch(generatedUrl(problem.pixi_zip))).arrayBuffer()));
+  const root = `${problem.slug}/`;
+  for (const [name, code] of Object.entries(edits)) {
+    files[`${root}problems/${problem.category}/${problem.slug}/${name}`] = strToU8(code);
+  }
+  files[`${root}params.json`] = strToU8(JSON.stringify(params, null, 2) + "\n");
+  save(new Blob([zipSync(files)], { type: "application/zip" }), `${problem.slug}-pixi.zip`);
+}
+
+function save(blob: Blob, filename: string) {
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `${problem.slug}.ipynb`;
+  a.download = filename;
   a.click();
   URL.revokeObjectURL(a.href);
 }

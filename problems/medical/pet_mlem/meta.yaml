@@ -1,0 +1,45 @@
+title: 'PET: positron annihilation and image reconstruction'
+category: medical
+level: intermediate
+order: 3
+summary: >
+  A tracer such as FDG emits positrons; each one annihilates with an electron into two 511 keV photons flying
+  back to back. A batch of simulated decays is followed to the detector ring, every coincidence is binned into a
+  sinogram by its line of response, and the image is recovered with MLEM, $\lambda \leftarrow \lambda\,A^{\mathsf T}(y / A\lambda) / A^{\mathsf T}1$,
+  where the whole scanner is one system matrix $A$ and each iteration is two matrix–vector products.
+animated: true
+vector_form: 'e^+ + e^- \to \gamma\gamma,\quad \mathbf p_1 = -\mathbf p_2,\ E_\gamma = m_e c^2 = 511\,\text{keV},\qquad \boldsymbol\lambda^{k+1} = \frac{\boldsymbol\lambda^{k}}{A^{\mathsf T}\mathbf 1}\odot A^{\mathsf T}\frac{\mathbf y}{A\boldsymbol\lambda^{k} + \mathbf r}'
+index_form: 'a_{ei} = d_{ei} + \sigma_+\xi_{ei},\quad u_{epi} = \pm(\cos\varphi_e, \sin\varphi_e),\qquad \bar y_b = A_{bj}\lambda_j + r_b,\qquad \lambda_j^{k+1} = \frac{\lambda_j^k}{A_{bj}1_b}\,A_{bj}\frac{y_b}{\bar y_b^{\,k}}'
+translation:
+  - {symbol: 'd_{ei}', code: 'multinomial(activity) + jitter', shape: '(E, 2)', meaning: 'decay positions drawn from the activity map (hot lesions decay more often)'}
+  - {symbol: 'a_{ei}', code: 'positron_range(decay, sigma, gen)', shape: '(E, 2)', meaning: 'annihilation point: the positron travels about a millimetre first'}
+  - {symbol: 'u_{epi}', code: 'annihilation_photons(phi)', shape: '(E, 2, 2)', meaning: 'two photons $p = 1, 2$ in opposite directions, each $511$ keV'}
+  - {symbol: 'h_{epi}', code: "ring_hits(a, u, R)  # einsum('ei,epi->ep')", shape: '(E, 2, 2)', meaning: 'where each photon reaches the ring: solve $|a + t u| = R$ for $t > 0$'}
+  - {symbol: 'y_b', code: 'bincount(bin[kept])', shape: '(K·L,)', meaning: 'sinogram: detected coincidences per line of response $(\theta, s)$'}
+  - {symbol: 'A_{bj}', code: 'system_matrix(n, dev)', shape: '(K·L, n·n)', meaning: 'probability that a decay in pixel $j$ is counted in bin $b$ (times attenuation)'}
+  - {symbol: 'A_{bj}\lambda_j + r_b', code: "einsum('bj,j->b', A, lam) + r", shape: '(K·L,)', meaning: 'repeated $j$ ⇒ summed: forward projection plus randoms/scatter'}
+  - {symbol: 'A_{bj}\,q_b', code: "einsum('bj,b->j', A, q)", shape: '(n·n,)', meaning: 'repeated $b$ ⇒ summed: back-projection along every LOR'}
+  - {symbol: '\lambda_j^{k+1}', code: 'mlem_step(lam, A, y, r, sens)', shape: '(n·n,)', meaning: 'multiplicative update: stays positive and keeps the total counts'}
+notes: >
+  The two photons leave in opposite directions, so the decay lies somewhere on the line joining the two detectors that
+  fire together: a line of response. Collecting millions of them gives the sinogram (each point of the body traces a sine
+  curve in $(\theta, s)$). MLEM treats the counts as Poisson with mean $\bar y = A\lambda + r$ and climbs the
+  log-likelihood $\sum_b y_b \log \bar y_b - \bar y_b$: each iteration forward-projects the current image, compares with
+  the data, and back-projects the ratio. It never goes negative, it conserves the total counts ($\sum_b (A\lambda)_b = \sum_b y_b$
+  without background), and its likelihood never decreases. Early iterations are smooth; later ones are sharper but amplify
+  the Poisson noise, so the error first drops and then rises again (with the defaults the minimum is near 50 iterations;
+  try 150 iterations, or fewer decays, to see the rise): clinical scanners stop early (or use OSEM subsets and
+  a post-filter). FBP filters every projection with a ramp and back-projects in one step; it is fast but noisier and can go
+  negative. Photons crossing the body are attenuated by $e^{-\int \mu\, dl}$ with $\mu \approx 0.096$ cm$^{-1}$ for water
+  at 511 keV, and that factor depends only on the LOR, not on where the decay was, so it is folded into $A$. Simplifications:
+  2D only, Gaussian positron range (F-18 has a mean range of about 0.6 mm, Ga-68 about 3 mm, so it is hidden by the
+  6 mm pixels unless you raise it), no photon acollinearity, ideal crystals (each LOR end is placed at a random point of the crystal that fired) with no depth of interaction or dead time, and a
+  known smooth background for randoms and scatter. All values are approximate and for education only, not for clinical use.
+params:
+  kilo_decays: {default: 1500, min: 100, max: 5000, step: 100, type: int, label: Decays simulated (thousands)}
+  n_iter: {default: 40, min: 5, max: 150, step: 5, type: int, label: MLEM iterations}
+  positron_range: {default: 1.0, min: 0.0, max: 6.0, step: 0.5, label: 'Positron range $\sigma_+$', unit: mm}
+  attenuation: {default: 'on', type: choice, options: ['on', 'off'], label: Attenuation in the body}
+  background: {default: 0.2, min: 0.0, max: 0.6, step: 0.05, label: Randoms + scatter fraction}
+  grid: {default: 48, min: 32, max: 64, step: 8, type: int, label: 'Image grid $n \times n$'}
+  n_detectors: {default: 256, min: 64, max: 512, step: 32, type: int, label: Detector crystals on the ring}

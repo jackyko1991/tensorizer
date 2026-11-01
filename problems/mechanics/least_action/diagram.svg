@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Path space: time t across, position q up; two fixed end points joined by wiggly grey trial paths that gradient descent relaxes onto the true parabola, where the action is stationary, delta S = 0">
+  <defs>
+    <marker id="axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="flow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- axes -->
+    <line x1="22" y1="140" x2="226" y2="140" stroke="#374151" stroke-width="1.5" marker-end="url(#axis)"/>
+    <line x1="22" y1="140" x2="22" y2="10" stroke="#374151" stroke-width="1.5" marker-end="url(#axis)"/>
+    <text x="216" y="156" font-style="italic">t</text>
+    <text x="8" y="20" font-style="italic">q</text>
+    <!-- trial paths (wrong guesses) -->
+    <path d="M40,120 C70,140 90,30 120,70 S170,20 200,110" fill="none" stroke="#9ca3af" stroke-width="1.4" stroke-dasharray="4 3"/>
+    <path d="M40,120 C60,60 100,120 130,90 S180,90 200,110" fill="none" stroke="#9ca3af" stroke-width="1.4" stroke-dasharray="4 3"/>
+    <path d="M40,120 L200,110" fill="none" stroke="#9ca3af" stroke-width="1.4" stroke-dasharray="4 3"/>
+    <!-- true path: parabola, delta S = 0 -->
+    <path d="M40,120 Q120,-5 200,110" fill="none" stroke="#f59e0b" stroke-width="2.8"/>
+    <!-- descent arrow from a trial path to the true one -->
+    <path d="M150,96 L150,66" fill="none" stroke="#2563eb" stroke-width="1.5" marker-end="url(#flow)"/>
+    <text x="155" y="86" font-size="12" fill="#1e40af">−∂<tspan font-style="italic">S</tspan>/∂<tspan font-style="italic">q</tspan></text>
+    <!-- fixed end points -->
+    <circle cx="40" cy="120" r="4.5" fill="#111827"/>
+    <circle cx="200" cy="110" r="4.5" fill="#111827"/>
+    <text x="30" y="135" font-size="12"><tspan font-style="italic">q</tspan>₀</text>
+    <text x="194" y="128" font-size="12"><tspan font-style="italic">q<tspan font-size="9" dy="3">N</tspan></tspan></text>
+    <text x="92" y="36" font-size="13" fill="#b45309">δ<tspan font-style="italic">S</tspan> = 0</text>
+  </g>
+</svg>

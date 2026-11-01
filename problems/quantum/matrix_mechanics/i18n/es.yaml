@@ -1,0 +1,20 @@
+source_hash: 5a26364d7c17
+title: 'Mecánica matricial: el oscilador de Heisenberg con operadores escalera'
+summary: 'Sin funciones de onda ni malla: en la base de números de ocupación $|0\rangle, \dots, |N-1\rangle$ el operador de descenso es la matriz $a_{mn} = \sqrt n\,\delta_{m,n-1}$, y $X$, $P$ y $H = \tfrac12(P^2 + X^2)$ se obtienen con productos de matrices. Sus valores propios son $n + \tfrac12$ y $[X, P] = i$. Con torch.linalg.matrix_exp se mueve el operador $X(t) = U^\dagger X U$ (imagen de Heisenberg) o el estado $U|\alpha\rangle$ (imagen de Schrödinger); ambas dan el mismo $\langle X\rangle(t)$, y un estado coherente recorre el espacio de fases en círculo como una masa clásica en un resorte.'
+notes: 'Unidades $\hbar = m = \omega = 1$. Así escribieron la mecánica cuántica Heisenberg, Born y Jordan en 1925: los observables son matrices y sus productos no conmutan. Truncar a $N$ estados es la única aproximación. Rompe $[X, P] = i$ en el último elemento diagonal, que debe valer $i(1 - N)$ porque la traza de un conmutador de matrices finitas es 0, y da al último estado de la base la energía $(N-1)/2$ en vez de $N - \tfrac12$; los estados muy por debajo de $N$ son exactos. En la imagen de Heisenberg cada elemento $X(t)_{mn} = X_{mn}e^{i(E_m - E_n)t}$ gira a una frecuencia de Bohr, de modo que para el oscilador $X(t) = X\cos t + P\sin t$, la solución clásica escrita para matrices. El estado coherente $|\alpha\rangle$ tiene $\langle X\rangle(t) = \sqrt2\,\mathrm{Re}(\alpha e^{-it})$ y recorre el espacio de fases en un círculo de radio $\sqrt2\,\alpha$. El cálculo en malla de Oscilador armónico cuántico da la misma escalera y la misma oscilación desde una representación completamente
+  distinta. Pruebe $\lambda > 0$: los niveles dejan de estar equiespaciados, las frecuencias de Bohr se dispersan y el círculo se enrolla hacia dentro a medida que el paquete se desfasa. Para $\lambda$ pequeño las energías coinciden con la teoría de perturbaciones a primer orden, $\lambda\langle n|X^4|n\rangle = \lambda\,\tfrac34(2n^2 + 2n + 1)$.'
+meanings:
+- '$\sqrt1, \sqrt2, \dots$ en la superdiagonal: $a|n\rangle = \sqrt n\,|n-1\rangle$'
+- $(a + a^\dagger)/\sqrt2$ y $i(a^\dagger - a)/\sqrt2$, ambas hermíticas
+- '$k$ repetido ⇒ sumado: productos de matrices; igual a $a^\dagger a + \tfrac12$ salvo el último elemento'
+- '$i\,\delta_{mn}$, pero $i(1 - N)$ en la esquina: una matriz finita no puede cumplir $[X, P] = i$ (su traza es 0)'
+- $n + \tfrac12$; con $\lambda X^4$ desplazadas en $\approx \lambda\,\tfrac34(2n^2 + 2n + 1)$
+- operador de evolución temporal $e^{-iHt}$ para todos los tiempos a la vez
+- '$k, l$ repetidos ⇒ sumados: imagen de Heisenberg, el operador se mueve'
+- '$e^{-|\alpha|^2/2}\alpha^n/\sqrt{n!}$: un estado fundamental desplazado'
+- 'imagen de Schrödinger con $c(t) = Uc$: los mismos números que la imagen de Heisenberg'
+labels:
+  alpha: Amplitud del estado coherente $\alpha$
+  lam: Anarmonicidad $\lambda$ (añade $\lambda X^4$)
+  periods: Tiempo simulado
+  n_states: Tamaño de la base $N$

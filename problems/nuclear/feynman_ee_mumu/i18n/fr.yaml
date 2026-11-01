@@ -1,0 +1,17 @@
+source_hash: f068882719e2
+title: 'Diagramme de Feynman : $e^+e^- \to \mu^+\mu^-$ à partir de traces de Dirac'
+summary: 'Le diagramme de QED le plus simple : un électron et un positron s''annihilent en un photon virtuel qui crée une paire de muons. Les règles de Feynman transforment le dessin en amplitude, les sommes sur les spins la transforment en traces de matrices de Dirac $4\times4$ $\gamma^\mu$, et chaque trace est un seul einsum. Un balayage en énergie montre la distribution angulaire passer d''isotrope au seuil à $1 + \cos^2\theta$, et la section efficace décroître comme $4\pi\alpha^2/3s$.'
+notes: 'Le diagramme est dessiné une seule fois, mais le code ne construit jamais de spineur : la somme sur les spins remplace $u\bar u$ par $\not p + m$, si bien que tout le calcul se réduit à des produits et des traces de matrices $\gamma$, qu''einsum effectue pour toutes les énergies et tous les angles à la fois. Le résultat est $\overline{|\mathcal M|^2} = e^4\big[1 + 4m^2/s + (1 - 4m^2/s)\cos^2\theta\big]$ pour $m_e \to 0$ : au seuil, les muons lents sortent de manière isotrope ; bien au-dessus, le spin 1 du photon et la conservation de l''hélicité donnent $1 + \cos^2\theta$. La section efficace totale $\sigma$ croît fortement à partir de $\sqrt s = 2m$ puis décroît en $1/s$, environ $86.8$ nb à 1 GeV. Les données réelles de PETRA et du LEP suivent cette courbe jusqu''à $\sqrt s \approx 30$ GeV, où un second diagramme, avec un boson $Z$ à la place du photon, interfère et rend l''asymétrie avant–arrière $A_{FB}$ non nulle ; la QED pure donne $A_{FB} = 0$. Essayez la paire $\tau$, découverte
+  à SPEAR en 1975 juste au-dessus de son seuil de 3,55 GeV.'
+meanings:
+- 'matrices de Dirac : l''indice $\mu$ est d''espace-temps, $a, b$ sont des indices spinoriels ; $\{\gamma^\mu, \gamma^\nu\} = 2\eta^{\mu\nu}$'
+- métrique de Minkowski diag(1, −1, −1, −1), unités avec $\hbar = c = 1$
+- quadri-impulsions dans le centre de masse de $e^-$, $e^+$, $\ell^-$, $\ell^+$ pour chaque énergie $\sqrt s$ et chaque angle $\theta$
+- 'slash de Feynman : les sommes sur les spins $\sum u\bar u = \not p + m$ et $\sum v\bar v = \not p - m$'
+- '$a, b, c, d$ répétés ⇒ sommés : la trace de la ligne de l''électron (même fonction pour la ligne du muon)'
+- 'abaisser les indices du muon avec $\eta$ et contracter : le propagateur du photon relie les deux lignes'
+- facteurs de flux et d'espace des phases ; $(\hbar c)^2$ convertit les GeV$^{-2}$ en nb
+- section efficace totale ; comparée à $\frac{4\pi\alpha^2}{3s}\beta\,(1 + 2m^2/s)$, $\beta = \sqrt{1 - 4m^2/s}$
+labels:
+  final: État final
+  sqrt_s_max: Énergie maximale $\sqrt s$

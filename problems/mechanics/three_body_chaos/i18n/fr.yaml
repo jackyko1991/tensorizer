@@ -1,0 +1,18 @@
+source_hash: d014ac5184c9
+title: 'Chaos à trois corps : le problème pythagoricien'
+summary: 'Le problème de Burrau : des masses 3, 4 et 5 partent du repos aux sommets d''un triangle 3-4-5 et dansent de façon chaotique jusqu''à ce que l''une soit éjectée. Une course jumelle partie à $\delta = 10^{-6}$ de distance est intégrée dans le même tenseur (indice de course $k$) ; l''écart entre les deux croît exponentiellement, $|\Delta| \propto e^{\lambda t}$, et leurs destins se séparent.'
+notes: 'Les rencontres proches sont la partie difficile : deux corps se croisent à une distance d''environ $0.01$, où la force est $10^4$ fois plus grande que d''habitude. Un pas fixe exploserait là ou ramperait partout ailleurs, donc le solveur utilise la méthode adaptative de Dormand–Prince 5(4) : chaque pas compare une réponse d''ordre 5 et une d''ordre 4, et dt rétrécit automatiquement près d''un passage rapproché puis regrandit ensuite. Aucun adoucissement n''est utilisé : c''est la gravitation newtonienne exacte avec $G = 1$. Les deux courses partagent le même pas, pour être comparées aux mêmes instants. Comme le mouvement est chaotique, la tolérance compte : avec la valeur par défaut $10^{-11}$, la référence reproduit le résultat classique (Szebehely et Peters, 1967) : le corps le plus léger ($m = 3$) est éjecté vers $t \approx 60$ tandis que les masses 4 et 5 partent en binaire serrée dans la direction opposée. La jumelle, déplacée de seulement $\delta$, s''est complètement séparée
+  vers $t \approx 45$ et suit une autre histoire. La courbe de $|\Delta|$ est irrégulière : elle présente un pic à chaque rencontre proche, où la jumelle passe un instant plus tôt ou plus tard à grande vitesse, et croît par à-coups. Le $\lambda$ ajusté est la tendance moyenne de $t = 0$ jusqu''à ce que $|\Delta|$ reste définitivement au-dessus de $0.1$. Essayez une tolérance plus lâche : la référence elle-même change alors de destin, ce qui rappelle que l''erreur numérique est aussi une perturbation.'
+meanings:
+- position du corps $a$ dans la course $k$ ($k = 0$ référence, $k = 1$ jumelle), composante $i$ du plan
+- masses 3, 4, 5
+- séparation de $a$ à $b$, toutes les paires des deux courses par broadcasting
+- '$j$ répété ⇒ sommé : distance au carré de chaque paire'
+- '$b$ répété ⇒ sommé : attraction totale sur le corps $a$ ; $k$ n''est pas sommé, les courses restent indépendantes'
+- les 7 pentes d'étage du pas adaptatif de Dormand–Prince ; leur combinaison ordre 5 moins ordre 4 est l'estimation d'erreur
+- distance entre la jumelle et la référence en positions et vitesses
+- 'pente de $\ln|\Delta|$ en fonction de $t$ jusqu''à la séparation définitive des courses : l''exposant de Lyapunov'
+labels:
+  t_max: Durée simulée
+  log10_delta: Décalage de la jumelle $\log_{10}\delta$
+  log10_tol: Tolérance d'erreur $\log_{10}\mathrm{tol}$

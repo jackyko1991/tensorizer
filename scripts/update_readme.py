@@ -26,6 +26,7 @@ CATEGORIES = {
     "quantum": "Quantum",
     "astro": "Astrophysics & Relativity",
     "nuclear": "Nuclear & Particle",
+    "medical": "Medical Physics",
     "others": "Others",
 }
 LEVELS = {"beginner": "🟢 Beginner", "intermediate": "🟠 Intermediate", "advanced": "🔴 Advanced"}
@@ -33,6 +34,10 @@ LEVELS = {"beginner": "🟢 Beginner", "intermediate": "🟠 Intermediate", "adv
 # Where the first relation of the index form is only a definition, show the governing law instead.
 KEY_OVERRIDES = {
     "mechanics/n_body_gravity": r"\ddot x_{ai} = G\,m_b\,(r_{abj}r_{abj} + \varepsilon^2)^{-3/2}\,r_{abi}",
+    "mechanics/three_body_chaos": (
+        r"\ddot x_{kai} = G\,m_b\,(r_{kabj}r_{kabj})^{-3/2}\,r_{kabi},\;\; \lVert\Delta\rVert \propto e^{\lambda t}"
+    ),
+    "others/neural_operator": r"\hat w_{bok} = R_{iok}\,\hat v_{bik}",
     "mechanics/mass_spring_cloth": r"m\,\ddot x_{ai} = -k\,D_{ea}\,(\lVert d_e\rVert - \ell_0)\,\hat d_{ei} + m\,g_i",
     "optics/grin_mirage": r"\frac{d}{ds}\Big(n\,\frac{dr_i}{ds}\Big) = \partial_i n",
     "thermodynamics/carnot_cycle": r"W = \oint p\,dV,\;\; \eta = 1 - T_c/T_h",
@@ -68,7 +73,7 @@ def load() -> dict[str, dict[str, list[dict]]]:
 
 def render(library: dict[str, dict[str, list[dict]]]) -> str:
     total = sum(len(p) for levels in library.values() for p in levels.values())
-    out = [f"{total} problems in {len(CATEGORIES)} topics, three per difficulty level. Click a topic to expand it.", ""]
+    out = [f"{total} problems in {len(CATEGORIES)} topics by difficulty level. Click a topic to expand it.", ""]
     for cat, title in CATEGORIES.items():
         levels = library[cat]
         count = sum(len(p) for p in levels.values())

@@ -1,0 +1,37 @@
+title: 'Three-body chaos: the Pythagorean problem'
+category: mechanics
+level: advanced
+order: 4
+summary: >
+  Burrau's problem: masses 3, 4 and 5 start at rest on the corners of a 3-4-5 triangle and dance chaotically until
+  one is flung out. A twin run started $\delta = 10^{-6}$ away is integrated in the same tensor (run index $k$);
+  the distance between the two grows exponentially, $|\Delta| \propto e^{\lambda t}$, and their fates part ways.
+animated: true
+vector_form: '\ddot{\mathbf r}_a = G\sum_{b\neq a} m_b\,\frac{\mathbf r_b - \mathbf r_a}{\lVert\mathbf r_b - \mathbf r_a\rVert^{3}},\qquad |\Delta(t)| \approx |\Delta(0)|\,e^{\lambda t}'
+index_form: 'r_{kabi} = x_{kbi} - x_{kai},\qquad \ddot x_{kai} = G\,m_b\,\left(r_{kabj}r_{kabj}\right)^{-3/2}\,r_{kabi},\qquad |\Delta|^2 = \Delta x_{ai}\Delta x_{ai} + \Delta v_{ai}\Delta v_{ai}'
+translation:
+  - {symbol: 'x_{kai}', code: 'x', shape: '(K, 3, 2)', meaning: 'position of body $a$ in run $k$ ($k = 0$ reference, $k = 1$ twin), plane component $i$'}
+  - {symbol: 'm_b', code: 'm', shape: '(3,)', meaning: 'masses 3, 4, 5'}
+  - {symbol: 'r_{kabi}', code: 'x[:, None, :, :] - x[:, :, None, :]', shape: '(K, 3, 3, 2)', meaning: 'separation from $a$ to $b$, all pairs of both runs by broadcasting'}
+  - {symbol: 'r_{kabj}r_{kabj}', code: "einsum('kabj,kabj->kab', r, r)", shape: '(K, 3, 3)', meaning: 'repeated $j$ ⇒ summed: squared distance of every pair'}
+  - {symbol: '\ddot x_{kai}', code: "G * einsum('b,kab,kabi->kai', m, inv_d3, r)", shape: '(K, 3, 2)', meaning: 'repeated $b$ ⇒ summed: total pull on body $a$; $k$ is not summed, the runs stay independent'}
+  - {symbol: 'k_s', code: 'dopri_step(f, y, k1, dt)', shape: '(7, 2, K, 3, 2)', meaning: 'the 7 stage slopes of the adaptive Dormand–Prince step; their 5th- minus 4th-order combination is the error estimate'}
+  - {symbol: '|\Delta|', code: 'phase_space_distance(xs, vs)', shape: '(T,)', meaning: 'distance between twin and reference in positions and velocities'}
+  - {symbol: '\lambda', code: 'lyapunov_fit(times, dist)', shape: '()', meaning: 'slope of $\ln|\Delta|$ vs $t$ until the runs separate for good: the Lyapunov exponent'}
+notes: >
+  Close encounters are the hard part: two bodies swing past each other at a distance of about $0.01$, where the force is
+  $10^4$ times larger than usual. A fixed step would either blow up there or crawl everywhere else, so the solver uses
+  the adaptive Dormand–Prince 5(4) method: each step compares a 5th- and a 4th-order answer, and dt shrinks automatically
+  near a close pass and grows again afterwards. No softening is used, so this is exact Newtonian gravity with $G = 1$.
+  Both runs share one step, so they are compared at equal times. Because the motion is chaotic, the tolerance matters:
+  with the default $10^{-11}$ the reference reproduces the classic outcome (Szebehely and Peters, 1967): the lightest
+  body ($m = 3$) is ejected around $t \approx 60$ while masses 4 and 5 leave as a tight binary in the opposite direction.
+  The twin, moved by only $\delta$, has separated completely by $t \approx 45$ and follows a different history.
+  The curve of $|\Delta|$ is jumpy: it spikes at every close encounter, where the twin passes a moment earlier or
+  later at high speed, and it grows in bursts. The fitted $\lambda$ is the average trend from $t = 0$ until $|\Delta|$
+  stays above $0.1$ for good.
+  Try a looser tolerance: the reference itself then changes its fate, a reminder that numerical error is a perturbation too.
+params:
+  t_max: {default: 63.0, min: 10, max: 80, step: 1, label: Simulated time, unit: time units}
+  log10_delta: {default: -6, min: -12, max: -2, step: 1, type: int, label: 'Twin offset $\log_{10}\delta$'}
+  log10_tol: {default: -11, min: -13, max: -7, step: 1, type: int, label: 'Error tolerance $\log_{10}\mathrm{tol}$'}

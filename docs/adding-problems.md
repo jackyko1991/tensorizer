@@ -61,6 +61,13 @@ Copy the style of `problems/mechanics/simple_pendulum/diagram.svg`:
 - Labels: italic symbols, at most about 5, sans-serif at 13–14 px, still readable at 160 px wide.
 - It shows the physical setup, not the result. No scripts, external references or raster images.
 
+## Wikipedia link
+
+Add the problem to `content/wiki.json`: `"<category>/<slug>": {"wikidata": "Q…", "titles": {"en": "…", "fr": "…", …}}`.
+Take the titles from the article's Wikidata sitelinks (`en`, `zh`, `fr`, `de`, `es`, `ja`, `ru`, `ko`, `hi`; leave out languages
+without an article). The app links to the reader's language when it exists and to English otherwise. The file lives outside
+the problem folder, so editing it never forces a re-render.
+
 ## Tests
 
 Add physics checks to `tests/test_physics_<category>.py` that compare against known results: conservation laws, analytic solutions, limits and symmetries. `tests/test_smoke.py` already checks that every problem follows the convention and renders.

@@ -1,0 +1,23 @@
+source_hash: 492f2e3f4bf6
+title: 'PET: aniquilación de positrones y reconstrucción de imagen'
+summary: Un trazador como la FDG emite positrones; cada uno se aniquila con un electrón en dos fotones de 511 keV que salen espalda con espalda. Se sigue un lote de desintegraciones simuladas hasta el anillo de detectores, cada coincidencia se clasifica en un sinograma según su línea de respuesta, y la imagen se reconstruye con MLEM, $\lambda \leftarrow \lambda\,A^{\mathsf T}(y / A\lambda) / A^{\mathsf T}1$, donde todo el escáner es una sola matriz de sistema $A$ y cada iteración son dos productos matriz–vector.
+notes: 'Los dos fotones salen en direcciones opuestas, así que la desintegración está en algún punto de la recta que une los dos detectores que se disparan a la vez: una línea de respuesta (LOR). Reuniendo millones se obtiene el sinograma (cada punto del cuerpo traza una sinusoide en $(\theta, s)$). MLEM trata los conteos como poissonianos con media $\bar y = A\lambda + r$ y asciende por la log-verosimilitud $\sum_b y_b \log \bar y_b - \bar y_b$: cada iteración proyecta la imagen actual, la compara con los datos y retroproyecta el cociente. Nunca se vuelve negativa, conserva el total de cuentas ($\sum_b (A\lambda)_b = \sum_b y_b$ sin fondo) y su verosimilitud nunca disminuye. Las primeras iteraciones son suaves; las posteriores son más nítidas pero amplifican el ruido de Poisson, de modo que el error primero baja y luego vuelve a subir (con los valores por defecto el mínimo está cerca de 50 iteraciones; pruebe 150 iteraciones, o menos desintegraciones, para ver la subida): los escáneres
+  clínicos paran pronto (o usan subconjuntos OSEM y un posfiltro). La FBP filtra cada proyección con una rampa y retroproyecta en un solo paso; es rápida pero más ruidosa y puede dar valores negativos. Los fotones que atraviesan el cuerpo se atenúan en $e^{-\int \mu\, dl}$ con $\mu \approx 0.096$ cm$^{-1}$ para el agua a 511 keV; ese factor solo depende de la LOR, no de dónde ocurrió la desintegración, por lo que se incluye en $A$. Simplificaciones: solo 2D, alcance del positrón gaussiano (el F-18 tiene un alcance medio de unos 0,6 mm, el Ga-68 de unos 3 mm, así que queda oculto por los píxeles de 6 mm salvo que lo aumente), sin acolinealidad de los fotones, cristales ideales (cada extremo de la LOR se coloca en un punto aleatorio del cristal que se disparó) sin profundidad de interacción ni tiempo muerto, y un fondo suave y conocido de aleatorias y dispersión. Todos los valores son aproximados y con fines educativos, no para uso clínico.'
+meanings:
+- posiciones de desintegración tomadas del mapa de actividad (las lesiones calientes se desintegran más a menudo)
+- 'punto de aniquilación: el positrón recorre antes alrededor de un milímetro'
+- dos fotones $p = 1, 2$ en direcciones opuestas, de $511$ keV cada uno
+- 'dónde llega cada fotón al anillo: resolver $|a + t u| = R$ con $t > 0$'
+- 'sinograma: coincidencias detectadas por línea de respuesta $(\theta, s)$'
+- probabilidad de que una desintegración en el píxel $j$ se cuente en el bin $b$ (por la atenuación)
+- '$j$ repetido ⇒ sumado: proyección directa más aleatorias/dispersión'
+- '$b$ repetido ⇒ sumado: retroproyección a lo largo de cada LOR'
+- 'actualización multiplicativa: sigue siendo positiva y conserva el total de cuentas'
+labels:
+  kilo_decays: Desintegraciones simuladas (miles)
+  n_iter: Iteraciones MLEM
+  positron_range: Alcance del positrón $\sigma_+$
+  attenuation: Atenuación en el cuerpo
+  background: Fracción de aleatorias + dispersión
+  grid: Malla de la imagen $n \times n$
+  n_detectors: Cristales detectores en el anillo

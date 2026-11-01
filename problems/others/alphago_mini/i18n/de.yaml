@@ -1,0 +1,18 @@
+source_hash: f0ace6f81d9f
+title: 'AlphaGo im Kleinen: Baumsuche auf einem $5\times5$-Go-Brett'
+summary: 'Eine Selbstspiel-Partie Go auf einem winzigen Brett, deren Züge von derselben Suche gewählt werden, die AlphaGo verwendete: Monte-Carlo-Baumsuche mit der PUCT-Regel. Die Go-Regeln selbst sind Tensoroperationen: Schlagen und die Flächenzählung sind Flutfüllungen, pro Schritt ein einsum mit der Adjazenzmatrix des Bretts. Jede neue Stellung wird von einem ganzen Stapel gleichzeitig gespielter Zufallspartien bewertet. Beobachten Sie, wie sich die Besuchszahlen auf den Zug konzentrieren, an den die Suche glaubt.'
+notes: 'Jede Simulation läuft den Baum hinab, wählt das PUCT-Maximum, fügt eine neue Stellung hinzu, bewertet sie mit dem Stapel zufälliger Playouts und addiert dieses Ergebnis zu jedem Zug auf dem Pfad. Gute Züge sammeln Besuche, sodass sich die Suche auf das Wesentliche konzentriert, ohne jede Variante zu betrachten. AlphaGo nutzte dieselbe Schleife, ersetzte aber den gleichverteilten Prior $P_a$ durch ein Policy-Netz und die zufälligen Playouts durch ein Value-Netz, beide an Partien trainiert; AlphaGo Zero lernte beide allein durch Selbstspiel. Auf $5\times5$ ist die Eröffnung im Zentrum stark für Schwarz; mit wenigen Simulationen macht die Suche sichtbare Fehler; erhöhen Sie die Simulationen, wird die Partie präziser, aber langsamer. Regeln: Tromp–Taylor (Selbstmord entfernt die eigene Gruppe, Flächenzählung) mit einer einfachen Ko-Prüfung.'
+meanings:
+- 'Punkt $p$ des Bretts: $+1$ Schwarz, $-1$ Weiß, 0 leer'
+- 'das Brett als Graph: 1, wenn $p$ und $q$ waagerecht oder senkrecht benachbart sind'
+- 'Flutfüllung: von den leeren Punkten durch eine Farbe findet man die Gruppen mit einer Freiheit; der Rest wird geschlagen'
+- 'Flächenzählung: Steine plus leere Punkte, die nur diese Farbe erreicht, Schwarz minus Weiß minus Komi $k$'
+- $R$ Zufallspartien als ein $(R, n^2)$-Tensor gespielt; mittleres Ergebnis für Schwarz; nie das eigene Auge füllen
+- 'PUCT: Wert $Q_a$ plus ein Explorationsbonus, der schrumpft, je öfter Zug $a$ besucht wird; gleichverteilter Prior $P_a$'
+- 'Besuchszahlen nach allen Simulationen (letzter Eintrag: Passen); der meistbesuchte Zug wird gespielt'
+labels:
+  board_size: Brettgröße $n$
+  simulations: Simulationen pro Zug
+  rollouts: Zufällige Playouts pro Blatt $R$
+  c_puct: Exploration $c$
+  komi: Komi $k$

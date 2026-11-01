@@ -1,0 +1,21 @@
+source_hash: 2ee80d9bf824
+title: Équations de Bloch et écho de spin
+summary: 'L''équation de Bloch est un produit vectoriel, $\varepsilon_{ijk} M_j \Omega_k$, plus une relaxation. Des centaines d''isochromats aux fréquences de décalage de résonance $\Delta\omega_n$ légèrement différentes avancent ensemble en une seule mise à jour RK4 par lot : après une impulsion de 90° ils se dispersent en éventail et le signal s''éteint avec $T_2^*$, puis une impulsion de 180° à $TE/2$ les refocalise en un écho à $TE$ dont la hauteur ne décroît qu''avec le vrai $T_2$.'
+notes: 'Les temps sont en ms et les fréquences en rad/ms. Chaque isochromat pris seul garde $\lvert\mathbf M\rvert$ fixe, à la relaxation près, mais la moyenne de l''ensemble perd sa cohérence de phase : avec une dispersion lorentzienne, la décroissance libre de l''induction suit $e^{-t/T_2^*}$ avec $1/T_2^* = 1/T_2 + 1/T_2^{\prime}$. L''impulsion de 180° inverse chaque phase comme un miroir : les spins qui étaient en avance sont désormais en retard, et tous se réalignent à $TE$ ; cela annule l''inhomogénéité statique mais pas la perte aléatoire en $T_2$, si bien que les hauteurs d''écho suivent $e^{-TE/T_2}$. Plusieurs impulsions de refocalisation (un train CPMG, 180° autour de $y$) donnent une série d''échos qui permet de mesurer $T_2$. Les impulsions sont de courtes impulsions rectangulaires « dures » calculées avec la même équation de Bloch ; les spins loin de la résonance sont refocalisés imparfaitement. Les valeurs sont illustratives, à but éducatif uniquement, et non à usage clinique.
+  Essayez la dispersion gaussienne, un $T_2^{\prime}$ plus long ou un écho unique.'
+meanings:
+- aimantation de l'isochromat $n$, composante $i \in \{x, y, z\}$, dans le référentiel tournant
+- 'symbole de Levi-Civita : le produit vectoriel, exactement comme dans la force de Lorentz'
+- '$\gamma\mathbf B$ dans le référentiel tournant : champ RF $\omega_1$ dans le plan $xy$ pendant une impulsion, décalage de résonance $\Delta\omega_n$ selon $z$'
+- '$j, k$ répétés ⇒ sommés : précession $\mathbf M\times\boldsymbol\Omega$ de chaque isochromat'
+- $\mathrm{diag}(1/T_2, 1/T_2, 1/T_1)$ ; contracté avec $M_{nj} - M^0_j$ sur $j$
+- dispersion des fréquences de précession due à l'inhomogénéité du champ, de largeur $1/T_2^{\prime}$
+- 'ce que voit la bobine de réception : l''aimantation transversale moyenne, sommée sur $n$'
+labels:
+  T1: Relaxation longitudinale $T_1$
+  T2: Relaxation transversale $T_2$
+  t2_prime: Temps d'inhomogénéité $T_2^{\prime}$
+  TE: Temps d'écho $TE$
+  n_echoes: Nombre d'échos (impulsions de 180°)
+  n_spins: Isochromats
+  spread: Forme de raie hors résonance

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="X-ray tube sends a beam of intensity I0 through a body containing bone; the detector records the attenuated intensity I">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- X-ray tube -->
+    <rect x="10" y="62" width="28" height="36" rx="4" fill="#93c5fd" stroke="#374151" stroke-width="2"/>
+    <circle cx="32" cy="80" r="4" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <!-- fan of rays -->
+    <g stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3">
+      <line x1="36" y1="80" x2="206" y2="30"/>
+      <line x1="36" y1="80" x2="206" y2="80"/>
+      <line x1="36" y1="80" x2="206" y2="130"/>
+    </g>
+    <!-- body with bone -->
+    <ellipse cx="120" cy="80" rx="40" ry="46" fill="#93c5fd" fill-opacity="0.55" stroke="#374151" stroke-width="2"/>
+    <circle cx="124" cy="80" r="11" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="96" y="58" font-style="italic">μ</text>
+    <!-- detector -->
+    <rect x="206" y="22" width="10" height="116" fill="#e5e7eb" stroke="#374151" stroke-width="2"/>
+    <!-- beam direction and intensities -->
+    <line x1="44" y1="112" x2="72" y2="112" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="44" y="132" font-style="italic" fill="#b91c1c">I<tspan font-size="10" dy="3">0</tspan></text>
+    <line x1="168" y1="112" x2="196" y2="112" stroke="#dc2626" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <text x="178" y="132" font-style="italic" fill="#b91c1c">I</text>
+    <text x="222" y="84" font-style="italic" font-size="13" fill="#b45309">x</text>
+  </g>
+</svg>

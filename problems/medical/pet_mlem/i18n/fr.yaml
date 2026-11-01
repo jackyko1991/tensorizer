@@ -1,0 +1,24 @@
+source_hash: 492f2e3f4bf6
+title: 'TEP : annihilation des positons et reconstruction d''image'
+summary: Un traceur comme le FDG émet des positons ; chacun s'annihile avec un électron en deux photons de 511 keV émis dos à dos. Un lot de désintégrations simulées est suivi jusqu'à la couronne de détecteurs, chaque coïncidence est rangée dans un sinogramme selon sa ligne de réponse, et l'image est reconstruite par MLEM, $\lambda \leftarrow \lambda\,A^{\mathsf T}(y / A\lambda) / A^{\mathsf T}1$, où tout le scanner tient dans une seule matrice système $A$ et chaque itération se réduit à deux produits matrice–vecteur.
+notes: 'Les deux photons partent en sens opposés, donc la désintégration se trouve quelque part sur la droite qui relie les deux détecteurs touchés ensemble : une ligne de réponse (LOR). En en collectant des millions on obtient le sinogramme (chaque point du corps y trace une sinusoïde en $(\theta, s)$). MLEM traite les comptages comme poissoniens de moyenne $\bar y = A\lambda + r$ et fait croître la log-vraisemblance $\sum_b y_b \log \bar y_b - \bar y_b$ : chaque itération projette l''image courante, la compare aux données et rétroprojette le rapport. L''image ne devient jamais négative, le nombre total de coups est conservé ($\sum_b (A\lambda)_b = \sum_b y_b$ sans bruit de fond) et la vraisemblance ne diminue jamais. Les premières itérations sont lisses ; les suivantes sont plus nettes mais amplifient le bruit de Poisson, si bien que l''erreur diminue puis remonte (avec les valeurs par défaut le minimum se situe vers 50 itérations ; essayez 150 itérations, ou moins de désintégrations,
+  pour voir la remontée) : les scanners cliniques s''arrêtent tôt (ou utilisent des sous-ensembles OSEM et un post-filtrage). La FBP filtre chaque projection par une rampe et rétroprojette en une seule étape ; elle est rapide mais plus bruitée et peut devenir négative. Les photons qui traversent le corps sont atténués d''un facteur $e^{-\int \mu\, dl}$ avec $\mu \approx 0.096$ cm$^{-1}$ pour l''eau à 511 keV ; ce facteur ne dépend que de la LOR, pas de l''endroit de la désintégration, et il est donc intégré à $A$. Simplifications : 2D uniquement, parcours du positon gaussien (le F-18 a un parcours moyen d''environ 0,6 mm, le Ga-68 d''environ 3 mm, donc il reste caché par les pixels de 6 mm à moins de l''augmenter), pas d''acolinéarité des photons, cristaux idéaux (chaque extrémité de LOR est placée en un point aléatoire du cristal touché) sans profondeur d''interaction ni temps mort, et un fond de fortuits et de diffusés lisse et connu. Toutes les valeurs sont approximatives et destinées
+  à l''enseignement, pas à un usage clinique.'
+meanings:
+- positions des désintégrations tirées de la carte d'activité (les lésions chaudes se désintègrent plus souvent)
+- 'point d''annihilation : le positon parcourt d''abord environ un millimètre'
+- deux photons $p = 1, 2$ en sens opposés, de $511$ keV chacun
+- 'point où chaque photon atteint la couronne : résoudre $|a + t u| = R$ avec $t > 0$'
+- 'sinogramme : coïncidences détectées par ligne de réponse $(\theta, s)$'
+- probabilité qu'une désintégration dans le pixel $j$ soit comptée dans la case $b$ (fois l'atténuation)
+- '$j$ répété ⇒ sommé : projection plus fortuits/diffusés'
+- '$b$ répété ⇒ sommé : rétroprojection le long de chaque LOR'
+- 'mise à jour multiplicative : reste positive et conserve le nombre total de coups'
+labels:
+  kilo_decays: Désintégrations simulées (milliers)
+  n_iter: Itérations MLEM
+  positron_range: Parcours du positon $\sigma_+$
+  attenuation: Atténuation dans le corps
+  background: Fraction de fortuits + diffusés
+  grid: Grille de l'image $n \times n$
+  n_detectors: Cristaux détecteurs sur la couronne

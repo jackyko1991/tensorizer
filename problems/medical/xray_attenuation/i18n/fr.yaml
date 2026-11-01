@@ -1,0 +1,17 @@
+source_hash: 9753ed59836b
+title: Atténuation des rayons X et contraste d'image
+summary: Les rayons X s'atténuent exponentiellement à travers le corps, $I = I_0\,e^{-\int\mu\,dl}$. Un fantôme thoracique composé de poumon, de tissus mous, d'os et de produit de contraste iodé est projeté rayon par rayon avec un seul einsum, ce qui montre pourquoi l'os ressort à basse énergie et comment le spectre d'un vrai tube se durcit avec la profondeur.
+notes: 'En échelle logarithmique la projection est additive : $-\ln(I/I_0)$ est la somme de $\mu\,L$ sur les matériaux, donc une image monochromatique est une application linéaire des longueurs de matériau. Une plaque homogène divise le faisceau par deux à chaque couche de demi-atténuation $\ln 2/\mu$. L''absorption photoélectrique croît à peu près comme $Z^3/E^3$, donc le contraste de l''os est fort à 30–50 keV et s''estompe à plus haute énergie ; l''iode fait un saut au-dessus de son seuil K à 33 keV, d''où son usage comme produit de contraste. Un vrai tube émet un spectre : les photons mous sont absorbés en premier, l''énergie moyenne augmente et le $\mu$ effectif diminue avec la profondeur (durcissement du faisceau). Simplifications : rayons droits et parallèles, pas de diffusion, pas de réponse du détecteur, huit énergies tabulées avec des valeurs de $\mu$ arrondies. Tous les chiffres sont approximatifs et à but éducatif uniquement, non à usage clinique.'
+meanings:
+- 'fantôme one-hot : 1 là où le pixel $(y, x)$ est du matériau $m$'
+- longueur du trajet d'un rayon dans la ligne de pixels $y$
+- '$y$ répété ⇒ sommé : longueur de matériau $m$ traversée par le rayon $x$'
+- coefficient d'atténuation linéique du matériau $m$ à l'énergie $E_e$ (1/cm)
+- '$m$ répété ⇒ sommé : intégrale de ligne $\int \mu\, dl$ pour chaque énergie et chaque rayon'
+- spectre du tube (loi de Kramers, filtre en aluminium), $\sum_e S_e = 1$
+- '$e$ répété ⇒ sommé : fraction transmise d''un faisceau polychromatique'
+labels:
+  energy_kev: Énergie des photons $E$
+  kvp: Tension du tube
+  iodine_mg_ml: Concentration en iode
+  n_pixels: Pixels en largeur

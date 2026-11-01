@@ -1,0 +1,19 @@
+source_hash: fa6ec3302fec
+title: 雜訊與朗之萬方程式
+summary: 諧振阱中的布朗粒子不斷受到周圍分子的隨機撞擊。朗之萬方程式在牛頓定律中加入這個雜訊項 $\sqrt{2\gamma k_BT}\,dW$； Euler–Maruyama 方法把整個粒子系綜放在一個批次張量中一起推進，位置的分佈最終趨於波茲曼分佈 $N(0, k_BT/k)$（能量均分）。
+notes: 只有摩擦時，牛頓定律會讓粒子停在阱底（粗紅線）。但流體中的真實粒子從不靜止：分子從四面八方撞擊它，這個隨機力就是朗之萬方程式的雜訊項（誤差項）。它的大小並非任意。漲落–耗散定理把它定為 $\sqrt{2\gamma k_BT}$：造成摩擦 $\gamma$ 的同一批碰撞也在推動粒子，於是系綜在溫度 $T$ 達到平衡： $\tfrac12 k\langle x^2\rangle = \tfrac12 m\langle v^2\rangle = \tfrac12 k_BT$（能量均分），位置按 $N(0, k_BT/k)$ 分佈。維納增量 $dW$ 的變異數為 $dt$；在有限步長中它變成 $\sqrt{\Delta t}\,\xi$，其中 $\xi \sim N(0,1)$，每步的速度衝量變異數為 $2\gamma k_BT\Delta t/m^2$。若雜訊按 $\Delta t$ 縮放，步長縮小時它就會消失：隨機撞擊像隨機漫步一樣累加，其分散程度按 $\sqrt{t}$ 增長。因為方程式是線性的，系綜平均 $\langle x\rangle$ 精確地遵循無雜訊的阻尼振子（紅線上的黑色虛線），而每條單獨軌跡則四處遊走。試試 $T = 0$（純阻尼振子）、大的 $\gamma$ 配小的 $m$（過阻尼布朗運動：$\langle x^2\rangle$ 以速率 $2k/\gamma$ 弛豫而不振盪），或小的 $\gamma$（緩慢趨於平衡）。簡化：採用 $k_B = 1$ 的約化單位、一維、白（無相關）雜訊，以及一階格式，其平衡變異數帶有 $O(\Delta t)$ 的偏差。
+meanings:
+- 粒子 $b$ 在第 $n$ 步的位置與速度：整個系綜就是一個批次
+- 雜訊張量，每步一列：獨立的標準常態亂數（固定種子）
+- 每步隨機衝量的大小；它按 $\sqrt{\Delta t}$ 縮放，而不是 $\Delta t$
+- 確定性加速度：摩擦加彈簧
+- Euler–Maruyama 步驟；位置使用新的速度（辛 Euler）
+- 系綜平均：重複的 $b$ ⇒ 對粒子求和
+- 平衡時的 $\langle x^2\rangle$ 與 $\langle v^2\rangle$：$\tfrac12 k\langle x^2\rangle = \tfrac12 m\langle v^2\rangle = \tfrac12 k_BT$
+labels:
+  temperature: 溫度 $k_BT$
+  gamma: 摩擦 $\gamma$
+  k: 勁度 $k$
+  m: 質量 $m$
+  n_particles: 粒子數 $B$
+  t_max: 時長 $t_{max}$

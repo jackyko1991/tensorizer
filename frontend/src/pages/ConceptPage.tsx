@@ -1,9 +1,10 @@
 import { generatedUrl } from "../api";
 import CodeBlock, { extractDef } from "../components/CodeBlock";
 import Tex, { RichText } from "../components/Tex";
+import TranslationTable from "../components/TranslationTable";
 import { usePageText, type PageKey } from "../content/pages";
 import { localize, useLang } from "../i18n";
-import type { Manifest, TranslationRow } from "../types";
+import type { Manifest } from "../types";
 
 const PENDULUM = "mechanics/simple_pendulum";
 const STEPS = [1, 2, 3, 4, 5, 6, 7] as const;
@@ -133,36 +134,3 @@ function Eq({ tex }: { tex: string }) {
   );
 }
 
-function TranslationTable({ rows }: { rows: TranslationRow[] }) {
-  const { t } = useLang();
-  return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-gray-200 text-left text-xs text-gray-500">
-            <th className="py-1.5 pr-3 font-medium">{t("col.symbol")}</th>
-            <th className="py-1.5 pr-3 font-medium">{t("col.code")}</th>
-            <th className="py-1.5 pr-3 font-medium">{t("col.shape")}</th>
-            <th className="py-1.5 font-medium">{t("col.meaning")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.symbol + r.code} className="border-b border-gray-100 align-top">
-              <td className="py-1.5 pr-3 whitespace-nowrap">
-                <Tex tex={r.symbol} />
-              </td>
-              <td className="py-1.5 pr-3">
-                <code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">{r.code}</code>
-              </td>
-              <td className="py-1.5 pr-3 font-mono text-xs whitespace-nowrap text-gray-600">{r.shape}</td>
-              <td className="py-1.5">
-                <RichText text={r.meaning} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}

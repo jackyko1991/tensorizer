@@ -1,0 +1,40 @@
+title: Lorenz attractor and the butterfly effect
+category: others
+level: intermediate
+order: 1
+summary: >
+  Three coupled equations from a model of convection never settle and never repeat. Written as a linear part
+  $A_{ij}x_j$ plus a quadratic part $Q_{ijk}x_j x_k$ with a rank-3 tensor, one einsum moves a whole batch of
+  trajectories that start within $10^{-6}$ of each other; they peel apart exponentially, at the rate set by the
+  largest Lyapunov exponent $\lambda \approx 0.9$, until they are spread over the whole butterfly.
+animated: true
+vector_form: '\dot x = \sigma\,(y - x),\qquad \dot y = x\,(\rho - z) - y,\qquad \dot z = x\,y - \beta\,z'
+index_form: '\dot x_{bi} = A_{ij}\,x_{bj} + Q_{ijk}\,x_{bj}\,x_{bk},\qquad Q_{102} = -1,\quad Q_{201} = 1,\qquad \partial_i \dot x_i = A_{ii} + (Q_{iik} + Q_{iki})\,x_k = -(\sigma + 1 + \beta)'
+translation:
+  - {symbol: 'x_{bi}', code: 'x', shape: '(B, 3)', meaning: 'state $(x, y, z)$ of trajectory $b$'}
+  - {symbol: 'A_{ij}', code: 'lorenz_tensors(sigma, rho, beta)[0]', shape: '(3, 3)', meaning: 'linear part: rows $(-\sigma, \sigma, 0)$, $(\rho, -1, 0)$, $(0, 0, -\beta)$'}
+  - {symbol: 'Q_{ijk}', code: 'lorenz_tensors(sigma, rho, beta)[1]', shape: '(3, 3, 3)', meaning: 'quadratic part, a rank-3 tensor with two non-zero entries: $-xz$ in $\dot y$ and $+xy$ in $\dot z$'}
+  - {symbol: 'A_{ij}x_{bj}', code: "einsum('ij,bj->bi', A, x)", shape: '(B, 3)', meaning: 'repeated $j$ ⇒ summed'}
+  - {symbol: 'Q_{ijk}x_{bj}x_{bk}', code: "einsum('ijk,bj,bk->bi', Q, x, x)", shape: '(B, 3)', meaning: 'repeated $j$ and $k$ ⇒ summed: the nonlinearity that makes the chaos'}
+  - {symbol: '\partial_i \dot x_i', code: 'divergence(x, A, Q)', shape: '(B,)', meaning: 'trace of the Jacobian: volumes of states shrink at the constant rate $\sigma + 1 + \beta$'}
+  - {symbol: 's(t)', code: 'spread(traj)', shape: '(T,)', meaning: 'RMS distance of the trajectories from their mean'}
+  - {symbol: '\lambda', code: 'lyapunov_fit(times, s)', shape: '()', meaning: 'slope of $\ln s$ vs $t$ while the spread grows from $10\,s(0)$ to $1$'}
+notes: >
+  Lorenz (1963) cut a model of a fluid heated from below down to three numbers: $x$ is the strength of the convection
+  roll, $y$ and $z$ describe the temperature profile. With $\sigma = 10$, $\rho = 28$ and $\beta = 8/3$ the motion
+  circles one of the two fixed points $C_\pm = (\pm\sqrt{\beta(\rho-1)}, \pm\sqrt{\beta(\rho-1)}, \rho-1)$, then jumps
+  unpredictably to the other wing. Nearby trajectories separate like $e^{\lambda t}$ with $\lambda \approx 0.906$: an
+  error of $10^{-6}$ grows to the size of the attractor after about $15$ time units, which is why a forecast has a
+  horizon (the butterfly effect). At the same time every volume of states shrinks like $e^{-(\sigma+1+\beta)t}$, so the
+  trajectories crowd onto a thin, fractal set: the strange attractor. The tensor form makes the structure explicit: $A$
+  holds all the linear couplings and the whole nonlinearity is the two entries of $Q$. Before the run, one trajectory
+  from $(1, 1, 1)$ is integrated for $10$ time units so that the ball starts on the attractor; RK4 with a fixed step
+  $0.005$ is accurate enough here. Try $\rho < 1$: the origin becomes stable and every trajectory decays to it; for
+  $1 < \rho < 24.74$ they spiral into $C_+$ or $C_-$; near $\rho = 28$ and above the chaos returns.
+params:
+  sigma: {default: 10.0, min: 1, max: 20, step: 0.5, label: 'Prandtl number $\sigma$'}
+  rho: {default: 28.0, min: 0.5, max: 50, step: 0.5, label: 'Rayleigh number $\rho$'}
+  beta: {default: 2.6667, min: 0.5, max: 5, step: 0.01, label: 'Geometry factor $\beta$'}
+  t_max: {default: 30.0, min: 5, max: 60, step: 1, label: Simulated time, unit: time units}
+  log10_radius: {default: -6, min: -10, max: -2, step: 1, type: int, label: 'Starting ball radius $\log_{10} r$'}
+  n_traj: {default: 8, min: 2, max: 8, step: 1, type: int, label: Number of trajectories}

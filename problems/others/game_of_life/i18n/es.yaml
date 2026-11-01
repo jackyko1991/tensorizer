@@ -1,0 +1,17 @@
+source_hash: 1d6c71673889
+title: El juego de la vida de Conway como una convolución
+summary: 'No es física, solo por diversión: una cuadrícula de células vivas y muertas donde cada célula mira a sus ocho vecinas. Contarlas es una convolución $3\times3$, escrita como un único einsum sobre parches desplegados, y la regla de nacimiento/supervivencia es una comparación de tensores, de modo que todas las células de varios tableros se actualizan a la vez. Observa planeadores, un cañón de planeadores y sopas aleatorias.'
+notes: Tres números (nace con 3, sobrevive con 2 o 3) bastan para obtener planeadores que avanzan en diagonal una celda cada 4 generaciones, osciladores como el púlsar (periodo 3) y el cañón de planeadores de Gosper, que dispara un nuevo planeador cada 30 generaciones, de modo que su población crece en 5 por periodo. El $R$-pentominó, con solo 5 células, sigue cambiando durante 1103 generaciones en una cuadrícula ilimitada; en un tablero finito el borde lo interrumpe antes. Las sopas aleatorias se consumen hasta quedar en vidas estáticas, parpadeadores y planeadores que escapan; las curvas grises muestran cuán parecido es este decaimiento de una sopa a otra. El mismo patrón de desplegar y aplicar einsum es como se calcula una capa de una red neuronal convolucional.
+meanings:
+- 'célula $(i, j)$ del tablero $b$: 1 viva, 0 muerta'
+- 'unos alrededor de la célula y 0 en el centro: una célula no es su propia vecina'
+- el parche $3\times3$ alrededor de cada célula $p$ dispuesto como columna; las células fuera del tablero cuentan como muertas
+- '$k$ repetido ⇒ sumado: vecinas vivas de cada célula, lo mismo que una convolución con $K$'
+- 'B3/S23: nace con exactamente 3 vecinas, sobrevive con 2 o 3, en otro caso muere'
+- población de cada tablero en cada generación
+labels:
+  pattern: Patrón inicial
+  size: Tamaño del tablero
+  generations: Generaciones
+  n_boards: Tableros aleatorios $B$
+  density: Densidad de llenado aleatorio

@@ -1,0 +1,19 @@
+source_hash: 3ad16fadfd42
+title: 'Espace k en IRM : imager avec des gradients et des transformées de Fourier'
+summary: 'Les gradients de champ magnétique donnent à chaque pixel sa propre phase de précession, si bien que la bobine enregistre la transformée de Fourier de l''image : $s(\mathbf k) = \sum_x \rho(x)\,e^{-2\pi i\,\mathbf k\cdot\mathbf x}$ avec $\mathbf k(t) = \tfrac{\gamma}{2\pi}\int \mathbf G\,dt$. Écrit comme un einsum avec une matrice d''encodage, cela coïncide avec la FFT. Remplir l''espace k ligne par ligne puis l''inverser montre l''image devenir nette ; sauter des lignes la replie (repliement), ne garder que le centre la floute avec des oscillations de Gibbs.'
+notes: 'Une ligne sur deux ($R = 2$) divise le champ de vue par deux : l''image complétée par des zéros vaut exactement $\tfrac12[\rho(p) + \rho(p + N/2)]$, une copie décalée de $\mathrm{FOV}/2$ qui se replie de l''autre côté. Ne garder que les lignes centrales conserve le terme continu, donc l''intensité totale, mais perd les contours : l''image devient floue et oscille (Gibbs). La reconstruction régularisée résout un petit problème de moindres carrés pour chaque colonne de l''image, avec une pénalité sur le signal hors d''un masque de la tête estimé à partir des lignes centrales ; elle réduit un peu l''erreur du schéma aléatoire mais ne peut pas défaire un repliement régulier lorsque les deux copies repliées tombent dans la tête. Les vrais scanners ajoutent plusieurs bobines (imagerie parallèle) ou des a priori de parcimonie (acquisition comprimée). Le fantôme est la tête classique de Shepp–Logan ; à titre illustratif uniquement, non à usage clinique.'
+meanings:
+- 'image de densité de protons : ligne de pixels $p$ (direction de codage de phase), colonne $r$ (lecture)'
+- position dans l'espace k comme intégrale cumulée du gradient, $\tfrac{\gamma}{2\pi}\int G\,dt$ ; pas $\Delta k = 1/\mathrm{FOV}$
+- phase $e^{-2\pi i\,up/N}$ du pixel $p$ sur la ligne $u$ de l'espace k ; la matrice 2D $E_{kx}$ se factorise en $E_{up}E_{vr}$
+- '$p, r$ répétés ⇒ sommés : le signal mesuré dans l''espace k, identique à fft2(rho)'
+- 'masque d''échantillonnage : 1 sur les lignes de codage de phase acquises'
+- reconstruction avec complétion par des zéros
+- moindres carrés de Tikhonov par colonne d'image $r$, pénalisant le signal hors de la tête
+labels:
+  size: Taille de l'image $N$
+  R: Facteur de saut $R$ (une ligne sur $R$)
+  lowpass: Fraction centrale de l'espace k conservée
+  random_frac: Fraction aléatoire de lignes conservée
+  lam: Poids de Tikhonov $\lambda$
+  n_frames: Images du remplissage

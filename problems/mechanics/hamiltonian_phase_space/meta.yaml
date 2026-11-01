@@ -1,0 +1,33 @@
+title: 'Hamiltonian mechanics: phase space and symplectic integration'
+category: mechanics
+level: intermediate
+order: 4
+summary: >
+  Write the pendulum Hamiltonian $H(q, p)$ once and let torch.autograd give Hamilton's equations $\dot z_a = J_{ab}\,\partial H/\partial z_b$.
+  A whole fan of orbits and a Liouville blob move as one tensor, and the symplectic leapfrog is raced against explicit Euler and RK4 over many periods.
+animated: true
+vector_form: '\dot q = \frac{\partial H}{\partial p},\quad \dot p = -\frac{\partial H}{\partial q},\qquad H(q, p) = \frac{p^2}{2mL^2} - mgL\cos q'
+index_form: '\dot z_{ba} = J_{ac}\,\frac{\partial H}{\partial z_{bc}},\qquad J = \begin{pmatrix} 0 & I \\ -I & 0 \end{pmatrix},\qquad A = \tfrac12\sum_k \big(q_k\,p_{k+1} - q_{k+1}\,p_k\big)'
+translation:
+  - {symbol: 'z_{ba} = (q_b, p_b)', code: 'z[b, :]', shape: '(B, 2)', meaning: 'phase-space point $b$: angle $q$ and angular momentum $p$; every orbit and blob point is one row'}
+  - {symbol: 'H(z)', code: 'pendulum(m, L, g)(z)', shape: '(B,)', meaning: 'the Hamiltonian, the only physics typed in by hand'}
+  - {symbol: '\partial H/\partial z_{bc}', code: 'autograd.grad(H(z).sum(), z)', shape: '(B, 2)', meaning: 'gradient of the sum gives each independent point its own gradient'}
+  - {symbol: 'J_{ac}', code: 'symplectic_matrix(1)', shape: '(2, 2)', meaning: 'symplectic matrix $[[0, I], [-I, 0]]$: turns the gradient by 90°'}
+  - {symbol: 'J_{ac}\,\partial H/\partial z_{bc}', code: "einsum('ab,...b->...a', J, dH)", shape: '(B, 2)', meaning: 'repeated $c$ ⇒ summed: Hamilton''s equations for all points at once'}
+  - {symbol: 'p \leftarrow p - \tfrac12\Delta t\,\partial_q H', code: 'leapfrog_step(H, z, dt)', shape: '(B, 2)', meaning: 'kick–drift–kick (Störmer–Verlet): each sub-step is a shear, so area is kept exactly'}
+  - {symbol: 'z \leftarrow z + \Delta t\,\dot z', code: 'euler_step(H, z, dt)', shape: '(B, 2)', meaning: 'explicit Euler, for comparison: stretches phase space every step'}
+  - {symbol: 'A', code: 'shoelace_area(blob)', shape: '(T,)', meaning: 'area of the blob polygon; Liouville says it stays constant'}
+notes: >
+  The separatrix $H = mgL$, i.e. $p = \pm 2mL\sqrt{gL}\cos(q/2)$, divides librations (closed loops) from rotations (wavy lines that leave on the right and come back on the left).
+  Near it the period grows without bound, so the blob's inner edge laps its outer edge: it stretches into a thin spiral but its area stays the same (Liouville's theorem).
+  Leapfrog is only second order, yet its energy error stays bounded forever because it exactly conserves a nearby "shadow" Hamiltonian;
+  RK4 is far more accurate per step but its error creeps up steadily, and explicit Euler multiplies phase-space area by about $1 + \omega^2\Delta t^2$ per step, so the energy explodes.
+  Try a larger $\Delta t$, or the harmonic system where the blob just rotates rigidly.
+params:
+  system: {default: pendulum, type: choice, options: [pendulum, harmonic]}
+  m: {default: 1.0, min: 0.2, max: 5, step: 0.1, label: 'Mass $m$', unit: kg}
+  length: {default: 1.0, min: 0.2, max: 3, step: 0.1, label: 'Length $L$', unit: m}
+  amplitude: {default: 120.0, min: 5, max: 175, step: 5, label: 'Test-orbit amplitude $q_0$', unit: °}
+  n_orbits: {default: 12, min: 4, max: 24, step: 1, type: int, label: Orbits in the portrait}
+  dt: {default: 0.05, min: 0.005, max: 0.2, step: 0.005, label: 'Time step $\Delta t$', unit: s}
+  t_max: {default: 50.0, min: 10, max: 200, step: 10, label: Simulated time, unit: s}

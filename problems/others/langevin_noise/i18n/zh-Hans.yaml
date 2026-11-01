@@ -1,0 +1,19 @@
+source_hash: fa6ec3302fec
+title: 噪声与朗之万方程
+summary: 谐振阱中的布朗粒子不断受到周围分子的随机撞击。朗之万方程在牛顿定律中加入这个噪声项 $\sqrt{2\gamma k_BT}\,dW$； Euler–Maruyama 方法把整个粒子系综放在一个批次张量中一起推进，位置的分布最终趋于玻尔兹曼分布 $N(0, k_BT/k)$（能量均分）。
+notes: 只有摩擦时，牛顿定律会让粒子停在阱底（粗红线）。但流体中的真实粒子从不静止：分子从四面八方撞击它，这个随机力就是朗之万方程的噪声项（误差项）。它的大小并非任意。涨落–耗散定理把它定为 $\sqrt{2\gamma k_BT}$：造成摩擦 $\gamma$ 的同一批碰撞也在推动粒子，于是系综在温度 $T$ 达到平衡： $\tfrac12 k\langle x^2\rangle = \tfrac12 m\langle v^2\rangle = \tfrac12 k_BT$（能量均分），位置按 $N(0, k_BT/k)$ 分布。维纳增量 $dW$ 的方差为 $dt$；在有限步长中它变成 $\sqrt{\Delta t}\,\xi$，其中 $\xi \sim N(0,1)$，每步的速度冲量方差为 $2\gamma k_BT\Delta t/m^2$。若噪声按 $\Delta t$ 缩放，步长缩小时它就会消失：随机撞击像随机游走一样累加，其分散程度按 $\sqrt{t}$ 增长。因为方程是线性的，系综平均 $\langle x\rangle$ 精确地遵循无噪声的阻尼振子（红线上的黑色虚线），而每条单独轨迹则四处游走。试试 $T = 0$（纯阻尼振子）、大的 $\gamma$ 配小的 $m$（过阻尼布朗运动：$\langle x^2\rangle$ 以速率 $2k/\gamma$ 弛豫而不振荡），或小的 $\gamma$（缓慢趋于平衡）。简化：采用 $k_B = 1$ 的约化单位、一维、白（无相关）噪声，以及一阶格式，其平衡方差带有 $O(\Delta t)$ 的偏差。
+meanings:
+- 粒子 $b$ 在第 $n$ 步的位置与速度：整个系综就是一个批次
+- 噪声张量，每步一行：独立的标准正态随机数（固定种子）
+- 每步随机冲量的大小；它按 $\sqrt{\Delta t}$ 缩放，而不是 $\Delta t$
+- 确定性加速度：摩擦加弹簧
+- Euler–Maruyama 步骤；位置使用新的速度（辛 Euler）
+- 系综平均：重复的 $b$ ⇒ 对粒子求和
+- 平衡时的 $\langle x^2\rangle$ 与 $\langle v^2\rangle$：$\tfrac12 k\langle x^2\rangle = \tfrac12 m\langle v^2\rangle = \tfrac12 k_BT$
+labels:
+  temperature: 温度 $k_BT$
+  gamma: 摩擦 $\gamma$
+  k: 刚度 $k$
+  m: 质量 $m$
+  n_particles: 粒子数 $B$
+  t_max: 时长 $t_{max}$

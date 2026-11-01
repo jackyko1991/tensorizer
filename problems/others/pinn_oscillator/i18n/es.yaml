@@ -1,0 +1,28 @@
+source_hash: cf2636b6ae13
+title: 'Red neuronal informada por la física (PINN): oscilador amortiguado'
+summary: Una pequeña red neuronal $\hat x(t; w)$ aprende el movimiento de una masa amortiguada en un resorte a partir de solo diez mediciones ruidosas en el primer 40 % del intervalo. Añadir la ecuación de movimiento $m\ddot x + \mu\dot x + kx = 0$ a la función de pérdida, evaluada con diferenciación automática en puntos de colocación, le permite extrapolar donde una red ordinaria falla; en modo inverso, además infiere el amortiguamiento desconocido $\mu$.
+notes: 'Una red neuronal ordinaria es un ajustador de curvas flexible: entrenada solo con las mediciones puede pasar por ellas, pero más allá del último dato nada le dice qué hacer, y su predicción (discontinua) se desvía. Una red neuronal informada por la física (PINN) añade un segundo término a la pérdida: el cuadrado medio del residuo $r_c = m\hat x'''' + \mu\hat x'' + k\hat x$ en puntos de colocación $t_c$ que cubren todo el intervalo, incluso donde no hay datos. Las derivadas son derivadas exactas de la red respecto de su entrada, calculadas con torch.autograd.grad y create_graph=True para que la pérdida pueda retropropagarse a través de ellas hasta los pesos. Llevar $r_c \to 0$ obliga a $\hat x$ a ser solución de la ecuación de movimiento en todas partes; los datos y la condición inicial $x(0) = 1$, $\dot x(0) = 0$ escogen entonces la única solución compatible, de modo que la red extrapola correctamente. La física actúa como un regularizador que sustituye a los datos que faltan. En
+  el problema inverso, el amortiguamiento $\mu$ es desconocido: se convierte en un parámetro entrenable y el optimizador encuentra el valor con el que datos y física concuerdan (obsérvalo pasarse y luego asentarse). La solución exacta es $x = e^{-\delta t}(\cos\omega t + \tfrac{\delta}{\omega}\sin\omega t)$ con $\delta = \mu/2m$ y $\omega = \sqrt{k/m - \delta^2}$. Aspectos prácticos: el residuo es del orden de $k$ veces el error, así que el peso $\lambda \approx 10^{-4}$ lo equilibra con el término de datos (si es demasiado grande, la red se queda en la solución trivial $\hat x = 0$, cuyo residuo también es cero); las frecuencias más altas ($k$ mayor) necesitan más iteraciones, porque una red aprende primero las frecuencias bajas. Aquí el problema directo se resuelve solo para ilustrar el método: un solucionador de EDO sería mucho más rápido. Las PINN compensan en problemas inversos, con datos escasos y ruidosos, y en EDP sobre dominios de forma complicada. Simplificaciones: masa fija $m
+  = 1$, semilla fija y Adam con una tasa de aprendizaje de decaimiento coseno (sin refinamiento con L-BFGS).'
+meanings:
+- 'un único lote de tiempos de entrada: puntos de colocación, instantes de medición y $t = 0$'
+- 'pesos entrenables $w$ de la capa $l$: tamaños $1 \to 32 \to 32 \to 32 \to 1$'
+- $j$ repetido ⇒ suma sobre las neuronas de la capa anterior
+- activaciones ocultas; una activación suave para que $\hat x$ tenga segundas derivadas
+- da $\dot{\hat x}$; llamarla otra vez sobre ella da $\ddot{\hat x}$ (derivadas exactas de la red, sin diferencias finitas)
+- 'residuo de la EDO en los puntos de colocación: cero donde $\hat x$ obedece a la física'
+- desajuste con los datos, media de $r_c^2$ y la condición inicial $(\hat x(0) - 1)^2 + (\dot{\hat x}(0)/\omega_0)^2$
+- 'modo inverso: el amortiguamiento es un parámetro entrenable más, que Adam actualiza junto con los pesos'
+labels:
+  mode: 'Modo: aprender $\mu$ (inverso) o conocerlo (directo)'
+  k: Constante del resorte $k$
+  mu: Amortiguamiento real $\mu$
+  mu_guess: Valor inicial de $\mu$ (modo inverso)
+  n_data: Número de mediciones
+  data_fraction: Fracción del intervalo cubierta por las mediciones
+  noise: Ruido de medición
+  n_colloc: Puntos de colocación $t_c$
+  log10_lambda: Peso de la física $\log_{10}\lambda$
+  n_iter: Iteraciones de entrenamiento
+  lr: Tasa de aprendizaje de Adam
+  compare: Entrenar también una red sin física

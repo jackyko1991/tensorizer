@@ -1,0 +1,24 @@
+source_hash: 31fa57e56a24
+title: 最小作用量原理：用梯度下降寻找路径
+summary: 把路径切成端点固定的点 $q_n$，将作用量 $S = \sum_n L\,\Delta t$ 写成一个张量表达式，让自动微分和优化器把一批错误的猜测沿下坡推动，直到 $\partial S/\partial q_n = 0$。它们最终落在抛体的抛物线或振子的正弦曲线上。
+notes: 这里自然界并不是一步一步向前积分：整条路径同时调整，而且事先知道起点和终点。令 $\partial S/\partial q_n = 0$ 得到 $m(q_{n+1} - 2q_n + q_{n-1})/\Delta t^2 = -V'(q_n)$，即离散的欧拉–拉格朗日方程，恰好就是 Verlet 格式；在均匀重力下它重现抛物线直到舍入误差，对振子则精确到 $O(\Delta t^2)$。这个原理其实是稳定作用量原理：对振子而言，黑塞矩阵的最小特征值约为 $m\Delta t\,(\pi^2/T^2 - \omega^2)$，所以一旦 $T$ 超过半个周期 $\pi/\omega$，真实路径就是 $S$ 的鞍点，梯度下降会发散，程序于是改用牛顿步 $x \leftarrow x - \alpha H^{-1}\nabla S$，它能找到任何驻点。平滑而长的摆动弛豫得最慢（对应最小的黑塞特征值）；短的摆动在几次迭代内就消失。
+meanings:
+- 试探路径 $b$ 在时刻 $t_n = n\,\Delta t$ 的位置；$q_{b0}$ 与 $q_{bN}$ 固定
+- 对角线上为 $-1$，其右侧为 $+1$：$(Dq)_n = q_{n+1} - q_n$
+- 重复的 $k$ ⇒ 求和：每条路径每一步的速度
+- 动能减势能，对各步求和；$V$ 取在每一步的左端点
+- 对内部自由点的梯度；各路径相互独立，所以一次反向传播即可同时处理
+- 带动量的梯度下降，$\eta = 0.8\,\Delta t/m$
+- 黑塞矩阵：三对角，对角线为 $2m/\Delta t - V''\Delta t$，两侧为 $-m/\Delta t$
+- 离散欧拉–拉格朗日方程 $m(q_{n+1} - 2q_n + q_{n-1})/\Delta t^2 + V'(q_n)$，即 Verlet 格式；$\partial S/\partial q_n = -\Delta t\,r_n$
+labels:
+  system: 系统
+  method: 方法
+  T: 总时间 $T$
+  omega: 振子频率 $\omega$
+  q_start: 起点 $q_0$
+  q_end: 终点 $q_N$
+  n_steps: 时间步数 $N$
+  n_paths: 试探路径数
+  wiggle: 试探路径的摆动幅度
+  n_iter: 迭代次数

@@ -1,0 +1,18 @@
+source_hash: d014ac5184c9
+title: 'Caos de tres cuerpos: el problema pitagórico'
+summary: 'El problema de Burrau: masas 3, 4 y 5 parten del reposo en los vértices de un triángulo 3-4-5 y bailan caóticamente hasta que una sale despedida. Una ejecución gemela que parte a $\delta = 10^{-6}$ de distancia se integra en el mismo tensor (índice de ejecución $k$); la distancia entre ambas crece exponencialmente, $|\Delta| \propto e^{\lambda t}$, y sus destinos se separan.'
+notes: 'Los encuentros cercanos son la parte difícil: dos cuerpos se cruzan a una distancia de unos $0.01$, donde la fuerza es $10^4$ veces mayor de lo habitual. Un paso fijo explotaría ahí o avanzaría a paso de tortuga en el resto, así que el integrador usa el método adaptativo de Dormand–Prince 5(4): cada paso compara una respuesta de orden 5 y otra de orden 4, y dt se reduce automáticamente cerca de un paso cercano y vuelve a crecer después. No se usa suavizado, así que es gravitación newtoniana exacta con $G = 1$. Ambas ejecuciones comparten el paso, de modo que se comparan en los mismos instantes. Como el movimiento es caótico, la tolerancia importa: con el valor por defecto $10^{-11}$ la referencia reproduce el resultado clásico (Szebehely y Peters, 1967): el cuerpo más ligero ($m = 3$) es expulsado hacia $t \approx 60$ mientras las masas 4 y 5 se alejan como una binaria cerrada en la dirección opuesta. La gemela, desplazada solo $\delta$, se ha separado por completo hacia $t \approx
+  45$ y sigue otra historia. La curva de $|\Delta|$ es irregular: tiene un pico en cada encuentro cercano, donde la gemela pasa un instante antes o después a gran velocidad, y crece a saltos. El $\lambda$ ajustado es la tendencia media desde $t = 0$ hasta que $|\Delta|$ se queda por encima de $0.1$ para siempre. Prueba una tolerancia más laxa: entonces la propia referencia cambia de destino, un recordatorio de que el error numérico también es una perturbación.'
+meanings:
+- posición del cuerpo $a$ en la ejecución $k$ ($k = 0$ referencia, $k = 1$ gemela), componente $i$ del plano
+- masas 3, 4, 5
+- separación de $a$ a $b$, todos los pares de ambas ejecuciones por broadcasting
+- '$j$ repetido ⇒ sumado: distancia al cuadrado de cada par'
+- '$b$ repetido ⇒ sumado: atracción total sobre el cuerpo $a$; $k$ no se suma, las ejecuciones siguen independientes'
+- las 7 pendientes de etapa del paso adaptativo de Dormand–Prince; su combinación de orden 5 menos orden 4 es la estimación del error
+- distancia entre gemela y referencia en posiciones y velocidades
+- 'pendiente de $\ln|\Delta|$ frente a $t$ hasta que las ejecuciones se separan definitivamente: el exponente de Lyapunov'
+labels:
+  t_max: Tiempo simulado
+  log10_delta: Desplazamiento de la gemela $\log_{10}\delta$
+  log10_tol: Tolerancia de error $\log_{10}\mathrm{tol}$

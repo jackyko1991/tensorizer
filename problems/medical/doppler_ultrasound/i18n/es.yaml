@@ -1,0 +1,20 @@
+source_hash: 2cd1c41299f8
+title: 'Ecografía Doppler: medir el flujo sanguíneo'
+summary: 'Una sonda de ultrasonido escucha los ecos de los glóbulos rojos. Cada célula en movimiento desplaza el eco en $f_D = 2 f_0 v \cos\theta / c$, y cientos de células en una arteria pulsátil se simulan a la vez como un lote de fasores. Una transformada de Fourier de tiempo corto (STFT) convierte su eco sumado en el espectrograma Doppler que muestra un ecógrafo: la distribución de velocidades de la sangre a lo largo del ciclo cardiaco.'
+notes: 'El factor 2 aparece porque el desplazamiento ocurre dos veces: la célula en movimiento recibe una onda desplazada y la reemite mientras se mueve. Solo cuenta la componente de la velocidad a lo largo del haz, así que con $\theta = 90°$ no hay ningún desplazamiento; los ecógrafos piden el ángulo al operador y calculan $v = f_D c / (2 f_0 \cos\theta)$, que se vuelve muy incierto por encima de unos 60°. Con los valores por defecto ($f_0 = 5$ MHz, $\theta = 60°$, pico de 1 m/s) el desplazamiento sistólico es de unos 3,2 kHz, en el rango audible, por eso los equipos Doppler también reproducen la señal como sonido. En flujo laminar el perfil es parabólico: las células junto a la pared apenas se mueven y la línea central es la más rápida. Como áreas iguales de la sección contienen el mismo número de células, todas las velocidades entre 0 y $v_{\max}$ son igual de frecuentes: el espectro es una banda plana (ventana «rellena») y la frecuencia media es exactamente la mitad de la máxima. Un
+  flujo alterado o estenótico ensancharía el espectro. El Doppler pulsado muestrea el eco una vez por pulso, así que por Nyquist solo puede medir $|f_D| < \mathrm{PRF}/2$: baje la PRF (o suba la velocidad) y el pico sistólico se pliega al lado negativo (aliasing). Los ecógrafos reales necesitan una PRF alta para chorros rápidos pero una PRF baja para llegar a vasos profundos, porque cada pulso debe volver antes de enviar el siguiente. Simplificaciones: el volumen de muestra cubre todo el vaso, el haz es uniforme, la señal IQ se simula directamente en banda base y no hay filtro de pared ni eco de tejidos (clutter). Todos los valores son aproximados y con fines educativos, no para uso clínico.'
+meanings:
+- 'velocidad en el eje durante dos latidos: pico sistólico, breve reflujo, flujo diastólico lento'
+- 'glóbulos rojos aleatorios: radio en el vaso, fase e intensidad del eco'
+- 'perfil parabólico (laminar) por la forma de onda: producto exterior, ningún índice sumado'
+- desplazamiento Doppler $2 f_0 v \cos\theta / c$ de cada célula en cada pulso
+- '$n$ repetido ⇒ sumado: el eco recibido, una muestra compleja (IQ) por pulso cada $\Delta t = 1/\mathrm{PRF}$'
+- 'espectrograma: potencia a la frecuencia $f$ en la ventana temporal $k$'
+- el Doppler pulsado solo ve $f$ plegada en $[-\mathrm{PRF}/2, \mathrm{PRF}/2)$
+labels:
+  f0: Frecuencia de emisión $f_0$
+  theta: Ángulo haz–flujo $\theta$
+  v_peak: Velocidad sistólica máxima
+  prf: Frecuencia de repetición de pulsos PRF
+  heart_rate: Frecuencia cardiaca
+  n_scatterers: Glóbulos rojos simulados

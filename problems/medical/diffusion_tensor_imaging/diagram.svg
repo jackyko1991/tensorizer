@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Diffusion tensor: a curved bundle of nerve fibres with a diffusion ellipsoid aligned along it; the principal eigenvector e1 follows the fibre and a diffusion gradient direction g probes it">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="probe" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- fibre bundle -->
+    <g fill="none" stroke="#374151" stroke-width="2">
+      <path d="M14,140 C50,60 150,40 228,52"/>
+      <path d="M26,146 C62,72 152,56 228,66"/>
+      <path d="M38,152 C74,86 156,72 228,80"/>
+    </g>
+    <!-- diffusion ellipsoid along the fibre -->
+    <g transform="translate(112,70) rotate(-17)">
+      <ellipse cx="0" cy="0" rx="40" ry="12" fill="#93c5fd" fill-opacity="0.85" stroke="#1e40af" stroke-width="1.5"/>
+      <line x1="0" y1="0" x2="0" y2="-11" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <line x1="0" y1="0" x2="54" y2="0" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    </g>
+    <circle cx="112" cy="70" r="2.5" fill="#1e40af"/>
+    <text x="164" y="44" font-style="italic" fill="#b91c1c">e<tspan font-size="10" dy="3">1</tspan></text>
+    <text x="68" y="62" font-style="italic" fill="#1e40af">λ<tspan font-size="10" dy="3">∥</tspan></text>
+    <text x="110" y="100" font-style="italic" fill="#1e40af">λ<tspan font-size="10" dy="3">⊥</tspan></text>
+    <!-- gradient direction -->
+    <line x1="172" y1="128" x2="204" y2="98" stroke="#f59e0b" stroke-width="2" marker-end="url(#probe)"/>
+    <text x="208" y="102" font-style="italic" fill="#b45309">ĝ</text>
+  </g>
+</svg>

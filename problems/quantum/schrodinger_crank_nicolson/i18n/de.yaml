@@ -1,0 +1,20 @@
+source_hash: d9c269ec5e13
+title: 'Schrödinger-Gleichung: Zeitschritte nach Crank–Nicolson'
+summary: Die zeitabhängige Schrödinger-Gleichung $i\,\partial_t\psi = H\psi$ wird auf einem Gitter mit dem impliziten Crank–Nicolson-Verfahren $(I + \tfrac{i\Delta t}{2}H)\,\psi^{n+1} = (I - \tfrac{i\Delta t}{2}H)\,\psi^n$ fortgeschrieben. Die linke Matrix wird einmal LU-zerlegt, danach ist jeder Schritt ein billiges torch.linalg.lu_solve für drei Wellenpakete zugleich (die Spalten von $\psi_{xb}$). Der Schritt ist exakt unitär, die Norm bleibt also 1, während das explizite Euler-Verfahren mit demselben $\Delta t$ explodiert.
+notes: 'Einheiten $\hbar = m = 1$. Warum es funktioniert: $U = (I + \tfrac{i\Delta t}{2}H)^{-1}(I - \tfrac{i\Delta t}{2}H)$ ist die Cayley-Transformierte der hermiteschen Matrix $H$. Auf einem Eigenvektor mit Energie $E$ multipliziert sie mit $(1 - iE\Delta t/2)/(1 + iE\Delta t/2)$, einer Zahl vom Betrag genau 1; daher ist $U$ für jedes $\Delta t$ unitär: kein Wachstum, kein Zerfall, und weil $U$ eine Funktion von $H$ ist, bleibt auch $\langle H\rangle$ erhalten. Ihre Phase $2\arctan(E\Delta t/2)$ stimmt mit der exakten $E\Delta t$ bis auf $\mathcal O(E^3\Delta t^3)$ pro Schritt überein, das Verfahren ist also von zweiter Ordnung, und als implizites Verfahren ist es für jedes $\Delta t$ stabil (große Schritte sind nur ungenauer, nie instabil). Das explizite Euler-Verfahren multipliziert dagegen mit $1 - iE\Delta t$, vom Betrag $\sqrt{1 + E^2\Delta t^2} > 1$; die steifen Gittermoden mit $E \sim 2/dx^2$ explodieren innerhalb weniger Dutzend Schritte (rote Kurve). Die drei Pakete haben verschiedene
+  Amplituden; die härtere $g\,x^4$-Feder lässt das große schneller schwingen, und weil seine Energieniveaus nicht mehr äquidistant sind, dephasiert es — es läuft auseinander und verliert seine Form —, während das kleine Paket die Anharmonizität kaum spürt. Probieren Sie $g = 0$: alle drei schwingen gemeinsam mit Periode $2\pi$ und zerfließen nie (kohärente Zustände). Vergleichen Sie mit dem Split-Step-FFT-Verfahren in Quantentunneln, dem anderen unitären Verfahren zweiter Ordnung.'
+meanings:
+- 'anharmonischer Topf $\tfrac12x^2 + g\,x^4$: die Schwingungsdauer hängt von der Amplitude ab'
+- kinetischer Anteil $-\tfrac12\,D2$ plus $V$ auf der Diagonale; Wände an den Rändern der Box
+- eine Gaußfunktion pro Spalte $b$, aus der Ruhe bei $x_{0,b}$ losgelassen
+- $I \pm \tfrac{i\Delta t}{2}H$, einmal vor der Schleife aufgebaut
+- einmal zerlegen ($\mathcal O(N^3)$); jeder Schritt kostet dann nur $\mathcal O(N^2)$
+- 'wiederholtes $y$ ⇒ summiert: rechte Seite, dann zwei Dreieckslösungen für alle Spalten'
+- 'explizites Euler-Verfahren zum Vergleich: jede Eigenkomponente wächst pro Schritt um $\sqrt{1 + E^2\Delta t^2}$'
+- 'wiederholte $x, y$ ⇒ summiert: Energie jedes Pakets, exakt erhalten'
+labels:
+  g: Quartische Stärke $g$
+  x0: Größte Startposition $x_0$
+  t_max: Simulierte Zeit
+  dt: Zeitschritt $\Delta t$
+  n_grid: Gitterpunkte

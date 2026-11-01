@@ -1,0 +1,33 @@
+title: X-ray attenuation and image contrast
+category: medical
+level: beginner
+order: 1
+summary: >
+  X-rays fade exponentially through the body, $I = I_0\,e^{-\int\mu\,dl}$. A chest phantom made of
+  lung, soft tissue, bone and iodine contrast is projected ray by ray with one einsum, showing why bone
+  stands out at low energy and how a real tube spectrum hardens with depth.
+animated: true
+vector_form: 'I(E) = I_0 \exp\!\left(-\int_{\text{ray}} \mu(E, \mathbf r)\, dl\right)'
+index_form: 'L_{mx} = M_{myx}\,\Delta l_y \qquad -\ln\frac{I_{ex}}{I_0} = \mu_{em}\,L_{mx} \qquad \frac{I_x}{I_0} = S_e\, e^{-\mu_{em} L_{mx}}'
+translation:
+  - {symbol: 'M_{myx}', code: 'masks', shape: '(M, Y, X)', meaning: 'one-hot phantom: 1 where pixel $(y, x)$ is material $m$'}
+  - {symbol: '\Delta l_y', code: 'dl', shape: '(Y,)', meaning: 'path length of a ray inside pixel row $y$'}
+  - {symbol: 'L_{mx}', code: "einsum('myx,y->mx', masks, dl)", shape: '(M, X)', meaning: 'repeated $y$ ⇒ summed: length of material $m$ crossed by ray $x$'}
+  - {symbol: '\mu_{em}', code: 'mu', shape: '(E, M)', meaning: 'linear attenuation coefficient of material $m$ at energy $E_e$ (1/cm)'}
+  - {symbol: '\mu_{em} L_{mx}', code: "einsum('em,mx->ex', mu, L)", shape: '(E, X)', meaning: 'repeated $m$ ⇒ summed: line integral $\int \mu\, dl$ for every energy and ray'}
+  - {symbol: 'S_e', code: 'spectrum', shape: '(E,)', meaning: 'tube spectrum (Kramers law, aluminium filter), $\sum_e S_e = 1$'}
+  - {symbol: 'S_e\, e^{-\mu_{em} L_{mx}}', code: "einsum('e,ex->x', S, T)", shape: '(X,)', meaning: 'repeated $e$ ⇒ summed: transmitted fraction of a polychromatic beam'}
+notes: >
+  In log space the projection is additive: $-\ln(I/I_0)$ is the sum of $\mu\,L$ over materials, so a
+  monochromatic image is a linear map of the material lengths. A homogeneous slab halves the beam every
+  half-value layer $\ln 2/\mu$. Photoelectric absorption grows roughly like $Z^3/E^3$, so bone contrast is
+  large at 30–50 keV and fades at higher energy; iodine jumps above its K-edge at 33 keV, which is why it is
+  used as a contrast agent. A real tube emits a spectrum: soft photons are absorbed first, the mean energy
+  rises and the effective $\mu$ drops with depth (beam hardening). Simplifications: straight parallel rays,
+  no scatter, no detector response, eight tabulated energies with rounded $\mu$ values. All numbers are
+  approximate and for education only, not for clinical use.
+params:
+  energy_kev: {default: 60, min: 30, max: 150, step: 5, label: 'Photon energy $E$', unit: keV}
+  kvp: {default: 120, min: 60, max: 150, step: 5, label: Tube voltage, unit: kVp}
+  iodine_mg_ml: {default: 10, min: 0, max: 30, step: 1, label: Iodine concentration, unit: mg/mL}
+  n_pixels: {default: 128, min: 48, max: 256, step: 16, type: int, label: Pixels across}

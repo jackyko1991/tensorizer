@@ -1,0 +1,17 @@
+source_hash: 8d871084eacb
+title: Transformada de Radon y reconstrucción por TC
+summary: 'Un escáner de TC registra integrales de línea $p(\theta, s)$ del mapa de atenuación desde todos los ángulos. El maniquí de cabeza de Shepp–Logan se proyecta girando y sumando un tensor, y se reconstruye por retroproyección filtrada: un filtro rampa $|\nu|$ en el espacio de Fourier y después un único einsum sobre los ángulos.'
+notes: 'Cada proyección conserva la masa total, $\int p\,ds = \iint f\,dA$, para cada ángulo. Retroproyectar las proyecciones en bruto (retroproyección simple) convierte un punto en un halo en $1/r$, de modo que la imagen es una versión borrosa de $f$; el filtro rampa $|\nu|$ deshace exactamente ese emborronamiento (teorema del corte central). Muy pocos ángulos producen rayas; el error disminuye al aumentar el número de ángulos hasta que lo limita la rejilla de píxeles. La ventana de Shepp–Logan suaviza la rampa a altas frecuencias, cambiando un poco de nitidez por menos ruido: pruébala con el ruido activado. Simplificaciones: geometría de haz paralelo, rayos monocromáticos, interpolación bilineal, ruido gaussiano del detector en lugar de estadística de fotones. Modelo educativo, no para uso clínico.'
+meanings:
+- 'mapa de atenuación (Shepp–Logan modificado: suma de 10 elipses)'
+- imagen muestreada a lo largo del rayo a distancia $s$, posición $t$, ángulo $\theta$
+- '$t$ repetido ⇒ sumado: el sinograma'
+- rampa $|\nu|$ (Ram-Lak), opcionalmente multiplicada por $\mathrm{sinc}(\nu\,\Delta s)$ (Shepp–Logan), sobre un detector rellenado con ceros
+- proyecciones filtradas
+- 'cada proyección redistribuida a lo largo de sus rayos: $q_\theta(x\cos\theta + y\sin\theta)$'
+- '$\theta$ repetido ⇒ sumado: la retroproyección'
+labels:
+  n_pixels: Tamaño de la imagen $N$
+  n_angles: Ángulos de proyección
+  filter: Ventana del filtro rampa
+  noise: Ruido del detector (fracción del máximo)

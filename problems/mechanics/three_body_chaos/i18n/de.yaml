@@ -1,0 +1,18 @@
+source_hash: d014ac5184c9
+title: 'Dreikörper-Chaos: das pythagoreische Problem'
+summary: 'Burraus Problem: Massen 3, 4 und 5 starten in Ruhe an den Ecken eines 3-4-5-Dreiecks und tanzen chaotisch, bis eine hinausgeschleudert wird. Ein Zwillingslauf, der um $\delta = 10^{-6}$ versetzt startet, wird im selben Tensor integriert (Laufindex $k$); der Abstand zwischen beiden wächst exponentiell, $|\Delta| \propto e^{\lambda t}$, und ihre Schicksale trennen sich.'
+notes: 'Nahe Begegnungen sind der schwierige Teil: Zwei Körper fliegen in einem Abstand von etwa $0.01$ aneinander vorbei, wo die Kraft $10^4$-mal größer ist als sonst. Ein fester Schritt würde dort explodieren oder überall sonst kriechen, daher nutzt der Löser das adaptive Dormand–Prince-5(4)-Verfahren: Jeder Schritt vergleicht eine Antwort 5. und 4. Ordnung, und dt schrumpft bei einem nahen Vorbeiflug automatisch und wächst danach wieder. Es wird keine Glättung (Softening) verwendet, dies ist also exakte Newtonsche Gravitation mit $G = 1$. Beide Läufe teilen sich einen Schritt und werden so zu gleichen Zeiten verglichen. Weil die Bewegung chaotisch ist, kommt es auf die Toleranz an: Mit dem Standardwert $10^{-11}$ reproduziert die Referenz das klassische Ergebnis (Szebehely und Peters, 1967): Der leichteste Körper ($m = 3$) wird um $t \approx 60$ herausgeschleudert, während die Massen 4 und 5 als enger Doppelstern in die Gegenrichtung davonziehen. Der um nur $\delta$ verschobene Zwilling
+  hat sich bis $t \approx 45$ völlig getrennt und erlebt eine andere Geschichte. Die Kurve von $|\Delta|$ ist sprunghaft: Sie zeigt bei jeder nahen Begegnung eine Spitze, weil der Zwilling einen Moment früher oder später mit hoher Geschwindigkeit vorbeikommt, und sie wächst schubweise. Das angepasste $\lambda$ ist der mittlere Trend von $t = 0$, bis $|\Delta|$ endgültig über $0.1$ bleibt. Probieren Sie eine lockerere Toleranz: Dann ändert die Referenz selbst ihr Schicksal – eine Erinnerung daran, dass auch numerische Fehler Störungen sind.'
+meanings:
+- Ort von Körper $a$ in Lauf $k$ ($k = 0$ Referenz, $k = 1$ Zwilling), Ebenenkomponente $i$
+- Massen 3, 4, 5
+- Abstandsvektor von $a$ nach $b$, alle Paare beider Läufe per Broadcasting
+- 'wiederholtes $j$ ⇒ summiert: quadrierter Abstand jedes Paares'
+- 'wiederholtes $b$ ⇒ summiert: gesamte Anziehung auf Körper $a$; über $k$ wird nicht summiert, die Läufe bleiben unabhängig'
+- die 7 Stufensteigungen des adaptiven Dormand–Prince-Schritts; ihre Kombination 5. minus 4. Ordnung ist die Fehlerschätzung
+- Abstand zwischen Zwilling und Referenz in Orten und Geschwindigkeiten
+- 'Steigung von $\ln|\Delta|$ über $t$, bis sich die Läufe endgültig trennen: der Ljapunow-Exponent'
+labels:
+  t_max: Simulierte Zeit
+  log10_delta: Versatz des Zwillings $\log_{10}\delta$
+  log10_tol: Fehlertoleranz $\log_{10}\mathrm{tol}$

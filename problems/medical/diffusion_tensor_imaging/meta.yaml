@@ -1,0 +1,34 @@
+title: 'Diffusion tensor imaging: mapping nerve fibres'
+category: medical
+level: advanced
+order: 3
+summary: >
+  Water diffuses faster along axons than across them, so each voxel has a diffusion tensor $D_{ij}$. The Stejskal–Tanner
+  signal $S = S_0\,e^{-b\,\hat g_i D_{ij}\hat g_j}$ is one einsum over voxels and gradient directions; a batched least-squares
+  fit of the log-signals recovers $D_{ij}$, its eigen-decomposition gives mean diffusivity, fractional anisotropy and the
+  fibre direction, and following that direction with RK2 traces the nerve bundles (tractography).
+animated: true
+vector_form: 'S(\hat{\mathbf g}) = S_0\,\exp\!\bigl(-b\,\hat{\mathbf g}^{\mathsf T}\mathbf D\,\hat{\mathbf g}\bigr),\qquad \mathbf D = \textstyle\sum_a \lambda_a\,\mathbf e_a\mathbf e_a^{\mathsf T},\qquad \dot{\mathbf x} = \mathbf e_1(\mathbf x)'
+index_form: 'S_{vg} = S_{0v}\,e^{-b\,\hat g_{gi}\,D_{vij}\,\hat g_{gj}},\qquad \ln\frac{S_{vg}}{S_{0v}} = -b\,B_{gm}\,d_{vm},\qquad MD_v = \tfrac13 D_{vii},\qquad FA_v = \sqrt{\tfrac32}\,\frac{\lVert\lambda_{va} - MD_v\rVert}{\lVert\lambda_{va}\rVert}'
+translation:
+  - {symbol: '\hat g_{gi}', code: 'gradient_directions(G)', shape: '(G, 3)', meaning: 'unit diffusion-gradient directions spread over a hemisphere'}
+  - {symbol: 'D_{vij}', code: 'phantom(n)', shape: '(V, 3, 3)', meaning: 'true diffusion tensor of every voxel: bundles $\lambda_\parallel e_ie_j + \lambda_\perp(\delta_{ij} - e_ie_j)$, isotropic CSF and grey matter'}
+  - {symbol: 'S_{vg}', code: "S0 * exp(-b * einsum('gi,vij,gj->vg', g, D, g))", shape: '(V, G)', meaning: 'repeated $i, j$ ⇒ summed: diffusion-weighted signal of each voxel for each direction'}
+  - {symbol: 'B_{gm}', code: 'design_matrix(g)', shape: '(G, 6)', meaning: 'rows $(g_x^2, g_y^2, g_z^2, 2g_xg_y, 2g_xg_z, 2g_yg_z)$ so that $\hat g_i D_{ij}\hat g_j = B_{gm}d_m$'}
+  - {symbol: 'd_{vm}', code: 'torch.linalg.lstsq(-b * B, log(S / S0).T)', shape: '(V, 6)', meaning: 'least-squares fit of the six unique tensor components, all voxels at once'}
+  - {symbol: '\lambda_{va},\ e_{vai}', code: 'torch.linalg.eigh(D)', shape: '(V, 3), (V, 3, 3)', meaning: 'eigenvalues and eigenvectors; the eigenvector of the largest eigenvalue points along the fibre'}
+  - {symbol: 'MD_v,\ FA_v', code: 'invariants(D)', shape: '(V,)', meaning: 'mean diffusivity (trace/3) and fractional anisotropy (0 isotropic, 1 a single direction)'}
+notes: >
+  Diffusivities are in $10^{-3}\,\mathrm{mm^2/s}$ and $b$ in $\mathrm{s/mm^2}$: roughly $\lambda_\parallel = 1.7$, $\lambda_\perp = 0.3$ in a
+  bundle (FA ≈ 0.8), 3.0 for free water (CSF) and 0.8 for grey matter. These are approximate values for teaching, not
+  for clinical use. The noise is Rician (the magnitude of a complex signal), so noisy fits overestimate FA in
+  isotropic regions. Where two bundles cross, one tensor can only represent their average, a flat (planar) tensor with
+  lower FA, and a tract entering it may stop or take the wrong turn into the other bundle: the classic limitation of
+  DTI that multi-fibre models address. Each ellipse shows the in-plane shape of the fitted tensor. Streamlines
+  start from seeds and follow the principal eigenvector of the bilinearly interpolated tensor field with the midpoint
+  (RK2) rule until FA drops below 0.2. Try more noise, fewer gradient directions or a smaller $b$.
+params:
+  b: {default: 1000.0, min: 200, max: 3000, step: 100, label: 'Diffusion weighting $b$', unit: s/mm²}
+  n_dirs: {default: 30, min: 6, max: 90, step: 1, type: int, label: Gradient directions}
+  noise: {default: 0.02, min: 0.0, max: 0.2, step: 0.005, label: 'Noise level $\sigma/S_0$'}
+  size: {default: 20, min: 12, max: 40, step: 2, type: int, label: Voxels per side}

@@ -1,0 +1,26 @@
+source_hash: 4e46f39a529c
+title: 'Opérateur neuronal de Fourier : apprendre l''opérateur solution de Burgers'
+summary: 'Au lieu de résoudre une seule équation, un opérateur neuronal de Fourier (FNO) apprend toute l''application $u_0(x) \mapsto u(x, T)$ de l''équation de Burgers visqueuse $u_t + u\,u_x = \nu\,u_{xx}$ à partir de paires produites par un solveur spectral. Sa couche clé est une convolution spectrale : transformée de Fourier, mélange des canaux mode par mode avec des poids complexes $R_{iok}$, conservation des $m$ modes les plus bas seulement, transformée inverse. Comme les poids vivent sur les modes de Fourier, le modèle entraîné fonctionne aussi sur une grille plus fine que celle de l''entraînement.'
+notes: 'Les données d''entraînement sont des paires $(u_0, u(\cdot, T))$ : des conditions initiales lisses aléatoires (sommes de modes de Fourier $k \le 5$ dont l''amplitude décroît comme $1/k$) et leurs solutions, calculées sur 256 points par un solveur pseudo-spectral puis sous-échantillonnées à 64 points pour l''entraînement. Le réseau ne voit jamais l''équation, seulement les données du solveur. La leçon tensorielle est la convolution spectrale : après rfft, chaque canal $i$ de chaque échantillon $b$ devient des coefficients de Fourier $\hat v_{bik}$, et einsum(''bik,iok->bok'') somme sur le canal d''entrée $i$ mais garde le nombre d''onde $k$ comme indice libre, si bien que chaque mode reçoit sa propre matrice complexe $C\times C$ $R_{\cdot\cdot k}$. C''est une convolution par un noyau global appris, calculée comme un produit dans l''espace de Fourier. Les modes plus élevés $k \ge m$ sont coupés ; le chemin local $W_{oi}v_{bix}$ et la non-linéarité $\sigma$ réintroduisent les détails
+  fins. Rien dans $R_{iok}$, $W_{oi}$, $P$ ou $Q$ ne fait référence au nombre de points de grille, donc l''opérateur entraîné fonctionne sur toute grille de plus de $2m$ points : le panneau en bas à droite applique les MÊMES poids à 256 points (super-résolution sans réentraînement) pour le cas test au front le plus raide. Les prédictions sur 64 points (points) se trouvent sur la courbe à 256 points : cette invariance à la discrétisation est approchée, car $\sigma$ crée des harmoniques qui se replient différemment selon la grille, mais l''erreur sur 256 points est égale à l''erreur sur 64 points. Ce qui limite la précision, c''est le modèle, pas la grille : les quasi-chocs demandent des modes au-delà de $m$ et sont les cas les plus difficiles. Comparez avec le PINN de ce thème : un PINN résout UN problème en mettant l''équation dans la fonction de perte, et doit être réentraîné pour chaque nouvelle condition initiale ; un opérateur neuronal apprend toute une famille de problèmes à partir
+  des données d''un solveur, après quoi chaque nouvelle prédiction n''est qu''une seule passe avant. La console affiche la durée de cette passe avant face à celle du solveur : des dizaines de fois plus rapide ici, mais pour Burgers 1D le solveur est déjà peu coûteux, et la génération des données et l''entraînement coûtent bien plus. Les opérateurs neuronaux sont rentables quand une simulation prend des heures (météo, turbulence, écoulement en milieu poreux) et qu''il faut de nombreuses requêtes, et seulement à l''intérieur de la distribution sur laquelle ils ont été entraînés. Essayez moins de modes $m$, un plus petit jeu d''entraînement, ou un $\nu$ plus grand (solutions plus lisses, plus faciles à apprendre). Simplifications : un seul instant de sortie $T$, une graine fixe, la position sur la grille comme simple canal d''entrée et pas de rembourrage (le domaine est de toute façon périodique).'
+meanings:
+- 'fonction d''entrée : $u_0$ et la position en chacun des $N$ points de grille de l''échantillon $b$'
+- 'relèvement : somme sur $f$, 2 caractéristiques deviennent $C$ canaux en chaque point'
+- coefficients de Fourier complexes de chaque canal $i$, nombre d'onde $k$
+- 'poids complexes, une matrice $C\times C$ par mode conservé $k < m$ : ils ne dépendent pas de $N$'
+- '$i$ répété ⇒ sommé ; $k$ n''est PAS sommé : chaque mode est mélangé séparément'
+- 'troncature : seuls les $m$ modes de Fourier les plus bas traversent la convolution spectrale'
+- 'retour vers un nombre quelconque $N$ de points de grille : c''est ici que se choisit la résolution'
+- chemin local, la même matrice $C\times C$ en chaque point ; $\sigma$ = GELU
+- projection ponctuelle à deux couches, des $C$ canaux vers la prédiction $u(x, T)$
+- 'erreur $L^2$ relative par échantillon, moyennée sur le lot : la perte minimisée par Adam'
+- 'les données : solveur pseudo-spectral, RK4 à facteur intégrant avec la règle de désaliasage 2/3, tous les échantillons à la fois'
+labels:
+  nu: Viscosité $\nu$
+  t_final: Instant de sortie $T$
+  n_train: Échantillons d'entraînement (conditions initiales)
+  modes: Modes de Fourier conservés $m$
+  width: Canaux $C$
+  epochs: Époques d'entraînement
+  lr: Taux d'apprentissage d'Adam

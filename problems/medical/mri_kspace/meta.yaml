@@ -1,0 +1,35 @@
+title: 'MRI k-space: imaging with gradients and Fourier transforms'
+category: medical
+level: advanced
+order: 2
+summary: >
+  Magnetic-field gradients give every pixel its own precession phase, so the coil records the Fourier transform of the
+  image: $s(\mathbf k) = \sum_x \rho(x)\,e^{-2\pi i\,\mathbf k\cdot\mathbf x}$ with $\mathbf k(t) = \tfrac{\gamma}{2\pi}\int \mathbf G\,dt$.
+  Written as an encoding-matrix einsum it equals the FFT. Filling k-space line by line and inverting shows the image
+  sharpen; skipping lines folds it over (aliasing), keeping only the centre blurs it with Gibbs ringing.
+animated: true
+vector_form: 's(\mathbf k) = \int \rho(\mathbf x)\,e^{-2\pi i\,\mathbf k\cdot\mathbf x}\,d^2x,\qquad \mathbf k(t) = \frac{\gamma}{2\pi}\int_0^t \mathbf G(t'')\,dt'',\qquad \rho = \mathcal F^{-1}[s]'
+index_form: 's_{uv} = E_{up}\,E_{vr}\,\rho_{pr},\qquad E_{up} = e^{-2\pi i\,up/N},\qquad \hat\rho_{pr} = \mathrm{IFFT}[\,m_{uv}\,s_{uv}\,]_{pr}'
+translation:
+  - {symbol: '\rho_{pr}', code: 'shepp_logan(N)', shape: '(N, N)', meaning: 'proton-density image: pixel row $p$ (phase-encode direction), column $r$ (readout)'}
+  - {symbol: 'k(t)', code: 'readout_k(N, fov, G)', shape: '(N,)', meaning: 'k-space position as the running integral of the gradient, $\tfrac{\gamma}{2\pi}\int G\,dt$; step $\Delta k = 1/\mathrm{FOV}$'}
+  - {symbol: 'E_{up}', code: 'encoding_matrix(N)', shape: '(N, N) complex', meaning: 'phase $e^{-2\pi i\,up/N}$ of pixel $p$ at k-space line $u$; the 2D matrix $E_{kx}$ factorises as $E_{up}E_{vr}$'}
+  - {symbol: 's_{uv}', code: "einsum('up,vr,pr->uv', E, E, rho)", shape: '(N, N) complex', meaning: 'repeated $p, r$ ⇒ summed: the measured k-space signal, identical to fft2(rho)'}
+  - {symbol: 'm_{uv}', code: 'line_mask(lines, N)', shape: '(N, N)', meaning: 'sampling mask: 1 on acquired phase-encode lines'}
+  - {symbol: '\hat\rho_{pr}', code: 'torch.fft.ifft2(mask * s)', shape: '(N, N)', meaning: 'zero-filled reconstruction'}
+  - {symbol: '(A^H A + \lambda W_r)\,\rho_{:r} = A^H h_{:r}', code: 'torch.linalg.solve(lhs, rhs)', shape: '(N, N, N)', meaning: 'Tikhonov least squares per image column $r$, penalising signal outside the head'}
+notes: >
+  Every other line ($R = 2$) halves the field of view: the zero-filled image is exactly $\tfrac12[\rho(p) + \rho(p + N/2)]$,
+  a copy shifted by $\mathrm{FOV}/2$ that wraps around. Keeping only the central lines keeps the DC term, so total
+  intensity is preserved, but loses the edges: the image blurs and rings (Gibbs). The regularised reconstruction
+  solves a small least-squares problem for each image column with a penalty on signal outside a head mask estimated
+  from the central lines; it reduces the error of the random scheme a little but cannot undo regular aliasing when the
+  folded copies both land inside the head. Real scanners add multiple coils (parallel imaging) or sparsity priors
+  (compressed sensing). The phantom is the classic Shepp–Logan head; illustrative only, not for clinical use.
+params:
+  size: {default: 64, min: 32, max: 128, step: 16, type: int, label: Image size $N$, unit: px}
+  R: {default: 2, min: 2, max: 4, step: 1, type: int, label: 'Skip factor $R$ (every $R$-th line)'}
+  lowpass: {default: 0.25, min: 0.05, max: 0.8, step: 0.05, label: Central fraction of k-space kept}
+  random_frac: {default: 0.4, min: 0.15, max: 0.9, step: 0.05, label: Random fraction of lines kept}
+  lam: {default: 10.0, min: 0.0, max: 100.0, step: 1, label: 'Tikhonov weight $\lambda$'}
+  n_frames: {default: 48, min: 8, max: 90, step: 4, type: int, label: Filling frames}

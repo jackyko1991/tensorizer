@@ -1,0 +1,33 @@
+title: 'Feynman diagram: $e^+e^- \to \mu^+\mu^-$ from Dirac traces'
+category: nuclear
+level: advanced
+order: 4
+summary: >
+  The simplest QED diagram: an electron and a positron annihilate into a virtual photon that makes a muon pair.
+  The Feynman rules turn the picture into an amplitude, the spin sums turn it into traces of $4\times4$ Dirac
+  matrices $\gamma^\mu$, and each trace is one einsum. Sweeping the energy shows the angular shape change from
+  isotropic at threshold to $1 + \cos^2\theta$, and the cross section fall as $4\pi\alpha^2/3s$.
+animated: true
+vector_form: '\mathcal M = \frac{e^2}{s}\,\big[\bar v(p'')\,\gamma^\mu\,u(p)\big]\big[\bar u(k)\,\gamma_\mu\,v(k'')\big],\qquad \frac{d\sigma}{d\Omega} = \frac{1}{64\pi^2 s}\,\frac{|\mathbf k|}{|\mathbf p|}\,\overline{|\mathcal M|^2}'
+index_form: '\overline{|\mathcal M|^2} = \frac{e^4}{4s^2}\,L^{\mu\nu}M_{\mu\nu},\qquad L^{\mu\nu} = (\not p'' - m_e)_{ab}\,\gamma^\mu_{bc}\,(\not p + m_e)_{cd}\,\gamma^\nu_{da},\qquad M_{\mu\nu} = (\not k + m)_{ab}\,\gamma_{\mu,bc}\,(\not k'' - m)_{cd}\,\gamma_{\nu,da}'
+translation:
+  - {symbol: '\gamma^\mu_{ab}', code: 'gamma_matrices(device)', shape: '(4, 4, 4)', meaning: 'Dirac matrices: index $\mu$ is spacetime, $a, b$ are spinor indices; $\{\gamma^\mu, \gamma^\nu\} = 2\eta^{\mu\nu}$'}
+  - {symbol: '\eta_{\mu\nu}', code: 'metric(device)', shape: '(4, 4)', meaning: 'Minkowski metric diag(1, −1, −1, −1), units with $\hbar = c = 1$'}
+  - {symbol: 'p^\mu, p''^\mu, k^\mu, k''^\mu', code: 'momenta(sqrt_s, theta, m)', shape: '(E, B, 4)', meaning: 'centre-of-mass four-momenta of $e^-$, $e^+$, $\ell^-$, $\ell^+$ for every energy $\sqrt s$ and angle $\theta$'}
+  - {symbol: '\not p_{ab} = \gamma^\mu_{ab}\,\eta_{\mu\nu}\,p^\nu', code: "einsum('mab,mn,...n->...ab', gamma, eta, p)", shape: '(E, B, 4, 4)', meaning: 'Feynman slash: the spin sums $\sum u\bar u = \not p + m$ and $\sum v\bar v = \not p - m$'}
+  - {symbol: 'L^{\mu\nu}', code: "einsum('...ab,mbc,...cd,nda->...mn', A, gamma, B, gamma)", shape: '(E, B, 4, 4)', meaning: 'repeated $a, b, c, d$ ⇒ summed: the trace of the electron line (same function for the muon line)'}
+  - {symbol: 'L^{\mu\nu}M_{\mu\nu}', code: "einsum('...mn,mr,ns,...rs->...', L, eta, eta, M)", shape: '(E, B)', meaning: 'lower the muon indices with $\eta$ and contract: the photon propagator joins the two lines'}
+  - {symbol: 'd\sigma/d\Omega', code: 'dsigma_domega(msq, sqrt_s, m_e, m)', shape: '(E, B)', meaning: 'flux and phase-space factors; $(\hbar c)^2$ converts GeV$^{-2}$ to nb'}
+  - {symbol: '\sigma = 2\pi\int \frac{d\sigma}{d\Omega}\sin\theta\,d\theta', code: 'trapezoid(dsdo * sin(theta), theta)', shape: '(E,)', meaning: 'total cross section; compared with $\frac{4\pi\alpha^2}{3s}\beta\,(1 + 2m^2/s)$, $\beta = \sqrt{1 - 4m^2/s}$'}
+notes: >
+  The diagram is drawn once, but the code never builds a spinor: summing over spins replaces $u\bar u$ by $\not p + m$,
+  so the whole calculation is products and traces of $\gamma$ matrices, which einsum does for every energy and angle at
+  once. The result is $\overline{|\mathcal M|^2} = e^4\big[1 + 4m^2/s + (1 - 4m^2/s)\cos^2\theta\big]$ for $m_e \to 0$:
+  at threshold the slow muons come out isotropically, far above it the photon's spin 1 and helicity conservation give
+  $1 + \cos^2\theta$. The total $\sigma$ rises steeply from $\sqrt s = 2m$ and then falls as $1/s$, about $86.8$ nb at
+  1 GeV. Real data from PETRA and LEP follow this curve until $\sqrt s \approx 30$ GeV, where a second diagram with a
+  $Z$ boson instead of the photon interferes and makes the forward–backward asymmetry $A_{FB}$ non-zero; pure QED gives
+  $A_{FB} = 0$. Try the $\tau$ pair, discovered at SPEAR in 1975 just above its 3.55 GeV threshold.
+params:
+  final: {default: muon, type: choice, options: [muon, tau], label: Final state}
+  sqrt_s_max: {default: 10.0, min: 1.0, max: 40.0, step: 0.5, label: 'Highest energy $\sqrt s$', unit: GeV}

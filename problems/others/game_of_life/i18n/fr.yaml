@@ -1,0 +1,17 @@
+source_hash: 1d6c71673889
+title: Le jeu de la vie de Conway comme une convolution
+summary: 'Pas de physique, juste pour le plaisir : une grille de cellules vivantes et mortes où chaque cellule regarde ses huit voisines. Les compter est une convolution $3\times3$, écrite comme un seul einsum sur des fenêtres dépliées, et la règle de naissance/survie est une comparaison de tenseurs, si bien que toutes les cellules de plusieurs grilles sont mises à jour en même temps. Observez des planeurs, un canon à planeurs et des soupes aléatoires.'
+notes: Trois nombres (naissance avec 3, survie avec 2 ou 3) suffisent pour obtenir des planeurs qui avancent en diagonale d'une case toutes les 4 générations, des oscillateurs comme le pulsar (période 3) et le canon à planeurs de Gosper, qui tire un nouveau planeur toutes les 30 générations, de sorte que sa population croît de 5 à chaque période. Le $R$-pentomino, avec seulement 5 cellules, continue d'évoluer pendant 1103 générations sur une grille infinie ; sur une grille finie, le bord écourte cette évolution. Les soupes aléatoires s'épuisent en structures stables, clignotants et planeurs qui s'échappent ; les courbes grises montrent à quel point ce déclin se ressemble d'une soupe à l'autre. Ce même schéma « dépliage puis einsum » est la façon dont on calcule une couche d'un réseau de neurones convolutif.
+meanings:
+- 'cellule $(i, j)$ de la grille $b$ : 1 vivante, 0 morte'
+- 'des 1 autour de la cellule et 0 au centre : une cellule n''est pas sa propre voisine'
+- la fenêtre $3\times3$ autour de chaque cellule $p$ disposée en colonne ; les cellules hors de la grille comptent comme mortes
+- '$k$ répété ⇒ sommé : voisines vivantes de chaque cellule, identique à une convolution par $K$'
+- 'B3/S23 : naissance avec exactement 3 voisines, survie avec 2 ou 3, sinon mort'
+- population de chaque grille à chaque génération
+labels:
+  pattern: Motif initial
+  size: Taille de la grille
+  generations: Générations
+  n_boards: Grilles aléatoires $B$
+  density: Densité de remplissage aléatoire

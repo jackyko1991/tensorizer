@@ -1,0 +1,1320 @@
+{
+ "astro/black_hole_geodesics": {
+  "titles": {
+   "de": "Schwarzschild-Metrik",
+   "en": "Schwarzschild metric",
+   "es": "Métrica de Schwarzschild",
+   "fr": "Métrique de Schwarzschild",
+   "ja": "シュワルツシルト解",
+   "ko": "슈바르츠실트 계량",
+   "ru": "Метрика Шварцшильда",
+   "zh": "史瓦西度規"
+  },
+  "wikidata": "Q742969"
+ },
+ "astro/escape_velocity": {
+  "titles": {
+   "en": "Escape velocity",
+   "es": "Velocidad de escape",
+   "fr": "Vitesse de libération",
+   "hi": "पलायन वेग",
+   "ja": "脱出速度",
+   "ko": "탈출 속도",
+   "ru": "Вторая космическая скорость",
+   "zh": "脱离速度"
+  },
+  "wikidata": "Q166530"
+ },
+ "astro/gravitational_lensing": {
+  "titles": {
+   "de": "Gravitationslinseneffekt",
+   "en": "Gravitational lens",
+   "es": "Lente gravitatoria",
+   "fr": "Lentille gravitationnelle",
+   "hi": "गुरुत्वाकर्षक लेंस",
+   "ja": "重力レンズ",
+   "ko": "중력렌즈",
+   "ru": "Гравитационная линза",
+   "zh": "引力透镜效应"
+  },
+  "wikidata": "Q185243"
+ },
+ "astro/hawking_radiation": {
+  "titles": {
+   "de": "Hawking-Strahlung",
+   "en": "Hawking radiation",
+   "es": "Radiación de Hawking",
+   "fr": "Évaporation des trous noirs",
+   "hi": "हॉकिंग विकिरण",
+   "ja": "ホーキング放射",
+   "ko": "호킹 복사",
+   "ru": "Излучение Хокинга",
+   "zh": "霍金輻射"
+  },
+  "wikidata": "Q497396"
+ },
+ "astro/hubble_expansion": {
+  "titles": {
+   "en": "Hubble's law",
+   "es": "Ley de Hubble-Lemaître",
+   "fr": "Loi de Hubble-Lemaître",
+   "hi": "हबल का नियम",
+   "ja": "ハッブル–ルメートルの法則",
+   "ko": "허블-르메트르 법칙",
+   "ru": "Закон Хаббла",
+   "zh": "哈勃–勒梅特定律"
+  },
+  "wikidata": "Q179916"
+ },
+ "astro/kepler_orbits": {
+  "titles": {
+   "de": "Keplersche Gesetze",
+   "en": "Kepler's laws of planetary motion",
+   "es": "Leyes de Kepler",
+   "fr": "Lois de Kepler",
+   "hi": "केप्लर के ग्रहीय गति के नियम",
+   "ja": "ケプラーの法則",
+   "ko": "케플러의 행성운동법칙",
+   "ru": "Законы Кеплера",
+   "zh": "开普勒定律"
+  },
+  "wikidata": "Q83219"
+ },
+ "astro/lagrange_points": {
+  "titles": {
+   "de": "Lagrange-Punkte",
+   "en": "Lagrange point",
+   "es": "Puntos de Lagrange",
+   "fr": "Point de Lagrange",
+   "hi": "लग्रांज बिन्दु",
+   "ja": "ラグランジュ点",
+   "ko": "라그랑주 점",
+   "ru": "Точки Лагранжа",
+   "zh": "拉格朗日点"
+  },
+  "wikidata": "Q190463"
+ },
+ "astro/minkowski_diagram": {
+  "titles": {
+   "de": "Minkowski-Diagramm",
+   "en": "Spacetime diagram",
+   "es": "Diagrama de Minkowski",
+   "fr": "Diagramme de Minkowski",
+   "ja": "時空図",
+   "ko": "시공도표",
+   "ru": "Пространственно-временная диаграмма",
+   "zh": "闵可夫斯基图"
+  },
+  "wikidata": "Q177596"
+ },
+ "astro/tidal_tensor": {
+  "titles": {
+   "de": "Spaghettisierung",
+   "en": "Spaghettification",
+   "es": "Espaguetización",
+   "fr": "Spaghettification",
+   "ja": "スパゲッティ化現象",
+   "ko": "국수효과",
+   "ru": "Спагеттификация",
+   "zh": "麵條化"
+  },
+  "wikidata": "Q788017"
+ },
+ "em/biot_savart": {
+  "titles": {
+   "de": "Biot-Savart-Gesetz",
+   "en": "Biot–Savart law",
+   "es": "Ley de Biot y Savart",
+   "fr": "Loi de Biot et Savart",
+   "hi": "बायो-सेवर्ट का नियम",
+   "ja": "ビオ・サバールの法則",
+   "ko": "비오-사바르 법칙",
+   "ru": "Закон Био — Савара — Лапласа",
+   "zh": "毕奥-萨伐尔定律"
+  },
+  "wikidata": "Q171340"
+ },
+ "em/coulomb_field": {
+  "titles": {
+   "de": "Coulombsches Gesetz",
+   "en": "Coulomb's law",
+   "es": "Ley de Coulomb",
+   "fr": "Loi de Coulomb (électrostatique)",
+   "hi": "कूलॉम-नियम",
+   "ja": "クーロンの法則",
+   "ko": "쿨롱 법칙",
+   "ru": "Закон Кулона",
+   "zh": "库仑定律"
+  },
+  "wikidata": "Q83152"
+ },
+ "em/electrostatics": {
+  "titles": {
+   "de": "Poisson-Gleichung",
+   "en": "Poisson's equation",
+   "es": "Ecuación de Poisson",
+   "fr": "Équation de Poisson",
+   "hi": "प्वासों समीकरण",
+   "ja": "ポアソン方程式",
+   "ko": "푸아송 방정식",
+   "ru": "Уравнение Пуассона",
+   "zh": "泊松方程"
+  },
+  "wikidata": "Q827688"
+ },
+ "em/em_wave_fdtd": {
+  "titles": {
+   "de": "Finite Difference Time Domain",
+   "en": "Finite-difference time-domain method",
+   "fr": "FDTD",
+   "ja": "FDTD法",
+   "ko": "FDTD법",
+   "ru": "Метод конечных разностей во временной области",
+   "zh": "时域有限差分"
+  },
+  "wikidata": "Q1417308"
+ },
+ "em/field_tensor_boost": {
+  "titles": {
+   "de": "Elektromagnetischer Feldstärketensor",
+   "en": "Electromagnetic tensor",
+   "es": "Tensor de campo electromagnético",
+   "fr": "Tenseur électromagnétique",
+   "ja": "電磁場テンソル",
+   "ko": "전자기장 텐서",
+   "ru": "Тензор электромагнитного поля",
+   "zh": "電磁張量"
+  },
+  "wikidata": "Q1076013"
+ },
+ "em/lorentz_force": {
+  "titles": {
+   "de": "Lorentzkraft",
+   "en": "Lorentz force",
+   "es": "Fuerza de Lorentz",
+   "fr": "Force électromagnétique",
+   "hi": "लॉरेंज बल",
+   "ja": "ローレンツ力",
+   "ko": "로런츠 힘",
+   "ru": "Сила Лоренца",
+   "zh": "洛伦兹力"
+  },
+  "wikidata": "Q172137"
+ },
+ "em/rc_circuit": {
+  "titles": {
+   "de": "RC-Glied",
+   "en": "RC circuit",
+   "es": "Circuito RC",
+   "fr": "Circuit RC",
+   "ja": "RC回路",
+   "ko": "RC 회로",
+   "ru": "RC-цепь",
+   "zh": "RC電路"
+  },
+  "wikidata": "Q939318"
+ },
+ "em/relativistic_particle": {
+  "titles": {
+   "en": "Relativistic mechanics",
+   "fr": "Mécanique relativiste",
+   "ja": "相対論的力学",
+   "ru": "Релятивистская механика"
+  },
+  "wikidata": "Q4393075"
+ },
+ "em/waveguide_modes": {
+  "titles": {
+   "de": "Hohlleiter",
+   "en": "Waveguide (radio frequency)",
+   "fr": "Guide d'ondes",
+   "hi": "तरंगपथक (विद्युतचुम्बकत्व)",
+   "ja": "導波管 (電磁気)",
+   "ko": "도파관 (전자기학)",
+   "ru": "Радиоволновод",
+   "zh": "电磁波导"
+  },
+  "wikidata": "Q354724"
+ },
+ "fluids/bernoulli_venturi": {
+  "titles": {
+   "de": "Bernoulli-Gleichung",
+   "en": "Bernoulli's principle",
+   "es": "Principio de Bernoulli",
+   "fr": "Théorème de Bernoulli",
+   "hi": "बर्नूली का प्रमेय",
+   "ja": "ベルヌーイの定理",
+   "ko": "베르누이 방정식",
+   "ru": "Закон Бернулли",
+   "zh": "伯努利定律"
+  },
+  "wikidata": "Q181328"
+ },
+ "fluids/burgers_shock": {
+  "titles": {
+   "de": "Burgersgleichung",
+   "en": "Burgers' equation",
+   "es": "Ecuación de Burgers",
+   "fr": "Équation de Burgers",
+   "ja": "バーガース方程式",
+   "ko": "버거스 방정식",
+   "ru": "Уравнение Бюргерса",
+   "zh": "伯格斯方程"
+  },
+  "wikidata": "Q1014918"
+ },
+ "fluids/cylinder_drag": {
+  "titles": {
+   "de": "Kármánsche Wirbelstraße",
+   "en": "Kármán vortex street",
+   "es": "Calle de vórtices de Von Kármán",
+   "fr": "Allée de tourbillons de Karman",
+   "ja": "カルマン渦",
+   "ko": "카르만 와류",
+   "ru": "Вихревая дорожка",
+   "zh": "卡门涡街"
+  },
+  "wikidata": "Q1044416"
+ },
+ "fluids/elastic_waves": {
+  "titles": {
+   "de": "Seismische Wellen",
+   "en": "Seismic wave",
+   "es": "Onda sísmica",
+   "fr": "Onde sismique",
+   "hi": "भूकम्पीय तरंग",
+   "ja": "地震波",
+   "ko": "지진파",
+   "ru": "Сейсмическая волна",
+   "zh": "地震波"
+  },
+  "wikidata": "Q186167"
+ },
+ "fluids/hydrostatics_buoyancy": {
+  "titles": {
+   "de": "Statischer Auftrieb",
+   "en": "Buoyancy",
+   "es": "Flotabilidad",
+   "fr": "Flottabilité",
+   "hi": "उत्प्लावन बल",
+   "ja": "浮力",
+   "ko": "부력",
+   "ru": "Плавучесть",
+   "zh": "浮力"
+  },
+  "wikidata": "Q6497624"
+ },
+ "fluids/lid_driven_cavity": {
+  "titles": {
+   "de": "Navier-Stokes-Gleichungen",
+   "en": "Navier–Stokes equations",
+   "es": "Ecuaciones de Navier-Stokes",
+   "fr": "Équations de Navier-Stokes",
+   "hi": "नेवियर-स्टोक्स समीकरण",
+   "ja": "ナビエ–ストークス方程式",
+   "ko": "나비에-스토크스 방정식",
+   "ru": "Уравнения Навье — Стокса",
+   "zh": "纳维-斯托克斯方程"
+  },
+  "wikidata": "Q201321"
+ },
+ "fluids/navier_stokes_pipe_flow": {
+  "titles": {
+   "de": "Gesetz von Hagen-Poiseuille",
+   "en": "Hagen–Poiseuille equation",
+   "es": "Ley de Poiseuille",
+   "fr": "Écoulement de Poiseuille",
+   "ja": "ハーゲン・ポアズイユ流れ",
+   "ko": "하겐-푸아죄유 방정식",
+   "ru": "Течение Пуазёйля",
+   "zh": "泊肃叶定律"
+  },
+  "wikidata": "Q869854"
+ },
+ "fluids/stress_strain": {
+  "titles": {
+   "de": "Mohrscher Spannungskreis",
+   "en": "Mohr's circle",
+   "es": "Círculo de Mohr",
+   "fr": "Cercle de Mohr",
+   "ja": "モールの応力円",
+   "ru": "Круг Мора",
+   "zh": "莫爾圓"
+  },
+  "wikidata": "Q360655"
+ },
+ "fluids/torricelli_draining": {
+  "titles": {
+   "de": "Ausflussgeschwindigkeit",
+   "en": "Torricelli's law",
+   "es": "Teorema de Torricelli",
+   "fr": "Formule de Torricelli",
+   "ja": "トリチェリーの原理",
+   "ko": "토리첼리의 정리",
+   "ru": "Формула Торричелли (гидродинамика)"
+  },
+  "wikidata": "Q728969"
+ },
+ "mechanics/coupled_oscillators": {
+  "titles": {
+   "de": "Eigenmode",
+   "en": "Normal mode",
+   "es": "Modo normal",
+   "fr": "Mode normal",
+   "ja": "固有振動",
+   "ko": "일반 모드",
+   "ru": "Нормальные колебания",
+   "zh": "简正模"
+  },
+  "wikidata": "Q900488"
+ },
+ "mechanics/double_pendulum": {
+  "titles": {
+   "de": "Doppelpendel",
+   "en": "Double pendulum",
+   "es": "Péndulo doble",
+   "fr": "Pendule double",
+   "hi": "द्विक लोलक",
+   "ja": "二重振り子",
+   "ko": "이중진자",
+   "ru": "Двойной маятник",
+   "zh": "双摆"
+  },
+  "wikidata": "Q1243208"
+ },
+ "mechanics/hamiltonian_phase_space": {
+  "titles": {
+   "de": "Hamiltonsche Mechanik",
+   "en": "Hamiltonian mechanics",
+   "es": "Mecánica hamiltoniana",
+   "fr": "Mécanique hamiltonienne",
+   "hi": "हैमिल्टनी यांत्रिकी",
+   "ja": "ハミルトン力学",
+   "ko": "해밀턴 역학",
+   "ru": "Гамильтонова механика",
+   "zh": "哈密顿力学"
+  },
+  "wikidata": "Q477921"
+ },
+ "mechanics/inclined_plane": {
+  "titles": {
+   "de": "Schiefe Ebene",
+   "en": "Inclined plane",
+   "es": "Plano inclinado",
+   "fr": "Plan incliné",
+   "hi": "आनत समतल",
+   "ja": "斜面",
+   "ko": "빗면",
+   "ru": "Наклонная плоскость",
+   "zh": "斜面"
+  },
+  "wikidata": "Q161462"
+ },
+ "mechanics/lagrangian_autograd": {
+  "titles": {
+   "de": "Lagrange-Formalismus",
+   "en": "Lagrangian mechanics",
+   "es": "Mecánica lagrangiana",
+   "fr": "Équations de Lagrange",
+   "hi": "लाग्रांजीय यांत्रिकी",
+   "ja": "ラグランジュ力学",
+   "ko": "라그랑주 역학",
+   "ru": "Лагранжева механика",
+   "zh": "拉格朗日力学"
+  },
+  "wikidata": "Q324669"
+ },
+ "mechanics/least_action": {
+  "titles": {
+   "de": "Prinzip der kleinsten Wirkung",
+   "en": "Action principles",
+   "es": "Principio de mínima acción",
+   "fr": "Principe de moindre action",
+   "ja": "最小作用の原理",
+   "ru": "Принцип наименьшего действия",
+   "zh": "最小作用量原理"
+  },
+  "wikidata": "Q722799"
+ },
+ "mechanics/mass_spring_cloth": {
+  "titles": {
+   "en": "Cloth modeling",
+   "es": "Simulación de telas"
+  },
+  "wikidata": "Q5135546"
+ },
+ "mechanics/n_body_gravity": {
+  "titles": {
+   "de": "N-Körper-Problem",
+   "en": "N-body problem",
+   "es": "Problema de los n cuerpos",
+   "fr": "Problème à N corps",
+   "ja": "多体問題",
+   "ko": "다체 문제",
+   "ru": "Гравитационная задача N тел",
+   "zh": "N体问题"
+  },
+  "wikidata": "Q1199050"
+ },
+ "mechanics/projectile": {
+  "titles": {
+   "de": "Wurfparabel",
+   "en": "Projectile motion",
+   "es": "Tiro parabólico",
+   "fr": "Trajectoire d'un projectile",
+   "hi": "परवलयिक गति",
+   "ja": "斜方投射",
+   "ko": "포물체 운동",
+   "ru": "Полёт снаряда",
+   "zh": "抛体运动"
+  },
+  "wikidata": "Q10281355"
+ },
+ "mechanics/rigid_body_rotation": {
+  "titles": {
+   "de": "Dschanibekow-Effekt",
+   "en": "Tennis racket theorem",
+   "es": "Teorema del eje intermedio",
+   "fr": "Effet Djanibekov",
+   "ja": "テニスラケットの定理",
+   "ru": "Эффект Джанибекова",
+   "zh": "网球拍定理"
+  },
+  "wikidata": "Q944604"
+ },
+ "mechanics/simple_pendulum": {
+  "titles": {
+   "de": "Mathematisches Pendel",
+   "en": "Pendulum (mechanics)",
+   "es": "Péndulo simple",
+   "fr": "Pendule simple",
+   "hi": "लोलक (गणित)",
+   "ru": "Математический маятник"
+  },
+  "wikidata": "Q829360"
+ },
+ "mechanics/three_body_chaos": {
+  "titles": {
+   "de": "Dreikörperproblem",
+   "en": "Three-body problem",
+   "es": "Problema de los tres cuerpos",
+   "hi": "तीन-वस्तु समस्या",
+   "ja": "三体問題",
+   "ko": "삼체 문제",
+   "ru": "Задача трёх тел",
+   "zh": "三体问题"
+  },
+  "wikidata": "Q607699"
+ },
+ "medical/bloch_spin_echo": {
+  "titles": {
+   "de": "Spin-Echo",
+   "en": "Spin echo",
+   "es": "Eco de espín",
+   "ja": "スピンエコー法",
+   "ru": "Спиновое эхо",
+   "zh": "自旋迴訊"
+  },
+  "wikidata": "Q904043"
+ },
+ "medical/diffusion_tensor_imaging": {
+  "titles": {
+   "en": "Diffusion-weighted magnetic resonance imaging",
+   "fr": "IRM de diffusion",
+   "ja": "拡散強調画像",
+   "ko": "확산강조 MRI",
+   "ru": "Диффузионная МРТ",
+   "zh": "擴散磁振造影"
+  },
+  "wikidata": "Q899360"
+ },
+ "medical/doppler_ultrasound": {
+  "titles": {
+   "de": "Farbkodierte Doppler-Sonografie",
+   "en": "Doppler ultrasonography",
+   "es": "Ecografía Doppler",
+   "fr": "Échographie Doppler",
+   "ru": "Доплерография",
+   "zh": "多普勒超声"
+  },
+  "wikidata": "Q3577488"
+ },
+ "medical/mri_kspace": {
+  "titles": {
+   "en": "K-space in magnetic resonance imaging",
+   "es": "Espacio k",
+   "fr": "Espace réciproque",
+   "ja": "K空間",
+   "zh": "K空間"
+  },
+  "wikidata": "Q1050490"
+ },
+ "medical/mri_relaxation": {
+  "titles": {
+   "de": "Relaxation (NMR)",
+   "en": "Relaxation (NMR)",
+   "es": "Relajación (resonancia magnética nuclear)",
+   "ja": "緩和 (NMR)",
+   "ko": "완화 (NMR)",
+   "zh": "弛豫 (核磁共振)"
+  },
+  "wikidata": "Q900475"
+ },
+ "medical/pet_mlem": {
+  "titles": {
+   "de": "Positronen-Emissions-Tomographie",
+   "en": "Positron emission tomography",
+   "es": "Tomografía por emisión de positrones",
+   "fr": "Tomographie par émission de positons",
+   "hi": "पॉजि़ट्रान उत्सर्जन टोमोग्राफी",
+   "ja": "ポジトロン断層法",
+   "ko": "양전자 방출 단층촬영",
+   "ru": "Позитронно-эмиссионная томография",
+   "zh": "正子斷層造影"
+  },
+  "wikidata": "Q208376"
+ },
+ "medical/proton_bragg_peak": {
+  "titles": {
+   "de": "Bragg-Kurve",
+   "en": "Bragg peak",
+   "fr": "Pic de Bragg",
+   "ja": "ブラッグ曲線",
+   "ru": "Кривая Брэгга",
+   "zh": "布拉格尖峰"
+  },
+  "wikidata": "Q897227"
+ },
+ "medical/radon_ct": {
+  "titles": {
+   "de": "Radon-Transformation",
+   "en": "Radon transform",
+   "es": "Transformada de Radon",
+   "fr": "Théorème de Radon",
+   "ja": "ラドン変換",
+   "ru": "Преобразование Радона",
+   "zh": "拉東變換"
+  },
+  "wikidata": "Q979829"
+ },
+ "medical/xray_attenuation": {
+  "titles": {
+   "de": "Absorptionskoeffizient",
+   "en": "Attenuation coefficient",
+   "ko": "감쇠 계수",
+   "zh": "衰減係數"
+  },
+  "wikidata": "Q902086"
+ },
+ "nuclear/binding_energy": {
+  "titles": {
+   "en": "Nuclear binding energy",
+   "es": "Energía de enlace nuclear",
+   "fr": "Liaison nucléaire",
+   "ko": "핵 결합 에너지",
+   "ru": "Ядерная энергия",
+   "zh": "核结合能"
+  },
+  "wikidata": "Q6750062"
+ },
+ "nuclear/decay_chain": {
+  "titles": {
+   "de": "Zerfallsreihe",
+   "en": "Decay chain",
+   "es": "Cadena de desintegración",
+   "fr": "Chaîne de désintégration",
+   "ja": "崩壊系列",
+   "ko": "붕괴 사슬",
+   "ru": "Радиоактивные ряды",
+   "zh": "衰變鏈"
+  },
+  "wikidata": "Q191645"
+ },
+ "nuclear/em_shower": {
+  "titles": {
+   "de": "Teilchenschauer",
+   "en": "Particle shower",
+   "ko": "입자 소나기"
+  },
+  "wikidata": "Q827629"
+ },
+ "nuclear/feynman_ee_mumu": {
+  "titles": {
+   "de": "Feynman-Diagramm",
+   "en": "Feynman diagram",
+   "es": "Diagrama de Feynman",
+   "fr": "Diagramme de Feynman",
+   "ja": "ファインマン・ダイアグラム",
+   "ko": "파인만 도형",
+   "ru": "Диаграммы Фейнмана",
+   "zh": "费曼图"
+  },
+  "wikidata": "Q386272"
+ },
+ "nuclear/four_momentum": {
+  "titles": {
+   "de": "Viererimpuls",
+   "en": "Four-momentum",
+   "es": "Cuadrimomento",
+   "fr": "Quadri-moment",
+   "ja": "4元運動量",
+   "ko": "사차원 운동량",
+   "ru": "Четырёхимпульс",
+   "zh": "四维动量"
+  },
+  "wikidata": "Q1068463"
+ },
+ "nuclear/neutrino_oscillations": {
+  "titles": {
+   "de": "Neutrinooszillation",
+   "en": "Neutrino oscillation",
+   "es": "Oscilación de neutrinos",
+   "fr": "Oscillation des neutrinos",
+   "ja": "ニュートリノ振動",
+   "ko": "중성미자 진동",
+   "ru": "Нейтринные осцилляции",
+   "zh": "中微子振荡"
+  },
+  "wikidata": "Q509021"
+ },
+ "nuclear/radioactive_decay": {
+  "titles": {
+   "de": "Radioaktiver Zerfall",
+   "en": "Radioactive decay",
+   "es": "Radiactividad",
+   "fr": "Décroissance radioactive",
+   "ja": "放射性崩壊",
+   "ko": "방사성 붕괴",
+   "ru": "Радиоактивный распад",
+   "zh": "放射性衰變"
+  },
+  "wikidata": "Q3332922"
+ },
+ "nuclear/reactor_criticality": {
+  "titles": {
+   "de": "Kritische Masse",
+   "en": "Critical mass",
+   "es": "Masa crítica",
+   "fr": "Masse critique (réaction nucléaire)",
+   "hi": "क्रांतिक द्रव्यमान",
+   "ja": "臨界量",
+   "ko": "임계 질량",
+   "ru": "Критическая масса",
+   "zh": "臨界質量"
+  },
+  "wikidata": "Q208470"
+ },
+ "nuclear/rutherford_scattering": {
+  "titles": {
+   "de": "Rutherfordscher Streuversuch",
+   "en": "Rutherford scattering experiments",
+   "es": "Experimento de Rutherford",
+   "fr": "Expérience de Rutherford",
+   "ja": "ガイガー＝マースデンの実験",
+   "ko": "알파입자 산란실험",
+   "ru": "Эксперимент Гейгера — Марсдена",
+   "zh": "盖革-马士登实验"
+  },
+  "wikidata": "Q1648751"
+ },
+ "nuclear/shell_model": {
+  "titles": {
+   "de": "Schalenmodell (Kernphysik)",
+   "en": "Nuclear shell model",
+   "es": "Modelo de capas nuclear",
+   "fr": "Modèle en couches",
+   "ja": "殻模型",
+   "ko": "핵 껍질 모형",
+   "ru": "Теория оболочечного строения ядра",
+   "zh": "核殼層模型"
+  },
+  "wikidata": "Q600617"
+ },
+ "optics/diffraction_grating": {
+  "titles": {
+   "de": "Optisches Gitter",
+   "en": "Diffraction grating",
+   "es": "Red de difracción",
+   "fr": "Réseau de diffraction",
+   "hi": "विवर्तन ग्रेटिंग",
+   "ja": "回折格子",
+   "ko": "회절격자",
+   "ru": "Дифракционная решётка",
+   "zh": "衍射光栅"
+  },
+  "wikidata": "Q653294"
+ },
+ "optics/double_slit": {
+  "titles": {
+   "de": "Doppelspaltexperiment",
+   "en": "Double-slit experiment",
+   "es": "Experimento de la doble rendija",
+   "fr": "Expérience de la double fente",
+   "hi": "दो झिरी प्रयोग",
+   "ja": "二重スリット実験",
+   "ko": "이중슬릿 실험",
+   "ru": "Двухщелевой опыт",
+   "zh": "雙縫實驗"
+  },
+  "wikidata": "Q217785"
+ },
+ "optics/fourier_optics": {
+  "titles": {
+   "de": "Beugungsintegral",
+   "en": "Fraunhofer diffraction",
+   "es": "Difracción de Fraunhofer",
+   "fr": "Diffraction de Fraunhofer",
+   "ja": "フラウンホーファー回折",
+   "ko": "프라운호퍼 회절",
+   "ru": "Дифракция Фраунгофера",
+   "zh": "夫琅禾费衍射"
+  },
+  "wikidata": "Q851014"
+ },
+ "optics/grin_mirage": {
+  "titles": {
+   "en": "Mirage",
+   "es": "Espejismo",
+   "fr": "Mirage",
+   "hi": "मरीचिका",
+   "ja": "蜃気楼",
+   "ko": "신기루",
+   "ru": "Мираж",
+   "zh": "海市蜃楼"
+  },
+  "wikidata": "Q308762"
+ },
+ "optics/lens_system": {
+  "titles": {
+   "de": "Matrizenoptik",
+   "en": "Ray transfer matrix analysis",
+   "fr": "Optique matricielle",
+   "ja": "光線行列解析",
+   "ko": "행렬광학",
+   "ru": "Матричная оптика",
+   "zh": "光線轉換矩陣分析"
+  },
+  "wikidata": "Q1760601"
+ },
+ "optics/mirror_reflection": {
+  "titles": {
+   "de": "Kugelspiegel",
+   "en": "Curved mirror",
+   "es": "Espejo curvo",
+   "fr": "Miroir sphérique",
+   "hi": "गोलीय दर्पण",
+   "ja": "球面鏡",
+   "ko": "만곡형 거울",
+   "ru": "Сферическое зеркало",
+   "zh": "曲面鏡"
+  },
+  "wikidata": "Q1506584"
+ },
+ "optics/polarization_jones": {
+  "titles": {
+   "de": "Jones-Formalismus",
+   "en": "Jones calculus",
+   "es": "Cálculo de Jones",
+   "fr": "Formalisme de Jones",
+   "ja": "ジョーンズ計算法",
+   "ko": "존스 행렬",
+   "ru": "Формализм Джонса",
+   "zh": "瓊斯運算"
+  },
+  "wikidata": "Q1323967"
+ },
+ "optics/snell_refraction": {
+  "titles": {
+   "de": "Snelliussches Brechungsgesetz",
+   "en": "Snell's law",
+   "es": "Ley de Snell",
+   "fr": "Lois de Snell-Descartes",
+   "hi": "स्नेल का नियम",
+   "ja": "スネルの法則",
+   "ko": "스넬의 법칙",
+   "ru": "Закон Снеллиуса",
+   "zh": "斯涅尔定律"
+  },
+  "wikidata": "Q208391"
+ },
+ "optics/thin_lens_image": {
+  "titles": {
+   "de": "Dünne Linse",
+   "en": "Thin lens",
+   "fr": "Lentille mince",
+   "hi": "पतला लेन्स",
+   "ja": "薄レンズ",
+   "ko": "얇은 렌즈",
+   "zh": "薄透鏡"
+  },
+  "wikidata": "Q283724"
+ },
+ "others/alphago_mini": {
+  "titles": {
+   "de": "AlphaGo",
+   "en": "AlphaGo",
+   "es": "AlphaGo",
+   "fr": "AlphaGo",
+   "hi": "अल्फागो",
+   "ja": "AlphaGo",
+   "ko": "알파고",
+   "ru": "AlphaGo",
+   "zh": "AlphaGo"
+  },
+  "wikidata": "Q22329209"
+ },
+ "others/game_of_life": {
+  "titles": {
+   "de": "Conways Spiel des Lebens",
+   "en": "Conway's Game of Life",
+   "es": "Juego de la vida",
+   "fr": "Jeu de la vie",
+   "ja": "ライフゲーム",
+   "ko": "라이프 게임",
+   "ru": "Игра «Жизнь»",
+   "zh": "康威生命游戏"
+  },
+  "wikidata": "Q244615"
+ },
+ "others/langevin_noise": {
+  "titles": {
+   "de": "Langevin-Gleichung",
+   "en": "Langevin equation",
+   "es": "Ecuación de Langevin",
+   "fr": "Équation de Langevin",
+   "ja": "ランジュバン方程式",
+   "ko": "랑주뱅 방정식",
+   "ru": "Уравнение Ланжевена",
+   "zh": "朗之万方程"
+  },
+  "wikidata": "Q584537"
+ },
+ "others/lorenz_attractor": {
+  "titles": {
+   "de": "Lorenz-Attraktor",
+   "en": "Lorenz system",
+   "es": "Atractor de Lorenz",
+   "fr": "Attracteur de Lorenz",
+   "ja": "ローレンツ方程式",
+   "ko": "로렌즈 방정식",
+   "ru": "Аттрактор Лоренца",
+   "zh": "洛伦茨吸引子"
+  },
+  "wikidata": "Q899844"
+ },
+ "others/measurement_fitting": {
+  "titles": {
+   "de": "Methode der kleinsten Quadrate",
+   "en": "Least squares",
+   "es": "Mínimos cuadrados",
+   "fr": "Méthode des moindres carrés",
+   "hi": "न्यूनतम वर्ग विधि",
+   "ja": "最小二乗法",
+   "ko": "최소제곱법",
+   "ru": "Метод наименьших квадратов",
+   "zh": "最小二乘法"
+  },
+  "wikidata": "Q74304"
+ },
+ "others/monte_carlo_pi": {
+  "titles": {
+   "de": "Monte-Carlo-Simulation",
+   "en": "Monte Carlo method",
+   "es": "Método de Montecarlo",
+   "fr": "Méthode de Monte-Carlo",
+   "hi": "मान्टे-कार्लो सिमुलेशन",
+   "ja": "モンテカルロ法",
+   "ko": "몬테카를로 방법",
+   "ru": "Метод Монте-Карло",
+   "zh": "蒙地卡羅方法"
+  },
+  "wikidata": "Q232207"
+ },
+ "others/neural_operator": {
+  "titles": {
+   "en": "Neural operators"
+  },
+  "wikidata": "Q123501640"
+ },
+ "others/pinn_oscillator": {
+  "titles": {
+   "en": "Physics-informed neural networks",
+   "fr": "Réseaux de neurones informés par la physique",
+   "ja": "物理情報ニューラルネットワーク",
+   "ko": "물리정보 신경망",
+   "zh": "物理信息神经网络"
+  },
+  "wikidata": "Q107285102"
+ },
+ "others/receptor_binding": {
+  "titles": {
+   "de": "Dissoziationskonstante",
+   "en": "Dissociation constant",
+   "es": "Constante de disociación",
+   "fr": "Constante de dissociation",
+   "hi": "वियोजन स्थिरांक",
+   "ja": "解離定数",
+   "ko": "이온화 상수",
+   "ru": "Константа диссоциации",
+   "zh": "解离常数"
+  },
+  "wikidata": "Q898254"
+ },
+ "quantum/double_well": {
+  "titles": {
+   "en": "Double-well potential",
+   "ru": "Двухъямный потенциал"
+  },
+  "wikidata": "Q25313552"
+ },
+ "quantum/free_wave_packet": {
+  "titles": {
+   "de": "Wellenpaket",
+   "en": "Wave packet",
+   "es": "Paquete de ondas",
+   "fr": "Paquet d'onde",
+   "ja": "波束",
+   "ko": "확률파동",
+   "ru": "Волновой пакет",
+   "zh": "波包"
+  },
+  "wikidata": "Q1412691"
+ },
+ "quantum/harmonic_oscillator": {
+  "titles": {
+   "de": "Harmonischer Oszillator (Quantenmechanik)",
+   "en": "Quantum harmonic oscillator",
+   "es": "Oscilador armónico cuántico",
+   "fr": "Oscillateur harmonique quantique",
+   "hi": "क्वांटम सरल आवर्ती दोलक",
+   "ko": "양자 조화 진동자",
+   "ru": "Квантовый гармонический осциллятор",
+   "zh": "量子諧振子"
+  },
+  "wikidata": "Q677864"
+ },
+ "quantum/hydrogen_radial": {
+  "titles": {
+   "de": "Wasserstoffatom",
+   "en": "Hydrogen atom",
+   "es": "Átomo de hidrógeno",
+   "fr": "Atome d'hydrogène",
+   "hi": "हाइड्रोजन परमाणु",
+   "ja": "水素原子",
+   "ru": "Атом водорода",
+   "zh": "氫原子"
+  },
+  "wikidata": "Q6643508"
+ },
+ "quantum/infinite_well": {
+  "titles": {
+   "de": "Teilchen im Kasten",
+   "en": "Particle in a box",
+   "es": "Partícula en una caja",
+   "fr": "Particule dans une boîte",
+   "ja": "井戸型ポテンシャル",
+   "ko": "상자 속 입자",
+   "ru": "Квантовая яма с бесконечными стенками",
+   "zh": "無限深方形阱"
+  },
+  "wikidata": "Q909221"
+ },
+ "quantum/matrix_mechanics": {
+  "titles": {
+   "de": "Matrizenmechanik",
+   "en": "Matrix mechanics",
+   "es": "Mecánica matricial",
+   "fr": "Mécanique matricielle",
+   "ja": "行列力学",
+   "ko": "행렬 역학",
+   "ru": "Матричная квантовая механика",
+   "zh": "矩陣力學"
+  },
+  "wikidata": "Q603198"
+ },
+ "quantum/scattering_2d": {
+  "titles": {
+   "de": "Streuung (Physik)",
+   "en": "Scattering",
+   "es": "Dispersión (física)",
+   "fr": "Diffusion des ondes",
+   "hi": "प्रकीर्णन",
+   "ja": "散乱",
+   "ko": "산란",
+   "ru": "Рассеяние",
+   "zh": "散射"
+  },
+  "wikidata": "Q210028"
+ },
+ "quantum/schrodinger_crank_nicolson": {
+  "titles": {
+   "de": "Crank-Nicolson-Verfahren",
+   "en": "Crank–Nicolson method",
+   "es": "Método de Crank-Nicolson",
+   "fr": "Méthode de Crank-Nicolson",
+   "ko": "크랭크-니콜슨 방법",
+   "ru": "Схема Кранка — Николсон",
+   "zh": "克兰克-尼科尔森方法"
+  },
+  "wikidata": "Q588725"
+ },
+ "quantum/spin_precession": {
+  "titles": {
+   "de": "Rabi-Oszillation",
+   "en": "Rabi cycle",
+   "fr": "Oscillations de Rabi",
+   "ja": "ラビ振動",
+   "ru": "Оптическая нутация",
+   "zh": "拉比周期"
+  },
+  "wikidata": "Q527266"
+ },
+ "quantum/tunneling": {
+  "titles": {
+   "de": "Tunneleffekt",
+   "en": "Quantum tunnelling",
+   "es": "Efecto túnel",
+   "fr": "Effet tunnel",
+   "hi": "प्रमात्रा सुरंगन",
+   "ja": "トンネル効果",
+   "ko": "터널 효과",
+   "ru": "Туннельный эффект",
+   "zh": "量子穿隧效應"
+  },
+  "wikidata": "Q175751"
+ },
+ "quantum/two_qubit_entanglement": {
+  "titles": {
+   "de": "Quantenverschränkung",
+   "en": "Quantum entanglement",
+   "es": "Entrelazamiento cuántico",
+   "fr": "Intrication quantique",
+   "hi": "क्वाण्टम उलझाव",
+   "ja": "量子もつれ",
+   "ko": "양자 얽힘",
+   "ru": "Квантовая запутанность",
+   "zh": "量子糾纏"
+  },
+  "wikidata": "Q215675"
+ },
+ "thermodynamics/blackbody_radiation": {
+  "titles": {
+   "de": "Hohlraumstrahlung",
+   "en": "Black-body radiation",
+   "es": "Radiación de cuerpo negro",
+   "fr": "Rayonnement du corps noir",
+   "hi": "कृष्णिका विकिरण",
+   "ja": "黒体放射",
+   "ko": "흑체 방사",
+   "zh": "黑体辐射"
+  },
+  "wikidata": "Q900097"
+ },
+ "thermodynamics/carnot_cycle": {
+  "titles": {
+   "de": "Carnot-Prozess",
+   "en": "Carnot cycle",
+   "es": "Ciclo de Carnot",
+   "fr": "Cycle de Carnot",
+   "hi": "कार्नो चक्र",
+   "ja": "カルノーサイクル",
+   "ko": "카르노사이클",
+   "ru": "Цикл Карно",
+   "zh": "卡诺循环"
+  },
+  "wikidata": "Q188910"
+ },
+ "thermodynamics/heat_diffusion": {
+  "titles": {
+   "de": "Wärmeleitungsgleichung",
+   "en": "Heat equation",
+   "es": "Ecuación del calor",
+   "fr": "Équation de la chaleur",
+   "hi": "ऊष्मा समीकरण",
+   "ko": "열 방정식",
+   "ru": "Уравнение теплопроводности",
+   "zh": "熱傳導方程式"
+  },
+  "wikidata": "Q6510488"
+ },
+ "thermodynamics/ideal_gas_processes": {
+  "titles": {
+   "de": "Thermodynamischer Prozess",
+   "en": "Thermodynamic process",
+   "es": "Proceso termodinámico",
+   "fr": "Processus thermodynamique",
+   "ko": "열역학 과정",
+   "ru": "Тепловой процесс",
+   "zh": "热力学过程"
+  },
+  "wikidata": "Q213016"
+ },
+ "thermodynamics/ising_model": {
+  "titles": {
+   "de": "Ising-Modell",
+   "en": "Ising model",
+   "es": "Modelo de Ising",
+   "fr": "Modèle d'Ising",
+   "ja": "イジング模型",
+   "ko": "이징 모형",
+   "ru": "Модель Изинга",
+   "zh": "易辛模型"
+  },
+  "wikidata": "Q1076349"
+ },
+ "thermodynamics/kinetic_gas": {
+  "titles": {
+   "de": "Kinetische Gastheorie",
+   "en": "Kinetic theory of gases",
+   "es": "Teoría cinética de los gases",
+   "fr": "Théorie cinétique des gaz",
+   "hi": "गैसों का अणुगति सिद्धान्त",
+   "ja": "気体分子運動論",
+   "ko": "기체 분자 운동론",
+   "ru": "Молекулярно-кинетическая теория",
+   "zh": "分子运动论"
+  },
+  "wikidata": "Q200286"
+ },
+ "thermodynamics/newton_cooling": {
+  "titles": {
+   "en": "Newton's law of cooling",
+   "es": "Ley del enfriamiento de Newton",
+   "fr": "Loi de refroidissement de Newton",
+   "hi": "न्यूटन का शीतलन का नियम",
+   "ja": "ニュートンの冷却の法則",
+   "ko": "뉴턴의 냉각 법칙",
+   "ru": "Закон Ньютона — Рихмана",
+   "zh": "冷却定律"
+  },
+  "wikidata": "Q2902868"
+ },
+ "thermodynamics/random_walk_diffusion": {
+  "titles": {
+   "de": "Irrfahrt (Stochastik)",
+   "en": "Random walk",
+   "es": "Camino aleatorio",
+   "fr": "Marche aléatoire",
+   "ja": "ランダムウォーク",
+   "ko": "무작위 행보",
+   "ru": "Случайное блуждание",
+   "zh": "隨機漫步"
+  },
+  "wikidata": "Q856741"
+ },
+ "thermodynamics/van_der_waals": {
+  "titles": {
+   "de": "Van-der-Waals-Gleichung",
+   "en": "Van der Waals equation",
+   "es": "Ecuación de Van der Waals",
+   "fr": "Équation d'état de van der Waals",
+   "hi": "वान डर वाल्स समीकरण",
+   "ja": "ファンデルワールスの状態方程式",
+   "ko": "반데르발스 상태 방정식",
+   "ru": "Уравнение Ван-дер-Ваальса",
+   "zh": "范德華方程式"
+  },
+  "wikidata": "Q254329"
+ },
+ "waves/beats_superposition": {
+  "titles": {
+   "de": "Schwebung",
+   "en": "Beat (acoustics)",
+   "es": "Batimiento",
+   "fr": "Battement (acoustique)",
+   "hi": "विस्पन्द",
+   "ja": "うなり",
+   "ko": "맥놀이",
+   "ru": "Биения",
+   "zh": "拍频"
+  },
+  "wikidata": "Q829522"
+ },
+ "waves/dispersive_waves": {
+  "titles": {
+   "en": "Dispersion (water waves)",
+   "ru": "Дисперсия волн"
+  },
+  "wikidata": "Q1229165"
+ },
+ "waves/doppler_effect": {
+  "titles": {
+   "de": "Doppler-Effekt",
+   "en": "Doppler effect",
+   "es": "Efecto Doppler",
+   "fr": "Effet Doppler",
+   "hi": "डॉप्लर प्रभाव",
+   "ja": "ドップラー効果",
+   "ko": "도플러 효과",
+   "ru": "Эффект Доплера",
+   "zh": "多普勒效应"
+  },
+  "wikidata": "Q76436"
+ },
+ "waves/kdv_solitons": {
+  "titles": {
+   "de": "Korteweg-de-Vries-Gleichung",
+   "en": "Korteweg–De Vries equation",
+   "es": "Ecuación de Korteweg-de Vries",
+   "fr": "Équation de Korteweg–de Vries",
+   "ja": "KdV方程式",
+   "ko": "코르테버흐-더프리스 방정식",
+   "ru": "Уравнение Кортевега — де Фриза",
+   "zh": "KdV方程"
+  },
+  "wikidata": "Q601796"
+ },
+ "waves/membrane_modes": {
+  "titles": {
+   "en": "Vibration of a circular membrane",
+   "es": "Vibraciones de una membrana circular"
+  },
+  "wikidata": "Q13042351"
+ },
+ "waves/nonlinear_schrodinger": {
+  "titles": {
+   "de": "Monsterwelle",
+   "en": "Rogue wave",
+   "es": "Ola gigante",
+   "fr": "Vague scélérate",
+   "ja": "巨大波",
+   "ru": "Волны-убийцы",
+   "zh": "瘋狗浪"
+  },
+  "wikidata": "Q110360"
+ },
+ "waves/ripple_tank": {
+  "titles": {
+   "en": "Ripple tank",
+   "es": "Cuba de ondas"
+  },
+  "wikidata": "Q2544492"
+ },
+ "waves/standing_waves": {
+  "titles": {
+   "de": "Stehende Welle",
+   "en": "Standing wave",
+   "es": "Onda estacionaria",
+   "fr": "Onde stationnaire",
+   "ja": "定常波",
+   "ko": "정상파",
+   "ru": "Стоячая волна",
+   "zh": "駐波"
+  },
+  "wikidata": "Q123300"
+ },
+ "waves/string_junction": {
+  "titles": {
+   "de": "Reflexion (Physik)",
+   "en": "Reflection (physics)",
+   "es": "Reflexión (física)",
+   "fr": "Réflexion (physique)",
+   "hi": "परावर्तन (भौतिकी)",
+   "ja": "反射",
+   "ko": "반사",
+   "ru": "Отражение (физика)",
+   "zh": "反射 (物理学)"
+  },
+  "wikidata": "Q165939"
+ }
+}

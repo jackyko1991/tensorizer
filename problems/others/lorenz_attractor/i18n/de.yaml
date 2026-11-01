@@ -1,0 +1,21 @@
+source_hash: 8944aa9bc162
+title: Lorenz-Attraktor und Schmetterlingseffekt
+summary: Drei gekoppelte Gleichungen aus einem Konvektionsmodell kommen nie zur Ruhe und wiederholen sich nie. Als linearer Teil $A_{ij}x_j$ plus quadratischer Teil $Q_{ijk}x_j x_k$ mit einem Tensor dritter Stufe geschrieben, bewegt ein einziges einsum einen ganzen Stapel von Trajektorien, die weniger als $10^{-6}$ voneinander entfernt starten; sie laufen exponentiell auseinander, mit der Rate des größten Ljapunow-Exponenten $\lambda \approx 0.9$, bis sie über den ganzen Schmetterling verteilt sind.
+notes: 'Lorenz (1963) reduzierte ein Modell einer von unten beheizten Flüssigkeit auf drei Zahlen: $x$ ist die Stärke der Konvektionswalze, $y$ und $z$ beschreiben das Temperaturprofil. Mit $\sigma = 10$, $\rho = 28$ und $\beta = 8/3$ kreist die Bewegung um einen der beiden Fixpunkte $C_\pm = (\pm\sqrt{\beta(\rho-1)}, \pm\sqrt{\beta(\rho-1)}, \rho-1)$ und springt dann unvorhersehbar zum anderen Flügel. Benachbarte Trajektorien entfernen sich wie $e^{\lambda t}$ mit $\lambda \approx 0.906$: Ein Fehler von $10^{-6}$ wächst nach etwa $15$ Zeiteinheiten auf die Größe des Attraktors an, deshalb hat jede Vorhersage einen Horizont (der Schmetterlingseffekt). Gleichzeitig schrumpft jedes Volumen von Zuständen wie $e^{-(\sigma+1+\beta)t}$, sodass sich die Trajektorien auf einer dünnen, fraktalen Menge drängen: dem seltsamen Attraktor. Die Tensorform macht die Struktur sichtbar: $A$ enthält alle linearen Kopplungen, und die gesamte Nichtlinearität steckt in den zwei Einträgen von $Q$. Vor dem Lauf
+  wird eine Trajektorie ab $(1, 1, 1)$ über $10$ Zeiteinheiten integriert, damit die Kugel auf dem Attraktor startet; RK4 mit festem Schritt $0.005$ ist hier genau genug. Probieren Sie $\rho < 1$: Der Ursprung wird stabil und alle Trajektorien klingen dorthin ab; für $1 < \rho < 24.74$ laufen sie spiralförmig in $C_+$ oder $C_-$; bei $\rho = 28$ und darüber kehrt das Chaos zurück.'
+meanings:
+- Zustand $(x, y, z)$ der Trajektorie $b$
+- 'linearer Teil: Zeilen $(-\sigma, \sigma, 0)$, $(\rho, -1, 0)$, $(0, 0, -\beta)$'
+- 'quadratischer Teil, ein Tensor dritter Stufe mit zwei Einträgen ungleich null: $-xz$ in $\dot y$ und $+xy$ in $\dot z$'
+- wiederholtes $j$ ⇒ summiert
+- 'wiederholte $j$ und $k$ ⇒ summiert: die Nichtlinearität, die das Chaos erzeugt'
+- 'Spur der Jacobi-Matrix: Zustandsvolumina schrumpfen mit der konstanten Rate $\sigma + 1 + \beta$'
+- mittlerer quadratischer Abstand der Trajektorien von ihrem Mittelwert
+- Steigung von $\ln s$ über $t$, solange die Streuung von $10\,s(0)$ auf $1$ wächst
+labels:
+  sigma: Prandtl-Zahl $\sigma$
+  rho: Rayleigh-Zahl $\rho$
+  beta: Geometriefaktor $\beta$
+  t_max: Simulierte Zeit
+  log10_radius: Radius der Startkugel $\log_{10} r$
+  n_traj: Anzahl der Trajektorien

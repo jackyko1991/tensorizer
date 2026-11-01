@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Relaxation after a 90 degree pulse: longitudinal magnetisation M_z recovers towards M_0 with time constant T1 while the transverse part M_xy decays with T2; the repetition time TR is marked">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- axes -->
+    <line x1="34" y1="136" x2="226" y2="136" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="34" y1="136" x2="34" y2="14" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="214" y="153" font-style="italic">t</text>
+    <!-- equilibrium M0 -->
+    <line x1="34" y1="34" x2="220" y2="34" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="8" y="39" font-style="italic">M<tspan font-size="10" dy="3">0</tspan></text>
+    <!-- M_z recovery 1 - exp(-t/T1) -->
+    <path d="M34,136 C60,80 95,48 140,40 S200,35 220,34.5" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+    <text x="150" y="58" font-style="italic" fill="#1e40af">M<tspan font-size="10" dy="3">z</tspan></text>
+    <!-- M_xy decay exp(-t/T2) -->
+    <path d="M34,34 C46,90 62,120 95,131 S170,135.5 220,135.8" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+    <text x="70" y="110" font-style="italic" fill="#b45309">M<tspan font-size="10" dy="3">xy</tspan></text>
+    <!-- repetition time -->
+    <line x1="120" y1="136" x2="120" y2="42" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <circle cx="120" cy="42.5" r="3.5" fill="#2563eb" stroke="#1e40af" stroke-width="1"/>
+    <text x="108" y="153" font-style="italic">TR</text>
+  </g>
+</svg>

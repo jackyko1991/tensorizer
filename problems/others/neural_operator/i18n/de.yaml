@@ -1,0 +1,26 @@
+source_hash: 4e46f39a529c
+title: 'Fourier-Neuraloperator: den Lösungsoperator der Burgers-Gleichung lernen'
+summary: 'Statt eine einzelne Gleichung zu lösen, lernt ein Fourier-Neuraloperator (FNO) die ganze Abbildung $u_0(x) \mapsto u(x, T)$ der viskosen Burgers-Gleichung $u_t + u\,u_x = \nu\,u_{xx}$ aus Paaren, die ein Spektrallöser erzeugt. Seine Schlüsselschicht ist eine Spektralfaltung: Fourier-Transformation, Kanäle Mode für Mode mit komplexen Gewichten $R_{iok}$ mischen, nur die niedrigsten $m$ Moden behalten, zurücktransformieren. Weil die Gewichte auf Fourier-Moden leben, läuft das trainierte Modell auch auf einem feineren Gitter als dem Trainingsgitter.'
+notes: 'Die Trainingsdaten sind Paare $(u_0, u(\cdot, T))$: zufällige glatte Anfangsbedingungen (Summen von Fourier-Moden $k \le 5$ mit Amplituden, die wie $1/k$ abfallen) und ihre Lösungen, berechnet auf 256 Punkten mit einem pseudospektralen Löser und für das Training auf 64 Punkte unterabgetastet. Das Netz sieht nie die Gleichung, nur Löserdaten. Die Tensor-Lektion ist die Spektralfaltung: Nach rfft wird jeder Kanal $i$ jeder Probe $b$ zu Fourier-Koeffizienten $\hat v_{bik}$, und einsum(''bik,iok->bok'') summiert über den Eingangskanal $i$, behält aber die Wellenzahl $k$ als freien Index, sodass jede Mode ihre eigene komplexe $C\times C$-Matrix $R_{\cdot\cdot k}$ bekommt. Das ist eine Faltung mit einem globalen, gelernten Kern, berechnet als Produkt im Fourier-Raum. Höhere Moden $k \ge m$ werden abgeschnitten; der lokale Pfad $W_{oi}v_{bix}$ und die Nichtlinearität $\sigma$ bringen feine Details zurück. Nichts in $R_{iok}$, $W_{oi}$, $P$ oder $Q$ bezieht sich auf die Zahl der Gitterpunkte,
+  daher läuft der trainierte Operator auf jedem Gitter mit mehr als $2m$ Punkten: Das Feld unten rechts gibt DIESELBEN Gewichte auf 256 Punkte (Zero-Shot-Superauflösung), für den Testfall mit der steilsten Front. Die 64-Punkte-Vorhersagen (Punkte) liegen auf der 256-Punkte-Kurve: Diese Diskretisierungsinvarianz ist nur näherungsweise, weil $\sigma$ Oberschwingungen erzeugt, die auf verschiedenen Gittern verschieden aliasen, aber der Fehler auf 256 Punkten ist gleich dem 64-Punkte-Fehler. Was die Genauigkeit begrenzt, ist das Modell, nicht das Gitter: Beinahe-Stöße brauchen Moden oberhalb von $m$ und sind die schwierigsten Fälle. Vergleich mit dem PINN in diesem Thema: Ein PINN löst EIN Problem, indem es die Gleichung in die Verlustfunktion steckt, und muss für jede neue Anfangsbedingung neu trainiert werden; ein Neuraloperator lernt eine ganze Familie von Problemen aus Löserdaten, danach ist jede neue Vorhersage ein einziger Vorwärtsdurchlauf. Die Konsole zeigt die Zeit dieses Vorwärtsdurchlaufs
+  im Vergleich zum Löser: hier dutzendfach schneller, doch für Burgers in 1D ist der Löser schon billig, und Datenerzeugung und Training kosten weit mehr. Neuraloperatoren lohnen sich, wo eine Simulation Stunden dauert (Wetter, Turbulenz, Strömung in porösen Medien) und viele Abfragen nötig sind, und nur innerhalb der Verteilung, auf der sie trainiert wurden. Probieren Sie weniger Moden $m$, einen kleineren Trainingsdatensatz oder ein größeres $\nu$ (glattere Lösungen, leichter zu lernen). Vereinfachungen: eine einzige Ausgabezeit $T$, ein fester Seed, die Gitterposition als einfacher Eingangskanal und kein Padding (das Gebiet ist ohnehin periodisch).'
+meanings:
+- 'Eingangsfunktion: $u_0$ und die Position an jedem der $N$ Gitterpunkte von Probe $b$'
+- 'Anheben: über $f$ summiert, aus 2 Merkmalen werden $C$ Kanäle an jedem Punkt'
+- komplexe Fourier-Koeffizienten jedes Kanals $i$, Wellenzahl $k$
+- 'komplexe Gewichte, eine $C\times C$-Matrix pro behaltener Mode $k < m$: sie hängen nicht von $N$ ab'
+- 'wiederholtes $i$ ⇒ summiert; über $k$ wird NICHT summiert: jede Mode wird einzeln gemischt'
+- 'Abschneiden: nur die niedrigsten $m$ Fourier-Moden passieren die Spektralfaltung'
+- 'zurück auf beliebig viele $N$ Gitterpunkte: hier wird die Auflösung gewählt'
+- lokaler Pfad, dieselbe $C\times C$-Matrix an jedem Punkt; $\sigma$ = GELU
+- punktweise zweischichtige Projektion von $C$ Kanälen auf die Vorhersage $u(x, T)$
+- 'relativer $L^2$-Fehler pro Probe, gemittelt über den Batch: der Verlust, den Adam minimiert'
+- 'die Daten: pseudospektraler Löser, RK4 mit integrierendem Faktor und 2/3-Dealiasing-Regel, alle Proben auf einmal'
+labels:
+  nu: Viskosität $\nu$
+  t_final: Ausgabezeit $T$
+  n_train: Trainingsproben (Anfangsbedingungen)
+  modes: Behaltene Fourier-Moden $m$
+  width: Kanäle $C$
+  epochs: Trainingsepochen
+  lr: Adam-Lernrate

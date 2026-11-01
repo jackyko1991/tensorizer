@@ -1,0 +1,21 @@
+source_hash: adf3aca0e79d
+title: 'Protonentherapie: der Bragg-Peak'
+summary: Das Bethe-Bloch-Bremsvermögen $-dE/dz \propto 1/\beta^2$ wird mit RK4 für ein ganzes Bündel von Protonenenergien gleichzeitig integriert. Die Dosis türmt sich kurz vor dem Stillstand jedes Protons auf (der Bragg-Peak), und eine gewichtete Summe von Energieschichten ergibt eine gleichmäßige Dosis über einem Tumor mit fast nichts dahinter.
+notes: 'Konstanten für Wasser: $K = 0.307$ MeV cm²/mol, $Z/A = 0.555$, $I \approx 75$ eV, $\rho = 1$ g/cm³; Schalen- und Dichtekorrekturen werden vernachlässigt. Die integrierte Reichweite (150 MeV → etwa 15,8 cm) stimmt mit NIST PSTAR auf etwa 1 % überein und folgt der Bragg-Kleeman-Regel $R = \alpha E^p$ mit $p \approx 1.75$. Reichweitenstreuung ($\sigma \approx 1.2\,\%$ von $R$) und die Energieunschärfe des Strahls runden den Peak ab; Kernreaktionen werden nur als Verlust von 1 %/cm der Primärteilchen modelliert, daher ist das Verhältnis von Peak zu Eintrittsdosis höher als bei einem echten Strahl. Ein Megavolt-Röntgenstrahl (Aufbaueffekt, dann $e^{-\mu z}$), normiert auf dieselbe Tumordosis, deponiert mehr am Eintritt und läuft über den Tumor hinaus weiter; Protonen bleiben stehen. Alle Zahlen sind Näherungen und nur für die Lehre gedacht, nicht für den klinischen Einsatz oder die Bestrahlungsplanung.'
+meanings:
+- kinetische Energie des Strahls $b$ bei jedem Tiefenschritt (RK4, alle Strahlen gemeinsam)
+- Bethe-Bloch-$-dE/dz$ in MeV/cm, elementweise über das Bündel
+- 'reine Dosis: Energieverlust pro cm im Tiefenintervall $k$'
+- Gaußsche Reichweitenstreuung + Energieunschärfe, Zeilen normiert
+- 'wiederholtes $k$ ⇒ summiert: verschmierte Bragg-Kurve'
+- 'wiederholtes $k$ ⇒ summiert: aufgeweiteter Bragg-Peak aus $K$ Energieschichten'
+- nichtnegative kleinste Quadrate (projizierter Gradient) für eine gleichmäßige Zieldosis
+labels:
+  e_min: Niedrigste Strahlenergie
+  e_max: Höchste Strahlenergie
+  n_energies: Strahlen im Durchlauf
+  target_start: Anfangstiefe des Tumors
+  target_end: Endtiefe des Tumors
+  n_layers: SOBP-Energieschichten
+  energy_spread: Energieunschärfe des Strahls $\sigma_E/E$
+  i_ev: Mittlere Anregungsenergie $I$

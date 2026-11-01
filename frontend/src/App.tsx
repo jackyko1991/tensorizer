@@ -7,7 +7,8 @@ import PlotPanel from "./components/PlotPanel";
 import Sidebar, { LEVEL_STYLE } from "./components/Sidebar";
 import TerminalPanel from "./components/TerminalPanel";
 import { LANGS, localize, useLang, type Key, type Lang } from "./i18n";
-import { colabUrl, downloadNotebook, REPO_URL } from "./notebook";
+import ExportMenu from "./components/ExportMenu";
+import { REPO_URL } from "./notebook";
 import ConceptPage from "./pages/ConceptPage";
 import SkillsPage from "./pages/SkillsPage";
 import { plainText, RichText } from "./components/Tex";
@@ -59,7 +60,7 @@ export default function App() {
   const goTo = (target: Page) => (window.location.hash = target === "problems" ? `/${problem?.id ?? ""}` : `/${target}`);
 
   return (
-    <div className="flex min-h-screen flex-col bg-white lg:h-screen">
+    <div className="flex min-h-screen flex-col bg-white lg:h-screen lg:overflow-hidden">
       <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1.5 bg-blue-700 px-4 py-2 text-white shadow-sm sm:px-6 lg:h-[52px] lg:flex-nowrap lg:py-0">
         <div className="flex min-w-0 items-center gap-3">
           <img src={`${import.meta.env.BASE_URL}logo-light.svg`} alt="" className="h-8 w-8" />
@@ -69,7 +70,7 @@ export default function App() {
           <span className="hidden text-sm text-blue-100 xl:inline">{t("tagline")}</span>
         </div>
         {/* On phones the tabs wrap onto their own row under the logo and language menu. */}
-        <nav className="order-last flex w-full items-center gap-1 overflow-x-auto lg:order-none lg:w-auto" aria-label="Sections">
+        <nav className="order-last flex w-full items-center gap-1 overflow-x-auto lg:order-none lg:ml-auto lg:w-auto" aria-label="Sections">
             {PAGES.map((target) => (
               <button
                 key={target}
@@ -83,7 +84,7 @@ export default function App() {
               </button>
             ))}
           </nav>
-        <div className="ml-auto flex items-center gap-4">
+        <div className="ml-auto flex items-center gap-4 lg:ml-0">
           <BackendBadge backend={backend} />
           <select
             value={lang}
@@ -164,6 +165,14 @@ export default function App() {
       )}
 
       <footer className="sticky bottom-0 z-10 flex h-7 shrink-0 items-center justify-end gap-4 border-t border-gray-200 bg-white/95 px-4 text-xs text-gray-500 backdrop-blur">
+        <a
+          href="https://buymeacoffee.com/jackyko1991"
+          target="_blank"
+          rel="noreferrer"
+          className="rounded-full bg-yellow-300 px-2.5 py-0.5 font-medium text-gray-900 hover:bg-yellow-400"
+        >
+          ☕ {t("coffee")}
+        </a>
         <span>Apache-2.0</span>
         <a href={REPO_URL} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-gray-900">
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="currentColor" aria-hidden="true">
@@ -290,8 +299,9 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
     setEdits(({ [name]: _, ...rest }) => (code === original ? rest : { ...rest, [name]: code }));
   }
 
-  const { t } = useLang();
+  const { lang, t } = useLang();
   const level = LEVEL_STYLE[problem.level];
+  const wiki = wikiLink(problem, lang);
 
   return (
     <>
@@ -342,6 +352,17 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
               className="mx-auto mt-3 h-36 w-full max-w-xs object-contain"
             />
           )}
+          {wiki && (
+            <a
+              href={wiki.url}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-2 flex items-center justify-center gap-1.5 text-xs text-blue-700 hover:underline"
+            >
+              <span className="font-serif font-semibold">W</span>
+              {t("wiki")}: {wiki.title} ↗
+            </a>
+          )}
         </div>
 
         <div className={`space-y-5 bg-gray-50/60 p-5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto ${onPhone("formulation")}`}>
@@ -359,20 +380,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
           editable={editable}
           onEdit={edit}
           onReset={() => setEdits({})}
-          toolbar={
-            <>
-              <button
-                onClick={() => downloadNotebook(problem, edits, params)}
-                title={t("nb.downloadHint")}
-                className="hover:text-gray-800"
-              >
-                ⬇ {t("nb.download")}
-              </button>
-              <a href={colabUrl(problem)} target="_blank" rel="noreferrer" className="font-medium text-orange-600 hover:text-orange-700">
-                {t("nb.colab")} ↗
-              </a>
-            </>
-          }
+          toolbar={<ExportMenu problem={problem} edits={edits} params={params} />}
           side={
             <ParamsPanel
               specs={problem.params}
@@ -408,4 +416,16 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
       </section>
     </>
   );
+}
+
+/** The problem's Wikipedia article in the reader's language when one exists, otherwise in English. */
+function wikiLink(problem: Problem, lang: Lang): { url: string; title: string } | null {
+  if (!problem.wiki) return null;
+  const site = lang.startsWith("zh") ? "zh" : lang;
+  const local = problem.wiki.titles[site];
+  const title = local ?? problem.wiki.titles.en;
+  if (!title) return null;
+  const host = local ? site : "en";
+  const variant = local && lang === "zh-Hant" ? "zh-tw" : local && lang === "zh-Hans" ? "zh-cn" : "wiki";
+  return { url: `https://${host}.wikipedia.org/${variant}/${encodeURIComponent(title.replace(/ /g, "_"))}`, title };
 }

@@ -1,0 +1,18 @@
+source_hash: 27367fbd090e
+title: 'Imagen por tensor de difusión: cartografiar las fibras nerviosas'
+summary: El agua se difunde más deprisa a lo largo de los axones que transversalmente, así que cada vóxel tiene un tensor de difusión $D_{ij}$. La señal de Stejskal–Tanner $S = S_0\,e^{-b\,\hat g_i D_{ij}\hat g_j}$ es un único einsum sobre vóxeles y direcciones de gradiente; un ajuste por mínimos cuadrados por lotes de los logaritmos de la señal recupera $D_{ij}$, su descomposición en autovalores da la difusividad media, la anisotropía fraccional y la dirección de la fibra, y seguir esa dirección con RK2 traza los haces nerviosos (tractografía).
+notes: 'Las difusividades están en $10^{-3}\,\mathrm{mm^2/s}$ y $b$ en $\mathrm{s/mm^2}$: aproximadamente $\lambda_\parallel = 1.7$, $\lambda_\perp = 0.3$ en un haz (FA ≈ 0,8), 3,0 para el agua libre (LCR) y 0,8 para la sustancia gris. Son valores aproximados para la docencia, no para uso clínico. El ruido es riciano (el módulo de una señal compleja), por lo que los ajustes ruidosos sobrestiman la FA en regiones isótropas. Donde se cruzan dos haces, un solo tensor solo puede representar su promedio, un tensor aplanado (planar) con menor FA, y un tracto que entra en él puede detenerse o desviarse por error hacia el otro haz: la limitación clásica de la DTI que abordan los modelos multifibra. Cada elipse muestra la forma en el plano del tensor ajustado. Las líneas de corriente parten de semillas y siguen el autovector principal del campo tensorial interpolado bilinealmente con la regla del punto medio (RK2) hasta que la FA cae por debajo de 0,2. Prueba más ruido, menos direcciones de gradiente
+  o un $b$ menor.'
+meanings:
+- direcciones unitarias de los gradientes de difusión repartidas sobre un hemisferio
+- 'tensor de difusión verdadero de cada vóxel: haces $\lambda_\parallel e_ie_j + \lambda_\perp(\delta_{ij} - e_ie_j)$, LCR y sustancia gris isótropos'
+- '$i, j$ repetidos ⇒ sumados: señal ponderada en difusión de cada vóxel para cada dirección'
+- filas $(g_x^2, g_y^2, g_z^2, 2g_xg_y, 2g_xg_z, 2g_yg_z)$ de modo que $\hat g_i D_{ij}\hat g_j = B_{gm}d_m$
+- ajuste por mínimos cuadrados de las seis componentes independientes del tensor, todos los vóxeles a la vez
+- autovalores y autovectores; el autovector del mayor autovalor apunta a lo largo de la fibra
+- difusividad media (traza/3) y anisotropía fraccional (0 isótropa, 1 una sola dirección)
+labels:
+  b: Ponderación en difusión $b$
+  n_dirs: Direcciones de gradiente
+  noise: Nivel de ruido $\sigma/S_0$
+  size: Vóxeles por lado

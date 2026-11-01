@@ -1,0 +1,20 @@
+source_hash: 5a26364d7c17
+title: 'Matrizenmechanik: Heisenbergs Oszillator aus Leiteroperatoren'
+summary: 'Keine Wellenfunktionen, kein Gitter: in der Besetzungszahlbasis $|0\rangle, \dots, |N-1\rangle$ ist der Absteigeoperator die Matrix $a_{mn} = \sqrt n\,\delta_{m,n-1}$, und $X$, $P$ und $H = \tfrac12(P^2 + X^2)$ folgen durch Matrixprodukte. Seine Eigenwerte sind $n + \tfrac12$ und $[X, P] = i$. Mit torch.linalg.matrix_exp bewegt sich der Operator $X(t) = U^\dagger X U$ (Heisenberg-Bild) oder der Zustand $U|\alpha\rangle$ (Schrödinger-Bild); beide liefern dasselbe $\langle X\rangle(t)$, und ein kohärenter Zustand umkreist den Phasenraum wie eine klassische Masse an einer Feder.'
+notes: 'Einheiten $\hbar = m = \omega = 1$. So haben Heisenberg, Born und Jordan die Quantenmechanik 1925 zuerst aufgeschrieben: Observablen sind Matrizen, und ihre Produkte kommutieren nicht. Das Abschneiden auf $N$ Zustände ist die einzige Näherung. Es verletzt $[X, P] = i$ im letzten Diagonalelement, das $i(1 - N)$ sein muss, weil die Spur eines Kommutators endlicher Matrizen 0 ist, und es gibt dem letzten Basiszustand die Energie $(N-1)/2$ statt $N - \tfrac12$; Zustände weit unterhalb von $N$ sind exakt. Im Heisenberg-Bild rotiert jedes Element $X(t)_{mn} = X_{mn}e^{i(E_m - E_n)t}$ mit einer Bohr-Frequenz, für den Oszillator also $X(t) = X\cos t + P\sin t$, die klassische Lösung für Matrizen geschrieben. Der kohärente Zustand $|\alpha\rangle$ hat $\langle X\rangle(t) = \sqrt2\,\mathrm{Re}(\alpha e^{-it})$ und umkreist den Phasenraum mit Radius $\sqrt2\,\alpha$. Die Gitterrechnung in Quantenmechanischer harmonischer Oszillator liefert dieselbe Leiter und dieselbe Schwingung aus einer
+  völlig anderen Darstellung. Probieren Sie $\lambda > 0$: die Niveaus sind nicht mehr äquidistant, die Bohr-Frequenzen fächern auf, und der Kreis spiralt nach innen, während das Paket dephasiert. Für kleines $\lambda$ stimmen die Energien mit der Störungstheorie erster Ordnung überein, $\lambda\langle n|X^4|n\rangle = \lambda\,\tfrac34(2n^2 + 2n + 1)$.'
+meanings:
+- '$\sqrt1, \sqrt2, \dots$ auf der Nebendiagonale: $a|n\rangle = \sqrt n\,|n-1\rangle$'
+- $(a + a^\dagger)/\sqrt2$ und $i(a^\dagger - a)/\sqrt2$, beide hermitesch
+- 'wiederholtes $k$ ⇒ summiert: Matrixprodukte; gleich $a^\dagger a + \tfrac12$ außer im letzten Element'
+- '$i\,\delta_{mn}$, aber $i(1 - N)$ in der Ecke: eine endliche Matrix kann nicht $[X, P] = i$ erfüllen (ihre Spur ist 0)'
+- $n + \tfrac12$; mit $\lambda X^4$ verschoben um $\approx \lambda\,\tfrac34(2n^2 + 2n + 1)$
+- Zeitentwicklungsoperator $e^{-iHt}$ für alle Zeiten auf einmal
+- 'wiederholte $k, l$ ⇒ summiert: Heisenberg-Bild, der Operator bewegt sich'
+- '$e^{-|\alpha|^2/2}\alpha^n/\sqrt{n!}$: ein verschobener Grundzustand'
+- 'Schrödinger-Bild mit $c(t) = Uc$: dieselben Zahlen wie im Heisenberg-Bild'
+labels:
+  alpha: Amplitude des kohärenten Zustands $\alpha$
+  lam: Anharmonizität $\lambda$ (fügt $\lambda X^4$ hinzu)
+  periods: Simulierte Zeit
+  n_states: Basisgröße $N$

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Physics-informed neural network: a small network maps time t to the predicted displacement x-hat; its fit to the data and its residual in the mass-spring-damper equation both feed the loss">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- network connections: input → hidden → hidden → output -->
+    <g stroke="#9ca3af" stroke-width="1">
+      <line x1="20" y1="55" x2="48" y2="28"/><line x1="20" y1="55" x2="48" y2="55"/><line x1="20" y1="55" x2="48" y2="82"/>
+      <line x1="48" y1="28" x2="76" y2="28"/><line x1="48" y1="28" x2="76" y2="55"/><line x1="48" y1="28" x2="76" y2="82"/>
+      <line x1="48" y1="55" x2="76" y2="28"/><line x1="48" y1="55" x2="76" y2="55"/><line x1="48" y1="55" x2="76" y2="82"/>
+      <line x1="48" y1="82" x2="76" y2="28"/><line x1="48" y1="82" x2="76" y2="55"/><line x1="48" y1="82" x2="76" y2="82"/>
+      <line x1="76" y1="28" x2="104" y2="55"/><line x1="76" y1="55" x2="104" y2="55"/><line x1="76" y1="82" x2="104" y2="55"/>
+    </g>
+    <!-- nodes -->
+    <circle cx="20" cy="55" r="9" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="16.5" y="60" font-style="italic">t</text>
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1.5">
+      <circle cx="48" cy="28" r="6"/><circle cx="48" cy="55" r="6"/><circle cx="48" cy="82" r="6"/>
+      <circle cx="76" cy="28" r="6"/><circle cx="76" cy="55" r="6"/><circle cx="76" cy="82" r="6"/>
+    </g>
+    <circle cx="104" cy="55" r="9" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="99.5" y="60" font-style="italic">x̂</text>
+    <text x="62" y="104" font-size="11" fill="#6b7280" text-anchor="middle">tanh</text>
+    <!-- x̂(t) is plugged into the equation of motion -->
+    <line x1="114" y1="55" x2="136" y2="55" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow-amber)"/>
+    <!-- wall -->
+    <line x1="142" y1="22" x2="142" y2="90" stroke="#374151" stroke-width="2"/>
+    <g stroke="#9ca3af" stroke-width="1.5">
+      <line x1="142" y1="28" x2="136" y2="34"/><line x1="142" y1="42" x2="136" y2="48"/><line x1="142" y1="70" x2="136" y2="76"/>
+      <line x1="142" y1="84" x2="136" y2="90"/>
+    </g>
+    <!-- spring k -->
+    <polyline points="142,38 150,38 154,30 160,46 166,30 172,46 178,30 182,38 192,38" fill="none" stroke="#374151" stroke-width="2"/>
+    <text x="161" y="24" font-style="italic">k</text>
+    <!-- damper μ -->
+    <line x1="142" y1="72" x2="156" y2="72" stroke="#374151" stroke-width="2"/>
+    <polyline points="176,64 156,64 156,80 176,80" fill="none" stroke="#374151" stroke-width="2"/>
+    <line x1="168" y1="66" x2="168" y2="78" stroke="#374151" stroke-width="2"/>
+    <line x1="168" y1="72" x2="192" y2="72" stroke="#374151" stroke-width="2"/>
+    <text x="161" y="97" font-style="italic">μ</text>
+    <!-- mass -->
+    <rect x="192" y="28" width="32" height="54" rx="3" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="202" y="60" fill="#ffffff" font-style="italic">m</text>
+    <!-- loss -->
+    <rect x="88" y="128" width="64" height="24" rx="4" fill="none" stroke="#374151" stroke-width="2"/>
+    <text x="120" y="145" text-anchor="middle">loss</text>
+    <path d="M100,66 C96,90 96,108 104,125" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="68" y="124" font-size="13" fill="#b91c1c" text-anchor="middle">data</text>
+    <circle cx="80" cy="134" r="2.5" fill="#dc2626"/><circle cx="72" cy="140" r="2.5" fill="#dc2626"/><circle cx="64" cy="137" r="2.5" fill="#dc2626"/>
+    <path d="M184,98 C182,114 170,124 156,134" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="198" y="148" font-size="13" fill="#b91c1c" text-anchor="middle">ODE residual</text>
+  </g>
+</svg>

@@ -1,0 +1,18 @@
+source_hash: f0ace6f81d9f
+title: 'AlphaGo en miniatura: búsqueda en árbol en un tablero de go de $5\times5$'
+summary: 'Una partida de go en autojuego sobre un tablero diminuto, cuyas jugadas elige la misma búsqueda que usó AlphaGo: la búsqueda de árbol Monte Carlo con la regla PUCT. Las propias reglas del go son operaciones tensoriales: las capturas y el conteo por área son rellenos por inundación, un einsum con la matriz de adyacencia del tablero por paso. Cada nueva posición se evalúa con todo un lote de partidas aleatorias jugadas a la vez. Observa cómo los conteos de visitas se concentran en la jugada en la que cree la búsqueda.'
+notes: 'Cada simulación desciende por el árbol eligiendo el máximo PUCT, añade una nueva posición, la puntúa con el lote de playouts aleatorios y suma ese resultado a cada jugada del camino. Las buenas jugadas acumulan visitas, así que la búsqueda se concentra donde importa sin examinar cada variante. AlphaGo usaba el mismo bucle, pero sustituía la prior uniforme $P_a$ por una red de política y los playouts aleatorios por una red de valor, ambas entrenadas con partidas; AlphaGo Zero aprendió ambas solo mediante autojuego. En $5\times5$ la apertura en el centro es fuerte para negras; con pocas simulaciones la búsqueda comete errores visibles; aumenta las simulaciones y la partida se vuelve más precisa pero más lenta. Reglas: Tromp–Taylor (el suicidio retira el propio grupo, conteo por área) con una comprobación simple de ko.'
+meanings:
+- 'punto $p$ del tablero: $+1$ negras, $-1$ blancas, 0 vacío'
+- 'el tablero como grafo: 1 cuando $p$ y $q$ son vecinos horizontales o verticales'
+- 'relleno por inundación: desde los puntos vacíos a través de un color se hallan los grupos con una libertad; el resto se captura'
+- 'conteo por área: piedras más puntos vacíos que solo ese color alcanza, negras menos blancas menos el komi $k$'
+- $R$ partidas aleatorias jugadas como un único tensor $(R, n^2)$; resultado medio para negras; nunca se rellena el propio ojo
+- 'PUCT: valor $Q_a$ más una bonificación de exploración que se reduce a medida que se visita la jugada $a$; prior uniforme $P_a$'
+- 'conteos de visitas tras todas las simulaciones (última entrada: pasar); se juega la jugada más visitada'
+labels:
+  board_size: Tamaño del tablero $n$
+  simulations: Simulaciones por jugada
+  rollouts: Playouts aleatorios por hoja $R$
+  c_puct: Exploración $c$
+  komi: Komi $k$

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Cartesian k-space: a grid of sample points with axes k_x and k_y; each readout line is swept left to right by the gradient G, and phase-encode steps of size delta k move between lines">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- grid of k-space samples -->
+    <g stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3">
+      <line x1="40" y1="30" x2="180" y2="30"/><line x1="40" y1="50" x2="180" y2="50"/>
+      <line x1="40" y1="90" x2="180" y2="90"/><line x1="40" y1="110" x2="180" y2="110"/>
+      <line x1="40" y1="130" x2="180" y2="130"/>
+    </g>
+    <!-- k axes through the centre -->
+    <line x1="30" y1="70" x2="200" y2="70" stroke="#374151" stroke-width="2" marker-end="url(#axis)"/>
+    <line x1="110" y1="146" x2="110" y2="14" stroke="#374151" stroke-width="2" marker-end="url(#axis)"/>
+    <text x="202" y="76" font-style="italic">k<tspan font-size="10" dy="3">x</tspan></text>
+    <text x="116" y="20" font-style="italic">k<tspan font-size="10" dy="3">y</tspan></text>
+    <!-- acquired readout lines -->
+    <g stroke="#2563eb" stroke-width="2.5">
+      <line x1="40" y1="90" x2="178" y2="90"/>
+      <line x1="40" y1="70" x2="178" y2="70" stroke="#1e40af"/>
+      <line x1="40" y1="50" x2="178" y2="50"/>
+    </g>
+    <g fill="#2563eb">
+      <circle cx="54" cy="50" r="2.5"/><circle cx="82" cy="50" r="2.5"/><circle cx="138" cy="50" r="2.5"/><circle cx="166" cy="50" r="2.5"/>
+      <circle cx="54" cy="90" r="2.5"/><circle cx="82" cy="90" r="2.5"/><circle cx="138" cy="90" r="2.5"/><circle cx="166" cy="90" r="2.5"/>
+    </g>
+    <!-- readout direction (gradient) and phase-encode step -->
+    <line x1="60" y1="40" x2="160" y2="40" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="164" y="44" font-style="italic" fill="#b91c1c">G</text>
+    <line x1="196" y1="110" x2="196" y2="90" stroke="#f59e0b" stroke-width="2"/>
+    <line x1="191" y1="110" x2="201" y2="110" stroke="#f59e0b" stroke-width="2"/>
+    <line x1="191" y1="90" x2="201" y2="90" stroke="#f59e0b" stroke-width="2"/>
+    <text x="204" y="105" font-style="italic" fill="#b45309">Δk</text>
+  </g>
+</svg>

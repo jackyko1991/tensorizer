@@ -1,0 +1,17 @@
+source_hash: 9753ed59836b
+title: Atenuación de rayos X y contraste de la imagen
+summary: Los rayos X se atenúan exponencialmente al atravesar el cuerpo, $I = I_0\,e^{-\int\mu\,dl}$. Un maniquí de tórax formado por pulmón, tejido blando, hueso y contraste yodado se proyecta rayo a rayo con un único einsum, lo que muestra por qué el hueso destaca a baja energía y cómo el espectro de un tubo real se endurece con la profundidad.
+notes: 'En escala logarítmica la proyección es aditiva: $-\ln(I/I_0)$ es la suma de $\mu\,L$ sobre los materiales, así que una imagen monocromática es una aplicación lineal de las longitudes de material. Una lámina homogénea reduce el haz a la mitad en cada capa hemirreductora $\ln 2/\mu$. La absorción fotoeléctrica crece aproximadamente como $Z^3/E^3$, por lo que el contraste del hueso es grande a 30–50 keV y se desvanece a energías mayores; el yodo da un salto por encima de su borde K a 33 keV, y por eso se usa como agente de contraste. Un tubo real emite un espectro: los fotones blandos se absorben primero, la energía media aumenta y el $\mu$ efectivo disminuye con la profundidad (endurecimiento del haz). Simplificaciones: rayos rectos y paralelos, sin dispersión, sin respuesta del detector, ocho energías tabuladas con valores de $\mu$ redondeados. Todas las cifras son aproximadas y solo con fines educativos, no para uso clínico.'
+meanings:
+- 'maniquí one-hot: 1 donde el píxel $(y, x)$ es del material $m$'
+- longitud del recorrido de un rayo dentro de la fila de píxeles $y$
+- '$y$ repetido ⇒ sumado: longitud de material $m$ atravesada por el rayo $x$'
+- coeficiente de atenuación lineal del material $m$ a la energía $E_e$ (1/cm)
+- '$m$ repetido ⇒ sumado: integral de línea $\int \mu\, dl$ para cada energía y cada rayo'
+- espectro del tubo (ley de Kramers, filtro de aluminio), $\sum_e S_e = 1$
+- '$e$ repetido ⇒ sumado: fracción transmitida de un haz policromático'
+labels:
+  energy_kev: Energía del fotón $E$
+  kvp: Tensión del tubo
+  iodine_mg_ml: Concentración de yodo
+  n_pixels: Píxeles de ancho

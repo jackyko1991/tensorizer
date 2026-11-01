@@ -1,0 +1,22 @@
+source_hash: 2ae828bc3a14
+title: Messdaten mit Tensoren anpassen
+summary: Eine (synthetische) Labormessung eines gedämpften Oszillators mit einem Fehlerbalken $\sigma_i$ an jedem Punkt wird nach der Maximum-Likelihood-Methode angepasst. Das Messmodell enthält einen expliziten Fehlerterm $\varepsilon_i$, dessen Streuung eine unbekannte Zusatzstreuung $s$ einschließt; Autograd minimiert $-2\ln L$, Jacobi- und Hesse-Matrix liefern die Parameterunsicherheiten, und ein lineares Teilproblem zeigt die Methode der kleinsten Quadrate als einen einzigen lstsq-Aufruf.
+notes: 'Eine Messung ist nie exakt das Modell: $x_i = f(t_i;\theta) + \varepsilon_i$, und um den Fehlerterm $\varepsilon_i$ geht es in der Statistik. Wären die angegebenen Fehlerbalken alles, dann wäre $\varepsilon_i \sim N(0, \sigma_i^2)$, und die Likelihood zu maximieren wäre dasselbe, wie $\chi^2 = \sum_i ((x_i - f_i)/\sigma_i)^2$ zu minimieren (gewichtete kleinste Quadrate). Echte Experimente streuen oft stärker, als ihre Fehlerbalken sagen (Vibrationen, eine nicht modellierte Drift); deshalb ist die Streuung hier $\sigma_{tot,i}^2 = \sigma_i^2 + s^2$ mit einer unbekannten Zusatzstreuung („Jitter“) $s$, die zusammen mit den fünf physikalischen Parametern angepasst wird. Der Term $\ln 2\pi\sigma_{tot,i}^2$ in $-2\ln L$ verhindert, dass die Anpassung alles mit einem riesigen $s$ wegerklärt. Die Daten in measurements.csv sind synthetisch, erzeugt mit $s = 0.8$ mm zusätzlich zu Fehlerbalken von 0,5–1 mm: Eine reine $\chi^2$-Anpassung endet bei $\chi^2/\mathrm{dof} \approx 2.5$, dem Zeichen
+  unterschätzter Fehler, während mit angepasstem $s$ die normierten Residuen $r_i = (x_i - f_i)/\sigma_{tot,i}$ einer $N(0,1)$ folgen und $\chi^2/\mathrm{dof} \approx 1$ gilt. Autograd liefert den Gradienten von $-2\ln L$ für Adam (die animierten Iterationen) und L-BFGS (den letzten Feinschliff). Die Unsicherheiten stammen aus der Krümmung von $-2\ln L$ im Minimum: $C = (J^TJ)^{-1}$ mit der Jacobi-Matrix $J_{ip} = \partial r_i/\partial\theta_p$, oder $C = 2H^{-1}$ mit der vollen Hesse-Matrix, wenn $s$ dazugehört. Lineare und nichtlineare kleinste Quadrate: Bei festem $\gamma$ und $\omega$ ist das Modell linear in $(A\cos\varphi, A\sin\varphi, c)$, die besten Werte folgen also aus einem einzigen lstsq-Aufruf (keine Iterationen, eine eindeutige Lösung); so entsteht der Startwert aus $\omega_0, \gamma_0$. $\gamma$ und $\omega$ gehen nichtlinear ein und brauchen eine iterative Suche, die in einem lokalen Minimum hängen bleiben kann. Probieren Sie ein schlechtes $\omega_0$ (die Anpassung kann
+  auf eine falsche Frequenz einrasten), eine große Lernrate, oder schalten Sie den Jitter ab. Vereinfachungen: unabhängige Gaußsche Fehler, kein Fehler in $t$, und Kovarianzen nur aus der lokalen Krümmung.'
+meanings:
+- Zeit, gemessene Position und angegebener Fehlerbalken von Punkt $i$, gelesen aus measurements.csv
+- $(A, \gamma, \omega, \varphi, c, \ln s)$; die Anpassung von $\ln s$ hält den Jitter $s$ positiv
+- das Modell des gedämpften Oszillators zu jedem Messzeitpunkt
+- 'Streuung des Fehlerterms $\varepsilon_i$: Fehlerbalken und Zusatzstreuung quadratisch addiert'
+- wiederholtes $i$ ⇒ summiert; mit $s = 0$ ist es $\chi^2$ plus eine Konstante
+- wie sich jedes normierte Residuum mit jedem Parameter ändert
+- 'Gauß–Newton-Kovarianz $C$: Unsicherheiten $\sqrt{C_{pp}}$ ($i$ summiert)'
+- Kovarianz einschließlich $\ln s$, aus der Hesse-Matrix von $-2\ln L$
+- bei festem $\gamma, \omega$ ist das Modell linear in $\beta = (A\cos\varphi, A\sin\varphi, c)$
+labels:
+  omega0: Startwert $\omega_0$
+  gamma0: Startwert $\gamma_0$
+  lr: Adam-Lernrate
+  iterations: Adam-Iterationen
+  jitter: Zusatzstreuung $s$ anpassen

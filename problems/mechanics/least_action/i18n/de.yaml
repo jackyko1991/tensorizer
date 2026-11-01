@@ -1,0 +1,25 @@
+source_hash: 31fa57e56a24
+title: 'Prinzip der kleinsten Wirkung: den Weg per Gradientenabstieg finden'
+summary: Zerlege einen Weg in Punkte $q_n$ mit festen Enden, schreibe die Wirkung $S = \sum_n L\,\Delta t$ als einen einzigen Tensorausdruck und lass Autograd und einen Optimierer ein Bündel falscher Schätzungen bergab gleiten, bis $\partial S/\partial q_n = 0$ gilt. Sie landen auf der Parabel eines geworfenen Balls oder der Sinuskurve eines Oszillators.
+notes: 'Die Natur integriert hier nicht Schritt für Schritt vorwärts: Der ganze Weg wird auf einmal angepasst, wobei bekannt ist, wo er beginnen und enden muss. Aus $\partial S/\partial q_n = 0$ folgt $m(q_{n+1} - 2q_n + q_{n-1})/\Delta t^2 = -V''(q_n)$, die diskrete Euler-Lagrange-Gleichung, die genau das Verlet-Verfahren ist; bei konstanter Schwerkraft gibt sie die Parabel bis auf Rundungsfehler wieder, beim Oszillator bis auf $O(\Delta t^2)$. Eigentlich ist es ein Prinzip der stationären Wirkung: Beim Oszillator ist der kleinste Eigenwert der Hesse-Matrix etwa $m\Delta t\,(\pi^2/T^2 - \omega^2)$; sobald $T$ eine halbe Periode $\pi/\omega$ überschreitet, ist der wahre Weg ein Sattelpunkt von $S$, der Gradientenabstieg würde davonlaufen, und der Code wechselt zu Newton-Schritten $x \leftarrow x - \alpha H^{-1}\nabla S$, die jeden stationären Punkt finden. Glatte, lange Wellen relaxieren am langsamsten (die kleinsten Eigenwerte der Hesse-Matrix); kurze Wellen verschwinden innerhalb weniger
+  Iterationen.'
+meanings:
+- Versuchsweg $b$ zur Zeit $t_n = n\,\Delta t$; $q_{b0}$ und $q_{bN}$ sind fest
+- '$-1$ auf der Diagonalen, $+1$ rechts daneben: $(Dq)_n = q_{n+1} - q_n$'
+- 'wiederholtes $k$ ⇒ summiert: Geschwindigkeit auf jedem Schritt jedes Weges'
+- kinetische minus potentielle Energie, über die Schritte summiert; $V$ am linken Ende jedes Schritts genommen
+- Gradient für die freien inneren Punkte; die Wege sind unabhängig, daher genügt ein Rückwärtsdurchlauf für alle
+- Gradientenabstieg mit Momentum, $\eta = 0.8\,\Delta t/m$
+- 'Hesse-Matrix: tridiagonal, $2m/\Delta t - V''''\Delta t$ auf der Diagonalen und $-m/\Delta t$ daneben'
+- diskrete Euler-Lagrange-Gleichung $m(q_{n+1} - 2q_n + q_{n-1})/\Delta t^2 + V'(q_n)$, das Verlet-Verfahren; $\partial S/\partial q_n = -\Delta t\,r_n$
+labels:
+  system: System
+  method: Methode
+  T: Gesamtzeit $T$
+  omega: Oszillatorfrequenz $\omega$
+  q_start: Start $q_0$
+  q_end: Ende $q_N$
+  n_steps: Zeitschritte $N$
+  n_paths: Versuchswege
+  wiggle: Welligkeit der Versuchswege
+  n_iter: Iterationen

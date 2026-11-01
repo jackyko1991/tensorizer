@@ -31,6 +31,9 @@ from problems.mechanics.rigid_body_rotation import tensors as rb_t
 from problems.mechanics.simple_pendulum import equation as sp_eq
 from problems.mechanics.simple_pendulum import solve as sp_solve
 from problems.mechanics.simple_pendulum import tensors as sp_t
+from problems.mechanics.three_body_chaos import equation as tb_eq
+from problems.mechanics.three_body_chaos import solve as tb_solve
+from problems.mechanics.three_body_chaos import tensors as tb_t
 
 CPU = torch.device("cpu")
 
@@ -394,3 +397,69 @@ def test_cloth_energy_decreases_with_damping_and_is_conserved_without():
     E = cl_eq.energy(traj, D, rest, undamped)
     kinetic_max = 0.5 * m * torch.einsum("tai,tai->t", traj[:, 1], traj[:, 1]).max()
     assert (E - E[0]).abs().max() < 1e-4 * kinetic_max
+
+
+# --- three-body chaos (Pythagorean problem) ---
+
+
+def test_three_body_pythagorean_setup():
+    m, x, v = tb_t.initial_state(0.0, CPU)
+    d = tb_eq.pair_distances(x)[0]  # (3, 3)
+    # each mass sits opposite the side of the same length: |x_4 - x_5| = 3, |x_3 - x_5| = 4, |x_3 - x_4| = 5
+    assert torch.allclose(torch.stack([d[1, 2], d[0, 2], d[0, 1]]), m)
+    assert torch.allclose(tb_eq.center_of_mass(x[0], m), torch.zeros(2, dtype=torch.float64))
+    assert (v == 0).all()
+
+
+def test_three_body_einsum_force_matches_pairwise_loop():
+    m, x, _ = tb_t.initial_state(1e-3, CPU)
+    a = tb_eq.acceleration(x, m, G=1.0)  # (K, 3, 2)
+    for k in range(2):
+        for i in range(3):
+            expected = sum(m[j] * (x[k, j] - x[k, i]) / (x[k, j] - x[k, i]).norm() ** 3 for j in range(3) if j != i)
+            assert torch.allclose(a[k, i], expected)
+    assert torch.allclose(tb_eq.momentum(a, m), torch.zeros(2, 2, dtype=torch.float64), atol=1e-12)  # Newton III
+
+
+@pytest.fixture(scope="module")
+def three_body_runs():
+    """Run 0 = reference, run 1 = twin moved by δ = 1e-6, integrated together to t = 50."""
+    m, x0, v0 = tb_t.initial_state(1e-6, CPU)
+    times, xs, vs, _ = tb_solve.solve(m, x0, v0, 1.0, t_max=50.0, tol=1e-10)
+    return m, times, xs, vs
+
+
+def test_three_body_conserves_energy_momentum_and_centre_of_mass(three_body_runs):
+    m, _, xs, vs = three_body_runs
+    e_err = tb_solve.energy_error(xs, vs, m, 1.0)[:, 0]
+    assert e_err.max() < 1e-6  # through close encounters at distance ~0.01
+    assert tb_eq.momentum(vs[:, 0], m).abs().max() < 1e-10
+    assert tb_eq.center_of_mass(xs[:, 0], m).abs().max() < 1e-10
+
+
+def test_three_body_is_chaotic(three_body_runs):
+    m, times, xs, vs = three_body_runs
+    dist = tb_eq.phase_space_distance(xs, vs)  # reference vs δ = 1e-6 twin
+    assert dist[0] == pytest.approx(1e-6)
+    assert dist[-10:].min() > 0.1  # grew by more than five orders of magnitude
+    lam, *_ = tb_solve.lyapunov_fit(times, dist)
+    assert lam > 0.05
+
+
+def test_three_body_twin_with_zero_offset_stays_identical():
+    m, x0, v0 = tb_t.initial_state(0.0, CPU)
+    _, xs, vs, _ = tb_solve.solve(m, x0, v0, 1.0, t_max=20.0, tol=1e-10)
+    assert (xs[:, 1] - xs[:, 0]).abs().max() < 1e-12
+    assert tb_eq.phase_space_distance(xs, vs).max() < 1e-12
+    assert math.isnan(
+        tb_solve.lyapunov_fit(torch.arange(len(xs), dtype=torch.float64), tb_eq.phase_space_distance(xs, vs))[0]
+    )
+
+
+def test_three_body_lyapunov_fit_recovers_known_rate():
+    t = torch.linspace(0, 20, 401, dtype=torch.float64)
+    dist = 1e-6 * torch.exp(0.4 * t)  # pure exponential growth, saturating above 0.1 at t ≈ 28.8 → never
+    dist = torch.cat([dist, torch.full((50,), 1.0, dtype=torch.float64)])
+    t = torch.cat([t, 20 + 0.05 * torch.arange(1, 51, dtype=torch.float64)])
+    lam, *_ = tb_solve.lyapunov_fit(t, dist)
+    assert lam == pytest.approx(0.4, rel=0.15)

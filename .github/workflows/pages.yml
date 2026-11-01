@@ -31,6 +31,8 @@ jobs:
           key: generated-${{ hashFiles('problems/**/*.py', 'problems/**/meta.yaml') }}
           restore-keys: generated-
       - run: pixi run python scripts/build_assets.py --jobs 4
+      # Refuse to publish if any problem lacks its diagram, animation, notebook or translations
+      - run: pixi run python scripts/audit.py
       - run: pixi run web-build
       - uses: actions/configure-pages@v6.0.0
       - uses: actions/upload-pages-artifact@v5.0.0

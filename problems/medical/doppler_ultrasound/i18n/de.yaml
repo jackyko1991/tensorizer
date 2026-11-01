@@ -1,0 +1,20 @@
+source_hash: 2cd1c41299f8
+title: 'Doppler-Ultraschall: Blutfluss messen'
+summary: 'Ein Ultraschallkopf horcht auf die Echos der roten Blutkörperchen. Jede bewegte Zelle verschiebt das Echo um $f_D = 2 f_0 v \cos\theta / c$, und Hunderte Zellen in einer pulsierenden Arterie werden auf einmal als ein Stapel von Zeigern (Phasoren) simuliert. Eine Kurzzeit-Fourier-Transformation (STFT) macht aus ihrem summierten Echo das Doppler-Spektrogramm, wie es ein Ultraschallgerät zeigt: die Verteilung der Blutgeschwindigkeiten über den Herzzyklus.'
+notes: 'Der Faktor 2 entsteht, weil die Verschiebung zweimal passiert: Die bewegte Zelle empfängt eine verschobene Welle und sendet sie in Bewegung wieder aus. Nur die Geschwindigkeitskomponente entlang des Schallstrahls zählt, bei $\theta = 90°$ gibt es also gar keine Verschiebung; Geräte fragen den Untersucher nach dem Winkel und berechnen $v = f_D c / (2 f_0 \cos\theta)$, was oberhalb von etwa 60° sehr unsicher wird. Mit den Standardwerten ($f_0 = 5$ MHz, $\theta = 60°$, Spitze 1 m/s) beträgt die systolische Verschiebung etwa 3,2 kHz, also im hörbaren Bereich – deshalb geben Doppler-Geräte das Signal auch als Ton aus. Bei laminarer Strömung ist das Profil parabolisch: Zellen an der Wand bewegen sich kaum, auf der Mittellinie am schnellsten. Weil gleich große Flächen des Querschnitts gleich viele Zellen enthalten, ist jede Geschwindigkeit zwischen 0 und $v_{\max}$ gleich häufig: Das Spektrum ist ein flaches Band („gefülltes“ Fenster), und die mittlere Frequenz ist genau die Hälfte des
+  Maximums. Gestörte oder stenotische Strömung würde das Spektrum dagegen verbreitern. Gepulster Doppler tastet das Echo einmal pro Puls ab, kann also nach Nyquist nur $|f_D| < \mathrm{PRF}/2$ messen: Senken Sie die PRF (oder erhöhen Sie die Geschwindigkeit), und die systolische Spitze klappt auf die negative Seite um (Aliasing). Reale Geräte brauchen eine hohe PRF für schnelle Jets, aber eine niedrige PRF für tiefe Gefäße, denn jeder Puls muss zurück sein, bevor der nächste gesendet wird. Vereinfachungen: Das Messvolumen umfasst das ganze Gefäß, der Strahl ist gleichmäßig, das IQ-Signal wird direkt im Basisband simuliert, und es gibt weder Wandfilter noch Gewebe-Clutter. Alle Werte sind Näherungen und nur für die Lehre gedacht, nicht für den klinischen Einsatz.'
+meanings:
+- 'Geschwindigkeit auf der Mittellinie über zwei Herzschläge: systolische Spitze, kurzer Rückfluss, langsamer diastolischer Fluss'
+- 'zufällige rote Blutkörperchen: Radius im Gefäß, Phase und Stärke des Echos'
+- 'parabolisches (laminares) Profil mal Kurvenform: ein äußeres Produkt, kein Index summiert'
+- Doppler-Verschiebung $2 f_0 v \cos\theta / c$ jeder Zelle bei jedem Puls
+- 'wiederholtes $n$ ⇒ summiert: das empfangene Echo, ein komplexer (IQ-)Wert pro Puls im Abstand $\Delta t = 1/\mathrm{PRF}$'
+- 'Spektrogramm: Leistung bei der Frequenz $f$ im Zeitfenster $k$'
+- gepulster Doppler sieht $f$ nur in $[-\mathrm{PRF}/2, \mathrm{PRF}/2)$ zurückgefaltet
+labels:
+  f0: Sendefrequenz $f_0$
+  theta: Winkel Strahl–Strömung $\theta$
+  v_peak: Systolische Spitzengeschwindigkeit
+  prf: Pulswiederholfrequenz PRF
+  heart_rate: Herzfrequenz
+  n_scatterers: Simulierte rote Blutkörperchen

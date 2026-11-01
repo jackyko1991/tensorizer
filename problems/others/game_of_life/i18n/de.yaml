@@ -1,0 +1,17 @@
+source_hash: 1d6c71673889
+title: Conways Spiel des Lebens als Faltung
+summary: 'Keine Physik, nur zum Spaß: ein Gitter aus lebenden und toten Zellen, in dem jede Zelle auf ihre acht Nachbarn schaut. Sie zu zählen ist eine $3\times3$-Faltung, geschrieben als ein einziges einsum über entfaltete Ausschnitte, und die Geburts-/Überlebensregel ist ein Vergleich von Tensoren, sodass jede Zelle mehrerer Spielfelder gleichzeitig aktualisiert wird. Beobachten Sie Gleiter, eine Gleiterkanone und zufällige Suppen.'
+notes: Drei Zahlen (Geburt bei 3, Überleben bei 2 oder 3) genügen für Gleiter, die alle 4 Generationen eine Zelle diagonal weiterwandern, Oszillatoren wie den Pulsar (Periode 3) und die Gosper-Gleiterkanone, die alle 30 Generationen einen neuen Gleiter abfeuert, sodass ihre Population pro Periode um 5 wächst. Das $R$-Pentomino mit nur 5 Zellen verändert sich auf einem unbegrenzten Gitter 1103 Generationen lang; auf einem endlichen Spielfeld bricht der Rand dies vorzeitig ab. Zufällige Suppen brennen aus zu statischen Objekten, Blinkern und entkommenden Gleitern; die grauen Kurven zeigen, wie ähnlich dieser Zerfall von Suppe zu Suppe ist. Dasselbe Muster aus Entfalten und einsum ist genau die Art, wie eine Schicht eines faltenden neuronalen Netzes berechnet wird.
+meanings:
+- 'Zelle $(i, j)$ von Spielfeld $b$: 1 lebendig, 0 tot'
+- 'Einsen um die Zelle und 0 in der Mitte: eine Zelle ist nicht ihr eigener Nachbar'
+- der $3\times3$-Ausschnitt um jede Zelle $p$ als Spalte angeordnet; Zellen außerhalb des Spielfelds gelten als tot
+- 'wiederholtes $k$ ⇒ summiert: lebende Nachbarn jeder Zelle, dasselbe wie eine Faltung mit $K$'
+- 'B3/S23: Geburt bei genau 3 Nachbarn, Überleben bei 2 oder 3, sonst Tod'
+- Population jedes Spielfelds in jeder Generation
+labels:
+  pattern: Startmuster
+  size: Spielfeldgröße
+  generations: Generationen
+  n_boards: Zufällige Spielfelder $B$
+  density: Zufällige Fülldichte

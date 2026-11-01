@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Spin echo: in the main field B0 a fan of isochromat arrows dephases in the transverse plane; a 90 degree pulse, then a 180 degree pulse at TE/2, gives an echo at TE">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="spin" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1e40af"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- main field -->
+    <line x1="18" y1="92" x2="18" y2="22" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="24" y="30" font-style="italic" fill="#b91c1c">B<tspan font-size="10" dy="3">0</tspan></text>
+    <!-- transverse plane with a fan of dephasing spins -->
+    <ellipse cx="62" cy="78" rx="44" ry="16" fill="#93c5fd" fill-opacity="0.35" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <g stroke="#2563eb" stroke-width="2" marker-end="url(#spin)">
+      <line x1="62" y1="78" x2="98" y2="70"/>
+      <line x1="62" y1="78" x2="92" y2="88"/>
+      <line x1="62" y1="78" x2="72" y2="93"/>
+      <line x1="62" y1="78" x2="88" y2="63"/>
+      <line x1="62" y1="78" x2="46" y2="92"/>
+    </g>
+    <path d="M90,96 A30,12 0 0 1 60,98" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <text x="74" y="116" font-style="italic" fill="#b45309">Δω</text>
+    <!-- pulse sequence timeline -->
+    <line x1="120" y1="132" x2="232" y2="132" stroke="#374151" stroke-width="2"/>
+    <rect x="124" y="108" width="7" height="24" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+    <rect x="164" y="96" width="9" height="36" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+    <text x="116" y="102" font-size="12">90°</text>
+    <text x="156" y="90" font-size="12">180°</text>
+    <!-- FID and echo -->
+    <path d="M131,132 C134,112 138,128 146,131" fill="none" stroke="#2563eb" stroke-width="2"/>
+    <path d="M196,131 C205,129 207,106 211,106 C215,106 217,129 226,131" fill="none" stroke="#2563eb" stroke-width="2"/>
+    <line x1="127.5" y1="140" x2="211" y2="140" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="160" y="156" font-style="italic">TE</text>
+  </g>
+</svg>

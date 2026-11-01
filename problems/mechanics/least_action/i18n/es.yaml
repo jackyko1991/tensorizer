@@ -1,0 +1,25 @@
+source_hash: 31fa57e56a24
+title: 'Principio de mínima acción: encontrar la trayectoria por descenso de gradiente'
+summary: Divide una trayectoria en puntos $q_n$ con extremos fijos, escribe la acción $S = \sum_n L\,\Delta t$ como una sola expresión tensorial y deja que autograd y un optimizador hagan descender un lote de conjeturas erróneas hasta que $\partial S/\partial q_n = 0$. Acaban en la parábola de una pelota lanzada o en la sinusoide de un oscilador.
+notes: 'Aquí la naturaleza no integra hacia delante paso a paso: toda la trayectoria se ajusta a la vez, sabiendo dónde debe empezar y terminar. Imponer $\partial S/\partial q_n = 0$ da $m(q_{n+1} - 2q_n + q_{n-1})/\Delta t^2 = -V''(q_n)$, la ecuación de Euler–Lagrange discreta, que es exactamente el esquema de Verlet; con gravedad constante reproduce la parábola salvo errores de redondeo, y para el oscilador hasta $O(\Delta t^2)$. En realidad es un principio de acción estacionaria: para el oscilador, el menor autovalor de la hessiana es aproximadamente $m\Delta t\,(\pi^2/T^2 - \omega^2)$, así que en cuanto $T$ supera medio período $\pi/\omega$, la trayectoria real es un punto de silla de $S$, el descenso de gradiente divergiría y el código pasa a pasos de Newton $x \leftarrow x - \alpha H^{-1}\nabla S$, que encuentran cualquier punto estacionario. Las ondulaciones suaves y largas son las que más tardan en relajarse (los autovalores más pequeños de la hessiana); las ondulaciones cortas desaparecen
+  en pocas iteraciones.'
+meanings:
+- trayectoria de prueba $b$ en el instante $t_n = n\,\Delta t$; $q_{b0}$ y $q_{bN}$ están fijos
+- '$-1$ en la diagonal, $+1$ a su derecha: $(Dq)_n = q_{n+1} - q_n$'
+- '$k$ repetido ⇒ sumado: velocidad en cada paso de cada trayectoria'
+- energía cinética menos potencial, sumada sobre los pasos; $V$ evaluado en el extremo izquierdo de cada paso
+- gradiente para los puntos interiores libres; las trayectorias son independientes, así que una sola pasada hacia atrás sirve para todas
+- descenso de gradiente con momento, $\eta = 0.8\,\Delta t/m$
+- 'hessiana: tridiagonal, $2m/\Delta t - V''''\Delta t$ en la diagonal y $-m/\Delta t$ a su lado'
+- ecuación de Euler–Lagrange discreta $m(q_{n+1} - 2q_n + q_{n-1})/\Delta t^2 + V'(q_n)$, el esquema de Verlet; $\partial S/\partial q_n = -\Delta t\,r_n$
+labels:
+  system: sistema
+  method: método
+  T: Tiempo total $T$
+  omega: Frecuencia del oscilador $\omega$
+  q_start: Inicio $q_0$
+  q_end: Final $q_N$
+  n_steps: Pasos de tiempo $N$
+  n_paths: Trayectorias de prueba
+  wiggle: Ondulación de las trayectorias de prueba
+  n_iter: Iteraciones

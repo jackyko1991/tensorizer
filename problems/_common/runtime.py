@@ -63,12 +63,15 @@ def cli(run: Callable[[dict[str, Any], Path], Path], main_file: str) -> None:
     sys.stdout.reconfigure(encoding="utf-8")  # Windows consoles default to cp1252 and choke on ° or →
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", default="out", help="directory for the rendered GIF/PNG")
-    parser.add_argument("--params", default="{}", help="JSON overrides, e.g. '{\"v0\": 40}'")
+    parser.add_argument(
+        "--params", default="{}", help="JSON overrides, e.g. '{\"v0\": 40}', or @file.json to read them from a file"
+    )
     parser.add_argument("--verbose", action="store_true", help="trace each step with tensor shapes and timings")
     args = parser.parse_args()
 
     meta = load_meta(Path(main_file).parent)
-    params = resolve_params(meta, json.loads(args.params))
+    overrides = Path(args.params[1:]).read_text(encoding="utf-8") if args.params.startswith("@") else args.params
+    params = resolve_params(meta, json.loads(overrides))
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     if args.verbose:

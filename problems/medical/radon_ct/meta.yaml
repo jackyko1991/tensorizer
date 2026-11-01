@@ -1,0 +1,32 @@
+title: Radon transform and CT reconstruction
+category: medical
+level: intermediate
+order: 1
+summary: >
+  A CT scanner records line integrals $p(\theta, s)$ of the attenuation map from every angle. The
+  Shepp–Logan head phantom is projected by rotating and summing a tensor, and rebuilt by filtered
+  back-projection: a ramp filter $|\nu|$ in Fourier space, then one einsum over the angles.
+animated: true
+vector_form: 'p(\theta, s) = \int f(s\,\hat{\mathbf n}_\theta + t\,\hat{\mathbf n}_\theta^{\perp})\,dt \qquad f(\mathbf r) = \int_0^{\pi} \big(\mathcal F^{-1}|\nu|\,\mathcal F p\big)(\theta,\, \mathbf r\cdot\hat{\mathbf n}_\theta)\,d\theta'
+index_form: 'p_{\theta s} = f_{\theta t s}\,\Delta t \qquad q_{\theta s} = \mathcal F^{-1}_s\!\big[H(\nu)\,\mathcal F_s[p_{\theta s}]\big] \qquad f_{yx} = Q_{\theta yx}\,\Delta\theta'
+translation:
+  - {symbol: 'f_{yx}', code: 'f', shape: '(N, N)', meaning: 'attenuation map (modified Shepp–Logan: sum of 10 ellipses)'}
+  - {symbol: 'f_{\theta t s}', code: 'grid_sample(f, rotated_points(theta, s, t))', shape: '(A, T, S)', meaning: 'image sampled along the ray at distance $s$, position $t$, angle $\theta$'}
+  - {symbol: 'p_{\theta s}', code: "einsum('ats->as', samples) * dt", shape: '(A, S)', meaning: 'repeated $t$ ⇒ summed: the sinogram'}
+  - {symbol: 'H(\nu)', code: 'ramp_filter(S, ds, window)', shape: '(P,)', meaning: 'ramp $|\nu|$ (Ram-Lak), optionally times $\mathrm{sinc}(\nu\,\Delta s)$ (Shepp–Logan), on a zero-padded detector'}
+  - {symbol: 'q_{\theta s}', code: 'ifft(fft(p, n=P) * H)', shape: '(A, S)', meaning: 'filtered projections'}
+  - {symbol: 'Q_{\theta yx}', code: 'smear(q, theta, x, y)', shape: '(A, N, N)', meaning: 'each projection spread back along its rays: $q_\theta(x\cos\theta + y\sin\theta)$'}
+  - {symbol: 'Q_{\theta yx}\,\Delta\theta', code: "einsum('ayx,a->yx', Q, dtheta)", shape: '(N, N)', meaning: 'repeated $\theta$ ⇒ summed: the back-projection'}
+notes: >
+  Every projection conserves the total mass, $\int p\,ds = \iint f\,dA$, for each angle. Smearing the raw
+  projections back (plain back-projection) turns a point into a $1/r$ halo, so the image is a blurred version
+  of $f$; the ramp filter $|\nu|$ exactly undoes this blur (central-slice theorem). Too few angles give
+  streaks; the error falls as the number of angles grows until the pixel grid limits it. The Shepp–Logan
+  window softens the ramp at high frequency, trading a little sharpness for less noise — try it with
+  noise switched on. Simplifications: parallel-beam geometry, monochromatic rays, bilinear interpolation,
+  Gaussian detector noise instead of photon statistics. Educational model, not for clinical use.
+params:
+  n_pixels: {default: 128, min: 64, max: 256, step: 32, type: int, label: Image size $N$}
+  n_angles: {default: 180, min: 8, max: 360, step: 4, type: int, label: Projection angles}
+  filter: {default: ram-lak, type: choice, options: [ram-lak, shepp-logan], label: Ramp filter window}
+  noise: {default: 0.0, min: 0.0, max: 0.05, step: 0.005, label: Detector noise (fraction of max)}

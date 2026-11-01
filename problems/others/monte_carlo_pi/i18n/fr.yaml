@@ -1,0 +1,14 @@
+source_hash: a88c161966b6
+title: 'Monte-Carlo : estimer $\pi$ avec des fléchettes aléatoires'
+summary: 'Lancez des fléchettes au hasard sur un carré unité et comptez combien tombent dans le quart de cercle : la proportion tend vers $\pi/4$. De nombreuses expériences indépendantes s''exécutent côte à côte dans un seul tenseur $(B, N)$, ce qui montre la loi caractéristique de Monte-Carlo : une erreur qui ne décroît que comme $1/\sqrt N$. L''aiguille de Buffon fournit une seconde estimation, datant du XVIIIe siècle.'
+notes: 'Chaque estimation est juste en moyenne mais bruitée, et le bruit ne diminue que comme $1/\sqrt N$ : cent fois plus de fléchettes pour un chiffre correct de plus. Ce taux ne dépend pas de la dimension, c''est pourquoi Monte-Carlo est la méthode de choix pour les intégrales sur de nombreuses variables, du transport des neutrons et du modèle d''Ising à l''évaluation d''options et aux trajets de photons en dosimétrie médicale. Les courbes grises sont des expériences individuelles : chacune erre, mais toutes restent dans la bande fixée par $\sigma_N$. Des graines fixes rendent chaque exécution reproductible ; essayez plus d''expériences pour voir la dispersion suivre la théorie de plus près.'
+meanings:
+- fléchette $n$ de l'expérience $b$, coordonnée $i$, uniforme dans $[0, 1)$
+- '$i$ répété ⇒ sommé : distance au coin au carré ; 1 si la fléchette est dans le quart de cercle'
+- 'somme cumulée divisée par $n$ : l''estimation après chaque fléchette, pour chaque expérience'
+- dispersion entre expériences ; théorie $\sqrt{\pi(4-\pi)/n}$ issue de la variance binomiale
+- 'aiguille de Buffon : coupe une ligne avec la probabilité $2\ell/(\pi d)$, donc $\hat\pi = 2\ell N/(d\,\text{crossings})$'
+labels:
+  n_darts: Fléchettes par expérience $N$
+  n_experiments: Expériences $B$
+  needle_length: Longueur de l'aiguille $\ell/d$

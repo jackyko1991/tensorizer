@@ -1,0 +1,28 @@
+source_hash: cf2636b6ae13
+title: 'Physikinformiertes neuronales Netz (PINN): gedämpfter Oszillator'
+summary: Ein kleines neuronales Netz $\hat x(t; w)$ lernt die Bewegung einer gedämpften Masse an einer Feder aus nur zehn verrauschten Messungen in den ersten 40 % des Intervalls. Nimmt man die Bewegungsgleichung $m\ddot x + \mu\dot x + kx = 0$ in die Verlustfunktion auf, ausgewertet mit automatischer Differentiation an Kollokationspunkten, so extrapoliert es dort, wo ein gewöhnliches Netz versagt; im inversen Modus bestimmt es zusätzlich die unbekannte Dämpfung $\mu$.
+notes: 'Ein gewöhnliches neuronales Netz ist ein flexibler Kurvenanpasser: Nur mit den Messungen trainiert, kann es durch sie hindurchgehen, aber hinter dem letzten Datenpunkt sagt ihm nichts, was es tun soll, und seine Vorhersage (gestrichelt) driftet ab. Ein physikinformiertes neuronales Netz (PINN) fügt einen zweiten Verlustterm hinzu: das mittlere Quadrat des Residuums $r_c = m\hat x'''' + \mu\hat x'' + k\hat x$ an Kollokationspunkten $t_c$, die das ganze Intervall abdecken, auch dort, wo es keine Daten gibt. Die Ableitungen sind exakte Ableitungen des Netzes nach seiner Eingabe, berechnet mit torch.autograd.grad und create_graph=True, damit der Verlust durch sie hindurch in die Gewichte zurückpropagiert werden kann. $r_c \to 0$ zu erzwingen macht $\hat x$ überall zu einer Lösung der Bewegungsgleichung; die Daten und die Anfangsbedingung $x(0) = 1$, $\dot x(0) = 0$ wählen dann die eine passende Lösung aus, sodass das Netz richtig extrapoliert. Die Physik wirkt als Regularisierer, der
+  fehlende Daten ersetzt. Im inversen Problem ist die Dämpfung $\mu$ unbekannt: Sie wird zu einem trainierbaren Parameter, und der Optimierer findet den Wert, bei dem Daten und Physik übereinstimmen (sieh zu, wie er überschießt und sich einpendelt). Die exakte Lösung ist $x = e^{-\delta t}(\cos\omega t + \tfrac{\delta}{\omega}\sin\omega t)$ mit $\delta = \mu/2m$ und $\omega = \sqrt{k/m - \delta^2}$. Praktische Hinweise: Das Residuum ist etwa $k$-mal so groß wie der Fehler, daher gleicht das Gewicht $\lambda \approx 10^{-4}$ es gegen den Datenterm aus (zu groß, und das Netz bleibt bei der trivialen Lösung $\hat x = 0$ hängen, deren Residuum ebenfalls null ist); höhere Frequenzen (größeres $k$) brauchen mehr Iterationen, weil ein Netz zuerst niedrige Frequenzen lernt. Das Vorwärtsproblem wird hier nur zur Veranschaulichung gelöst: Ein ODE-Löser wäre viel schneller. PINNs lohnen sich bei inversen Problemen, spärlichen und verrauschten Daten und PDEs auf unhandlichen Gebieten. Vereinfachungen:
+  feste Masse $m = 1$, fester Seed und Adam mit kosinusförmig abfallender Lernrate (keine L-BFGS-Nachoptimierung).'
+meanings:
+- 'ein Batch von Eingabezeiten: Kollokationspunkte, Messzeiten und $t = 0$'
+- 'trainierbare Gewichte $w$ der Schicht $l$: Größen $1 \to 32 \to 32 \to 32 \to 1$'
+- wiederholtes $j$ ⇒ Summe über die Neuronen der vorigen Schicht
+- verborgene Aktivierungen; eine glatte Aktivierung, damit $\hat x$ zweite Ableitungen hat
+- liefert $\dot{\hat x}$; ein zweiter Aufruf darauf liefert $\ddot{\hat x}$ (exakte Ableitungen des Netzes, keine finiten Differenzen)
+- 'ODE-Residuum an den Kollokationspunkten: null, wo $\hat x$ der Physik gehorcht'
+- Datenabweichung, Mittelwert von $r_c^2$ und die Anfangsbedingung $(\hat x(0) - 1)^2 + (\dot{\hat x}(0)/\omega_0)^2$
+- 'inverser Modus: Die Dämpfung ist ein weiterer trainierbarer Parameter, den Adam zusammen mit den Gewichten aktualisiert'
+labels:
+  mode: 'Modus: $\mu$ lernen (invers) oder kennen (vorwärts)'
+  k: Federkonstante $k$
+  mu: Wahre Dämpfung $\mu$
+  mu_guess: Startwert für $\mu$ (inverser Modus)
+  n_data: Anzahl der Messungen
+  data_fraction: Anteil des Intervalls, den die Messungen abdecken
+  noise: Messrauschen
+  n_colloc: Kollokationspunkte $t_c$
+  log10_lambda: Gewicht der Physik $\log_{10}\lambda$
+  n_iter: Trainingsiterationen
+  lr: Lernrate von Adam
+  compare: Zusätzlich ein Netz ohne Physik trainieren

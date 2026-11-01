@@ -1,0 +1,20 @@
+source_hash: 2cd1c41299f8
+title: 'Échographie Doppler : mesurer le flux sanguin'
+summary: 'Une sonde échographique écoute les échos des globules rouges. Chaque cellule en mouvement décale l''écho de $f_D = 2 f_0 v \cos\theta / c$, et des centaines de cellules dans une artère pulsatile sont simulées d''un coup comme un lot de phaseurs. Une transformée de Fourier à court terme (STFT) transforme leur écho sommé en spectrogramme Doppler, tel que l''affiche un échographe : la répartition des vitesses sanguines au cours du cycle cardiaque.'
+notes: 'Le facteur 2 vient de ce que le décalage se produit deux fois : la cellule en mouvement reçoit une onde décalée, puis la réémet tout en se déplaçant. Seule la composante de la vitesse le long du faisceau compte, donc à $\theta = 90°$ il n''y a aucun décalage ; l''échographe demande l''angle à l''opérateur et calcule $v = f_D c / (2 f_0 \cos\theta)$, qui devient très incertain au-delà d''environ 60°. Avec les valeurs par défaut ($f_0 = 5$ MHz, $\theta = 60°$, pic à 1 m/s), le décalage systolique vaut environ 3,2 kHz, dans le domaine audible : c''est pourquoi les appareils Doppler font aussi entendre le signal. En écoulement laminaire le profil est parabolique : les cellules près de la paroi bougent à peine et l''axe va le plus vite. Comme des aires égales de la section contiennent autant de cellules, toutes les vitesses entre 0 et $v_{\max}$ sont également fréquentes : le spectre est une bande plate (fenêtre « remplie ») et la fréquence moyenne vaut exactement la moitié du maximum.
+  Un écoulement perturbé ou sténosé élargirait au contraire le spectre. Le Doppler pulsé échantillonne l''écho une fois par impulsion, donc d''après Nyquist il ne peut mesurer que $|f_D| < \mathrm{PRF}/2$ : baissez la PRF (ou augmentez la vitesse) et le pic systolique se replie du côté négatif (repliement, aliasing). Les échographes réels ont besoin d''une PRF élevée pour les jets rapides, mais d''une PRF basse pour atteindre les vaisseaux profonds, car chaque impulsion doit revenir avant l''envoi de la suivante. Simplifications : le volume d''échantillonnage couvre tout le vaisseau, le faisceau est uniforme, le signal IQ est simulé directement en bande de base, et il n''y a ni filtre de paroi ni écho parasite des tissus. Toutes les valeurs sont approximatives et destinées à l''enseignement, pas à un usage clinique.'
+meanings:
+- 'vitesse sur l''axe pendant deux battements : pic systolique, bref reflux, écoulement diastolique lent'
+- 'globules rouges aléatoires : rayon dans le vaisseau, phase et intensité de l''écho'
+- 'profil parabolique (laminaire) fois la forme d''onde : produit extérieur, aucun indice sommé'
+- décalage Doppler $2 f_0 v \cos\theta / c$ de chaque cellule à chaque impulsion
+- '$n$ répété ⇒ sommé : l''écho reçu, un échantillon complexe (IQ) par impulsion, toutes les $\Delta t = 1/\mathrm{PRF}$'
+- 'spectrogramme : puissance à la fréquence $f$ dans la fenêtre temporelle $k$'
+- le Doppler pulsé ne voit $f$ que replié dans $[-\mathrm{PRF}/2, \mathrm{PRF}/2)$
+labels:
+  f0: Fréquence d'émission $f_0$
+  theta: Angle faisceau–flux $\theta$
+  v_peak: Vitesse systolique maximale
+  prf: Fréquence de répétition des impulsions PRF
+  heart_rate: Fréquence cardiaque
+  n_scatterers: Globules rouges simulés

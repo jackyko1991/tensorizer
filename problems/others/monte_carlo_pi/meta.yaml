@@ -1,0 +1,28 @@
+title: 'Monte Carlo: estimating $\pi$ with random darts'
+category: others
+level: beginner
+order: 3
+summary: >
+  Throw random darts at a unit square and count how many land inside the quarter circle: the fraction tends to
+  $\pi/4$. Many independent experiments run side by side in one $(B, N)$ tensor, which shows the defining law of
+  Monte Carlo, an error that shrinks only like $1/\sqrt N$. Buffon's needle gives a second, 18th-century estimate.
+animated: true
+vector_form: '\frac{\pi}{4} = \int_0^1\!\!\int_0^1 [x^2 + y^2 \le 1]\,dx\,dy \approx \frac1N\sum_{n=1}^N h_n,\qquad \sigma_N = \sqrt{\frac{\pi(4-\pi)}{N}}'
+index_form: 'h_{bn} = [x_{bni}\,x_{bni} \le 1],\qquad \hat\pi_{bn} = \frac{4}{n}\sum_{m \le n} h_{bm},\qquad \sigma_n = \operatorname{std}_b\,\hat\pi_{bn}'
+translation:
+  - {symbol: 'x_{bni}', code: 'torch.rand(B, N, 2)', shape: '(B, N, 2)', meaning: 'dart $n$ of experiment $b$, coordinate $i$, uniform in $[0, 1)$'}
+  - {symbol: 'h_{bn}', code: "einsum('bni,bni->bn', x, x) <= 1", shape: '(B, N)', meaning: 'repeated $i$ ⇒ summed: squared distance from the corner; 1 if the dart is inside the quarter circle'}
+  - {symbol: '\hat\pi_{bn}', code: 'running_estimate(h, 4.0)', shape: '(B, N)', meaning: 'cumulative sum divided by $n$: the estimate after every dart, for every experiment'}
+  - {symbol: '\sigma_n', code: 'est.std(dim=0)', shape: '(N,)', meaning: 'spread across experiments; theory $\sqrt{\pi(4-\pi)/n}$ from the binomial variance'}
+  - {symbol: '[y \le \tfrac{\ell}{2}\sin\varphi]', code: 'needle_crosses(y, phi, length)', shape: '(B, N)', meaning: "Buffon's needle: crosses a line with probability $2\\ell/(\\pi d)$, so $\\hat\\pi = 2\\ell N/(d\\,\\text{crossings})$"}
+notes: >
+  Every estimate is right on average but noisy, and the noise falls only as $1/\sqrt N$: a hundred times more darts
+  for one more correct digit. That rate does not depend on the dimension, which is why Monte Carlo is the method of
+  choice for integrals over many variables, from neutron transport and the Ising model to option pricing and
+  photon paths in medical dosimetry. The grey curves are single experiments: each wanders, but they all stay in the
+  band set by $\sigma_N$. Fixed seeds make every run reproducible; try more experiments to see the spread
+  match the theory more closely.
+params:
+  n_darts: {default: 100000, min: 1000, max: 2000000, step: 1000, type: int, label: 'Darts per experiment $N$'}
+  n_experiments: {default: 16, min: 2, max: 64, step: 1, type: int, label: 'Experiments $B$'}
+  needle_length: {default: 0.8, min: 0.1, max: 1.0, step: 0.05, label: "Needle length $\\ell/d$"}
