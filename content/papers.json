@@ -1,0 +1,1125 @@
+{
+ "astro/black_hole_geodesics": [
+  {
+   "label": "Schwarzschild, 1916, Sitzungsber. Preuss. Akad. Wiss. Berlin, 189",
+   "title": "Über das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie",
+   "url": null
+  },
+  {
+   "label": "Einstein, 1916, Annalen der Physik",
+   "title": "Die Grundlage der allgemeinen Relativitätstheorie",
+   "url": "https://doi.org/10.1002/andp.19163540702"
+  }
+ ],
+ "astro/escape_velocity": [
+  {
+   "label": "Michell, 1784, Phil. Trans. R. Soc.",
+   "title": "VII. On the means of discovering the distance, magnitude, &c. of the fixed stars, in consequence of the diminution of the velocity of their light, in case such a diminution should be found to take place in any of them, and such other data should be procured from observations, as would be farther necessary for that purpose. By the Rev. John Michell, B.D. F.R.S. In a letter to Henry Cavendish, Esq. F.R.S. and A.S",
+   "url": "https://doi.org/10.1098/rstl.1784.0008"
+  }
+ ],
+ "astro/gravitational_lensing": [
+  {
+   "label": "Einstein, 1936, Science",
+   "title": "Lens-Like Action of a Star by the Deviation of Light in the Gravitational Field",
+   "url": "https://doi.org/10.1126/science.84.2188.506"
+  },
+  {
+   "label": "Dyson et al., 1920, Philosophical Transactions of the Royal Society of London. Series A, Containing Papers of a Mathematical or Physical Character",
+   "title": "IX. A determination of the deflection of light by the sun's gravitational field, from observations made at the total eclipse of May 29, 1919",
+   "url": "https://doi.org/10.1098/rsta.1920.0009"
+  }
+ ],
+ "astro/hawking_radiation": [
+  {
+   "label": "Hawking, 1974, Nature",
+   "title": "Black hole explosions?",
+   "url": "https://doi.org/10.1038/248030a0"
+  },
+  {
+   "label": "Hawking, 1975, Commun.Math. Phys.",
+   "title": "Particle creation by black holes",
+   "url": "https://doi.org/10.1007/BF02345020"
+  }
+ ],
+ "astro/hubble_expansion": [
+  {
+   "label": "Hubble, 1929, Proc. Natl. Acad. Sci. U.S.A.",
+   "title": "A relation between distance and radial velocity among extra-galactic nebulae",
+   "url": "https://doi.org/10.1073/pnas.15.3.168"
+  }
+ ],
+ "astro/kepler_orbits": [
+  {
+   "label": "Kepler, 1609, Astronomia Nova",
+   "title": "Astronomia Nova (first and second laws of planetary motion)",
+   "url": null
+  }
+ ],
+ "astro/lagrange_points": [
+  {
+   "label": "Lagrange, 1772, Prix de l'Académie Royale des Sciences de Paris",
+   "title": "Essai sur le problème des trois corps",
+   "url": null
+  }
+ ],
+ "astro/minkowski_diagram": [
+  {
+   "label": "Einstein, 1905, Annalen der Physik",
+   "title": "Zur Elektrodynamik bewegter Körper",
+   "url": "https://doi.org/10.1002/andp.19053221004"
+  }
+ ],
+ "astro/orbit_transfer": [
+  {
+   "label": "Hohmann, 1925, R. Oldenbourg, Munich",
+   "title": "Die Erreichbarkeit der Himmelskörper",
+   "url": null
+  }
+ ],
+ "astro/pulsar_timing_hellings_downs": [
+  {
+   "label": "Hellings et al., 1983, ApJ",
+   "title": "Upper limits on the isotropic gravitational radiation background from pulsar timing analysis",
+   "url": "https://doi.org/10.1086/183954"
+  },
+  {
+   "label": "Agazie et al., 2023, ApJL",
+   "title": "The NANOGrav 15 yr Data Set: Evidence for a Gravitational-wave Background",
+   "url": "https://doi.org/10.3847/2041-8213/acdac6"
+  }
+ ],
+ "astro/tidal_tensor": [
+  {
+   "label": "Rees, 1988, Nature",
+   "title": "Tidal disruption of stars by black holes of 106–108 solar masses in nearby galaxies",
+   "url": "https://doi.org/10.1038/333523a0"
+  }
+ ],
+ "bioinformatics/coevolution_contacts": [
+  {
+   "label": "Morcos et al., 2011, Proc. Natl. Acad. Sci. U.S.A.",
+   "title": "Direct-coupling analysis of residue coevolution captures native contacts across many protein families",
+   "url": "https://doi.org/10.1073/pnas.1111471108"
+  }
+ ],
+ "bioinformatics/dna_binding_cnn": [
+  {
+   "label": "Alipanahi et al., 2015, Nat Biotechnol",
+   "title": "Predicting the sequence specificities of DNA- and RNA-binding proteins by deep learning",
+   "url": "https://doi.org/10.1038/nbt.3300"
+  }
+ ],
+ "bioinformatics/hmm_cpg_islands": [
+  {
+   "label": "Gardiner-Garden et al., 1987, Journal of Molecular Biology",
+   "title": "CpG Islands in vertebrate genomes",
+   "url": "https://doi.org/10.1016/0022-2836(87)90689-9"
+  }
+ ],
+ "bioinformatics/kmer_gc_skew": [
+  {
+   "label": "Lobry, 1996, Molecular Biology and Evolution",
+   "title": "Asymmetric substitution patterns in the two DNA strands of bacteria",
+   "url": "https://doi.org/10.1093/oxfordjournals.molbev.a025626"
+  }
+ ],
+ "bioinformatics/phylogenetic_tree": [
+  {
+   "label": "Saitou & Nei, 1987, Mol. Biol. Evol.",
+   "title": "The neighbor-joining method: a new method for reconstructing phylogenetic trees.",
+   "url": "https://doi.org/10.1093/oxfordjournals.molbev.a040454"
+  }
+ ],
+ "bioinformatics/protein_language_model": [
+  {
+   "label": "Rao et al., 2020, bioRxiv (ICLR 2021)",
+   "title": "Transformer protein language models are unsupervised structure learners",
+   "url": "https://doi.org/10.1101/2020.12.15.422761"
+  },
+  {
+   "label": "Lin et al., 2023, Science",
+   "title": "Evolutionary-scale prediction of atomic-level protein structure with a language model",
+   "url": "https://doi.org/10.1126/science.ade2574"
+  }
+ ],
+ "bioinformatics/pwm_motif_scan": [
+  {
+   "label": "Schneider et al., 1990, Nucl Acids Res",
+   "title": "Sequence logos: a new way to display consensus sequences",
+   "url": "https://doi.org/10.1093/nar/18.20.6097"
+  },
+  {
+   "label": "Stormo et al., 1982, Nucl Acids Res",
+   "title": "Use of the ‘Perceptron’ algorithm to distinguish translational initiation sites in E. coli",
+   "url": "https://doi.org/10.1093/nar/10.9.2997"
+  }
+ ],
+ "bioinformatics/sequence_alignment": [
+  {
+   "label": "Needleman et al., 1970, Journal of Molecular Biology",
+   "title": "A general method applicable to the search for similarities in the amino acid sequence of two proteins",
+   "url": "https://doi.org/10.1016/0022-2836(70)90057-4"
+  },
+  {
+   "label": "Smith et al., 1981, Journal of Molecular Biology",
+   "title": "Identification of common molecular subsequences",
+   "url": "https://doi.org/10.1016/0022-2836(81)90087-5"
+  }
+ ],
+ "bioinformatics/single_cell_pca": [
+  {
+   "label": "Wolf et al., 2018, Genome Biol",
+   "title": "SCANPY: large-scale single-cell gene expression data analysis",
+   "url": "https://doi.org/10.1186/s13059-017-1382-0"
+  },
+  {
+   "label": "Hubert et al., 1985, Journal of Classification",
+   "title": "Comparing partitions",
+   "url": "https://doi.org/10.1007/BF01908075"
+  }
+ ],
+ "bioinformatics/wright_fisher_drift": [
+  {
+   "label": "Kimura, 1962, Genetics",
+   "title": "ON THE PROBABILITY OF FIXATION OF MUTANT GENES IN A POPULATION",
+   "url": "https://doi.org/10.1093/genetics/47.6.713"
+  },
+  {
+   "label": "Wright, 1931, Genetics",
+   "title": "EVOLUTION IN MENDELIAN POPULATIONS",
+   "url": "https://doi.org/10.1093/genetics/16.2.97"
+  }
+ ],
+ "biophysics/coarse_grained_md": [
+  {
+   "label": "Clementi et al., 2000, Journal of Molecular Biology",
+   "title": "Topological and energetic factors: what determines the structural details of the transition state ensemble and “en-route” intermediates for protein folding? an investigation for small globular proteins",
+   "url": "https://doi.org/10.1006/jmbi.2000.3693"
+  }
+ ],
+ "biophysics/hodgkin_huxley": [
+  {
+   "label": "Hodgkin et al., 1952, The Journal of Physiology",
+   "title": "A quantitative description of membrane current and its application to conduction and excitation in nerve",
+   "url": "https://doi.org/10.1113/jphysiol.1952.sp004764"
+  }
+ ],
+ "biophysics/hp_lattice_folding": [
+  {
+   "label": "Dill, 1985, Biochemistry",
+   "title": "Theory for the folding and stability of globular proteins",
+   "url": "https://doi.org/10.1021/bi00327a032"
+  }
+ ],
+ "biophysics/michaelis_menten": [
+  {
+   "label": "Briggs et al., 1925, Biochemical Journal",
+   "title": "A Note on the Kinetics of Enzyme Action",
+   "url": "https://doi.org/10.1042/bj0190338"
+  },
+  {
+   "label": "Johnson et al., 2011, Biochemistry",
+   "title": "The Original Michaelis Constant: Translation of the 1913 Michaelis–Menten Paper",
+   "url": "https://doi.org/10.1021/bi201284u"
+  }
+ ],
+ "biophysics/mini_alphafold": [
+  {
+   "label": "Jumper et al., 2021, Nature",
+   "title": "Highly accurate protein structure prediction with AlphaFold",
+   "url": "https://doi.org/10.1038/s41586-021-03819-2"
+  }
+ ],
+ "biophysics/receptor_binding": [
+  {
+   "label": "Langmuir, 1918, J. Am. Chem. Soc.",
+   "title": "THE ADSORPTION OF GASES ON PLANE SURFACES OF GLASS, MICA AND PLATINUM.",
+   "url": "https://doi.org/10.1021/ja02242a004"
+  },
+  {
+   "label": "Hulme et al., 2010, British J Pharmacology",
+   "title": "Ligand binding assays at equilibrium: validation and interpretation",
+   "url": "https://doi.org/10.1111/j.1476-5381.2009.00604.x"
+  }
+ ],
+ "biophysics/turing_patterns": [
+  {
+   "label": "Turing, 1952, Philosophical Transactions of the Royal Society of London. Series B, Biological Sciences",
+   "title": "The chemical basis of morphogenesis",
+   "url": "https://doi.org/10.1098/rstb.1952.0012"
+  }
+ ],
+ "biophysics/worm_like_chain": [
+  {
+   "label": "Marko et al., 1995, Macromolecules",
+   "title": "Stretching DNA",
+   "url": "https://doi.org/10.1021/ma00130a008"
+  }
+ ],
+ "em/biot_savart": [
+  {
+   "label": "Griffiths, 2017, Cambridge University Press",
+   "title": "Introduction to Electrodynamics (4th ed.)",
+   "url": null
+  }
+ ],
+ "em/coulomb_field": [
+  {
+   "label": "Griffiths, 2017, Cambridge University Press",
+   "title": "Introduction to Electrodynamics (4th ed.)",
+   "url": null
+  }
+ ],
+ "em/electrostatics": [
+  {
+   "label": "Jackson, 1999, Wiley",
+   "title": "Classical Electrodynamics (3rd ed.)",
+   "url": null
+  }
+ ],
+ "em/em_wave_fdtd": [
+  {
+   "label": "Kane Yee, 1966, IEEE Trans. Antennas Propagat.",
+   "title": "Numerical solution of initial boundary value problems involving maxwell's equations in isotropic media",
+   "url": "https://doi.org/10.1109/TAP.1966.1138693"
+  }
+ ],
+ "em/field_tensor_boost": [
+  {
+   "label": "Einstein, 1905, Annalen der Physik",
+   "title": "Zur Elektrodynamik bewegter Körper",
+   "url": "https://doi.org/10.1002/andp.19053221004"
+  }
+ ],
+ "em/lorentz_force": [
+  {
+   "label": "Jackson, 1999, Wiley",
+   "title": "Classical Electrodynamics (3rd ed.)",
+   "url": null
+  }
+ ],
+ "em/rc_circuit": [
+  {
+   "label": "Horowitz & Hill, 2015, Cambridge University Press",
+   "title": "The Art of Electronics (3rd ed.)",
+   "url": null
+  }
+ ],
+ "em/relativistic_particle": [
+  {
+   "label": "Jackson, 1999, Wiley",
+   "title": "Classical Electrodynamics (3rd ed.)",
+   "url": null
+  }
+ ],
+ "em/topological_photonics": [
+  {
+   "label": "Haldane et al., 2008, Phys. Rev. Lett.",
+   "title": "Possible Realization of Directional Optical Waveguides in Photonic Crystals with Broken Time-Reversal Symmetry",
+   "url": "https://doi.org/10.1103/PhysRevLett.100.013904"
+  },
+  {
+   "label": "Wang et al., 2009, Nature",
+   "title": "Observation of unidirectional backscattering-immune topological electromagnetic states",
+   "url": "https://doi.org/10.1038/nature08293"
+  },
+  {
+   "label": "Ozawa et al., 2019, Rev. Mod. Phys.",
+   "title": "Topological photonics",
+   "url": "https://doi.org/10.1103/RevModPhys.91.015006"
+  }
+ ],
+ "em/waveguide_modes": [
+  {
+   "label": "Rayleigh, 1897, The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science",
+   "title": "XVIII. On the passage of electric waves through tubes, or the vibrations of dielectric cylinders",
+   "url": "https://doi.org/10.1080/14786449708620969"
+  }
+ ],
+ "fluids/bernoulli_venturi": [
+  {
+   "label": "Bernoulli, 1738, Strasbourg",
+   "title": "Hydrodynamica",
+   "url": null
+  }
+ ],
+ "fluids/burgers_shock": [
+  {
+   "label": "Burgers, 1948, Advances in Applied Mechanics",
+   "title": "A Mathematical Model Illustrating the Theory of Turbulence",
+   "url": "https://doi.org/10.1016/S0065-2156(08)70100-5"
+  }
+ ],
+ "fluids/cylinder_drag": [
+  {
+   "label": "Williamson, 1996, Annu. Rev. Fluid Mech.",
+   "title": "Vortex Dynamics in the Cylinder Wake",
+   "url": "https://doi.org/10.1146/annurev.fl.28.010196.002401"
+  },
+  {
+   "label": "Qian et al., 1992, Europhys. Lett.",
+   "title": "Lattice BGK Models for Navier-Stokes Equation",
+   "url": "https://doi.org/10.1209/0295-5075/17/6/001"
+  }
+ ],
+ "fluids/elastic_waves": [
+  {
+   "label": "Aki & Richards, 2002, University Science Books",
+   "title": "Quantitative Seismology (2nd ed.)",
+   "url": null
+  }
+ ],
+ "fluids/hydrostatics_buoyancy": [
+  {
+   "label": "Kundu, Cohen & Dowling, 2016, Academic Press",
+   "title": "Fluid Mechanics (6th ed.)",
+   "url": null
+  }
+ ],
+ "fluids/lid_driven_cavity": [
+  {
+   "label": "Ghia et al., 1982, Journal of Computational Physics",
+   "title": "High-Re solutions for incompressible flow using the Navier-Stokes equations and a multigrid method",
+   "url": "https://doi.org/10.1016/0021-9991(82)90058-4"
+  }
+ ],
+ "fluids/ml_accelerated_cfd": [
+  {
+   "label": "Kochkov et al., 2021, Proc. Natl. Acad. Sci. U.S.A.",
+   "title": "Machine learning–accelerated computational fluid dynamics",
+   "url": "https://doi.org/10.1073/pnas.2101784118"
+  }
+ ],
+ "fluids/navier_stokes_pipe_flow": [
+  {
+   "label": "Batchelor, 1967, Cambridge University Press",
+   "title": "An Introduction to Fluid Dynamics",
+   "url": null
+  },
+  {
+   "label": "Sutera et al., 1993, Annu. Rev. Fluid Mech.",
+   "title": "The History of Poiseuille's Law",
+   "url": "https://doi.org/10.1146/annurev.fl.25.010193.000245"
+  }
+ ],
+ "fluids/stress_strain": [
+  {
+   "label": "Timoshenko & Goodier, 1970, McGraw-Hill",
+   "title": "Theory of Elasticity (3rd ed.)",
+   "url": null
+  }
+ ],
+ "fluids/torricelli_draining": [
+  {
+   "label": "Torricelli, 1644, Florence",
+   "title": "Opera geometrica",
+   "url": null
+  }
+ ],
+ "mechanics/coupled_oscillators": [
+  {
+   "label": "Goldstein, Poole & Safko, 2002, Addison-Wesley",
+   "title": "Classical Mechanics (3rd ed.)",
+   "url": null
+  }
+ ],
+ "mechanics/double_pendulum": [
+  {
+   "label": "Shinbrot et al., 1992, American Journal of Physics",
+   "title": "Chaos in a double pendulum",
+   "url": "https://doi.org/10.1119/1.16860"
+  }
+ ],
+ "mechanics/egnn_dynamics": [
+  {
+   "label": "Satorras et al., 2021 (arXiv)",
+   "title": "E(n) Equivariant Graph Neural Networks",
+   "url": "https://arxiv.org/abs/2102.09844"
+  }
+ ],
+ "mechanics/hamiltonian_phase_space": [
+  {
+   "label": "Hamilton, 1835, Philosophical Transactions of the Royal Society of London",
+   "title": "VII. Second essay on a general method in dynamics",
+   "url": "https://doi.org/10.1098/rstl.1835.0009"
+  }
+ ],
+ "mechanics/inclined_plane": [
+  {
+   "label": "Kleppner & Kolenkow, 2014, Cambridge University Press",
+   "title": "An Introduction to Mechanics (2nd ed.)",
+   "url": null
+  }
+ ],
+ "mechanics/lagrangian_autograd": [
+  {
+   "label": "Cranmer et al., 2020 (arXiv)",
+   "title": "Lagrangian Neural Networks",
+   "url": "https://arxiv.org/abs/2003.04630"
+  },
+  {
+   "label": "Goldstein, Poole & Safko, 2002, Addison-Wesley",
+   "title": "Classical Mechanics (3rd ed.)",
+   "url": null
+  }
+ ],
+ "mechanics/least_action": [
+  {
+   "label": "Hamilton, 1834, Philosophical Transactions of the Royal Society of London",
+   "title": "XV. On a general method in dynamics; by which the study of the motions of all free systems of attracting or repelling points is reduced to the search and differentiation of one central relation, or characteristic function",
+   "url": "https://doi.org/10.1098/rstl.1834.0017"
+  }
+ ],
+ "mechanics/mass_spring_cloth": [
+  {
+   "label": "Baraff et al., 1998, Proceedings of the 25th annual conference on Computer graphics and interactive techniques  - SIGGRAPH '98",
+   "title": "Large steps in cloth simulation",
+   "url": "https://doi.org/10.1145/280814.280821"
+  }
+ ],
+ "mechanics/n_body_gravity": [
+  {
+   "label": "Moore, 1993, Phys. Rev. Lett.",
+   "title": "Braids in classical dynamics",
+   "url": "https://doi.org/10.1103/PhysRevLett.70.3675"
+  },
+  {
+   "label": "Chenciner et al., 2000, The Annals of Mathematics",
+   "title": "A Remarkable Periodic Solution of the Three-Body Problem in the Case of Equal Masses",
+   "url": "https://doi.org/10.2307/2661357"
+  }
+ ],
+ "mechanics/projectile": [
+  {
+   "label": "Taylor, 2005, University Science Books",
+   "title": "Classical Mechanics",
+   "url": null
+  }
+ ],
+ "mechanics/rigid_body_rotation": [
+  {
+   "label": "Ashbaugh et al., 1991, J Dyn Diff Equat",
+   "title": "The twisting tennis racket",
+   "url": "https://doi.org/10.1007/BF01049489"
+  }
+ ],
+ "mechanics/simple_pendulum": [
+  {
+   "label": "Lima et al., 2006, American Journal of Physics",
+   "title": "An accurate formula for the period of a simple pendulum oscillating beyond the small angle regime",
+   "url": "https://doi.org/10.1119/1.2215616"
+  }
+ ],
+ "mechanics/three_body_chaos": [
+  {
+   "label": "Szebehely et al., 1967, The Astronomical Journal",
+   "title": "Complete solution of a general problem of three bodies",
+   "url": "https://doi.org/10.1086/110355"
+  }
+ ],
+ "medical/bloch_spin_echo": [
+  {
+   "label": "Bloch, 1946, Phys. Rev.",
+   "title": "Nuclear Induction",
+   "url": "https://doi.org/10.1103/PhysRev.70.460"
+  },
+  {
+   "label": "Hahn, 1950, Phys. Rev.",
+   "title": "Spin Echoes",
+   "url": "https://doi.org/10.1103/PhysRev.80.580"
+  }
+ ],
+ "medical/diffusion_tensor_imaging": [
+  {
+   "label": "Basser et al., 1994, Biophysical Journal",
+   "title": "MR diffusion tensor spectroscopy and imaging",
+   "url": "https://doi.org/10.1016/S0006-3495(94)80775-1"
+  }
+ ],
+ "medical/doppler_ultrasound": [
+  {
+   "label": "Satomura, 1957, The Journal of the Acoustical Society of America",
+   "title": "Ultrasonic Doppler Method for the Inspection of Cardiac Functions",
+   "url": "https://doi.org/10.1121/1.1908737"
+  }
+ ],
+ "medical/mri_kspace": [
+  {
+   "label": "Lauterbur, 1973, Nature",
+   "title": "Image Formation by Induced Local Interactions: Examples Employing Nuclear Magnetic Resonance",
+   "url": "https://doi.org/10.1038/242190a0"
+  }
+ ],
+ "medical/mri_relaxation": [
+  {
+   "label": "Bloembergen et al., 1948, Phys. Rev.",
+   "title": "Relaxation Effects in Nuclear Magnetic Resonance Absorption",
+   "url": "https://doi.org/10.1103/PhysRev.73.679"
+  }
+ ],
+ "medical/pet_mlem": [
+  {
+   "label": "Shepp et al., 1982, IEEE Trans. Med. Imaging",
+   "title": "Maximum Likelihood Reconstruction for Emission Tomography",
+   "url": "https://doi.org/10.1109/TMI.1982.4307558"
+  }
+ ],
+ "medical/photon_counting_ct": [
+  {
+   "label": "Willemink et al., 2018, Radiology",
+   "title": "Photon-counting CT: Technical Principles and Clinical Prospects",
+   "url": "https://doi.org/10.1148/radiol.2018172656"
+  },
+  {
+   "label": "Alvarez & Macovski, 1976, Phys. Med. Biol.",
+   "title": "Energy-selective reconstructions in X-ray computerised tomography",
+   "url": "https://doi.org/10.1088/0031-9155/21/5/002"
+  }
+ ],
+ "medical/proton_bragg_peak": [
+  {
+   "label": "Wilson, 1946, Radiology",
+   "title": "Radiological Use of Fast Protons",
+   "url": "https://doi.org/10.1148/47.5.487"
+  }
+ ],
+ "medical/radon_ct": [
+  {
+   "label": "Cormack, 1963, Journal of Applied Physics",
+   "title": "Representation of a Function by Its Line Integrals, with Some Radiological Applications",
+   "url": "https://doi.org/10.1063/1.1729798"
+  },
+  {
+   "label": "Hounsfield, 1973, BJR",
+   "title": "Computerized transverse axial scanning (tomography): Part 1. Description of system",
+   "url": "https://doi.org/10.1259/0007-1285-46-552-1016"
+  }
+ ],
+ "medical/xray_attenuation": [
+  {
+   "label": "Röntgen, 1896, Nature (translation)",
+   "title": "On a New Kind of Rays",
+   "url": "https://doi.org/10.1038/053274b0"
+  },
+  {
+   "label": "Hubbell, 1969",
+   "title": "Photon cross sections, attenuation coefficients, and energy absorption coefficients from 10 keV to 100 GeV",
+   "url": "https://doi.org/10.6028/nbs.nsrds.29"
+  }
+ ],
+ "nuclear/binding_energy": [
+  {
+   "label": "Weizs�cker, 1935, Z. Physik",
+   "title": "Zur Theorie der Kernmassen",
+   "url": "https://doi.org/10.1007/BF01337700"
+  }
+ ],
+ "nuclear/decay_chain": [
+  {
+   "label": "Bateman, 1910, Proc. Cambridge Philos. Soc. 15, 423",
+   "title": "Solution of a system of differential equations occurring in the theory of radioactive transformations",
+   "url": null
+  }
+ ],
+ "nuclear/em_shower": [
+  {
+   "label": "Rossi et al., 1941, Rev. Mod. Phys.",
+   "title": "Cosmic-Ray Theory",
+   "url": "https://doi.org/10.1103/RevModPhys.13.240"
+  }
+ ],
+ "nuclear/feynman_ee_mumu": [
+  {
+   "label": "Feynman, 1949, Phys. Rev.",
+   "title": "Space-Time Approach to Quantum Electrodynamics",
+   "url": "https://doi.org/10.1103/PhysRev.76.769"
+  },
+  {
+   "label": "Perl et al., 1975, Phys. Rev. Lett.",
+   "title": "Evidence for Anomalous Lepton Production ine+−e−Annihilation",
+   "url": "https://doi.org/10.1103/PhysRevLett.35.1489"
+  }
+ ],
+ "nuclear/four_momentum": [
+  {
+   "label": "Einstein, 1905, Annalen der Physik",
+   "title": "Ist die Trägheit eines Körpers von seinem Energieinhalt abhängig?",
+   "url": "https://doi.org/10.1002/andp.19053231314"
+  }
+ ],
+ "nuclear/fusion_ignition": [
+  {
+   "label": "Abu-Shawareb et al., 2024, Phys. Rev. Lett.",
+   "title": "Achievement of Target Gain Larger than Unity in an Inertial Fusion Experiment",
+   "url": "https://doi.org/10.1103/PhysRevLett.132.065102"
+  },
+  {
+   "label": "Bosch et al., 1992, Nucl. Fusion",
+   "title": "Improved formulas for fusion cross-sections and thermal reactivities",
+   "url": "https://doi.org/10.1088/0029-5515/32/4/I07"
+  }
+ ],
+ "nuclear/neutrino_oscillations": [
+  {
+   "label": "Fukuda et al., 1998, Phys. Rev. Lett.",
+   "title": "Evidence for Oscillation of Atmospheric Neutrinos",
+   "url": "https://doi.org/10.1103/PhysRevLett.81.1562"
+  },
+  {
+   "label": "Maki et al., 1962, Prog. Theor. Phys.",
+   "title": "Remarks on the Unified Model of Elementary Particles",
+   "url": "https://doi.org/10.1143/PTP.28.870"
+  }
+ ],
+ "nuclear/radioactive_decay": [
+  {
+   "label": "Rutherford et al., 1902, The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science",
+   "title": "XLI. The cause and nature of radioactivity .—Part I",
+   "url": "https://doi.org/10.1080/14786440209462856"
+  }
+ ],
+ "nuclear/reactor_criticality": [
+  {
+   "label": "Fermi, 1952, American Journal of Physics",
+   "title": "Experimental Production of a Divergent Chain Reaction",
+   "url": "https://doi.org/10.1119/1.1933322"
+  }
+ ],
+ "nuclear/rutherford_scattering": [
+  {
+   "label": "Rutherford, 1911, The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science",
+   "title": "LXXIX. The scattering of α and β particles by matter and the structure of the atom",
+   "url": "https://doi.org/10.1080/14786440508637080"
+  }
+ ],
+ "nuclear/shell_model": [
+  {
+   "label": "Mayer, 1949, Phys. Rev.",
+   "title": "On Closed Shells in Nuclei. II",
+   "url": "https://doi.org/10.1103/PhysRev.75.1969"
+  },
+  {
+   "label": "Haxel et al., 1949, Phys. Rev.",
+   "title": "On the \"Magic Numbers\" in Nuclear Structure",
+   "url": "https://doi.org/10.1103/PhysRev.75.1766.2"
+  }
+ ],
+ "optics/diffraction_grating": [
+  {
+   "label": "Born & Wolf, 1999, Cambridge University Press",
+   "title": "Principles of Optics (7th ed.)",
+   "url": null
+  }
+ ],
+ "optics/double_slit": [
+  {
+   "label": "Young, 1804, Phil. Trans. R. Soc.",
+   "title": "I. The Bakerian Lecture. Experiments and calculations relative to physical optics",
+   "url": "https://doi.org/10.1098/rstl.1804.0001"
+  }
+ ],
+ "optics/fourier_optics": [
+  {
+   "label": "Goodman, 2005, Roberts & Company",
+   "title": "Introduction to Fourier Optics (3rd ed.)",
+   "url": null
+  }
+ ],
+ "optics/grin_mirage": [
+  {
+   "label": "Born & Wolf, 1999, Cambridge University Press",
+   "title": "Principles of Optics (7th ed.)",
+   "url": null
+  }
+ ],
+ "optics/lens_system": [
+  {
+   "label": "Gerrard & Burch, 1975, Wiley",
+   "title": "Introduction to Matrix Methods in Optics",
+   "url": null
+  }
+ ],
+ "optics/metalens_inverse_design": [
+  {
+   "label": "Khorasaninejad et al., 2016, Science",
+   "title": "Metalenses at visible wavelengths: Diffraction-limited focusing and subwavelength resolution imaging",
+   "url": "https://doi.org/10.1126/science.aaf6644"
+  },
+  {
+   "label": "Tseng et al., 2021, Nat Commun",
+   "title": "Neural nano-optics for high-quality thin lens imaging",
+   "url": "https://doi.org/10.1038/s41467-021-26443-0"
+  }
+ ],
+ "optics/mirror_reflection": [
+  {
+   "label": "Hecht, 2017, Pearson",
+   "title": "Optics (5th ed.)",
+   "url": null
+  }
+ ],
+ "optics/polarization_jones": [
+  {
+   "label": "Jones, 1941, J. Opt. Soc. Am.",
+   "title": "A New Calculus for the Treatment of Optical SystemsI Description and Discussion of the Calculus",
+   "url": "https://doi.org/10.1364/JOSA.31.000488"
+  }
+ ],
+ "optics/snell_refraction": [
+  {
+   "label": "Hecht, 2017, Pearson",
+   "title": "Optics (5th ed.)",
+   "url": null
+  }
+ ],
+ "optics/thin_lens_image": [
+  {
+   "label": "Hecht, 2017, Pearson",
+   "title": "Optics (5th ed.)",
+   "url": null
+  }
+ ],
+ "others/alphago_mini": [
+  {
+   "label": "Silver et al., 2016, Nature",
+   "title": "Mastering the game of Go with deep neural networks and tree search",
+   "url": "https://doi.org/10.1038/nature16961"
+  }
+ ],
+ "others/enigma_solver": [
+  {
+   "label": "Gillogly, 1995, Cryptologia",
+   "title": "CIPHERTEXT-ONLY CRYPTANALYSIS OF ENIGMA",
+   "url": "https://doi.org/10.1080/0161-119591884060"
+  }
+ ],
+ "others/game_of_life": [
+  {
+   "label": "Gardner, 1970, Sci Am",
+   "title": "Mathematical Games",
+   "url": "https://doi.org/10.1038/scientificamerican1070-120"
+  }
+ ],
+ "others/langevin_noise": [
+  {
+   "label": "Lemons et al., 1997, American Journal of Physics",
+   "title": "Paul Langevin’s 1908 paper “On the Theory of Brownian Motion” [“Sur la théorie du mouvement brownien,” C. R. Acad. Sci. (Paris) 146 , 530–533 (1908)]",
+   "url": "https://doi.org/10.1119/1.18725"
+  }
+ ],
+ "others/lorenz_attractor": [
+  {
+   "label": "Lorenz, 1963, J. Atmos. Sci.",
+   "title": "Deterministic Nonperiodic Flow",
+   "url": "https://doi.org/10.1175/1520-0469(1963)020<0130:DNF>2.0.CO;2"
+  }
+ ],
+ "others/measurement_fitting": [
+  {
+   "label": "Kingma et al., 2014 (arXiv)",
+   "title": "Adam: A Method for Stochastic Optimization",
+   "url": "https://arxiv.org/abs/1412.6980"
+  }
+ ],
+ "others/monte_carlo_pi": [
+  {
+   "label": "Metropolis et al., 1949, Journal of the American Statistical Association",
+   "title": "The Monte Carlo Method",
+   "url": "https://doi.org/10.1080/01621459.1949.10483310"
+  },
+  {
+   "label": "Metropolis et al., 1953, The Journal of Chemical Physics",
+   "title": "Equation of State Calculations by Fast Computing Machines",
+   "url": "https://doi.org/10.1063/1.1699114"
+  }
+ ],
+ "others/neural_operator": [
+  {
+   "label": "Li et al., 2020 (arXiv)",
+   "title": "Fourier Neural Operator for Parametric Partial Differential Equations",
+   "url": "https://arxiv.org/abs/2010.08895"
+  }
+ ],
+ "others/pinn_oscillator": [
+  {
+   "label": "Raissi et al., 2019, Journal of Computational Physics",
+   "title": "Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations",
+   "url": "https://doi.org/10.1016/j.jcp.2018.10.045"
+  }
+ ],
+ "quantum/double_well": [
+  {
+   "label": "Hund, 1927, Z. Physik",
+   "title": "Zur Deutung der Molekelspektren. III.",
+   "url": "https://doi.org/10.1007/BF01397249"
+  }
+ ],
+ "quantum/error_correction_threshold": [
+  {
+   "label": "Acharya et al., 2024 (arXiv)",
+   "title": "Quantum error correction below the surface code threshold",
+   "url": "https://arxiv.org/abs/2408.13687"
+  }
+ ],
+ "quantum/free_wave_packet": [
+  {
+   "label": "Schr�dinger, 1926, Naturwissenschaften",
+   "title": "Der stetige �bergang von der Mikro- zur Makromechanik",
+   "url": "https://doi.org/10.1007/BF01507634"
+  }
+ ],
+ "quantum/harmonic_oscillator": [
+  {
+   "label": "Schrödinger, 1926, Annalen der Physik",
+   "title": "Quantisierung als Eigenwertproblem",
+   "url": "https://doi.org/10.1002/andp.19263840602"
+  }
+ ],
+ "quantum/hydrogen_radial": [
+  {
+   "label": "Schrödinger, 1926, Annalen der Physik",
+   "title": "Quantisierung als Eigenwertproblem",
+   "url": "https://doi.org/10.1002/andp.19263840404"
+  }
+ ],
+ "quantum/infinite_well": [
+  {
+   "label": "Schrödinger, 1926, Phys. Rev.",
+   "title": "An Undulatory Theory of the Mechanics of Atoms and Molecules",
+   "url": "https://doi.org/10.1103/PhysRev.28.1049"
+  }
+ ],
+ "quantum/matrix_mechanics": [
+  {
+   "label": "Heisenberg, 1925, Z. Physik",
+   "title": "�ber quantentheoretische Umdeutung kinematischer und mechanischer Beziehungen.",
+   "url": "https://doi.org/10.1007/BF01328377"
+  },
+  {
+   "label": "Born et al., 1925, Z. Physik",
+   "title": "Zur Quantenmechanik",
+   "url": "https://doi.org/10.1007/BF01328531"
+  }
+ ],
+ "quantum/scattering_2d": [
+  {
+   "label": "Born, 1926, Z. Physik",
+   "title": "Zur Quantenmechanik der Sto�vorg�nge",
+   "url": "https://doi.org/10.1007/BF01397477"
+  }
+ ],
+ "quantum/schrodinger_crank_nicolson": [
+  {
+   "label": "Crank et al., 1947, Math. Proc. Camb. Phil. Soc.",
+   "title": "A practical method for numerical evaluation of solutions of partial differential equations of the heat-conduction type",
+   "url": "https://doi.org/10.1017/S0305004100023197"
+  },
+  {
+   "label": "Goldberg et al., 1967, American Journal of Physics",
+   "title": "Computer-Generated Motion Pictures of One-Dimensional Quantum-Mechanical Transmission and Reflection Phenomena",
+   "url": "https://doi.org/10.1119/1.1973991"
+  }
+ ],
+ "quantum/spin_precession": [
+  {
+   "label": "Rabi, 1937, Phys. Rev.",
+   "title": "Space Quantization in a Gyrating Magnetic Field",
+   "url": "https://doi.org/10.1103/PhysRev.51.652"
+  }
+ ],
+ "quantum/tunneling": [
+  {
+   "label": "Gamow, 1928, Z. Physik",
+   "title": "Zur Quantentheorie des Atomkernes",
+   "url": "https://doi.org/10.1007/BF01343196"
+  }
+ ],
+ "quantum/two_qubit_entanglement": [
+  {
+   "label": "Einstein et al., 1935, Phys. Rev.",
+   "title": "Can Quantum-Mechanical Description of Physical Reality Be Considered Complete?",
+   "url": "https://doi.org/10.1103/PhysRev.47.777"
+  },
+  {
+   "label": "Clauser et al., 1969, Phys. Rev. Lett.",
+   "title": "Proposed Experiment to Test Local Hidden-Variable Theories",
+   "url": "https://doi.org/10.1103/PhysRevLett.23.880"
+  }
+ ],
+ "thermodynamics/blackbody_radiation": [
+  {
+   "label": "Planck, 1901, Annalen der Physik",
+   "title": "Ueber das Gesetz der Energieverteilung im Normalspectrum",
+   "url": "https://doi.org/10.1002/andp.19013090310"
+  }
+ ],
+ "thermodynamics/carnot_cycle": [
+  {
+   "label": "Carnot, 1824, Bachelier, Paris",
+   "title": "Réflexions sur la puissance motrice du feu",
+   "url": null
+  }
+ ],
+ "thermodynamics/heat_diffusion": [
+  {
+   "label": "Fourier, 1822, Firmin Didot, Paris",
+   "title": "Théorie analytique de la chaleur",
+   "url": null
+  }
+ ],
+ "thermodynamics/ideal_gas_processes": [
+  {
+   "label": "Callen, 1985, Wiley",
+   "title": "Thermodynamics and an Introduction to Thermostatistics (2nd ed.)",
+   "url": null
+  }
+ ],
+ "thermodynamics/ising_model": [
+  {
+   "label": "Onsager, 1944, Phys. Rev.",
+   "title": "Crystal Statistics. I. A Two-Dimensional Model with an Order-Disorder Transition",
+   "url": "https://doi.org/10.1103/PhysRev.65.117"
+  },
+  {
+   "label": "Metropolis et al., 1953, The Journal of Chemical Physics",
+   "title": "Equation of State Calculations by Fast Computing Machines",
+   "url": "https://doi.org/10.1063/1.1699114"
+  }
+ ],
+ "thermodynamics/kinetic_gas": [
+  {
+   "label": "Maxwell, 1860, The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science",
+   "title": "V. Illustrations of the dynamical theory of gases.—Part I. On the motions and collisions of perfectly elastic spheres",
+   "url": "https://doi.org/10.1080/14786446008642818"
+  }
+ ],
+ "thermodynamics/mpemba_effect": [
+  {
+   "label": "Lu et al., 2017, Proc. Natl. Acad. Sci. U.S.A.",
+   "title": "Nonequilibrium thermodynamics of the Markovian Mpemba effect and its inverse",
+   "url": "https://doi.org/10.1073/pnas.1701264114"
+  },
+  {
+   "label": "Kumar et al., 2020, Nature",
+   "title": "Exponentially faster cooling in a colloidal system",
+   "url": "https://doi.org/10.1038/s41586-020-2560-x"
+  }
+ ],
+ "thermodynamics/newton_cooling": [
+  {
+   "label": "Newton, 1701, Phil. Trans. R. Soc.",
+   "title": "VII. Scala graduum caloris",
+   "url": "https://doi.org/10.1098/rstl.1700.0082"
+  }
+ ],
+ "thermodynamics/random_walk_diffusion": [
+  {
+   "label": "Einstein, 1905, Annalen der Physik",
+   "title": "Über die von der molekularkinetischen Theorie der Wärme geforderte Bewegung von in ruhenden Flüssigkeiten suspendierten Teilchen",
+   "url": "https://doi.org/10.1002/andp.19053220806"
+  },
+  {
+   "label": "Pearson, 1905, Nature",
+   "title": "The Problem of the Random Walk",
+   "url": "https://doi.org/10.1038/072294b0"
+  }
+ ],
+ "thermodynamics/van_der_waals": [
+  {
+   "label": "Clerk-Maxwell, 1875, Nature",
+   "title": "On the Dynamical Evidence of the Molecular Constitution of Bodies *",
+   "url": "https://doi.org/10.1038/011357a0"
+  },
+  {
+   "label": "van der Waals, 1873, PhD thesis, Leiden",
+   "title": "Over de continuïteit van den gas- en vloeistoftoestand",
+   "url": null
+  }
+ ],
+ "waves/beats_superposition": [
+  {
+   "label": "Crawford, 1968, McGraw-Hill",
+   "title": "Waves (Berkeley Physics Course, Vol. 3)",
+   "url": null
+  }
+ ],
+ "waves/dispersive_waves": [
+  {
+   "label": "Whitham, 1974, Wiley",
+   "title": "Linear and Nonlinear Waves",
+   "url": null
+  }
+ ],
+ "waves/doppler_effect": [
+  {
+   "label": "Doppler, 1842, Abh. Königl. Böhm. Ges. Wiss.",
+   "title": "Über das farbige Licht der Doppelsterne und einiger anderer Gestirne des Himmels",
+   "url": null
+  }
+ ],
+ "waves/kdv_solitons": [
+  {
+   "label": "Zabusky et al., 1965, Phys. Rev. Lett.",
+   "title": "Interaction of \"Solitons\" in a Collisionless Plasma and the Recurrence of Initial States",
+   "url": "https://doi.org/10.1103/PhysRevLett.15.240"
+  },
+  {
+   "label": "Korteweg et al., 1895, The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science",
+   "title": "XLI. On the change of form of long waves advancing in a rectangular canal, and on a new type of long stationary waves",
+   "url": "https://doi.org/10.1080/14786449508620739"
+  }
+ ],
+ "waves/membrane_modes": [
+  {
+   "label": "Rayleigh, 1877, Macmillan",
+   "title": "The Theory of Sound",
+   "url": null
+  }
+ ],
+ "waves/nonlinear_schrodinger": [
+  {
+   "label": "Peregrine, 1983, J. Aust. Math. Soc. Series B, Appl. Math",
+   "title": "Water waves, nonlinear Schrödinger equations and their solutions",
+   "url": "https://doi.org/10.1017/S0334270000003891"
+  },
+  {
+   "label": "Kibler et al., 2010, Nature Phys",
+   "title": "The Peregrine soliton in nonlinear fibre optics",
+   "url": "https://doi.org/10.1038/nphys1740"
+  }
+ ],
+ "waves/photonic_time_crystal": [
+  {
+   "label": "Moussa et al., 2023, Nat. Phys.",
+   "title": "Observation of temporal reflection and broadband frequency translation at photonic time interfaces",
+   "url": "https://doi.org/10.1038/s41567-023-01975-y"
+  },
+  {
+   "label": "Galiffi et al., 2022, Adv. Photon.",
+   "title": "Photonics of time-varying media",
+   "url": "https://doi.org/10.1117/1.AP.4.1.014002"
+  }
+ ],
+ "waves/ripple_tank": [
+  {
+   "label": "Young, 1804, Phil. Trans. R. Soc.",
+   "title": "I. The Bakerian Lecture. Experiments and calculations relative to physical optics",
+   "url": "https://doi.org/10.1098/rstl.1804.0001"
+  }
+ ],
+ "waves/standing_waves": [
+  {
+   "label": "French, 1971, W. W. Norton",
+   "title": "Vibrations and Waves",
+   "url": null
+  }
+ ],
+ "waves/string_junction": [
+  {
+   "label": "Crawford, 1968, McGraw-Hill",
+   "title": "Waves (Berkeley Physics Course, Vol. 3)",
+   "url": null
+  }
+ ]
+}

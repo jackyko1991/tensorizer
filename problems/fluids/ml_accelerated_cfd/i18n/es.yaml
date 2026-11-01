@@ -1,0 +1,18 @@
+source_hash: e6424f8df209
+title: CFD acelerada con aprendizaje automático
+summary: Un solver de volúmenes finitos simple, en una malla 16 veces más gruesa que la de referencia, emborrona los choques de la ecuación de Burgers viscosa. Una CNN diminuta aprende una corrección de los flujos en las caras, entrenada con retropropagación a través de una simulación gruesa desenrollada. Con condiciones iniciales que nunca ha visto, el solver aprendido sigue la solución fina varias veces más de cerca, con la misma resolución gruesa, mientras conserva $\int u\,dx$ exactamente.
+notes: 'Unidades: el dominio es $[0, 2\pi)$, periódico. La referencia es el mismo esquema de volúmenes finitos en 512 celdas, con integración temporal de Heun subdividida en subciclos para mantenerse estable. El entrenamiento usa 32 ondas suaves aleatorias, y la prueba usa otras 8 con una semilla distinta, ejecutadas un 50 % más ($t = 3$) que los datos de entrenamiento. En cada paso de Adam el solver aprendido parte del estado grueso verdadero en instantes aleatorios, ejecuta $S$ pasos y se penaliza por alejarse de la referencia promediada. Los gradientes fluyen hacia atrás a través de cada paso de tiempo, así que la red aprende correcciones que siguen siendo buenas cuando se alimentan con su propia salida. Dos decisiones de diseño lo mantienen honesto: $\delta F$ entra como un flujo, de modo que $\sum_i u_i$ se conserva hasta el redondeo, y la última capa empieza en cero, así que el entrenamiento parte del solver simple. La idea sigue a Bar-Sinai, Hoyer, Hickey & Brenner (PNAS, 2019), que
+  aprendieron discretizaciones basadas en datos de exactamente este tipo de ecuación, y a Kochkov, Smith, Alieva, Wang, Brenner & Hoyer (PNAS, 2021). Ellos aprendieron coeficientes de interpolación dentro de un solver de Navier–Stokes 2D e informaron de mallas 8–10× más gruesas con la misma precisión, aproximadamente 40–80× más rápido. Este juguete muestra el mecanismo, no esas aceleraciones. Una corrección aprendida puede fallar con entradas lejanas a sus datos de entrenamiento. Prueba a entrenar menos pasos, un desenrollado más corto o una viscosidad con la que la red no se entrenó.'
+meanings:
+- promedio de celda en la celda gruesa $i$ para la trayectoria $b$ (periódica)
+- $\tfrac14(u_i^2 + u_{i+1}^2) - \tfrac12\alpha(u_{i+1} - u_i)$, $\alpha = \max(\lvert u_i\rvert, \lvert u_{i+1}\rvert)$; $u_{i+1}$ es roll(u, -1)
+- lo que sale de una celda entra en la siguiente ⇒ $\sum_i u_i$ se conserva
+- '$k$ repetido ⇒ sumado: un esténcil de 5 celdas, relleno periódico'
+- corrección de flujo aprendida a partir de tres convoluciones (cero al inicio)
+- solución fina promediada sobre las $f = N_f/N_c$ celdas finas de cada celda gruesa
+- autograd a través de los $S$ pasos de tiempo desenrollados del solver
+labels:
+  nu: Viscosidad $\nu$
+  n_coarse: Celdas gruesas $N_c$
+  train_iters: Pasos de entrenamiento
+  unroll: Pasos desenrollados $S$

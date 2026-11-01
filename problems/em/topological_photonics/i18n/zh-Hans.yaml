@@ -1,0 +1,19 @@
+source_hash: b20a6dde0710
+title: Haldane 晶格上的拓扑光子学
+summary: 由耦合光学谐振腔组成的蜂窝阵列，具有复数次近邻耦合，即光子 Haldane 模型。在整个 $k$ 网格上计算 $2\times 2$ 布洛赫哈密顿量，用 Fukui–Hatsugai–Suzuki 链接法（对链接变量做 einsum）得到陈数。锯齿形条带显示穿越带隙的边缘态；在有限晶片边缘注入的光单向绕过一个缺口，而在平庸晶格中则无法通过。
+notes: 单位：耦合 $t_1 = 1$，谐振腔间距为 1。$E$ 是相对于裸谐振频率的失谐，在波导阵列中时间 $t$ 变为传播距离。相位固定为 $\phi = \pi/2$。当 $\lvert M\rvert < 3\sqrt3\,t_2\lvert\sin\phi\rvert$ 时晶格是拓扑的，$C = \pm1$；对照晶格使用两倍的质量项，$C = 0$。Fukui–Hatsugai–Suzuki 方法（J. Phys. Soc. Jpn., 2005）即使在粗网格上也给出精确的整数。体–边对应于是保证存在 $\lvert C\rvert$ 个单向边缘通道。输入光是靠近底边的一个光斑，经滤波只保留体带隙内的频率。它绕过缺口，因为不存在可供它散射进入的反向传播态。在平庸晶格中，同样的光只是扩散进体内。该模型由 Haldane 提出（PRL, 1988）。Haldane & Raghu（PRL, 2008）提出了它的光子版本，Wang, Chong, Joannopoulos & Soljačić（Nature, 2009）在磁光光子晶体中观测到单向微波边缘态。Rechtsman et al.（Nature, 2013）用螺旋波导构建了 Floquet 版本。随后出现了拓扑绝缘体激光器（Bandres et al., Science, 2018），Ozawa et al.（Rev. Mod. Phys., 2019）对该领域做了综述。较新的工作，包括不需要磁场的谷霍尔光子晶体，把这一思想带到了片上通信波段和太赫兹波导。试试把 $M$ 增大到超过临界值：$C$ 降为 0，边缘态与能带脱离，光不再能绕过缺口。
+meanings:
+- 晶片中谐振腔 $i$ 的复场振幅
+- 耦合 $t_1$、$t_2 e^{-i\nu_{ij}\phi}$ 与失谐 $\pm M$ 加无序
+- $k\cdot\delta_n$ 是对坐标 $i$ 的 einsum，针对网格上的每个 $k$；$\delta_n$、$b_n$ 为键矢量
+- 重复的 $\mu$ ⇒ 求和：每个 $k$ 处的布洛赫哈密顿量
+- 下能带本征矢（其相位任意）
+- 重复的 $a$ ⇒ 求和：相邻 $k$ 点之间的链接变量
+- 四个链接组成的回路的相位：贝里通量，规范不变
+- 重复的 $a, b, c$ ⇒ 求和：连续的贝里曲率，导数由自动微分求得
+- 每个晶格（拓扑与平庸）一次 eigh 得到 $e^{-iHt}\psi_0$
+labels:
+  t2: 次近邻耦合 $t_2$
+  mass: 子晶格失谐 $M$
+  disorder: 随机失谐强度 $W$
+  defect_radius: 缺口半径 $R$

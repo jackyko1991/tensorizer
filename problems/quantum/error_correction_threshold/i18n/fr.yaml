@@ -1,0 +1,23 @@
+source_hash: 0f2f557927c5
+title: Correction d'erreurs quantiques sous le seuil
+summary: 'Un code de répétition contre les bit-flips répartit un bit logique sur $d$ qubits bruités et mesure sans cesse leurs parités. Des milliers de tirs Monte Carlo s''exécutent sous forme d''un seul tenseur $(S, R, d)$, un décodeur exact de poids minimal lit l''historique spatio-temporel du syndrome, et les courbes pour $d = 3, 5, 7, 9$ se croisent au seuil : en dessous, chaque pas $d \to d + 2$ divise le taux d''erreur logique par un facteur $\Lambda > 1$, la grandeur derrière la mémoire à code de surface sous le seuil de Google en 2024.'
+notes: 'Le code stocke $\lvert 0_L\rangle = \lvert 00\ldots0\rangle$ et $\lvert 1_L\rangle = \lvert 11\ldots1\rangle$ ; les contrôles de parité $Z_jZ_{j+1}$ révèlent où des voisins sont en désaccord sans révéler la valeur logique. Dans le modèle de capacité du code (un seul tour, contrôles parfaits), le meilleur décodeur est un vote majoritaire et le $P_L$ simulé suit la queue binomiale exacte (pointillés), avec un seuil d''exactement $p = 1/2$. Dans le modèle phénoménologique, les contrôles se trompent aussi, si bien qu''un seul syndrome n''est pas fiable ; le décodeur cherche le plus petit nombre de flips de données et d''erreurs de lecture qui explique tout l''historique de $d$ tours. C''est le problème que résout l''appariement parfait de poids minimal ; en 1D, il est résolu ici exactement par programmation dynamique sur les $2^d$ motifs d''erreur (d''où $d \le 11$). Pour ce modèle, le seuil est proche de $p \approx 10\%$ (environ 10,3 % pour de très grands $d$), et les croisements à
+  petit $d$ tombent près de lui quand chaque code est exécuté pendant $d$ tours. Sous le seuil, les codes plus grands l''emportent, et $\Lambda = \varepsilon_d/\varepsilon_{d+2}$ croît quand $p$ diminue (à peu près comme $p_{th}/p$) ; au-dessus, ajouter des qubits ne fait qu''ajouter des points de défaillance. Contexte de recherche : Google Quantum AI and Collaborators, Quantum error correction below the surface code threshold, Nature 638, 920 (2025 ; arXiv:2408.13687, 2024) ont fait fonctionner des mémoires à code de surface de distance 3, 5 et 7 sur leur processeur Willow et rapporté $\Lambda \approx 2.1$, avec une erreur logique de distance 7 d''environ 0,14 % par cycle (valeurs approximatives). Les étapes antérieures étaient des codes de répétition (Nature 595, 383, 2021) et un code de surface de distance 5 battant de peu la distance 3 (Nature 614, 676, 2023). Code de répétition contre code de surface : le code de répétition est une ligne 1D qui ne corrige que les bit-flips (erreurs
+  $X$) — un phase-flip ($Z$) sur n''importe quel qubit est une erreur logique, ce n''est donc pas une mémoire quantique complète. Le code de surface est un réseau 2D avec des contrôles de type $Z$ et de type $X$ et corrige les deux ; son graphe de décodage est 3D (deux dimensions d''espace plus le temps) et ses seuils sont plus bas, environ 3 % pour ce bruit phénoménologique et à peu près 1 % pour un bruit de circuit réaliste (approximatif). Simplifications : erreurs indépendantes, lecture finale parfaite, et ni fuite ni salves corrélées, qui dans les vrais dispositifs imposent un plancher au taux d''erreur logique.'
+meanings:
+- flips de données (probabilité $p$) et contrôles mal lus (probabilité $q$) pour le tir $s$, tour $t$
+- erreur accumulée sur le qubit de données $i$ après le tour $t$
+- le contrôle $j$ compare les voisins $i = j$ et $i = j + 1$ ($Z_jZ_{j+1}$)
+- '$i$ répété ⇒ sommé : la parité que chaque contrôle devrait rapporter'
+- 'un bit de syndrome qui a changé : l''extrémité d''une chaîne d''erreurs dans l''espace-temps'
+- historique le moins coûteux se terminant par le motif d'erreur $x$, $w = \ln\frac{1-p}{p}$ ; le min sur $y$ porte sur $d$ flips d'un bit
+- 'vote majoritaire : le décodeur optimal quand les contrôles ne se trompent jamais'
+- suppression d'erreur par tour, $1 - 2P_L = (1 - 2\varepsilon)^R$
+labels:
+  model: Modèle de bruit (avec ou sans contrôles mal lus)
+  d_max: Plus grande distance $d$ (11 est lent)
+  shots: Tirs par point $(d, p)$
+  n_p: Nombre de taux d'erreur $p$
+  p_min: Plus petit $p$
+  p_max: Plus grand $p$
+  q_ratio: Taux d'erreur de lecture $q/p$

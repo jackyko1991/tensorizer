@@ -48,10 +48,10 @@ The interface and all problem text are available in 10 languages: English, 繁�
 ## Problem library
 
 <!-- library:start -->
-113 problems in 12 topics by difficulty level. Click a topic to expand it.
+134 problems in 13 topics by difficulty level. Click a topic to expand it.
 
 <details>
-<summary><b>Mechanics</b> (12 problems)</summary>
+<summary><b>Mechanics</b> (13 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -77,7 +77,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (5)</summary>
+<summary>🔴 Advanced (6)</summary>
 
 | Problem | Key equation |
 |---|---|
@@ -86,13 +86,14 @@ The interface and all problem text are available in 10 languages: English, 繁�
 | [Mass–spring cloth](problems/mechanics/mass_spring_cloth) | $m\,\ddot x_{ai} = -k\,D_{ea}\,(\lVert d_e\rVert - \ell_0)\,\hat d_{ei} + m\,g_i$ |
 | [Three-body chaos: the Pythagorean problem](problems/mechanics/three_body_chaos) | $\ddot x_{kai} = G\,m_b\,(r_{kabj}r_{kabj})^{-3/2}\,r_{kabi},\;\; \lVert\Delta\rVert \propto e^{\lambda t}$ |
 | [Principle of least action: finding the path by gradient descent](problems/mechanics/least_action) | $S_b = \sum_{n=0}^{N-1}\Big[\tfrac12 m\,v_{bn}v_{bn} - V(q_{bn})\Big]\Delta t$ |
+| [E(n)-equivariant graph neural network for particle dynamics](problems/mechanics/egnn_dynamics) | $r_{ija} = x_{ia} - x_{ja}$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Optics</b> (9 problems)</summary>
+<summary><b>Optics</b> (10 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -117,20 +118,21 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (3)</summary>
+<summary>🔴 Advanced (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Double-slit interference](problems/optics/double_slit) | $\partial_t^2 u = c^2\,\partial_i\partial_i u$ |
 | [Fraunhofer diffraction as a 2D Fourier transform](problems/optics/fourier_optics) | $U_{kl} = F_{ka}\,A_{ab}\,F_{lb}$ |
 | [Road mirage from the ray equation](problems/optics/grin_mirage) | $\frac{d}{ds}\Big(n\,\frac{dr_i}{ds}\Big) = \partial_i n$ |
+| [Inverse design of a metalens](problems/optics/metalens_inverse_design) | $\hat E_{lq} = F_{qx}\,A_x\,e^{i\varphi_{lx}}$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Waves</b> (9 problems)</summary>
+<summary><b>Waves</b> (10 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -155,20 +157,21 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (3)</summary>
+<summary>🔴 Advanced (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [KdV soliton collision](problems/waves/kdv_solitons) | $\partial_t \hat u_k = i k^3\,\hat u_k - 3ik\,F_{kj}\,(u_j u_j)$ |
 | [Rogue waves (nonlinear Schrödinger)](problems/waves/nonlinear_schrodinger) | $\psi_j \leftarrow F^{-1}_{jk}\,e^{-ik^2\Delta t/4}\,F_{kl}\,\psi_l$ |
 | [Ripple tank interference](problems/waves/ripple_tank) | $(\nabla^2 u)_{ab} = \frac{1}{h^2}\,K_{\alpha\beta}\,u_{a+\alpha,\,b+\beta}$ |
+| [Photonic time crystal and time reflection](problems/waves/photonic_time_crystal) | $\dot u_{ka} = A_{kab}(t)\,u_{kb}$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Thermodynamics</b> (9 problems)</summary>
+<summary><b>Thermodynamics</b> (10 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -193,20 +196,21 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (3)</summary>
+<summary>🔴 Advanced (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Kinetic theory of an ideal gas](problems/thermodynamics/kinetic_gas) | $v'_{ai} = v_{ai} - (\Delta v_{abj}\,n_{abj})\,n_{abi}$ |
 | [2D Ising model](problems/thermodynamics/ising_model) | $h_{ij} = K_{kl}\,s_{i+k,\,j+l}$ |
 | [Van der Waals gas and Maxwell's construction](problems/thermodynamics/van_der_waals) | $p_{tv} = \frac{nRT_t}{V_v - nb} - \frac{an^2}{V_v^2}$ |
+| [Markovian Mpemba effect](problems/thermodynamics/mpemba_effect) | $W_{ij} = A_{ij}\min\!\big(1, e^{-(U_i - U_j)/T_b}\big) - \delta_{ij}\textstyle\sum_k A_{kj}\min\!\big(1, e^{-(U_k - U_j)/T_b}\big)$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Electromagnetism</b> (9 problems)</summary>
+<summary><b>Electromagnetism</b> (10 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -231,20 +235,21 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (3)</summary>
+<summary>🔴 Advanced (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Lorentz boost of the field tensor](problems/em/field_tensor_boost) | $F'^{\mu\nu} = \Lambda^{\mu}{}_{\alpha}\,\Lambda^{\nu}{}_{\beta}\,F^{\alpha\beta}$ |
 | [Relativistic charged particle](problems/em/relativistic_particle) | $\frac{dU^\mu}{d\tau} = \frac{q}{m}\,F^{\mu}{}_{\nu}\,U^\nu$ |
 | [Rectangular waveguide modes](problems/em/waveguide_modes) | $\partial_i\partial_i\,\psi + k_c^2\,\psi = 0 \;\;\longrightarrow\;\; -L_{nm}\,\psi_m = k_c^2\,\psi_n$ |
+| [Topological photonics on a Haldane lattice](problems/em/topological_photonics) | $i\dot\psi_i = H_{ij}\psi_j$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Fluids & Continuum</b> (9 problems)</summary>
+<summary><b>Fluids & Continuum</b> (10 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -269,20 +274,21 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (3)</summary>
+<summary>🔴 Advanced (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Lid-driven cavity (Navier–Stokes)](problems/fluids/lid_driven_cavity) | $\partial_t\omega + u_j\,\partial_j\omega = \nu\,\partial_j\partial_j\omega$ |
 | [Flow past a cylinder: drag and vortex shedding](problems/fluids/cylinder_drag) | $f_i(\mathbf x + \mathbf e_i, t + 1) = f_i - \tfrac1\tau\big(f_i - f_i^\text{eq}\big)$ |
 | [Elastic P and S waves](problems/fluids/elastic_waves) | $\rho\,\ddot u_i = (\lambda + \mu)\,\partial_i\partial_j u_j + \mu\,\partial_j\partial_j u_i + f_i$ |
+| [Machine-learning–accelerated CFD](problems/fluids/ml_accelerated_cfd) | $\dot u_{bi} = -\frac{F_{b,i+\frac12} - F_{b,i-\frac12}}{\Delta x}$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Quantum</b> (11 problems)</summary>
+<summary><b>Quantum</b> (12 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -309,20 +315,21 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (3)</summary>
+<summary>🔴 Advanced (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Quantum tunnelling](problems/quantum/tunneling) | $\psi_x \leftarrow F^{-1}_{xk}\,K_k\,F_{ky}\,P_y\,\psi_y$ |
 | [2D wave-packet scattering](problems/quantum/scattering_2d) | $\psi \leftarrow P\,\mathcal F^{-1} K\,\mathcal F\,P\,\psi$ |
 | [Two-qubit entanglement](problems/quantum/two_qubit_entanglement) | $\psi_{ab} \leftarrow G_{abcd}\,\psi_{cd}$ |
+| [Quantum error correction below threshold](problems/quantum/error_correction_threshold) | $x_{sti} = \bigoplus_{t'\le t} e_{st'i}$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Astrophysics & Relativity</b> (9 problems)</summary>
+<summary><b>Astrophysics & Relativity</b> (11 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -336,31 +343,33 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🟠 Intermediate (3)</summary>
+<summary>🟠 Intermediate (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Special relativity: Minkowski diagrams and Lorentz boosts](problems/astro/minkowski_diagram) | $x'^\mu = \Lambda^\mu{}_\nu\,x^\nu$ |
 | [Lagrange points of the restricted three-body problem](problems/astro/lagrange_points) | $\ddot x_i = -m_s\,\frac{(x - x_s)_i}{\lvert x - x_s\rvert^3} - 2\,\varepsilon_{ijk}\Omega_j\dot x_k - \varepsilon_{ijk}\Omega_j\,\varepsilon_{klm}\Omega_l x_m$ |
 | [Spaghettification near a black hole](problems/astro/tidal_tensor) | $\ddot\xi_{bi} = T_{ij}\,\xi_{bj}$ |
+| [Hohmann and bi-elliptic orbit transfers](problems/astro/orbit_transfer) | $\ddot x_{bi} = -\mu\,x_{bi}\,(x_{bj}x_{bj})^{-3/2}$ |
 
 </details>
 
 <details>
-<summary>🔴 Advanced (3)</summary>
+<summary>🔴 Advanced (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [General relativity: orbits and infall around a black hole](problems/astro/black_hole_geodesics) | $\frac{d^2x^\mu}{d\tau^2} = -\Gamma^\mu{}_{\alpha\beta}\,\dot x^\alpha\dot x^\beta$ |
 | [Hawking radiation and black-hole evaporation](problems/astro/hawking_radiation) | $T_m = \frac{\hbar c^3}{8\pi G k_B}\,M_m^{-1}$ |
 | [Gravitational lensing by a black hole](problems/astro/gravitational_lensing) | $u_b'' = -u_b + 3M\,u_b^2$ |
+| [Pulsar timing array and the Hellings–Downs curve](problems/astro/pulsar_timing_hellings_downs) | $e^{+}_{mij} = m_im_j - n_in_j$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Nuclear & Particle</b> (10 problems)</summary>
+<summary><b>Nuclear & Particle</b> (11 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -385,7 +394,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (4)</summary>
+<summary>🔴 Advanced (5)</summary>
 
 | Problem | Key equation |
 |---|---|
@@ -393,13 +402,14 @@ The interface and all problem text are available in 10 languages: English, 繁�
 | [Reactor criticality](problems/nuclear/reactor_criticality) | $M_{ij}\,\phi_j = \frac1k\,F_{ij}\,\phi_j$ |
 | [Electromagnetic shower](problems/nuclear/em_shower) | $(E_p, s_p) \to \big(\tfrac{E_p}{2}, 1\big),\ \big(\tfrac{E_p}{2}, 1 - s_p\big)\ \text{ if } \tfrac{E_p}{2} \ge E_c$ |
 | [Feynman diagram: $e^+e^- \to \mu^+\mu^-$ from Dirac traces](problems/nuclear/feynman_ee_mumu) | $\overline{\vert \mathcal M\vert ^2} = \frac{e^4}{4s^2}\,L^{\mu\nu}M_{\mu\nu}$ |
+| [Inertial-fusion ignition of a DT hot spot](problems/nuclear/fusion_ignition) | $P^{\alpha}_b = \tfrac14 n^2(1-\varphi_b)^2\langle\sigma v\rangle(T_b)\,E_\alpha$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Medical Physics</b> (9 problems)</summary>
+<summary><b>Medical Physics</b> (10 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -424,13 +434,14 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (3)</summary>
+<summary>🔴 Advanced (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Proton therapy: the Bragg peak](problems/medical/proton_bragg_peak) | $\frac{dE_b}{dz} = -S(E_b)$ |
 | [MRI k-space: imaging with gradients and Fourier transforms](problems/medical/mri_kspace) | $s_{uv} = E_{up}\,E_{vr}\,\rho_{pr}$ |
 | [Diffusion tensor imaging: mapping nerve fibres](problems/medical/diffusion_tensor_imaging) | $S_{vg} = S_{0v}\,e^{-b\,\hat g_{gi}\,D_{vij}\,\hat g_{gj}}$ |
+| [Photon-counting CT and material decomposition](problems/medical/photon_counting_ct) | $A_{rm} = \textstyle\int a_m\,dl$ |
 
 </details>
 
@@ -468,6 +479,45 @@ The interface and all problem text are available in 10 languages: English, 繁�
 | [AlphaFold in miniature: from a distance map to a 3D fold](problems/biophysics/mini_alphafold) | $\hat d_{ij} = p_{ijk}\,c_k$ |
 | [Coarse-grained protein folding: a Gō model with Langevin dynamics](problems/biophysics/coarse_grained_md) | $r_{sp} = \sqrt{(x_{s i_p a} - x_{s j_p a})(x_{s i_p a} - x_{s j_p a})}$ |
 | [Turing patterns: Gray–Scott reaction–diffusion](problems/biophysics/turing_patterns) | $(\nabla^2 u)_{bij} = \frac{u_{b,i+1,j} + u_{b,i-1,j} + u_{b,i,j+1} + u_{b,i,j-1} - 4u_{bij}}{h^2}$ |
+
+</details>
+
+</details>
+
+<details>
+<summary><b>Bioinformatics</b> (10 problems)</summary>
+
+<details>
+<summary>🟢 Beginner (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [k-mers, GC content and GC skew](problems/bioinformatics/kmer_gc_skew) | $m_n = U_{naj}\,P_{ja}$ |
+| [Position weight matrix: motif logo and scan](problems/bioinformatics/pwm_motif_scan) | $C_{ja} = X_{sja}$ |
+| [Hardy–Weinberg and Wright–Fisher genetic drift](problems/bioinformatics/wright_fisher_drift) | $G_{rg} = \big(p_r^2,\ 2p_rq_r,\ q_r^2\big)_g$ |
+
+</details>
+
+<details>
+<summary>🟠 Intermediate (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Sequence alignment as a wavefront of tensor updates](problems/bioinformatics/sequence_alignment) | $S_{bij} = a_{bi\alpha}\,W_{\alpha\beta}\,c_{bj\beta}$ |
+| [Finding CpG islands with a hidden Markov model](problems/bioinformatics/hmm_cpg_islands) | $e_{btk} = x_{bt\alpha}E_{k\alpha}$ |
+| [Phylogenetic trees from DNA distances](problems/bioinformatics/phylogenetic_tree) | $y_{l\beta} = x_{l\alpha}P_{\alpha\beta}(t)$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (4)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Protein contacts from coevolution (DCA)](problems/bioinformatics/coevolution_contacts) | $E_{nia} = h_{ia} + J_{iajb}\,x_{njb}$ |
+| [Single-cell RNA-seq: PCA and k-means clustering](problems/bioinformatics/single_cell_pca) | $n_c = K_{cg}\,\mathbb 1_g$ |
+| [A tiny CNN finds a DNA binding motif](problems/bioinformatics/dna_binding_cnn) | $X_{npkb} = x_{n,p+k,b}$ |
+| [A tiny protein language model learns contacts](problems/bioinformatics/protein_language_model) | $A_{nhij} = \mathrm{softmax}_j\Big(\frac{X_{nic}W^Q_{hck}\;X_{njc'}W^K_{hc'k}}{\sqrt{d_k}}\Big)$ |
 
 </details>
 

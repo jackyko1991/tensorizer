@@ -1,0 +1,22 @@
+source_hash: a1a35d304051
+title: Hardy–Weinberg y deriva genética de Wright–Fisher
+summary: El apareamiento aleatorio da las frecuencias genotípicas de Hardy–Weinberg $p^2, 2pq, q^2$; el muestreo aleatorio de $2N$ copias génicas en cada generación hace que las frecuencias alélicas deriven. Miles de poblaciones evolucionan a la vez como un tensor (réplicas, generaciones) de extracciones binomiales, opcionalmente con selección $s$, y se comparan con $(1-1/2N)^t$ para la heterocigosidad y con $1/2N$ y la fórmula de Kimura para la fijación.
+notes: 'Hardy–Weinberg dice que una ronda de apareamiento aleatorio convierte la frecuencia alélica $p$ en las frecuencias genotípicas $p^2, 2pq, q^2$, sean cuales sean los genotipos de los padres; los puntos son $N$ individuos construidos a partir de dos gametos aleatorios y se dispersan alrededor de esas curvas. Las frecuencias alélicas solo se mantienen fijas en una población infinita. Con $2N$ copias, cada generación es una muestra binomial de la anterior, así que $p$ realiza un paseo aleatorio hasta llegar a 0 (alelo perdido) o a 1 (alelo fijado). Dos copias elegidas al azar comparten una copia parental con probabilidad $1/2N$, así que la heterocigosidad esperada $2pq$ se reduce por el factor $1 - 1/2N$ en cada generación; la deriva es más rápida en poblaciones pequeñas. Una nueva mutación neutra empieza como una copia de $2N$; como al final una de las $2N$ copias será la antecesora de todas, su probabilidad de fijación es $1/2N$. Con selección se aplica el resultado de difusión de
+  Kimura: un alelo beneficioso con $4Ns \gg 1$ se fija con una probabilidad cercana a $2s$, todavía lejos de ser seguro, y uno ligeramente perjudicial puede fijarse por deriva cuando $|4Ns| \lesssim 1$. Aquí $N$ es el tamaño de población idealizado (constante, apareamiento aleatorio, sin mutación ni migración); las poblaciones reales se describen con un tamaño efectivo $N_e$ menor.'
+meanings:
+- frecuencia del alelo A en la población réplica $r$ en la generación $t$
+- 'tras la selección: las copias A se transmiten $1+s$ veces más a menudo'
+- 'número de A entre las $2N$ copias de la siguiente generación: una extracción por población, todas a la vez'
+- frecuencias genotípicas AA, Aa, aa con apareamiento aleatorio
+- $N$ individuos formados por dos gametos aleatorios cada uno, contados por genotipo (puntos)
+- 'suma sobre $r$: media de $2pq$, comparada con $H_0(1-1/2N)^t$'
+- fracción de poblaciones en las que una sola copia nueva ($p_0 = 1/2N$) se fijó, para cada $s$
+- $(1-e^{-4Nsp_0})/(1-e^{-4Ns})$, igual a $p_0 = 1/2N$ cuando $s = 0$
+labels:
+  N: Tamaño de población $N$ (diploide)
+  p0: Frecuencia inicial $p_0$
+  s: Coeficiente de selección $s$
+  generations: Generaciones $G$
+  replicates: Poblaciones $R$
+  fix_replicates: Poblaciones por $s$ (fijación)
+  seed: Semilla aleatoria

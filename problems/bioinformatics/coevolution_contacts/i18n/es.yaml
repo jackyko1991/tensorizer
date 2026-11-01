@@ -1,0 +1,27 @@
+source_hash: 293708490c35
+title: Contactos de proteínas a partir de la coevolución (DCA)
+summary: 'Los residuos que se tocan en una proteína plegada mutan juntos a lo largo de la evolución. Plegamos una proteína de juguete en una red cúbica, colocamos acoplamientos $J_{ij}(a,b)$ en sus contactos, muestreamos un alineamiento múltiple de secuencias a partir del modelo de Potts mediante muestreo de Gibbs y luego recuperamos los contactos solo a partir del alineamiento: estadísticas de pares con un einsum one-hot, acoplamientos directos con DCA de campo medio $J \approx -C^{-1}$ (o pseudoverosimilitud con autograd) y una puntuación de Frobenius con corrección APC, comparada con el mapa de contactos verdadero.'
+notes: '¿Por qué funciona? Si el residuo $i$ cambia de tamaño o de carga, un residuo $j$ con el que está en contacto a menudo tiene que cambiar también, o la proteína se pliega mal. A lo largo de muchas secuencias emparentadas esto deja una correlación entre las columnas $i$ y $j$ del alineamiento. Pero las correlaciones son transitivas: si $i$ toca a $j$ y $j$ toca a $k$, entonces $i$ y $k$ también se correlacionan sin tocarse. El análisis de acoplamiento directo (DCA) ajusta un modelo global, el modelo de Potts (un modelo de Ising de $q$ estados), cuyos acoplamientos $J_{ij}$ explican todas las correlaciones a la vez, de modo que las indirectas quedan explicadas por las demás. En la aproximación de campo medio los acoplamientos son simplemente menos la inversa de la matriz de covarianza (como las correlaciones parciales); la maximización de la pseudoverosimilitud ajusta en cambio $P(s_i\mid\text{rest})$ para cada columna y suele ser más precisa en familias reales. La animación hace crecer
+  el alineamiento desde 20 secuencias hasta todas: el DCA (triángulo superior) mejora con la profundidad, mientras que la covarianza simple (triángulo inferior) se estanca porque sus falsos positivos son pares indirectos. Aquí los datos provienen realmente de un modelo de Potts con contactos conocidos, así que la precisión es una puntuación honesta. Los alineamientos reales son más difíciles: unas pocas letras sustituyen a 20 aminoácidos más un hueco, las secuencias están relacionadas por una filogenia (el DCA real resta peso a los casi duplicados) y solo algunos contactos dejan señal. La coevolución es la raíz de la predicción de estructuras actual: los contactos de tipo plmDCA alimentaron los primeros métodos de aprendizaje profundo, y AlphaFold 2 toma un MSA como entrada principal y aprende con atención su propio uso, mucho más rico, de él. Este juguete muestra la idea estadística detrás de esa entrada, no cómo funciona AlphaFold. Prueba un acoplamiento más débil, menos secuencias o más
+  letras $q$.'
+meanings:
+- una cadena en serpentín que llena una caja $X\times Y\times Z$; un contacto es un vecino en la red separado al menos 3 posiciones a lo largo de la cadena
+- 'el modelo "verdadero": campos aleatorios y bloques de acoplamiento aleatorios $q\times q$ solo donde $\mathcal C_{ij} = 1$'
+- 'campo local: $j, b$ sumados sobre todas las demás columnas y letras de la secuencia $n$'
+- 'Gibbs en tablero de ajedrez: los contactos unen colores opuestos, así que la mitad de los sitios se remuestrean a la vez, en las $N$ cadenas'
+- el alineamiento como tensor one-hot
+- '$n$ sumado: frecuencias simples y de pares; sumar $f_{iajb}$ sobre $b$ devuelve $f_{ia}$'
+- correlación conexa, tras mezclar un pseudoconteo $\lambda$ de frecuencias uniformes
+- 'DCA de campo medio: invierte la covarianza cuadrada de tamaño $L(q-1)$; la última letra es el estado de referencia'
+- 'alternativa de pseudoverosimilitud: maximizada sobre $h, J$ con Adam y una penalización $L_2$'
+- intensidad de acoplamiento de un par, $a, b$ sumados, en el gauge de suma cero $J^z$
+- 'corrección de producto medio: elimina el fondo de cada columna, de modo que filas y columnas tienen media 0'
+labels:
+  fold: Plegamiento en red (tamaño de la caja)
+  q: Letras por columna $q$
+  coupling: Intensidad del acoplamiento colocado $\sigma_J$
+  n_seq: Secuencias en el MSA $N$
+  sweeps: Barridos de Gibbs por secuencia
+  pseudocount: Pseudoconteo $\lambda$
+  method: 'Inferencia: DCA de campo medio o pseudoverosimilitud'
+  plm_iters: Pasos de Adam de pseudoverosimilitud

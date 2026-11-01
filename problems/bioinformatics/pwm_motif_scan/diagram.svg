@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Aligned binding sites are counted into a position weight matrix W with one row per letter; a window of the same length slides along a long DNA sequence and is scored on the plus and the minus strand.">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- aligned training sites -->
+    <g font-family="ui-monospace, monospace" font-size="12" fill="#1e40af">
+      <text x="12" y="34">TATAAAAG</text>
+      <text x="12" y="48">TATATAAG</text>
+      <text x="12" y="62">TATAAATA</text>
+      <text x="12" y="76">TATAAAAG</text>
+    </g>
+    <line x1="80" y1="52" x2="104" y2="52" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- position weight matrix: 4 letters × 8 positions -->
+    <g font-size="10" fill="#374151" text-anchor="end">
+      <text x="122" y="36">A</text><text x="122" y="47">C</text><text x="122" y="58">G</text><text x="122" y="69">T</text>
+    </g>
+    <g stroke="#ffffff" stroke-width="1">
+      <rect x="126" y="28" width="12" height="11" fill="#e5e7eb"/><rect x="138" y="28" width="12" height="11" fill="#2563eb"/>
+      <rect x="150" y="28" width="12" height="11" fill="#e5e7eb"/><rect x="162" y="28" width="12" height="11" fill="#2563eb"/>
+      <rect x="174" y="28" width="12" height="11" fill="#2563eb"/><rect x="186" y="28" width="12" height="11" fill="#2563eb"/>
+      <rect x="198" y="28" width="12" height="11" fill="#2563eb"/><rect x="210" y="28" width="12" height="11" fill="#93c5fd"/>
+      <rect x="126" y="39" width="12" height="11" fill="#e5e7eb"/><rect x="138" y="39" width="12" height="11" fill="#e5e7eb"/>
+      <rect x="150" y="39" width="12" height="11" fill="#e5e7eb"/><rect x="162" y="39" width="12" height="11" fill="#e5e7eb"/>
+      <rect x="174" y="39" width="12" height="11" fill="#e5e7eb"/><rect x="186" y="39" width="12" height="11" fill="#e5e7eb"/>
+      <rect x="198" y="39" width="12" height="11" fill="#e5e7eb"/><rect x="210" y="39" width="12" height="11" fill="#e5e7eb"/>
+      <rect x="126" y="50" width="12" height="11" fill="#e5e7eb"/><rect x="138" y="50" width="12" height="11" fill="#e5e7eb"/>
+      <rect x="150" y="50" width="12" height="11" fill="#e5e7eb"/><rect x="162" y="50" width="12" height="11" fill="#e5e7eb"/>
+      <rect x="174" y="50" width="12" height="11" fill="#e5e7eb"/><rect x="186" y="50" width="12" height="11" fill="#e5e7eb"/>
+      <rect x="198" y="50" width="12" height="11" fill="#e5e7eb"/><rect x="210" y="50" width="12" height="11" fill="#2563eb"/>
+      <rect x="126" y="61" width="12" height="11" fill="#2563eb"/><rect x="138" y="61" width="12" height="11" fill="#e5e7eb"/>
+      <rect x="150" y="61" width="12" height="11" fill="#2563eb"/><rect x="162" y="61" width="12" height="11" fill="#e5e7eb"/>
+      <rect x="174" y="61" width="12" height="11" fill="#93c5fd"/><rect x="186" y="61" width="12" height="11" fill="#e5e7eb"/>
+      <rect x="198" y="61" width="12" height="11" fill="#93c5fd"/><rect x="210" y="61" width="12" height="11" fill="#e5e7eb"/>
+    </g>
+    <rect x="126" y="28" width="96" height="44" fill="none" stroke="#374151" stroke-width="2"/>
+    <text x="174" y="20" text-anchor="middle" font-style="italic">W</text>
+    <!-- the window W is slid along a long sequence -->
+    <line x1="126" y1="72" x2="92" y2="106" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="222" y1="72" x2="148" y2="106" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <rect x="12" y="106" width="216" height="16" fill="none" stroke="#374151" stroke-width="2"/>
+    <rect x="92" y="106" width="56" height="16" fill="#93c5fd" stroke="#2563eb" stroke-width="2"/>
+    <line x1="60" y1="99" x2="180" y2="99" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <line x1="180" y1="131" x2="60" y2="131" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <text x="190" y="104" fill="#1e40af">+</text>
+    <text x="44" y="136" fill="#ea580c">−</text>
+    <text x="120" y="152" text-anchor="middle" font-size="12" fill="#6b7280">both strands scored</text>
+  </g>
+</svg>

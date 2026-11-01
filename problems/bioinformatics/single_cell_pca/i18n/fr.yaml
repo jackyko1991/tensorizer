@@ -1,0 +1,30 @@
+source_hash: f93e7ab544e0
+title: 'RNA-seq unicellulaire : ACP et partitionnement k-means'
+summary: 'Une expérience unicellulaire synthétique : des cellules de quelques types, chacun activant ses propres gènes marqueurs, avec des comptes binomiaux négatifs et des cellules séquencées à des profondeurs différentes. On exécute le pipeline standard sous forme d''opérations tensorielles : normaliser en $\log(1 + 10^4 K_{cg}/n_c)$, garder les gènes très variables, ACP par SVD, puis k-means avec plusieurs redémarrages en parallèle, et noter les clusters par rapport aux vrais types avec l''indice de Rand ajusté.'
+notes: 'Chaque cellule fournit quelques milliers de comptes d''ARNm répartis sur des milliers de gènes, si bien que la plupart des entrées sont nulles et que les comptes bruts reflètent surtout la profondeur de séquençage de la cellule. Diviser par la taille de bibliothèque $n_c$ supprime la profondeur ; le logarithme dompte l''énorme gamme des niveaux d''expression. La plupart des gènes ne portent que du bruit, on garde donc les gènes dont la variance dépasse celle de gènes de moyenne similaire : les gènes très variables, enrichis en marqueurs placés. L''ACP les comprime ensuite : avec $K$ types, le signal vit dans environ $K-1$ directions, visibles comme les $K-1$ premières barres du graphe des éboulis, au-dessus d''un plancher de bruit plat. k-means alterne deux étapes, assigner chaque cellule à son centre le plus proche et déplacer chaque centre à la moyenne de ses cellules ; aucune étape ne peut augmenter l''inertie $\sum_c \lVert y_c - \mu_{k(c)}\rVert^2$, donc l''algorithme converge,
+  mais seulement vers un minimum local, ce qui explique pourquoi plusieurs départs aléatoires sont lancés côte à côte (courbes grises) et le meilleur conservé. Comme on connaît les vrais types, l''indice de Rand ajusté note le résultat honnêtement. La carte t-SNE optionnelle est une petite disposition par forces entraînée avec autograd (similarités de Student-t, exagération précoce) ; les distances entre clusters dans de telles cartes ont peu de sens. Les vrais pipelines (Scanpy, Seurat) ajoutent contrôle qualité, correction des effets de lot et partitionnement par graphe (Leiden) sur un graphe des plus proches voisins, et les vrais types cellulaires sont rarement aussi nets. Essayez un facteur de variation plus petit, moins de marqueurs ou un mauvais $k$.'
+meanings:
+- 'expression moyenne du gène $g$ dans le type $k$ : une base log-normale, multipliée par le facteur de variation pour les $M$ gènes marqueurs de $k$'
+- comptes binomiaux négatifs (variance $m + \varphi m^2$) ; $s_c$ est une profondeur de séquençage log-normale
+- 'taille de bibliothèque : comptes totaux de la cellule $c$, $g$ sommé'
+- normalisé par la profondeur (comptes pour $10^4$, comme le CPM) et log-transformé
+- dispersion $\mathrm{Var}/\mathrm{Mean}$, standardisée dans des classes de moyenne similaire (sommes par classe via einsum one-hot)
+- ACP de la matrice centrée sur les $H$ gènes très variables ; torch.pca_lowrank donne les mêmes composantes principales
+- scores sur les CP, $g$ sommé ; $\Sigma_p^2/\sum_q\Sigma_q^2$ est la part de variance expliquée
+- distance au carré de la cellule $c$ au centre $k$ du redémarrage $r$ ; $p$ sommé, les $R$ redémarrages à la fois
+- 'étape d''assignation : chaque cellule rejoint son centre le plus proche'
+- 'étape de mise à jour : chaque centre se déplace à la moyenne de ses cellules, $c$ sommé'
+- accord par comptage de paires à partir de la table de contingence $n_{ij}$ (einsum one-hot) ; 1 = parfait, environ 0 = aléatoire
+labels:
+  n_cells: Cellules $C$
+  n_genes: Gènes $G$
+  n_types: Vrais types cellulaires $K$
+  n_markers: Gènes marqueurs par type
+  fold_change: Facteur de variation des marqueurs
+  dispersion: Dispersion binomiale négative $\varphi$
+  depth_spread: Dispersion de la taille de bibliothèque ($\sigma$ log-normal)
+  n_hvg: Gènes très variables conservés
+  n_pcs: Composantes principales pour le partitionnement
+  k: Clusters $k$
+  kmeans_iters: Itérations de k-means
+  embedding: 'Vue 2D : CP1–CP2 ou t-SNE'

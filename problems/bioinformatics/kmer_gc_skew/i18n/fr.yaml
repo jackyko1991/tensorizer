@@ -1,0 +1,22 @@
+source_hash: 48f29505ec48
+title: k-mers, contenu en GC et biais GC
+summary: Une séquence d'ADN devient un tenseur one-hot $(L, 4)$. Compter chaque mot de $k$ lettres est un seul einsum sur des fenêtres dépliées (une convolution 1-D), le contenu en GC et le biais GC (GC skew) sont des sommes sur fenêtres, et le minimum du biais cumulé indique où démarre la réplication sur un chromosome circulaire synthétique avec une origine et un terminus placés.
+notes: 'La plupart des chromosomes bactériens sont circulaires et copiés à partir d''une seule origine de réplication, avec deux fourches de réplication partant en sens opposés jusqu''à se rejoindre au terminus. Les deux moitiés sont copiées différemment (un brin en continu comme brin précoce, l''autre par fragments), et au fil de l''évolution le brin précoce tend à accumuler un peu plus de G que de C. Ici, ce biais est placé : de l''origine au terminus, G est favorisé d''un facteur $(1+\text{skew})/(1-\text{skew})$, sur l''autre moitié c''est C. Le biais d''une fenêtre est bruité, mais la somme cumulée $S_n$ descend jusqu''à l''origine et remonte jusqu''au terminus, si bien que son minimum et son maximum ressortent même quand le biais n''est que de quelques pour cent. Les vrais génomes montrent la même forme en V, moins nettement, car les gènes, les répétitions et les réarrangements ajoutent leur propre composition. Les deux segments pauvres en GC sur l''anneau intérieur imitent des îlots
+  génomiques, de l''ADN acquis ailleurs qui garde souvent une composition en bases différente. Le spectre des $k$-mers est le point de départ de l''assemblage des génomes et de nombreuses comparaisons sans alignement ; avec ce génome aléatoire, ses couleurs suivent simplement le contenu en GC. Essayez un biais plus faible, un génome plus petit ou un $k$ plus grand (plus de mots, moins de comptes chacun).'
+meanings:
+- 'position $n$, lettre $a$ ∈ (A, C, G, T) : 1 là où la base est $a$'
+- chaque fenêtre de $k$ lettres, sans copier la mémoire
+- '$a \cdot 4^{k-1-j}$ : le mot lu comme un nombre en base 4 (AAA = 0, …, TTT = $4^k-1$)'
+- '$j$ et $a$ répétés ⇒ sommés : l''indice du $k$-mer qui commence en $n$'
+- le spectre des $k$-mers ; les comptes totalisent $L-k+1$
+- '$i$ répété ⇒ sommé : comptes de bases dans la fenêtre $w$ de $\ell$ bases, une tous les $\Delta = \ell/2$'
+- $(n_G + n_C)/\ell$ et $(n_G - n_C)/(n_G + n_C)$
+- '$c = (0, -1, +1, 0)$ : compte cumulé de G moins C ; argmin = origine, argmax = terminus'
+labels:
+  length_kb: Longueur du génome $L$
+  k: Longueur de mot $k$
+  window: Fenêtre $\ell$
+  origin: Origine placée (fraction du génome)
+  skew: Biais de brin (skew)
+  gc: Contenu en GC
+  seed: Graine aléatoire

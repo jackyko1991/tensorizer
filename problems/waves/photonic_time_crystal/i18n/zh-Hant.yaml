@@ -1,0 +1,17 @@
+source_hash: 60f8bd39a854
+title: 光子時間晶體與時間反射
+summary: 光在介電常數 $\varepsilon(t)$ 隨時間而非空間變化的介質中傳播。$\varepsilon$ 的突然躍變把脈衝分成前進波與時間反射的後退波，兩者具有新的頻率；週期調變則在動量 $k$ 中打開能隙，能隙內的波呈指數成長。每個傅立葉模態都是獨立的 $2\times 2$ 問題，所以所有 $k$ 以一個批次求解，Floquet 能帶則來自一次批次 eigvals 呼叫。
+notes: 交換空間與時間的角色，熟悉的光學便裡外顛倒。在空間中的普通界面上，頻率守恆而波數改變；在時間界面上，整個介質同時從 $\varepsilon_1$ 切換到 $\varepsilon_2$，波數 $k$ 守恆而頻率躍變，$\omega_2 = \omega_1 n_1/n_2$。由於沒有電荷或電流出現，連續的是 $D$ 與 $B$（而非 $E$ 與 $H$），由此得到時間 Fresnel 係數 $D_f = \tfrac12(1 + n_2/n_1)$ 與 $D_b = \tfrac12(1 - n_2/n_1)$（Morgenthaler, 1958）：部分脈衝掉頭往回跑，即時間反射，而能量不守恆，因為切換介質會對場做功。時間反射與寬頻頻率轉換已在隨時間切換的傳輸線超穎材料中以微波觀測到（Moussa et al., Nature Physics 2023）。週期調變 $\varepsilon(t) = \varepsilon_0(1 + \alpha\cos\Omega t)$ 使每個模態成為參數振盪器，$\ddot D_k + (k^2/\varepsilon)D_k = 0$（類 Mathieu 方程）。在 $k/n_0 = \Omega/2$ 附近，前進波與後退波發生共振耦合：準頻率鎖定在 $\Omega/2$ 並獲得虛部，即動量（而非頻率）中的能隙，其邊緣為 $k \approx \tfrac{n_0\Omega}{2}(1 \mp \alpha/4)$，峰值成長率對 $\alpha$ 一階近似為 $\approx \alpha\Omega/8$。在 $k \approx n_0\Omega$ 處，第二個窄得多的能隙出現在 $\alpha^2$ 階。動畫中只有脈衝頻譜位於能隙內的部分會成長。這是光子時間晶體背後的想法（Galiffi et al. 的回顧，"Photonics of time-varying media", Advanced Photonics 2022）；在光學頻率下所需的調變深度與速度極難達到，所以至今的實驗主要在微波與射頻頻段進行。簡化：一維中無損耗、無色散的介質，$\mu = 1$，瞬間躍變，且調變由外部施加（成長所需的能量來自泵浦）。
+meanings:
+- 傅立葉振幅；介質在 $x$ 方向均勻，所以 $k$ 守恆，每個模態各自演化
+- 每個波數一個 $2\times 2$ 生成元
+- 重複的 $b$ ⇒ 求和；同一行程式碼也演化單值矩陣 $(K, 2, 2)$
+- 由 $D$ 與 $B$ 的連續性得到的前進／後退振幅 $\tfrac12(1 \pm n_2/n_1)$
+- 一個週期的傳播子，由對單位矩陣施加 RK4 求得
+- 所有 $k$ 的 Floquet 乘子以一次批次呼叫求得；$\det M = 1$，所以 $\lambda_+\lambda_- = 1$
+- 準頻率：在能帶中為實數，在動量能隙中 $\operatorname{Im}\omega > 0$（成長）
+labels:
+  eps2: 躍變後的介電常數 $\varepsilon_2$
+  alpha: 調變深度 $\alpha$
+  omega: 調變頻率 $\Omega$
+  t_max: 模擬時間

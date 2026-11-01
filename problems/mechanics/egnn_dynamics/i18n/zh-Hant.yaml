@@ -1,0 +1,20 @@
+source_hash: 95b6effde453
+title: 用於粒子動力學的 E(n) 等變圖神經網路
+summary: 一個小型 E(n) 等變圖神經網路（EGNN）學習將帶電粒子的三維系統向前推進一個時間步。它的訊息只取決於距離 $|\mathbf x_i - \mathbf x_j|^2$，座標更新則沿 $\mathbf x_i - \mathbf x_j$ 方向，所以旋轉輸入就精確地旋轉預測；以相同資料訓練的普通 MLP 必須學會這一點，而它學不會。
+notes: 真實系統：$N$ 個單位質量粒子，電荷 $c_i = \pm 1$，具軟化庫侖力，且每對之間有微弱彈簧 $k_s$（使粒子雲保持聚集），以步長 $\Delta t / 10$ 的 RK4 積分。兩個網路看到相同的配對（$t$ 時的狀態、$t + \Delta t$ 時的狀態），來自數個隨機系統，並以 Adam 對均方誤差訓練；保留的系統給出測試誤差。EGNN（Satorras, Hoogeboom & Welling, "E(n) Equivariant Graph Neural Networks", ICML 2021）只由不變量輸入（節點特徵、$d_{ij} = |\mathbf x_i - \mathbf x_j|^2$ 與電荷乘積）為每一對建立訊息 $m_{ij}$，再以學得的純量權重沿方向 $\mathbf x_i - \mathbf x_j$ 移動每個粒子。注意這正是真實力定律的形式，$\ddot{\mathbf x}_i = \sum_j w_{ij}(\mathbf x_i - \mathbf x_j)$：對稱性內建於架構中，而非從資料學得。檢查時以隨機的 $R$ 與 $\mathbf s$ 旋轉並平移一個測試輸入：對 EGNN，$f(R\mathbf x + \mathbf s) = Rf(\mathbf x) + \mathbf s$ 在 float32 捨入誤差內成立（約 $10^{-6}$），而對看到攤平座標的 MLP，失配量與預測本身同一數量級。訓練系統很少時，EGNN 以少得多的權重達到更低的測試誤差。在滾動預測中，每個模型都被餵入自己的預測；兩者的誤差都會累積，因為帶電系統是混沌的，但 EGNN 維持貼近的時間更長。簡化：三層、寬度 32，EGNN 的速度變體，$\tau = \Delta t / L$（我們的選擇），全批次訓練與固定種子。同樣的等變訊息傳遞概念也是機器學習原子間位能（如 NequIP，Batzner et al., Nature Communications 2022）以及生成三維分子之等變擴散模型（Hoogeboom et al., ICML 2022）的基礎。試試較少的訓練系統：兩個網路之間的差距會擴大。
+meanings:
+- 系統 $b$ 中粒子 $i$ 的位置與速度，笛卡兒分量 $a$
+- 以廣播求得所有成對位移
+- 重複的 $a$ ⇒ 求和：距離平方，是各 MLP 唯一的幾何輸入（旋轉不變）
+- 真實力：重複的 $j$ ⇒ 對夥伴求和（庫侖力加彈簧）
+- 每一對上的訊息，$H = 32$ 個特徵
+- 座標更新：重複的 $j$ ⇒ 求和；只由 $\mathbf x_i - \mathbf x_j$ 構成的向量，所以隨輸入一起旋轉
+- 不變純量乘以向量：仍是等變的
+- 用於等變性檢查的隨機旋轉
+labels:
+  n_particles: 粒子數 $N$
+  n_train: 訓練系統數
+  dt: 模型時間步 $\Delta t$
+  n_iter: 訓練迭代次數
+  lr: Adam 學習率
+  rollout_steps: 滾動預測步數

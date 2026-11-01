@@ -1,0 +1,40 @@
+title: 'k-mers, GC content and GC skew'
+category: bioinformatics
+level: beginner
+order: 1
+summary: >
+  A DNA sequence becomes a one-hot $(L, 4)$ tensor. Counting every word of $k$ letters is one einsum over unfolded
+  windows (a 1-D convolution), GC content and GC skew are window sums, and the minimum of the cumulative skew points
+  to where replication starts on a synthetic circular chromosome with a planted origin and terminus.
+animated: true
+vector_form: 'N(w) = \#\{n : s_n s_{n+1}\cdots s_{n+k-1} = w\},\qquad \mathrm{GC} = \frac{G + C}{\ell},\qquad \mathrm{skew} = \frac{G - C}{G + C},\qquad S(x) = \sum_{n \le x} \big([s_n = \mathrm{G}] - [s_n = \mathrm{C}]\big)'
+index_form: 'm_n = U_{naj}\,P_{ja},\quad U_{naj} = X_{n+j,\,a} \qquad N_m = \sum_n [m_n = m] \qquad n_{wa} = \sum_i X_{w\Delta + i,\,a} \qquad S_n = \sum_{n'' \le n} X_{n''a}\,c_a'
+translation:
+  - {symbol: 'X_{na}', code: 'one_hot(seq)', shape: '(L, 4)', meaning: 'position $n$, letter $a$ ∈ (A, C, G, T): 1 where the base is $a$'}
+  - {symbol: 'U_{naj}', code: 'X.unfold(0, k, 1)', shape: '(L−k+1, 4, k)', meaning: 'every window of $k$ letters, without copying memory'}
+  - {symbol: 'P_{ja}', code: 'place_values(k)', shape: '(k, 4)', meaning: '$a \cdot 4^{k-1-j}$: the word read as a number in base 4 (AAA = 0, …, TTT = $4^k-1$)'}
+  - {symbol: 'm_n = U_{naj} P_{ja}', code: "einsum('naj,ja->n', U, P)", shape: '(L−k+1,)', meaning: 'repeated $j$ and $a$ ⇒ summed: the index of the $k$-mer that starts at $n$'}
+  - {symbol: 'N_m', code: 'bincount(m, minlength=4**k)', shape: '(4^k,)', meaning: 'the $k$-mer spectrum; the counts add up to $L-k+1$'}
+  - {symbol: 'n_{wa}', code: "einsum('wai->wa', X.unfold(0, ℓ, Δ))", shape: '(W, 4)', meaning: 'repeated $i$ ⇒ summed: base counts in window $w$ of $\ell$ bases, one every $\Delta = \ell/2$'}
+  - {symbol: '\mathrm{GC}_w,\ \mathrm{skew}_w', code: 'gc_content(n, g), gc_skew(n, g, c)', shape: '(W,)', meaning: '$(n_G + n_C)/\ell$ and $(n_G - n_C)/(n_G + n_C)$'}
+  - {symbol: 'S_n', code: "cumsum(einsum('na,a->n', X, c))", shape: '(L,)', meaning: '$c = (0, -1, +1, 0)$: running count of G minus C; argmin = origin, argmax = terminus'}
+notes: >
+  Most bacterial chromosomes are circular and are copied from a single origin of replication, with two replication
+  forks running in opposite directions until they meet at the terminus. The two halves are copied differently (one
+  strand continuously as the leading strand, the other in pieces), and over evolutionary time the leading strand tends
+  to collect slightly more G than C. Here that bias is planted: from the origin to the terminus G is favoured by the
+  factor $(1+\text{skew})/(1-\text{skew})$, on the other half C is. The skew of one window is noisy, but the running
+  sum $S_n$ falls all the way to the origin and climbs all the way to the terminus, so its minimum and maximum stand out
+  even when the bias is only a few percent. Real genomes show the same V shape, though less cleanly, because genes,
+  repeats and rearrangements add their own composition. The two low-GC stretches on the inner ring imitate genomic
+  islands, DNA picked up from elsewhere that often keeps a different base composition. The $k$-mer spectrum is the
+  starting point of genome assembly and of many alignment-free comparisons; with this random genome its colours
+  simply follow the GC content. Try a smaller skew, a smaller genome or a larger $k$ (more words, fewer counts each).
+params:
+  length_kb: {default: 200, min: 20, max: 2000, step: 10, label: 'Genome length $L$', unit: kb}
+  k: {default: 3, min: 1, max: 6, step: 1, type: int, label: 'Word length $k$'}
+  window: {default: 2000, min: 200, max: 20000, step: 100, type: int, label: 'Window $\ell$', unit: bp}
+  origin: {default: 0.3, min: 0.0, max: 0.95, step: 0.05, label: 'Planted origin (fraction of the genome)'}
+  skew: {default: 0.05, min: 0.0, max: 0.2, step: 0.01, label: 'Strand bias (skew)'}
+  gc: {default: 0.5, min: 0.3, max: 0.7, step: 0.01, label: 'GC content'}
+  seed: {default: 0, min: 0, max: 1000, step: 1, type: int, label: Random seed}

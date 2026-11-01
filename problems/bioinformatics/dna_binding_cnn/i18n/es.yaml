@@ -1,0 +1,25 @@
+source_hash: e272fe98f3be
+title: Una CNN diminuta encuentra un motivo de unión al ADN
+summary: La mitad de un conjunto de secuencias de ADN aleatorias lleva una copia degenerada del sitio de unión de un factor de transcripción. Una red convolucional 1D de una capa, $z_{nfp} = W_{fkb}\,x_{n,p+k,b}$ seguida de max-pooling, aprende con autograd y Adam a distinguirlas; leído como logo de secuencia, su filtro más importante se convierte en el motivo colocado.
+notes: 'Un factor de transcripción se une al ADN donde encuentra una palabra corta y algo variable, su motivo, que suele resumirse como una matriz de pesos posicionales (PWM). Recorrer una secuencia con una PWM es exactamente una convolución 1D de la secuencia one-hot con un filtro $w \times 4$, y por eso las redes convolucionales encajan bien en genómica: los filtros de la primera capa son detectores de motivos y el max-pooling hace que la respuesta no dependa de dónde esté el sitio. Aquí nada le dice a la red cuál es el motivo: solo ve etiquetas, y el descenso de gradiente da a su filtro más útil la forma de la palabra colocada (mira cómo el logo se perfila a partir del ruido). La línea discontinua es una referencia que sí conoce el motivo: el escaneo con la PWM verdadera. Como los sitios colocados son degenerados y el ADN aleatorio a veces parece un sitio, ni siquiera ella llega al 100 %, y la red entrenada termina cerca de ella. Solo se usa la hebra directa y el fondo es uniforme; los
+  modelos reales también escanean el complemento inverso y deben lidiar con el contenido GC, las repeticiones y etiquetas experimentales ruidosas. Esta es la idea detrás de DeepBind (2015), que aprendió motivos a partir de experimentos de unión de proteínas; modelos como Basset, Basenji y Enformer apilan muchas más capas (y atención) para predecir cromatina y expresión a partir de secuencias de 100 kb. Este juguete reproduce solo la idea de la primera capa. Prueba un motivo más débil, un motivo corto (la E-box, CACGTG, aparece por azar más a menudo) o menos filtros.'
+meanings:
+- 'matriz de pesos posicionales colocada: la base consenso con probabilidad "strength", las otras tres se reparten el resto'
+- la secuencia $n$ tiene la base $b \in$ {A, C, G, T} en la posición $l$; etiqueta $y_n = 1$ si se colocó un sitio
+- cada ventana de $w$ bases (una vista, sin copia), $P = \ell - w + 1$
+- 'filtros entrenables: una puntuación por base y posición, con la misma forma que una PWM'
+- 'convolución: $k, b$ sumados, el filtro $f$ puntuado en cada posición $p$'
+- 'max-pooling global: la mejor coincidencia en cualquier parte, así que el sitio puede estar en cualquier posición'
+- logit, $f$ sumado; entrenado con entropía cruzada binaria, autograd y Adam (minilotes de 100)
+- 'de vuelta a un motivo, como hace DeepBind: promedia la mejor ventana $p^*_{nf}$ de cada secuencia positiva cuya puntuación supera la mitad de la máxima ($\kappa_{nf} = 1$), $n$ sumado'
+- 'contenido de información en bits: la altura de la pila del logo en la posición $k$'
+- correlación entre la matriz aprendida y la colocada en el mejor desplazamiento; 1 = idénticas
+labels:
+  motif: 'Motivo colocado: NF-κB, AP-1 o E-box'
+  strength: Probabilidad de la base consenso
+  n_seq: Secuencias (80 % entrenamiento / 20 % prueba)
+  length: Longitud de la secuencia $\ell$
+  n_filters: Filtros $F$
+  width: Anchura del filtro $w$
+  epochs: Épocas de entrenamiento
+  lr: Tasa de aprendizaje de Adam

@@ -1,0 +1,20 @@
+source_hash: b20a6dde0710
+title: Topologische Photonik auf einem Haldane-Gitter
+summary: Ein Wabengitter gekoppelter optischer Resonatoren mit komplexen Kopplungen zu übernächsten Nachbarn, das photonische Haldane-Modell. Der $2\times 2$-Bloch-Hamiltonoperator auf einem ganzen $k$-Gitter liefert die Chern-Zahl per Link-Methode nach Fukui–Hatsugai–Suzuki (einsum über Link-Variablen). Ein Zickzack-Band zeigt Randzustände, die die Lücke durchqueren, und Licht, das am Rand einer endlichen Flocke eingespeist wird, fließt in eine Richtung um eine Kerbe herum, während es in einem trivialen Gitter nicht vorbeikommt.
+notes: 'Einheiten: die Kopplung $t_1 = 1$, und der Resonatorabstand ist 1. $E$ ist die Verstimmung gegenüber der nackten Resonanzfrequenz, und in einem Wellenleiter-Array wird die Zeit $t$ zur Ausbreitungsstrecke. Die Phase ist auf $\phi = \pi/2$ festgelegt. Das Gitter ist topologisch, mit $C = \pm1$, wenn $\lvert M\rvert < 3\sqrt3\,t_2\lvert\sin\phi\rvert$; das Vergleichsgitter verwendet die doppelte Masse und hat $C = 0$. Die Fukui–Hatsugai–Suzuki-Methode (J. Phys. Soc. Jpn., 2005) liefert selbst auf einem groben Gitter eine exakte ganze Zahl. Die Bulk-Rand-Korrespondenz verspricht dann $\lvert C\rvert$ Einweg-Randkanäle. Das eingespeiste Licht ist ein Fleck neben dem unteren Rand, gefiltert auf Frequenzen innerhalb der Bulk-Lücke. Es läuft um die Kerbe herum, weil es keinen rückwärts laufenden Zustand gibt, in den es streuen könnte. Im trivialen Gitter breitet sich dasselbe Licht einfach ins Innere aus. Das Modell stammt von Haldane (PRL, 1988). Haldane & Raghu (PRL, 2008) schlugen seine
+  photonische Version vor, und Wang, Chong, Joannopoulos & Soljačić (Nature, 2009) beobachteten Einweg-Mikrowellen-Randzustände in einem magnetooptischen photonischen Kristall. Rechtsman et al. (Nature, 2013) bauten eine Floquet-Version aus helikalen Wellenleitern. Es folgten topologische Isolatorlaser (Bandres et al., Science, 2018), und Ozawa et al. (Rev. Mod. Phys., 2019) geben einen Überblick über das Gebiet. Neuere Arbeiten, darunter Valley-Hall-Photonenkristalle, die kein Magnetfeld brauchen, tragen die Idee zu On-Chip-Wellenleitern im Telekom- und Terahertzbereich. Probier, $M$ über den kritischen Wert zu erhöhen: $C$ fällt auf 0, die Randzustände lösen sich von den Bändern, und das Licht kommt nicht mehr um die Kerbe herum.'
+meanings:
+- komplexe Feldamplitude im Resonator $i$ der Flocke
+- Kopplungen $t_1$, $t_2 e^{-i\nu_{ij}\phi}$ und Verstimmung $\pm M$ plus Unordnung
+- $k\cdot\delta_n$ ist ein einsum über die Koordinate $i$, für jedes $k$ auf dem Gitter; $\delta_n$, $b_n$ sind Bindungsvektoren
+- 'wiederholtes $\mu$ ⇒ summiert: der Bloch-Hamiltonoperator an jedem $k$'
+- Eigenvektor des unteren Bandes (seine Phase ist beliebig)
+- 'wiederholtes $a$ ⇒ summiert: Link-Variable zwischen benachbarten $k$-Punkten'
+- 'Phase der Schleife aus vier Links: Berry-Fluss, eichinvariant'
+- 'wiederholtes $a, b, c$ ⇒ summiert: kontinuierliche Berry-Krümmung, Ableitungen per Autograd'
+- $e^{-iHt}\psi_0$ aus einem eigh pro Gitter (topologisch und trivial)
+labels:
+  t2: Kopplung zu übernächsten Nachbarn $t_2$
+  mass: Untergitter-Verstimmung $M$
+  disorder: Stärke der zufälligen Verstimmung $W$
+  defect_radius: Kerbenradius $R$

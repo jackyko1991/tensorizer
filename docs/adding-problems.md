@@ -68,6 +68,18 @@ Take the titles from the article's Wikidata sitelinks (`en`, `zh`, `fr`, `de`, `
 without an article). The app links to the reader's language when it exists and to English otherwise. The file lives outside
 the problem folder, so editing it never forces a re-render.
 
+## Paper links
+
+For a problem built on specific research, link the key papers next to the Wikipedia link:
+
+```bash
+pixi run python scripts/papers.py add <category>/<slug> 10.1038/s41586-021-03819-2 2010.08895   # DOIs or arXiv ids
+pixi run python scripts/papers.py check   # re-verify every stored link
+```
+
+The script looks each one up on Crossref or arXiv and stores the label (first author, year, venue) and the title
+from that record in `content/papers.json`, so never type citations by hand.
+
 ## Tests
 
 Add physics checks to `tests/test_physics_<category>.py` that compare against known results: conservation laws, analytic solutions, limits and symmetries. `tests/test_smoke.py` already checks that every problem follows the convention and renders.

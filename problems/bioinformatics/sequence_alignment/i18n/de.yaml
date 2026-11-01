@@ -1,0 +1,21 @@
+source_hash: b944848791a5
+title: Sequenzalignment als Wellenfront von Tensor-Updates
+summary: Needleman–Wunsch- (global) und Smith–Waterman-Alignment (lokal) von DNA-Sequenzen per dynamischer Programmierung. Jede Zelle der Tabelle braucht nur ihren linken, oberen und diagonalen Nachbarn, sodass eine ganze Antidiagonale $i + j = d$ in einem Tensor-Update gefüllt wird, für einen Batch von Sequenzpaaren auf einmal. Sieh zu, wie die Wellenfront über die Tabelle läuft und dann das Traceback das optimale Alignment abliest.
+notes: 'Das globale Alignment zwingt beide Sequenzen, von Ende zu Ende aligniert zu werden; das lokale Alignment fügt die Option 0 hinzu, sodass ein schlechter Abschnitt einfach wegfällt und das bestbewertete Stück irgendwo gemeldet wird (hier ein in zufälligen Hintergrund gesetztes Motiv). Das Traceback läuft von der Endzelle zurück, fragt bei jedem Schritt, welche der drei Optionen den gespeicherten Wert erzeugt hat, und wechselt innerhalb einer Lücke zwischen den Tabellen $H$, $E$, $F$. Die Kosten sind weiterhin $O(nm)$ Zellen, aber nur $n + m - 1$ sequenzielle Schritte: So arbeiten GPU- und SIMD-Aligner mit dieser Antidiagonal-Parallelität. Probier eine höhere Mutationsrate oder $g_o > g_e$, um wenige lange Lücken gegenüber vielen kurzen zu bevorzugen. Proteine verwenden statt $W$ eine $20\times20$-Matrix wie BLOSUM62; sonst ändert sich nichts.'
+meanings:
+- Buchstabe $i$ der ersten und $j$ der zweiten Sequenz des Paares $b$, One-hot über A, C, G, T
+- 'Score für das Alignieren von Buchstabe $\alpha$ mit $\beta$: Match auf der Diagonale, Mismatch sonst'
+- 'wiederholtes $\alpha, \beta$ ⇒ summiert: der Score jeder möglichen Buchstabenpaarung'
+- eine Lücke aus $k$ Buchstaben kostet $g_o + (k-1)\,g_e$ (affin); $g_o = g_e$ ist eine lineare Lücke
+- alle Zellen auf der Antidiagonale $d$; sie hängen nur von den Diagonalen $d-1$ und $d-2$ ab
+- 'ein Tensor-Update pro Diagonale: bester Score, der mit einem Match, einer Lücke in $a$ oder einer Lücke in $c$ endet'
+- globaler Score in der Ecke, lokaler Score in der besten Zelle; Padding jenseits jeder Länge wird ignoriert
+labels:
+  mode: Alignment (global = Needleman–Wunsch, lokal = Smith–Waterman)
+  length: Sequenzlänge $L$
+  n_pairs: Paare im Batch $B$
+  mutation: Mutationsrate pro Position
+  match: Match-Score
+  mismatch: Mismatch-Score
+  gap_open: Lückeneröffnung $g_o$
+  gap_extend: Lückenverlängerung $g_e$

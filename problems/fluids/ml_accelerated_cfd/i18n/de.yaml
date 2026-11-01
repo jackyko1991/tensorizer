@@ -1,0 +1,18 @@
+source_hash: e6424f8df209
+title: Durch maschinelles Lernen beschleunigte CFD
+summary: Ein einfacher Finite-Volumen-Löser auf einem Gitter, das 16-mal gröber als die Referenz ist, verschmiert die Schocks der viskosen Burgers-Gleichung. Ein winziges CNN lernt eine Korrektur der Flächenflüsse, trainiert durch Backpropagation durch eine ausgerollte grobe Simulation. Bei Anfangsbedingungen, die es nie gesehen hat, folgt der gelernte Löser der feinen Lösung bei gleicher grober Auflösung um ein Mehrfaches genauer und erhält dabei $\int u\,dx$ exakt.
+notes: 'Einheiten: Das Gebiet ist $[0, 2\pi)$, periodisch. Die Referenz ist dasselbe Finite-Volumen-Verfahren auf 512 Zellen, mit Heun-Zeitschritten, die zur Stabilität in Unterschritte aufgeteilt werden. Das Training verwendet 32 zufällige glatte Wellen, der Test 8 andere aus einem anderen Seed, die 50 % länger laufen ($t = 3$) als die Trainingsdaten. Bei jedem Adam-Schritt startet der gelernte Löser zu zufälligen Zeiten vom wahren groben Zustand, läuft $S$ Schritte und wird für das Abdriften von der gemittelten Referenz bestraft. Die Gradienten fließen durch jeden Zeitschritt zurück, sodass das Netz Korrekturen lernt, die gut bleiben, wenn sie ihre eigene Ausgabe als Eingabe bekommen. Zwei Designentscheidungen halten es ehrlich: $\delta F$ geht als Fluss ein, sodass $\sum_i u_i$ bis auf Rundungsfehler erhalten bleibt, und die letzte Schicht startet bei null, sodass das Training vom einfachen Löser ausgeht. Die Idee folgt Bar-Sinai, Hoyer, Hickey & Brenner (PNAS, 2019), die datengetriebene
+  Diskretisierungen genau dieser Art von Gleichung lernten, sowie Kochkov, Smith, Alieva, Wang, Brenner & Hoyer (PNAS, 2021). Sie lernten Interpolationskoeffizienten in einem 2D-Navier–Stokes-Löser und berichteten von 8–10-mal gröberen Gittern bei gleicher Genauigkeit, grob 40–80-mal schneller. Dieses Spielzeug zeigt den Mechanismus, nicht diese Beschleunigungen. Eine gelernte Korrektur kann bei Eingaben weit weg von ihren Trainingsdaten versagen. Probier weniger Trainingsschritte, ein kürzeres Ausrollen oder eine Viskosität, auf die das Netz nicht trainiert wurde.'
+meanings:
+- Zellmittelwert in der groben Zelle $i$ für die Trajektorie $b$ (periodisch)
+- $\tfrac14(u_i^2 + u_{i+1}^2) - \tfrac12\alpha(u_{i+1} - u_i)$, $\alpha = \max(\lvert u_i\rvert, \lvert u_{i+1}\rvert)$; $u_{i+1}$ ist roll(u, -1)
+- was aus einer Zelle herausfließt, fließt in die nächste hinein ⇒ $\sum_i u_i$ erhalten
+- 'wiederholtes $k$ ⇒ summiert: eine 5-Zellen-Schablone, periodisches Padding'
+- gelernte Flusskorrektur aus drei Faltungen (zu Beginn null)
+- feine Lösung, gemittelt über die $f = N_f/N_c$ feinen Zellen in jeder groben Zelle
+- Autograd durch alle $S$ ausgerollten Zeitschritte des Lösers
+labels:
+  nu: Viskosität $\nu$
+  n_coarse: Grobe Zellen $N_c$
+  train_iters: Trainingsschritte
+  unroll: Ausgerollte Schritte $S$

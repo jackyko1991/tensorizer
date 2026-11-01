@@ -1,0 +1,19 @@
+source_hash: 8522595ab746
+title: Efecto Mpemba markoviano
+summary: ¿Puede el agua caliente congelarse antes que el agua tibia? Para una partícula que salta en un potencial de red con tasas de Metropolis la respuesta es sí. La ecuación maestra $\dot p = W p$ se diagonaliza una vez, cada temperatura inicial se proyecta sobre el modo más lento con un solo einsum, y un arranque caliente cuya amplitud del modo lento $a_2$ se anula relaja exponencialmente más rápido que uno más frío.
+notes: 'Unidades: $k_B = 1$ y la tasa de intento es 1. El baño está a $T_b$ y el sistema parte del equilibrio a una temperatura $T_0$. Si los saltos cumplen el balance detallado, $W_{ij}\pi_j = W_{ji}\pi_i$, $W$ es semejante a una matriz simétrica, así que todos sus autovalores son reales y $\le 0$, y su estado estacionario es la distribución de Boltzmann $\pi$. Pasado un tiempo corto solo queda el modo más lento, $p - \pi \approx a_2\, e^{\lambda_2 t}\, r_2$, así que el arranque con el $\lvert a_2\rvert$ más pequeño acaba más cerca del equilibrio, sea cual sea su temperatura. Como $a_2(T_0)$ no tiene por qué ser monótona, un arranque más caliente puede adelantar a uno más templado (el efecto Mpemba markoviano). En la $T^*$ especial donde $a_2 = 0$ el modo lento desaparece por completo, y la relajación avanza a la tasa más rápida $\lambda_3$ (el efecto fuerte). En este potencial la forma surge de una competencia entre cuencas. A $T_0$ baja, el pozo profundo y estrecho concentra la mayor
+  parte de la probabilidad. A $T_0$ intermedia gana por entropía el pozo ancho y poco profundo. A $T_0$ alta se llena la meseta elevada, así que la proporción de la cuenca izquierda vuelve a subir y supera su valor de equilibrio en $T^*$. La teoría es de Lu & Raz (PNAS, 2017). Kumar & Bechhoefer (Nature, 2020) observaron el efecto, incluida la versión fuerte, con una bola coloidal en un potencial de doble pozo moldeado ópticamente. Kumar, Chétrite & Bechhoefer (PNAS, 2022) observaron después el efecto inverso (calentamiento anómalo). Recientemente se han descrito análogos cuánticos en experimentos con iones atrapados. Esta red es una versión de juguete de esos sistemas. Prueba a subir $T_b$: por encima de aproximadamente $1.4$ el cruce desaparece.'
+meanings:
+- 'energía en escalera del sitio $i$: meseta, pozo profundo y estrecho, barrera, pozo ancho y poco profundo'
+- 1 para vecinos más cercanos en la cadena, 0 en otro caso
+- tasa de un salto $j \to i$; la diagonal hace que cada columna sume cero
+- estado de Boltzmann a cada temperatura inicial $T_{0,b}$, un lote de arranques
+- '$j$ repetido ⇒ sumado: la ecuación maestra para todos los arranques a la vez'
+- eigh de la matriz simetrizada $\Pi^{-1/2} W \Pi^{1/2}$; $\lambda_1 = 0$ es el equilibrio, $\lambda_2$ el decaimiento más lento
+- '$i$ repetido ⇒ sumado: solapamiento de cada arranque con cada modo'
+- '$k$ repetido ⇒ sumado: solución exacta en cada instante'
+- distancia de Kullback–Leibler al equilibrio, $\sum_i p_i \ln(p_i/\pi_i)$
+labels:
+  T_bath: Temperatura del baño $T_b$
+  barrier: Altura de la barrera $U_\text{bar}$
+  T_hot: Arranque caliente $T_\text{hot}$

@@ -1,0 +1,22 @@
+source_hash: 95b6effde453
+title: E(n)-äquivariantes Graph-Neuronales-Netz für Teilchendynamik
+summary: Ein winziges E(n)-äquivariantes Graph-Neuronales-Netz (EGNN) lernt, ein 3D-System geladener Teilchen in der Zeit voranzuschreiten. Seine Nachrichten hängen nur von den Abständen $|\mathbf x_i - \mathbf x_j|^2$ ab, und seine Koordinaten-Updates zeigen entlang $\mathbf x_i - \mathbf x_j$, sodass eine Drehung der Eingabe die Vorhersage exakt mitdreht; ein einfaches MLP auf denselben Daten muss das lernen und schafft es nicht.
+notes: 'Das wahre System: $N$ Teilchen der Masse 1 mit Ladungen $c_i = \pm 1$, geglätteten Coulomb-Kräften und schwachen Federn $k_s$ zwischen jedem Paar (damit die Wolke zusammenbleibt), integriert mit RK4 bei einer Schrittweite von $\Delta t / 10$. Beide Netze sehen dieselben Paare (Zustand bei $t$, Zustand bei $t + \Delta t$) aus einigen zufälligen Systemen und werden mit Adam auf den mittleren quadratischen Fehler trainiert; zurückgehaltene Systeme liefern den Testfehler. Das EGNN (Satorras, Hoogeboom & Welling, "E(n) Equivariant Graph Neural Networks", ICML 2021) bildet für jedes Paar eine Nachricht $m_{ij}$ nur aus invarianten Eingaben (Knotenmerkmale, $d_{ij} = |\mathbf x_i - \mathbf x_j|^2$ und das Ladungsprodukt) und verschiebt dann jedes Teilchen entlang der Richtungen $\mathbf x_i - \mathbf x_j$ mit gelernten skalaren Gewichten. Beachte, dass das genau die Form des wahren Kraftgesetzes ist, $\ddot{\mathbf x}_i = \sum_j w_{ij}(\mathbf x_i - \mathbf x_j)$: Die Symmetrie ist in die
+  Architektur eingebaut, statt aus Daten gelernt zu werden. Der Test dreht und verschiebt eine Testeingabe um ein zufälliges $R$ und $\mathbf s$: Für das EGNN gilt $f(R\mathbf x + \mathbf s) = Rf(\mathbf x) + \mathbf s$ bis auf float32-Rundungsfehler (etwa $10^{-6}$), während beim MLP, das die abgeflachten Koordinaten sieht, die Abweichung von der Größenordnung der Vorhersage selbst ist. Mit wenigen Trainingssystemen erreicht das EGNN einen niedrigeren Testfehler mit weit weniger Gewichten. Beim Rollout bekommt jedes Modell seine eigenen Vorhersagen als Eingabe; die Fehler wachsen bei beiden, weil das geladene System chaotisch ist, aber das EGNN bleibt länger nah dran. Vereinfachungen: drei Schichten der Breite 32, die Geschwindigkeitsvariante des EGNN mit $\tau = \Delta t / L$ (unsere Wahl), Full-Batch-Training und ein fester Seed. Dieselbe Idee des äquivarianten Message Passing liegt maschinell gelernten interatomaren Potentialen wie NequIP (Batzner et al., Nature Communications 2022)
+  und äquivarianten Diffusionsmodellen zugrunde, die 3D-Moleküle erzeugen (Hoogeboom et al., ICML 2022). Probier weniger Trainingssysteme: Der Abstand zwischen den beiden Netzen wächst.'
+meanings:
+- Position und Geschwindigkeit des Teilchens $i$ im System $b$, kartesische Komponente $a$
+- alle Paarabstände per Broadcasting
+- 'wiederholtes $a$ ⇒ summiert: quadrierte Abstände, die einzige geometrische Eingabe der MLPs (rotationsinvariant)'
+- 'wahre Kraft: wiederholtes $j$ ⇒ summiert über Partner (Coulomb plus Federn)'
+- Nachricht auf jedem Paar, $H = 32$ Merkmale
+- 'Koordinaten-Update: wiederholtes $j$ ⇒ summiert; ein Vektor, der nur aus $\mathbf x_i - \mathbf x_j$ gebildet ist und sich daher mit der Eingabe dreht'
+- 'ein invarianter Skalar mal ein Vektor: immer noch äquivariant'
+- zufällige Drehung für den Äquivarianztest
+labels:
+  n_particles: Teilchen $N$
+  n_train: Trainingssysteme
+  dt: Modell-Zeitschritt $\Delta t$
+  n_iter: Trainingsiterationen
+  lr: Adam-Lernrate
+  rollout_steps: Rollout-Schritte

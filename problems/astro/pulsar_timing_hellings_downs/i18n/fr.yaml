@@ -1,0 +1,26 @@
+source_hash: 890ee320b06e
+title: Réseau de chronométrage de pulsars et courbe de Hellings–Downs
+summary: Une mer d'ondes gravitationnelles nanohertz étire doucement les trajets entre la Terre et de nombreux pulsars millisecondes. Un fond isotrope, construit à partir d'un millier d'ondes planes aléatoires, décale les tops de chaque pulsar via le diagramme d'antenne $F^A = \tfrac12 \hat p^i \hat p^j e^A_{ij}/(1 + \hat\Omega\cdot\hat p)$, un seul einsum sur les tenseurs de polarisation. Corréler toutes les paires de résidus de chronométrage et les regrouper par angle redonne la courbe de Hellings–Downs, l'empreinte quadrupolaire dont les réseaux de chronométrage de pulsars ont annoncé des indices en 2023.
+notes: 'Une onde gravitationnelle modifie le temps de trajet de la lumière entre un pulsar et la Terre, si bien que les instants d''arrivée des impulsions dérivent de dizaines à centaines de nanosecondes sur des années. Pour une seule onde, l''effet dépend de la géométrie via $F^{+}$ et $F^{\times}$ ; pour un fond isotrope, la moyenne sur les directions laisse une corrélation qui ne dépend que de l''angle entre les deux pulsars. Hellings et Downs (ApJL 265, L39, 1983) l''ont calculée : des pulsars proches sur le ciel sont corrélés à $\tfrac12$ (l''autre moitié de la puissance de chaque pulsar est son propre terme pulsar, non corrélé), des paires séparées d''environ $82.5^\circ$ sont légèrement anticorrélées, et des pulsars opposés sont de nouveau positivement corrélés à $\tfrac14$. La forme quadrupolaire est la signature d''une onde transverse de spin 2 : une erreur d''horloge donnerait un monopôle ($\Gamma = 1$) et une erreur d''éphéméride du Système solaire un dipôle ($\Gamma = \cos\zeta$)
+  ; les deux sont ajustés pour comparaison. La page vérifie la normalisation de deux façons : la formule contre une intégrale de Monte Carlo sur le ciel $\tfrac{3}{8\pi}\oint \sum_A F^A_aF^A_b\,d\Omega$, et la moyenne du diagramme d''antenne $\langle\sum_A (F^A)^2\rangle = 1/3$. Un seul ciel se disperse nettement autour de la courbe : avec seulement quelques fréquences dominantes, cette « variance cosmique » est réelle et touche aussi les réseaux réels ; la moyenne sur de nombreux ciels simulés montre la convergence. L''amplitude ajustée est diluée en dessous de 1 par le bruit blanc. Contexte de recherche : en juin 2023, la collaboration NANOGrav (jeu de données sur 15 ans, Agazie et al., ApJL 951, L8, 2023) a annoncé des indices d''un fond d''ondes gravitationnelles nanohertz avec des corrélations de Hellings–Downs (environ 3σ pour les corrélations, approximatif), en même temps que les PTA européen et indien (EPTA + InPTA, A&A 2023), le Parkes PTA (Reardon et al., ApJL 951, L6, 2023) et
+  le PTA chinois. La source probable est une population de binaires de trous noirs supermassifs, qui donne le spectre $h_c \propto f^{-2/3}$ utilisé ici. Simplifications : les résidus ne sont pas ajustés pour le ralentissement de chaque pulsar (seule la moyenne est retirée), bruit blanc uniquement, pas de bruit rouge propre à chaque pulsar, et une simple corrélation croisée normalisée au lieu de la statistique optimale ou d''une analyse bayésienne complète.'
+meanings:
+- vecteur unitaire vers le pulsar $a$, uniforme sur le ciel
+- direction de propagation et angle de polarisation de l'onde $m$
+- tenseurs $+$ et $\times$ construits à partir du repère transverse $m, n \perp \hat\Omega$
+- '$i$ et $j$ sommés : l''étirement de la ligne Terre–pulsar'
+- diagramme d'antenne ; la moyenne sur le ciel de $\sum_A (F^A)^2$ vaut exactement $1/3$
+- déphasage du terme pulsar, $\omega L_a(1 + \hat\Omega\cdot\hat p_a)/c$
+- '$m$ et $A$ sommés : résidu de chronométrage du pulsar $a$ à l''époque $t$'
+- '$t$ sommé : corrélation de chaque paire, normalisée par l''autopuissance moyenne'
+- corrélation attendue, $\Gamma(0^+) = \tfrac12$, minimum $\approx -0.152$ à $\zeta \approx 82.5^\circ$
+labels:
+  n_pulsars: Pulsars $N$
+  n_realisations: Ciels simulés $K$
+  n_waves: Ondes planes par ciel $M$
+  n_freq: Canaux de fréquence $j/T_{span}$
+  span: Durée d'observation $T_{span}$
+  n_times: Époques par pulsar
+  noise: Bruit blanc $\sigma$ / rms des OG
+  n_bins: Classes angulaires
+  seed: Graine aléatoire

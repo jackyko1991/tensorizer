@@ -1,0 +1,21 @@
+source_hash: b05c63a03eb9
+title: DT 熱點的慣性核融合點火
+summary: 內爆的氘–氚靶丸中心熱點的零維模型。來自 $\mathrm{D + T \to {}^4He + n}$ 的阿爾法粒子加熱它，制動輻射與膨脹使它冷卻，而逸入冷殼層的熱則助長燃燒。整個起始溫度與面密度 $(T_0, \rho R_0)$ 網格以單一批次積分：在 Lawson 型邊界之上熱點失控並燃燒，之下則熄滅。
+notes: 慣性約束以極快速度壓縮數百微克的 DT，使其在飛散之前就燃燒。當熱點產生的阿爾法粒子加熱它的速度快於它冷卻的速度時，熱點便點火。兩個數字決定這一點：溫度，因為 $\langle\sigma v\rangle$ 在數十 keV 以內急遽上升；以及面密度 $\rho R$，因為較厚的熱點能阻止自身的阿爾法粒子（10 keV 附近阿爾法射程約 0.3 g/cm²），並能更久地抵抗膨脹而維持聚集。僅考慮制動輻射即可定出理想點火溫度，約 4.3 keV，此時 $\tfrac14\langle\sigma v\rangle E_\alpha = C_B\sqrt T$。虛線是瞬時平衡，即 Lawson 判據的 ICF 形式；陰影區是完整積分所得的結果，它也計入燃燒向冷殼層的傳播。提高損失倍率 $L$，邊界便移向更大的 $\rho R$ 與更高的 $T$。研究背景：2022 年 12 月 5 日，國家點火設施（National Ignition Facility）報告了首次靶增益大於 1 的實驗室核融合實驗，由 2.05 MJ 照射到靶上的雷射光產生約 3.15 MJ 核融合能量（概略值；Indirect Drive ICF Collaboration, Phys. Rev. Lett. 132, 065102, 2024），此前已達成燃燒電漿（Zylstra et al., Nature 601, 542, 2022），以及 2021 年 8 月一次超過點火 Lawson 判據的 1.3 MJ 實驗（Phys. Rev. Lett. 129, 075001, 2022）。靶增益只計入抵達靶的雷射能量；驅動雷射所用的電能要大得多。簡化：固定密度的均勻零維熱點（因此燃耗比例被高估——除了 PdV 損失項外，沒有任何機制使其解體）、示意性的阿爾法沉積公式、近似的 Spitzer 熱傳導（$\ln\Lambda \approx 10$）、無輻射捕獲、無燒蝕層材料混入，且離子與電子溫度相等。
+meanings:
+- 每個網格點 $b = i\,n_r + j$ 是一個熱點；狀態為 $(\ln T, \ln\rho R, \varphi)$
+- Bosch–Hale DT 反應率，在 10 keV 時 $\approx 1.14\times10^{-22}$ m³/s，在 65 keV 附近達峰值 $\approx 9\times10^{-22}$
+- 3.5 MeV 阿爾法能量中在熱點內被阻止的比例
+- 制動輻射，$C_B = 5.34\times10^{-37}$ W m³ keV$^{-1/2}$
+- 以聲速膨脹之熱點所做的 PdV 功
+- 流入殼層的 Spitzer 熱傳導；回收為新的熱質量（燃燒傳播）
+- 所有熱點同時計算的右端項，以 RK4 步進
+- 自加熱等於損失處的 Lawson 型曲線，以批次二分法求得
+labels:
+  density: 熱點密度 $\rho$
+  loss: 損失倍率 $L$（制動輻射 + PdV）
+  rho_r_max: 可用燃料總 $\rho R$
+  t_end: 模擬時間
+  n_grid: 每軸網格點數
+  t_min: 最低 $T_0$
+  t_max_init: 最高 $T_0$

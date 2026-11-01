@@ -1,0 +1,26 @@
+source_hash: 890ee320b06e
+title: Pulsar-Timing-Array und die Hellings–Downs-Kurve
+summary: Ein Meer von Nanohertz-Gravitationswellen dehnt sanft die Wege zwischen der Erde und vielen Millisekundenpulsaren. Ein isotroper Hintergrund, aufgebaut aus tausend zufälligen ebenen Wellen, verschiebt die Ticks jedes Pulsars über das Antennenmuster $F^A = \tfrac12 \hat p^i \hat p^j e^A_{ij}/(1 + \hat\Omega\cdot\hat p)$, ein einziges einsum über Polarisationstensoren. Korreliert man jedes Paar von Timing-Residuen und mittelt in Winkelklassen, erhält man die Hellings–Downs-Kurve zurück, den Quadrupol-Fingerabdruck, für den Pulsar-Timing-Arrays 2023 Hinweise berichtet haben.
+notes: 'Eine Gravitationswelle ändert die Lichtlaufzeit zwischen einem Pulsar und der Erde, sodass die Ankunftszeiten der Pulse über Jahre um Dutzende bis Hunderte Nanosekunden driften. Für eine einzelne Welle hängt der Effekt über $F^{+}$ und $F^{\times}$ von der Geometrie ab; für einen isotropen Hintergrund bleibt nach Mittelung über die Richtungen eine Korrelation, die nur vom Winkel zwischen den beiden Pulsaren abhängt. Hellings und Downs (ApJL 265, L39, 1983) haben sie berechnet: Am Himmel nahe Pulsare sind mit $\tfrac12$ korreliert (die andere Hälfte der Leistung jedes Pulsars ist sein eigener, unkorrelierter Pulsarterm), Paare mit etwa $82.5^\circ$ Abstand sind leicht antikorreliert, und gegenüberliegende Pulsare sind wieder positiv mit $\tfrac14$ korreliert. Die Quadrupolform ist die Signatur einer transversalen Spin-2-Welle: Ein Uhrenfehler gäbe einen Monopol ($\Gamma = 1$) und ein Fehler in der Ephemeride des Sonnensystems einen Dipol ($\Gamma = \cos\zeta$); beide werden zum Vergleich
+  angepasst. Die Seite prüft die Normierung auf zwei Arten: die Formel gegen ein Monte-Carlo-Himmelsintegral $\tfrac{3}{8\pi}\oint \sum_A F^A_aF^A_b\,d\Omega$ und den Mittelwert des Antennenmusters $\langle\sum_A (F^A)^2\rangle = 1/3$. Ein einzelner Himmel streut merklich um die Kurve: Mit nur wenigen dominanten Frequenzen ist diese "kosmische Varianz" real und betrifft auch echte Arrays; die Mittelung über viele simulierte Himmel zeigt die Konvergenz. Die angepasste Amplitude wird durch weißes Rauschen unter 1 verdünnt. Forschungskontext: Im Juni 2023 berichtete die NANOGrav Collaboration (15-Jahres-Datensatz, Agazie et al., ApJL 951, L8, 2023) Hinweise auf einen Nanohertz-Gravitationswellenhintergrund mit Hellings–Downs-Korrelationen (grob 3σ für die Korrelationen, näherungsweise), zusammen mit den europäischen und indischen PTAs (EPTA + InPTA, A&A 2023), dem Parkes PTA (Reardon et al., ApJL 951, L6, 2023) und dem Chinese PTA. Die wahrscheinliche Quelle ist eine Population supermassereicher
+  Schwarzer-Loch-Doppelsysteme, die das hier verwendete Spektrum $h_c \propto f^{-2/3}$ liefert. Vereinfachungen: Die Residuen werden nicht um das Spin-down jedes Pulsars bereinigt (nur der Mittelwert wird abgezogen), nur weißes Rauschen, kein pulsarspezifisches rotes Rauschen und eine einfache normierte Kreuzkorrelation statt der optimalen Statistik oder einer vollständigen Bayes-Analyse.'
+meanings:
+- Einheitsvektor zum Pulsar $a$, gleichverteilt am Himmel
+- Ausbreitungsrichtung und Polarisationswinkel der Welle $m$
+- $+$- und $\times$-Tensoren, gebildet aus dem transversalen Dreibein $m, n \perp \hat\Omega$
+- '$i$ und $j$ summiert: die Dehnung der Linie Erde–Pulsar'
+- Antennenmuster; das Himmelsmittel von $\sum_A (F^A)^2$ ist genau $1/3$
+- Phasenverzögerung des Pulsarterms, $\omega L_a(1 + \hat\Omega\cdot\hat p_a)/c$
+- '$m$ und $A$ summiert: Timing-Residuum des Pulsars $a$ zur Epoche $t$'
+- '$t$ summiert: Korrelation jedes Paares, normiert auf die mittlere Autoleistung'
+- erwartete Korrelation, $\Gamma(0^+) = \tfrac12$, Minimum $\approx -0.152$ bei $\zeta \approx 82.5^\circ$
+labels:
+  n_pulsars: Pulsare $N$
+  n_realisations: Simulierte Himmel $K$
+  n_waves: Ebene Wellen pro Himmel $M$
+  n_freq: Frequenzklassen $j/T_{span}$
+  span: Beobachtungsdauer $T_{span}$
+  n_times: Epochen pro Pulsar
+  noise: Weißes Rauschen $\sigma$ / GW-Effektivwert
+  n_bins: Winkelklassen
+  seed: Zufalls-Seed

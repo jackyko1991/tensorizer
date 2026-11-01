@@ -1,0 +1,20 @@
+source_hash: b20a6dde0710
+title: Photonique topologique sur un réseau de Haldane
+summary: 'Un réseau en nid d''abeilles de résonateurs optiques couplés, avec des couplages complexes entre seconds voisins : le modèle de Haldane photonique. L''hamiltonien de Bloch $2\times 2$ sur toute une grille de $k$ donne le nombre de Chern par la méthode des liens de Fukui–Hatsugai–Suzuki (einsum sur les variables de lien). Un ruban zigzag montre des états de bord traversant la bande interdite, et la lumière injectée au bord d''un flocon fini contourne une encoche dans un seul sens, alors que dans un réseau trivial elle ne passe pas.'
+notes: 'Unités : le couplage $t_1 = 1$ et l''espacement des résonateurs vaut 1. $E$ est le désaccord par rapport à la fréquence de résonance nue, et dans un réseau de guides d''onde le temps $t$ devient la distance de propagation. La phase est fixée à $\phi = \pi/2$. Le réseau est topologique, avec $C = \pm1$, quand $\lvert M\rvert < 3\sqrt3\,t_2\lvert\sin\phi\rvert$ ; le réseau de comparaison utilise une masse double et a $C = 0$. La méthode de Fukui–Hatsugai–Suzuki (J. Phys. Soc. Jpn., 2005) donne un entier exact même sur une grille grossière. La correspondance volume-bord promet alors $\lvert C\rvert$ canaux de bord unidirectionnels. La lumière injectée est une tache près du bord inférieur, filtrée aux fréquences situées dans la bande interdite du volume. Elle contourne l''encoche, car il n''existe aucun état se propageant en sens inverse dans lequel elle pourrait diffuser. Dans le réseau trivial, la même lumière se répand simplement dans le volume. Le modèle est celui de Haldane (PRL,
+  1988). Haldane & Raghu (PRL, 2008) en ont proposé la version photonique, et Wang, Chong, Joannopoulos & Soljačić (Nature, 2009) ont observé des états de bord micro-ondes unidirectionnels dans un cristal photonique magnéto-optique. Rechtsman et al. (Nature, 2013) en ont construit une version de Floquet à partir de guides d''onde hélicoïdaux. Les lasers à isolant topologique ont suivi (Bandres et al., Science, 2018), et Ozawa et al. (Rev. Mod. Phys., 2019) passent le domaine en revue. Des travaux plus récents, dont des cristaux photoniques à effet Hall de vallée qui ne nécessitent pas de champ magnétique, portent l''idée vers des guides d''onde sur puce aux fréquences télécom et térahertz. Essayez d''augmenter $M$ au-delà de la valeur critique : $C$ tombe à 0, les états de bord se détachent des bandes, et la lumière ne contourne plus l''encoche.'
+meanings:
+- amplitude complexe du champ dans le résonateur $i$ du flocon
+- couplages $t_1$, $t_2 e^{-i\nu_{ij}\phi}$ et désaccord $\pm M$ plus désordre
+- $k\cdot\delta_n$ est un einsum sur la coordonnée $i$, pour chaque $k$ de la grille ; $\delta_n$, $b_n$ sont des vecteurs de liaison
+- '$\mu$ répété ⇒ sommé : l''hamiltonien de Bloch en chaque $k$'
+- vecteur propre de la bande inférieure (sa phase est arbitraire)
+- '$a$ répété ⇒ sommé : variable de lien entre points $k$ voisins'
+- 'phase de la boucle de quatre liens : flux de Berry, invariant de jauge'
+- '$a, b, c$ répétés ⇒ sommés : courbure de Berry continue, dérivées par autograd'
+- $e^{-iHt}\psi_0$ à partir d'un seul eigh par réseau (topologique et trivial)
+labels:
+  t2: Couplage entre seconds voisins $t_2$
+  mass: Désaccord de sous-réseau $M$
+  disorder: Intensité du désaccord aléatoire $W$
+  defect_radius: Rayon de l'encoche $R$

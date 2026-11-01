@@ -5,6 +5,7 @@ python scripts/audit.py            # prints a table of problems with something m
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -19,6 +20,14 @@ CODE = ["meta.yaml", "main.py", "equation.py", "tensors.py", "solve.py", "plot.p
 
 def audit() -> list[tuple[str, list[str]]]:
     rows = []
+    content = ROOT / "content"
+    wiki, papers = (
+        {} if not f.is_file() else json.loads(f.read_text(encoding="utf-8"))
+        for f in (
+            content / "wiki.json",
+            content / "papers.json",
+        )
+    )
     for meta in sorted((ROOT / "problems").glob("*/*/meta.yaml")):
         if hidden(meta):
             continue
@@ -32,6 +41,10 @@ def audit() -> list[tuple[str, list[str]]]:
             issues.append("no rendered animation")
         if not (ROOT / "notebooks" / d.parent.name / f"{d.name}.ipynb").is_file():
             issues.append("no notebook")
+        if pid not in wiki:
+            issues.append("no Wikipedia link (content/wiki.json)")
+        if not papers.get(pid):
+            issues.append("no paper or reference (scripts/papers.py)")
         if not issues or all(f.startswith("missing") is False for f in issues):
             en = i18n.english(d) if all((d / f).is_file() for f in CODE) else None
             if en:

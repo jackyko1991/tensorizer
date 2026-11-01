@@ -1,0 +1,51 @@
+title: Quantum error correction below threshold
+category: quantum
+level: advanced
+order: 4
+summary: >
+  A bit-flip repetition code spreads one logical bit over $d$ noisy qubits and keeps measuring their parities.
+  Thousands of Monte Carlo shots run as one $(S, R, d)$ tensor, an exact minimum-weight decoder reads the
+  space–time syndrome history, and the curves for $d = 3, 5, 7, 9$ cross at the threshold: below it every
+  step $d \to d + 2$ divides the logical error rate by a factor $\Lambda > 1$, the quantity behind Google's 2024
+  below-threshold surface-code memory.
+animated: true
+vector_form: '\sigma_t = H\,x_t \oplus m_t,\qquad P_L = \sum_{k > d/2}\binom{d}{k}p^k(1-p)^{d-k}\ \text{(no readout errors)},\qquad \Lambda = \frac{\varepsilon_d}{\varepsilon_{d+2}}'
+index_form: 'x_{sti} = \bigoplus_{t''\le t} e_{st''i},\qquad \sigma_{stj} = H_{ji}\,x_{sti} + m_{stj}\ (\mathrm{mod}\ 2),\qquad D_{stj} = \sigma_{stj}\oplus\sigma_{s,t-1,j},\qquad C_t(x) = \min_y\big[C_{t-1}(y) + w\,\lvert x\oplus y\rvert\big] + w_m K_{\sigma_t x}'
+translation:
+  - {symbol: 'e_{sti},\ m_{stj}', code: 'sample_noise(S, R, d, p, q, gen, dev)', shape: '(S, R, d), (S, R, d-1)', meaning: 'data flips (probability $p$) and misread checks (probability $q$) for shot $s$, round $t$'}
+  - {symbol: 'x_{sti}', code: 'torch.cumsum(e, dim=1) % 2', shape: '(S, R, d)', meaning: 'accumulated error on data qubit $i$ after round $t$'}
+  - {symbol: 'H_{ji}', code: 'parity_check(d)', shape: '(d-1, d)', meaning: 'check $j$ compares neighbours $i = j$ and $i = j + 1$ ($Z_jZ_{j+1}$)'}
+  - {symbol: 'H_{ji}\,x_{sti}', code: "einsum('ji,sti->stj', h, x) % 2", shape: '(S, R, d-1)', meaning: 'repeated $i$ ⇒ summed: the parity each check should report'}
+  - {symbol: 'D_{stj}', code: 'detection_events(sigma)', shape: '(S, R, d-1)', meaning: 'a syndrome bit that changed: the end of an error chain in space–time'}
+  - {symbol: 'C_t(x)', code: 'relax_data_errors(cost, w, d) + w_m * K[sigma_t]', shape: '(S, 2^d)', meaning: 'cheapest history ending in error pattern $x$, $w = \ln\frac{1-p}{p}$; the min over $y$ is $d$ one-bit flips'}
+  - {symbol: '\sum_i x_{si} > d/2', code: "einsum('si->s', x) > d / 2", shape: '(S,)', meaning: 'majority vote: the optimal decoder when checks never misread'}
+  - {symbol: '\Lambda_{d/d+2}', code: 'eps[:-1] / eps[1:]', shape: '(D-1, P)', meaning: 'error suppression per round, $1 - 2P_L = (1 - 2\varepsilon)^R$'}
+notes: >
+  The code stores $\lvert 0_L\rangle = \lvert 00\ldots0\rangle$ and $\lvert 1_L\rangle = \lvert 11\ldots1\rangle$; the parity checks $Z_jZ_{j+1}$
+  reveal where neighbours disagree without revealing the logical value. In the code-capacity model (one round,
+  perfect checks) the best decoder is a majority vote and the simulated $P_L$ follows the exact binomial tail
+  (dashed), with a threshold of exactly $p = 1/2$. In the phenomenological model the checks also misread, so a
+  single syndrome cannot be trusted; the decoder looks for the fewest data flips plus misreads that explain the whole
+  $d$-round history. That is the problem minimum-weight perfect matching solves; in 1D it is solved here exactly
+  by dynamic programming over the $2^d$ error patterns (so $d \le 11$). For this model the threshold is near
+  $p \approx 10\%$ (about 10.3 % for very large $d$), and the small-$d$ crossings land close to it when each code is
+  run for $d$ rounds. Below threshold larger codes win, and $\Lambda = \varepsilon_d/\varepsilon_{d+2}$ grows as $p$ falls
+  (roughly as $p_{th}/p$); above it, adding qubits only adds more places to fail. Research context:
+  Google Quantum AI and Collaborators, Quantum error correction below the surface code threshold, Nature 638, 920
+  (2025; arXiv:2408.13687, 2024) ran distance-3, 5 and 7 surface-code memories on their Willow processor and reported
+  $\Lambda \approx 2.1$, with a distance-7 logical error of roughly 0.14 % per cycle (approximate values). Earlier steps
+  were repetition codes (Nature 595, 383, 2021) and a distance-5 surface code slightly beating distance 3 (Nature 614,
+  676, 2023). Repetition code vs surface code: the repetition code is a 1D line that corrects only bit flips ($X$
+  errors) — a phase flip ($Z$) on any qubit is a logical error, so it is not a full quantum memory. The surface code
+  is a 2D lattice with both $Z$-type and $X$-type checks and corrects both; its decoding graph is 3D (two space
+  dimensions plus time) and its thresholds are lower, about 3 % for this phenomenological noise and roughly 1 % for
+  realistic circuit noise (approximate). Simplifications: independent errors, a perfect final readout, and no
+  leakage or correlated bursts, which in real devices set a floor on the logical error rate.
+params:
+  model: {default: phenomenological, type: choice, options: [phenomenological, code_capacity], label: 'Noise model (with or without misread checks)'}
+  d_max: {default: 9, min: 5, max: 11, step: 2, type: int, label: 'Largest distance $d$ (11 is slow)'}
+  shots: {default: 10000, min: 1000, max: 50000, step: 1000, type: int, label: 'Shots per $(d, p)$ point'}
+  n_p: {default: 10, min: 4, max: 16, step: 1, type: int, label: 'Number of error rates $p$'}
+  p_min: {default: 0.02, min: 0.005, max: 0.1, step: 0.005, label: 'Smallest $p$'}
+  p_max: {default: 0.2, min: 0.1, max: 0.6, step: 0.01, label: 'Largest $p$'}
+  q_ratio: {default: 1.0, min: 0.0, max: 2.0, step: 0.1, label: 'Misread rate $q/p$'}

@@ -1,0 +1,23 @@
+source_hash: 0f2f557927c5
+title: Quantenfehlerkorrektur unterhalb der Schwelle
+summary: 'Ein Bitflip-Wiederholungscode verteilt ein logisches Bit auf $d$ verrauschte Qubits und misst fortlaufend ihre Paritäten. Tausende Monte-Carlo-Durchläufe laufen als ein $(S, R, d)$-Tensor, ein exakter Minimum-Weight-Decoder liest die Raum-Zeit-Historie der Syndrome, und die Kurven für $d = 3, 5, 7, 9$ kreuzen sich an der Schwelle: Darunter teilt jeder Schritt $d \to d + 2$ die logische Fehlerrate durch einen Faktor $\Lambda > 1$, die Größe hinter Googles Surface-Code-Speicher unterhalb der Schwelle von 2024.'
+notes: 'Der Code speichert $\lvert 0_L\rangle = \lvert 00\ldots0\rangle$ und $\lvert 1_L\rangle = \lvert 11\ldots1\rangle$; die Paritätschecks $Z_jZ_{j+1}$ zeigen, wo Nachbarn nicht übereinstimmen, ohne den logischen Wert preiszugeben. Im Code-Capacity-Modell (eine Runde, perfekte Checks) ist der beste Decoder eine Mehrheitsentscheidung, und das simulierte $P_L$ folgt dem exakten Binomialschwanz (gestrichelt), mit einer Schwelle von genau $p = 1/2$. Im phänomenologischen Modell lesen sich auch die Checks falsch, sodass man einem einzelnen Syndrom nicht trauen kann; der Decoder sucht die wenigsten Datenflips plus Fehllesungen, die die ganze Historie aus $d$ Runden erklären. Das ist das Problem, das Minimum-Weight Perfect Matching löst; in 1D wird es hier exakt per dynamischer Programmierung über die $2^d$ Fehlermuster gelöst (daher $d \le 11$). Für dieses Modell liegt die Schwelle nahe $p \approx 10\%$ (etwa 10,3 % für sehr großes $d$), und die Kreuzungen bei kleinem $d$ landen nahe daran,
+  wenn jeder Code über $d$ Runden läuft. Unterhalb der Schwelle gewinnen größere Codes, und $\Lambda = \varepsilon_d/\varepsilon_{d+2}$ wächst mit fallendem $p$ (grob wie $p_{th}/p$); oberhalb fügen zusätzliche Qubits nur weitere Stellen hinzu, an denen etwas schiefgehen kann. Forschungskontext: Google Quantum AI and Collaborators, Quantum error correction below the surface code threshold, Nature 638, 920 (2025; arXiv:2408.13687, 2024) betrieben Surface-Code-Speicher der Distanz 3, 5 und 7 auf ihrem Willow-Prozessor und berichteten $\Lambda \approx 2.1$, mit einem logischen Fehler bei Distanz 7 von grob 0,14 % pro Zyklus (Näherungswerte). Frühere Schritte waren Wiederholungscodes (Nature 595, 383, 2021) und ein Surface Code der Distanz 5, der Distanz 3 knapp schlug (Nature 614, 676, 2023). Wiederholungscode vs. Surface Code: Der Wiederholungscode ist eine 1D-Linie, die nur Bitflips ($X$-Fehler) korrigiert — ein Phasenflip ($Z$) auf irgendeinem Qubit ist ein logischer Fehler, er ist also
+  kein vollständiger Quantenspeicher. Der Surface Code ist ein 2D-Gitter mit Checks vom $Z$-Typ und vom $X$-Typ und korrigiert beides; sein Decodiergraph ist 3D (zwei Raumdimensionen plus Zeit), und seine Schwellen sind niedriger, etwa 3 % für dieses phänomenologische Rauschen und grob 1 % für realistisches Schaltkreisrauschen (näherungsweise). Vereinfachungen: unabhängige Fehler, eine perfekte abschließende Auslese und keine Leckage oder korrelierten Fehlerausbrüche, die in echten Geräten eine Untergrenze für die logische Fehlerrate setzen.'
+meanings:
+- Datenflips (Wahrscheinlichkeit $p$) und falsch gelesene Checks (Wahrscheinlichkeit $q$) für Durchlauf $s$, Runde $t$
+- akkumulierter Fehler auf Daten-Qubit $i$ nach Runde $t$
+- Check $j$ vergleicht die Nachbarn $i = j$ und $i = j + 1$ ($Z_jZ_{j+1}$)
+- 'wiederholtes $i$ ⇒ summiert: die Parität, die jeder Check melden sollte'
+- 'ein Syndrombit, das sich geändert hat: das Ende einer Fehlerkette in der Raumzeit'
+- billigste Historie, die im Fehlermuster $x$ endet, $w = \ln\frac{1-p}{p}$; das Minimum über $y$ sind $d$ Ein-Bit-Flips
+- 'Mehrheitsentscheidung: der optimale Decoder, wenn Checks sich nie falsch lesen'
+- Fehlerunterdrückung pro Runde, $1 - 2P_L = (1 - 2\varepsilon)^R$
+labels:
+  model: Rauschmodell (mit oder ohne falsch gelesene Checks)
+  d_max: Größte Distanz $d$ (11 ist langsam)
+  shots: Durchläufe pro Punkt $(d, p)$
+  n_p: Anzahl der Fehlerraten $p$
+  p_min: Kleinstes $p$
+  p_max: Größtes $p$
+  q_ratio: Fehllese-Rate $q/p$

@@ -1,0 +1,24 @@
+source_hash: 8da6dcc23206
+title: 'Positionsgewichtsmatrix: Motivlogo und Scan'
+summary: Alignierte Bindestellen eines Transkriptionsfaktors werden zu einer $(m, 4)$-Matrix gezählt, mit einem Pseudocount in Häufigkeiten und in Log-Odds-Scores gegenüber dem Hintergrund umgewandelt. Der Informationsgehalt ergibt ein Sequenzlogo, und ein einziges einsum über entfaltete Fenster bewertet beide Stränge einer langen Sequenz auf einmal; Treffer werden mit einem p-Wert bestimmt, der aus gemischten Kopien der Sequenz gewonnen wird.
+notes: 'Eine PWM nimmt an, dass jede Position einer Bindestelle unabhängig beiträgt, sodass der Score eines Fensters eine Summe aus einer Zahl pro Buchstabe ist: ein Skalarprodukt des One-hot-Fensters mit $W$. Der Pseudocount $\beta$ verhindert, dass Buchstaben, die in wenigen Trainingsstellen nie vorkamen, einen Score von $-\infty$ bekommen; er spielt eine umso geringere Rolle, je mehr Stellen du hast. Der Informationsgehalt einer Spalte ist, wie stark das Motiv den Buchstaben dort einschränkt, von 0 Bit (alles geht) bis 2 Bit (immer derselbe Buchstabe), und das Logo stapelt die Buchstaben proportional zu $P_{ja}$. Die Stellen hier sind synthetisch: 12 bp mit einem Kern, der der TATA-Box ähnelt (Konsensus TATAWAWR, mit W = A oder T und R = A oder G), und zwei festen Buchstaben auf jeder Seite, damit das Motiv genug Bits trägt, um gefunden zu werden. Ein kurzes degeneriertes Motiv allein trägt zu wenig Information: In einer langen Sequenz erreichen zufällige Fenster so hohe Scores wie echte
+  Stellen, weshalb eine echte TATA-Box allein über ihre PWM schwer zu finden ist. Der p-Wert stammt aus dem Abtasten gemischter Kopien der Sequenz (gleiche Buchstaben, kein Motiv); bei $2(L-m+1)$ Fenstern lässt ein Schnitt bei $p$ etwa $2(L-m+1)\,p$ zufällige Treffer durch, und der kleinste auflösbare p-Wert ist $1/(1 + \#\text{null scores})$. Probier weniger Trainingsstellen, ein schwächeres Motiv oder einen lockereren Schnitt und sieh zu, wie gesetzte Stellen verloren gehen oder falsche Treffer auftauchen.'
+meanings:
+- Trainingsstelle $s$, Spalte $j$, Buchstabe $a$ ∈ (A, C, G, T)
+- 'wiederholtes $s$ ⇒ summiert: Buchstabenzählungen in jeder Spalte'
+- Häufigkeiten mit Pseudocount $\beta$; jede Zeile summiert sich zu 1, und kein Eintrag ist 0
+- 'Log-Odds gegenüber dem Hintergrund $q_a$ (Bit): > 0 bevorzugt, < 0 gemieden'
+- 'wiederholtes $a$ ⇒ summiert: Bit pro Spalte, zwischen 0 und 2 bei gleichverteiltem Hintergrund; die Logohöhe'
+- $t = 0$ Plusstrang, $t = 1$ reverses Komplement (Spalten umgekehrt, A↔T, C↔G)
+- jedes Fenster aus $m$ Buchstaben der langen Sequenz
+- 'wiederholtes $j$, $a$ ⇒ summiert: beide Stränge in einem Aufruf; derselbe Code bewertet alle Mischungen $(R, 2, L-m+1)$'
+- Anteil der Scores gemischter Sequenzen, die mindestens so hoch sind
+labels:
+  n_train: Trainingsstellen $N$
+  strength: Motivstärke (Wahrscheinlichkeit des Konsensus)
+  pseudo: Pseudocount $\beta$
+  length: Sequenzlänge $L$
+  n_sites: Gesetzte Stellen
+  log10_p: p-Wert-Schnitt $\log_{10} p$
+  shuffles: Gemischte Sequenzen $R$
+  seed: Zufalls-Seed

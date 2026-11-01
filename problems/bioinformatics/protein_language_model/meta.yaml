@@ -1,0 +1,43 @@
+title: A tiny protein language model learns contacts
+category: bioinformatics
+level: advanced
+order: 4
+summary: >
+  A two-layer transformer with einsum attention, $A_{nhij} = \mathrm{softmax}_j(Q_{nhik}K_{nhjk}/\sqrt{d_k})$, is trained
+  only to fill in masked letters of sequences from a Potts model with couplings planted on a lattice fold. Nobody tells
+  it the structure, yet its symmetrised, APC-corrected attention maps point at the planted contacts, the idea behind
+  the contact heads of protein language models.
+animated: true
+vector_form: '\mathbf A^{(h)} = \operatorname{softmax}\!\Big(\frac{(\mathbf X\mathbf W_Q^{(h)})(\mathbf X\mathbf W_K^{(h)})^{\mathsf T}}{\sqrt{d_k}}\Big),\qquad \mathbf X \leftarrow \mathbf X + \sum_h \mathbf A^{(h)}\mathbf X\mathbf W_V^{(h)}\mathbf W_O^{(h)},\qquad \mathcal L = -\!\!\sum_{i\in\text{masked}}\!\! \log p_\theta(s_i \mid \mathbf s_{\setminus\text{masked}})'
+index_form: 'A_{nhij} = \mathrm{softmax}_j\Big(\frac{X_{nic}W^Q_{hck}\;X_{njc''}W^K_{hc''k}}{\sqrt{d_k}}\Big) \qquad X_{nic} \mathrel{+}= A_{nhij}\,X_{njc''}W^V_{hc''k}\,W^O_{hkc} \qquad C_{ij} = \tfrac12\big(\bar A_{lhij} + \bar A_{lhji}\big) - \text{APC}'
+translation:
+  - {symbol: 'J_{iajb}', code: 'planted_potts(contacts, q, coupling, ...)', shape: '(L, q, L, q)', meaning: 'random coupling blocks only between residues that touch in the lattice fold; Gibbs sampling turns them into a sequence family'}
+  - {symbol: 'X_{nic}', code: "w['tok'][tokens] + w['pos']", shape: '(N, L, d)', meaning: 'token plus position embedding of letter $s_{ni}$ (masked letters use the [MASK] token)'}
+  - {symbol: 'Q_{nhik} = X_{nic}W^Q_{hck}', code: "einsum('nic,hck->nhik', X, Wq)", shape: '(N, H, L, d_k)', meaning: 'repeated $c$ ⇒ summed: queries of every head (keys and values alike)'}
+  - {symbol: 'A_{nhij}', code: "softmax(einsum('nhik,nhjk->nhij', Q, K) / sqrt(dk), -1)", shape: '(N, H, L, L)', meaning: 'repeated $k$ ⇒ summed; each row is a probability distribution over the attended positions $j$'}
+  - {symbol: 'A_{nhij}V_{nhjk}W^O_{hkc}', code: "einsum('nhik,hkc->nic', einsum('nhij,nhjk->nhik', A, V), Wo)", shape: '(N, L, d)', meaning: 'repeated $j$, then $h, k$ ⇒ summed: what each position collects from the others'}
+  - {symbol: '\mathcal L', code: 'masked_lm_loss(logits, seqs, mask)', shape: '()', meaning: 'cross-entropy of the true letter at the 15 % masked positions, minimised with Adam'}
+  - {symbol: 'C_{ij}', code: 'apc(0.5 * (A + A.T)).mean((0, 1))', shape: '(L, L)', meaning: 'attention averaged over test sequences, symmetrised and APC-corrected per head, then averaged over layers $l$ and heads $h$'}
+notes: >
+  Why does attention find contacts? In a Potts model the letter at site $i$, given all the others, depends only on
+  the sites coupled to it (its Markov blanket), so the best way to guess a masked letter is to look at its contact
+  partners, and attention learns to do just that. Rao et al., "Transformer protein language models are unsupervised
+  structure learners" (ICLR 2021), showed that attention maps of large protein language models trained on millions of
+  natural sequences encode contacts, read out with a logistic regression over the APC-corrected, symmetrised maps
+  fitted on a handful of proteins. Later models such as ESM-2 (2022–2023) went on to predict 3D structure from such
+  representations. Here the readout is fully unsupervised (a plain average over heads), the family is synthetic,
+  and the test loss is compared with two context-free baselines: the unigram (one letter distribution) and the
+  per-site profile. Beating the profile means the model uses context, i.e. the couplings. The serpentine fold puts
+  contacts on anti-diagonals, like the strands of a β-sheet; random pairs would be right only about 5 % of the
+  time. APC removes the background of positions that everybody attends to. Try weaker couplings, fewer sequences or
+  a single head.
+params:
+  coupling: {default: 1.2, min: 0.2, max: 2.0, step: 0.1, label: 'Planted coupling strength $\sigma_J$'}
+  n_seq: {default: 4000, min: 500, max: 10000, step: 500, type: int, label: Training sequences}
+  q: {default: 8, min: 4, max: 20, step: 1, type: int, label: 'Alphabet size $q$'}
+  layers: {default: 2, min: 1, max: 3, step: 1, type: int, label: Transformer layers}
+  heads: {default: 4, min: 1, max: 8, step: 1, type: int, label: Attention heads $H$}
+  d_model: {default: 32, min: 16, max: 64, step: 16, type: int, label: Model width $d$}
+  steps: {default: 800, min: 200, max: 4000, step: 100, type: int, label: Training steps}
+  lr: {default: 0.003, min: 0.0005, max: 0.01, step: 0.0005, label: Learning rate}
+  mask_rate: {default: 0.15, min: 0.05, max: 0.5, step: 0.05, label: Masked fraction}

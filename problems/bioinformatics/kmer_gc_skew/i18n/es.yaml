@@ -1,0 +1,22 @@
+source_hash: 48f29505ec48
+title: k-meros, contenido GC y sesgo GC
+summary: Una secuencia de ADN se convierte en un tensor one-hot $(L, 4)$. Contar cada palabra de $k$ letras es un solo einsum sobre ventanas desplegadas (una convolución 1-D), el contenido GC y el sesgo GC son sumas por ventana, y el mínimo del sesgo acumulado señala dónde empieza la replicación en un cromosoma circular sintético con un origen y un término colocados.
+notes: 'La mayoría de los cromosomas bacterianos son circulares y se copian desde un único origen de replicación, con dos horquillas de replicación que avanzan en sentidos opuestos hasta encontrarse en el término. Las dos mitades se copian de forma distinta (una hebra de manera continua como hebra adelantada, la otra a trozos), y a lo largo del tiempo evolutivo la hebra adelantada tiende a acumular algo más de G que de C. Aquí ese sesgo está colocado: del origen al término se favorece G por el factor $(1+\text{skew})/(1-\text{skew})$, en la otra mitad C. El sesgo de una ventana es ruidoso, pero la suma acumulada $S_n$ baja durante todo el camino hasta el origen y sube durante todo el camino hasta el término, así que su mínimo y su máximo destacan incluso cuando el sesgo es de solo unos pocos por ciento. Los genomas reales muestran la misma forma de V, aunque de manera menos limpia, porque los genes, las repeticiones y los reordenamientos añaden su propia composición. Los dos tramos con poco
+  GC del anillo interior imitan islas genómicas, ADN adquirido de otro lugar que a menudo conserva una composición de bases distinta. El espectro de $k$-meros es el punto de partida del ensamblaje de genomas y de muchas comparaciones sin alineamiento; con este genoma aleatorio sus colores simplemente siguen el contenido GC. Prueba un sesgo menor, un genoma más pequeño o un $k$ mayor (más palabras, menos conteos de cada una).'
+meanings:
+- 'posición $n$, letra $a$ ∈ (A, C, G, T): 1 donde la base es $a$'
+- cada ventana de $k$ letras, sin copiar memoria
+- '$a \cdot 4^{k-1-j}$: la palabra leída como un número en base 4 (AAA = 0, …, TTT = $4^k-1$)'
+- '$j$ y $a$ repetidos ⇒ sumados: el índice del $k$-mero que empieza en $n$'
+- el espectro de $k$-meros; los conteos suman $L-k+1$
+- '$i$ repetido ⇒ sumado: conteos de bases en la ventana $w$ de $\ell$ bases, una cada $\Delta = \ell/2$'
+- $(n_G + n_C)/\ell$ y $(n_G - n_C)/(n_G + n_C)$
+- '$c = (0, -1, +1, 0)$: conteo acumulado de G menos C; argmin = origen, argmax = término'
+labels:
+  length_kb: Longitud del genoma $L$
+  k: Longitud de palabra $k$
+  window: Ventana $\ell$
+  origin: Origen colocado (fracción del genoma)
+  skew: Sesgo de hebra (skew)
+  gc: Contenido GC
+  seed: Semilla aleatoria

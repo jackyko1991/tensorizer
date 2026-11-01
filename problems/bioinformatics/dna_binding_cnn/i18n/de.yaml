@@ -1,0 +1,25 @@
+source_hash: e272fe98f3be
+title: Ein winziges CNN findet ein DNA-Bindemotiv
+summary: Die Hälfte einer Menge zufälliger DNA-Sequenzen trägt eine degenerierte Kopie einer Transkriptionsfaktor-Bindestelle. Ein einschichtiges 1D-Faltungsnetz, $z_{nfp} = W_{fkb}\,x_{n,p+k,b}$ gefolgt von Max-Pooling, lernt mit Autograd und Adam, sie zu unterscheiden; als Sequenzlogo zurückgelesen wird sein wichtigster Filter zum gesetzten Motiv.
+notes: 'Ein Transkriptionsfaktor bindet DNA dort, wo er ein kurzes, leicht variables Wort findet, sein Motiv, meist als Positionsgewichtsmatrix (PWM) zusammengefasst. Eine Sequenz mit einer PWM abzutasten ist genau eine 1D-Faltung der One-hot-Sequenz mit einem $w \times 4$-Filter, weshalb Faltungsnetze zur Genomik passen: Die Filter der ersten Schicht sind Motivdetektoren, und Max-Pooling macht die Antwort unabhängig davon, wo die Stelle liegt. Hier sagt dem Netz nichts, was das Motiv ist: Es sieht nur Labels, und der Gradientenabstieg formt seinen nützlichsten Filter zum gesetzten Wort (sieh zu, wie das Logo aus dem Rauschen schärfer wird). Die gestrichelte Linie ist eine Referenz, die das Motiv kennt: das Abtasten mit der wahren PWM. Weil die gesetzten Stellen degeneriert sind und zufällige DNA manchmal wie eine Stelle aussieht, erreicht selbst diese keine 100 %, und das trainierte Netz endet nahe daran. Nur der Vorwärtsstrang wird verwendet, und der Hintergrund ist gleichverteilt; echte
+  Modelle tasten auch das reverse Komplement ab und müssen mit GC-Gehalt, Repeats und verrauschten experimentellen Labels klarkommen. Das ist die Idee hinter DeepBind (2015), das Motive aus Protein-Bindungsexperimenten lernte; Modelle wie Basset, Basenji und Enformer stapeln viel mehr Schichten (und Attention), um Chromatin und Expression aus 100-kb-Sequenzen vorherzusagen. Dieses Spielzeug reproduziert nur die Idee der ersten Schicht. Probier ein schwächeres Motiv, ein kurzes Motiv (die E-Box, CACGTG, kommt öfter zufällig vor) oder weniger Filter.'
+meanings:
+- 'gesetzte Positionsgewichtsmatrix: die Konsensusbase mit Wahrscheinlichkeit "Stärke", die anderen drei teilen sich den Rest'
+- Sequenz $n$ hat die Base $b \in$ {A, C, G, T} an Position $l$; Label $y_n = 1$, wenn eine Stelle gesetzt wurde
+- jedes Fenster aus $w$ Basen (eine View, keine Kopie), $P = \ell - w + 1$
+- 'trainierbare Filter: ein Score pro Base und Position, dieselbe Form wie eine PWM'
+- 'Faltung: $k, b$ summiert, Filter $f$ an jeder Position $p$ bewertet'
+- 'globales Max-Pooling: der beste Treffer irgendwo, die Stelle darf also an jeder Position sitzen'
+- Logit, $f$ summiert; trainiert mit binärer Kreuzentropie, Autograd und Adam (Mini-Batches zu 100)
+- 'zurück zu einem Motiv, wie bei DeepBind: mittle das beste Fenster $p^*_{nf}$ jeder positiven Sequenz, deren Score die Hälfte des Höchstscores übersteigt ($\kappa_{nf} = 1$), $n$ summiert'
+- 'Informationsgehalt in Bit: die Höhe des Logostapels an Position $k$'
+- Korrelation von gelernter und gesetzter Matrix bei der besten Verschiebung; 1 = identisch
+labels:
+  motif: 'Gesetztes Motiv: NF-κB, AP-1 oder E-Box'
+  strength: Wahrscheinlichkeit der Konsensusbase
+  n_seq: Sequenzen (80 % Training / 20 % Test)
+  length: Sequenzlänge $\ell$
+  n_filters: Filter $F$
+  width: Filterbreite $w$
+  epochs: Trainingsepochen
+  lr: Adam-Lernrate

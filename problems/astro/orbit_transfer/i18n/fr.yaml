@@ -1,0 +1,21 @@
+source_hash: c0b25ec18fe5
+title: Transferts orbitaux de Hohmann et bi-elliptique
+summary: Combien de $\Delta v$ faut-il pour faire passer un engin spatial d'une orbite circulaire à une autre ? L'équation de vis-viva $v^2 = \mu(2/r - 1/a)$ chiffre le transfert de Hohmann à deux poussées et le transfert bi-elliptique à trois poussées, et une seule intégration RK4 en lot, avec des poussées impulsionnelles aux apsides, vérifie que chaque engin finit bien sur l'orbite visée.
+notes: 'Le transfert de Hohmann parcourt la moitié de l''ellipse tangente aux deux cercles, $a = (r_1 + r_2)/2$ : une poussée prograde $\Delta v_1$ au périapside et une seconde $\Delta v_2$ à l''apoapside pour circulariser, au bout de $t_H = \pi\sqrt{a^3/\mu}$. Le transfert bi-elliptique monte d''abord jusqu''à un rayon lointain $r_b$, où l''engin est lent et où une petite poussée relève l''autre côté de l''orbite jusqu''à $r_2$, puis freine à l''arrivée. Il dure beaucoup plus longtemps, mais pour $r_2/r_1 \gtrsim 11.94$ un $r_b$ assez lointain le rend moins coûteux (la limite $r_b \to \infty$ coûte $(\sqrt2 - 1)(v_{c1} + v_{c2})$), et au-delà de $r_2/r_1 \approx 15.58$ tout $r_b > r_2$ y parvient. Les deux seuils sont trouvés numériquement par dichotomie, le second avec une dérivée par autograd. Par défaut, on va de l''orbite terrestre basse (environ 320 km d''altitude) à l''orbite géostationnaire : environ 3,9 km/s et 5,3 h par Hohmann. Choisissez le Soleil avec $r_1 = 1$ UA et $r_2 =
+  1.524$ UA pour Terre → Mars : environ 5,6 km/s héliocentriques au total et quelque 259 jours (le calcul affiche toujours ce cas). Les missions réelles doivent aussi sortir du puits de gravité terrestre et attendre le bon alignement planétaire ; ici les orbites sont circulaires et coplanaires et les poussées instantanées. Le calcul découpe l''intégration RK4 à chaque poussée pour que chacune se produise exactement à une apside.'
+meanings:
+- position de l'engin $b$ par rapport au centre de l'astre, en km
+- vitesse de l'engin $b$, en km/s
+- '$j$ répété ⇒ sommé : distance au carré $r_b^2$'
+- attraction en inverse du carré vers le centre, $\mu = GM$
+- vitesse au rayon $r$ sur une orbite de demi-grand axe $a$ ; chaque $\Delta v$ est une différence de deux de ces vitesses
+- instant et amplitude signée de la poussée $k$ de l'engin $b$ ($\Delta v < 0$ freine)
+- poussée impulsionnelle le long de la vitesse, appliquée entre deux tronçons RK4
+- conservée entre les poussées ; chaque poussée la fait sauter au $-\mu/2a$ de l'orbite suivante
+- pente en $r_b = r_2$ ; elle devient négative au-delà de $r_2/r_1 \approx 15.58$
+labels:
+  body: Astre central
+  r1: Rayon de départ $r_1$
+  r2: Rayon visé $r_2$
+  transfer: Transfert
+  rb_ratio: Rayon intermédiaire bi-elliptique $r_b / r_2$

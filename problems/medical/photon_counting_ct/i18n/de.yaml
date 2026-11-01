@@ -1,0 +1,22 @@
+source_hash: e03f3730cc96
+title: Photonenzählende CT und Materialzerlegung
+summary: Ein photonenzählender Detektor sortiert jedes Röntgenquant in Energieklassen, sodass jeder Strahl statt einer mehrere Beer–Lambert-Messungen $\lambda_{rb} = N_0 R_{be}S_e e^{-\mu_{em}A_{rm}}$ liefert. Ein gebatchter Maximum-Likelihood-Fit (Autograd-Gradient, Fisher-Scoring-Schritte) verwandelt die Poisson-Zählungen jedes Strahls in Linienintegrale von Wasser, Knochen und Iod; gefilterte Rückprojektion erzeugt Materialkarten und virtuelle monoenergetische Bilder und trennt Iod von Knochen, die ein konventioneller Scanner gleich darstellt.
+notes: 'Photonenzählende Detektoren (Cadmiumtellurid oder Silizium) registrieren einzelne Photonen und vergleichen jede Pulshöhe mit mehreren Schwellen, sodass die Zählung in jeder Energieklasse eine eigene Beer–Lambert-Messung ist. Der erste photonenzählende CT-Scanner wurde 2021 von der US-amerikanischen FDA zugelassen, und seither sind spektrale Bildgebung, schärfere Auflösung und geringeres elektronisches Rauschen aus der Forschung in die Kliniken gewandert. Drei Materialien brauchen mindestens drei Klassen: Wasser und Knochen unterscheiden sich vor allem über den Photoeffekt, und Iod bringt seine K-Kante bei 33,2 keV hinzu, sodass eine Schwelle nahe 35 keV hilft (probier die Einstellung 25, 50, 75 keV). Der Knocheneinsatz wird so weit verdünnt, bis er dieselbe energiegewichtete Schwächung hat wie der Iodeinsatz mit 10 mg/mL, sodass das konventionelle Bild beide gleich zeigt; die Materialkarten unterscheiden sie. Virtuelle monoenergetische Bilder $\mu_m(E)a_m$ verstärken den Iodkontrast
+  bei niedriger Energie und haben kein Strahlaufhärtungs-Cupping, das das konventionelle Bild zeigt. Die Dreimaterialzerlegung verstärkt Rauschen (die Schwächungskurven der Basis sind fast parallel), daher fällt der Iodfehler nur wie $1/\sqrt{N_0}$ und beträgt bei moderater Dosis einige mg/mL pro Pixel; klinische Systeme verwenden oft zwei Basismaterialien, Rauschunterdrückung und iterative Rekonstruktion. Vereinfachungen: parallele Strahlen, idealer Detektor abgesehen von gaußscher Energieauflösung (kein Charge Sharing, kein Pile-up, keine K-Escape), keine Streuung, gerundete Schwächungstabellen. Lehrmodell, nicht für den klinischen Einsatz.'
+meanings:
+- 'Basismengen pro Pixel: Wasseranteil, Knochenanteil, Iod in mg/mL'
+- 'Radon-Transformation jeder Basiskarte: cm Wasser, cm Knochen, mg/cm² Iod entlang des Strahls $r = (\theta, s)$'
+- Schwächung jedes Basismaterials auf einem 1-keV-Gitter (XCOM, log-log-interpoliert, Iod-K-Kante bei 33,2 keV)
+- gefiltertes Röhrenspektrum; Wahrscheinlichkeit, dass ein Photon der Energie $E_e$ in Klasse $b$ gezählt wird (gaußsche Energieauflösung)
+- 'Beer–Lambert pro Klasse: wiederholtes $m$, dann $e$ ⇒ summiert; die Zählungen sind $y_{rb} \sim \mathrm{Poisson}(\lambda_{rb})$'
+- Gradient der negativen Poisson-Log-Likelihood; die Strahlen sind unabhängig, daher liefert ein einziger Backward-Durchlauf jedem Strahl seinen eigenen Gradienten
+- Fisher-Information, wiederholtes $b$ ⇒ summiert; $J_{rbm} = \partial\lambda_{rb}/\partial A_{rm}$
+- 'ein $3\times 3$-Gleichungssystem pro Strahl, gebatcht: der Fisher-Scoring-Schritt (Newton-artig)'
+- virtuelles monoenergetisches Bild bei der Energie $E$ aus den rekonstruierten Basiskarten, in HU dargestellt
+labels:
+  kvp: Röhrenspannung
+  dose: Photonen pro Strahl $N_0$
+  thresholds: Energieschwellen (keV)
+  sigma_kev: Energieauflösung $\sigma$
+  n_pixels: Bildgröße $N$
+  n_angles: Projektionswinkel

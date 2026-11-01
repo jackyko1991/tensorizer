@@ -1,0 +1,30 @@
+source_hash: f93e7ab544e0
+title: 'Einzelzell-RNA-seq: PCA und k-Means-Clustering'
+summary: 'Ein synthetisches Einzelzellexperiment: Zellen einiger Typen, von denen jeder seine eigenen Markergene einschaltet, mit negativ-binomialen Zählungen und unterschiedlich tief sequenzierten Zellen. Wir führen die Standard-Pipeline als Tensoroperationen aus: normiere auf $\log(1 + 10^4 K_{cg}/n_c)$, behalte hochvariable Gene, PCA per SVD, dann k-Means mit mehreren parallelen Neustarts, und bewerte die Cluster mit dem adjustierten Rand-Index gegen die wahren Typen.'
+notes: 'Jede Zelle liefert einige tausend mRNA-Zählungen, verteilt auf tausende Gene, sodass die meisten Einträge null sind und die Rohzählungen vor allem widerspiegeln, wie tief eine Zelle sequenziert wurde. Die Division durch die Bibliotheksgröße $n_c$ entfernt die Tiefe; der Logarithmus zähmt den riesigen Bereich der Expressionsniveaus. Die meisten Gene tragen nur Rauschen, daher behalten wir die Gene, deren Varianz das übersteigt, was Gene mit ähnlichem Mittelwert zeigen: die hochvariablen Gene, angereichert mit den gesetzten Markern. Die PCA komprimiert sie dann: Bei $K$ Typen lebt das Signal in etwa $K-1$ Richtungen, sichtbar als die ersten $K-1$ Balken des Scree-Plots, die über einem flachen Rauschboden stehen. k-Means wechselt zwischen zwei Schritten: weise jede Zelle ihrem nächsten Zentrum zu und verschiebe jedes Zentrum auf den Mittelwert seiner Zellen; keiner der Schritte kann die Inertia $\sum_c \lVert y_c - \mu_{k(c)}\rVert^2$ erhöhen, also konvergiert es, aber nur gegen ein
+  lokales Minimum, weshalb mehrere zufällige Starts nebeneinander laufen (graue Kurven) und der beste behalten wird. Weil wir die wahren Typen kennen, bewertet der adjustierte Rand-Index das Ergebnis ehrlich. Die optionale t-SNE-Karte ist ein kleines Kräftelayout, das mit Autograd trainiert wird (Student-t-Ähnlichkeiten, Early Exaggeration); Abstände zwischen Clustern in solchen Karten bedeuten wenig. Echte Pipelines (Scanpy, Seurat) fügen Qualitätskontrolle, Batch-Korrektur und graphbasiertes Clustering (Leiden) auf einem Nächste-Nachbarn-Graphen hinzu, und echte Zelltypen sind selten so sauber. Probier einen kleineren Fold Change, weniger Marker oder ein falsches $k$.'
+meanings:
+- 'mittlere Expression des Gens $g$ im Typ $k$: eine log-normale Basislinie, mal dem Fold Change für die $M$ Markergene von $k$'
+- negativ-binomiale Zählungen (Varianz $m + \varphi m^2$); $s_c$ ist eine log-normale Sequenziertiefe
+- 'Bibliotheksgröße: Gesamtzählungen der Zelle $c$, $g$ summiert'
+- tiefennormiert (Zählungen pro $10^4$, wie CPM) und log-transformiert
+- Dispersion $\mathrm{Var}/\mathrm{Mean}$, standardisiert innerhalb von Klassen ähnlichen Mittelwerts (Klassensummen per One-hot-einsum)
+- PCA der zentrierten Matrix auf den $H$ hochvariablen Genen; torch.pca_lowrank liefert dieselben führenden Komponenten
+- PC-Scores, $g$ summiert; $\Sigma_p^2/\sum_q\Sigma_q^2$ ist der Anteil der erklärten Varianz
+- quadrierter Abstand der Zelle $c$ zum Zentrum $k$ des Neustarts $r$; $p$ summiert, alle $R$ Neustarts auf einmal
+- 'Zuweisungsschritt: jede Zelle schließt sich ihrem nächsten Zentrum an'
+- 'Aktualisierungsschritt: jedes Zentrum rückt auf den Mittelwert seiner Zellen, $c$ summiert'
+- Paarzähl-Übereinstimmung aus der Kontingenztafel $n_{ij}$ (One-hot-einsum); 1 = perfekt, etwa 0 = zufällig
+labels:
+  n_cells: Zellen $C$
+  n_genes: Gene $G$
+  n_types: Wahre Zelltypen $K$
+  n_markers: Markergene pro Typ
+  fold_change: Fold Change der Marker
+  dispersion: Negativ-binomiale Dispersion $\varphi$
+  depth_spread: Streuung der Bibliotheksgröße (log-normales $\sigma$)
+  n_hvg: Behaltene hochvariable Gene
+  n_pcs: Hauptkomponenten fürs Clustering
+  k: Cluster $k$
+  kmeans_iters: k-Means-Iterationen
+  embedding: '2D-Ansicht: PC1–PC2 oder t-SNE'

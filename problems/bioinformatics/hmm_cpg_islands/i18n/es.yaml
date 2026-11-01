@@ -1,0 +1,19 @@
+source_hash: 5165c35a9a08
+title: Detección de islas CpG con un modelo oculto de Markov
+summary: 'Una secuencia de ADN alterna, sin que se vea, entre el fondo ordinario y las islas CpG ricas en GC. Un modelo oculto de Markov de dos estados las encuentra: forward–backward da la probabilidad de estar en una isla en cada posición, Viterbi la mejor segmentación única y Baum–Welch aprende el modelo solo a partir de las secuencias. Cada paso a lo largo de la secuencia es un producto matricial por lotes sobre los estados, en espacio logarítmico. Mira cómo la probabilidad posterior se ajusta a las islas colocadas.'
+notes: 'Los datos son sintéticos: cada secuencia tiene islas de 100–300 letras colocadas en lugares aleatorios, con más C y G dentro. Una sola letra apenas dice nada sobre el estado, pero la cadena $A$ hace que los estados persistan, así que las pasadas forward y backward acumulan la evidencia de tramos enteros. Baum–Welch es esperanza–maximización: calcula $\gamma$ y $\xi$ con el modelo actual y luego fija $E_{k\alpha}$ a las frecuencias esperadas de letras en cada estado y $A_{ij}$ a las frecuencias esperadas de cambio; la verosimilitud nunca disminuye. Partiendo de una estimación vaga termina cerca del modelo verdadero (línea verde). Las islas CpG reales son ricas en el dinucleótido CG, no solo en C y G; Durbin et al. lo modelan con 8 estados (A+, C+, G+, T+, A−, …) cuyas transiciones son las frecuencias de dinucleótidos. Baja el contenido GC de las islas para hacer el problema más difícil.'
+meanings:
+- letra en la posición $t$ de la secuencia $b$, one-hot sobre A, C, G, T
+- probabilidades iniciales, de transición y de emisión; estado 0 fondo, estado 1 isla
+- '$\alpha$ repetido ⇒ sumado: con qué probabilidad emite cada estado la letra observada'
+- $i$ repetido ⇒ sumado; se guarda como $\log\alpha$ sacando la entrada mayor (log-sum-exp) para que nada haga underflow
+- '$j$ repetido ⇒ sumado: probabilidad del resto de la secuencia dado el estado $i$'
+- probabilidad posterior $P(z_t = k \mid x)$; $\gamma_{bt1}$ es la curva azul
+- 'Viterbi: la misma recursión con máximo en lugar de suma, más punteros hacia atrás para el mejor camino'
+- '$b, t$ repetidos ⇒ sumados: número esperado de cambios $i \to j$; Baum–Welch fija $A_{ij} \propto \xi_{ij}$'
+labels:
+  n_seq: Secuencias $B$
+  length: Longitud $T$
+  n_islands: Islas colocadas por secuencia
+  gc_island: Contenido GC de las islas
+  iterations: Iteraciones de Baum–Welch

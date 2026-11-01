@@ -1,0 +1,21 @@
+source_hash: b944848791a5
+title: L'alignement de séquences comme un front d'onde de mises à jour tensorielles
+summary: Alignement de séquences d'ADN par Needleman–Wunsch (global) et Smith–Waterman (local), par programmation dynamique. Chaque case de la table n'a besoin que de ses voisines de gauche, du dessus et en diagonale, si bien qu'une anti-diagonale entière $i + j = d$ est remplie en une seule mise à jour tensorielle, pour un lot de paires de séquences à la fois. Regardez le front d'onde balayer la table, puis le retour sur trace lire l'alignement optimal.
+notes: 'L''alignement global oblige les deux séquences à être alignées d''un bout à l''autre ; l''alignement local ajoute l''option 0, si bien qu''un mauvais segment est simplement abandonné et que le meilleur morceau, où qu''il soit, est rapporté (ici un motif placé dans un fond aléatoire). Le retour sur trace repart de la case finale en se demandant à chaque pas laquelle des trois options a produit la valeur stockée, et bascule entre les tables $H$, $E$, $F$ à l''intérieur d''un gap. Le coût reste de $O(nm)$ cases, mais seulement $n + m - 1$ étapes séquentielles : ce parallélisme par anti-diagonales est celui des aligneurs sur GPU et SIMD. Essayez d''augmenter le taux de mutation, ou $g_o > g_e$ pour favoriser quelques longs gaps plutôt que de nombreux courts. Pour les protéines, une matrice $20\times20$ comme BLOSUM62 remplace $W$ ; rien d''autre ne change.'
+meanings:
+- lettre $i$ de la première et $j$ de la seconde séquence de la paire $b$, one-hot sur A, C, G, T
+- 'score pour aligner la lettre $\alpha$ avec $\beta$ : correspondance sur la diagonale, mésappariement ailleurs'
+- '$\alpha, \beta$ répétés ⇒ sommés : le score de chaque appariement possible de lettres'
+- un gap de $k$ lettres coûte $g_o + (k-1)\,g_e$ (affine) ; $g_o = g_e$ donne un gap linéaire
+- toutes les cases de l'anti-diagonale $d$ ; elles ne dépendent que des diagonales $d-1$ et $d-2$
+- 'une mise à jour tensorielle par diagonale : meilleur score finissant par une correspondance, un gap dans $a$, un gap dans $c$'
+- score global au coin, score local à la meilleure case ; le remplissage au-delà de chaque longueur est ignoré
+labels:
+  mode: Alignement (global = Needleman–Wunsch, local = Smith–Waterman)
+  length: Longueur de séquence $L$
+  n_pairs: Paires dans le lot $B$
+  mutation: Taux de mutation par site
+  match: Score de correspondance
+  mismatch: Score de mésappariement
+  gap_open: Ouverture de gap $g_o$
+  gap_extend: Extension de gap $g_e$

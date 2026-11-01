@@ -1,0 +1,25 @@
+source_hash: e272fe98f3be
+title: Un petit CNN trouve un motif de liaison à l'ADN
+summary: La moitié d'un ensemble de séquences d'ADN aléatoires porte une copie dégénérée d'un site de liaison d'un facteur de transcription. Un réseau convolutif 1D à une couche, $z_{nfp} = W_{fkb}\,x_{n,p+k,b}$ suivi d'un max-pooling, apprend avec autograd et Adam à les distinguer ; relu comme un logo de séquence, son filtre le plus important devient le motif placé.
+notes: 'Un facteur de transcription se fixe sur l''ADN là où il trouve un mot court et légèrement variable, son motif, généralement résumé par une matrice poids-position (PWM). Balayer une séquence avec une PWM revient exactement à une convolution 1D de la séquence one-hot avec un filtre $w \times 4$, d''où l''intérêt des réseaux convolutifs en génomique : les filtres de la première couche sont des détecteurs de motifs et le max-pooling rend la réponse indépendante de la position du site. Ici, rien n''indique au réseau quel est le motif : il ne voit que les étiquettes, et la descente de gradient façonne son filtre le plus utile en le mot placé (regardez le logo se préciser à partir du bruit). La ligne pointillée est une référence qui connaît le motif : le balayage avec la vraie PWM. Comme les sites placés sont dégénérés et que l''ADN aléatoire ressemble parfois à un site, même elle ne peut atteindre 100 %, et le réseau entraîné finit près d''elle. Seul le brin direct est utilisé et le fond
+  est uniforme ; les vrais modèles balayent aussi le complément inverse et doivent composer avec le contenu en GC, les répétitions et des étiquettes expérimentales bruitées. C''est l''idée derrière DeepBind (2015), qui apprenait des motifs à partir d''expériences de liaison de protéines ; des modèles comme Basset, Basenji et Enformer empilent bien plus de couches (et de l''attention) pour prédire la chromatine et l''expression à partir de séquences de 100 kb. Ce jouet ne reproduit que l''idée de la première couche. Essayez un motif plus faible, un motif court (la E-box, CACGTG, apparaît plus souvent par hasard) ou moins de filtres.'
+meanings:
+- 'matrice poids-position placée : la base consensus avec la probabilité « strength », les trois autres se partagent le reste'
+- la séquence $n$ porte la base $b \in$ {A, C, G, T} à la position $l$ ; étiquette $y_n = 1$ si un site a été placé
+- chaque fenêtre de $w$ bases (une vue, sans copie), $P = \ell - w + 1$
+- 'filtres entraînables : un score par base et par position, de même forme qu''une PWM'
+- 'convolution : $k, b$ sommés, filtre $f$ évalué à chaque position $p$'
+- 'max-pooling global : la meilleure correspondance n''importe où, le site peut donc être à n''importe quelle position'
+- logit, $f$ sommé ; entraîné par entropie croisée binaire, autograd et Adam (mini-lots de 100)
+- 'retour à un motif, comme dans DeepBind : moyenne de la meilleure fenêtre $p^*_{nf}$ de chaque séquence positive dont le score dépasse la moitié du meilleur score ($\kappa_{nf} = 1$), $n$ sommé'
+- 'contenu en information en bits : la hauteur de la pile du logo à la position $k$'
+- corrélation des matrices apprise et placée au meilleur décalage ; 1 = identiques
+labels:
+  motif: 'Motif placé : NF-κB, AP-1 ou E-box'
+  strength: Probabilité de la base consensus
+  n_seq: Séquences (80 % entraînement / 20 % test)
+  length: Longueur de séquence $\ell$
+  n_filters: Filtres $F$
+  width: Largeur de filtre $w$
+  epochs: Époques d'entraînement
+  lr: Taux d'apprentissage d'Adam

@@ -1,0 +1,18 @@
+source_hash: 72ebeb1bb100
+title: Arbres phylogénétiques à partir de distances ADN
+summary: Des séquences d'ADN évoluent le long d'un arbre aléatoire caché, chaque branche étant un produit matriciel avec la matrice de transition de Jukes–Cantor. À partir des seules feuilles, on compte les différences avec un einsum sur des lettres one-hot, on les corrige des substitutions multiples cachées, et on reconstruit l'arbre par UPGMA et par neighbour joining. Regardez les deux arbres à mesure que l'on utilise plus de sites, notés par rapport à la vérité avec la distance de Robinson–Foulds.
+notes: Le vrai arbre est un arbre de coalescence aléatoire ; avec l'horloge relâchée, chaque branche reçoit aussi son propre taux, si bien que les feuilles sont à des distances différentes de la racine. La fraction brute de sites différents $p$ sature à $3/4$ et sous-estime les longs chemins (points gris sous la diagonale) ; le $d$ de Jukes–Cantor est sans biais (points bleus sur la diagonale) mais plus bruité, et son bruit décroît comme $1/\sqrt L$. UPGMA suppose que toutes les feuilles sont à égale distance de la racine, donc sur une horloge relâchée il peut joindre deux branches courtes qui ne sont pas voisines (branches rouges), quel que soit le nombre de sites. Le neighbour joining exige seulement que les distances s'additionnent le long de l'arbre et converge vers la vraie forme non enracinée ; il est dessiné enraciné au milieu de son plus long chemin, car les distances seules ne permettent pas de localiser la racine. Passez à une horloge stricte et UPGMA devient lui aussi consistant.
+meanings:
+- probabilité que la lettre $\alpha$ soit devenue $\beta$ après une branche de longueur $t$ (substitutions attendues par site)
+- '$\alpha$ répété ⇒ sommé : probabilités des lettres de l''enfant à chaque site ; échantillonnées par CDF inverse'
+- les séquences observées aux feuilles, one-hot sur A, C, G, T
+- '$l, \alpha$ répétés ⇒ sommés : fraction des sites où $i$ et $j$ diffèrent'
+- 'distance corrigée $-\tfrac34\ln(1 - \tfrac43 p)$ : compte les substitutions cachées par des coups répétés sur un même site'
+- le neighbour joining fusionne la paire de plus petit $Q$, pas de plus petit $d$ ; $r_i = d_{ik}\mathbf 1_k$
+- vraies longueurs de chemin ; $M_{iv} = 1$ quand la branche $v$ se trouve entre la feuille $i$ et la racine, $b_v$ sa longueur
+- nombre de bipartitions des feuilles (une par branche interne) présentes dans un seul des deux arbres
+labels:
+  n_taxa: Taxons $n$
+  n_sites: Sites $L$
+  tree_depth: Profondeur racine–feuille (substitutions par site)
+  clock: Horloge moléculaire

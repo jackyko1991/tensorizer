@@ -1,0 +1,23 @@
+source_hash: 7c33ee10a4e7
+title: Conception inverse d'une métalentille
+summary: Une métasurface plane de méta-atomes sub-longueur d'onde imprime une phase $\varphi(x)$ à la lumière. La lumière est propagée par la méthode du spectre angulaire (une FFT), et autograd avec Adam ajuste chaque méta-atome pour envoyer autant de puissance que possible dans une tache focale, en partant d'une surface plate. Le résultat est comparé à la lentille hyperbolique analytique, et la conception pour deux longueurs d'onde à la fois (un lot) montre le compromis chromatique.
+notes: 'La métalentille analytique met en phase tous les chemins de la lentille au foyer, $\varphi(x) = -k(\sqrt{x^2 + f^2} - f)$, ramenée dans $[0, 2\pi)$ car un méta-atome ne peut retarder la lumière que d''une longueur d''onde au plus (des métalentilles visibles de ce type ont été démontrées par Khorasaninejad et al., Science 2016). Ici, aucune formule n''est donnée à l''optimiseur : il part d''une surface plate, calcule la puissance dans la tache focale $\eta$ avec un propagateur à base de FFT, et obtient le gradient par rapport à toutes les phases des méta-atomes en une seule passe arrière, la même information que donne la méthode adjointe en conception inverse photonique. Pour une seule longueur d''onde et un seul point focal, la meilleure phase est proche de la phase hyperbolique, et l''optimiseur la redécouvre (il peut faire légèrement mieux sur $\eta$, car la tache a une largeur finie et le propagateur scalaire n''est pas exactement l''image des rayons). Le cas intéressant est celui
+  de deux longueurs d''onde : dans le modèle jouet, chaque méta-atome ajoute un chemin optique fixe ramené dans une longueur d''onde, si bien qu''à $\lambda_1 \neq \lambda_0$ la phase est multipliée par $\lambda_0/\lambda_1$ et les sauts ne coïncident plus. La lentille hyperbolique focalise alors la lumière rouge à une autre distance (aberration chromatique diffractive). Avec la conception « dual », les deux longueurs d''onde partagent la perte et l''optimiseur trouve un compromis : meilleur à $\lambda_1$, moins bon à $\lambda_0$. Simplifications : lumière scalaire 1D, un masque de phase en élément mince (chaque méta-atome est un déphaseur idéal sans couplage avec ses voisins), transmission parfaite, un modèle de dispersion jouet et des conditions aux limites périodiques. La vraie conception inverse résout les équations de Maxwell pour les méta-atomes ; des modèles différentiables de caméras à métasurface complètes ont été entraînés de bout en bout par Tseng et al. (« Neural nano-optics
+  », Nature Communications 2021), et Li et al. passent en revue les métasurfaces issues de conception inverse (ACS Photonics 2022). La bande passante qu''une lentille plate peut focaliser à la fois est soumise à des limites fondamentales (Presutti & Monticone, Optica 2020).'
+meanings:
+- 2048 points de grille ($\Delta x = 0.05$ μm) et leurs nombres d'onde FFT
+- 'variable de conception : retard de phase de chaque méta-atome, en longueurs d''onde à $\lambda_0$, une valeur par atome de 0,25 μm'
+- phase à la longueur d'onde $\lambda_l$ ; $l$ est un lot de deux longueurs d'onde
+- 'complexe : imaginaire (décroissant) pour les composantes évanescentes $|k_x| > k$'
+- $x$ répété ⇒ sommé, calculé en $O(X\log X)$ par la FFT
+- champ à toutes les longueurs d'onde et distances à la fois, par broadcasting de la fonction de transfert
+- '$x$ répété ⇒ sommé : puissance dans la tache focale $|x| < \lambda_l f / D$'
+- 'autograd à travers les FFT : la méthode adjointe gratuitement'
+labels:
+  design: Conception pour les deux longueurs d'onde (dual) ou seulement $\lambda_0$
+  wavelength: Longueur d'onde de conception $\lambda_0$
+  wavelength2: Seconde longueur d'onde $\lambda_1$
+  focal_length: Distance focale $f$
+  diameter: Diamètre de la lentille $D$
+  n_iter: Itérations d'Adam
+  lr: Taux d'apprentissage d'Adam (longueurs d'onde par pas)

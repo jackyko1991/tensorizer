@@ -1,0 +1,39 @@
+title: Hohmann and bi-elliptic orbit transfers
+category: astro
+level: intermediate
+order: 4
+summary: >
+  How much $\Delta v$ does it take to move a spacecraft from one circular orbit to another? The vis-viva equation
+  $v^2 = \mu(2/r - 1/a)$ prices the two-burn Hohmann transfer and the three-burn bi-elliptic transfer, and one batched RK4
+  integration with impulsive burns at the apsides checks that each spacecraft really ends up on the target orbit.
+animated: true
+vector_form: '\ddot{\mathbf r} = -\frac{\mu}{r^3}\,\mathbf r,\qquad v^2 = \mu\Big(\frac{2}{r} - \frac{1}{a}\Big),\qquad \Delta\mathbf v = \Delta v\,\hat{\mathbf v},\qquad t_H = \pi\sqrt{a^3/\mu}'
+index_form: '\ddot x_{bi} = -\mu\,x_{bi}\,(x_{bj}x_{bj})^{-3/2},\qquad \tfrac12 v_{bi}v_{bi} - \frac{\mu}{\sqrt{x_{bj}x_{bj}}} = -\frac{\mu}{2a_b},\qquad v_{bi} \leftarrow v_{bi} + \Delta v_{bk}\,\frac{v_{bi}}{\sqrt{v_{bj}v_{bj}}}'
+translation:
+  - {symbol: 'x_{bi}', code: 'y[:, 0, :]', shape: '(B, 2)', meaning: 'position of spacecraft $b$ relative to the centre of the body, in km'}
+  - {symbol: 'v_{bi}', code: 'y[:, 1, :]', shape: '(B, 2)', meaning: 'velocity of spacecraft $b$, in km/s'}
+  - {symbol: 'x_{bj}x_{bj}', code: "einsum('bj,bj->b', x, x)", shape: '(B,)', meaning: 'repeated $j$ ⇒ summed: squared distance $r_b^2$'}
+  - {symbol: '\ddot x_{bi}', code: 'acceleration(x, mu)', shape: '(B, 2)', meaning: 'inverse-square pull toward the centre, $\mu = GM$'}
+  - {symbol: '\sqrt{\mu(2/r - 1/a)}', code: 'vis_viva(r, a, mu)', shape: 'like r', meaning: 'speed at radius $r$ on an orbit of semi-major axis $a$; every $\Delta v$ is a difference of two of these'}
+  - {symbol: 't_{bk},\; \Delta v_{bk}', code: 'burn_schedule(...)', shape: '(B, 3)', meaning: 'time and signed size of burn $k$ of spacecraft $b$ ($\Delta v < 0$ brakes)'}
+  - {symbol: 'v_{bi} \leftarrow v_{bi} + \Delta v\,\hat v_{bi}', code: 'apply_burn(y, dv)', shape: '(B, 2, 2)', meaning: 'impulsive burn along the velocity, applied between two RK4 pieces'}
+  - {symbol: 'E_b', code: 'energy(y, mu)', shape: '(T, B)', meaning: 'conserved between burns; each burn jumps it to the next orbit''s $-\mu/2a$'}
+  - {symbol: '\partial\,\Delta v_\mathrm{tot} / \partial r_b', code: 'autograd.grad(dv1 + dv2 - dv3, rb)', shape: '()', meaning: 'slope at $r_b = r_2$; it turns negative above $r_2/r_1 \approx 15.58$'}
+notes: >
+  The Hohmann transfer flies half of the ellipse that touches both circles, $a = (r_1 + r_2)/2$: a prograde burn
+  $\Delta v_1$ at periapsis and a second one $\Delta v_2$ at apoapsis to circularise, after $t_H = \pi\sqrt{a^3/\mu}$.
+  The bi-elliptic transfer first climbs to a far radius $r_b$, where the spacecraft is slow and a small burn raises the
+  other side of the orbit to $r_2$, then brakes on arrival. It takes much longer, but for $r_2/r_1 \gtrsim 11.94$ a far enough
+  $r_b$ makes it cheaper (the limit $r_b \to \infty$ costs $(\sqrt2 - 1)(v_{c1} + v_{c2})$), and above $r_2/r_1 \approx 15.58$
+  every $r_b > r_2$ does. Both crossovers are found numerically by bisection, the second with an autograd derivative.
+  The default is low Earth orbit (about 320 km up) to geostationary orbit: about 3.9 km/s and 5.3 h by Hohmann.
+  Choose the Sun with $r_1 = 1$ AU and $r_2 = 1.524$ AU for Earth → Mars: roughly 5.6 km/s heliocentric in total and about
+  259 days (the run always prints this case). Real missions also climb out of Earth's gravity well and must wait for the
+  right planetary alignment; the orbits here are circular and coplanar and the burns are instantaneous. The run splits the RK4
+  integration at every burn so that each burn fires exactly at an apsis.
+params:
+  body: {default: earth, type: choice, options: [earth, sun], label: Central body}
+  r1: {default: 1.05, min: 1.0, max: 10, step: 0.01, label: 'Start radius $r_1$', unit: 'R⊕ or AU'}
+  r2: {default: 6.61, min: 1.0, max: 30, step: 0.01, label: 'Target radius $r_2$', unit: 'R⊕ or AU'}
+  transfer: {default: both, type: choice, options: [both, hohmann, bi_elliptic], label: Transfer}
+  rb_ratio: {default: 2.0, min: 1.0, max: 3.0, step: 0.1, label: 'Bi-elliptic intermediate radius $r_b / r_2$'}

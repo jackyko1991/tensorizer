@@ -1,0 +1,23 @@
+source_hash: b05c63a03eb9
+title: Ignición por fusión inercial de un punto caliente de DT
+summary: 'Un modelo 0D del punto caliente en el centro de una cápsula implosionada de deuterio–tritio. Las partículas alfa de $\mathrm{D + T \to {}^4He + n}$ lo calientan, la radiación de frenado (bremsstrahlung) y la expansión lo enfrían, y el calor que escapa hacia la capa fría alimenta la combustión. Toda una malla de temperaturas iniciales y densidades areales $(T_0, \rho R_0)$ se integra como un solo lote: por encima de una frontera de tipo Lawson el punto caliente se dispara y arde, por debajo se apaga.'
+notes: 'El confinamiento inercial comprime unos cientos de microgramos de DT tan deprisa que arden antes de dispersarse. El punto caliente se enciende cuando las partículas alfa que produce lo calientan más rápido de lo que se enfría. Dos números lo deciden: la temperatura, porque $\langle\sigma v\rangle$ sube abruptamente hasta decenas de keV, y la densidad areal $\rho R$, porque un punto caliente más grueso frena sus propias alfas (alcance alfa de aproximadamente 0.3 g/cm² cerca de 10 keV) y resiste más tiempo la expansión. La radiación de frenado por sí sola fija la temperatura de ignición ideal, unos 4.3 keV, donde $\tfrac14\langle\sigma v\rangle E_\alpha = C_B\sqrt T$. La curva discontinua es el balance instantáneo, la forma ICF del criterio de Lawson; la región sombreada es lo que encuentra la integración completa, que también tiene en cuenta la propagación de la combustión hacia la capa fría. Sube el multiplicador de pérdidas $L$ y la frontera se desplaza a mayor $\rho R$ y mayor
+  $T$. Contexto de investigación: el 5 de diciembre de 2022 la National Ignition Facility informó del primer experimento de fusión en laboratorio con ganancia de blanco superior a 1, unos 3.15 MJ de energía de fusión a partir de 2.05 MJ de luz láser sobre el blanco (aproximado; Indirect Drive ICF Collaboration, Phys. Rev. Lett. 132, 065102, 2024), tras alcanzar un plasma en combustión (Zylstra et al., Nature 601, 542, 2022) y un disparo de 1.3 MJ en agosto de 2021 que superó el criterio de Lawson para la ignición (Phys. Rev. Lett. 129, 075001, 2022). La ganancia de blanco solo cuenta la energía láser que llega al blanco; la electricidad usada para hacer funcionar los láseres es mucho mayor. Simplificaciones: un punto caliente 0D uniforme a densidad fija (así que la fracción quemada se sobreestima — nada lo hace desensamblarse salvo el término de pérdida PdV), una fórmula ilustrativa de depósito alfa, conductividad de Spitzer aproximada ($\ln\Lambda \approx 10$), sin atrapamiento de radiación,
+  sin mezcla de material del ablador y temperaturas iónica y electrónica iguales.'
+meanings:
+- cada punto de la malla $b = i\,n_r + j$ es un punto caliente; el estado es $(\ln T, \ln\rho R, \varphi)$
+- reactividad DT de Bosch–Hale, $\approx 1.14\times10^{-22}$ m³/s a 10 keV, máximo $\approx 9\times10^{-22}$ cerca de 65 keV
+- fracción de la energía alfa de 3.5 MeV frenada dentro del punto caliente
+- radiación de frenado, $C_B = 5.34\times10^{-37}$ W m³ keV$^{-1/2}$
+- trabajo PdV de un punto caliente que se expande a la velocidad del sonido
+- conducción de Spitzer hacia la capa; se recicla como nueva masa caliente (propagación de la combustión)
+- lado derecho para todos los puntos calientes a la vez, avanzado con RK4
+- curva de tipo Lawson donde el autocalentamiento iguala las pérdidas, por bisección por lotes
+labels:
+  density: Densidad del punto caliente $\rho$
+  loss: Multiplicador de pérdidas $L$ (bremsstrahlung + PdV)
+  rho_r_max: $\rho R$ total de combustible disponible
+  t_end: Tiempo simulado
+  n_grid: Puntos de malla por eje
+  t_min: $T_0$ mínima
+  t_max_init: $T_0$ máxima

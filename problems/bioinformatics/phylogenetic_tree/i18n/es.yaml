@@ -1,0 +1,18 @@
+source_hash: 72ebeb1bb100
+title: Árboles filogenéticos a partir de distancias de ADN
+summary: Las secuencias de ADN evolucionan a lo largo de un árbol aleatorio oculto, cada rama un producto matricial con la matriz de transición de Jukes–Cantor. Solo a partir de las hojas contamos las diferencias con un einsum sobre letras one-hot, las corregimos por las sustituciones múltiples ocultas y reconstruimos el árbol con UPGMA y con neighbour joining. Mira ambos árboles a medida que se usan más sitios, puntuados frente al verdadero con la distancia de Robinson–Foulds.
+notes: El árbol verdadero es un árbol coalescente aleatorio; con el reloj relajado cada rama recibe además su propia tasa, así que las hojas quedan a distancias distintas de la raíz. La fracción bruta de sitios distintos $p$ se satura en $3/4$ e infravalora los caminos largos (puntos grises bajo la diagonal); la $d$ de Jukes–Cantor es insesgada (puntos azules sobre la diagonal) pero más ruidosa, y su ruido disminuye como $1/\sqrt L$. UPGMA supone que todas las hojas están igual de lejos de la raíz, así que con un reloj relajado puede unir dos ramas cortas que no son vecinas (ramas rojas), por muchos sitios que vea. El neighbour joining solo necesita que las distancias sean aditivas a lo largo del árbol y converge a la forma verdadera sin raíz; se dibuja enraizado en el punto medio de su camino más largo, ya que las distancias por sí solas no pueden localizar la raíz. Cambia a un reloj estricto y UPGMA también se vuelve consistente.
+meanings:
+- probabilidad de que la letra $\alpha$ se haya convertido en $\beta$ tras una rama de longitud $t$ (sustituciones esperadas por sitio)
+- '$\alpha$ repetido ⇒ sumado: probabilidades de letra del hijo en cada sitio; muestreadas por CDF inversa'
+- las secuencias observadas en las hojas, one-hot sobre A, C, G, T
+- '$l, \alpha$ repetidos ⇒ sumados: fracción de sitios donde $i$ y $j$ difieren'
+- 'distancia corregida $-\tfrac34\ln(1 - \tfrac43 p)$: cuenta las sustituciones ocultas por impactos repetidos en un mismo sitio'
+- el neighbour joining fusiona el par con el $Q$ más pequeño, no con la $d$ más pequeña; $r_i = d_{ik}\mathbf 1_k$
+- longitudes de camino verdaderas; $M_{iv} = 1$ cuando la rama $v$ está entre la hoja $i$ y la raíz, $b_v$ su longitud
+- número de biparticiones de hojas (una por rama interna) presentes en solo uno de los dos árboles
+labels:
+  n_taxa: Taxones $n$
+  n_sites: Sitios $L$
+  tree_depth: Profundidad raíz–hoja (sustituciones por sitio)
+  clock: Reloj molecular

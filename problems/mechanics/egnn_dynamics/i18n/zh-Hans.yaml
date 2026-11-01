@@ -1,0 +1,20 @@
+source_hash: 95b6effde453
+title: 用于粒子动力学的 E(n) 等变图神经网络
+summary: 一个微型 E(n) 等变图神经网络（EGNN）学习把带电粒子的三维系统在时间上向前推进一步。它的消息只依赖于距离 $|\mathbf x_i - \mathbf x_j|^2$，坐标更新沿 $\mathbf x_i - \mathbf x_j$ 方向，因此旋转输入会精确地旋转预测；用同样数据训练的普通 MLP 必须学习这一点，而且学不会。
+notes: 真实系统：$N$ 个单位质量粒子，电荷 $c_i = \pm 1$，受软化库仑力以及每对粒子之间的弱弹簧 $k_s$ 作用（使粒子云保持聚集），用步长 $\Delta t / 10$ 的 RK4 积分。两个网络看到相同的样本对（$t$ 时刻的状态，$t + \Delta t$ 时刻的状态），来自少数几个随机系统，用 Adam 以均方误差训练；留出的系统给出测试误差。EGNN（Satorras, Hoogeboom & Welling, "E(n) Equivariant Graph Neural Networks", ICML 2021）只用不变量输入（节点特征、$d_{ij} = |\mathbf x_i - \mathbf x_j|^2$ 和电荷乘积）为每对粒子构建消息 $m_{ij}$，然后以学习到的标量权重沿 $\mathbf x_i - \mathbf x_j$ 方向移动每个粒子。注意这恰好是真实力定律的形式，$\ddot{\mathbf x}_i = \sum_j w_{ij}(\mathbf x_i - \mathbf x_j)$：对称性内置于架构中，而不是从数据中学习。检验时用随机的 $R$ 和 $\mathbf s$ 对测试输入做旋转和平移：对 EGNN，$f(R\mathbf x + \mathbf s) = Rf(\mathbf x) + \mathbf s$ 在 float32 舍入误差（约 $10^{-6}$）内成立，而对看到展平坐标的 MLP，偏差与预测本身同量级。训练系统较少时，EGNN 以少得多的权重达到更低的测试误差。在滚动预测中，每个模型都以自身的预测作为输入；由于带电系统是混沌的，两者的误差都会累积，但 EGNN 保持接近的时间更长。简化：三层、宽度 32，EGNN 的速度变体，$\tau = \Delta t / L$（我们的选择），全批量训练，固定随机种子。同样的等变消息传递思想是 NequIP（Batzner et al., Nature Communications 2022）等机器学习原子间势，以及生成三维分子的等变扩散模型（Hoogeboom et al., ICML 2022）的基础。试试更少的训练系统：两个网络之间的差距会扩大。
+meanings:
+- 系统 $b$ 中粒子 $i$ 的位置与速度，笛卡尔分量 $a$
+- 通过广播得到的所有粒子对间隔
+- 重复的 $a$ ⇒ 求和：距离平方，是各 MLP 唯一的几何输入（旋转不变）
+- 真实力：重复的 $j$ ⇒ 对伙伴求和（库仑力加弹簧）
+- 每对粒子上的消息，$H = 32$ 个特征
+- 坐标更新：重复的 $j$ ⇒ 求和；只由 $\mathbf x_i - \mathbf x_j$ 构成的矢量，因此随输入一起旋转
+- 不变标量乘以矢量：仍然是等变的
+- 用于等变性检验的随机旋转
+labels:
+  n_particles: 粒子数 $N$
+  n_train: 训练系统数
+  dt: 模型时间步长 $\Delta t$
+  n_iter: 训练迭代次数
+  lr: Adam 学习率
+  rollout_steps: 滚动预测步数

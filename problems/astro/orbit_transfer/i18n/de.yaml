@@ -1,0 +1,21 @@
+source_hash: c0b25ec18fe5
+title: Hohmann- und bielliptische Bahnübergänge
+summary: Wie viel $\Delta v$ braucht es, um ein Raumfahrzeug von einer Kreisbahn auf eine andere zu bringen? Die Vis-viva-Gleichung $v^2 = \mu(2/r - 1/a)$ bepreist den Hohmann-Transfer mit zwei Zündungen und den bielliptischen Transfer mit drei Zündungen, und eine einzige gebatchte RK4-Integration mit impulsiven Zündungen an den Apsiden prüft, dass jedes Raumfahrzeug wirklich auf der Zielbahn ankommt.
+notes: 'Der Hohmann-Transfer fliegt die halbe Ellipse, die beide Kreise berührt, $a = (r_1 + r_2)/2$: eine prograde Zündung $\Delta v_1$ im Periapsis und eine zweite $\Delta v_2$ im Apoapsis zum Zirkularisieren, nach $t_H = \pi\sqrt{a^3/\mu}$. Der bielliptische Transfer steigt zuerst auf einen weit entfernten Radius $r_b$, wo das Raumfahrzeug langsam ist und eine kleine Zündung die andere Seite der Bahn auf $r_2$ anhebt, und bremst dann bei der Ankunft. Er dauert viel länger, aber für $r_2/r_1 \gtrsim 11.94$ macht ihn ein ausreichend großes $r_b$ günstiger (der Grenzfall $r_b \to \infty$ kostet $(\sqrt2 - 1)(v_{c1} + v_{c2})$), und oberhalb von $r_2/r_1 \approx 15.58$ gilt das für jedes $r_b > r_2$. Beide Übergangspunkte werden numerisch per Bisektion gefunden, der zweite mit einer Autograd-Ableitung. Voreingestellt ist der Übergang von einer niedrigen Erdumlaufbahn (etwa 320 km Höhe) in den geostationären Orbit: etwa 3,9 km/s und 5,3 h per Hohmann. Wähle die Sonne mit $r_1 = 1$ AE und $r_2
+  = 1.524$ AE für Erde → Mars: insgesamt grob 5,6 km/s heliozentrisch und etwa 259 Tage (der Lauf gibt diesen Fall immer aus). Echte Missionen müssen außerdem aus dem Schwerefeld der Erde heraussteigen und auf die richtige Planetenkonstellation warten; die Bahnen hier sind kreisförmig und koplanar, und die Zündungen erfolgen augenblicklich. Der Lauf teilt die RK4-Integration bei jeder Zündung auf, damit jede Zündung genau an einer Apside erfolgt.'
+meanings:
+- Position des Raumfahrzeugs $b$ relativ zum Mittelpunkt des Zentralkörpers, in km
+- Geschwindigkeit des Raumfahrzeugs $b$, in km/s
+- 'wiederholtes $j$ ⇒ summiert: quadrierter Abstand $r_b^2$'
+- Anziehung zum Zentrum nach dem inversen Abstandsquadrat, $\mu = GM$
+- Geschwindigkeit beim Radius $r$ auf einer Bahn mit großer Halbachse $a$; jedes $\Delta v$ ist eine Differenz zweier solcher Werte
+- Zeitpunkt und vorzeichenbehaftete Größe der Zündung $k$ des Raumfahrzeugs $b$ ($\Delta v < 0$ bremst)
+- impulsive Zündung entlang der Geschwindigkeit, angewendet zwischen zwei RK4-Abschnitten
+- zwischen den Zündungen erhalten; jede Zündung lässt sie auf das $-\mu/2a$ der nächsten Bahn springen
+- Steigung bei $r_b = r_2$; sie wird oberhalb von $r_2/r_1 \approx 15.58$ negativ
+labels:
+  body: Zentralkörper
+  r1: Startradius $r_1$
+  r2: Zielradius $r_2$
+  transfer: Transfer
+  rb_ratio: Bielliptischer Zwischenradius $r_b / r_2$

@@ -1,0 +1,47 @@
+title: E(n)-equivariant graph neural network for particle dynamics
+category: mechanics
+level: advanced
+order: 6
+summary: >
+  A tiny E(n)-equivariant graph neural network (EGNN) learns to step a 3D system of charged particles forward in
+  time. Its messages depend only on the distances $|\mathbf x_i - \mathbf x_j|^2$ and its coordinate updates point
+  along $\mathbf x_i - \mathbf x_j$, so rotating the input rotates the prediction exactly; a plain MLP of the same
+  data has to learn this and does not.
+animated: true
+vector_form: '\ddot{\mathbf x}_i = \sum_{j} \Big(\frac{c_i c_j}{(\lVert\mathbf x_i - \mathbf x_j\rVert^2 + \varepsilon^2)^{3/2}} - k_s\Big)(\mathbf x_i - \mathbf x_j) \qquad \mathbf v_i \leftarrow \phi_v(\mathbf h_i)\,\mathbf v_i + \frac{1}{N-1}\sum_{j\neq i}(\mathbf x_i - \mathbf x_j)\,\phi_x(\mathbf m_{ij}),\quad \mathbf x_i \leftarrow \mathbf x_i + \tau\,\mathbf v_i'
+index_form: 'r_{ija} = x_{ia} - x_{ja},\quad d_{ij} = r_{ija}r_{ija} \qquad m_{ijh} = \phi_e(h_i, h_j, d_{ij}, c_ic_j)_h \qquad v_{ia} \leftarrow \phi_v(h_i)\,v_{ia} + \tfrac{1}{N-1}\,r_{ija}\,\phi_x(m_{ij}) \qquad h_{ih} \leftarrow h_{ih} + \phi_h(h_i, m_{ijh})_h'
+translation:
+  - {symbol: 'x_{bia},\ v_{bia}', code: 'y[:, 0], y[:, 1]', shape: '(B, N, 3)', meaning: 'position and velocity of particle $i$ in system $b$, Cartesian component $a$'}
+  - {symbol: 'r_{bija}', code: 'x[:, :, None, :] - x[:, None, :, :]', shape: '(B, N, N, 3)', meaning: 'all pair separations by broadcasting'}
+  - {symbol: 'd_{bij} = r_{bija}r_{bija}', code: "einsum('bija,bija->bij', r, r)", shape: '(B, N, N)', meaning: 'repeated $a$ ⇒ summed: squared distances, the only geometric input of the MLPs (rotation invariant)'}
+  - {symbol: 'w_{bij}\,r_{bija}', code: "einsum('bij,bija->bia', w, r)", shape: '(B, N, 3)', meaning: 'true force: repeated $j$ ⇒ summed over partners (Coulomb plus springs)'}
+  - {symbol: 'm_{bijh}', code: 'mlp(cat([h_i, h_j, d, q]), phi_e)', shape: '(B, N, N, H)', meaning: 'message on every pair, $H = 32$ features'}
+  - {symbol: 'r_{bija}\,\phi_x(m_{bij})', code: "einsum('bija,bij->bia', r, weight)", shape: '(B, N, 3)', meaning: 'coordinate update: repeated $j$ ⇒ summed; a vector built only from $\mathbf x_i - \mathbf x_j$, so it rotates with the input'}
+  - {symbol: '\phi_v(h_i)\,v_{ia}', code: 'mlp(h, phi_v) * v', shape: '(B, N, 3)', meaning: 'an invariant scalar times a vector: still equivariant'}
+  - {symbol: 'R_{ae}\,x_{bie}', code: "einsum('ae,bie->bia', R, x)", shape: '(B, N, 3)', meaning: 'random rotation used for the equivariance check'}
+notes: >
+  The true system: $N$ unit-mass particles with charges $c_i = \pm 1$, softened Coulomb forces and weak springs
+  $k_s$ between every pair (so the cloud stays together), integrated with RK4 at a step of $\Delta t / 10$. Both
+  networks see the same pairs (state at $t$, state at $t + \Delta t$) from a few random systems and are trained with
+  Adam on the mean squared error; held-out systems give the test error. The EGNN (Satorras, Hoogeboom & Welling,
+  "E(n) Equivariant Graph Neural Networks", ICML 2021) builds a message $m_{ij}$ for every pair from invariant
+  inputs only (node features, $d_{ij} = |\mathbf x_i - \mathbf x_j|^2$ and the charge product), then moves each
+  particle along the directions $\mathbf x_i - \mathbf x_j$ with learned scalar weights. Notice that this is exactly
+  the form of the true force law, $\ddot{\mathbf x}_i = \sum_j w_{ij}(\mathbf x_i - \mathbf x_j)$: the symmetry is
+  built into the architecture instead of being learned from data. The check rotates and shifts a test input by a
+  random $R$ and $\mathbf s$: for the EGNN $f(R\mathbf x + \mathbf s) = Rf(\mathbf x) + \mathbf s$ holds to float32
+  round-off (about $10^{-6}$), while for the MLP, which sees the flattened coordinates, the mismatch is of the
+  order of the prediction itself. With few training systems the EGNN reaches a lower test error with far fewer
+  weights. In the rollout each model is fed its own predictions; errors compound in both, because the charged
+  system is chaotic, but the EGNN stays close for longer. Simplifications: three layers of width 32, the
+  velocity variant of the EGNN with $\tau = \Delta t / L$ (our choice), full-batch training and a fixed seed. The
+  same equivariant message-passing idea underlies machine-learned interatomic potentials such as NequIP (Batzner et
+  al., Nature Communications 2022) and equivariant diffusion models that generate 3D molecules (Hoogeboom et al.,
+  ICML 2022). Try fewer training systems: the gap between the two networks widens.
+params:
+  n_particles: {default: 5, min: 3, max: 8, step: 1, type: int, label: 'Particles $N$'}
+  n_train: {default: 12, min: 4, max: 48, step: 4, type: int, label: Training systems}
+  dt: {default: 0.1, min: 0.05, max: 0.2, step: 0.01, label: 'Model time step $\Delta t$'}
+  n_iter: {default: 600, min: 100, max: 3000, step: 100, type: int, label: Training iterations}
+  lr: {default: 0.003, min: 0.0005, max: 0.01, step: 0.0005, label: Adam learning rate}
+  rollout_steps: {default: 50, min: 10, max: 100, step: 5, type: int, label: Rollout steps}

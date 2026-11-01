@@ -1,0 +1,19 @@
+source_hash: 5165c35a9a08
+title: CpG-Inseln finden mit einem Hidden-Markov-Modell
+summary: 'Eine DNA-Sequenz wechselt unsichtbar zwischen gewöhnlichem Hintergrund und GC-reichen CpG-Inseln. Ein Hidden-Markov-Modell mit zwei Zuständen findet sie: Forward–Backward liefert die Wahrscheinlichkeit, an jeder Position in einer Insel zu sein, Viterbi die einzelne beste Segmentierung, und Baum–Welch lernt das Modell allein aus den Sequenzen. Jeder Schritt entlang der Sequenz ist ein gebatchtes Matrixprodukt über die Zustände, im Log-Raum gehalten. Sieh zu, wie sich die Posterior-Wahrscheinlichkeit auf die gesetzten Inseln einrastet.'
+notes: 'Die Daten sind synthetisch: Jede Sequenz hat Inseln von 100–300 Buchstaben an zufälligen Stellen, mit mehr C und G darin. Ein einzelner Buchstabe sagt fast nichts über den Zustand, aber die Kette $A$ lässt Zustände andauern, sodass Vorwärts- und Rückwärtsdurchlauf die Evidenz ganzer Abschnitte bündeln. Baum–Welch ist Expectation–Maximization: Berechne $\gamma$ und $\xi$ unter dem aktuellen Modell, setze dann $E_{k\alpha}$ auf die erwarteten Buchstabenhäufigkeiten in jedem Zustand und $A_{ij}$ auf die erwarteten Wechselhäufigkeiten; die Likelihood nimmt nie ab. Von einer vagen Schätzung aus endet es nahe am wahren Modell (grüne Linie). Echte CpG-Inseln sind reich am Dinukleotid CG statt nur an C und G; Durbin et al. modellieren das mit 8 Zuständen (A+, C+, G+, T+, A−, …), deren Übergänge die Dinukleotidhäufigkeiten sind. Senke den GC-Gehalt der Inseln, um das Problem schwerer zu machen.'
+meanings:
+- Buchstabe an Position $t$ der Sequenz $b$, One-hot über A, C, G, T
+- Start-, Übergangs- und Emissionswahrscheinlichkeiten; Zustand 0 Hintergrund, Zustand 1 Insel
+- 'wiederholtes $\alpha$ ⇒ summiert: wie wahrscheinlich jeder Zustand den gesehenen Buchstaben emittiert'
+- wiederholtes $i$ ⇒ summiert; gespeichert als $\log\alpha$ mit herausgezogenem größtem Eintrag (Log-Sum-Exp), damit nichts unterläuft
+- 'wiederholtes $j$ ⇒ summiert: Wahrscheinlichkeit des Rests der Sequenz bei gegebenem Zustand $i$'
+- Posterior $P(z_t = k \mid x)$; $\gamma_{bt1}$ ist die blaue Kurve
+- 'Viterbi: dieselbe Rekursion mit Max statt Summe, plus Rückzeiger für den besten Pfad'
+- 'wiederholtes $b, t$ ⇒ summiert: erwartete Anzahl von Wechseln $i \to j$; Baum–Welch setzt $A_{ij} \propto \xi_{ij}$'
+labels:
+  n_seq: Sequenzen $B$
+  length: Länge $T$
+  n_islands: Gesetzte Inseln pro Sequenz
+  gc_island: GC-Gehalt der Inseln
+  iterations: Baum–Welch-Iterationen

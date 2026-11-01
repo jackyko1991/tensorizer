@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Photon-counting CT: an X-ray tube with spectrum S(E) shines through a water phantom with iodine and bone inserts onto a detector that sorts photons into energy bins b">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- X-ray tube -->
+    <rect x="10" y="66" width="26" height="28" rx="4" fill="#93c5fd" stroke="#374151" stroke-width="2"/>
+    <circle cx="36" cy="80" r="3" fill="#374151"/>
+    <text x="8" y="58" font-style="italic">S(E)</text>
+    <!-- fan beam edges -->
+    <line x1="36" y1="80" x2="196" y2="22" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="36" y1="80" x2="196" y2="138" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- one ray -->
+    <line x1="36" y1="80" x2="192" y2="80" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- phantom: water with inserts -->
+    <circle cx="118" cy="80" r="38" fill="#dbeafe" stroke="#374151" stroke-width="2"/>
+    <circle cx="118" cy="56" r="7" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="96" cy="94" r="7" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="140" cy="94" r="7" fill="#f3f4f6" stroke="#374151" stroke-width="1.5"/>
+    <text x="104" y="136" font-style="italic">a</text><text x="112" y="140" font-size="10" font-style="italic">m</text>
+    <!-- energy-resolving detector: stacked bins -->
+    <g stroke="#374151" stroke-width="1.5">
+      <rect x="198" y="20" width="10" height="120" fill="#ffffff" stroke-width="2"/>
+      <rect x="210" y="74" width="7" height="12" fill="#93c5fd"/>
+      <rect x="217" y="74" width="7" height="12" fill="#60a5fa"/>
+      <rect x="224" y="74" width="7" height="12" fill="#2563eb"/>
+    </g>
+    <path d="M216,92 A16,16 0 0 0 230,92" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <text x="219" y="110" font-style="italic" fill="#b45309">b</text>
+    <text x="150" y="70" font-style="italic" fill="#b91c1c">λ</text>
+  </g>
+</svg>

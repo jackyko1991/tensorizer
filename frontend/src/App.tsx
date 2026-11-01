@@ -4,6 +4,7 @@ import {
   backendChoice,
   health,
   loadManifest,
+  newWorkspace,
   RunFailed,
   runProblemStream,
   setBackendChoice,
@@ -179,8 +180,20 @@ export default function App() {
                   <Sidebar manifest={manifest} selected={problem.id} onSelect={select} />
                 </div>
                 {/* Workspace: problems created with the agent this visit */}
-                <div className="flex h-8 shrink-0 items-center border-y border-gray-200 bg-gray-50 px-2">
+                <div className="flex h-8 shrink-0 items-center justify-between border-y border-gray-200 bg-gray-50 px-2">
                   <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t("workspace")}</span>
+                  <button
+                    onClick={() =>
+                      newWorkspace().then(
+                        (entry) => (setWorkspace((ws) => [entry, ...ws]), select(entry.id)),
+                        () => alert(t("workspace.unavailable")),
+                      )
+                    }
+                    title={t("workspace.new")}
+                    className="rounded px-1.5 text-xs font-medium text-blue-700 hover:bg-blue-50"
+                  >
+                    + {t("workspace.newShort")}
+                  </button>
                 </div>
                 <div className="max-h-48 shrink-0 overflow-y-auto p-2">
                   {workspace.length === 0 ? (
@@ -226,6 +239,7 @@ export default function App() {
       {manifest && problem && (
         <AgentPanel
           problem={problem}
+          backendKey={`${backendChoice()}:${backend === "checking" ? "checking" : backend ? "up" : "down"}`}
           onWorkspaceProblem={(entry) => {
             setWorkspace((ws) => [entry, ...ws.filter((w) => w.id !== entry.id)]);
             select(entry.id);
@@ -342,14 +356,14 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
   const [params, setParams] = useState<Params>(() => defaults(problem));
   const [edits, setEdits] = useState<Record<string, string>>({});
   // Claude's edits arrive here; and the Ask AI panel always knows what is on screen.
-  useEffect(
-    () => onApplyFiles(({ problem: id, files }) => id === problem.id && setEdits((e) => ({ ...e, ...files }))),
-    [problem.id],
-  );
-  useEffect(
-    () => emitContext({ problem: problem.id, title: plainText(problem.title), edits, params }),
-    [problem.id, problem.title, edits, params],
-  );
+  useEffect(() => {
+    return onApplyFiles(({ problem: id, files }) => {
+      if (id === problem.id) setEdits((e) => ({ ...e, ...files }));
+    });
+  }, [problem.id]);
+  useEffect(() => {
+    emitContext({ problem: problem.id, title: plainText(problem.title), edits, params });
+  }, [problem.id, problem.title, edits, params]);
   const [src, setSrc] = useState<string | null>(problem.output ? assetUrl(problem.output) : null);
   const [console, setConsole] = useState(problem.console);
   const [running, setRunning] = useState(false);
@@ -472,16 +486,49 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
               className="mx-auto mt-3 h-36 w-full max-w-xs object-contain"
             />
           )}
-          {wiki && (
-            <a
-              href={wiki.url}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-2 flex items-center justify-center gap-1.5 text-xs text-blue-700 hover:underline"
-            >
-              <span className="font-serif font-semibold">W</span>
-              {t("wiki")}: {wiki.title} ↗
-            </a>
+          {(wiki || problem.papers?.length) && (
+            <div className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs">
+              {wiki && (
+                <a
+                  href={wiki.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1.5 text-blue-700 hover:underline"
+                >
+                  <span className="font-serif font-semibold">W</span>
+                  {t("wiki")}: {wiki.title} ↗
+                </a>
+              )}
+              {problem.papers?.map((paper) =>
+                paper.url ? (
+                  <a
+                    key={paper.url}
+                    href={paper.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={paper.title}
+                    className="flex max-w-xs items-center gap-1.5 text-blue-700 hover:underline"
+                  >
+                    <span>📄</span>
+                    <span className="truncate">
+                      {t("paper")}: {paper.label}
+                    </span>
+                    ↗
+                  </a>
+                ) : (
+                  <span
+                    key={paper.label}
+                    title={paper.title}
+                    className="flex max-w-xs items-center gap-1.5 text-gray-600"
+                  >
+                    <span>📄</span>
+                    <span className="truncate">
+                      {t("reference")}: {paper.label}
+                    </span>
+                  </span>
+                ),
+              )}
+            </div>
           )}
         </div>
 

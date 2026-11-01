@@ -1,0 +1,23 @@
+source_hash: 0f2f557927c5
+title: Corrección cuántica de errores por debajo del umbral
+summary: 'Un código de repetición de bit-flip reparte un bit lógico entre $d$ qubits ruidosos y mide continuamente sus paridades. Miles de disparos de Monte Carlo se ejecutan como un solo tensor $(S, R, d)$, un decodificador exacto de peso mínimo lee el historial de síndromes en el espacio–tiempo, y las curvas para $d = 3, 5, 7, 9$ se cruzan en el umbral: por debajo, cada paso $d \to d + 2$ divide la tasa de error lógico por un factor $\Lambda > 1$, la magnitud detrás de la memoria de código de superficie por debajo del umbral de Google en 2024.'
+notes: 'El código almacena $\lvert 0_L\rangle = \lvert 00\ldots0\rangle$ y $\lvert 1_L\rangle = \lvert 11\ldots1\rangle$; las comprobaciones de paridad $Z_jZ_{j+1}$ revelan dónde discrepan los vecinos sin revelar el valor lógico. En el modelo de capacidad del código (una ronda, comprobaciones perfectas) el mejor decodificador es una votación por mayoría y la $P_L$ simulada sigue la cola binomial exacta (discontinua), con un umbral de exactamente $p = 1/2$. En el modelo fenomenológico las comprobaciones también se leen mal, así que no se puede confiar en un solo síndrome; el decodificador busca el menor número de inversiones de datos más lecturas erróneas que explique todo el historial de $d$ rondas. Ese es el problema que resuelve el emparejamiento perfecto de peso mínimo; en 1D se resuelve aquí exactamente por programación dinámica sobre los $2^d$ patrones de error (así que $d \le 11$). Para este modelo el umbral está cerca de $p \approx 10\%$ (alrededor del 10.3 % para $d$ muy grande),
+  y los cruces con $d$ pequeño quedan cerca de él cuando cada código se ejecuta durante $d$ rondas. Por debajo del umbral ganan los códigos más grandes, y $\Lambda = \varepsilon_d/\varepsilon_{d+2}$ crece a medida que $p$ baja (aproximadamente como $p_{th}/p$); por encima, añadir qubits solo añade más lugares donde fallar. Contexto de investigación: Google Quantum AI and Collaborators, Quantum error correction below the surface code threshold, Nature 638, 920 (2025; arXiv:2408.13687, 2024) ejecutaron memorias de código de superficie de distancia 3, 5 y 7 en su procesador Willow e informaron de $\Lambda \approx 2.1$, con un error lógico de distancia 7 de aproximadamente 0.14 % por ciclo (valores aproximados). Los pasos anteriores fueron códigos de repetición (Nature 595, 383, 2021) y un código de superficie de distancia 5 que superaba ligeramente al de distancia 3 (Nature 614, 676, 2023). Código de repetición frente a código de superficie: el código de repetición es una línea 1D que solo
+  corrige inversiones de bit (errores $X$) — una inversión de fase ($Z$) en cualquier qubit es un error lógico, así que no es una memoria cuántica completa. El código de superficie es una red 2D con comprobaciones de tipo $Z$ y de tipo $X$ y corrige ambos; su grafo de decodificación es 3D (dos dimensiones espaciales más el tiempo) y sus umbrales son más bajos, alrededor del 3 % para este ruido fenomenológico y aproximadamente del 1 % para ruido de circuito realista (aproximado). Simplificaciones: errores independientes, una lectura final perfecta y sin fugas ni ráfagas correlacionadas, que en los dispositivos reales imponen un suelo a la tasa de error lógico.'
+meanings:
+- inversiones de datos (probabilidad $p$) y comprobaciones mal leídas (probabilidad $q$) para el disparo $s$, ronda $t$
+- error acumulado en el qubit de datos $i$ tras la ronda $t$
+- la comprobación $j$ compara los vecinos $i = j$ e $i = j + 1$ ($Z_jZ_{j+1}$)
+- '$i$ repetido ⇒ sumado: la paridad que debería informar cada comprobación'
+- 'un bit de síndrome que cambió: el extremo de una cadena de errores en el espacio–tiempo'
+- historial más barato que termina en el patrón de error $x$, $w = \ln\frac{1-p}{p}$; el mínimo sobre $y$ son $d$ inversiones de un bit
+- 'votación por mayoría: el decodificador óptimo cuando las comprobaciones nunca se leen mal'
+- supresión de errores por ronda, $1 - 2P_L = (1 - 2\varepsilon)^R$
+labels:
+  model: Modelo de ruido (con o sin comprobaciones mal leídas)
+  d_max: Distancia máxima $d$ (11 es lento)
+  shots: Disparos por punto $(d, p)$
+  n_p: Número de tasas de error $p$
+  p_min: $p$ mínima
+  p_max: $p$ máxima
+  q_ratio: Tasa de lectura errónea $q/p$

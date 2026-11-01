@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Protein language model: a chain folded on a lattice, contacts between neighbouring strands, and a masked residue i whose prediction attends to its contact partner j">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- serpentine backbone on a lattice: three strands -->
+    <polyline points="40,40 80,40 120,40 160,40 200,40 200,80 160,80 120,80 80,80 40,80 40,120 80,120 120,120 160,120 200,120"
+              fill="none" stroke="#374151" stroke-width="2"/>
+    <!-- contacts between strands -->
+    <g stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3">
+      <line x1="80" y1="48" x2="80" y2="72"/><line x1="120" y1="48" x2="120" y2="72"/><line x1="160" y1="48" x2="160" y2="72"/>
+      <line x1="80" y1="88" x2="80" y2="112"/><line x1="120" y1="88" x2="120" y2="112"/><line x1="160" y1="88" x2="160" y2="112"/>
+    </g>
+    <!-- residues -->
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1.5">
+      <circle cx="40" cy="40" r="7"/><circle cx="80" cy="40" r="7"/><circle cx="160" cy="40" r="7"/><circle cx="200" cy="40" r="7"/>
+      <circle cx="200" cy="80" r="7"/><circle cx="160" cy="80" r="7"/><circle cx="80" cy="80" r="7"/><circle cx="40" cy="80" r="7"/>
+      <circle cx="40" cy="120" r="7"/><circle cx="80" cy="120" r="7"/><circle cx="160" cy="120" r="7"/><circle cx="200" cy="120" r="7"/>
+      <circle cx="120" cy="40" r="7"/>
+    </g>
+    <!-- masked residue i and its partner j -->
+    <circle cx="120" cy="80" r="9" fill="#ffffff" stroke="#374151" stroke-width="2"/>
+    <text x="115" y="85" font-size="12" fill="#374151">?</text>
+    <circle cx="120" cy="120" r="7" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <!-- attention arcs from i to its contacts -->
+    <path d="M129,78 C150,66 146,52 128,44" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <path d="M129,82 C150,94 146,108 128,116" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <text x="100" y="98" font-style="italic">i</text>
+    <text x="126" y="146" font-style="italic">j</text>
+    <text x="150" y="102" font-style="italic" fill="#b45309">A</text><text x="160" y="106" font-size="10" font-style="italic" fill="#b45309">ij</text>
+  </g>
+</svg>

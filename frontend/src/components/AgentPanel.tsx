@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { applyFiles, onAsk, onContext, onSelection, type CodeSelection, type ViewContext } from "../agentBus";
-import { agentChat, agentStatus, RunFailed, type AgentEvent, type AgentStatus } from "../api";
+import { agentChat, agentStatus, RunFailed, type AgentEvent, type AgentId, type AgentStatus } from "../api";
 import { useLang, type Key } from "../i18n";
 import type { Problem } from "../types";
 import AgentMascot from "./AgentMascot";
@@ -18,6 +18,7 @@ interface Message {
 }
 
 const KEY_STORE = "tensorizer.agent.key";
+const AGENT_STORE = "tensorizer.agent.mode";
 const EXAMPLES: Key[] = ["agent.ex1", "agent.ex2", "agent.ex3", "agent.ex4"];
 // "Create a problem" ideas: a different three from the pool each time the panel opens.
 const NEW_IDEAS = Array.from({ length: 9 }, (_, i) => `agent.newEx${i + 1}` as Key);
@@ -51,17 +52,22 @@ const EMPTY_CHAT: Chat = { messages: [], session: null };
 export default function AgentPanel({
   problem,
   onWorkspaceProblem,
+  backendKey,
 }: {
   problem: Problem;
   /** A problem the agent created: shown in the left panel's Workspace section. */
   onWorkspaceProblem: (entry: Problem) => void;
+  /** Changes whenever the backend changes (picker or reconnect), so the panel re-detects what it can use. */
+  backendKey: string;
 }) {
   const { t } = useLang();
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<AgentStatus | null | "checking">("checking");
   const [apiKey, setApiKey] = useState<string | null>(() => load(KEY_STORE));
-  const [keyDraft, setKeyDraft] = useState("");
   const [model, setModel] = useState<string>("");
+  const [agent, setAgent] = useState<AgentId>(() => (load(AGENT_STORE) as AgentId) || "claude-code");
+  const [provider, setProvider] = useState("anthropic");
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [chats, setChats] = useState<Record<string, Chat>>({});
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState<string | null>(null); // the chat that is answering
@@ -75,24 +81,46 @@ export default function AgentPanel({
   const abort = useRef<AbortController | null>(null);
   const bottom = useRef<HTMLDivElement>(null);
 
+  // Re-detect what this backend offers whenever it changes; pick Claude Code (local) automatically when it is
+  // installed and logged in on that machine, otherwise the API.
+  useEffect(() => {
+    setStatus("checking");
+  }, [backendKey]);
   useEffect(() => {
     if (!open || status !== "checking") return;
     agentStatus().then((s) => {
       setStatus(s);
       if (s?.models.length) setModel((m) => m || s.models[0]);
+      const local = s?.agents.find((a) => a.id === "claude-code");
+      if (s && (!local?.available || local.logged_in === false) && agent === "claude-code") setAgent("claude-api");
+      else if (s && load(AGENT_STORE) === null) setAgent(s.default);
     });
-  }, [open, status]);
-  useEffect(() => bottom.current?.scrollIntoView({ block: "end" }), [messages]);
+  }, [open, status, agent]);
+  useEffect(() => {
+    bottom.current?.scrollIntoView({ block: "end" });
+  }, [messages]);
 
   const workProblem = chatKey === "new" ? "new" : problem.id;
-  const connected = status !== "checking" && !!status?.enabled && (status.auth === "local" || !!apiKey);
+  const localAgent = status !== "checking" ? status?.agents.find((a) => a.id === "claude-code") : undefined;
+  const localReady = !!localAgent?.available && localAgent.logged_in !== false;
+  const connected = status !== "checking" && !!status?.enabled && (agent === "claude-code" ? localReady : !!apiKey);
+  // Nothing usable yet: open the Agent form so the choice (or the key field) is right there.
+  useEffect(() => {
+    if (open && status !== "checking" && status?.enabled && !connected) setSettingsOpen(true);
+  }, [open, status, connected]);
   const shownSelection = mode === "current" && selection?.problem === problem.id ? selection : null;
 
   // What is on screen (problem, edits, parameters) and highlighted in the editor; right-click → Explain / Fix.
-  useEffect(() => onContext(setView), []);
-  useEffect(() => onSelection(setSelection), []);
+  useEffect(() => {
+    return onContext(setView);
+  }, []);
+  useEffect(() => {
+    return onSelection(setSelection);
+  }, []);
   const askRef = useRef<(action: "explain" | "fix", sel: CodeSelection) => void>(() => {});
-  useEffect(() => onAsk(({ action, selection: sel }) => askRef.current(action, sel)), []);
+  useEffect(() => {
+    return onAsk(({ action, selection: sel }) => askRef.current(action, sel));
+  }, []);
   askRef.current = (action, sel) => {
     setOpen(true);
     setMode("current");
@@ -157,9 +185,9 @@ export default function AgentPanel({
       params: onScreen?.params,
       selection: sel ? { file: sel.file, from_line: sel.fromLine, to_line: sel.toLine, text: sel.text } : undefined,
     };
-    const body = { session: (chats[m] ?? EMPTY_CHAT).session, problem: target, message, model, context };
+    const body = { session: (chats[m] ?? EMPTY_CHAT).session, problem: target, message, model, context, agent };
     try {
-      await agentChat(body, apiKey, (e) => onEvent(m, e), abort.current.signal);
+      await agentChat(body, agent === "claude-api" ? apiKey : null, (e) => onEvent(m, e), abort.current.signal);
     } catch (e) {
       onEvent(m, { type: "error", message: e instanceof RunFailed ? e.message : String(e) });
     } finally {
@@ -168,17 +196,15 @@ export default function AgentPanel({
     }
   }
 
-  function connect() {
-    const key = keyDraft.trim();
-    if (!key) return;
-    setApiKey(key);
-    save(KEY_STORE, key);
-    setKeyDraft("");
+  function chooseAgent(a: AgentId) {
+    setAgent(a);
+    save(AGENT_STORE, a);
   }
 
-  function disconnect() {
-    setApiKey(null);
-    save(KEY_STORE, null);
+  function saveKey(key: string) {
+    const k = key.trim() || null;
+    setApiKey(k);
+    save(KEY_STORE, k);
   }
 
   return (
@@ -210,16 +236,19 @@ export default function AgentPanel({
                   ? t("backend.checking")
                   : !status?.enabled
                     ? t("agent.unavailable")
-                    : status.auth === "local"
-                      ? t("agent.localLogin")
-                      : apiKey
-                        ? t("agent.keyConnected")
-                        : t("agent.needKey")}
+                    : connected
+                      ? `${t("agent.agent")}: ${agent === "claude-code" ? t("agent.local") : `${t("agent.api")} · Anthropic`}`
+                      : t("agent.chooseAgent")}
               </div>
             </div>
-            {status !== "checking" && status?.auth === "api_key" && apiKey && (
-              <button onClick={disconnect} className="rounded px-2 py-1 text-[11px] text-gray-500 hover:bg-gray-100">
-                {t("agent.disconnect")}
+            {status !== "checking" && status?.enabled && (
+              <button
+                onClick={() => setSettingsOpen((o) => !o)}
+                aria-expanded={settingsOpen}
+                title={t("agent.agent")}
+                className={`rounded px-2 py-1 text-[11px] hover:bg-gray-100 ${settingsOpen ? "bg-gray-100 text-gray-800" : "text-gray-500"}`}
+              >
+                ⚙ {t("agent.agent")}
               </button>
             )}
             <button
@@ -237,6 +266,87 @@ export default function AgentPanel({
               ✕
             </button>
           </header>
+
+          {settingsOpen && status !== "checking" && status?.enabled && (
+            <div className="space-y-2 border-b border-gray-200 bg-gray-50 px-3 py-2.5 text-xs">
+              <div className="flex items-center gap-2">
+                <span className="w-16 shrink-0 font-medium text-gray-600">{t("agent.agent")}</span>
+                <div className="grid flex-1 grid-cols-2 gap-1 rounded-md bg-white p-0.5 ring-1 ring-gray-200">
+                  {(["claude-code", "claude-api"] as const).map((a) => (
+                    <button
+                      key={a}
+                      onClick={() => chooseAgent(a)}
+                      disabled={a === "claude-code" && !localAgent?.available}
+                      className={`rounded px-2 py-1 ${agent === a ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"} disabled:cursor-not-allowed disabled:opacity-40`}
+                    >
+                      {a === "claude-code" ? t("agent.local") : t("agent.api")}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {agent === "claude-code" ? (
+                <p className={localReady ? "text-green-700" : "text-amber-700"}>
+                  {localReady
+                    ? `✓ ${t("agent.localReady")}`
+                    : localAgent?.available
+                      ? t("agent.localNoLogin")
+                      : t("agent.localUnavailable")}
+                </p>
+              ) : (
+                <>
+                  <div className="flex items-center gap-2">
+                    <span className="w-16 shrink-0 font-medium text-gray-600">{t("agent.provider")}</span>
+                    <select
+                      value={provider}
+                      onChange={(e) => setProvider(e.target.value)}
+                      className="flex-1 rounded border border-gray-300 bg-white px-1.5 py-1"
+                    >
+                      {(status.agents.find((a) => a.id === "claude-api")?.providers ?? []).map((p) => (
+                        <option key={p.id} value={p.id} disabled={!p.available}>
+                          {p.label}
+                          {p.available ? "" : ` (${t("agent.soon")})`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-16 shrink-0 font-medium text-gray-600">{t("agent.apiKey")}</span>
+                    <input
+                      type="password"
+                      defaultValue={apiKey ?? ""}
+                      onChange={(e) => saveKey(e.target.value)}
+                      placeholder="sk-ant-…"
+                      autoComplete="off"
+                      className="min-w-0 flex-1 rounded border border-gray-300 bg-white px-2 py-1 font-mono"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-16 shrink-0 font-medium text-gray-600">{t("agent.model")}</span>
+                    <select
+                      value={model}
+                      onChange={(e) => setModel(e.target.value)}
+                      className="flex-1 rounded border border-gray-300 bg-white px-1.5 py-1"
+                    >
+                      {status.models.map((m) => (
+                        <option key={m}>{m}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <p className="text-[11px] text-gray-500">
+                    {t("agent.keyHelp")}{" "}
+                    <a
+                      href="https://console.anthropic.com/settings/keys"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-blue-700 hover:underline"
+                    >
+                      {t("agent.getKey")} ↗
+                    </a>
+                  </p>
+                </>
+              )}
+            </div>
+          )}
 
           {/* Two conversations side by side: the current problem, and a brand-new one */}
           <div role="tablist" className="grid grid-cols-2 gap-1 border-b border-gray-200 bg-gray-50 p-1 text-xs">
@@ -271,36 +381,6 @@ export default function AgentPanel({
           </div>
 
           <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-3 py-3 text-sm">
-            {status !== "checking" && status?.enabled && status.auth === "api_key" && !apiKey && (
-              <div className="space-y-2 rounded-lg border border-gray-200 bg-gray-50 p-3">
-                <p className="text-xs text-gray-600">{t("agent.keyHelp")}</p>
-                <div className="flex gap-2">
-                  <input
-                    type="password"
-                    value={keyDraft}
-                    onChange={(e) => setKeyDraft(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && connect()}
-                    placeholder="sk-ant-…"
-                    autoComplete="off"
-                    className="min-w-0 flex-1 rounded-md border border-gray-300 px-2 py-1 font-mono text-xs"
-                  />
-                  <button
-                    onClick={connect}
-                    className="rounded-md bg-blue-600 px-3 py-1 text-xs font-medium text-white hover:bg-blue-700"
-                  >
-                    {t("agent.connect")}
-                  </button>
-                </div>
-                <a
-                  href="https://console.anthropic.com/settings/keys"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[11px] text-blue-700 hover:underline"
-                >
-                  {t("agent.getKey")} ↗
-                </a>
-              </div>
-            )}
             {status !== "checking" && !status?.enabled && (
               <p className="rounded-lg bg-gray-50 p-3 text-xs text-gray-600">{t("agent.unavailableHelp")}</p>
             )}
@@ -398,19 +478,7 @@ export default function AgentPanel({
               )}
             </div>
             <div className="mt-1.5 flex items-center justify-between gap-2 text-[10px] text-gray-400">
-              {status !== "checking" && status?.auth === "api_key" && status.models.length > 1 ? (
-                <select
-                  value={model}
-                  onChange={(e) => setModel(e.target.value)}
-                  className="rounded border border-gray-200 px-1 py-0.5"
-                >
-                  {status.models.map((m) => (
-                    <option key={m}>{m}</option>
-                  ))}
-                </select>
-              ) : (
-                <span>{t("agent.hint")}</span>
-              )}
+              <span>{t("agent.hint")}</span>
               <button
                 disabled
                 title={t("agent.proSoon")}
@@ -493,7 +561,8 @@ function AgentBlock({ block }: { block: Block }) {
 
 /** Assistant text: paragraphs, ``` code fences and `inline code`. */
 function AgentText({ text }: { text: string }) {
-  const parts = text.split(/```[a-z]*\n?/);
+  // Markdown the model writes: ``` fences, # headings, - / 1. lists, --- rules, | tables |, **bold**, `code`, $math$.
+  const parts = text.replace(/\$\$([\s\S]+?)\$\$/g, (_, m) => `$${m.trim()}$`).split(/```[a-z]*\n?/);
   return (
     <div className="space-y-2 text-gray-800">
       {parts.map((part, i) =>
@@ -502,21 +571,80 @@ function AgentText({ text }: { text: string }) {
             {part.replace(/\n$/, "")}
           </pre>
         ) : (
-          <p key={i} className="whitespace-pre-wrap">
-            {part.split(/(`[^`]+`)/).map((s, j) =>
-              s.startsWith("`") && s.endsWith("`") && s.length > 1 ? (
-                <code key={j} className="rounded bg-gray-100 px-1 text-[12px]">
-                  {s.slice(1, -1)}
-                </code>
-              ) : (
-                s
-              ),
-            )}
-          </p>
+          <MarkdownBlocks key={i} text={part} />
         ),
       )}
     </div>
   );
+}
+
+function MarkdownBlocks({ text }: { text: string }) {
+  const out: React.ReactNode[] = [];
+  const lines = text.split("\n");
+  for (let k = 0; k < lines.length; k++) {
+    const line = lines[k];
+    const h = line.match(/^(#{1,4})\s+(.*)/);
+    if (!line.trim()) continue;
+    if (h) {
+      out.push(
+        <p key={k} className={`font-semibold text-gray-900 ${h[1].length <= 2 ? "text-[15px]" : "text-sm"}`}>
+          <RichText text={h[2]} />
+        </p>,
+      );
+    } else if (/^\s*(-{3,}|\*{3,})\s*$/.test(line)) {
+      out.push(<hr key={k} className="border-gray-200" />);
+    } else if (/^\s*\|/.test(line)) {
+      const rows: string[][] = [];
+      for (; k < lines.length && /^\s*\|/.test(lines[k]); k++) {
+        if (/^\s*\|[\s:|-]+\|\s*$/.test(lines[k])) continue; // the |---|---| separator
+        rows.push(
+          lines[k]
+            .trim()
+            .replace(/^\||\|$/g, "")
+            .split("|")
+            .map((c) => c.trim()),
+        );
+      }
+      k--;
+      out.push(
+        <div key={k} className="overflow-x-auto">
+          <table className="text-xs">
+            <tbody>
+              {rows.map((r, ri) => (
+                <tr key={ri} className={ri === 0 ? "font-semibold" : "border-t border-gray-100"}>
+                  {r.map((c, ci) => (
+                    <td key={ci} className="px-2 py-1 align-top">
+                      <RichText text={c} />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>,
+      );
+    } else if (/^\s*([-*]|\d+\.)\s+/.test(line)) {
+      const items: string[] = [];
+      for (; k < lines.length && /^\s*([-*]|\d+\.)\s+/.test(lines[k]); k++) items.push(lines[k]);
+      k--;
+      out.push(
+        <ul key={k} className="list-disc space-y-1 pl-5">
+          {items.map((it, ii) => (
+            <li key={ii}>
+              <RichText text={it.replace(/^\s*([-*]|\d+\.)\s+/, "")} />
+            </li>
+          ))}
+        </ul>,
+      );
+    } else {
+      out.push(
+        <p key={k} className="whitespace-pre-wrap">
+          <RichText text={line} />
+        </p>,
+      );
+    }
+  }
+  return <>{out}</>;
 }
 
 /** Save a brand-new problem's files as my_problem.zip (drop the folder into problems/<topic>/ to keep it). */

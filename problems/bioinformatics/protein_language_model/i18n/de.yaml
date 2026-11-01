@@ -1,0 +1,23 @@
+source_hash: 2038e43e9d92
+title: Ein winziges Protein-Sprachmodell lernt Kontakte
+summary: Ein zweischichtiger Transformer mit einsum-Attention, $A_{nhij} = \mathrm{softmax}_j(Q_{nhik}K_{nhjk}/\sqrt{d_k})$, wird nur darauf trainiert, maskierte Buchstaben von Sequenzen aus einem Potts-Modell mit auf einer Gitterfaltung gesetzten Kopplungen zu ergänzen. Niemand verrät ihm die Struktur, und doch zeigen seine symmetrisierten, APC-korrigierten Attention-Karten auf die gesetzten Kontakte, die Idee hinter den Kontakt-Heads von Protein-Sprachmodellen.
+notes: 'Warum findet Attention Kontakte? In einem Potts-Modell hängt der Buchstabe an Position $i$, gegeben alle anderen, nur von den an ihn gekoppelten Positionen ab (seiner Markov-Decke), daher ist der beste Weg, einen maskierten Buchstaben zu erraten, auf seine Kontaktpartner zu schauen, und genau das lernt Attention. Rao et al., "Transformer protein language models are unsupervised structure learners" (ICLR 2021), zeigten, dass die Attention-Karten großer Protein-Sprachmodelle, die auf Millionen natürlicher Sequenzen trainiert wurden, Kontakte kodieren, ausgelesen mit einer logistischen Regression über die APC-korrigierten, symmetrisierten Karten, angepasst an einer Handvoll Proteine. Spätere Modelle wie ESM-2 (2022–2023) sagten aus solchen Repräsentationen sogar die 3D-Struktur vorher. Hier ist das Auslesen vollständig unüberwacht (ein einfacher Mittelwert über die Heads), die Familie ist synthetisch, und der Testverlust wird mit zwei kontextfreien Baselines verglichen: dem Unigramm
+  (eine einzige Buchstabenverteilung) und dem positionsweisen Profil. Das Profil zu schlagen heißt, dass das Modell Kontext nutzt, also die Kopplungen. Die Serpentinenfaltung legt Kontakte auf Antidiagonalen, wie die Stränge eines β-Faltblatts; zufällige Paare lägen nur in etwa 5 % der Fälle richtig. APC entfernt den Hintergrund von Positionen, auf die alle achten. Probier schwächere Kopplungen, weniger Sequenzen oder einen einzigen Head.'
+meanings:
+- zufällige Kopplungsblöcke nur zwischen Resten, die sich in der Gitterfaltung berühren; Gibbs-Sampling macht daraus eine Sequenzfamilie
+- Token- plus Positionseinbettung des Buchstabens $s_{ni}$ (maskierte Buchstaben verwenden das [MASK]-Token)
+- 'wiederholtes $c$ ⇒ summiert: Queries jedes Heads (Keys und Values ebenso)'
+- wiederholtes $k$ ⇒ summiert; jede Zeile ist eine Wahrscheinlichkeitsverteilung über die beachteten Positionen $j$
+- 'wiederholtes $j$, dann $h, k$ ⇒ summiert: was jede Position von den anderen sammelt'
+- Kreuzentropie des wahren Buchstabens an den 15 % maskierten Positionen, mit Adam minimiert
+- Attention gemittelt über Testsequenzen, pro Head symmetrisiert und APC-korrigiert, dann über Schichten $l$ und Heads $h$ gemittelt
+labels:
+  coupling: Gesetzte Kopplungsstärke $\sigma_J$
+  n_seq: Trainingssequenzen
+  q: Alphabetgröße $q$
+  layers: Transformer-Schichten
+  heads: Attention-Heads $H$
+  d_model: Modellbreite $d$
+  steps: Trainingsschritte
+  lr: Lernrate
+  mask_rate: Maskierter Anteil

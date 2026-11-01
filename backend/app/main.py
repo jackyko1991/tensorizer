@@ -122,6 +122,7 @@ class AgentRequest(BaseModel):
     model: str | None = None
     # What is on screen: {title, files (the editor's edited files), params, selection {file, from_line, to_line, text}}
     context: dict | None = None
+    agent: str = "claude-code"  # "claude-code" (this machine's login) or "claude-api" (the X-Anthropic-Key)
 
 
 @app.get("/api/agent/status")
@@ -143,11 +144,21 @@ async def agent_chat(req: AgentRequest, request: Request) -> StreamingResponse:
     key = request.headers.get("x-anthropic-key") or None
 
     async def events():
-        events = agent.chat(req.session, req.problem, req.message, req.model, key, _client(request), req.context)
+        events = agent.chat(
+            req.session, req.problem, req.message, req.model, key, _client(request), req.context, req.agent
+        )
         async for event in events:
             yield json.dumps(event) + "\n"
 
     return StreamingResponse(events(), media_type="application/x-ndjson", headers={"Cache-Control": "no-cache"})
+
+
+@app.post("/api/workspace/new")
+def workspace_new() -> dict:
+    """Start a blank problem in the Workspace (from the template), to edit and run by hand."""
+    if not agent.ENABLED:
+        raise HTTPException(403, "workspaces are not enabled on this server")
+    return agent.create_workspace()
 
 
 @app.post("/api/workspace/{session}/run-stream")

@@ -1,0 +1,19 @@
+source_hash: 60f8bd39a854
+title: Cristal temporel photonique et réflexion temporelle
+summary: La lumière dans un milieu dont la permittivité $\varepsilon(t)$ varie dans le temps mais pas dans l'espace. Un saut brusque de $\varepsilon$ scinde une impulsion en une onde avant et une onde arrière réfléchie temporellement, à une nouvelle fréquence ; une modulation périodique ouvre une bande interdite en impulsion $k$, à l'intérieur de laquelle les ondes croissent exponentiellement. Chaque mode de Fourier est un problème $2\times 2$ indépendant, si bien que tous les $k$ sont résolus en un seul lot, et les bandes de Floquet viennent d'un seul appel eigvals en lot.
+notes: 'Échanger les rôles de l''espace et du temps retourne l''optique familière comme un gant. À une interface ordinaire dans l''espace, la fréquence est conservée et le nombre d''onde change ; à une interface temporelle, où tout le milieu passe d''un coup de $\varepsilon_1$ à $\varepsilon_2$, le nombre d''onde $k$ est conservé et la fréquence saute, $\omega_2 = \omega_1 n_1/n_2$. Comme aucune charge ni aucun courant n''apparaît, $D$ et $B$ restent continus (et non $E$ et $H$), ce qui donne les coefficients de Fresnel temporels $D_f = \tfrac12(1 + n_2/n_1)$ et $D_b = \tfrac12(1 - n_2/n_1)$ (Morgenthaler, 1958) : une partie de l''impulsion fait demi-tour et repart en arrière, la réflexion temporelle, et l''énergie n''est pas conservée car la commutation du milieu fournit un travail au champ. La réflexion temporelle et la translation de fréquence large bande ont été observées en micro-ondes dans un métamatériau de ligne de transmission commuté dans le temps (Moussa et al., Nature Physics
+  2023). Une modulation périodique $\varepsilon(t) = \varepsilon_0(1 + \alpha\cos\Omega t)$ fait de chaque mode un oscillateur paramétrique, $\ddot D_k + (k^2/\varepsilon)D_k = 0$ (une équation de type Mathieu). Près de $k/n_0 = \Omega/2$, les ondes avant et arrière sont couplées de façon résonante : la quasi-fréquence se verrouille sur $\Omega/2$ et acquiert une partie imaginaire, une bande interdite en impulsion (plutôt qu''en fréquence), de bords $k \approx \tfrac{n_0\Omega}{2}(1 \mp \alpha/4)$ et de taux de croissance maximal $\approx \alpha\Omega/8$ au premier ordre en $\alpha$. Une seconde bande interdite, bien plus étroite, en $k \approx n_0\Omega$ apparaît à l''ordre $\alpha^2$. Dans l''animation, seule la partie du spectre de l''impulsion située dans la bande interdite croît. C''est l''idée derrière les cristaux temporels photoniques (passés en revue par Galiffi et al., « Photonics of time-varying media », Advanced Photonics 2022) ; aux fréquences optiques, la profondeur et la vitesse
+  de modulation nécessaires sont très difficiles à atteindre, si bien que les expériences fonctionnent jusqu''ici surtout aux fréquences micro-ondes et radio. Simplifications : un milieu sans pertes et sans dispersion en 1D, $\mu = 1$, un saut instantané, et une modulation imposée de l''extérieur (l''énergie de la croissance vient de la pompe).'
+meanings:
+- amplitudes de Fourier ; le milieu est uniforme en $x$, donc $k$ est conservé et chaque mode évolue indépendamment
+- un générateur $2\times 2$ par nombre d'onde
+- $b$ répété ⇒ sommé ; la même ligne fait évoluer la matrice de monodromie $(K, 2, 2)$
+- amplitudes avant/arrière $\tfrac12(1 \pm n_2/n_1)$ issues de la continuité de $D$ et $B$
+- propagateur sur une période, obtenu par RK4 appliqué à la matrice identité
+- multiplicateurs de Floquet pour tous les $k$ en un seul appel en lot ; $\det M = 1$, donc $\lambda_+\lambda_- = 1$
+- 'quasi-fréquence : réelle dans une bande, $\operatorname{Im}\omega > 0$ (croissance) dans une bande interdite en impulsion'
+labels:
+  eps2: Permittivité après le saut $\varepsilon_2$
+  alpha: Profondeur de modulation $\alpha$
+  omega: Fréquence de modulation $\Omega$
+  t_max: Durée simulée

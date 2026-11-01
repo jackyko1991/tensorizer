@@ -1,0 +1,20 @@
+source_hash: b20a6dde0710
+title: Fotónica topológica en una red de Haldane
+summary: Una red de panal de resonadores ópticos acoplados con acoplamientos complejos entre segundos vecinos, el modelo de Haldane fotónico. El hamiltoniano de Bloch $2\times 2$ sobre toda una malla de $k$ da el número de Chern mediante el método de enlaces de Fukui–Hatsugai–Suzuki (einsum sobre variables de enlace). Una cinta zigzag muestra estados de borde que cruzan la brecha, y la luz lanzada en el borde de un fragmento finito fluye en un solo sentido alrededor de una muesca, mientras que en una red trivial no consigue pasar.
+notes: 'Unidades: el acoplamiento $t_1 = 1$ y la separación entre resonadores es 1. $E$ es la desintonía respecto a la frecuencia de resonancia desnuda, y en una red de guías de onda el tiempo $t$ se convierte en la distancia de propagación. La fase está fijada en $\phi = \pi/2$. La red es topológica, con $C = \pm1$, cuando $\lvert M\rvert < 3\sqrt3\,t_2\lvert\sin\phi\rvert$; la red de comparación usa el doble de esa masa y tiene $C = 0$. El método de Fukui–Hatsugai–Suzuki (J. Phys. Soc. Jpn., 2005) da un entero exacto incluso en una malla gruesa. La correspondencia volumen-borde promete entonces $\lvert C\rvert$ canales de borde unidireccionales. La luz de entrada es una mancha junto al borde inferior, filtrada a frecuencias dentro de la brecha del volumen. Rodea la muesca porque no hay ningún estado que se mueva hacia atrás al que pueda dispersarse. En la red trivial la misma luz simplemente se esparce por el volumen. El modelo es el de Haldane (PRL, 1988). Haldane & Raghu (PRL, 2008)
+  propusieron su versión fotónica, y Wang, Chong, Joannopoulos & Soljačić (Nature, 2009) observaron estados de borde unidireccionales de microondas en un cristal fotónico magnetoóptico. Rechtsman et al. (Nature, 2013) construyeron una versión de Floquet con guías de onda helicoidales. Después llegaron los láseres de aislante topológico (Bandres et al., Science, 2018), y Ozawa et al. (Rev. Mod. Phys., 2019) revisan el campo. Trabajos más recientes, incluidos cristales fotónicos de efecto Hall de valle que no necesitan campo magnético, llevan la idea a guías de onda en chip para telecomunicaciones y terahercios. Prueba a subir $M$ por encima del valor crítico: $C$ cae a 0, los estados de borde se separan de las bandas y la luz ya no rodea la muesca.'
+meanings:
+- amplitud compleja del campo en el resonador $i$ del fragmento
+- acoplamientos $t_1$, $t_2 e^{-i\nu_{ij}\phi}$ y desintonía $\pm M$ más desorden
+- $k\cdot\delta_n$ es un einsum sobre la coordenada $i$, para cada $k$ de la malla; $\delta_n$, $b_n$ son vectores de enlace
+- '$\mu$ repetido ⇒ sumado: el hamiltoniano de Bloch en cada $k$'
+- autovector de la banda inferior (su fase es arbitraria)
+- '$a$ repetido ⇒ sumado: variable de enlace entre puntos $k$ vecinos'
+- 'fase del lazo de cuatro enlaces: flujo de Berry, invariante gauge'
+- '$a, b, c$ repetidos ⇒ sumados: curvatura de Berry continua, derivadas con autograd'
+- $e^{-iHt}\psi_0$ a partir de un eigh por red (topológica y trivial)
+labels:
+  t2: Acoplamiento a segundos vecinos $t_2$
+  mass: Desintonía de subred $M$
+  disorder: Intensidad de la desintonía aleatoria $W$
+  defect_radius: Radio de la muesca $R$

@@ -1,0 +1,37 @@
+title: Machine-learning–accelerated CFD
+category: fluids
+level: advanced
+order: 4
+summary: >
+  A plain finite-volume solver on a grid 16 times coarser than the truth smears the shocks of the viscous Burgers equation. A tiny CNN
+  learns a correction to the face fluxes, trained by backpropagating through an unrolled coarse simulation. On initial
+  conditions it has never seen, the learned solver follows the fine solution several times more closely, at the same coarse
+  resolution, while conserving $\int u\,dx$ exactly.
+animated: true
+vector_form: '\partial_t u + \partial_x\big(\tfrac12 u^2 - \nu\,\partial_x u\big) = 0,\qquad \mathcal L(\theta) = \Big\langle \textstyle\sum_{s=1}^{S}\big\lVert u_\theta^{(s)} - \bar u_\text{fine}^{(s)}\big\rVert^2\Big\rangle'
+index_form: '\dot u_{bi} = -\frac{F_{b,i+\frac12} - F_{b,i-\frac12}}{\Delta x},\qquad F_{b,i+\frac12} = F^\text{Rus}_{b,i+\frac12} - \nu\frac{u_{b,i+1} - u_{bi}}{\Delta x} + \delta F_{b,i+\frac12}[u],\qquad h^{(1)}_{bci} = \sigma\big(K^{(1)}_{ck}\,u_{b,i+k} + \beta_c\big)'
+translation:
+  - {symbol: 'u_{bi}', code: 'u', shape: '(B, N_c)', meaning: 'cell average in coarse cell $i$ for trajectory $b$ (periodic)'}
+  - {symbol: 'F^\text{Rus}_{i+\frac12}', code: 'rusanov_flux(u)', shape: '(B, N_c)', meaning: '$\tfrac14(u_i^2 + u_{i+1}^2) - \tfrac12\alpha(u_{i+1} - u_i)$, $\alpha = \max(\lvert u_i\rvert, \lvert u_{i+1}\rvert)$; $u_{i+1}$ is roll(u, -1)'}
+  - {symbol: 'F_{i+\frac12} - F_{i-\frac12}', code: 'F - roll(F, 1, dims=-1)', shape: '(B, N_c)', meaning: 'what flows out of one cell flows into the next ⇒ $\sum_i u_i$ conserved'}
+  - {symbol: 'K^{(1)}_{ck}\,u_{b,i+k}', code: "Conv1d(1, 16, 5, padding_mode='circular')", shape: '(B, 16, N_c)', meaning: 'repeated $k$ ⇒ summed: a 5-cell stencil, periodic padding'}
+  - {symbol: '\delta F_{i+\frac12}[u]', code: 'FluxCorrection()(u)', shape: '(B, N_c)', meaning: 'learned flux correction from three convolutions (zero at the start)'}
+  - {symbol: '\bar u_{\text{fine},I}', code: 'u_fine.unflatten(-1, (-1, f)).mean(-1)', shape: '(T, B, N_c)', meaning: 'fine solution averaged over the $f = N_f/N_c$ fine cells in each coarse cell'}
+  - {symbol: '\nabla_\theta\mathcal L', code: 'loss.backward()', shape: '—', meaning: 'autograd through all $S$ unrolled time steps of the solver'}
+notes: >
+  Units: the domain is $[0, 2\pi)$, periodic. The truth is the same finite-volume scheme on 512 cells, with Heun time stepping
+  sub-cycled to stay stable. Training uses 32 random smooth waves, and the test uses 8 others from a different seed, run 50%
+  longer ($t = 3$) than the training data. At each Adam step the learned solver starts from the true coarse state at random
+  times, runs $S$ steps, and is penalised for drifting from the averaged truth. Gradients flow back through every time step, so the
+  network learns corrections that stay good when they are fed their own output. Two design choices keep it honest: $\delta F$ enters as a
+  flux, so $\sum_i u_i$ is conserved to round-off, and the last layer starts at zero, so training begins from the plain solver.
+  The idea follows Bar-Sinai, Hoyer, Hickey & Brenner (PNAS, 2019), who learned data-driven discretisations of exactly this
+  kind of equation, and Kochkov, Smith, Alieva, Wang, Brenner & Hoyer (PNAS, 2021). They learned interpolation coefficients
+  inside a 2D Navier–Stokes solver and reported 8–10× coarser grids at the same accuracy, roughly 40–80× faster. This toy shows the
+  mechanism, not those speed-ups. A learned correction can fail on inputs far from its training data. Try training for fewer
+  steps, a shorter unroll, or a viscosity the network was not trained on.
+params:
+  nu: {default: 0.02, min: 0.01, max: 0.05, step: 0.005, label: 'Viscosity $\nu$'}
+  n_coarse: {default: '32', type: choice, options: ['16', '32', '64'], label: 'Coarse cells $N_c$'}
+  train_iters: {default: 150, min: 20, max: 600, step: 10, type: int, label: Training steps}
+  unroll: {default: 12, min: 2, max: 30, step: 1, type: int, label: 'Unrolled steps $S$'}

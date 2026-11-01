@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Repetition code: a line of d data qubits with parity checks between neighbours; one qubit flipped with probability p lights up the two checks beside it">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- distance brace -->
+    <path d="M32,40 q0,-8 8,-8 h72 q8,0 8,-8 q0,8 8,8 h72 q8,0 8,8" fill="none" stroke="#9ca3af" stroke-width="1.5"/>
+    <text x="120" y="16" text-anchor="middle" font-style="italic">d</text>
+    <!-- links from checks to neighbouring data qubits -->
+    <g stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3">
+      <line x1="40" y1="62" x2="60" y2="104"/><line x1="80" y1="62" x2="60" y2="104"/>
+      <line x1="80" y1="62" x2="100" y2="104"/><line x1="120" y1="62" x2="100" y2="104"/>
+      <line x1="120" y1="62" x2="140" y2="104"/><line x1="160" y1="62" x2="140" y2="104"/>
+      <line x1="160" y1="62" x2="180" y2="104"/><line x1="200" y1="62" x2="180" y2="104"/>
+    </g>
+    <!-- data qubits -->
+    <g stroke="#1e40af" stroke-width="1.5" fill="#2563eb">
+      <circle cx="40" cy="58" r="10"/><circle cx="80" cy="58" r="10"/>
+      <circle cx="160" cy="58" r="10"/><circle cx="200" cy="58" r="10"/>
+    </g>
+    <circle cx="120" cy="58" r="10" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <!-- bit flip on the middle qubit -->
+    <path d="M113,51 L127,65 M127,51 L113,65" stroke="#dc2626" stroke-width="2.5"/>
+    <text x="128" y="84" font-style="italic" fill="#b91c1c">p</text>
+    <!-- parity checks Z Z -->
+    <g stroke="#374151" stroke-width="2" fill="#ffffff">
+      <rect x="52" y="104" width="16" height="16" rx="2"/><rect x="172" y="104" width="16" height="16" rx="2"/>
+    </g>
+    <g stroke="#b45309" stroke-width="2" fill="#f59e0b">
+      <rect x="92" y="104" width="16" height="16" rx="2"/><rect x="132" y="104" width="16" height="16" rx="2"/>
+    </g>
+    <text x="120" y="148" text-anchor="middle" font-size="13">checks <tspan font-style="italic">Z</tspan><tspan font-size="10" dy="3">j</tspan><tspan dy="-3" font-style="italic">Z</tspan><tspan font-size="10" dy="3">j+1</tspan></text>
+  </g>
+</svg>

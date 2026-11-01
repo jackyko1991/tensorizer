@@ -1,0 +1,22 @@
+source_hash: 95b6effde453
+title: Réseau de neurones sur graphe E(n)-équivariant pour la dynamique de particules
+summary: Un petit réseau de neurones sur graphe E(n)-équivariant (EGNN) apprend à faire avancer dans le temps un système 3D de particules chargées. Ses messages ne dépendent que des distances $|\mathbf x_i - \mathbf x_j|^2$ et ses mises à jour de coordonnées sont dirigées selon $\mathbf x_i - \mathbf x_j$, si bien que tourner l'entrée tourne exactement la prédiction ; un MLP ordinaire entraîné sur les mêmes données doit apprendre cette propriété, et n'y parvient pas.
+notes: 'Le vrai système : $N$ particules de masse unité et de charges $c_i = \pm 1$, avec des forces de Coulomb adoucies et de faibles ressorts $k_s$ entre toutes les paires (pour que le nuage reste groupé), intégré par RK4 avec un pas de $\Delta t / 10$. Les deux réseaux voient les mêmes paires (état à $t$, état à $t + \Delta t$) issues de quelques systèmes aléatoires et sont entraînés avec Adam sur l''erreur quadratique moyenne ; des systèmes mis de côté donnent l''erreur de test. L''EGNN (Satorras, Hoogeboom & Welling, « E(n) Equivariant Graph Neural Networks », ICML 2021) construit un message $m_{ij}$ pour chaque paire à partir d''entrées invariantes uniquement (caractéristiques des nœuds, $d_{ij} = |\mathbf x_i - \mathbf x_j|^2$ et le produit des charges), puis déplace chaque particule selon les directions $\mathbf x_i - \mathbf x_j$ avec des poids scalaires appris. Remarquez que c''est exactement la forme de la vraie loi de force, $\ddot{\mathbf x}_i = \sum_j w_{ij}(\mathbf x_i - \mathbf
+  x_j)$ : la symétrie est intégrée à l''architecture au lieu d''être apprise à partir des données. Le test fait tourner et translate une entrée de test par des $R$ et $\mathbf s$ aléatoires : pour l''EGNN, $f(R\mathbf x + \mathbf s) = Rf(\mathbf x) + \mathbf s$ est vérifiée à l''arrondi float32 près (environ $10^{-6}$), tandis que pour le MLP, qui voit les coordonnées aplaties, l''écart est de l''ordre de la prédiction elle-même. Avec peu de systèmes d''entraînement, l''EGNN atteint une erreur de test plus faible avec bien moins de poids. Lors du déroulement, chaque modèle reçoit ses propres prédictions ; les erreurs s''accumulent dans les deux, car le système chargé est chaotique, mais l''EGNN reste proche plus longtemps. Simplifications : trois couches de largeur 32, la variante de l''EGNN avec vitesse et $\tau = \Delta t / L$ (notre choix), entraînement sur le lot complet et graine fixe. La même idée de passage de messages équivariant sous-tend les potentiels interatomiques appris comme
+  NequIP (Batzner et al., Nature Communications 2022) et les modèles de diffusion équivariants qui génèrent des molécules 3D (Hoogeboom et al., ICML 2022). Essayez moins de systèmes d''entraînement : l''écart entre les deux réseaux se creuse.'
+meanings:
+- position et vitesse de la particule $i$ dans le système $b$, composante cartésienne $a$
+- toutes les séparations de paires par broadcasting
+- '$a$ répété ⇒ sommé : distances au carré, la seule entrée géométrique des MLP (invariante par rotation)'
+- 'vraie force : $j$ répété ⇒ sommé sur les partenaires (Coulomb plus ressorts)'
+- message sur chaque paire, $H = 32$ caractéristiques
+- 'mise à jour des coordonnées : $j$ répété ⇒ sommé ; un vecteur construit uniquement à partir de $\mathbf x_i - \mathbf x_j$, il tourne donc avec l''entrée'
+- 'un scalaire invariant fois un vecteur : toujours équivariant'
+- rotation aléatoire utilisée pour le test d'équivariance
+labels:
+  n_particles: Particules $N$
+  n_train: Systèmes d'entraînement
+  dt: Pas de temps du modèle $\Delta t$
+  n_iter: Itérations d'entraînement
+  lr: Taux d'apprentissage d'Adam
+  rollout_steps: Pas de déroulement

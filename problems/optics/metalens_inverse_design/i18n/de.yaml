@@ -1,0 +1,23 @@
+source_hash: 7c33ee10a4e7
+title: Inverses Design einer Metalinse
+summary: Eine flache Metaoberfläche aus Meta-Atomen unterhalb der Wellenlänge prägt dem Licht eine Phase $\varphi(x)$ auf. Das Licht wird mit der Winkelspektrum-Methode propagiert (eine FFT), und Autograd mit Adam stimmt jedes Meta-Atom so ab, dass möglichst viel Leistung in einen Brennfleck gelangt, ausgehend von einem flachen Start. Das Ergebnis wird mit der analytischen hyperbolischen Linse verglichen, und das Design für zwei Wellenlängen gleichzeitig (ein Batch) zeigt den chromatischen Kompromiss.
+notes: 'Die analytische Metalinse bringt jeden Weg von der Linse zum Fokus in Phase, $\varphi(x) = -k(\sqrt{x^2 + f^2} - f)$, umgebrochen in $[0, 2\pi)$, weil ein Meta-Atom das Licht nur um bis zu eine Welle verzögern kann (Metalinsen dieser Art für sichtbares Licht wurden von Khorasaninejad et al., Science 2016, demonstriert). Hier bekommt der Optimierer keine Formel: Er startet von einer flachen Oberfläche, berechnet die Brennfleckleistung $\eta$ mit einem FFT-basierten Propagator und erhält den Gradienten nach allen Meta-Atom-Phasen aus einem einzigen Backward-Durchlauf, dieselbe Information, die die Adjungierten-Methode im photonischen inversen Design liefert. Für eine einzige Wellenlänge und einen einzigen Brennpunkt liegt die beste Phase nahe an der hyperbolischen, und der Optimierer entdeckt sie wieder (bei $\eta$ kann er etwas besser abschneiden, weil der Fleck eine endliche Breite hat und der skalare Propagator nicht genau dem Strahlenbild entspricht). Interessant ist der Fall zweier
+  Wellenlängen: Im Spielzeugmodell fügt jedes Meta-Atom einen festen optischen Weg hinzu, umgebrochen in eine Welle, sodass bei $\lambda_1 \neq \lambda_0$ die Phase um $\lambda_0/\lambda_1$ skaliert wird und die Umbrüche nicht mehr übereinanderliegen. Die hyperbolische Linse fokussiert rotes Licht dann in einem anderen Abstand (diffraktive chromatische Aberration). Mit dem Design ''dual'' teilen sich beide Wellenlängen den Verlust, und der Optimierer findet einen Kompromiss: besser bei $\lambda_1$, schlechter bei $\lambda_0$. Vereinfachungen: skalares 1D-Licht, eine Phasenmaske als dünnes Element (jedes Meta-Atom ist ein idealer Phasenschieber ohne Kopplung zu den Nachbarn), perfekte Transmission, ein Spielzeug-Dispersionsmodell und periodische Ränder. Echtes inverses Design löst die Maxwell-Gleichungen für die Meta-Atome; differenzierbare Modelle ganzer Metaoberflächen-Kameras wurden von Tseng et al. ("Neural nano-optics", Nature Communications 2021) Ende-zu-Ende trainiert, und Li et al.
+  geben einen Überblick über invers entworfene Metaoberflächen (ACS Photonics 2022). Wie viel Bandbreite eine flache Linse auf einmal fokussieren kann, unterliegt fundamentalen Grenzen (Presutti & Monticone, Optica 2020).'
+meanings:
+- 2048 Gitterpunkte ($\Delta x = 0.05$ μm) und ihre FFT-Wellenzahlen
+- 'Designvariable: Phasenverzögerung jedes Meta-Atoms in Wellen bei $\lambda_0$, ein Wert pro 0,25-μm-Atom'
+- Phase bei der Wellenlänge $\lambda_l$; $l$ ist ein Batch aus zwei Wellenlängen
+- 'komplex: imaginär (abklingend) für evaneszente Komponenten $|k_x| > k$'
+- wiederholtes $x$ ⇒ summiert, per FFT in $O(X\log X)$ ausgeführt
+- Feld bei jeder Wellenlänge und jedem Abstand auf einmal, durch Broadcasting der Transferfunktion
+- 'wiederholtes $x$ ⇒ summiert: Leistung innerhalb des Brennflecks $|x| < \lambda_l f / D$'
+- 'Autograd durch die FFTs: die Adjungierten-Methode gratis'
+labels:
+  design: Design für beide Wellenlängen (dual) oder nur $\lambda_0$
+  wavelength: Designwellenlänge $\lambda_0$
+  wavelength2: Zweite Wellenlänge $\lambda_1$
+  focal_length: Brennweite $f$
+  diameter: Linsendurchmesser $D$
+  n_iter: Adam-Iterationen
+  lr: Adam-Lernrate (Wellen pro Schritt)

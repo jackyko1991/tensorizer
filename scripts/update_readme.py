@@ -26,9 +26,13 @@ CATEGORIES = {
     "quantum": "Quantum",
     "astro": "Astrophysics & Relativity",
     "nuclear": "Nuclear & Particle",
+    "physchem": "Physical Chemistry",
+    "chemistry": "Chemistry",
     "medical": "Medical Physics",
     "biophysics": "Biophysics",
     "bioinformatics": "Bioinformatics",
+    "maths": "Mathematics",
+    "graphics": "Gaming & Computer Vision",
     "others": "Others",
 }
 LEVELS = {"beginner": "🟢 Beginner", "intermediate": "🟠 Intermediate", "advanced": "🔴 Advanced"}

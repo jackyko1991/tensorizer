@@ -1,0 +1,48 @@
+title: Inverse design of a metalens
+category: optics
+level: advanced
+order: 4
+summary: >
+  A flat metasurface of sub-wavelength meta-atoms imprints a phase $\varphi(x)$ on light. Light is propagated by
+  the angular-spectrum method (one FFT), and autograd with Adam tunes every meta-atom to push as much power as
+  possible into a focal spot, from a flat start. The result is compared with the analytic hyperbolic lens, and
+  designing for two wavelengths at once (a batch) shows the chromatic trade-off.
+animated: true
+vector_form: 'E(x, z) = \int \hat E(k_x, 0)\, e^{i k_x x + i\sqrt{k^2 - k_x^2}\,z}\,\frac{dk_x}{2\pi},\qquad E(x, 0) = A(x)\,e^{i\varphi(x)} \qquad \max_{\varphi}\ \eta = \frac{\int_{|x|<w} |E(x, f)|^2\,dx}{\int |E(x, 0)|^2\,dx}'
+index_form: '\hat E_{lq} = F_{qx}\,A_x\,e^{i\varphi_{lx}},\qquad E_{lzx} = F^{-1}_{xq}\,e^{i k_{z,lq} z_z}\,\hat E_{lq} \qquad \varphi_{lx} = 2\pi\,\tfrac{\lambda_0}{\lambda_l}\,(\theta_x \bmod 1) \qquad \eta_l = \frac{S_{lx}\,|E_{lx}(f)|^2}{|E_{lx}(0)|^2}'
+translation:
+  - {symbol: 'x,\ k_{x,q}', code: 'tensors.grid(device)', shape: '(X,), (Q,)', meaning: '2048 grid points ($\Delta x = 0.05$ μm) and their FFT wavenumbers'}
+  - {symbol: '\theta_x', code: 'atoms_to_grid(theta_atoms, x, D)', shape: '(X,)', meaning: 'design variable: phase delay of each meta-atom in waves at $\lambda_0$, one value per 0.25 μm atom'}
+  - {symbol: '\varphi_{lx}', code: 'metasurface_phase(theta, wavelengths, lam0)', shape: '(L, X)', meaning: 'phase at wavelength $\lambda_l$; $l$ is a batch of two wavelengths'}
+  - {symbol: 'k_{z,lq}', code: 'sqrt(k[:, None]**2 - kx[None, :]**2)', shape: '(L, Q)', meaning: 'complex: imaginary (decaying) for evanescent components $|k_x| > k$'}
+  - {symbol: 'F_{qx}\,(\cdot)_x', code: 'torch.fft.fft(E0, dim=-1)', shape: '(L, Q)', meaning: 'repeated $x$ ⇒ summed, done in $O(X\log X)$ by the FFT'}
+  - {symbol: 'E_{lzx}', code: 'propagate(E0, kz, z)', shape: '(L, Z, X)', meaning: 'field at every wavelength and distance at once, by broadcasting the transfer function'}
+  - {symbol: 'S_{lx}\,|E_{lx}|^2', code: "einsum('lx,lx->l', spot, E_f.abs()**2)", shape: '(L,)', meaning: 'repeated $x$ ⇒ summed: power inside the focal spot $|x| < \lambda_l f / D$'}
+  - {symbol: '\partial \eta / \partial \theta_x', code: 'loss.backward()', shape: '(n_atoms,)', meaning: 'autograd through the FFTs: the adjoint method for free'}
+notes: >
+  The analytic metalens puts every path from the lens to the focus in phase, $\varphi(x) = -k(\sqrt{x^2 + f^2} -
+  f)$, wrapped into $[0, 2\pi)$ because a meta-atom can only delay light by up to one wave (visible metalenses of
+  this kind were demonstrated by Khorasaninejad et al., Science 2016). Here no formula is given to the optimiser:
+  it starts from a flat surface, computes the focal-spot power $\eta$ with an FFT-based propagator, and gets the
+  gradient with respect to all meta-atom phases from one backward pass, the same information the adjoint method
+  gives in photonic inverse design. For a single wavelength and a single focal point the best phase is close to the
+  hyperbolic one, and the optimiser rediscovers it (it may do slightly better on $\eta$, because the spot has a
+  finite width and the scalar propagator is not exactly the ray picture). The interesting case is two wavelengths:
+  in the toy model each meta-atom adds a fixed optical path wrapped into one wave, so at $\lambda_1 \neq \lambda_0$
+  the phase is scaled by $\lambda_0/\lambda_1$ and the wraps no longer line up. The hyperbolic lens then focuses red
+  light at a different distance (diffractive chromatic aberration). With design 'dual' both wavelengths share the
+  loss and the optimiser finds a compromise: better at $\lambda_1$, worse at $\lambda_0$. Simplifications: scalar 1D
+  light, a thin-element phase mask (each meta-atom is an ideal phase shifter with no coupling between neighbours),
+  perfect transmission, a toy dispersion model and periodic boundaries. Real inverse design solves Maxwell's
+  equations for the meta-atoms; differentiable models of whole metasurface cameras were trained end to end by Tseng
+  et al. ("Neural nano-optics", Nature Communications 2021), and Li et al. review inverse-designed metasurfaces
+  (ACS Photonics 2022). How much bandwidth a flat lens can focus at once has fundamental limits (Presutti &
+  Monticone, Optica 2020).
+params:
+  design: {default: dual, type: choice, options: [dual, single], label: 'Design for both wavelengths (dual) or only $\lambda_0$'}
+  wavelength: {default: 0.532, min: 0.4, max: 0.8, step: 0.001, label: 'Design wavelength $\lambda_0$', unit: μm}
+  wavelength2: {default: 0.633, min: 0.4, max: 0.8, step: 0.001, label: 'Second wavelength $\lambda_1$', unit: μm}
+  focal_length: {default: 30.0, min: 10, max: 60, step: 1, label: 'Focal length $f$', unit: μm}
+  diameter: {default: 40.0, min: 10, max: 60, step: 2.5, label: 'Lens diameter $D$', unit: μm}
+  n_iter: {default: 300, min: 50, max: 1000, step: 50, type: int, label: Adam iterations}
+  lr: {default: 0.02, min: 0.002, max: 0.1, step: 0.002, label: 'Adam learning rate (waves per step)'}

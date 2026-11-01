@@ -1,0 +1,46 @@
+title: 'A tiny CNN finds a DNA binding motif'
+category: bioinformatics
+level: advanced
+order: 3
+summary: >
+  Half of a set of random DNA sequences carry one degenerate copy of a transcription-factor binding site. A
+  one-layer 1D convolutional network, $z_{nfp} = W_{fkb}\,x_{n,p+k,b}$ then max-pooling, learns with autograd and
+  Adam to tell them apart; read back as a sequence logo, its most important filter turns into the planted motif.
+animated: true
+vector_form: 'z_{f}(p) = \sum_{k,b} W_{f}(k, b)\, x(p+k, b) + c_f,\qquad \hat y = \sigma\Big(\sum_f v_f \max_p \operatorname{ReLU} z_f(p) + v_0\Big),\qquad \mathcal L = -\big\langle y\log\hat y + (1-y)\log(1-\hat y)\big\rangle'
+index_form: 'X_{npkb} = x_{n,p+k,b} \qquad z_{nfp} = W_{fkb}\,X_{npkb} + c_f \qquad m_{nf} = \max_p \operatorname{ReLU}(z_{nfp}) \qquad o_n = v_f\,m_{nf} + v_0 \qquad p_{fkb} = \frac{\kappa_{nf}\,X_{n,p^*_{nf},kb}}{\kappa_{nf}}'
+translation:
+  - {symbol: '\pi_{kb}', code: "motif_pwm('GGGACTTTCC', strength)", shape: '(W, 4)', meaning: 'planted position weight matrix: the consensus base with probability "strength", the other three share the rest'}
+  - {symbol: 'x_{nlb}', code: 'one_hot(seqs, 4)', shape: '(N, ℓ, 4)', meaning: 'sequence $n$ has base $b \in$ {A, C, G, T} at position $l$; label $y_n = 1$ if a site was planted'}
+  - {symbol: 'X_{npkb}', code: 'x.unfold(1, w, 1).transpose(2, 3)', shape: '(N, P, w, 4)', meaning: 'every window of $w$ bases (a view, no copy), $P = \ell - w + 1$'}
+  - {symbol: 'W_{fkb},\ c_f', code: 'params["W"], params["c"]', shape: '(F, w, 4), (F,)', meaning: 'trainable filters: a score per base and position, the same shape as a PWM'}
+  - {symbol: 'z_{nfp}', code: "einsum('npkb,fkb->nfp', X, W) + c", shape: '(N, F, P)', meaning: 'convolution: $k, b$ summed, filter $f$ scored at every position $p$'}
+  - {symbol: 'm_{nf}', code: 'relu(z).amax(dim=2)', shape: '(N, F)', meaning: 'global max pooling: the best match anywhere, so the site may sit at any position'}
+  - {symbol: 'o_n', code: "einsum('nf,f->n', m, v) + v0", shape: '(N,)', meaning: 'logit, $f$ summed; trained with binary cross-entropy, autograd and Adam (mini-batches of 100)'}
+  - {symbol: 'p_{fkb}', code: 'filter_pwms(x_pos, W, c)', shape: '(F, w, 4)', meaning: 'back to a motif, as DeepBind does: average the best window $p^*_{nf}$ of each positive sequence whose score passes half the top score ($\kappa_{nf} = 1$), $n$ summed'}
+  - {symbol: '\mathrm{IC}_k', code: '2 + (p * log2(p)).sum(-1)', shape: '(w,)', meaning: 'information content in bits: the height of the logo stack at position $k$'}
+  - {symbol: 'r', code: 'motif_similarity(p_f, π)', shape: '()', meaning: 'correlation of the learned and planted matrices at the best shift; 1 = identical'}
+notes: >
+  A transcription factor binds DNA where it finds a short, slightly variable word, its motif, usually summarised as
+  a position weight matrix (PWM). Scanning a sequence with a PWM is exactly a 1D convolution of the one-hot
+  sequence with a $w \times 4$ filter, which is why convolutional networks suit genomics: the first layer's
+  filters are motif detectors and max-pooling makes the answer independent of where the site is. Here nothing
+  tells the network what the motif is: it only sees labels, and gradient descent shapes its most useful filter
+  into the planted word (watch the logo sharpen from noise).
+  The dashed line is a reference that does know the
+  motif: scanning with the true PWM. Because the planted sites are degenerate and random DNA sometimes looks
+  like a site, even that cannot reach 100%, and the trained network ends close to it. Only the forward strand is
+  used and the background is uniform; real models also scan the reverse complement and must cope with GC content,
+  repeats and noisy experimental labels. This is the idea behind DeepBind (2015), which learned motifs from
+  protein-binding experiments; models such as Basset, Basenji and Enformer stack many more layers (and attention)
+  to predict chromatin and expression from 100-kb sequences. This toy reproduces only the first-layer idea. Try a
+  weaker motif, a short motif (E-box, CACGTG, appears by chance more often), or fewer filters.
+params:
+  motif: {default: nfkb, type: choice, options: [nfkb, ap1, ebox], label: 'Planted motif: NF-κB, AP-1 or E-box'}
+  strength: {default: 0.9, min: 0.5, max: 1.0, step: 0.05, label: Probability of the consensus base}
+  n_seq: {default: 5000, min: 1000, max: 20000, step: 500, type: int, label: Sequences (80% train / 20% test)}
+  length: {default: 80, min: 30, max: 200, step: 10, type: int, label: 'Sequence length $\ell$', unit: bp}
+  n_filters: {default: 8, min: 1, max: 32, step: 1, type: int, label: 'Filters $F$'}
+  width: {default: 12, min: 6, max: 20, step: 1, type: int, label: 'Filter width $w$', unit: bp}
+  epochs: {default: 20, min: 2, max: 60, step: 1, type: int, label: Training epochs}
+  lr: {default: 0.003, min: 0.001, max: 0.05, step: 0.001, label: Adam learning rate}

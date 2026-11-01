@@ -1,0 +1,36 @@
+title: Finding CpG islands with a hidden Markov model
+category: bioinformatics
+level: intermediate
+order: 2
+summary: >
+  A DNA sequence switches unseen between ordinary background and GC-rich CpG islands. A two-state hidden Markov
+  model finds them: forward–backward gives the probability of being in an island at every position, Viterbi the
+  single best segmentation, and Baum–Welch learns the model from the sequences alone. Each step along the sequence
+  is a batched matrix product over the states, kept in log space. Watch the posterior lock onto the planted islands.
+animated: true
+vector_form: '\boldsymbol\alpha_t = \mathbf e(x_t) \odot \big(A^{\mathsf T}\boldsymbol\alpha_{t-1}\big),\qquad \boldsymbol\beta_t = A\,\big(\mathbf e(x_{t+1}) \odot \boldsymbol\beta_{t+1}\big),\qquad P(z_t = k \mid x) = \frac{\alpha_{tk}\,\beta_{tk}}{P(x)}'
+index_form: 'e_{btk} = x_{bt\alpha}E_{k\alpha},\qquad \alpha_{btj} = e_{btj}\,\alpha_{b,t-1,i}A_{ij},\qquad \beta_{bti} = A_{ij}\,e_{b,t+1,j}\,\beta_{b,t+1,j},\qquad \gamma_{btk} = \frac{\alpha_{btk}\beta_{btk}}{\alpha_{bTj}\mathbf 1_j}'
+translation:
+  - {symbol: 'x_{bt\alpha}', code: 'one_hot(x_codes)', shape: '(B, T, 4)', meaning: 'letter at position $t$ of sequence $b$, one-hot over A, C, G, T'}
+  - {symbol: '\pi_k,\ A_{ij},\ E_{k\alpha}', code: 'pi, A, E = initial_guess(device)', shape: '(2,), (2, 2), (2, 4)', meaning: 'start, transition and emission probabilities; state 0 background, state 1 island'}
+  - {symbol: '\log e_{btk} = x_{bt\alpha}\log E_{k\alpha}', code: "einsum('bta,ka->btk', x, E.log())", shape: '(B, T, K)', meaning: 'repeated $\alpha$ ⇒ summed: how likely each state is to emit the letter seen'}
+  - {symbol: '\alpha_{btj} = e_{btj}\,\alpha_{b,t-1,i}A_{ij}', code: "forward_step(log_alpha, A, log_e)  # einsum('bi,ij->bj', ...)", shape: '(B, K)', meaning: 'repeated $i$ ⇒ summed; stored as $\log\alpha$ with the largest entry pulled out (log-sum-exp) so nothing underflows'}
+  - {symbol: '\beta_{bti} = A_{ij}e_{b,t+1,j}\beta_{b,t+1,j}', code: "backward_step(log_beta, A, log_e_next)  # einsum('ij,bj->bi', ...)", shape: '(B, K)', meaning: 'repeated $j$ ⇒ summed: probability of the rest of the sequence given state $i$'}
+  - {symbol: '\gamma_{btk}', code: 'softmax(log_alpha + log_beta, dim=-1)', shape: '(B, T, K)', meaning: 'posterior $P(z_t = k \mid x)$; $\gamma_{bt1}$ is the blue curve'}
+  - {symbol: '\delta_{btj} = \log e_{btj} + \max_i(\delta_{b,t-1,i} + \log A_{ij})', code: 'viterbi_step(delta, A, log_e)', shape: '(B, K)', meaning: 'Viterbi: the same recursion with max in place of sum, plus back-pointers for the best path'}
+  - {symbol: '\xi_{ij} = \alpha_{bti}A_{ij}e_{b,t+1,j}\beta_{b,t+1,j}/P(x_b)', code: "einsum('bt,bti,ij,btj->ij', ...)", shape: '(K, K)', meaning: 'repeated $b, t$ ⇒ summed: expected number of $i \to j$ switches; Baum–Welch sets $A_{ij} \propto \xi_{ij}$'}
+notes: >
+  The data are synthetic: every sequence has islands of 100–300 letters planted at random places, with more C and G
+  inside. One letter says almost nothing about the state, but the chain $A$ makes states persist, so the forward and
+  backward passes pool the evidence of whole stretches. Baum–Welch is expectation–maximisation: compute $\gamma$ and
+  $\xi$ under the current model, then set $E_{k\alpha}$ to the expected letter frequencies in each state and
+  $A_{ij}$ to the expected switch frequencies; the likelihood never decreases. Starting from a vague guess it ends
+  close to the true model (green line). Real CpG islands are rich in the dinucleotide CG rather than just in C and
+  G; Durbin et al. model that with 8 states (A+, C+, G+, T+, A−, …) whose transitions are the dinucleotide
+  frequencies. Lower the island GC content to make the problem harder.
+params:
+  n_seq: {default: 8, min: 1, max: 32, step: 1, type: int, label: 'Sequences $B$'}
+  length: {default: 2000, min: 600, max: 5000, step: 100, type: int, label: 'Length $T$'}
+  n_islands: {default: 2, min: 0, max: 5, step: 1, type: int, label: Islands planted per sequence}
+  gc_island: {default: 0.65, min: 0.45, max: 0.85, step: 0.05, label: GC content of the islands}
+  iterations: {default: 15, min: 1, max: 40, step: 1, type: int, label: Baum–Welch iterations}

@@ -1,0 +1,17 @@
+source_hash: 60f8bd39a854
+title: 光子时间晶体与时间反射
+summary: 光在介电常数 $\varepsilon(t)$ 随时间变化但不随空间变化的介质中传播。$\varepsilon$ 的突然跃变把脉冲分成以新频率传播的前向波和时间反射的后向波；周期性调制在动量 $k$ 中打开带隙，带隙内的波指数增长。每个傅里叶模式都是独立的 $2\times 2$ 问题，因此所有 $k$ 作为一个批次求解，Floquet 能带则来自一次批量 eigvals 调用。
+notes: 交换空间与时间的角色，熟悉的光学就被彻底翻转。在普通的空间界面上，频率守恒而波数改变；在时间界面上，整个介质同时从 $\varepsilon_1$ 切换到 $\varepsilon_2$，波数 $k$ 守恒而频率跃变，$\omega_2 = \omega_1 n_1/n_2$。由于没有电荷或电流出现，连续的是 $D$ 和 $B$（而不是 $E$ 和 $H$），由此得到时间菲涅耳系数 $D_f = \tfrac12(1 + n_2/n_1)$ 与 $D_b = \tfrac12(1 - n_2/n_1)$（Morgenthaler, 1958）：部分脉冲掉头向后传播，即时间反射，而且能量不守恒，因为切换介质会对场做功。时间反射与宽带频率转换已在随时间切换的传输线超材料中用微波观测到（Moussa et al., Nature Physics 2023）。周期性调制 $\varepsilon(t) = \varepsilon_0(1 + \alpha\cos\Omega t)$ 使每个模式成为参量振荡器，$\ddot D_k + (k^2/\varepsilon)D_k = 0$（类 Mathieu 方程）。在 $k/n_0 = \Omega/2$ 附近，前向波与后向波共振耦合：准频率锁定在 $\Omega/2$ 并获得虚部，形成动量（而不是频率）中的带隙，带边为 $k \approx \tfrac{n_0\Omega}{2}(1 \mp \alpha/4)$，在 $\alpha$ 的一阶近似下峰值增长率 $\approx \alpha\Omega/8$。在 $k \approx n_0\Omega$ 处还有第二个窄得多的带隙，出现在 $\alpha^2$ 阶。动画中只有脉冲谱位于带隙内的部分增长。这是光子时间晶体背后的思想（Galiffi et al. 的综述 "Photonics of time-varying media", Advanced Photonics 2022）；在光频下所需的调制深度和速度极难达到，因此迄今的实验主要在微波和射频频段进行。简化：一维无损耗、无色散介质，$\mu = 1$，瞬时跃变，以及由外部施加的调制（增长所需的能量来自泵浦）。
+meanings:
+- 傅里叶振幅；介质在 $x$ 方向均匀，因此 $k$ 守恒，每个模式各自演化
+- 每个波数一个 $2\times 2$ 生成元
+- 重复的 $b$ ⇒ 求和；同一行代码也推进单值矩阵 $(K, 2, 2)$
+- 由 $D$ 和 $B$ 的连续性得到的前向/后向振幅 $\tfrac12(1 \pm n_2/n_1)$
+- 一个周期内的传播子，由对单位矩阵应用 RK4 得到
+- 一次批量调用得到所有 $k$ 的 Floquet 乘子；$\det M = 1$，因此 $\lambda_+\lambda_- = 1$
+- 准频率：在能带中为实数，在动量带隙中 $\operatorname{Im}\omega > 0$（增长）
+labels:
+  eps2: 跃变后的介电常数 $\varepsilon_2$
+  alpha: 调制深度 $\alpha$
+  omega: 调制频率 $\Omega$
+  t_max: 模拟时间

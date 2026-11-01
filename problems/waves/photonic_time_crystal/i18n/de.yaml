@@ -1,0 +1,19 @@
+source_hash: 60f8bd39a854
+title: Photonischer Zeitkristall und Zeitreflexion
+summary: Licht in einem Medium, dessen Permittivität $\varepsilon(t)$ sich in der Zeit ändert, aber nicht im Raum. Ein plötzlicher Sprung von $\varepsilon$ spaltet einen Puls in eine vorwärts laufende und eine zeitreflektierte rückwärts laufende Welle bei einer neuen Frequenz auf; eine periodische Modulation öffnet eine Bandlücke im Impuls $k$, in der Wellen exponentiell wachsen. Jede Fourier-Mode ist ein unabhängiges $2\times 2$-Problem, sodass alle $k$ als ein Batch gelöst werden, und die Floquet-Bänder stammen aus einem einzigen gebatchten eigvals-Aufruf.
+notes: 'Vertauscht man die Rollen von Raum und Zeit, stülpt sich die vertraute Optik um. An einer gewöhnlichen Grenzfläche im Raum bleibt die Frequenz erhalten, und die Wellenzahl ändert sich; an einer zeitlichen Grenzfläche, an der das ganze Medium auf einmal von $\varepsilon_1$ auf $\varepsilon_2$ umschaltet, bleibt die Wellenzahl $k$ erhalten, und die Frequenz springt, $\omega_2 = \omega_1 n_1/n_2$. Weil keine Ladungen oder Ströme auftreten, bleiben $D$ und $B$ stetig (nicht $E$ und $H$), was die zeitlichen Fresnel-Koeffizienten $D_f = \tfrac12(1 + n_2/n_1)$ und $D_b = \tfrac12(1 - n_2/n_1)$ ergibt (Morgenthaler, 1958): Ein Teil des Pulses kehrt um und läuft rückwärts, die Zeitreflexion, und die Energie ist nicht erhalten, weil das Umschalten des Mediums Arbeit am Feld verrichtet. Zeitliche Reflexion und breitbandige Frequenzverschiebung wurden mit Mikrowellen in einem zeitlich geschalteten Leitungs-Metamaterial beobachtet (Moussa et al., Nature Physics 2023). Eine periodische Modulation
+  $\varepsilon(t) = \varepsilon_0(1 + \alpha\cos\Omega t)$ macht jede Mode zu einem parametrischen Oszillator, $\ddot D_k + (k^2/\varepsilon)D_k = 0$ (eine Mathieu-artige Gleichung). Nahe $k/n_0 = \Omega/2$ koppeln die vorwärts und rückwärts laufenden Wellen resonant: Die Quasifrequenz rastet auf $\Omega/2$ ein und bekommt einen Imaginärteil, eine Bandlücke im Impuls (statt in der Frequenz), mit Rändern $k \approx \tfrac{n_0\Omega}{2}(1 \mp \alpha/4)$ und maximaler Wachstumsrate $\approx \alpha\Omega/8$ in erster Ordnung in $\alpha$. Eine zweite, viel schmalere Lücke bei $k \approx n_0\Omega$ erscheint in Ordnung $\alpha^2$. In der Animation wächst nur der Teil des Pulsspektrums innerhalb der Lücke. Das ist die Idee hinter photonischen Zeitkristallen (Übersicht bei Galiffi et al., "Photonics of time-varying media", Advanced Photonics 2022); bei optischen Frequenzen sind die nötige Modulationstiefe und -geschwindigkeit sehr schwer zu erreichen, daher arbeiten Experimente bisher hauptsächlich
+  bei Mikrowellen- und Radiofrequenzen. Vereinfachungen: ein verlustfreies, dispersionsfreies Medium in 1D, $\mu = 1$, ein augenblicklicher Sprung und eine von außen aufgeprägte Modulation (die Energie für das Wachstum stammt von der Pumpe).'
+meanings:
+- Fourier-Amplituden; das Medium ist in $x$ homogen, also ist $k$ erhalten, und jede Mode entwickelt sich für sich
+- ein $2\times 2$-Generator pro Wellenzahl
+- wiederholtes $b$ ⇒ summiert; dieselbe Zeile entwickelt die Monodromiematrix $(K, 2, 2)$
+- Vorwärts-/Rückwärtsamplituden $\tfrac12(1 \pm n_2/n_1)$ aus der Stetigkeit von $D$ und $B$
+- Propagator über eine Periode, aus RK4 angewendet auf die Einheitsmatrix
+- Floquet-Multiplikatoren für alle $k$ in einem gebatchten Aufruf; $\det M = 1$, also $\lambda_+\lambda_- = 1$
+- 'Quasifrequenz: reell in einem Band, $\operatorname{Im}\omega > 0$ (Wachstum) in einer Impulslücke'
+labels:
+  eps2: Permittivität nach dem Sprung $\varepsilon_2$
+  alpha: Modulationstiefe $\alpha$
+  omega: Modulationsfrequenz $\Omega$
+  t_max: Simulierte Zeit

@@ -1,0 +1,19 @@
+source_hash: b20a6dde0710
+title: Haldane 晶格上的拓撲光子學
+summary: 由耦合光學共振腔組成的蜂巢陣列，具有複數次近鄰耦合，即光子 Haldane 模型。在整個 $k$ 網格上的 $2\times 2$ 布洛赫哈密頓量以 Fukui–Hatsugai–Suzuki 連結法（對連結變數的 einsum）給出陳數。鋸齒形條帶顯示跨越能隙的邊緣態；在有限薄片邊緣射入的光單向繞過一個缺口，而在平庸晶格中則無法通過。
+notes: 單位：耦合 $t_1 = 1$，共振腔間距為 1。$E$ 是相對於裸共振頻率的失諧，在波導陣列中時間 $t$ 變為傳播距離。相位固定為 $\phi = \pi/2$。當 $\lvert M\rvert < 3\sqrt3\,t_2\lvert\sin\phi\rvert$ 時晶格為拓撲的，$C = \pm1$；對照晶格使用兩倍的質量項，$C = 0$。Fukui–Hatsugai–Suzuki 方法（J. Phys. Soc. Jpn., 2005）即使在粗網格上也給出精確的整數。體–邊對應接著保證有 $\lvert C\rvert$ 條單向邊緣通道。入射光是靠近底邊的一個光點，經濾波只保留體能隙內的頻率。它繞過缺口，因為沒有反向傳播的態可供它散射進去。在平庸晶格中，同樣的光只是擴散進體內。此模型出自 Haldane（PRL, 1988）。Haldane & Raghu（PRL, 2008）提出其光子版本，Wang、Chong、Joannopoulos & Soljačić（Nature, 2009）在磁光光子晶體中觀測到單向微波邊緣態。Rechtsman et al.（Nature, 2013）以螺旋波導建構了 Floquet 版本。隨後出現拓撲絕緣體雷射（Bandres et al., Science, 2018），Ozawa et al.（Rev. Mod. Phys., 2019）則回顧了此領域。較新的研究，包括不需磁場的谷霍爾光子晶體，把這個想法帶到晶片上的電信與兆赫波導。試試把 $M$ 提高到超過臨界值：$C$ 降為 0，邊緣態脫離能帶，光也不再能繞過缺口。
+meanings:
+- 薄片中共振腔 $i$ 的複數場振幅
+- 耦合 $t_1$、$t_2 e^{-i\nu_{ij}\phi}$ 與失諧 $\pm M$ 加上無序
+- $k\cdot\delta_n$ 是對座標 $i$ 的 einsum，對網格上每個 $k$ 計算；$\delta_n$、$b_n$ 為鍵向量
+- 重複的 $\mu$ ⇒ 求和：每個 $k$ 的布洛赫哈密頓量
+- 下能帶本徵向量（其相位任意）
+- 重複的 $a$ ⇒ 求和：相鄰 $k$ 點之間的連結變數
+- 四條連結所圍迴路的相位：貝里通量，規範不變
+- 重複的 $a, b, c$ ⇒ 求和：連續的貝里曲率，以 autograd 求導
+- 每個晶格（拓撲與平庸）以一次 eigh 求得 $e^{-iHt}\psi_0$
+labels:
+  t2: 次近鄰耦合 $t_2$
+  mass: 子晶格失諧 $M$
+  disorder: 隨機失諧強度 $W$
+  defect_radius: 缺口半徑 $R$

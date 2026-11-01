@@ -1,0 +1,18 @@
+source_hash: 72ebeb1bb100
+title: Stammbäume aus DNA-Distanzen
+summary: DNA-Sequenzen evolvieren entlang eines verborgenen Zufallsbaums, jeder Ast ein Matrixprodukt mit der Jukes–Cantor-Übergangsmatrix. Allein aus den Blättern zählen wir Unterschiede mit einem einsum über One-hot-Buchstaben, korrigieren sie um verborgene Mehrfachsubstitutionen und bauen den Baum per UPGMA und per Neighbor-Joining neu auf. Sieh dir beide Bäume an, während mehr Positionen verwendet werden, bewertet gegen die Wahrheit mit der Robinson–Foulds-Distanz.
+notes: Der wahre Baum ist ein zufälliger Koaleszenzbaum; mit der relaxierten Uhr bekommt außerdem jeder Ast seine eigene Rate, sodass die Blätter unterschiedlich weit von der Wurzel entfernt sind. Der rohe Anteil abweichender Positionen $p$ sättigt bei $3/4$ und unterschätzt lange Pfade (graue Punkte unter der Diagonale); das Jukes–Cantor-$d$ ist erwartungstreu (blaue Punkte auf der Diagonale), aber verrauschter, und sein Rauschen schrumpft wie $1/\sqrt L$. UPGMA nimmt an, dass alle Blätter gleich weit von der Wurzel entfernt sind, und kann daher bei relaxierter Uhr zwei kurze Äste verbinden, die keine Nachbarn sind (rote Äste), egal wie viele Positionen es sieht. Neighbor-Joining braucht nur, dass sich die Distanzen entlang des Baums addieren, und konvergiert gegen die wahre ungewurzelte Form; es wird im Mittelpunkt seines längsten Pfades gewurzelt gezeichnet, da Distanzen allein die Wurzel nicht festlegen können. Schalte auf eine strikte Uhr um, und auch UPGMA wird konsistent.
+meanings:
+- Wahrscheinlichkeit, dass Buchstabe $\alpha$ nach einem Ast der Länge $t$ (erwartete Substitutionen pro Position) zu $\beta$ geworden ist
+- 'wiederholtes $\alpha$ ⇒ summiert: Buchstabenwahrscheinlichkeiten des Kindes an jeder Position; gezogen per inverser CDF'
+- die beobachteten Blattsequenzen, One-hot über A, C, G, T
+- 'wiederholtes $l, \alpha$ ⇒ summiert: Anteil der Positionen, an denen sich $i$ und $j$ unterscheiden'
+- 'korrigierte Distanz $-\tfrac34\ln(1 - \tfrac43 p)$: zählt die Substitutionen, die durch wiederholte Treffer an einer Position verborgen sind'
+- Neighbor-Joining verbindet das Paar mit dem kleinsten $Q$, nicht dem kleinsten $d$; $r_i = d_{ik}\mathbf 1_k$
+- wahre Pfadlängen; $M_{iv} = 1$, wenn Ast $v$ zwischen Blatt $i$ und der Wurzel liegt, $b_v$ seine Länge
+- Anzahl der Blatt-Bipartitionen (eine pro innerem Ast), die nur in einem der beiden Bäume vorkommen
+labels:
+  n_taxa: Taxa $n$
+  n_sites: Positionen $L$
+  tree_depth: Tiefe Wurzel–Blatt (Substitutionen pro Position)
+  clock: Molekulare Uhr

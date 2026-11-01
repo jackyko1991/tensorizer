@@ -1,0 +1,47 @@
+title: Inertial-fusion ignition of a DT hot spot
+category: nuclear
+level: advanced
+order: 5
+summary: >
+  A 0D model of the hot spot at the centre of an imploded deuterium–tritium capsule. Alpha particles from
+  $\mathrm{D + T \to {}^4He + n}$ heat it, bremsstrahlung and expansion cool it, and heat escaping into the cold shell
+  feeds the burn. A whole grid of starting temperatures and areal densities $(T_0, \rho R_0)$ is integrated as one
+  batch: above a Lawson-type boundary the hot spot runs away and burns, below it quenches.
+animated: true
+vector_form: '3nT\,\frac{d\ln T}{dt} = f_\alpha(\rho R, T)\,\tfrac14 n^2\langle\sigma v\rangle E_\alpha - L\,\big(C_B n^2\sqrt T + 3p\,c_s/R\big),\qquad \frac{d\ln M}{dt} = \frac{P_{cond} + (1 - f_\alpha)P_\alpha}{3nT}'
+index_form: 'P^{\alpha}_b = \tfrac14 n^2(1-\varphi_b)^2\langle\sigma v\rangle(T_b)\,E_\alpha,\qquad \dot y_{bk} = g_k(y_b),\quad y_{bk} = (\ln T_b,\ \ln\rho R_b,\ \varphi_b),\qquad \text{ignited}_b = \big[\max_t T_{tb} \ge 2\,T_{0b}\big]'
+translation:
+  - {symbol: '(T_{0b}, \rho R_{0b})', code: 'initial_state(t0, r0)', shape: '(B, 3)', meaning: 'every grid point $b = i\,n_r + j$ is one hot spot; the state is $(\ln T, \ln\rho R, \varphi)$'}
+  - {symbol: '\langle\sigma v\rangle(T)', code: 'sigma_v(T)', shape: '(B,)', meaning: 'Bosch–Hale DT reactivity, $\approx 1.14\times10^{-22}$ m³/s at 10 keV, peak $\approx 9\times10^{-22}$ near 65 keV'}
+  - {symbol: 'f_\alpha', code: 'alpha_fraction(rho_r, T)', shape: '(B,)', meaning: 'share of the 3.5 MeV alpha energy stopped inside the hot spot'}
+  - {symbol: 'C_B n^2\sqrt T', code: 'C_BREMS * n**2 * sqrt(T)', shape: '(B,)', meaning: 'bremsstrahlung, $C_B = 5.34\times10^{-37}$ W m³ keV$^{-1/2}$'}
+  - {symbol: '3p\,c_s/R', code: 'powers(...)["pdv"]', shape: '(B,)', meaning: 'PdV work of a hot spot expanding at the sound speed'}
+  - {symbol: 'P_{cond}', code: '3 * KAPPA0 * T**3.5 / R**2', shape: '(B,)', meaning: 'Spitzer conduction into the shell; recycled as new hot mass (burn propagation)'}
+  - {symbol: 'g_k(y_b)', code: 'rhs(y, rho, loss, rho_r_max)', shape: '(B, 3)', meaning: 'right-hand side for all hot spots at once, stepped with RK4'}
+  - {symbol: '\rho R^*(T)', code: 'balance_boundary(T, rho, loss)', shape: '(n,)', meaning: 'Lawson-type curve where self-heating equals losses, by batched bisection'}
+notes: >
+  Inertial confinement squeezes a few hundred micrograms of DT so fast that it burns before it flies apart. The
+  hot spot ignites when the alpha particles it makes heat it faster than it cools. Two numbers decide this: the
+  temperature, because $\langle\sigma v\rangle$ climbs steeply up to tens of keV, and the areal density $\rho R$, because a
+  thicker hot spot stops its own alphas (alpha range roughly 0.3 g/cm² near 10 keV) and holds together longer
+  against expansion. Bremsstrahlung alone sets the ideal ignition temperature, about 4.3 keV, where
+  $\tfrac14\langle\sigma v\rangle E_\alpha = C_B\sqrt T$. The dashed curve is the instantaneous balance, the ICF form of the Lawson
+  criterion; the shaded region is what the full integration finds, which also counts burn propagation into the
+  cold shell. Raise the loss multiplier $L$ and the boundary moves to larger $\rho R$ and higher $T$. Research context:
+  on 5 December 2022 the National Ignition Facility reported the first laboratory fusion experiment with target
+  gain above 1, about 3.15 MJ of fusion energy from 2.05 MJ of laser light on target (approximate; Indirect Drive
+  ICF Collaboration, Phys. Rev. Lett. 132, 065102, 2024), after reaching a burning plasma (Zylstra et al., Nature 601,
+  542, 2022) and a 1.3 MJ shot in August 2021 that exceeded the Lawson criterion for ignition (Phys. Rev. Lett. 129,
+  075001, 2022). Target gain counts only the laser energy reaching the target; the electricity used to run the lasers
+  is far larger. Simplifications: a uniform 0D hot spot at fixed density (so the burn-up fraction is overestimated —
+  nothing makes it disassemble except the PdV loss term), an illustrative alpha-deposition formula,
+  approximate Spitzer conductivity ($\ln\Lambda \approx 10$), no radiation trapping, no mix of ablator material and
+  equal ion and electron temperatures.
+params:
+  density: {default: 100.0, min: 20.0, max: 500.0, step: 10.0, label: 'Hot-spot density $\rho$', unit: g/cm³}
+  loss: {default: 1.0, min: 0.5, max: 3.0, step: 0.1, label: 'Loss multiplier $L$ (bremsstrahlung + PdV)'}
+  rho_r_max: {default: 2.0, min: 0.5, max: 4.0, step: 0.1, label: 'Total fuel $\rho R$ available', unit: g/cm²}
+  t_end: {default: 200.0, min: 50.0, max: 500.0, step: 10.0, label: Simulated time, unit: ps}
+  n_grid: {default: 40, min: 10, max: 60, step: 2, type: int, label: 'Grid points per axis'}
+  t_min: {default: 2.0, min: 1.0, max: 5.0, step: 0.5, label: 'Lowest $T_0$', unit: keV}
+  t_max_init: {default: 20.0, min: 8.0, max: 40.0, step: 1.0, label: 'Highest $T_0$', unit: keV}

@@ -5,7 +5,7 @@ Nothing new is built here: the agent loop, tools and context handling are Claude
   * limits Claude to Read / Write / Edit / Glob / Grep inside that folder, plus one tool `run_problem` that renders
     the edited problem through the shared run queue,
   * passes the visitor's API key to that session's Claude Code process only (never stored or logged), or, on a
-    personal machine (AGENT_AUTH=local), lets Claude Code use the machine's own login,
+    personal machine (AGENT_AUTH=local), can let Claude Code use the machine's own login,
   * turns the SDK's messages into the newline-delimited JSON events the web page draws.
 """
 
@@ -25,7 +25,10 @@ from pathlib import Path
 from .runner import CODE_FILES, PROBLEMS, RunError, problem_dir, stream_problem
 
 ENABLED = os.environ.get("AGENT_ENABLED") == "1"
-AUTH = "local" if os.environ.get("AGENT_AUTH") == "local" else "api_key"
+# On a personal machine (AGENT_AUTH=local) the agent may use this machine's Claude Code login; a shared server
+# only ever uses the visitor's own API key.
+LOCAL_ALLOWED = os.environ.get("AGENT_AUTH") == "local"
+AGENTS = ("claude-code", "claude-api")
 MODELS = ["claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5"]
 MAX_TURNS = int(os.environ.get("AGENT_MAX_TURNS", "24"))
 IDLE_S = 30 * 60
@@ -71,8 +74,55 @@ class Session:
 _sessions: dict[str, Session] = {}
 
 
+def local_claude() -> dict:
+    """Is Claude Code usable here without any setup? The SDK ships the CLI; a login leaves a credentials file
+    (on macOS the login sits in the Keychain, so it is reported as unknown and simply tried)."""
+    if not (ENABLED and LOCAL_ALLOWED):
+        return {"available": False, "logged_in": False}
+    import shutil
+    import sys
+
+    try:
+        import claude_agent_sdk
+
+        bundled = any((Path(claude_agent_sdk.__file__).parent / "_bundled").glob("claude*"))
+    except ImportError:
+        bundled = False
+    cli = bundled or shutil.which("claude") is not None
+    creds = (Path(os.environ.get("CLAUDE_CONFIG_DIR", Path.home() / ".claude")) / ".credentials.json").is_file()
+    logged_in = True if creds or os.environ.get("ANTHROPIC_API_KEY") else (None if sys.platform == "darwin" else False)
+    return {"available": cli, "logged_in": logged_in}
+
+
 def status() -> dict:
-    return {"enabled": ENABLED, "auth": AUTH, "models": MODELS}
+    """What the AI Assistant can use on this server, for the panel's Agent form."""
+    local = local_claude()
+    return {
+        "enabled": ENABLED,
+        "agents": [
+            {"id": "claude-code", "label": "Claude Code (local)", **local},
+            {
+                "id": "claude-api",
+                "label": "API",
+                "available": ENABLED,
+                "providers": [
+                    {"id": "anthropic", "label": "Anthropic (Claude)", "available": True},
+                    {"id": "openrouter", "label": "OpenRouter", "available": False},
+                ],
+            },
+        ],
+        "default": "claude-code" if local["available"] and local["logged_in"] is not False else "claude-api",
+        "models": MODELS,
+        "workspace": ENABLED,
+    }
+
+
+def create_workspace() -> dict:
+    """A blank new problem (a copy of the template) the user edits and runs by hand, without the AI."""
+    s = _session(None, "new")
+    entry = workspace_entry(s)
+    assert entry is not None
+    return entry
 
 
 def _cleanup() -> None:
@@ -207,6 +257,7 @@ async def chat(
     api_key: str | None,
     client_id: str,
     context: dict | None = None,
+    agent: str = "claude-code",
 ) -> AsyncIterator[dict]:
     """One user turn. Yields events: session, text, tool, tool_result, run, queued, files, done | error."""
     from claude_agent_sdk import (
@@ -223,8 +274,13 @@ async def chat(
     )
     from claude_agent_sdk.types import PermissionResultAllow, PermissionResultDeny, StreamEvent
 
-    if AUTH == "api_key" and not api_key:
-        yield {"type": "error", "message": "connect your Anthropic API key first"}
+    if agent not in AGENTS:
+        agent = "claude-api" if api_key else "claude-code"
+    if agent == "claude-code" and not LOCAL_ALLOWED:
+        yield {"type": "error", "message": "Claude Code (local) only runs on your own computer; use the API option"}
+        return
+    if agent == "claude-api" and not api_key:
+        yield {"type": "error", "message": "enter your Anthropic API key in the Agent settings first"}
         return
     s = _session(session_id, problem)
     message = _with_context(s, message, context or {})
@@ -269,10 +325,10 @@ async def chat(
         return PermissionResultAllow(updated_input=data)
 
     env = {"CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1", "CLAUDE_CONFIG_DIR": str(WORK_ROOT / s.id / ".claude")}
-    if AUTH == "local":
-        env.pop("CLAUDE_CONFIG_DIR")  # keep the machine's own Claude Code login
-    if api_key:
-        env["ANTHROPIC_API_KEY"] = api_key
+    if agent == "claude-code":
+        env.pop("CLAUDE_CONFIG_DIR")  # use this machine's own Claude Code login
+    else:
+        env["ANTHROPIC_API_KEY"] = api_key  # the visitor's key, for this chat's Claude Code process only
     prompt = SYSTEM + (NEW_PROBLEM if s.problem == NEW_ID else "")
     options = ClaudeAgentOptions(
         cwd=str(s.workspace),
@@ -300,7 +356,7 @@ async def chat(
         except Exception as e:  # noqa: BLE001 - shown to the user, never contains the key
             text = str(e).replace(api_key, "***") if api_key else str(e)
             if "logged in" in text.lower() or "auth" in text.lower():
-                text += " — on this computer run `claude` once to log in, or connect an API key."
+                text += " — Claude Code isn't logged in on this computer; switch the Agent to API and enter a key."
             await events.put({"type": "error", "message": text[:500]})
         finally:
             await events.put(None)

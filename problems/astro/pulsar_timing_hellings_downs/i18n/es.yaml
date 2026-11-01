@@ -1,0 +1,26 @@
+source_hash: 890ee320b06e
+title: Red de cronometraje de púlsares y la curva de Hellings–Downs
+summary: Un mar de ondas gravitacionales de nanohercios estira suavemente los trayectos entre la Tierra y muchos púlsares de milisegundos. Un fondo isótropo, construido con mil ondas planas aleatorias, desplaza los pulsos de cada púlsar a través del patrón de antena $F^A = \tfrac12 \hat p^i \hat p^j e^A_{ij}/(1 + \hat\Omega\cdot\hat p)$, un solo einsum sobre los tensores de polarización. Correlacionar cada par de residuos de cronometraje y agruparlos por ángulo recupera la curva de Hellings–Downs, la huella cuadrupolar de la que las redes de cronometraje de púlsares informaron evidencias en 2023.
+notes: 'Una onda gravitacional cambia el tiempo de viaje de la luz entre un púlsar y la Tierra, así que los tiempos de llegada de los pulsos derivan entre decenas y cientos de nanosegundos a lo largo de años. Para una sola onda, el efecto depende de la geometría a través de $F^{+}$ y $F^{\times}$; para un fondo isótropo, promediar sobre direcciones deja una correlación que solo depende del ángulo entre los dos púlsares. Hellings y Downs (ApJL 265, L39, 1983) la calcularon: los púlsares cercanos en el cielo están correlacionados en $\tfrac12$ (la otra mitad de la potencia de cada púlsar es su propio término de púlsar no correlacionado), los pares separados unos $82.5^\circ$ están ligeramente anticorrelacionados y los púlsares opuestos vuelven a estar correlacionados positivamente en $\tfrac14$. La forma cuadrupolar es la firma de una onda transversal de espín 2: un error de reloj daría un monopolo ($\Gamma = 1$) y un error en las efemérides del Sistema Solar un dipolo ($\Gamma = \cos\zeta$);
+  ambos se ajustan para comparar. La página comprueba la normalización de dos maneras: la fórmula frente a una integral de Monte Carlo sobre el cielo $\tfrac{3}{8\pi}\oint \sum_A F^A_aF^A_b\,d\Omega$, y el promedio del patrón de antena $\langle\sum_A (F^A)^2\rangle = 1/3$. Un solo cielo se dispersa notablemente alrededor de la curva: con solo unas pocas frecuencias dominantes, esta "varianza cósmica" es real y también afecta a las redes reales; promediar muchos cielos simulados muestra la convergencia. El ruido blanco diluye la amplitud ajustada por debajo de 1. Contexto de investigación: en junio de 2023 la NANOGrav Collaboration (conjunto de datos de 15 años, Agazie et al., ApJL 951, L8, 2023) informó de evidencias de un fondo de ondas gravitacionales de nanohercios con correlaciones de Hellings–Downs (aproximadamente 3σ para las correlaciones, valor aproximado), junto con las PTA europea e india (EPTA + InPTA, A&A 2023), la Parkes PTA (Reardon et al., ApJL 951, L6, 2023) y la PTA china.
+  La fuente probable es una población de binarias de agujeros negros supermasivos, que da el espectro $h_c \propto f^{-2/3}$ usado aquí. Simplificaciones: los residuos no se ajustan al frenado del giro de cada púlsar (solo se resta la media), solo ruido blanco, sin ruido rojo propio de cada púlsar, y una correlación cruzada normalizada simple en lugar del estadístico óptimo o de un análisis bayesiano completo.'
+meanings:
+- vector unitario hacia el púlsar $a$, uniforme en el cielo
+- dirección de propagación y ángulo de polarización de la onda $m$
+- tensores $+$ y $\times$ construidos a partir del sistema transversal $m, n \perp \hat\Omega$
+- '$i$ y $j$ sumados: el estiramiento de la línea Tierra–púlsar'
+- patrón de antena; el promedio sobre el cielo de $\sum_A (F^A)^2$ es exactamente $1/3$
+- desfase del término de púlsar, $\omega L_a(1 + \hat\Omega\cdot\hat p_a)/c$
+- '$m$ y $A$ sumados: residuo de cronometraje del púlsar $a$ en la época $t$'
+- '$t$ sumado: correlación de cada par, normalizada por la autopotencia media'
+- correlación esperada, $\Gamma(0^+) = \tfrac12$, mínimo $\approx -0.152$ en $\zeta \approx 82.5^\circ$
+labels:
+  n_pulsars: Púlsares $N$
+  n_realisations: Cielos simulados $K$
+  n_waves: Ondas planas por cielo $M$
+  n_freq: Intervalos de frecuencia $j/T_{span}$
+  span: Duración de la observación $T_{span}$
+  n_times: Épocas por púlsar
+  noise: Ruido blanco $\sigma$ / rms de OG
+  n_bins: Intervalos angulares
+  seed: Semilla aleatoria

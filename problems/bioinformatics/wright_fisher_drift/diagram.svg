@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Wright-Fisher model: three generations of 2N gene copies; each copy in the next generation picks a random parent copy, so the share of allele A (dark) drifts from 4 of 8 to 7 of 8.">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- parent links: each child copy picks a random parent copy -->
+    <g stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3">
+      <line x1="48" y1="73" x2="48" y2="37"/><line x1="70" y1="73" x2="48" y2="37"/>
+      <line x1="92" y1="73" x2="92" y2="37"/><line x1="114" y1="73" x2="114" y2="37"/>
+      <line x1="136" y1="73" x2="114" y2="37"/><line x1="158" y1="73" x2="158" y2="37"/>
+      <line x1="180" y1="73" x2="180" y2="37"/><line x1="202" y1="73" x2="70" y2="37"/>
+      <line x1="48" y1="121" x2="70" y2="87"/><line x1="70" y1="121" x2="70" y2="87"/>
+      <line x1="92" y1="121" x2="92" y2="87"/><line x1="114" y1="121" x2="136" y2="87"/>
+      <line x1="136" y1="121" x2="136" y2="87"/><line x1="158" y1="121" x2="158" y2="87"/>
+      <line x1="180" y1="121" x2="158" y2="87"/><line x1="202" y1="121" x2="180" y2="87"/>
+    </g>
+    <!-- generation t: A a A A a A a a -->
+    <g stroke="#1e40af" stroke-width="1.5">
+      <circle cx="48" cy="30" r="7" fill="#2563eb"/><circle cx="70" cy="30" r="7" fill="#ffffff"/>
+      <circle cx="92" cy="30" r="7" fill="#2563eb"/><circle cx="114" cy="30" r="7" fill="#2563eb"/>
+      <circle cx="136" cy="30" r="7" fill="#ffffff"/><circle cx="158" cy="30" r="7" fill="#2563eb"/>
+      <circle cx="180" cy="30" r="7" fill="#ffffff"/><circle cx="202" cy="30" r="7" fill="#ffffff"/>
+      <!-- generation t+1: A A A A A A a a -->
+      <circle cx="48" cy="80" r="7" fill="#2563eb"/><circle cx="70" cy="80" r="7" fill="#2563eb"/>
+      <circle cx="92" cy="80" r="7" fill="#2563eb"/><circle cx="114" cy="80" r="7" fill="#2563eb"/>
+      <circle cx="136" cy="80" r="7" fill="#2563eb"/><circle cx="158" cy="80" r="7" fill="#2563eb"/>
+      <circle cx="180" cy="80" r="7" fill="#ffffff"/><circle cx="202" cy="80" r="7" fill="#ffffff"/>
+      <!-- generation t+2: A A A A A A A a -->
+      <circle cx="48" cy="128" r="7" fill="#2563eb"/><circle cx="70" cy="128" r="7" fill="#2563eb"/>
+      <circle cx="92" cy="128" r="7" fill="#2563eb"/><circle cx="114" cy="128" r="7" fill="#2563eb"/>
+      <circle cx="136" cy="128" r="7" fill="#2563eb"/><circle cx="158" cy="128" r="7" fill="#2563eb"/>
+      <circle cx="180" cy="128" r="7" fill="#2563eb"/><circle cx="202" cy="128" r="7" fill="#ffffff"/>
+    </g>
+    <!-- labels -->
+    <text x="8" y="35" font-style="italic">t</text>
+    <text x="8" y="85" font-style="italic">t<tspan font-style="normal">+1</tspan></text>
+    <text x="8" y="133" font-style="italic">t<tspan font-style="normal">+2</tspan></text>
+    <text x="213" y="35" font-size="13" fill="#374151">2<tspan font-style="italic">N</tspan></text>
+    <text x="125" y="154" text-anchor="middle" font-size="12" fill="#6b7280">dark = allele A,  p: 4/8 → 6/8 → 7/8</text>
+  </g>
+</svg>

@@ -1,0 +1,37 @@
+title: Sequence alignment as a wavefront of tensor updates
+category: bioinformatics
+level: intermediate
+order: 1
+summary: >
+  Needleman–Wunsch (global) and Smith–Waterman (local) alignment of DNA sequences by dynamic programming. Every cell
+  of the table needs only its left, upper and diagonal neighbours, so a whole anti-diagonal $i + j = d$ is filled in
+  one tensor update, for a batch of sequence pairs at once. Watch the wavefront sweep the table, then the traceback
+  read off the optimal alignment.
+animated: true
+vector_form: 'H(i,j) = \max\begin{cases} H(i-1,j-1) + s(a_i, c_j) \\ E(i,j) = \max\{H(i,j-1) - g_o,\ E(i,j-1) - g_e\} \\ F(i,j) = \max\{H(i-1,j) - g_o,\ F(i-1,j) - g_e\} \\ 0 \quad\text{(local only)} \end{cases}'
+index_form: 'S_{bij} = a_{bi\alpha}\,W_{\alpha\beta}\,c_{bj\beta},\qquad H_{b,\,i_k,\,d-i_k} = \max\big(H_{b,\,i_k-1,\,d-i_k-1} + S_{b,\,i_k,\,d-i_k},\ E_{b,\,i_k,\,d-i_k},\ F_{b,\,i_k,\,d-i_k}\big)\quad \forall\,k \text{ at once}'
+translation:
+  - {symbol: 'a_{bi\alpha},\ c_{bj\beta}', code: 'one_hot(codes)', shape: '(B, n, 4), (B, m, 4)', meaning: 'letter $i$ of the first and $j$ of the second sequence of pair $b$, one-hot over A, C, G, T'}
+  - {symbol: 'W_{\alpha\beta}', code: 'substitution_matrix(match, mismatch, device)', shape: '(4, 4)', meaning: 'score for aligning letter $\alpha$ with $\beta$: match on the diagonal, mismatch elsewhere'}
+  - {symbol: 'S_{bij} = a_{bi\alpha} W_{\alpha\beta} c_{bj\beta}', code: "einsum('bia,ay,bjy->bij', a, W, c)", shape: '(B, n, m)', meaning: 'repeated $\alpha, \beta$ ⇒ summed: the score of every possible pairing of letters'}
+  - {symbol: 'g_o,\ g_e', code: 'gap_open, gap_extend', shape: 'scalars', meaning: 'a gap of $k$ letters costs $g_o + (k-1)\,g_e$ (affine); $g_o = g_e$ is a linear gap'}
+  - {symbol: '(i_k,\ d - i_k)', code: 'i = arange(...); j = d - i', shape: '(K,)', meaning: 'all cells on anti-diagonal $d$; they depend only on diagonals $d-1$ and $d-2$'}
+  - {symbol: 'H, E, F', code: 'wavefront_step(H, E, F, S, i, j, ...)', shape: '(B, K) each', meaning: 'one tensor update per diagonal: best score ending in a match, a gap in $a$, a gap in $c$'}
+  - {symbol: 'H_{b,n_b,m_b},\ \max_{ij} H_{bij}', code: 'best_cells(H, len_a, len_c, local)', shape: '(B,), (B, 2)', meaning: 'global score at the corner, local score at the best cell; padding beyond each length is ignored'}
+notes: >
+  Global alignment forces both sequences to be aligned end to end; local alignment adds the option 0, so a bad
+  stretch is simply dropped and the best-scoring piece anywhere is reported (here a motif planted in random
+  background). The traceback walks back from the end cell, at each step asking which of the three options produced
+  the stored value, and switches between the tables $H$, $E$, $F$ while inside a gap. The cost is still
+  $O(nm)$ cells, but only $n + m - 1$ sequential steps: this anti-diagonal parallelism is how GPU and SIMD aligners
+  work. Try raising the mutation rate, or $g_o > g_e$ to favour a few long gaps over many short ones. Proteins use a
+  $20\times20$ matrix such as BLOSUM62 in place of $W$; nothing else changes.
+params:
+  mode: {default: global, type: choice, options: [global, local], label: 'Alignment (global = Needleman–Wunsch, local = Smith–Waterman)'}
+  length: {default: 40, min: 12, max: 120, step: 4, type: int, label: 'Sequence length $L$'}
+  n_pairs: {default: 16, min: 1, max: 64, step: 1, type: int, label: 'Pairs in the batch $B$'}
+  mutation: {default: 0.2, min: 0.0, max: 0.6, step: 0.05, label: Mutation rate per site}
+  match: {default: 2.0, min: 1, max: 5, step: 1, label: 'Match score'}
+  mismatch: {default: -2.0, min: -5, max: 0, step: 1, label: 'Mismatch score'}
+  gap_open: {default: 3.0, min: 0.5, max: 10, step: 0.5, label: 'Gap open $g_o$'}
+  gap_extend: {default: 1.0, min: 0.5, max: 10, step: 0.5, label: 'Gap extend $g_e$'}

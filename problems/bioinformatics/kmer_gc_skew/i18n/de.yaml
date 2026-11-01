@@ -1,0 +1,22 @@
+source_hash: 48f29505ec48
+title: k-mere, GC-Gehalt und GC-Skew
+summary: Eine DNA-Sequenz wird zu einem One-hot-Tensor $(L, 4)$. Das Zählen jedes Wortes aus $k$ Buchstaben ist ein einsum über entfaltete Fenster (eine 1D-Faltung), GC-Gehalt und GC-Skew sind Fenstersummen, und das Minimum des kumulativen Skews zeigt, wo die Replikation auf einem synthetischen ringförmigen Chromosom mit gesetztem Origin und Terminus beginnt.
+notes: 'Die meisten bakteriellen Chromosomen sind ringförmig und werden von einem einzigen Replikationsursprung aus kopiert, wobei zwei Replikationsgabeln in entgegengesetzte Richtungen laufen, bis sie sich am Terminus treffen. Die beiden Hälften werden unterschiedlich kopiert (ein Strang kontinuierlich als Leitstrang, der andere in Stücken), und über evolutionäre Zeiträume sammelt der Leitstrang tendenziell etwas mehr G als C an. Hier ist diese Verzerrung gesetzt: Vom Origin zum Terminus wird G um den Faktor $(1+\text{skew})/(1-\text{skew})$ bevorzugt, auf der anderen Hälfte C. Der Skew eines einzelnen Fensters ist verrauscht, aber die laufende Summe $S_n$ fällt bis zum Origin und steigt bis zum Terminus, sodass Minimum und Maximum hervortreten, selbst wenn die Verzerrung nur wenige Prozent beträgt. Echte Genome zeigen dieselbe V-Form, wenn auch weniger sauber, weil Gene, Repeats und Umlagerungen ihre eigene Zusammensetzung beisteuern. Die beiden GC-armen Abschnitte auf dem inneren Ring
+  imitieren genomische Inseln, DNA, die von anderswo aufgenommen wurde und oft eine andere Basenzusammensetzung behält. Das $k$-mer-Spektrum ist der Ausgangspunkt der Genomassemblierung und vieler alignmentfreier Vergleiche; bei diesem zufälligen Genom folgen seine Farben einfach dem GC-Gehalt. Probier einen kleineren Skew, ein kleineres Genom oder ein größeres $k$ (mehr Wörter, weniger Zählungen pro Wort).'
+meanings:
+- 'Position $n$, Buchstabe $a$ ∈ (A, C, G, T): 1, wo die Base $a$ ist'
+- jedes Fenster aus $k$ Buchstaben, ohne Speicher zu kopieren
+- '$a \cdot 4^{k-1-j}$: das Wort als Zahl zur Basis 4 gelesen (AAA = 0, …, TTT = $4^k-1$)'
+- 'wiederholtes $j$ und $a$ ⇒ summiert: der Index des $k$-mers, das bei $n$ beginnt'
+- das $k$-mer-Spektrum; die Zählungen summieren sich zu $L-k+1$
+- 'wiederholtes $i$ ⇒ summiert: Basenzählungen im Fenster $w$ aus $\ell$ Basen, eines alle $\Delta = \ell/2$'
+- $(n_G + n_C)/\ell$ und $(n_G - n_C)/(n_G + n_C)$
+- '$c = (0, -1, +1, 0)$: laufende Zählung G minus C; argmin = Origin, argmax = Terminus'
+labels:
+  length_kb: Genomlänge $L$
+  k: Wortlänge $k$
+  window: Fenster $\ell$
+  origin: Gesetzter Origin (Anteil des Genoms)
+  skew: Strangverzerrung (Skew)
+  gc: GC-Gehalt
+  seed: Zufalls-Seed

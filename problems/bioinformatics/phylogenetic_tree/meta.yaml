@@ -1,0 +1,35 @@
+title: Phylogenetic trees from DNA distances
+category: bioinformatics
+level: intermediate
+order: 3
+summary: >
+  DNA sequences evolve down a hidden random tree, each branch one matrix product with the Jukes–Cantor transition
+  matrix. From the leaves alone we count differences with one einsum over one-hot letters, correct them for hidden
+  multiple substitutions, and rebuild the tree by UPGMA and by neighbour joining. Watch both trees as more sites
+  are used, scored against the truth by the Robinson–Foulds distance.
+animated: true
+vector_form: 'P(t) = \tfrac14\,\mathbf 1\mathbf 1^{\mathsf T} + \big(I - \tfrac14\,\mathbf 1\mathbf 1^{\mathsf T}\big)\,e^{-4t/3},\qquad d = -\tfrac34\ln\!\big(1 - \tfrac43\,p\big),\qquad Q = (n-2)\,D - \mathbf r\,\mathbf 1^{\mathsf T} - \mathbf 1\,\mathbf r^{\mathsf T}'
+index_form: 'y_{l\beta} = x_{l\alpha}P_{\alpha\beta}(t),\qquad p_{ij} = 1 - \tfrac1L\,X_{il\alpha}X_{jl\alpha},\qquad Q_{ij} = (n-2)\,d_{ij} - d_{ik}\mathbf 1_k - d_{jk}\mathbf 1_k'
+translation:
+  - {symbol: 'P_{\alpha\beta}(t)', code: 'jc_transition(t, device)', shape: '(4, 4)', meaning: 'probability that letter $\alpha$ has become $\beta$ after a branch of length $t$ (expected substitutions per site)'}
+  - {symbol: 'y_{rl\beta} = x_{rl\alpha}P_{\alpha\beta}', code: "einsum('rla,ab->rlb', x, P)", shape: '(R, L, 4)', meaning: 'repeated $\alpha$ ⇒ summed: letter probabilities of the child at every site; sampled by inverse CDF'}
+  - {symbol: 'X_{il\alpha}', code: 'simulate(tree, n_sites, 1, ...)[0]', shape: '(n, L, 4)', meaning: 'the observed leaf sequences, one-hot over A, C, G, T'}
+  - {symbol: 'p_{ij} = 1 - X_{il\alpha}X_{jl\alpha}/L', code: "1 - einsum('ila,jla->ij', X, X) / L", shape: '(n, n)', meaning: 'repeated $l, \alpha$ ⇒ summed: fraction of sites where $i$ and $j$ differ'}
+  - {symbol: 'd_{ij}', code: 'jukes_cantor(p)', shape: '(n, n)', meaning: 'corrected distance $-\tfrac34\ln(1 - \tfrac43 p)$: counts the substitutions hidden by repeated hits at one site'}
+  - {symbol: 'Q_{ij}', code: 'nj_criterion(D)', shape: '(n, n)', meaning: 'neighbour joining merges the pair with the smallest $Q$, not the smallest $d$; $r_i = d_{ik}\mathbf 1_k$'}
+  - {symbol: 'd_{ij} = M_{iv}b_v + M_{jv}b_v - 2M_{iv}b_vM_{jv}', code: 'patristic(M, b)', shape: '(n, n)', meaning: 'true path lengths; $M_{iv} = 1$ when branch $v$ lies between leaf $i$ and the root, $b_v$ its length'}
+  - {symbol: '\mathrm{RF}', code: 'robinson_foulds(tree_a, tree_b)', shape: 'int', meaning: 'number of leaf bipartitions (one per inner branch) present in only one of the two trees'}
+notes: >
+  The true tree is a random coalescent tree; with the relaxed clock every branch also gets its own rate, so leaves
+  sit at different distances from the root. The raw fraction of differing sites $p$ saturates at $3/4$ and
+  underestimates long paths (grey dots below the diagonal); the Jukes–Cantor $d$ is unbiased (blue dots on the
+  diagonal) but noisier, and its noise shrinks as $1/\sqrt L$. UPGMA assumes all leaves are equally far from the
+  root, so on a relaxed clock it can join two short branches that are not neighbours (red branches), however many
+  sites it sees. Neighbour joining only needs the distances to add up along the tree and converges to the true
+  unrooted shape; it is drawn rooted at the midpoint of its longest path, since distances alone cannot locate the root. Switch to a
+  strict clock and UPGMA becomes consistent too.
+params:
+  n_taxa: {default: 10, min: 4, max: 20, step: 1, type: int, label: 'Taxa $n$'}
+  n_sites: {default: 3000, min: 200, max: 20000, step: 100, type: int, label: 'Sites $L$'}
+  tree_depth: {default: 0.5, min: 0.1, max: 1.5, step: 0.05, label: 'Root-to-leaf depth (substitutions per site)'}
+  clock: {default: relaxed, type: choice, options: [relaxed, strict], label: Molecular clock}

@@ -1,0 +1,51 @@
+title: 'Protein contacts from coevolution (DCA)'
+category: bioinformatics
+level: advanced
+order: 1
+summary: >
+  Residues that touch in a folded protein mutate together over evolution. We fold a toy protein on a cubic
+  lattice, plant couplings $J_{ij}(a,b)$ on its contacts, sample a multiple sequence alignment from the Potts model by
+  Gibbs sampling, then recover the contacts from the alignment alone: pair statistics by one-hot einsum, direct
+  couplings by mean-field DCA $J \approx -C^{-1}$ (or pseudo-likelihood with autograd), and an APC-corrected
+  Frobenius score, checked against the true contact map.
+animated: true
+vector_form: 'P(\mathbf s) = \frac{1}{Z}\exp\!\Big(\sum_i h_i(s_i) + \sum_{i<j} J_{ij}(s_i, s_j)\Big),\qquad \mathbf C = \langle \mathbf x\,\mathbf x^{\mathsf T}\rangle - \langle\mathbf x\rangle\langle\mathbf x\rangle^{\mathsf T},\qquad \mathbf J^{\mathrm{MF}} = -\mathbf C^{-1}'
+index_form: 'E_{nia} = h_{ia} + J_{iajb}\,x_{njb} \qquad f_{ia} = \tfrac1N x_{nia} \qquad C_{iajb} = \tfrac1N x_{nia}x_{njb} - f_{ia}f_{jb} \qquad F_{ij} = \sqrt{J_{iajb}J_{iajb}} \qquad F^{\mathrm{APC}}_{ij} = F_{ij} - \frac{\bar F_{i\cdot}\,\bar F_{\cdot j}}{\bar F_{\cdot\cdot}}'
+translation:
+  - {symbol: 'r_{ia},\ \mathcal C_{ij}', code: 'lattice_fold(dims), contact_map(coords, 3)', shape: '(L, 3), (L, L)', meaning: 'a serpentine chain filling an $X\times Y\times Z$ box; a contact is a lattice neighbour at least 3 apart along the chain'}
+  - {symbol: 'h_{ia},\ J_{iajb}', code: 'planted_potts(contacts, q, coupling, 1.0, seed)', shape: '(L, q), (L, q, L, q)', meaning: 'the "true" model: random fields, and random $q\times q$ coupling blocks only where $\mathcal C_{ij} = 1$'}
+  - {symbol: 'E_{nia}', code: "h + einsum('iajb,njb->nia', J, x)", shape: '(N, L, q)', meaning: 'local field: $j, b$ summed over every other column and letter of sequence $n$'}
+  - {symbol: 's_{ni} \sim \operatorname{softmax}_a E_{nia}', code: 'gibbs_sample(h, J, colour, N, sweeps, seed)', shape: '(N, L)', meaning: 'checkerboard Gibbs: contacts join opposite colours, so half of the sites are resampled at once, in all $N$ chains'}
+  - {symbol: 'x_{nia}', code: 'one_hot(seqs, q)', shape: '(N, L, q)', meaning: 'the alignment as a one-hot tensor'}
+  - {symbol: 'f_{ia},\ f_{iajb}', code: "einsum('nia->ia', x) / N, einsum('nia,njb->iajb', x, x) / N", shape: '(L, q), (L, q, L, q)', meaning: '$n$ summed: single and pair frequencies; summing $f_{iajb}$ over $b$ gives back $f_{ia}$'}
+  - {symbol: 'C_{iajb}', code: "f2 - einsum('ia,jb->iajb', f1, f1)", shape: '(L, q, L, q)', meaning: 'connected correlation, after mixing in a pseudocount $\lambda$ of uniform frequencies'}
+  - {symbol: 'J^{\mathrm{MF}}_{iajb}', code: '-torch.linalg.inv(C[:, :q-1, :, :q-1].reshape(...))', shape: '(L, q, L, q)', meaning: 'mean-field DCA: invert the $L(q-1)$-square covariance; the last letter is the reference state'}
+  - {symbol: '\log P(s_{ni}\mid s_{n,\setminus i})', code: "einsum('nia,nia->', x, log_softmax(E, -1)) / N", shape: '()', meaning: 'pseudo-likelihood alternative: maximised over $h, J$ by Adam with an $L_2$ penalty'}
+  - {symbol: 'F_{ij}', code: "einsum('iajb,iajb->ij', Jz, Jz).sqrt()", shape: '(L, L)', meaning: 'coupling strength of a pair, $a, b$ summed, in the zero-sum gauge $J^z$'}
+  - {symbol: 'F^{\mathrm{APC}}_{ij}', code: 'F - outer(F.mean(1), F.mean(0)) / F.mean()', shape: '(L, L)', meaning: 'average-product correction: removes the per-column background, so rows and columns have mean 0'}
+notes: >
+  Why does this work? If residue $i$ changes its size or charge, a residue $j$ it touches must often change too, or
+  the protein misfolds. Over many related sequences this leaves a correlation between columns $i$ and $j$ of the
+  alignment. But correlations are transitive: if $i$ touches $j$ and $j$ touches $k$, then $i$ and $k$ also
+  correlate without touching. Direct coupling analysis (DCA) fits a global model, the Potts model (a
+  $q$-state Ising model), whose couplings $J_{ij}$ explain all correlations at once, so indirect ones are explained
+  away. In the mean-field approximation the couplings are just minus the inverse of the covariance matrix (like
+  partial correlations); pseudo-likelihood maximisation instead fits $P(s_i\mid\text{rest})$ for every column
+  and is usually more accurate on real families. The animation grows the alignment from 20 sequences to all of them:
+  DCA (upper triangle) improves with depth, while plain covariance (lower triangle) stalls because its false
+  positives are indirect pairs. Here the data really come from a Potts model with known contacts, so the precision is
+  an honest score. Real alignments are harder: a handful of letters stand in for 20 amino acids plus a gap,
+  sequences are related by a phylogeny (real DCA down-weights near-duplicates), and only some contacts leave a
+  signal. Coevolution is the root of today's structure prediction: plmDCA-type contacts fed early deep-learning
+  methods, and AlphaFold 2 takes an MSA as its main input and learns its own, far richer, use of it with attention.
+  This toy shows the statistical idea behind that input, not how AlphaFold works. Try a weaker coupling, fewer
+  sequences, or more letters $q$.
+params:
+  fold: {default: 4x4x4, type: choice, options: [3x3x4, 4x4x4, 4x4x5], label: Lattice fold (box size)}
+  q: {default: 5, min: 2, max: 21, step: 1, type: int, label: 'Letters per column $q$'}
+  coupling: {default: 1.5, min: 0.3, max: 3.0, step: 0.1, label: 'Planted coupling strength $\sigma_J$'}
+  n_seq: {default: 1000, min: 100, max: 4000, step: 100, type: int, label: 'Sequences in the MSA $N$'}
+  sweeps: {default: 200, min: 20, max: 1000, step: 20, type: int, label: Gibbs sweeps per sequence}
+  pseudocount: {default: 0.3, min: 0.01, max: 0.9, step: 0.01, label: 'Pseudocount $\lambda$'}
+  method: {default: mfdca, type: choice, options: [mfdca, plm], label: 'Inference: mean-field DCA or pseudo-likelihood'}
+  plm_iters: {default: 300, min: 50, max: 2000, step: 50, type: int, label: Pseudo-likelihood Adam steps}

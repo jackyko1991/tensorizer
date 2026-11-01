@@ -1,0 +1,23 @@
+source_hash: b05c63a03eb9
+title: Allumage par fusion inertielle d'un point chaud DT
+summary: 'Un modèle 0D du point chaud au centre d''une capsule de deutérium–tritium implosée. Les particules alpha issues de $\mathrm{D + T \to {}^4He + n}$ le chauffent, le bremsstrahlung et la détente le refroidissent, et la chaleur qui s''échappe vers la coquille froide alimente la combustion. Toute une grille de températures et de densités surfaciques initiales $(T_0, \rho R_0)$ est intégrée en un seul lot : au-dessus d''une frontière de type Lawson, le point chaud s''emballe et brûle, en dessous il s''éteint.'
+notes: 'Le confinement inertiel comprime quelques centaines de microgrammes de DT si vite qu''ils brûlent avant de se disperser. Le point chaud s''allume quand les particules alpha qu''il produit le chauffent plus vite qu''il ne se refroidit. Deux grandeurs en décident : la température, car $\langle\sigma v\rangle$ augmente fortement jusqu''à quelques dizaines de keV, et la densité surfacique $\rho R$, car un point chaud plus épais arrête ses propres alphas (parcours des alphas d''environ 0,3 g/cm² vers 10 keV) et résiste plus longtemps à la détente. Le bremsstrahlung seul fixe la température d''allumage idéale, environ 4,3 keV, où $\tfrac14\langle\sigma v\rangle E_\alpha = C_B\sqrt T$. La courbe pointillée est le bilan instantané, la forme FCI du critère de Lawson ; la région ombrée est ce que trouve l''intégration complète, qui tient aussi compte de la propagation de la combustion dans la coquille froide. Augmentez le multiplicateur de pertes $L$ et la frontière se déplace vers des $\rho
+  R$ plus grands et des $T$ plus élevées. Contexte de recherche : le 5 décembre 2022, la National Ignition Facility a annoncé la première expérience de fusion en laboratoire avec un gain de cible supérieur à 1, environ 3,15 MJ d''énergie de fusion pour 2,05 MJ de lumière laser sur la cible (approximatif ; Indirect Drive ICF Collaboration, Phys. Rev. Lett. 132, 065102, 2024), après avoir atteint un plasma en combustion (Zylstra et al., Nature 601, 542, 2022) et un tir de 1,3 MJ en août 2021 qui a dépassé le critère de Lawson pour l''allumage (Phys. Rev. Lett. 129, 075001, 2022). Le gain de cible ne compte que l''énergie laser qui atteint la cible ; l''électricité utilisée pour faire fonctionner les lasers est bien plus grande. Simplifications : un point chaud 0D uniforme à densité fixe (la fraction brûlée est donc surestimée — rien ne le fait se désassembler hormis le terme de pertes PdV), une formule de dépôt des alphas illustrative, une conductivité de Spitzer approximative ($\ln\Lambda
+  \approx 10$), pas de piégeage du rayonnement, pas de mélange avec le matériau de l''ablateur, et des températures ionique et électronique égales.'
+meanings:
+- chaque point de grille $b = i\,n_r + j$ est un point chaud ; l'état est $(\ln T, \ln\rho R, \varphi)$
+- réactivité DT de Bosch–Hale, $\approx 1.14\times10^{-22}$ m³/s à 10 keV, pic $\approx 9\times10^{-22}$ vers 65 keV
+- part de l'énergie alpha de 3,5 MeV arrêtée dans le point chaud
+- bremsstrahlung, $C_B = 5.34\times10^{-37}$ W m³ keV$^{-1/2}$
+- travail PdV d'un point chaud en détente à la vitesse du son
+- conduction de Spitzer vers la coquille ; recyclée en nouvelle masse chaude (propagation de la combustion)
+- second membre pour tous les points chauds à la fois, avancé par RK4
+- courbe de type Lawson où l'autochauffage égale les pertes, par dichotomie en lot
+labels:
+  density: Densité du point chaud $\rho$
+  loss: Multiplicateur de pertes $L$ (bremsstrahlung + PdV)
+  rho_r_max: $\rho R$ total de combustible disponible
+  t_end: Durée simulée
+  n_grid: Points de grille par axe
+  t_min: $T_0$ le plus bas
+  t_max_init: $T_0$ le plus haut

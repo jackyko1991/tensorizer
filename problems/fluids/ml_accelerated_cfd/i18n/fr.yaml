@@ -1,0 +1,18 @@
+source_hash: e6424f8df209
+title: CFD accélérée par apprentissage automatique
+summary: Un solveur volumes finis ordinaire, sur une grille 16 fois plus grossière que la référence, étale les chocs de l'équation de Burgers visqueuse. Un petit CNN apprend une correction des flux aux faces, entraîné par rétropropagation à travers une simulation grossière déroulée. Sur des conditions initiales qu'il n'a jamais vues, le solveur appris suit la solution fine plusieurs fois mieux, à la même résolution grossière, tout en conservant exactement $\int u\,dx$.
+notes: 'Unités : le domaine est $[0, 2\pi)$, périodique. La référence est le même schéma volumes finis sur 512 cellules, avec un pas de temps de Heun sous-cyclé pour rester stable. L''entraînement utilise 32 ondes lisses aléatoires, et le test 8 autres issues d''une graine différente, simulées 50 % plus longtemps ($t = 3$) que les données d''entraînement. À chaque pas d''Adam, le solveur appris part de l''état grossier exact à des instants aléatoires, effectue $S$ pas, et est pénalisé s''il s''écarte de la référence moyennée. Les gradients remontent à travers chaque pas de temps, si bien que le réseau apprend des corrections qui restent bonnes lorsqu''on lui fournit sa propre sortie. Deux choix de conception le gardent honnête : $\delta F$ entre comme un flux, donc $\sum_i u_i$ est conservé à l''arrondi près, et la dernière couche démarre à zéro, donc l''entraînement part du solveur ordinaire. L''idée suit Bar-Sinai, Hoyer, Hickey & Brenner (PNAS, 2019), qui ont appris des discrétisations
+  guidées par les données pour exactement ce type d''équation, et Kochkov, Smith, Alieva, Wang, Brenner & Hoyer (PNAS, 2021). Ces derniers ont appris des coefficients d''interpolation dans un solveur Navier–Stokes 2D et ont rapporté des grilles 8 à 10 fois plus grossières à précision égale, soit un calcul environ 40 à 80 fois plus rapide. Ce jouet montre le mécanisme, pas ces accélérations. Une correction apprise peut échouer sur des entrées éloignées de ses données d''entraînement. Essayez d''entraîner moins de pas, un déroulement plus court ou une viscosité sur laquelle le réseau n''a pas été entraîné.'
+meanings:
+- moyenne dans la cellule grossière $i$ pour la trajectoire $b$ (périodique)
+- $\tfrac14(u_i^2 + u_{i+1}^2) - \tfrac12\alpha(u_{i+1} - u_i)$, $\alpha = \max(\lvert u_i\rvert, \lvert u_{i+1}\rvert)$ ; $u_{i+1}$ est roll(u, -1)
+- ce qui sort d'une cellule entre dans la suivante ⇒ $\sum_i u_i$ conservé
+- '$k$ répété ⇒ sommé : un stencil de 5 cellules, remplissage périodique'
+- correction de flux apprise à partir de trois convolutions (nulle au départ)
+- solution fine moyennée sur les $f = N_f/N_c$ cellules fines de chaque cellule grossière
+- autograd à travers les $S$ pas de temps déroulés du solveur
+labels:
+  nu: Viscosité $\nu$
+  n_coarse: Cellules grossières $N_c$
+  train_iters: Pas d'entraînement
+  unroll: Pas déroulés $S$

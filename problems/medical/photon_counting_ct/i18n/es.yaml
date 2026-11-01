@@ -1,0 +1,22 @@
+source_hash: e03f3730cc96
+title: TC de recuento de fotones y descomposición de materiales
+summary: Un detector de recuento de fotones clasifica cada rayo X en intervalos de energía, así que cada rayo da varias medidas de Beer–Lambert $\lambda_{rb} = N_0 R_{be}S_e e^{-\mu_{em}A_{rm}}$ en lugar de una. Un ajuste de máxima verosimilitud por lotes (gradiente con autograd, pasos de Fisher scoring) convierte los conteos de Poisson de cada rayo en integrales de línea de agua, hueso y yodo; la retroproyección filtrada produce mapas de materiales e imágenes monoenergéticas virtuales, y separa el yodo del hueso, que un escáner convencional muestra idénticos.
+notes: 'Los detectores de recuento de fotones (telururo de cadmio o silicio) registran fotones individuales y comparan la altura de cada pulso con varios umbrales, así que el conteo en cada intervalo de energía es una medida de Beer–Lambert independiente. El primer escáner de TC de recuento de fotones recibió la autorización de la FDA estadounidense en 2021, y desde entonces la imagen espectral, una resolución más nítida y un menor ruido electrónico han pasado de la investigación a la clínica. Tres materiales necesitan al menos tres intervalos: el agua y el hueso difieren sobre todo por el efecto fotoeléctrico, y el yodo añade su borde K en 33.2 keV, así que un umbral cerca de 35 keV ayuda (prueba la configuración de 25, 50, 75 keV). El inserto de hueso se diluye hasta tener la misma atenuación ponderada por energía que el inserto de yodo de 10 mg/mL, de modo que la imagen convencional muestra los dos iguales; los mapas de materiales los distinguen. Las imágenes monoenergéticas virtuales
+  $\mu_m(E)a_m$ realzan el contraste del yodo a baja energía y no tienen el efecto de cubeta por endurecimiento del haz que muestra la imagen convencional. La descomposición en tres materiales amplifica el ruido (las curvas de atenuación de la base son casi paralelas), así que el error del yodo solo disminuye como $1/\sqrt{N_0}$ y es de unos pocos mg/mL por píxel con dosis moderada; los sistemas clínicos suelen usar dos materiales base, eliminación de ruido y reconstrucción iterativa. Simplificaciones: haces paralelos, detector ideal salvo la resolución energética gaussiana (sin compartición de carga, apilamiento ni escape K), sin dispersión, tablas de atenuación redondeadas. Modelo educativo, no apto para uso clínico.'
+meanings:
+- 'cantidades de base por píxel: fracción de agua, fracción de hueso, yodo en mg/mL'
+- 'transformada de Radon de cada mapa base: cm de agua, cm de hueso, mg/cm² de yodo a lo largo del rayo $r = (\theta, s)$'
+- atenuación de cada material base en una malla de 1 keV (XCOM, interpolada en log-log, borde K del yodo en 33.2 keV)
+- espectro filtrado del tubo; probabilidad de que un fotón de energía $E_e$ se cuente en el intervalo $b$ (resolución energética gaussiana)
+- 'Beer–Lambert por intervalo: $m$ y luego $e$ repetidos ⇒ sumados; los conteos son $y_{rb} \sim \mathrm{Poisson}(\lambda_{rb})$'
+- gradiente de la log-verosimilitud negativa de Poisson; los rayos son independientes, así que una sola pasada hacia atrás da a cada rayo su propio gradiente
+- información de Fisher, $b$ repetido ⇒ sumado; $J_{rbm} = \partial\lambda_{rb}/\partial A_{rm}$
+- 'una resolución $3\times 3$ por rayo, por lotes: el paso de Fisher scoring (tipo Newton)'
+- imagen monoenergética virtual a la energía $E$ a partir de los mapas base reconstruidos, mostrada en HU
+labels:
+  kvp: Tensión del tubo
+  dose: Fotones por rayo $N_0$
+  thresholds: Umbrales de energía (keV)
+  sigma_kev: Resolución energética $\sigma$
+  n_pixels: Tamaño de imagen $N$
+  n_angles: Ángulos de proyección

@@ -1,0 +1,22 @@
+source_hash: 95b6effde453
+title: Red neuronal de grafos equivariante E(n) para dinámica de partículas
+summary: Una diminuta red neuronal de grafos equivariante E(n) (EGNN) aprende a avanzar en el tiempo un sistema 3D de partículas cargadas. Sus mensajes dependen solo de las distancias $|\mathbf x_i - \mathbf x_j|^2$ y sus actualizaciones de coordenadas apuntan a lo largo de $\mathbf x_i - \mathbf x_j$, así que rotar la entrada rota exactamente la predicción; un MLP simple con los mismos datos tiene que aprenderlo, y no lo consigue.
+notes: 'El sistema verdadero: $N$ partículas de masa unidad con cargas $c_i = \pm 1$, fuerzas de Coulomb suavizadas y muelles débiles $k_s$ entre cada par (para que la nube se mantenga unida), integradas con RK4 con un paso de $\Delta t / 10$. Ambas redes ven los mismos pares (estado en $t$, estado en $t + \Delta t$) de unos pocos sistemas aleatorios y se entrenan con Adam sobre el error cuadrático medio; los sistemas reservados dan el error de prueba. La EGNN (Satorras, Hoogeboom & Welling, "E(n) Equivariant Graph Neural Networks", ICML 2021) construye un mensaje $m_{ij}$ para cada par solo a partir de entradas invariantes (características de los nodos, $d_{ij} = |\mathbf x_i - \mathbf x_j|^2$ y el producto de cargas), y luego mueve cada partícula a lo largo de las direcciones $\mathbf x_i - \mathbf x_j$ con pesos escalares aprendidos. Fíjate en que esta es exactamente la forma de la ley de fuerzas verdadera, $\ddot{\mathbf x}_i = \sum_j w_{ij}(\mathbf x_i - \mathbf x_j)$: la simetría está
+  incorporada en la arquitectura en lugar de aprenderse de los datos. La comprobación rota y desplaza una entrada de prueba con $R$ y $\mathbf s$ aleatorios: para la EGNN $f(R\mathbf x + \mathbf s) = Rf(\mathbf x) + \mathbf s$ se cumple hasta el redondeo de float32 (unos $10^{-6}$), mientras que para el MLP, que ve las coordenadas aplanadas, la discrepancia es del orden de la propia predicción. Con pocos sistemas de entrenamiento, la EGNN alcanza un error de prueba menor con muchos menos pesos. En el rollout cada modelo se alimenta con sus propias predicciones; los errores se acumulan en ambos, porque el sistema cargado es caótico, pero la EGNN se mantiene cerca durante más tiempo. Simplificaciones: tres capas de anchura 32, la variante de velocidad de la EGNN con $\tau = \Delta t / L$ (elección nuestra), entrenamiento con el lote completo y una semilla fija. La misma idea de paso de mensajes equivariante está en la base de potenciales interatómicos aprendidos como NequIP (Batzner et al.,
+  Nature Communications 2022) y de modelos de difusión equivariantes que generan moléculas 3D (Hoogeboom et al., ICML 2022). Prueba con menos sistemas de entrenamiento: la diferencia entre las dos redes aumenta.'
+meanings:
+- posición y velocidad de la partícula $i$ en el sistema $b$, componente cartesiana $a$
+- todas las separaciones entre pares por broadcasting
+- '$a$ repetido ⇒ sumado: distancias al cuadrado, la única entrada geométrica de los MLP (invariante bajo rotaciones)'
+- 'fuerza verdadera: $j$ repetido ⇒ sumado sobre los compañeros (Coulomb más muelles)'
+- mensaje en cada par, $H = 32$ características
+- 'actualización de coordenadas: $j$ repetido ⇒ sumado; un vector construido solo a partir de $\mathbf x_i - \mathbf x_j$, así que rota con la entrada'
+- 'un escalar invariante por un vector: sigue siendo equivariante'
+- rotación aleatoria usada para la comprobación de equivariancia
+labels:
+  n_particles: Partículas $N$
+  n_train: Sistemas de entrenamiento
+  dt: Paso de tiempo del modelo $\Delta t$
+  n_iter: Iteraciones de entrenamiento
+  lr: Tasa de aprendizaje de Adam
+  rollout_steps: Pasos del rollout

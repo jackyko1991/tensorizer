@@ -1,0 +1,23 @@
+source_hash: 2038e43e9d92
+title: Un petit modèle de langage protéique apprend les contacts
+summary: 'Un transformer à deux couches avec attention par einsum, $A_{nhij} = \mathrm{softmax}_j(Q_{nhik}K_{nhjk}/\sqrt{d_k})$, est entraîné uniquement à compléter des lettres masquées de séquences issues d''un modèle de Potts dont les couplages sont placés sur un repliement sur réseau. Personne ne lui indique la structure, et pourtant ses cartes d''attention symétrisées et corrigées par APC désignent les contacts placés : c''est l''idée derrière les têtes de contacts des modèles de langage protéiques.'
+notes: 'Pourquoi l''attention trouve-t-elle les contacts ? Dans un modèle de Potts, la lettre au site $i$, sachant toutes les autres, ne dépend que des sites qui lui sont couplés (sa couverture de Markov) ; la meilleure façon de deviner une lettre masquée est donc de regarder ses partenaires de contact, et l''attention apprend à faire exactement cela. Rao et al., « Transformer protein language models are unsupervised structure learners » (ICLR 2021), ont montré que les cartes d''attention de grands modèles de langage protéiques entraînés sur des millions de séquences naturelles encodent les contacts, lus par une régression logistique sur les cartes symétrisées et corrigées par APC, ajustée sur une poignée de protéines. Des modèles ultérieurs comme ESM-2 (2022–2023) sont allés jusqu''à prédire la structure 3D à partir de telles représentations. Ici, la lecture est entièrement non supervisée (une simple moyenne sur les têtes), la famille est synthétique, et la perte de test est comparée à
+  deux références sans contexte : l''unigramme (une seule distribution des lettres) et le profil par site. Battre le profil signifie que le modèle utilise le contexte, c''est-à-dire les couplages. Le repliement en serpentin place les contacts sur des anti-diagonales, comme les brins d''un feuillet β ; des paires aléatoires ne seraient justes qu''environ 5 % du temps. L''APC retire le fond des positions sur lesquelles tout le monde porte son attention. Essayez des couplages plus faibles, moins de séquences ou une seule tête.'
+meanings:
+- blocs de couplage aléatoires uniquement entre résidus qui se touchent dans le repliement sur réseau ; l'échantillonnage de Gibbs en fait une famille de séquences
+- plongement de jeton plus plongement de position de la lettre $s_{ni}$ (les lettres masquées utilisent le jeton [MASK])
+- '$c$ répété ⇒ sommé : requêtes de chaque tête (de même pour les clés et les valeurs)'
+- $k$ répété ⇒ sommé ; chaque ligne est une distribution de probabilité sur les positions $j$ regardées
+- '$j$ répété, puis $h, k$ ⇒ sommés : ce que chaque position recueille des autres'
+- entropie croisée de la vraie lettre aux 15 % de positions masquées, minimisée avec Adam
+- attention moyennée sur les séquences de test, symétrisée et corrigée par APC pour chaque tête, puis moyennée sur les couches $l$ et les têtes $h$
+labels:
+  coupling: Force des couplages placés $\sigma_J$
+  n_seq: Séquences d'entraînement
+  q: Taille de l'alphabet $q$
+  layers: Couches du transformer
+  heads: Têtes d'attention $H$
+  d_model: Largeur du modèle $d$
+  steps: Pas d'entraînement
+  lr: Taux d'apprentissage
+  mask_rate: Fraction masquée

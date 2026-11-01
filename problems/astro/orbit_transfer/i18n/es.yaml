@@ -1,0 +1,21 @@
+source_hash: c0b25ec18fe5
+title: Transferencias orbitales de Hohmann y bielíptica
+summary: ¿Cuánto $\Delta v$ hace falta para llevar una nave de una órbita circular a otra? La ecuación vis-viva $v^2 = \mu(2/r - 1/a)$ pone precio a la transferencia de Hohmann de dos encendidos y a la bielíptica de tres, y una única integración RK4 por lotes con encendidos impulsivos en los ápsides comprueba que cada nave termina de verdad en la órbita objetivo.
+notes: 'La transferencia de Hohmann recorre media elipse tangente a ambas circunferencias, $a = (r_1 + r_2)/2$: un encendido progrado $\Delta v_1$ en el periapsis y un segundo $\Delta v_2$ en el apoapsis para circularizar, tras $t_H = \pi\sqrt{a^3/\mu}$. La transferencia bielíptica sube primero hasta un radio lejano $r_b$, donde la nave va despacio y un pequeño encendido eleva el otro lado de la órbita hasta $r_2$, y luego frena al llegar. Tarda mucho más, pero para $r_2/r_1 \gtrsim 11.94$ un $r_b$ suficientemente lejano la hace más barata (el límite $r_b \to \infty$ cuesta $(\sqrt2 - 1)(v_{c1} + v_{c2})$), y por encima de $r_2/r_1 \approx 15.58$ lo consigue cualquier $r_b > r_2$. Ambos cruces se hallan numéricamente por bisección, el segundo con una derivada de autograd. Por defecto se va de la órbita terrestre baja (unos 320 km de altura) a la órbita geoestacionaria: unos 3.9 km/s y 5.3 h por Hohmann. Elige el Sol con $r_1 = 1$ AU y $r_2 = 1.524$ AU para Tierra → Marte: en total, aproximadamente
+  5.6 km/s heliocéntricos y unos 259 días (la ejecución imprime siempre este caso). Las misiones reales también tienen que salir del pozo gravitatorio de la Tierra y esperar la alineación planetaria adecuada; aquí las órbitas son circulares y coplanares y los encendidos instantáneos. La ejecución parte la integración RK4 en cada encendido para que cada uno se produzca exactamente en un ápside.'
+meanings:
+- posición de la nave $b$ respecto al centro del cuerpo, en km
+- velocidad de la nave $b$, en km/s
+- '$j$ repetido ⇒ sumado: distancia al cuadrado $r_b^2$'
+- atracción hacia el centro según el inverso del cuadrado, $\mu = GM$
+- rapidez en el radio $r$ sobre una órbita de semieje mayor $a$; cada $\Delta v$ es una diferencia de dos de estas
+- instante y tamaño con signo del encendido $k$ de la nave $b$ ($\Delta v < 0$ frena)
+- encendido impulsivo a lo largo de la velocidad, aplicado entre dos tramos de RK4
+- se conserva entre encendidos; cada encendido la hace saltar al $-\mu/2a$ de la órbita siguiente
+- pendiente en $r_b = r_2$; se vuelve negativa por encima de $r_2/r_1 \approx 15.58$
+labels:
+  body: Cuerpo central
+  r1: Radio inicial $r_1$
+  r2: Radio objetivo $r_2$
+  transfer: Transferencia
+  rb_ratio: Radio intermedio bielíptico $r_b / r_2$

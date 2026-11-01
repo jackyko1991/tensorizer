@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Dynamic-programming table for aligning sequence a down the side with sequence c across the top; one anti-diagonal of cells is highlighted and one cell receives arrows from its left, upper and upper-left neighbours">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- 5x5 table, 22 px cells, origin (40, 30) -->
+    <rect x="40" y="30" width="110" height="110" fill="#ffffff" stroke="#374151" stroke-width="2"/>
+    <!-- anti-diagonal i + j = 4 (row + col = 4, zero-based) -->
+    <g fill="#fde68a" stroke="#f59e0b" stroke-width="1">
+      <rect x="128" y="30" width="22" height="22"/>
+      <rect x="106" y="52" width="22" height="22"/>
+      <rect x="84" y="74" width="22" height="22"/>
+      <rect x="62" y="96" width="22" height="22"/>
+      <rect x="40" y="118" width="22" height="22"/>
+    </g>
+    <!-- filled cells above the wavefront -->
+    <g fill="#93c5fd" opacity="0.55">
+      <rect x="40" y="30" width="88" height="22"/>
+      <rect x="40" y="52" width="66" height="22"/>
+      <rect x="40" y="74" width="44" height="22"/>
+      <rect x="40" y="96" width="22" height="22"/>
+    </g>
+    <g stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3">
+      <line x1="62" y1="30" x2="62" y2="140"/><line x1="84" y1="30" x2="84" y2="140"/>
+      <line x1="106" y1="30" x2="106" y2="140"/><line x1="128" y1="30" x2="128" y2="140"/>
+      <line x1="40" y1="52" x2="150" y2="52"/><line x1="40" y1="74" x2="150" y2="74"/>
+      <line x1="40" y1="96" x2="150" y2="96"/><line x1="40" y1="118" x2="150" y2="118"/>
+    </g>
+    <!-- the cell (84,74) gets three arrows -->
+    <rect x="84" y="74" width="22" height="22" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <g stroke="#dc2626" stroke-width="2" fill="none" marker-end="url(#arrow)">
+      <line x1="70" y1="85" x2="82" y2="85"/>
+      <line x1="95" y1="60" x2="95" y2="72"/>
+      <line x1="70" y1="60" x2="83" y2="73"/>
+    </g>
+    <!-- sequences -->
+    <g font-size="12" font-family="ui-monospace, monospace" text-anchor="middle" fill="#374151">
+      <text x="51" y="24">G</text><text x="73" y="24">A</text><text x="95" y="24">T</text><text x="117" y="24">T</text><text x="139" y="24">A</text>
+      <text x="32" y="46">G</text><text x="32" y="68">C</text><text x="32" y="90">A</text><text x="32" y="112">T</text><text x="32" y="134">G</text>
+    </g>
+    <text x="150" y="16" font-style="italic">c</text>
+    <text x="14" y="150" font-style="italic">a</text>
+    <text x="160" y="80" fill="#b45309"><tspan font-style="italic">i</tspan> + <tspan font-style="italic">j</tspan> = <tspan font-style="italic">d</tspan></text>
+    <text x="160" y="100" font-size="12" fill="#374151">one update</text>
+    <text x="160" y="116" font-size="12" fill="#374151">per diagonal</text>
+  </g>
+</svg>

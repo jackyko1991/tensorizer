@@ -107,6 +107,29 @@
   },
   "wikidata": "Q177596"
  },
+ "astro/orbit_transfer": {
+  "titles": {
+   "en": "Hohmann transfer orbit",
+   "zh": "霍曼轉移軌道",
+   "fr": "Orbite de transfert",
+   "de": "Hohmann-Transfer",
+   "es": "Órbita de transferencia de Hohmann",
+   "ja": "ホーマン遷移軌道",
+   "ru": "Гомановская траектория",
+   "ko": "호만 전이 궤도",
+   "hi": "होहमान्न स्थानांतरण कक्षा"
+  },
+  "wikidata": "Q723861"
+ },
+ "astro/pulsar_timing_hellings_downs": {
+  "titles": {
+   "en": "Pulsar timing array",
+   "zh": "脉冲星计时阵列",
+   "fr": "Chronométrage de réseau de pulsars",
+   "ja": "パルサータイミングアレイ"
+  },
+  "wikidata": "Q7259618"
+ },
  "astro/tidal_tensor": {
   "titles": {
    "de": "Spaghettisierung",
@@ -119,6 +142,111 @@
    "zh": "麵條化"
   },
   "wikidata": "Q788017"
+ },
+ "bioinformatics/coevolution_contacts": {
+  "titles": {
+   "en": "Direct coupling analysis"
+  },
+  "wikidata": "Q28130454"
+ },
+ "bioinformatics/dna_binding_cnn": {
+  "titles": {
+   "en": "Convolutional neural network",
+   "zh": "卷积神经网络",
+   "fr": "Réseau neuronal convolutif",
+   "de": "Convolutional Neural Network",
+   "es": "Red neuronal convolucional",
+   "ja": "畳み込みニューラルネットワーク",
+   "ru": "Свёрточная нейронная сеть",
+   "ko": "합성곱 신경망",
+   "hi": "कन्वोलुशनल न्यूरल नेटवर्क"
+  },
+  "wikidata": "Q17084460"
+ },
+ "bioinformatics/hmm_cpg_islands": {
+  "titles": {
+   "en": "Hidden Markov model",
+   "zh": "隐马尔可夫模型",
+   "fr": "Modèle de Markov caché",
+   "de": "Hidden Markov Model",
+   "es": "Modelo oculto de Márkov",
+   "ja": "隠れマルコフモデル",
+   "ru": "Скрытая марковская модель",
+   "ko": "은닉 마르코프 모형"
+  },
+  "wikidata": "Q176769"
+ },
+ "bioinformatics/kmer_gc_skew": {
+  "titles": {
+   "en": "GC skew"
+  },
+  "wikidata": "Q5513061"
+ },
+ "bioinformatics/phylogenetic_tree": {
+  "titles": {
+   "en": "Neighbor joining",
+   "zh": "邻接法",
+   "fr": "Neighbour joining",
+   "de": "Neighbor-Joining-Algorithmus",
+   "es": "Método de unión de vecinos",
+   "ja": "近隣結合法",
+   "ru": "Метод присоединения соседей"
+  },
+  "wikidata": "Q1935806"
+ },
+ "bioinformatics/protein_language_model": {
+  "titles": {
+   "en": "Protein structure prediction",
+   "zh": "蛋白质结构预测",
+   "fr": "Prédiction de la structure des protéines",
+   "de": "Proteinstrukturvorhersage",
+   "es": "Predicción de la estructura de las proteínas",
+   "ja": "タンパク質構造予測",
+   "ru": "Предсказание структуры белка",
+   "ko": "단백질 구조 예측"
+  },
+  "wikidata": "Q899656"
+ },
+ "bioinformatics/pwm_motif_scan": {
+  "titles": {
+   "en": "Position weight matrix",
+   "es": "Matriz de pesos posicionales",
+   "ru": "Позиционная весовая матрица"
+  },
+  "wikidata": "Q7233183"
+ },
+ "bioinformatics/sequence_alignment": {
+  "titles": {
+   "en": "Needleman–Wunsch algorithm",
+   "zh": "尼德曼-翁施算法",
+   "fr": "Algorithme de Needleman-Wunsch",
+   "de": "Needleman-Wunsch-Algorithmus",
+   "es": "Algoritmo Needleman-Wunsch",
+   "ru": "Алгоритм Нидлмана — Вунша"
+  },
+  "wikidata": "Q583546"
+ },
+ "bioinformatics/single_cell_pca": {
+  "titles": {
+   "en": "Single-cell transcriptomics",
+   "es": "Transcriptómica de células individuales",
+   "ru": "Транскриптомика одиночных клеток"
+  },
+  "wikidata": "Q18409577"
+ },
+ "bioinformatics/wright_fisher_drift": {
+  "titles": {
+   "en": "Genetic drift",
+   "zh": "遗传漂变",
+   "fr": "Dérive génétique",
+   "de": "Gendrift",
+   "es": "Deriva genética",
+   "ja": "遺伝的浮動",
+   "ru": "Дрейф генов",
+   "ko": "유전적 부동",
+   "hi": "आनुवंशिक च्युति"
+  },
+  "wikidata": "Q486420"
  },
  "biophysics/coarse_grained_md": {
   "titles": {
@@ -304,6 +432,19 @@
   },
   "wikidata": "Q4393075"
  },
+ "em/topological_photonics": {
+  "titles": {
+   "en": "Topological insulator",
+   "zh": "拓扑绝缘体",
+   "fr": "Isolant topologique",
+   "de": "Topologischer Isolator",
+   "es": "Aislante topológico",
+   "ja": "トポロジカル絶縁体",
+   "ru": "Топологический изолятор",
+   "ko": "위상절연체"
+  },
+  "wikidata": "Q1488689"
+ },
  "em/waveguide_modes": {
   "titles": {
    "de": "Hohlleiter",
@@ -399,6 +540,20 @@
   },
   "wikidata": "Q201321"
  },
+ "fluids/ml_accelerated_cfd": {
+  "titles": {
+   "en": "Computational fluid dynamics",
+   "zh": "计算流体力学",
+   "fr": "Mécanique des fluides numérique",
+   "de": "Numerische Strömungsmechanik",
+   "es": "Fluidodinámica computacional",
+   "ja": "数値流体力学",
+   "ru": "Вычислительная гидродинамика",
+   "ko": "전산 유체 역학",
+   "hi": "अभिकलनात्मक तरल यांत्रिकी"
+  },
+  "wikidata": "Q815820"
+ },
  "fluids/navier_stokes_pipe_flow": {
   "titles": {
    "de": "Gesetz von Hagen-Poiseuille",
@@ -462,6 +617,15 @@
    "zh": "双摆"
   },
   "wikidata": "Q1243208"
+ },
+ "mechanics/egnn_dynamics": {
+  "titles": {
+   "en": "Graph neural network",
+   "zh": "图神经网络",
+   "es": "Redes neuronales gráficas",
+   "ko": "그래프 신경망"
+  },
+  "wikidata": "Q107750691"
  },
  "mechanics/hamiltonian_phase_space": {
   "titles": {
@@ -655,6 +819,13 @@
   },
   "wikidata": "Q208376"
  },
+ "medical/photon_counting_ct": {
+  "titles": {
+   "en": "Photon-counting computed tomography",
+   "fr": "Tomodensitométrie à comptage photonique"
+  },
+  "wikidata": "Q48799185"
+ },
  "medical/proton_bragg_peak": {
   "titles": {
    "de": "Bragg-Kurve",
@@ -744,6 +915,19 @@
    "zh": "四维动量"
   },
   "wikidata": "Q1068463"
+ },
+ "nuclear/fusion_ignition": {
+  "titles": {
+   "en": "Inertial confinement fusion",
+   "zh": "慣性局限融合",
+   "fr": "Fusion par confinement inertiel",
+   "de": "Trägheitsfusion",
+   "es": "Confinamiento inercial",
+   "ja": "慣性閉じ込め方式",
+   "ru": "Инерциальный управляемый термоядерный синтез",
+   "ko": "관성 봉입 핵융합"
+  },
+  "wikidata": "Q1364409"
  },
  "nuclear/neutrino_oscillations": {
   "titles": {
@@ -876,6 +1060,12 @@
    "zh": "光線轉換矩陣分析"
   },
   "wikidata": "Q1760601"
+ },
+ "optics/metalens_inverse_design": {
+  "titles": {
+   "en": "Flat lens"
+  },
+  "wikidata": "Q5457840"
  },
  "optics/mirror_reflection": {
   "titles": {
@@ -1047,6 +1237,16 @@
    "ru": "Двухъямный потенциал"
   },
   "wikidata": "Q25313552"
+ },
+ "quantum/error_correction_threshold": {
+  "titles": {
+   "en": "Quantum error correction",
+   "zh": "量子纠错",
+   "de": "Quantenfehlerkorrektur",
+   "es": "Corrección de errores cuántica",
+   "ko": "양자 오류 정정"
+  },
+  "wikidata": "Q1536431"
  },
  "quantum/free_wave_packet": {
   "titles": {
@@ -1257,6 +1457,20 @@
   },
   "wikidata": "Q200286"
  },
+ "thermodynamics/mpemba_effect": {
+  "titles": {
+   "en": "Mpemba effect",
+   "zh": "姆潘巴现象",
+   "fr": "Effet Mpemba",
+   "de": "Mpemba-Effekt",
+   "es": "Efecto Mpemba",
+   "ja": "ムペンバ効果",
+   "ru": "Эффект Мпембы",
+   "ko": "음펨바 효과",
+   "hi": "पेम्बा प्रभाव"
+  },
+  "wikidata": "Q723510"
+ },
  "thermodynamics/newton_cooling": {
   "titles": {
    "en": "Newton's law of cooling",
@@ -1363,6 +1577,19 @@
    "zh": "瘋狗浪"
   },
   "wikidata": "Q110360"
+ },
+ "waves/photonic_time_crystal": {
+  "titles": {
+   "en": "Time crystal",
+   "zh": "時間晶體",
+   "fr": "Cristal temporel",
+   "de": "Zeitkristall",
+   "es": "Cristal de espacio tiempo",
+   "ja": "時間結晶",
+   "ru": "Темпоральный кристалл",
+   "ko": "시간 결정"
+  },
+  "wikidata": "Q7572183"
  },
  "waves/ripple_tank": {
   "titles": {

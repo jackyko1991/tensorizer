@@ -1,0 +1,39 @@
+title: Markovian Mpemba effect
+category: thermodynamics
+level: advanced
+order: 4
+summary: >
+  Can hot water freeze faster than warm water? For a particle hopping in a lattice potential with Metropolis rates the answer
+  is yes. The master equation $\dot p = W p$ is diagonalised once, every initial temperature is projected on the slowest mode in one
+  einsum, and a hot start whose slow-mode amplitude $a_2$ vanishes relaxes exponentially faster than a cooler one.
+animated: true
+vector_form: '\dot{\mathbf p} = W\,\mathbf p,\qquad \mathbf p(t) = \boldsymbol\pi + \sum_{k\ge 2} a_k\,e^{\lambda_k t}\,\mathbf r_k,\qquad a_k = \boldsymbol\ell_k\cdot\mathbf p(0)'
+index_form: 'W_{ij} = A_{ij}\min\!\big(1, e^{-(U_i - U_j)/T_b}\big) - \delta_{ij}\textstyle\sum_k A_{kj}\min\!\big(1, e^{-(U_k - U_j)/T_b}\big),\qquad \dot p_{bi} = W_{ij}\,p_{bj},\qquad a_{bk} = \ell_{ik}\,p_{bi}(0)'
+translation:
+  - {symbol: 'U_i', code: 'potential(barrier, dev)', shape: '(N,)', meaning: 'staircase energy of site $i$: plateau, deep narrow well, barrier, wide shallow well'}
+  - {symbol: 'A_{ij}', code: 'neighbours(N, dev)', shape: '(N, N)', meaning: '1 for nearest neighbours on the chain, else 0'}
+  - {symbol: 'W_{ij}', code: 'metropolis_rates(u, A, T_bath)', shape: '(N, N)', meaning: 'rate of a jump $j \to i$; the diagonal makes every column sum to zero'}
+  - {symbol: 'p_{bi}(0)', code: 'softmax(-u / T0[:, None], dim=1)', shape: '(B, N)', meaning: 'Boltzmann state at each initial temperature $T_{0,b}$, a batch of starts'}
+  - {symbol: 'W_{ij}\,p_{bj}', code: "einsum('ij,bj->bi', W, p)", shape: '(B, N)', meaning: 'repeated $j$ ⇒ summed: the master equation for every start at once'}
+  - {symbol: '\lambda_k,\ r_{ik},\ \ell_{ik}', code: 'spectrum(W, pi)', shape: '(N,), (N, N), (N, N)', meaning: 'eigh of the symmetrised $\Pi^{-1/2} W \Pi^{1/2}$; $\lambda_1 = 0$ is equilibrium, $\lambda_2$ the slowest decay'}
+  - {symbol: 'a_{bk} = \ell_{ik}\,p_{bi}(0)', code: "einsum('ik,bi->bk', left, p0)", shape: '(B, N)', meaning: 'repeated $i$ ⇒ summed: overlap of each start with each mode'}
+  - {symbol: 'r_{ik}\,a_{bk}\,e^{\lambda_k t}', code: "einsum('ik,bk,tk->tbi', right, a, decay)", shape: '(T, B, N)', meaning: 'repeated $k$ ⇒ summed: exact solution at every time'}
+  - {symbol: 'D(p\,\Vert\,\pi)', code: 'kl_divergence(p, pi)', shape: '(T, B)', meaning: 'Kullback–Leibler distance to equilibrium, $\sum_i p_i \ln(p_i/\pi_i)$'}
+notes: >
+  Units: $k_B = 1$ and the attempt rate is 1. The bath sits at $T_b$ and the system starts in equilibrium at a temperature $T_0$. If
+  the hops obey detailed balance, $W_{ij}\pi_j = W_{ji}\pi_i$, $W$ is similar to a symmetric matrix, so all its eigenvalues are real and
+  $\le 0$, and its stationary state is the Boltzmann distribution $\pi$. After a short time only the slowest mode is left,
+  $p - \pi \approx a_2\, e^{\lambda_2 t}\, r_2$, so the start with the smaller $\lvert a_2\rvert$ ends up closer to equilibrium, whatever its
+  temperature. Because $a_2(T_0)$ need not be monotonic, a hotter start can overtake a warmer one (the Markovian Mpemba effect). At the
+  special $T^*$ where $a_2 = 0$ the slow mode is absent altogether, and the relaxation runs at the faster rate $\lambda_3$ (the
+  strong effect). In this potential the shape comes from a competition between basins. At low $T_0$ the deep narrow well holds most of
+  the probability. At intermediate $T_0$ the wide shallow well wins by entropy. At high $T_0$ the raised plateau fills, so the left
+  basin's share comes back up and passes its equilibrium value at $T^*$. The theory is from Lu & Raz (PNAS, 2017). Kumar & Bechhoefer
+  (Nature, 2020) saw the effect, including the strong version, with a colloidal bead in an optically shaped double-well potential.
+  Kumar, Chétrite & Bechhoefer (PNAS, 2022) then saw the inverse effect (anomalous heating). Quantum analogues have recently been
+  reported in trapped-ion experiments. This lattice is a toy version of those systems. Try raising $T_b$: above about $1.4$ the
+  crossing disappears.
+params:
+  T_bath: {default: 1.0, min: 0.7, max: 1.3, step: 0.05, label: 'Bath temperature $T_b$', unit: U/k_B}
+  barrier: {default: 2.0, min: 1.0, max: 3.0, step: 0.1, label: 'Barrier height $U_\text{bar}$', unit: U}
+  T_hot: {default: 3.5, min: 1.2, max: 30.0, step: 0.1, label: 'Hot start $T_\text{hot}$', unit: U/k_B}

@@ -1,0 +1,19 @@
+source_hash: 60f8bd39a854
+title: Cristal temporal fotónico y reflexión temporal
+summary: Luz en un medio cuya permitividad $\varepsilon(t)$ cambia en el tiempo pero no en el espacio. Un salto brusco de $\varepsilon$ divide un pulso en una onda hacia delante y una onda hacia atrás reflejada en el tiempo, con una nueva frecuencia; una modulación periódica abre una banda prohibida en el momento $k$, dentro de la cual las ondas crecen exponencialmente. Cada modo de Fourier es un problema $2\times 2$ independiente, así que todos los $k$ se resuelven como un solo lote, y las bandas de Floquet salen de una sola llamada a eigvals por lotes.
+notes: 'Intercambiar los papeles del espacio y el tiempo da la vuelta a la óptica conocida. En una interfaz ordinaria en el espacio se conserva la frecuencia y cambia el número de onda; en una interfaz temporal, donde todo el medio pasa de $\varepsilon_1$ a $\varepsilon_2$ de golpe, se conserva el número de onda $k$ y la frecuencia salta, $\omega_2 = \omega_1 n_1/n_2$. Como no aparecen cargas ni corrientes, $D$ y $B$ se mantienen continuos (no $E$ y $H$), lo que da los coeficientes de Fresnel temporales $D_f = \tfrac12(1 + n_2/n_1)$ y $D_b = \tfrac12(1 - n_2/n_1)$ (Morgenthaler, 1958): parte del pulso da media vuelta y corre hacia atrás, la reflexión temporal, y la energía no se conserva porque cambiar el medio realiza trabajo sobre el campo. La reflexión temporal y la traslación de frecuencia de banda ancha se observaron con microondas en un metamaterial de línea de transmisión conmutado en el tiempo (Moussa et al., Nature Physics 2023). Una modulación periódica $\varepsilon(t) = \varepsilon_0(1
+  + \alpha\cos\Omega t)$ convierte cada modo en un oscilador paramétrico, $\ddot D_k + (k^2/\varepsilon)D_k = 0$ (una ecuación de tipo Mathieu). Cerca de $k/n_0 = \Omega/2$ las ondas hacia delante y hacia atrás se acoplan de forma resonante: la cuasifrecuencia se fija en $\Omega/2$ y adquiere una parte imaginaria, una banda prohibida en el momento (en lugar de en la frecuencia), con bordes $k \approx \tfrac{n_0\Omega}{2}(1 \mp \alpha/4)$ y tasa de crecimiento máxima $\approx \alpha\Omega/8$ a primer orden en $\alpha$. Una segunda banda prohibida, mucho más estrecha, en $k \approx n_0\Omega$ aparece a orden $\alpha^2$. En la animación solo crece la parte del espectro del pulso que cae dentro de la banda prohibida. Esta es la idea detrás de los cristales temporales fotónicos (revisados por Galiffi et al., "Photonics of time-varying media", Advanced Photonics 2022); a frecuencias ópticas la profundidad y la velocidad de modulación necesarias son muy difíciles de alcanzar, así que los experimentos
+  hasta ahora funcionan principalmente a frecuencias de microondas y de radio. Simplificaciones: un medio sin pérdidas y sin dispersión en 1D, $\mu = 1$, un salto instantáneo y una modulación impuesta desde fuera (la energía del crecimiento procede del bombeo).'
+meanings:
+- amplitudes de Fourier; el medio es uniforme en $x$, así que $k$ se conserva y cada modo evoluciona por su cuenta
+- un generador $2\times 2$ por número de onda
+- $b$ repetido ⇒ sumado; la misma línea hace evolucionar la matriz de monodromía $(K, 2, 2)$
+- amplitudes hacia delante/hacia atrás $\tfrac12(1 \pm n_2/n_1)$ a partir de la continuidad de $D$ y $B$
+- propagador sobre un periodo, obtenido aplicando RK4 a la matriz identidad
+- multiplicadores de Floquet para todos los $k$ en una sola llamada por lotes; $\det M = 1$, así que $\lambda_+\lambda_- = 1$
+- 'cuasifrecuencia: real en una banda, $\operatorname{Im}\omega > 0$ (crecimiento) en una banda prohibida de momento'
+labels:
+  eps2: Permitividad tras el salto $\varepsilon_2$
+  alpha: Profundidad de modulación $\alpha$
+  omega: Frecuencia de modulación $\Omega$
+  t_max: Tiempo simulado

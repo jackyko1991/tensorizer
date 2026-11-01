@@ -1,0 +1,19 @@
+source_hash: 8522595ab746
+title: Effet Mpemba markovien
+summary: L'eau chaude peut-elle geler plus vite que l'eau tiède ? Pour une particule sautant dans un potentiel sur réseau avec des taux de Metropolis, la réponse est oui. L'équation maîtresse $\dot p = W p$ est diagonalisée une fois, chaque température initiale est projetée sur le mode le plus lent en un seul einsum, et un départ chaud dont l'amplitude du mode lent $a_2$ s'annule relaxe exponentiellement plus vite qu'un départ plus froid.
+notes: 'Unités : $k_B = 1$ et le taux de tentative vaut 1. Le bain est à $T_b$ et le système part de l''équilibre à une température $T_0$. Si les sauts obéissent au bilan détaillé, $W_{ij}\pi_j = W_{ji}\pi_i$, $W$ est semblable à une matrice symétrique, donc toutes ses valeurs propres sont réelles et $\le 0$, et son état stationnaire est la distribution de Boltzmann $\pi$. Après un court instant, seul le mode le plus lent subsiste, $p - \pi \approx a_2\, e^{\lambda_2 t}\, r_2$, si bien que le départ ayant le plus petit $\lvert a_2\rvert$ finit plus près de l''équilibre, quelle que soit sa température. Comme $a_2(T_0)$ n''est pas forcément monotone, un départ plus chaud peut dépasser un départ plus tiède (l''effet Mpemba markovien). À la température particulière $T^*$ où $a_2 = 0$, le mode lent est totalement absent, et la relaxation se fait au taux plus rapide $\lambda_3$ (l''effet fort). Dans ce potentiel, la forme provient d''une compétition entre bassins. À bas $T_0$, le puits profond
+  et étroit contient l''essentiel de la probabilité. À $T_0$ intermédiaire, le puits large et peu profond l''emporte par l''entropie. À haut $T_0$, le plateau surélevé se remplit, si bien que la part du bassin gauche remonte et dépasse sa valeur d''équilibre en $T^*$. La théorie est due à Lu & Raz (PNAS, 2017). Kumar & Bechhoefer (Nature, 2020) ont observé l''effet, y compris sa version forte, avec une bille colloïdale dans un potentiel à double puits façonné optiquement. Kumar, Chétrite & Bechhoefer (PNAS, 2022) ont ensuite observé l''effet inverse (réchauffement anormal). Des analogues quantiques ont récemment été rapportés dans des expériences sur ions piégés. Ce réseau est une version jouet de ces systèmes. Essayez d''augmenter $T_b$ : au-delà d''environ $1.4$, le croisement disparaît.'
+meanings:
+- 'énergie en escalier du site $i$ : plateau, puits profond et étroit, barrière, puits large et peu profond'
+- 1 pour les plus proches voisins sur la chaîne, 0 sinon
+- taux d'un saut $j \to i$ ; la diagonale annule la somme de chaque colonne
+- état de Boltzmann à chaque température initiale $T_{0,b}$, un lot de départs
+- '$j$ répété ⇒ sommé : l''équation maîtresse pour tous les départs à la fois'
+- eigh de la matrice symétrisée $\Pi^{-1/2} W \Pi^{1/2}$ ; $\lambda_1 = 0$ est l'équilibre, $\lambda_2$ la décroissance la plus lente
+- '$i$ répété ⇒ sommé : recouvrement de chaque départ avec chaque mode'
+- '$k$ répété ⇒ sommé : solution exacte à chaque instant'
+- distance de Kullback–Leibler à l'équilibre, $\sum_i p_i \ln(p_i/\pi_i)$
+labels:
+  T_bath: Température du bain $T_b$
+  barrier: Hauteur de la barrière $U_\text{bar}$
+  T_hot: Départ chaud $T_\text{hot}$

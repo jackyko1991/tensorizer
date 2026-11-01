@@ -1,0 +1,44 @@
+title: Photon-counting CT and material decomposition
+category: medical
+level: advanced
+order: 4
+summary: >
+  A photon-counting detector sorts every X-ray into energy bins, so each ray gives several Beer–Lambert
+  measurements $\lambda_{rb} = N_0 R_{be}S_e e^{-\mu_{em}A_{rm}}$ instead of one. A batched maximum-likelihood fit
+  (autograd gradient, Fisher-scoring steps) turns the Poisson counts of every ray into water, bone and iodine line
+  integrals; filtered back-projection makes material maps and virtual monoenergetic images, and separates iodine
+  from bone that a conventional scanner shows as identical.
+animated: true
+vector_form: '\lambda_b = N_0 \int R_b(E)\,S(E)\,\exp\!\Big(-\sum_m \mu_m(E)\int_{\text{ray}} a_m(\mathbf r)\,dl\Big)\,dE \qquad \hat{\mathbf A} = \arg\min_{\mathbf A} \sum_b \big(\lambda_b(\mathbf A) - y_b\ln\lambda_b(\mathbf A)\big)'
+index_form: 'A_{rm} = \textstyle\int a_m\,dl \qquad \lambda_{rb} = N_0\,R_{be}\,S_e\,e^{-\mu_{em}A_{rm}} \qquad F_{rmn} = J_{rbm}J_{rbn}/\lambda_{rb} \qquad A_{rm} \leftarrow A_{rm} - (F^{-1})_{rmn}\,\partial_{A_{rn}}\mathcal L \qquad \mu_{yx}(E) = \mu_m(E)\,a_{myx}'
+translation:
+  - {symbol: 'a_{myx}', code: 'phantom(x, bone_fraction)', shape: '(M, N, N)', meaning: 'basis amounts per pixel: water fraction, bone fraction, iodine in mg/mL'}
+  - {symbol: 'A_{rm}', code: 'basis_sinograms(maps, theta, x)', shape: '(A, S, M)', meaning: 'Radon transform of each basis map: cm of water, cm of bone, mg/cm² of iodine along ray $r = (\theta, s)$'}
+  - {symbol: '\mu_{em}', code: 'basis_attenuation(e)', shape: '(E, M)', meaning: 'attenuation of each basis material on a 1 keV grid (XCOM, log-log interpolated, iodine K-edge at 33.2 keV)'}
+  - {symbol: 'S_e,\ R_{be}', code: 'spectrum(kvp, e), bin_response(e, T, sigma)', shape: '(E,), (B, E)', meaning: 'filtered tube spectrum; probability that a photon of energy $E_e$ is counted in bin $b$ (Gaussian energy resolution)'}
+  - {symbol: '\lambda_{rb}', code: "n0 * einsum('be,e,re->rb', R, s, exp(-einsum('em,rm->re', mu, A)))", shape: '(R, B)', meaning: 'Beer–Lambert per bin: repeated $m$ then $e$ ⇒ summed; the counts are $y_{rb} \sim \mathrm{Poisson}(\lambda_{rb})$'}
+  - {symbol: '\partial_{A_{rn}}\mathcal L', code: 'autograd.grad(poisson_nll(y, lam).sum(), A)', shape: '(R, M)', meaning: 'gradient of the Poisson negative log-likelihood; rays are independent, so one backward pass gives every ray its own gradient'}
+  - {symbol: 'F_{rmn}', code: "einsum('rbm,rbn,rb->rmn', J, J, 1 / lam)", shape: '(R, M, M)', meaning: 'Fisher information, repeated $b$ ⇒ summed; $J_{rbm} = \partial\lambda_{rb}/\partial A_{rm}$'}
+  - {symbol: '(F^{-1})_{rmn}\,\partial_{A_{rn}}\mathcal L', code: 'linalg.solve(F, grad)', shape: '(R, M)', meaning: 'one $3\times 3$ solve per ray, batched: the Fisher-scoring (Newton-like) step'}
+  - {symbol: '\mu_{yx}(E)', code: "einsum('...m,myx->...yx', mu_E, maps)", shape: '(K, N, N)', meaning: 'virtual monoenergetic image at energy $E$ from the reconstructed basis maps, shown in HU'}
+notes: >
+  Photon-counting detectors (cadmium telluride or silicon) register single photons and compare each pulse height
+  with several thresholds, so the count in each energy bin is a separate Beer–Lambert measurement. The first
+  photon-counting CT scanner was cleared by the US FDA in 2021, and since then spectral imaging, sharper
+  resolution and lower electronic noise have moved from research into clinics. Three materials need at least three
+  bins: water and bone differ mainly through the photoelectric effect, and iodine adds its K-edge at 33.2 keV, so a
+  threshold near 35 keV helps (try the 25, 50, 75 keV setting). The bone insert is diluted until it has the same
+  energy-weighted attenuation as the 10 mg/mL iodine insert, so the conventional image shows the two as equal; the
+  material maps tell them apart. Virtual monoenergetic images $\mu_m(E)a_m$ boost iodine contrast at low energy and
+  have no beam-hardening cupping, which the conventional image shows. Three-material decomposition amplifies noise
+  (the basis attenuation curves are nearly parallel), so the iodine error falls only as $1/\sqrt{N_0}$ and is a few
+  mg/mL per pixel at moderate dose; clinical systems often use two basis materials, denoising and iterative
+  reconstruction. Simplifications: parallel beams, ideal detector apart from Gaussian energy resolution (no charge
+  sharing, pile-up or K-escape), no scatter, rounded attenuation tables. Educational model, not for clinical use.
+params:
+  kvp: {default: 120, min: 80, max: 140, step: 10, label: Tube voltage, unit: kVp}
+  dose: {default: 1000000.0, min: 20000, max: 10000000, step: 20000, label: 'Photons per ray $N_0$'}
+  thresholds: {default: '25,35,50,70', type: choice, options: ['25,35,50,70', '25,50,75'], label: Energy thresholds (keV)}
+  sigma_kev: {default: 3.0, min: 0.5, max: 10.0, step: 0.5, label: 'Energy resolution $\sigma$', unit: keV}
+  n_pixels: {default: 128, min: 64, max: 192, step: 32, type: int, label: Image size $N$}
+  n_angles: {default: 180, min: 60, max: 360, step: 20, type: int, label: Projection angles}

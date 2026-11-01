@@ -1,0 +1,22 @@
+source_hash: a1a35d304051
+title: Hardy–Weinberg et dérive génétique de Wright–Fisher
+summary: L'appariement aléatoire donne les fréquences génotypiques de Hardy–Weinberg $p^2, 2pq, q^2$ ; le tirage aléatoire de $2N$ copies de gènes à chaque génération fait dériver les fréquences alléliques. Des milliers de populations évoluent à la fois sous forme d'un tenseur (réplicats, générations) de tirages binomiaux, éventuellement avec sélection $s$, et sont comparées à $(1-1/2N)^t$ pour l'hétérozygotie et à $1/2N$ et à la formule de Kimura pour la fixation.
+notes: 'Hardy–Weinberg dit qu''un tour d''appariement aléatoire transforme la fréquence allélique $p$ en fréquences génotypiques $p^2, 2pq, q^2$, quels que soient les génotypes des parents ; les points sont $N$ individus construits à partir de deux gamètes aléatoires et se dispersent autour de ces courbes. Les fréquences alléliques ne restent fixes que dans une population infinie. Avec $2N$ copies, chaque génération est un échantillon binomial de la précédente, si bien que $p$ effectue une marche aléatoire jusqu''à atteindre 0 (allèle perdu) ou 1 (allèle fixé). Deux copies prises au hasard partagent une copie parentale avec la probabilité $1/2N$, donc l''hétérozygotie attendue $2pq$ diminue du facteur $1 - 1/2N$ par génération ; la dérive est plus rapide dans les petites populations. Une nouvelle mutation neutre démarre comme une copie sur $2N$ ; puisqu''au bout du compte l''une des $2N$ copies sera l''ancêtre de toutes, sa probabilité de fixation est $1/2N$. Avec sélection, le résultat
+  de diffusion de Kimura s''applique : un allèle avantageux avec $4Ns \gg 1$ est fixé avec une probabilité proche de $2s$, encore loin d''être certaine, et un allèle légèrement délétère peut être fixé par dérive quand $|4Ns| \lesssim 1$. Ici $N$ est la taille de population idéalisée (constante, appariement aléatoire, ni mutation ni migration) ; les populations réelles sont décrites par une taille efficace plus petite $N_e$.'
+meanings:
+- fréquence de l'allèle A dans la population réplicat $r$ à la génération $t$
+- 'après sélection : les copies A sont transmises $1+s$ fois plus souvent'
+- 'nombre de A parmi les $2N$ copies de la génération suivante : un tirage par population, tous à la fois'
+- fréquences génotypiques AA, Aa, aa sous appariement aléatoire
+- $N$ individus faits chacun de deux gamètes aléatoires, comptés par génotype (points)
+- 'somme sur $r$ : $2pq$ moyen, comparé à $H_0(1-1/2N)^t$'
+- fraction des populations où une seule nouvelle copie ($p_0 = 1/2N$) a été fixée, pour chaque $s$
+- $(1-e^{-4Nsp_0})/(1-e^{-4Ns})$, égal à $p_0 = 1/2N$ quand $s = 0$
+labels:
+  N: Taille de population $N$ (diploïde)
+  p0: Fréquence initiale $p_0$
+  s: Coefficient de sélection $s$
+  generations: Générations $G$
+  replicates: Populations $R$
+  fix_replicates: Populations par $s$ (fixation)
+  seed: Graine aléatoire

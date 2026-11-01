@@ -1,0 +1,26 @@
+source_hash: 293708490c35
+title: Proteinkontakte aus Koevolution (DCA)
+summary: 'Reste, die sich in einem gefalteten Protein berühren, mutieren im Lauf der Evolution gemeinsam. Wir falten ein Spielzeugprotein auf einem kubischen Gitter, setzen Kopplungen $J_{ij}(a,b)$ auf seine Kontakte, ziehen per Gibbs-Sampling ein multiples Sequenzalignment aus dem Potts-Modell und gewinnen die Kontakte dann allein aus dem Alignment zurück: Paarstatistiken per One-hot-einsum, direkte Kopplungen per Mean-Field-DCA $J \approx -C^{-1}$ (oder Pseudo-Likelihood mit Autograd) und ein APC-korrigierter Frobenius-Score, geprüft gegen die wahre Kontaktkarte.'
+notes: 'Warum funktioniert das? Wenn Rest $i$ seine Größe oder Ladung ändert, muss ein Rest $j$, den er berührt, sich oft auch ändern, sonst faltet sich das Protein falsch. Über viele verwandte Sequenzen hinterlässt das eine Korrelation zwischen den Spalten $i$ und $j$ des Alignments. Aber Korrelationen sind transitiv: Wenn $i$ $j$ berührt und $j$ $k$ berührt, dann korrelieren auch $i$ und $k$, ohne sich zu berühren. Die Direct Coupling Analysis (DCA) passt ein globales Modell an, das Potts-Modell (ein Ising-Modell mit $q$ Zuständen), dessen Kopplungen $J_{ij}$ alle Korrelationen auf einmal erklären, sodass indirekte wegerklärt werden. In der Mean-Field-Näherung sind die Kopplungen einfach minus die Inverse der Kovarianzmatrix (wie partielle Korrelationen); die Pseudo-Likelihood-Maximierung passt stattdessen $P(s_i\mid\text{rest})$ für jede Spalte an und ist bei echten Familien meist genauer. Die Animation lässt das Alignment von 20 Sequenzen bis zu allen wachsen: DCA (oberes Dreieck) wird
+  mit der Tiefe besser, während die einfache Kovarianz (unteres Dreieck) stagniert, weil ihre falsch Positiven indirekte Paare sind. Hier stammen die Daten wirklich aus einem Potts-Modell mit bekannten Kontakten, die Präzision ist also ein ehrlicher Score. Echte Alignments sind schwieriger: Eine Handvoll Buchstaben steht für 20 Aminosäuren plus Lücke, Sequenzen sind über eine Phylogenie verwandt (echte DCA gewichtet Beinahe-Duplikate herunter), und nur manche Kontakte hinterlassen ein Signal. Koevolution ist die Wurzel der heutigen Strukturvorhersage: Kontakte vom Typ plmDCA speisten frühe Deep-Learning-Methoden, und AlphaFold 2 nimmt ein MSA als Haupteingabe und lernt mit Attention eine eigene, weit reichhaltigere Nutzung davon. Dieses Spielzeug zeigt die statistische Idee hinter dieser Eingabe, nicht wie AlphaFold funktioniert. Probier eine schwächere Kopplung, weniger Sequenzen oder mehr Buchstaben $q$.'
+meanings:
+- eine Serpentinenkette, die eine $X\times Y\times Z$-Box füllt; ein Kontakt ist ein Gitternachbar, der entlang der Kette mindestens 3 entfernt ist
+- 'das "wahre" Modell: zufällige Felder und zufällige $q\times q$-Kopplungsblöcke nur dort, wo $\mathcal C_{ij} = 1$'
+- 'lokales Feld: $j, b$ summiert über jede andere Spalte und jeden Buchstaben der Sequenz $n$'
+- 'Schachbrett-Gibbs: Kontakte verbinden entgegengesetzte Farben, sodass die Hälfte der Plätze auf einmal neu gezogen wird, in allen $N$ Ketten'
+- das Alignment als One-hot-Tensor
+- '$n$ summiert: Einzel- und Paarhäufigkeiten; die Summe von $f_{iajb}$ über $b$ ergibt wieder $f_{ia}$'
+- verbundene Korrelation, nach Beimischen eines Pseudocounts $\lambda$ gleichverteilter Häufigkeiten
+- 'Mean-Field-DCA: invertiere die quadratische Kovarianz der Größe $L(q-1)$; der letzte Buchstabe ist der Referenzzustand'
+- 'Pseudo-Likelihood-Alternative: über $h, J$ mit Adam und einem $L_2$-Strafterm maximiert'
+- Kopplungsstärke eines Paares, $a, b$ summiert, in der Nullsummen-Eichung $J^z$
+- 'Average-Product-Korrektur: entfernt den spaltenweisen Hintergrund, sodass Zeilen und Spalten Mittelwert 0 haben'
+labels:
+  fold: Gitterfaltung (Boxgröße)
+  q: Buchstaben pro Spalte $q$
+  coupling: Gesetzte Kopplungsstärke $\sigma_J$
+  n_seq: Sequenzen im MSA $N$
+  sweeps: Gibbs-Sweeps pro Sequenz
+  pseudocount: Pseudocount $\lambda$
+  method: 'Inferenz: Mean-Field-DCA oder Pseudo-Likelihood'
+  plm_iters: Adam-Schritte der Pseudo-Likelihood

@@ -1,0 +1,19 @@
+source_hash: 8522595ab746
+title: Markovscher Mpemba-Effekt
+summary: Kann heißes Wasser schneller gefrieren als warmes? Für ein Teilchen, das mit Metropolis-Raten in einem Gitterpotential hüpft, lautet die Antwort ja. Die Mastergleichung $\dot p = W p$ wird einmal diagonalisiert, jede Anfangstemperatur wird in einem einzigen einsum auf die langsamste Mode projiziert, und ein heißer Start, dessen Amplitude $a_2$ der langsamen Mode verschwindet, relaxiert exponentiell schneller als ein kühlerer.
+notes: 'Einheiten: $k_B = 1$, und die Versuchsrate ist 1. Das Bad hat die Temperatur $T_b$, und das System startet im Gleichgewicht bei einer Temperatur $T_0$. Wenn die Sprünge detailliertes Gleichgewicht erfüllen, $W_{ij}\pi_j = W_{ji}\pi_i$, ist $W$ ähnlich zu einer symmetrischen Matrix, sodass alle Eigenwerte reell und $\le 0$ sind und der stationäre Zustand die Boltzmann-Verteilung $\pi$ ist. Nach kurzer Zeit bleibt nur die langsamste Mode übrig, $p - \pi \approx a_2\, e^{\lambda_2 t}\, r_2$, also endet der Start mit dem kleineren $\lvert a_2\rvert$ näher am Gleichgewicht, unabhängig von seiner Temperatur. Weil $a_2(T_0)$ nicht monoton sein muss, kann ein heißerer Start einen wärmeren überholen (der Markovsche Mpemba-Effekt). Bei dem speziellen $T^*$, an dem $a_2 = 0$, fehlt die langsame Mode ganz, und die Relaxation läuft mit der schnelleren Rate $\lambda_3$ (der starke Effekt). In diesem Potential entsteht die Form aus einem Wettbewerb zwischen Becken. Bei niedrigem $T_0$ hält der
+  tiefe, schmale Topf den größten Teil der Wahrscheinlichkeit. Bei mittlerem $T_0$ gewinnt der breite, flache Topf durch Entropie. Bei hohem $T_0$ füllt sich das erhöhte Plateau, sodass der Anteil des linken Beckens wieder steigt und bei $T^*$ seinen Gleichgewichtswert überschreitet. Die Theorie stammt von Lu & Raz (PNAS, 2017). Kumar & Bechhoefer (Nature, 2020) beobachteten den Effekt, einschließlich der starken Version, mit einer kolloidalen Kugel in einem optisch geformten Doppelmuldenpotential. Kumar, Chétrite & Bechhoefer (PNAS, 2022) beobachteten dann den inversen Effekt (anomales Aufheizen). Quantenanaloga wurden kürzlich in Experimenten mit gefangenen Ionen berichtet. Dieses Gitter ist eine Spielzeugversion dieser Systeme. Probier, $T_b$ zu erhöhen: Oberhalb von etwa $1.4$ verschwindet die Kreuzung.'
+meanings:
+- 'Treppenenergie des Platzes $i$: Plateau, tiefer schmaler Topf, Barriere, breiter flacher Topf'
+- 1 für nächste Nachbarn auf der Kette, sonst 0
+- Rate eines Sprungs $j \to i$; die Diagonale sorgt dafür, dass jede Spalte sich zu null summiert
+- Boltzmann-Zustand bei jeder Anfangstemperatur $T_{0,b}$, ein Batch von Starts
+- 'wiederholtes $j$ ⇒ summiert: die Mastergleichung für jeden Start auf einmal'
+- eigh des symmetrisierten $\Pi^{-1/2} W \Pi^{1/2}$; $\lambda_1 = 0$ ist das Gleichgewicht, $\lambda_2$ der langsamste Zerfall
+- 'wiederholtes $i$ ⇒ summiert: Überlapp jedes Starts mit jeder Mode'
+- 'wiederholtes $k$ ⇒ summiert: exakte Lösung zu jeder Zeit'
+- Kullback–Leibler-Abstand zum Gleichgewicht, $\sum_i p_i \ln(p_i/\pi_i)$
+labels:
+  T_bath: Badtemperatur $T_b$
+  barrier: Barrierenhöhe $U_\text{bar}$
+  T_hot: Heißer Start $T_\text{hot}$

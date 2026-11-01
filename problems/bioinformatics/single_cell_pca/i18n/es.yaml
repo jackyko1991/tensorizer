@@ -1,0 +1,30 @@
+source_hash: f93e7ab544e0
+title: 'RNA-seq de célula única: PCA y agrupamiento k-means'
+summary: 'Un experimento sintético de célula única: células de unos pocos tipos, cada uno activando sus propios genes marcadores, con conteos binomiales negativos y células secuenciadas a profundidades distintas. Ejecutamos el pipeline estándar como operaciones tensoriales: normalizar a $\log(1 + 10^4 K_{cg}/n_c)$, quedarnos con los genes altamente variables, PCA por SVD y luego k-means con varios reinicios en paralelo, y puntuamos los grupos frente a los tipos verdaderos con el índice de Rand ajustado.'
+notes: 'Cada célula da unos pocos miles de conteos de ARNm repartidos entre miles de genes, así que la mayoría de las entradas son cero y los conteos brutos reflejan sobre todo con qué profundidad se secuenció la célula. Dividir por el tamaño de biblioteca $n_c$ elimina la profundidad; el logaritmo doma el enorme rango de niveles de expresión. La mayoría de los genes solo llevan ruido, así que nos quedamos con los genes cuya varianza supera la que muestran genes de media similar: los genes altamente variables, enriquecidos en los marcadores colocados. La PCA los comprime después: con $K$ tipos la señal vive en unas $K-1$ direcciones, visibles como las primeras $K-1$ barras del gráfico de sedimentación que sobresalen sobre un suelo de ruido plano. k-means alterna dos pasos, asignar cada célula a su centro más cercano y mover cada centro a la media de sus células; ningún paso puede aumentar la inercia $\sum_c \lVert y_c - \mu_{k(c)}\rVert^2$, así que converge, pero solo a un mínimo local,
+  y por eso se ejecutan varios arranques aleatorios en paralelo (curvas grises) y se conserva el mejor. Como conocemos los tipos verdaderos, el índice de Rand ajustado puntúa el resultado de forma honesta. El mapa t-SNE opcional es un pequeño layout de fuerzas entrenado con autograd (similitudes t de Student, exageración temprana); las distancias entre grupos en esos mapas significan poco. Los pipelines reales (Scanpy, Seurat) añaden control de calidad, corrección de lotes y agrupamiento basado en grafos (Leiden) sobre un grafo de vecinos más cercanos, y los tipos celulares reales rara vez están tan limpios. Prueba un cambio de expresión menor, menos marcadores o un $k$ incorrecto.'
+meanings:
+- 'expresión media del gen $g$ en el tipo $k$: una línea base log-normal, multiplicada por el cambio de expresión para los $M$ genes marcadores de $k$'
+- conteos binomiales negativos (varianza $m + \varphi m^2$); $s_c$ es una profundidad de secuenciación log-normal
+- 'tamaño de biblioteca: conteos totales de la célula $c$, $g$ sumado'
+- normalizada por profundidad (conteos por $10^4$, como CPM) y transformada logarítmicamente
+- dispersión $\mathrm{Var}/\mathrm{Mean}$, estandarizada dentro de intervalos de media similar (sumas por intervalo con un einsum one-hot)
+- PCA de la matriz centrada sobre los $H$ genes altamente variables; torch.pca_lowrank da las mismas componentes principales
+- puntuaciones de las PC, $g$ sumado; $\Sigma_p^2/\sum_q\Sigma_q^2$ es la razón de varianza explicada
+- distancia al cuadrado de la célula $c$ al centro $k$ del reinicio $r$; $p$ sumado, los $R$ reinicios a la vez
+- 'paso de asignación: cada célula se une a su centro más cercano'
+- 'paso de actualización: cada centro se mueve a la media de sus células, $c$ sumado'
+- concordancia por conteo de pares a partir de la tabla de contingencia $n_{ij}$ (einsum one-hot); 1 = perfecta, alrededor de 0 = aleatoria
+labels:
+  n_cells: Células $C$
+  n_genes: Genes $G$
+  n_types: Tipos celulares verdaderos $K$
+  n_markers: Genes marcadores por tipo
+  fold_change: Cambio de expresión de los marcadores
+  dispersion: Dispersión binomial negativa $\varphi$
+  depth_spread: Dispersión del tamaño de biblioteca ($\sigma$ log-normal)
+  n_hvg: Genes altamente variables conservados
+  n_pcs: Componentes principales para el agrupamiento
+  k: Grupos $k$
+  kmeans_iters: Iteraciones de k-means
+  embedding: 'Vista 2D: PC1–PC2 o t-SNE'

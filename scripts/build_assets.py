@@ -41,9 +41,13 @@ CATEGORIES = {
     "quantum": "Quantum",
     "astro": "Astrophysics & Relativity",
     "nuclear": "Nuclear & Particle",
+    "physchem": "Physical Chemistry",
+    "chemistry": "Chemistry",
     "medical": "Medical Physics",
     "biophysics": "Biophysics",
     "bioinformatics": "Bioinformatics",
+    "maths": "Mathematics",
+    "graphics": "Gaming & Computer Vision",
     "others": "Others",
 }
 
@@ -201,6 +205,8 @@ def main() -> None:
 
     wiki_file = ROOT / "content" / "wiki.json"  # problem id -> Wikipedia titles by language (see docs)
     wiki = json.loads(wiki_file.read_text(encoding="utf-8")) if wiki_file.is_file() else {}
+    papers_file = ROOT / "content" / "papers.json"  # key papers, verified by scripts/papers.py
+    papers = json.loads(papers_file.read_text(encoding="utf-8")) if papers_file.is_file() else {}
     problems = []
     for d in dirs:
         cat, slug = d.parent.name, d.name
@@ -221,6 +227,7 @@ def main() -> None:
                 "console": console_file.read_text(encoding="utf-8") if console_file.exists() else "",
                 "diagram": copy_diagram(d, target),
                 "wiki": wiki.get(f"{cat}/{slug}"),
+                "papers": papers.get(f"{cat}/{slug}", []),
                 "i18n": load_translations(d),
                 "notebook": write_notebook(d, target),
                 "pixi_zip": write_pixi_zip(d, target),

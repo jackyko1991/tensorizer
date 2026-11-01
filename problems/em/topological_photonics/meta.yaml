@@ -1,0 +1,41 @@
+title: Topological photonics on a Haldane lattice
+category: em
+level: advanced
+order: 4
+summary: >
+  A honeycomb array of coupled optical resonators with complex next-nearest-neighbour couplings, the photonic Haldane model. The
+  $2\times 2$ Bloch Hamiltonian on a whole $k$-grid gives the Chern number by the Fukui–Hatsugai–Suzuki link method (einsum over
+  link variables). A zigzag ribbon shows edge states crossing the gap, and light launched at the edge of a finite flake flows
+  one way around a notch, while in a trivial lattice it does not get past.
+animated: true
+vector_form: 'i\,\dot{\boldsymbol\psi} = H\boldsymbol\psi,\qquad H(\mathbf k) = d_0(\mathbf k)\,\mathbb 1 + \mathbf d(\mathbf k)\cdot\boldsymbol\sigma,\qquad C = \frac{1}{2\pi}\int_{\text{BZ}}\Omega\,d^2k'
+index_form: 'i\dot\psi_i = H_{ij}\psi_j,\qquad H_{ab}(\mathbf k) = d_\mu(\mathbf k)\,\sigma^\mu_{ab},\qquad U_\mu(\mathbf k) = \frac{u^*_a(\mathbf k)\,u_a(\mathbf k + \hat\mu)}{\lvert\cdots\rvert},\qquad C = \frac{1}{2\pi}\sum_{\mathbf k}\arg\big[U_1(\mathbf k)\,U_2(\mathbf k + \hat 1)\,U_1^*(\mathbf k + \hat 2)\,U_2^*(\mathbf k)\big]'
+translation:
+  - {symbol: '\psi_i', code: 'psi', shape: '(N,)', meaning: 'complex field amplitude in resonator $i$ of the flake'}
+  - {symbol: 'H_{ij}', code: 'flake_hamiltonian(pos, xi, t1, t2, phi, M, detuning)', shape: '(N, N)', meaning: 'couplings $t_1$, $t_2 e^{-i\nu_{ij}\phi}$ and detuning $\pm M$ plus disorder'}
+  - {symbol: 'd_\mu(\mathbf k)', code: 'd_vector(k, delta, b, t1, t2, phi, M)', shape: '(n, n, 4)', meaning: '$k\cdot\delta_n$ is einsum over the coordinate $i$, for every $k$ on the grid; $\delta_n$, $b_n$ are bond vectors'}
+  - {symbol: 'd_\mu\,\sigma^\mu_{ab}', code: "einsum('...m,mab->...ab', d, SIGMA)", shape: '(n, n, 2, 2)', meaning: 'repeated $\mu$ ⇒ summed: the Bloch Hamiltonian at every $k$'}
+  - {symbol: 'u_a(\mathbf k)', code: 'eigh(H)[1][..., 0]', shape: '(n, n, 2)', meaning: 'lower-band eigenvector (its phase is arbitrary)'}
+  - {symbol: 'u^*_a(\mathbf k)\,u_a(\mathbf k + \hat\mu)', code: "einsum('xya,xya->xy', u.conj(), roll(u, -1, dims=mu))", shape: '(n, n)', meaning: 'repeated $a$ ⇒ summed: link variable between neighbouring $k$ points'}
+  - {symbol: '\Omega\,\Delta A', code: 'plaquette_flux(U1, U2)', shape: '(n, n)', meaning: 'phase of the loop of four links: Berry flux, gauge invariant'}
+  - {symbol: '-\tfrac12\varepsilon_{abc}\hat d_a\partial_x\hat d_b\partial_y\hat d_c', code: "einsum('abc,...a,...b,...c->...', EPS, dhat, ddx, ddy)", shape: '(n, n)', meaning: 'repeated $a, b, c$ ⇒ summed: continuum Berry curvature, derivatives by autograd'}
+  - {symbol: '\psi_i(t)', code: "einsum('sin,stn,sn->sti', V, exp(-1j*E*t), c)", shape: '(2, T, N)', meaning: '$e^{-iHt}\psi_0$ from one eigh per lattice (topological and trivial)'}
+notes: >
+  Units: the coupling $t_1 = 1$ and the resonator spacing is 1. $E$ is the detuning from the bare resonance frequency, and in a
+  waveguide array the time $t$ becomes the propagation distance. The phase is fixed at $\phi = \pi/2$. The lattice is topological,
+  with $C = \pm1$, when $\lvert M\rvert < 3\sqrt3\,t_2\lvert\sin\phi\rvert$; the comparison lattice uses twice that mass and has
+  $C = 0$. The Fukui–Hatsugai–Suzuki method (J. Phys. Soc. Jpn., 2005) gives an exact integer even on a coarse grid. The
+  bulk-boundary correspondence then promises $\lvert C\rvert$ one-way edge channels. The input light is a spot next to the
+  bottom edge, filtered to frequencies inside the bulk gap. It runs around the notch, because there is no backward-moving state
+  for it to scatter into. In the trivial lattice the same light just spreads into the bulk. The model is Haldane's (PRL, 1988).
+  Haldane & Raghu (PRL, 2008) proposed its photonic version, and Wang, Chong, Joannopoulos & Soljačić (Nature, 2009) observed
+  one-way microwave edge states in a magneto-optical photonic crystal. Rechtsman et al. (Nature, 2013) built a Floquet version
+  from helical waveguides. Topological insulator lasers followed (Bandres et al., Science, 2018), and Ozawa et al. (Rev. Mod. Phys.,
+  2019) review the field. More recent work, including valley-Hall photonic crystals that need no magnetic field, carries the
+  idea to on-chip telecom and terahertz waveguides. Try raising $M$ past the critical value: $C$ drops to 0, the edge states
+  detach from the bands, and the light no longer gets around the notch.
+params:
+  t2: {default: 0.15, min: 0.05, max: 0.3, step: 0.01, label: 'Next-nearest coupling $t_2$', unit: t_1}
+  mass: {default: 0.0, min: 0.0, max: 2.0, step: 0.05, label: 'Sublattice detuning $M$', unit: t_1}
+  disorder: {default: 0.3, min: 0.0, max: 1.5, step: 0.05, label: 'Random detuning strength $W$', unit: t_1}
+  defect_radius: {default: 3.0, min: 0.0, max: 6.0, step: 0.5, label: 'Notch radius $R$', unit: a}

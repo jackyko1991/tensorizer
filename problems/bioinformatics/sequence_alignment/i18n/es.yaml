@@ -1,0 +1,21 @@
+source_hash: b944848791a5
+title: El alineamiento de secuencias como un frente de onda de actualizaciones tensoriales
+summary: Alineamiento de secuencias de ADN de Needleman–Wunsch (global) y Smith–Waterman (local) mediante programación dinámica. Cada celda de la tabla solo necesita sus vecinas izquierda, superior y diagonal, así que toda una antidiagonal $i + j = d$ se rellena en una sola actualización tensorial, para un lote de pares de secuencias a la vez. Mira cómo el frente de onda barre la tabla y luego cómo el rastreo hacia atrás lee el alineamiento óptimo.
+notes: 'El alineamiento global obliga a alinear ambas secuencias de extremo a extremo; el alineamiento local añade la opción 0, de modo que un tramo malo simplemente se descarta y se informa del fragmento con mejor puntuación en cualquier parte (aquí un motivo colocado en un fondo aleatorio). El rastreo hacia atrás recorre el camino desde la celda final, preguntando en cada paso cuál de las tres opciones produjo el valor guardado, y cambia entre las tablas $H$, $E$, $F$ mientras está dentro de un hueco. El coste sigue siendo $O(nm)$ celdas, pero solo $n + m - 1$ pasos secuenciales: este paralelismo por antidiagonales es como funcionan los alineadores en GPU y SIMD. Prueba a subir la tasa de mutación, o $g_o > g_e$ para favorecer unos pocos huecos largos frente a muchos cortos. Las proteínas usan una matriz $20\times20$ como BLOSUM62 en lugar de $W$; nada más cambia.'
+meanings:
+- letra $i$ de la primera y $j$ de la segunda secuencia del par $b$, one-hot sobre A, C, G, T
+- 'puntuación por alinear la letra $\alpha$ con $\beta$: coincidencia en la diagonal, discordancia en el resto'
+- '$\alpha, \beta$ repetidos ⇒ sumados: la puntuación de cada emparejamiento posible de letras'
+- un hueco de $k$ letras cuesta $g_o + (k-1)\,g_e$ (afín); $g_o = g_e$ es un hueco lineal
+- todas las celdas de la antidiagonal $d$; solo dependen de las diagonales $d-1$ y $d-2$
+- 'una actualización tensorial por diagonal: mejor puntuación que termina en una coincidencia, un hueco en $a$, un hueco en $c$'
+- puntuación global en la esquina, puntuación local en la mejor celda; el relleno más allá de cada longitud se ignora
+labels:
+  mode: Alineamiento (global = Needleman–Wunsch, local = Smith–Waterman)
+  length: Longitud de la secuencia $L$
+  n_pairs: Pares en el lote $B$
+  mutation: Tasa de mutación por sitio
+  match: Puntuación de coincidencia
+  mismatch: Puntuación de discordancia
+  gap_open: Apertura de hueco $g_o$
+  gap_extend: Extensión de hueco $g_e$

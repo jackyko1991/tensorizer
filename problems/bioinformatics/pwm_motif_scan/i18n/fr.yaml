@@ -1,0 +1,24 @@
+source_hash: 8da6dcc23206
+title: 'Matrice poids-position : logo de motif et balayage'
+summary: Des sites de liaison alignés d'un facteur de transcription sont comptés dans une matrice $(m, 4)$, convertis en fréquences avec un pseudo-compte puis en scores log-odds par rapport au fond. Le contenu en information donne un logo de séquence, et un seul einsum sur des fenêtres dépliées note les deux brins d'une longue séquence à la fois ; les hits sont retenus avec une p-valeur tirée de copies mélangées de la séquence.
+notes: 'Une PWM suppose que chaque position d''un site de liaison contribue indépendamment, de sorte que le score d''une fenêtre est une somme d''un nombre par lettre : un produit scalaire de la fenêtre one-hot avec $W$. Le pseudo-compte $\beta$ empêche les lettres jamais vues dans quelques sites d''entraînement de recevoir un score de $-\infty$ ; il compte d''autant moins que l''on a de sites. Le contenu en information d''une colonne mesure à quel point le motif y restreint la lettre, de 0 bit (tout est permis) à 2 bits (toujours la même lettre), et le logo empile les lettres proportionnellement à $P_{ja}$. Les sites sont ici synthétiques : 12 pb avec un cœur ressemblant à la boîte TATA (consensus TATAWAWR, avec W = A ou T et R = A ou G) et deux lettres fixes de chaque côté, afin que le motif porte assez de bits pour être trouvé. Un motif court et dégénéré seul porte trop peu d''information : dans une longue séquence, des fenêtres aléatoires obtiennent des scores aussi élevés que les vrais
+  sites, ce qui explique pourquoi une vraie boîte TATA est difficile à trouver par sa seule PWM. La p-valeur provient du balayage de copies mélangées de la séquence (mêmes lettres, pas de motif) ; avec $2(L-m+1)$ fenêtres, un seuil à $p$ laisse passer environ $2(L-m+1)\,p$ hits aléatoires, et la plus petite p-valeur que l''on peut résoudre est $1/(1 + \#\text{null scores})$. Essayez moins de sites d''entraînement, un motif plus faible ou un seuil plus lâche, et regardez des sites placés disparaître ou de faux hits apparaître.'
+meanings:
+- site d'entraînement $s$, colonne $j$, lettre $a$ ∈ (A, C, G, T)
+- '$s$ répété ⇒ sommé : comptes de lettres dans chaque colonne'
+- fréquences avec pseudo-compte $\beta$ ; chaque ligne somme à 1 et aucune entrée n'est nulle
+- 'log-odds par rapport au fond $q_a$ (bits) : > 0 préféré, < 0 évité'
+- '$a$ répété ⇒ sommé : bits par colonne, entre 0 et 2 pour un fond uniforme ; la hauteur du logo'
+- $t = 0$ brin plus, $t = 1$ complément inverse (colonnes inversées, A↔T, C↔G)
+- chaque fenêtre de $m$ lettres de la longue séquence
+- '$j$, $a$ répétés ⇒ sommés : les deux brins en un seul appel ; le même code note tous les mélanges $(R, 2, L-m+1)$'
+- fraction des scores des séquences mélangées au moins aussi élevés
+labels:
+  n_train: Sites d'entraînement $N$
+  strength: Force du motif (probabilité du consensus)
+  pseudo: Pseudo-compte $\beta$
+  length: Longueur de séquence $L$
+  n_sites: Sites placés
+  log10_p: Seuil de p-valeur $\log_{10} p$
+  shuffles: Séquences mélangées $R$
+  seed: Graine aléatoire

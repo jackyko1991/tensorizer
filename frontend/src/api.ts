@@ -150,11 +150,21 @@ function unreachable(): string {
 
 // --- Agent ("Ask Claude") ---------------------------------------------------------------------------
 
+export type AgentId = "claude-code" | "claude-api";
+
 export interface AgentStatus {
   enabled: boolean;
-  /** "local": the backend machine's own Claude Code login; "api_key": each visitor brings an Anthropic API key */
-  auth: "local" | "api_key";
+  /** Claude Code (local): this machine's own login, no setup. API: the visitor's key for a provider. */
+  agents: {
+    id: AgentId;
+    label: string;
+    available: boolean;
+    logged_in?: boolean | null;
+    providers?: { id: string; label: string; available: boolean }[];
+  }[];
+  default: AgentId;
   models: string[];
+  workspace: boolean;
 }
 
 export async function agentStatus(): Promise<AgentStatus | null> {
@@ -181,7 +191,7 @@ export type AgentEvent =
 /** One user turn: streams the agent's events until "done" or "error". The API key, if any, goes in a header
  *  and is never stored by the server. */
 export async function agentChat(
-  body: { session: string | null; problem: string; message: string; model?: string },
+  body: { session: string | null; problem: string; message: string; model?: string; agent: AgentId },
   apiKey: string | null,
   onEvent: (e: AgentEvent) => void,
   signal: AbortSignal,
@@ -219,4 +229,11 @@ export async function agentChat(
 export function assetUrl(path: string): string {
   if (/^(data:|https?:)/.test(path)) return path;
   return path.startsWith("/api/") ? API + path : generatedUrl(path);
+}
+
+/** A blank new problem in the Workspace (a copy of the template), to edit and run by hand. */
+export async function newWorkspace(): Promise<Problem> {
+  const res = await fetch(`${API}/api/workspace/new`, { method: "POST" });
+  if (!res.ok) throw new RunFailed(`request failed (${res.status})`);
+  return res.json();
 }

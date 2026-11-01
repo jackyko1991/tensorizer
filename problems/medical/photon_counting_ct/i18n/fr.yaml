@@ -1,0 +1,22 @@
+source_hash: e03f3730cc96
+title: TDM à comptage photonique et décomposition en matériaux
+summary: Un détecteur à comptage photonique trie chaque photon X dans des canaux d'énergie, si bien que chaque rayon donne plusieurs mesures de Beer–Lambert $\lambda_{rb} = N_0 R_{be}S_e e^{-\mu_{em}A_{rm}}$ au lieu d'une seule. Un ajustement par maximum de vraisemblance en lot (gradient par autograd, pas de Fisher scoring) transforme les comptes de Poisson de chaque rayon en intégrales de ligne d'eau, d'os et d'iode ; la rétroprojection filtrée produit des cartes de matériaux et des images monoénergétiques virtuelles, et sépare l'iode de l'os, qu'un scanner conventionnel montre identiques.
+notes: 'Les détecteurs à comptage photonique (tellurure de cadmium ou silicium) enregistrent les photons un par un et comparent la hauteur de chaque impulsion à plusieurs seuils, de sorte que le compte dans chaque canal d''énergie est une mesure de Beer–Lambert distincte. Le premier scanner TDM à comptage photonique a été autorisé par la FDA américaine en 2021, et depuis, l''imagerie spectrale, une meilleure résolution et un bruit électronique plus faible sont passés de la recherche à la clinique. Trois matériaux exigent au moins trois canaux : l''eau et l''os diffèrent surtout par l''effet photoélectrique, et l''iode ajoute son seuil K à 33,2 keV, si bien qu''un seuil vers 35 keV aide (essayez le réglage 25, 50, 75 keV). L''insert d''os est dilué jusqu''à avoir la même atténuation pondérée en énergie que l''insert d''iode à 10 mg/mL, si bien que l''image conventionnelle montre les deux comme égaux ; les cartes de matériaux les distinguent. Les images monoénergétiques virtuelles $\mu_m(E)a_m$
+  renforcent le contraste de l''iode à basse énergie et n''ont pas l''effet de cupping dû au durcissement du faisceau que montre l''image conventionnelle. La décomposition en trois matériaux amplifie le bruit (les courbes d''atténuation de base sont presque parallèles), si bien que l''erreur sur l''iode ne décroît qu''en $1/\sqrt{N_0}$ et atteint quelques mg/mL par pixel à dose modérée ; les systèmes cliniques utilisent souvent deux matériaux de base, du débruitage et une reconstruction itérative. Simplifications : faisceaux parallèles, détecteur idéal hormis une résolution en énergie gaussienne (pas de partage de charge, d''empilement ni d''échappement K), pas de diffusé, tables d''atténuation arrondies. Modèle pédagogique, non destiné à un usage clinique.'
+meanings:
+- 'quantités de base par pixel : fraction d''eau, fraction d''os, iode en mg/mL'
+- 'transformée de Radon de chaque carte de base : cm d''eau, cm d''os, mg/cm² d''iode le long du rayon $r = (\theta, s)$'
+- atténuation de chaque matériau de base sur une grille de 1 keV (XCOM, interpolée en log-log, seuil K de l'iode à 33,2 keV)
+- spectre filtré du tube ; probabilité qu'un photon d'énergie $E_e$ soit compté dans le canal $b$ (résolution en énergie gaussienne)
+- 'Beer–Lambert par canal : $m$ puis $e$ répétés ⇒ sommés ; les comptes sont $y_{rb} \sim \mathrm{Poisson}(\lambda_{rb})$'
+- gradient de la log-vraisemblance négative de Poisson ; les rayons sont indépendants, donc une seule passe arrière donne à chaque rayon son propre gradient
+- information de Fisher, $b$ répété ⇒ sommé ; $J_{rbm} = \partial\lambda_{rb}/\partial A_{rm}$
+- 'une résolution $3\times 3$ par rayon, en lot : le pas de Fisher scoring (de type Newton)'
+- image monoénergétique virtuelle à l'énergie $E$ à partir des cartes de base reconstruites, affichée en UH
+labels:
+  kvp: Tension du tube
+  dose: Photons par rayon $N_0$
+  thresholds: Seuils d'énergie (keV)
+  sigma_kev: Résolution en énergie $\sigma$
+  n_pixels: Taille de l'image $N$
+  n_angles: Angles de projection

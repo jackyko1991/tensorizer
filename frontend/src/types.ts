@@ -54,6 +54,8 @@ export interface Problem {
   session?: string;
   /** Wikipedia article titles by wiki language code (en, zh, fr, …), from content/wiki.json. */
   wiki?: { wikidata: string; titles: Record<string, string> } | null;
+  /** Key papers (label, title, DOI/arXiv url), from content/papers.json. */
+  papers?: { label: string; title: string; url: string | null }[];
   notebook?: string;
   pixi_zip?: string;
   /** Translations by language code; any missing field falls back to English. */

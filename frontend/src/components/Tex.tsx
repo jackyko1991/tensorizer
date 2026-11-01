@@ -28,7 +28,14 @@ function splitRelations(tex: string): string[] {
     }
   }
   parts.push(tex.slice(start));
-  return parts.map((p) => p.trim().replace(/^,\s*/, "").replace(/(\\[,;:!]|\\quad|,|\s)+$/, "")).filter(Boolean);
+  return parts
+    .map((p) =>
+      p
+        .trim()
+        .replace(/^,\s*/, "")
+        .replace(/(\\[,;:!]|\\quad|,|\s)+$/, ""),
+    )
+    .filter(Boolean);
 }
 
 /** Length of a relation-separating gap command at position i, or 0. */
@@ -40,7 +47,8 @@ function gapAt(tex: string, i: number, before: string): number {
   return 0;
 }
 
-const render = (tex: string, display: boolean) => katex.renderToString(tex, { displayMode: display, throwOnError: false });
+const render = (tex: string, display: boolean) =>
+  katex.renderToString(tex, { displayMode: display, throwOnError: false });
 
 export default function Tex({ tex, display = false }: { tex: string; display?: boolean }) {
   const pieces = useMemo(() => (display ? splitRelations(tex).map((t) => render(t, true)) : []), [tex, display]);
@@ -56,7 +64,8 @@ export default function Tex({ tex, display = false }: { tex: string; display?: b
       container.querySelectorAll<HTMLElement>(":scope > .tex-piece").forEach((piece) => {
         piece.style.fontSize = "";
         const inner = piece.querySelector<HTMLElement>(".katex-display > .katex");
-        if (inner && inner.scrollWidth > width) piece.style.fontSize = `${Math.max(MIN_SCALE, width / inner.scrollWidth)}em`;
+        if (inner && inner.scrollWidth > width)
+          piece.style.fontSize = `${Math.max(MIN_SCALE, width / inner.scrollWidth)}em`;
       });
     };
     fit();
@@ -78,7 +87,10 @@ export default function Tex({ tex, display = false }: { tex: string; display?: b
 /** Inline math reduced to plain text for <option> labels and alt text: "$k_{on}$" → "k_on". */
 export function plainText(text: string): string {
   return text.replace(/(?<!\\)\$(.+?)(?<!\\)\$/gs, (_, m: string) =>
-    m.replace(/\\(mathrm|text|mathbf|boldsymbol)\{([^}]*)\}/g, "$2").replace(/\\([a-zA-Z]+)/g, "$1").replace(/[{}]/g, ""),
+    m
+      .replace(/\\(mathrm|text|mathbf|boldsymbol)\{([^}]*)\}/g, "$2")
+      .replace(/\\([a-zA-Z]+)/g, "$1")
+      .replace(/[{}]/g, ""),
   );
 }
 
@@ -91,10 +103,12 @@ export function RichText({ text }: { text: string }) {
       .map((part, i) =>
         i % 2
           ? render(part, false)
-          : escape(part.replace(/\\\$/g, "$")).replace(
-              /`([^`]+)`/g,
-              '<code class="rounded bg-gray-100 px-1 py-0.5 font-mono text-[0.85em] text-gray-800">$1</code>',
-            ),
+          : escape(part.replace(/\\\$/g, "$"))
+              .replace(
+                /`([^`]+)`/g,
+                '<code class="rounded bg-gray-100 px-1 py-0.5 font-mono text-[0.85em] text-gray-800">$1</code>',
+              )
+              .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>"),
       )
       .join("");
   }, [text]);

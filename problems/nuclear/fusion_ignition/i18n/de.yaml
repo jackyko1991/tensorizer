@@ -1,0 +1,23 @@
+source_hash: b05c63a03eb9
+title: Zündung eines DT-Hotspots bei der Trägheitsfusion
+summary: 'Ein 0D-Modell des Hotspots im Zentrum einer implodierten Deuterium–Tritium-Kapsel. Alphateilchen aus $\mathrm{D + T \to {}^4He + n}$ heizen ihn, Bremsstrahlung und Expansion kühlen ihn, und Wärme, die in die kalte Hülle entweicht, speist den Abbrand. Ein ganzes Gitter von Anfangstemperaturen und Flächendichten $(T_0, \rho R_0)$ wird als ein Batch integriert: Oberhalb einer Lawson-artigen Grenze läuft der Hotspot davon und brennt, unterhalb erlischt er.'
+notes: 'Trägheitseinschluss komprimiert einige hundert Mikrogramm DT so schnell, dass es brennt, bevor es auseinanderfliegt. Der Hotspot zündet, wenn die von ihm erzeugten Alphateilchen ihn schneller heizen, als er abkühlt. Zwei Größen entscheiden darüber: die Temperatur, weil $\langle\sigma v\rangle$ bis zu einigen zehn keV steil ansteigt, und die Flächendichte $\rho R$, weil ein dickerer Hotspot seine eigenen Alphas abbremst (Alpha-Reichweite grob 0,3 g/cm² nahe 10 keV) und der Expansion länger standhält. Bremsstrahlung allein legt die ideale Zündtemperatur fest, etwa 4,3 keV, bei der $\tfrac14\langle\sigma v\rangle E_\alpha = C_B\sqrt T$. Die gestrichelte Kurve ist die momentane Bilanz, die ICF-Form des Lawson-Kriteriums; der schattierte Bereich ist das, was die vollständige Integration findet, die auch die Ausbreitung des Abbrands in die kalte Hülle berücksichtigt. Erhöhe den Verlustfaktor $L$, und die Grenze wandert zu größerem $\rho R$ und höherem $T$. Forschungskontext: Am 5. Dezember
+  2022 meldete die National Ignition Facility das erste Fusionsexperiment im Labor mit einem Target-Gewinn über 1, etwa 3,15 MJ Fusionsenergie aus 2,05 MJ Laserlicht auf dem Target (näherungsweise; Indirect Drive ICF Collaboration, Phys. Rev. Lett. 132, 065102, 2024), nachdem zuvor ein brennendes Plasma erreicht worden war (Zylstra et al., Nature 601, 542, 2022) und ein 1,3-MJ-Schuss im August 2021 das Lawson-Kriterium für Zündung überschritten hatte (Phys. Rev. Lett. 129, 075001, 2022). Der Target-Gewinn zählt nur die Laserenergie, die das Target erreicht; die zum Betrieb der Laser verbrauchte Elektrizität ist weit größer. Vereinfachungen: ein homogener 0D-Hotspot bei fester Dichte (daher wird der Abbrandanteil überschätzt — außer dem PdV-Verlustterm bringt ihn nichts zum Auseinanderfallen), eine illustrative Formel für die Alpha-Deposition, eine genäherte Spitzer-Leitfähigkeit ($\ln\Lambda \approx 10$), kein Strahlungseinschluss, keine Beimischung von Ablatormaterial und gleiche Ionen-
+  und Elektronentemperaturen.'
+meanings:
+- jeder Gitterpunkt $b = i\,n_r + j$ ist ein Hotspot; der Zustand ist $(\ln T, \ln\rho R, \varphi)$
+- Bosch–Hale-DT-Reaktivität, $\approx 1.14\times10^{-22}$ m³/s bei 10 keV, Maximum $\approx 9\times10^{-22}$ nahe 65 keV
+- Anteil der 3,5-MeV-Alphaenergie, der im Hotspot abgebremst wird
+- Bremsstrahlung, $C_B = 5.34\times10^{-37}$ W m³ keV$^{-1/2}$
+- PdV-Arbeit eines Hotspots, der sich mit Schallgeschwindigkeit ausdehnt
+- Spitzer-Wärmeleitung in die Hülle; als neue heiße Masse zurückgeführt (Abbrandausbreitung)
+- rechte Seite für alle Hotspots auf einmal, mit RK4 integriert
+- Lawson-artige Kurve, auf der Selbstheizung gleich den Verlusten ist, per gebatchter Bisektion
+labels:
+  density: Hotspot-Dichte $\rho$
+  loss: Verlustfaktor $L$ (Bremsstrahlung + PdV)
+  rho_r_max: Verfügbarer Gesamtbrennstoff $\rho R$
+  t_end: Simulierte Zeit
+  n_grid: Gitterpunkte pro Achse
+  t_min: Niedrigstes $T_0$
+  t_max_init: Höchstes $T_0$

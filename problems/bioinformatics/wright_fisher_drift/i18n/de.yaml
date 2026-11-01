@@ -1,0 +1,22 @@
+source_hash: a1a35d304051
+title: Hardy–Weinberg und genetische Drift nach Wright–Fisher
+summary: Zufällige Paarung ergibt die Hardy–Weinberg-Genotyphäufigkeiten $p^2, 2pq, q^2$; das zufällige Ziehen von $2N$ Genkopien in jeder Generation lässt die Allelhäufigkeiten driften. Tausende Populationen evolvieren gleichzeitig als ein (Replikate, Generationen)-Tensor binomialer Ziehungen, optional mit Selektion $s$, und werden mit $(1-1/2N)^t$ für die Heterozygotie sowie mit $1/2N$ und Kimuras Formel für die Fixierung verglichen.
+notes: 'Hardy–Weinberg besagt, dass eine Runde zufälliger Paarung die Allelhäufigkeit $p$ in die Genotyphäufigkeiten $p^2, 2pq, q^2$ verwandelt, egal welche Genotypen die Eltern hatten; die Punkte sind $N$ Individuen aus je zwei zufälligen Gameten und streuen um diese Kurven. Allelhäufigkeiten bleiben nur in einer unendlichen Population konstant. Mit $2N$ Kopien ist jede Generation eine binomiale Stichprobe der vorigen, sodass $p$ eine Irrfahrt ausführt, bis es 0 (Allel verloren) oder 1 (Allel fixiert) erreicht. Zwei zufällig gewählte Kopien haben mit Wahrscheinlichkeit $1/2N$ dieselbe Elternkopie, daher schrumpft die erwartete Heterozygotie $2pq$ pro Generation um den Faktor $1 - 1/2N$; in kleinen Populationen ist die Drift schneller. Eine neue neutrale Mutation beginnt als eine Kopie von $2N$; da am Ende eine der $2N$ Kopien die Vorfahrin aller sein wird, ist ihre Fixierungswahrscheinlichkeit $1/2N$. Mit Selektion gilt Kimuras Diffusionsergebnis: Ein vorteilhaftes Allel mit $4Ns \gg 1$
+  wird mit einer Wahrscheinlichkeit nahe $2s$ fixiert, also immer noch weit von sicher, und ein leicht schädliches kann durch Drift fixiert werden, wenn $|4Ns| \lesssim 1$. Hier ist $N$ die idealisierte Populationsgröße (konstant, zufällige Paarung, keine Mutation oder Migration); echte Populationen werden durch eine kleinere effektive Größe $N_e$ beschrieben.'
+meanings:
+- Häufigkeit des Allels A in der Replikatpopulation $r$ in Generation $t$
+- 'nach der Selektion: A-Kopien werden $1+s$-mal so oft weitergegeben'
+- 'Anzahl der A unter den $2N$ Kopien der nächsten Generation: eine Ziehung pro Population, alle auf einmal'
+- Genotyphäufigkeiten AA, Aa, aa bei zufälliger Paarung
+- $N$ Individuen aus je zwei zufälligen Gameten, nach Genotyp gezählt (Punkte)
+- 'Summe über $r$: mittleres $2pq$, verglichen mit $H_0(1-1/2N)^t$'
+- Anteil der Populationen, in denen eine einzelne neue Kopie ($p_0 = 1/2N$) fixiert wurde, für jedes $s$
+- $(1-e^{-4Nsp_0})/(1-e^{-4Ns})$, gleich $p_0 = 1/2N$ für $s = 0$
+labels:
+  N: Populationsgröße $N$ (diploid)
+  p0: Anfangshäufigkeit $p_0$
+  s: Selektionskoeffizient $s$
+  generations: Generationen $G$
+  replicates: Populationen $R$
+  fix_replicates: Populationen pro $s$ (Fixierung)
+  seed: Zufalls-Seed

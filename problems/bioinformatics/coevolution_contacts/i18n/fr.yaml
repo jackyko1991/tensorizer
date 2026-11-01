@@ -1,0 +1,27 @@
+source_hash: 293708490c35
+title: Contacts protéiques par coévolution (DCA)
+summary: 'Les résidus qui se touchent dans une protéine repliée mutent ensemble au cours de l''évolution. On replie une protéine jouet sur un réseau cubique, on place des couplages $J_{ij}(a,b)$ sur ses contacts, on échantillonne un alignement multiple de séquences à partir du modèle de Potts par échantillonnage de Gibbs, puis on retrouve les contacts à partir de l''alignement seul : statistiques de paires par einsum one-hot, couplages directs par DCA en champ moyen $J \approx -C^{-1}$ (ou pseudo-vraisemblance avec autograd), et un score de Frobenius corrigé par APC, comparé à la vraie carte de contacts.'
+notes: 'Pourquoi cela marche-t-il ? Si le résidu $i$ change de taille ou de charge, un résidu $j$ qu''il touche doit souvent changer lui aussi, sinon la protéine se replie mal. Sur de nombreuses séquences apparentées, cela laisse une corrélation entre les colonnes $i$ et $j$ de l''alignement. Mais les corrélations sont transitives : si $i$ touche $j$ et $j$ touche $k$, alors $i$ et $k$ sont aussi corrélés sans se toucher. L''analyse des couplages directs (DCA) ajuste un modèle global, le modèle de Potts (un modèle d''Ising à $q$ états), dont les couplages $J_{ij}$ expliquent toutes les corrélations à la fois, de sorte que les corrélations indirectes sont expliquées par d''autres. Dans l''approximation de champ moyen, les couplages sont simplement l''opposé de l''inverse de la matrice de covariance (comme des corrélations partielles) ; la maximisation de la pseudo-vraisemblance ajuste plutôt $P(s_i\mid\text{rest})$ pour chaque colonne et est généralement plus précise sur de vraies familles.
+  L''animation fait croître l''alignement de 20 séquences jusqu''à toutes : la DCA (triangle supérieur) s''améliore avec la profondeur, tandis que la covariance simple (triangle inférieur) plafonne, car ses faux positifs sont des paires indirectes. Ici, les données proviennent vraiment d''un modèle de Potts aux contacts connus, si bien que la précision est un score honnête. Les vrais alignements sont plus difficiles : une poignée de lettres remplace 20 acides aminés plus un gap, les séquences sont apparentées par une phylogénie (la vraie DCA sous-pondère les quasi-doublons), et seuls certains contacts laissent un signal. La coévolution est à la racine de la prédiction de structure actuelle : des contacts de type plmDCA ont alimenté les premières méthodes d''apprentissage profond, et AlphaFold 2 prend un MSA comme entrée principale et apprend avec l''attention sa propre utilisation, bien plus riche, de celui-ci. Ce jouet montre l''idée statistique derrière cette entrée, pas le fonctionnement
+  d''AlphaFold. Essayez un couplage plus faible, moins de séquences ou davantage de lettres $q$.'
+meanings:
+- une chaîne en serpentin remplissant une boîte $X\times Y\times Z$ ; un contact est un voisin sur le réseau distant d'au moins 3 le long de la chaîne
+- 'le « vrai » modèle : champs aléatoires, et blocs de couplage aléatoires $q\times q$ seulement là où $\mathcal C_{ij} = 1$'
+- 'champ local : $j, b$ sommés sur toutes les autres colonnes et lettres de la séquence $n$'
+- 'Gibbs en damier : les contacts relient des couleurs opposées, donc la moitié des sites est rééchantillonnée d''un coup, dans les $N$ chaînes'
+- l'alignement sous forme de tenseur one-hot
+- '$n$ sommé : fréquences simples et de paires ; sommer $f_{iajb}$ sur $b$ redonne $f_{ia}$'
+- corrélation connexe, après mélange d'un pseudo-compte $\lambda$ de fréquences uniformes
+- 'DCA en champ moyen : inverser la covariance carrée de taille $L(q-1)$ ; la dernière lettre est l''état de référence'
+- 'alternative par pseudo-vraisemblance : maximisée sur $h, J$ par Adam avec une pénalité $L_2$'
+- force de couplage d'une paire, $a, b$ sommés, dans la jauge à somme nulle $J^z$
+- 'correction par produit moyen : retire le fond propre à chaque colonne, de sorte que lignes et colonnes ont une moyenne 0'
+labels:
+  fold: Repliement sur réseau (taille de la boîte)
+  q: Lettres par colonne $q$
+  coupling: Force des couplages placés $\sigma_J$
+  n_seq: Séquences dans le MSA $N$
+  sweeps: Balayages de Gibbs par séquence
+  pseudocount: Pseudo-compte $\lambda$
+  method: 'Inférence : DCA en champ moyen ou pseudo-vraisemblance'
+  plm_iters: Pas d'Adam (pseudo-vraisemblance)

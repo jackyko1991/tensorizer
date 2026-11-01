@@ -1,0 +1,23 @@
+source_hash: 7c33ee10a4e7
+title: Diseño inverso de una metalente
+summary: Una metasuperficie plana de metaátomos de tamaño sublongitud de onda imprime una fase $\varphi(x)$ en la luz. La luz se propaga con el método del espectro angular (una FFT), y autograd con Adam ajusta cada metaátomo para llevar tanta potencia como sea posible a un punto focal, partiendo de una superficie plana. El resultado se compara con la lente hiperbólica analítica, y diseñar para dos longitudes de onda a la vez (un lote) muestra el compromiso cromático.
+notes: 'La metalente analítica pone en fase todos los caminos de la lente al foco, $\varphi(x) = -k(\sqrt{x^2 + f^2} - f)$, plegada en $[0, 2\pi)$ porque un metaátomo solo puede retrasar la luz hasta una onda (metalentes visibles de este tipo fueron demostradas por Khorasaninejad et al., Science 2016). Aquí no se le da ninguna fórmula al optimizador: parte de una superficie plana, calcula la potencia en el punto focal $\eta$ con un propagador basado en FFT y obtiene el gradiente respecto a todas las fases de los metaátomos con una sola pasada hacia atrás, la misma información que da el método adjunto en el diseño inverso fotónico. Para una sola longitud de onda y un solo punto focal, la mejor fase es cercana a la hiperbólica, y el optimizador la redescubre (puede hacerlo algo mejor en $\eta$, porque el punto tiene anchura finita y el propagador escalar no es exactamente la imagen de rayos). El caso interesante es el de dos longitudes de onda: en el modelo de juguete cada metaátomo añade
+  un camino óptico fijo plegado en una onda, así que en $\lambda_1 \neq \lambda_0$ la fase se escala por $\lambda_0/\lambda_1$ y los pliegues ya no coinciden. La lente hiperbólica enfoca entonces la luz roja a otra distancia (aberración cromática difractiva). Con el diseño ''dual'' ambas longitudes de onda comparten la pérdida y el optimizador encuentra un compromiso: mejor en $\lambda_1$, peor en $\lambda_0$. Simplificaciones: luz escalar 1D, una máscara de fase de elemento delgado (cada metaátomo es un desfasador ideal sin acoplamiento entre vecinos), transmisión perfecta, un modelo de dispersión de juguete y contornos periódicos. El diseño inverso real resuelve las ecuaciones de Maxwell para los metaátomos; Tseng et al. entrenaron de extremo a extremo modelos diferenciables de cámaras de metasuperficie completas ("Neural nano-optics", Nature Communications 2021), y Li et al. revisan las metasuperficies de diseño inverso (ACS Photonics 2022). Cuánto ancho de banda puede enfocar a la vez
+  una lente plana tiene límites fundamentales (Presutti & Monticone, Optica 2020).'
+meanings:
+- 2048 puntos de malla ($\Delta x = 0.05$ μm) y sus números de onda de la FFT
+- 'variable de diseño: retardo de fase de cada metaátomo en ondas a $\lambda_0$, un valor por átomo de 0.25 μm'
+- fase a la longitud de onda $\lambda_l$; $l$ es un lote de dos longitudes de onda
+- 'compleja: imaginaria (decreciente) para las componentes evanescentes $|k_x| > k$'
+- $x$ repetido ⇒ sumado, hecho en $O(X\log X)$ con la FFT
+- campo a todas las longitudes de onda y distancias a la vez, por broadcasting de la función de transferencia
+- '$x$ repetido ⇒ sumado: potencia dentro del punto focal $|x| < \lambda_l f / D$'
+- 'autograd a través de las FFT: el método adjunto gratis'
+labels:
+  design: Diseño para ambas longitudes de onda (dual) o solo para $\lambda_0$
+  wavelength: Longitud de onda de diseño $\lambda_0$
+  wavelength2: Segunda longitud de onda $\lambda_1$
+  focal_length: Distancia focal $f$
+  diameter: Diámetro de la lente $D$
+  n_iter: Iteraciones de Adam
+  lr: Tasa de aprendizaje de Adam (ondas por paso)

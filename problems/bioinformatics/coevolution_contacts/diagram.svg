@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Coevolution: two columns i and j of a multiple sequence alignment change together because residues i and j touch in the folded chain, coupled by J_ij">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- alignment: 6 sequences × 8 columns -->
+    <g stroke="#ffffff" stroke-width="1">
+      <rect x="12" y="34" width="88" height="84" fill="#e5e7eb"/>
+      <rect x="23" y="34" width="11" height="14" fill="#93c5fd"/><rect x="56" y="48" width="11" height="14" fill="#93c5fd"/>
+      <rect x="12" y="62" width="11" height="14" fill="#93c5fd"/><rect x="89" y="76" width="11" height="14" fill="#93c5fd"/>
+      <rect x="45" y="90" width="11" height="14" fill="#93c5fd"/><rect x="67" y="104" width="11" height="14" fill="#93c5fd"/>
+      <!-- column i and column j: the same pattern of letters -->
+      <rect x="34" y="34" width="11" height="14" fill="#2563eb"/><rect x="78" y="34" width="11" height="14" fill="#2563eb"/>
+      <rect x="34" y="62" width="11" height="14" fill="#2563eb"/><rect x="78" y="62" width="11" height="14" fill="#2563eb"/>
+      <rect x="34" y="104" width="11" height="14" fill="#2563eb"/><rect x="78" y="104" width="11" height="14" fill="#2563eb"/>
+    </g>
+    <rect x="34" y="34" width="11" height="84" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <rect x="78" y="34" width="11" height="84" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <text x="36" y="28" font-style="italic">i</text>
+    <text x="80" y="28" font-style="italic">j</text>
+    <text x="56" y="154" font-size="13" fill="#6b7280" text-anchor="middle">MSA</text>
+    <!-- from statistics to structure -->
+    <line x1="106" y1="76" x2="124" y2="76" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+    <!-- lattice chain -->
+    <polyline points="134,36 156,36 178,36 200,36 222,36 222,68 200,68 178,68 156,68 134,68 134,100 156,100 178,100 200,100 222,100 222,132 200,132 178,132" fill="none" stroke="#374151" stroke-width="2"/>
+    <g fill="#93c5fd" stroke="#1e40af" stroke-width="1.5">
+      <circle cx="134" cy="36" r="5"/><circle cx="178" cy="36" r="5"/><circle cx="200" cy="36" r="5"/><circle cx="222" cy="36" r="5"/><circle cx="222" cy="68" r="5"/><circle cx="200" cy="68" r="5"/><circle cx="178" cy="68" r="5"/><circle cx="134" cy="68" r="5"/><circle cx="134" cy="100" r="5"/><circle cx="156" cy="100" r="5"/><circle cx="178" cy="100" r="5"/><circle cx="200" cy="100" r="5"/><circle cx="222" cy="100" r="5"/><circle cx="222" cy="132" r="5"/><circle cx="200" cy="132" r="5"/><circle cx="178" cy="132" r="5"/>
+    </g>
+    <!-- residues i and j touch: a contact -->
+    <line x1="156" y1="36" x2="156" y2="68" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 3"/>
+    <circle cx="156" cy="36" r="7" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="156" cy="68" r="7" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="152" y="22" font-style="italic">i</text>
+    <text x="141" y="88" font-style="italic">j</text>
+    <text x="159" y="57" font-size="13" font-style="italic" fill="#b91c1c">J<tspan font-size="10" dy="3">ij</tspan></text>
+    <text x="178" y="154" font-size="13" fill="#6b7280" text-anchor="middle">fold</text>
+  </g>
+</svg>

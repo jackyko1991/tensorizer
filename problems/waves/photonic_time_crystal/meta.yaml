@@ -1,0 +1,46 @@
+title: Photonic time crystal and time reflection
+category: waves
+level: advanced
+order: 4
+summary: >
+  Light in a medium whose permittivity $\varepsilon(t)$ changes in time but not in space. A sudden jump of
+  $\varepsilon$ splits a pulse into a forward and a time-reflected backward wave at a new frequency; a periodic
+  modulation opens a band gap in momentum $k$, inside which waves grow exponentially. Every Fourier mode is an
+  independent $2\times 2$ problem, so all $k$ are solved as one batch, and the Floquet bands come from one batched
+  eigvals call.
+animated: true
+vector_form: '\partial_t D = -\partial_x H,\quad \partial_t B = -\partial_x E,\quad D = \varepsilon(t)\,E,\ B = H \qquad \ddot D_k + \frac{k^2}{\varepsilon(t)}\,D_k = 0'
+index_form: '\dot u_{ka} = A_{kab}(t)\,u_{kb},\quad A_k = \begin{pmatrix} 0 & -ik \\ -ik/\varepsilon(t) & 0 \end{pmatrix} \qquad M_{kab} = \mathcal T\exp\!\int_0^T A_k\,dt,\quad M_{kab}\,w_{kb} = \lambda_k\,w_{ka},\quad \lambda_k = e^{-i\omega_k T}'
+translation:
+  - {symbol: 'u_{ka} = (D_k, B_k)', code: 'stack([fft(D), fft(B)], dim=-1)', shape: '(K, 2)', meaning: 'Fourier amplitudes; the medium is uniform in $x$, so $k$ is conserved and every mode evolves on its own'}
+  - {symbol: 'A_{kab}(t)', code: 'generator(k, eps)', shape: '(K, 2, 2)', meaning: 'one $2\times 2$ generator per wavenumber'}
+  - {symbol: 'A_{kab}\,u_{kb}', code: "einsum('kab,kb...->ka...', A, u)", shape: '(K, 2)', meaning: 'repeated $b$ ⇒ summed; the same line evolves the monodromy matrix $(K, 2, 2)$'}
+  - {symbol: 'D_f,\ D_b', code: 'temporal_fresnel(n1, n2)', shape: '()', meaning: 'forward/backward amplitudes $\tfrac12(1 \pm n_2/n_1)$ from continuity of $D$ and $B$'}
+  - {symbol: 'M_{kab}', code: 'monodromy(k_band, eps_periodic, T)', shape: '(K, 2, 2)', meaning: 'propagator over one period, from RK4 applied to the identity matrix'}
+  - {symbol: '\lambda_k', code: 'torch.linalg.eigvals(M)', shape: '(K, 2)', meaning: 'Floquet multipliers for all $k$ in one batched call; $\det M = 1$, so $\lambda_+\lambda_- = 1$'}
+  - {symbol: '\omega_k = i\ln\lambda_k / T', code: 'floquet_frequencies(lam, T)', shape: '(K, 2)', meaning: 'quasi-frequency: real in a band, $\operatorname{Im}\omega > 0$ (growth) in a momentum gap'}
+notes: >
+  Swapping the roles of space and time turns familiar optics inside out. At an ordinary interface in space the
+  frequency is conserved and the wavenumber changes; at a temporal interface, where the whole medium switches from
+  $\varepsilon_1$ to $\varepsilon_2$ at once, the wavenumber $k$ is conserved and the frequency jumps,
+  $\omega_2 = \omega_1 n_1/n_2$. Because no charges or currents appear, $D$ and $B$ stay continuous (not $E$ and
+  $H$), which gives the temporal Fresnel coefficients $D_f = \tfrac12(1 + n_2/n_1)$ and
+  $D_b = \tfrac12(1 - n_2/n_1)$ (Morgenthaler, 1958): part of the pulse turns around and runs backwards, the time
+  reflection, and the energy is not conserved because switching the medium does work on the field. Temporal
+  reflection and broadband frequency translation were observed with microwaves in a transmission-line metamaterial
+  switched in time (Moussa et al., Nature Physics 2023). A periodic modulation $\varepsilon(t) = \varepsilon_0(1 +
+  \alpha\cos\Omega t)$ makes each mode a parametric oscillator, $\ddot D_k + (k^2/\varepsilon)D_k = 0$ (a Mathieu-like
+  equation). Near $k/n_0 = \Omega/2$ the forward and backward waves are coupled resonantly: the quasi-frequency
+  locks to $\Omega/2$ and acquires an imaginary part, a band gap in momentum (rather than in frequency), with edges
+  $k \approx \tfrac{n_0\Omega}{2}(1 \mp \alpha/4)$ and peak growth rate $\approx \alpha\Omega/8$ to first order in $\alpha$.
+  A second, much narrower gap at $k \approx n_0\Omega$ appears at order $\alpha^2$. In the animation only the in-gap
+  part of the pulse spectrum grows. This is the idea behind photonic time crystals (reviewed by Galiffi et al.,
+  "Photonics of time-varying media", Advanced Photonics 2022); at optical frequencies the modulation depth and
+  speed needed are very hard to reach, so experiments so far work mainly at microwave and radio frequencies.
+  Simplifications: a lossless, dispersionless medium in 1D, $\mu = 1$, an instantaneous jump, and a modulation
+  that is imposed from outside (the energy for the growth comes from the pump).
+params:
+  eps2: {default: 4.0, min: 0.25, max: 9, step: 0.25, label: 'Permittivity after the jump $\varepsilon_2$'}
+  alpha: {default: 0.2, min: 0.02, max: 0.5, step: 0.02, label: 'Modulation depth $\alpha$'}
+  omega: {default: 2.0, min: 1, max: 3, step: 0.1, label: 'Modulation frequency $\Omega$'}
+  t_max: {default: 100.0, min: 30, max: 160, step: 10, label: Simulated time}

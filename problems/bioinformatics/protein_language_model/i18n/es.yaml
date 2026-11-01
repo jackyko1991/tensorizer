@@ -1,0 +1,23 @@
+source_hash: 2038e43e9d92
+title: Un modelo de lenguaje de proteínas diminuto aprende contactos
+summary: Un transformer de dos capas con atención por einsum, $A_{nhij} = \mathrm{softmax}_j(Q_{nhik}K_{nhjk}/\sqrt{d_k})$, se entrena solo para rellenar letras enmascaradas de secuencias de un modelo de Potts con acoplamientos colocados sobre un plegamiento en red. Nadie le dice la estructura y, aun así, sus mapas de atención simetrizados y con corrección APC señalan los contactos colocados, la idea detrás de las cabezas de contacto de los modelos de lenguaje de proteínas.
+notes: '¿Por qué la atención encuentra contactos? En un modelo de Potts la letra del sitio $i$, dadas todas las demás, depende solo de los sitios acoplados a él (su manto de Markov), así que la mejor manera de adivinar una letra enmascarada es mirar a sus compañeros de contacto, y la atención aprende a hacer justo eso. Rao et al., "Transformer protein language models are unsupervised structure learners" (ICLR 2021), mostraron que los mapas de atención de grandes modelos de lenguaje de proteínas entrenados con millones de secuencias naturales codifican contactos, que se leen con una regresión logística sobre los mapas simetrizados y con corrección APC, ajustada con un puñado de proteínas. Modelos posteriores como ESM-2 (2022–2023) pasaron a predecir la estructura 3D a partir de esas representaciones. Aquí la lectura es totalmente no supervisada (un simple promedio sobre cabezas), la familia es sintética y la pérdida de prueba se compara con dos referencias sin contexto: el unigrama (una sola
+  distribución de letras) y el perfil por sitio. Superar al perfil significa que el modelo usa el contexto, es decir, los acoplamientos. El plegamiento en serpentín pone los contactos en antidiagonales, como las hebras de una lámina β; pares aleatorios acertarían solo alrededor del 5 % de las veces. La APC elimina el fondo de las posiciones a las que todo el mundo atiende. Prueba acoplamientos más débiles, menos secuencias o una sola cabeza.'
+meanings:
+- bloques de acoplamiento aleatorios solo entre residuos que se tocan en el plegamiento en red; el muestreo de Gibbs los convierte en una familia de secuencias
+- embedding de token más posición de la letra $s_{ni}$ (las letras enmascaradas usan el token [MASK])
+- '$c$ repetido ⇒ sumado: consultas de cada cabeza (claves y valores igual)'
+- $k$ repetido ⇒ sumado; cada fila es una distribución de probabilidad sobre las posiciones atendidas $j$
+- '$j$ repetido, luego $h, k$ ⇒ sumados: lo que cada posición recoge de las demás'
+- entropía cruzada de la letra verdadera en el 15 % de posiciones enmascaradas, minimizada con Adam
+- atención promediada sobre las secuencias de prueba, simetrizada y con corrección APC por cabeza, y luego promediada sobre capas $l$ y cabezas $h$
+labels:
+  coupling: Intensidad del acoplamiento colocado $\sigma_J$
+  n_seq: Secuencias de entrenamiento
+  q: Tamaño del alfabeto $q$
+  layers: Capas del transformer
+  heads: Cabezas de atención $H$
+  d_model: Anchura del modelo $d$
+  steps: Pasos de entrenamiento
+  lr: Tasa de aprendizaje
+  mask_rate: Fracción enmascarada

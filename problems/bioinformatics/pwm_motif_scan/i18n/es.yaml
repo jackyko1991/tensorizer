@@ -1,0 +1,24 @@
+source_hash: 8da6dcc23206
+title: 'Matriz de pesos posicionales: logo del motivo y escaneo'
+summary: Los sitios de unión alineados de un factor de transcripción se cuentan en una matriz $(m, 4)$, que se convierte en frecuencias con un pseudoconteo y en puntuaciones log-odds frente al fondo. El contenido de información da un logo de secuencia, y un solo einsum sobre ventanas desplegadas puntúa a la vez ambas hebras de una secuencia larga; los aciertos se seleccionan con un p-valor obtenido de copias barajadas de la secuencia.
+notes: 'Una PWM supone que cada posición de un sitio de unión contribuye de forma independiente, así que la puntuación de una ventana es una suma de un número por letra: un producto escalar de la ventana one-hot con $W$. El pseudoconteo $\beta$ evita que las letras nunca vistas en unos pocos sitios de entrenamiento reciban una puntuación de $-\infty$; importa menos cuantos más sitios tengas. El contenido de información de una columna mide cuánto restringe el motivo la letra en esa posición, desde 0 bits (vale cualquiera) hasta 2 bits (siempre la misma letra), y el logo apila las letras en proporción a $P_{ja}$. Los sitios aquí son sintéticos: 12 bp con un núcleo parecido a la caja TATA (consenso TATAWAWR, con W = A o T y R = A o G) y dos letras fijas a cada lado, para que el motivo lleve bits suficientes para ser encontrado. Un motivo corto y degenerado por sí solo lleva muy poca información: en una secuencia larga las ventanas aleatorias puntúan tan alto como los sitios reales, y por eso
+  una caja TATA real es difícil de encontrar solo con su PWM. El p-valor se obtiene escaneando copias barajadas de la secuencia (mismas letras, sin motivo); con $2(L-m+1)$ ventanas, un corte en $p$ deja pasar unos $2(L-m+1)\,p$ aciertos aleatorios, y el p-valor más pequeño que puedes resolver es $1/(1 + \#\text{null scores})$. Prueba menos sitios de entrenamiento, un motivo más débil o un corte más laxo y observa cómo desaparecen sitios colocados o aparecen falsos aciertos.'
+meanings:
+- sitio de entrenamiento $s$, columna $j$, letra $a$ ∈ (A, C, G, T)
+- '$s$ repetido ⇒ sumado: conteos de letras en cada columna'
+- frecuencias con pseudoconteo $\beta$; cada fila suma 1 y ninguna entrada es 0
+- 'log-odds frente al fondo $q_a$ (bits): > 0 preferida, < 0 evitada'
+- '$a$ repetido ⇒ sumado: bits por columna, entre 0 y 2 para un fondo uniforme; la altura del logo'
+- $t = 0$ hebra directa, $t = 1$ complemento inverso (columnas invertidas, A↔T, C↔G)
+- cada ventana de $m$ letras de la secuencia larga
+- '$j$, $a$ repetidos ⇒ sumados: ambas hebras en una llamada; el mismo código puntúa todas las barajadas $(R, 2, L-m+1)$'
+- fracción de puntuaciones de secuencias barajadas al menos igual de altas
+labels:
+  n_train: Sitios de entrenamiento $N$
+  strength: Fuerza del motivo (probabilidad del consenso)
+  pseudo: Pseudoconteo $\beta$
+  length: Longitud de la secuencia $L$
+  n_sites: Sitios colocados
+  log10_p: Corte de p-valor $\log_{10} p$
+  shuffles: Secuencias barajadas $R$
+  seed: Semilla aleatoria

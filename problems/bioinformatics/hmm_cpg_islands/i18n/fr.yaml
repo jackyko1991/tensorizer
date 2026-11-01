@@ -1,0 +1,19 @@
+source_hash: 5165c35a9a08
+title: Trouver les îlots CpG avec un modèle de Markov caché
+summary: 'Une séquence d''ADN passe, sans qu''on le voie, d''un fond ordinaire à des îlots CpG riches en GC. Un modèle de Markov caché à deux états les trouve : forward–backward donne la probabilité d''être dans un îlot à chaque position, Viterbi la meilleure segmentation unique, et Baum–Welch apprend le modèle à partir des seules séquences. Chaque pas le long de la séquence est un produit matriciel en lot sur les états, tenu en espace logarithmique. Regardez la probabilité a posteriori se caler sur les îlots placés.'
+notes: 'Les données sont synthétiques : chaque séquence contient des îlots de 100 à 300 lettres placés au hasard, avec davantage de C et de G à l''intérieur. Une seule lettre n''apprend presque rien sur l''état, mais la chaîne $A$ fait persister les états, si bien que les passes avant et arrière mettent en commun les indices de segments entiers. Baum–Welch est un algorithme espérance–maximisation : calculer $\gamma$ et $\xi$ sous le modèle courant, puis fixer $E_{k\alpha}$ aux fréquences attendues des lettres dans chaque état et $A_{ij}$ aux fréquences attendues de transition ; la vraisemblance ne diminue jamais. Parti d''une estimation vague, il finit près du vrai modèle (ligne verte). Les vrais îlots CpG sont riches en dinucléotide CG plutôt que simplement en C et G ; Durbin et al. modélisent cela avec 8 états (A+, C+, G+, T+, A−, …) dont les transitions sont les fréquences de dinucléotides. Baissez le contenu en GC des îlots pour rendre le problème plus difficile.'
+meanings:
+- lettre à la position $t$ de la séquence $b$, one-hot sur A, C, G, T
+- probabilités initiales, de transition et d'émission ; état 0 fond, état 1 îlot
+- '$\alpha$ répété ⇒ sommé : probabilité que chaque état émette la lettre observée'
+- $i$ répété ⇒ sommé ; stocké sous forme de $\log\alpha$ en factorisant la plus grande entrée (log-sum-exp) pour éviter tout sous-dépassement
+- '$j$ répété ⇒ sommé : probabilité du reste de la séquence sachant l''état $i$'
+- probabilité a posteriori $P(z_t = k \mid x)$ ; $\gamma_{bt1}$ est la courbe bleue
+- 'Viterbi : la même récurrence avec max au lieu de la somme, plus des pointeurs arrière pour le meilleur chemin'
+- '$b, t$ répétés ⇒ sommés : nombre attendu de transitions $i \to j$ ; Baum–Welch pose $A_{ij} \propto \xi_{ij}$'
+labels:
+  n_seq: Séquences $B$
+  length: Longueur $T$
+  n_islands: Îlots placés par séquence
+  gc_island: Contenu en GC des îlots
+  iterations: Itérations de Baum–Welch

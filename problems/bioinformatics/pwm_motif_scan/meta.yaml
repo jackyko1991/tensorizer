@@ -1,0 +1,44 @@
+title: 'Position weight matrix: motif logo and scan'
+category: bioinformatics
+level: beginner
+order: 2
+summary: >
+  Aligned binding sites of a transcription factor are counted into a $(m, 4)$ matrix, turned into frequencies with
+  a pseudocount and into log-odds scores against the background. The information content gives a sequence logo,
+  and one einsum over unfolded windows scores both strands of a long sequence at once; hits are called with a
+  p-value taken from shuffled copies of the sequence.
+animated: false
+vector_form: 'P_j(a) = \frac{C_j(a) + \beta}{N + 4\beta},\qquad W_j(a) = \log_2\frac{P_j(a)}{q(a)},\qquad \mathrm{IC}_j = \sum_a P_j(a)\log_2\frac{P_j(a)}{q(a)},\qquad \mathrm{score}(n) = \sum_{j=0}^{m-1} W_j(s_{n+j})'
+index_form: 'C_{ja} = X_{sja} \qquad P_{ja} = \frac{C_{ja} + \beta}{N + 4\beta} \qquad \mathrm{IC}_j = P_{ja}\log_2\frac{P_{ja}}{q_a} \qquad \mathrm{score}_{tn} = U_{naj}\,W_{tja},\quad U_{naj} = X_{n+j,\,a}'
+translation:
+  - {symbol: 'X_{sja}', code: 'one_hot(sites)', shape: '(N, m, 4)', meaning: 'training site $s$, column $j$, letter $a$ ∈ (A, C, G, T)'}
+  - {symbol: 'C_{ja} = X_{sja}', code: "einsum('sja->ja', X)", shape: '(m, 4)', meaning: 'repeated $s$ ⇒ summed: letter counts in every column'}
+  - {symbol: 'P_{ja}', code: '(C + β) / (N + 4β)', shape: '(m, 4)', meaning: 'frequencies with pseudocount $\beta$; each row sums to 1 and no entry is 0'}
+  - {symbol: 'W_{ja}', code: 'log2(P / q)', shape: '(m, 4)', meaning: 'log-odds against the background $q_a$ (bits): > 0 preferred, < 0 avoided'}
+  - {symbol: '\mathrm{IC}_j', code: "einsum('ja,ja->j', P, log2(P / q))", shape: '(m,)', meaning: 'repeated $a$ ⇒ summed: bits per column, between 0 and 2 for a uniform background; the logo height'}
+  - {symbol: 'W_{tja}', code: 'stack([W, W.flip(0).flip(1)])', shape: '(2, m, 4)', meaning: '$t = 0$ plus strand, $t = 1$ reverse complement (columns reversed, A↔T, C↔G)'}
+  - {symbol: 'U_{naj}', code: 'X.unfold(-2, m, 1)', shape: '(L−m+1, 4, m)', meaning: 'every window of $m$ letters of the long sequence'}
+  - {symbol: '\mathrm{score}_{tn}', code: "einsum('...naj,sja->...sn', U, W2)", shape: '(2, L−m+1)', meaning: 'repeated $j$, $a$ ⇒ summed: both strands in one call; the same code scores all shuffles $(R, 2, L-m+1)$'}
+  - {symbol: 'p_{tn}', code: 'p_values(score, null)', shape: '(2, L−m+1)', meaning: 'fraction of shuffled-sequence scores at least as high'}
+notes: >
+  A PWM assumes that each position of a binding site contributes independently, so the score of a window is a
+  sum of one number per letter: an inner product of the one-hot window with $W$. The pseudocount $\beta$ keeps
+  letters never seen in a few training sites from getting a score of $-\infty$; it matters less the more sites you
+  have. The information content of a column is how much the motif narrows down the letter there, from 0 bits
+  (anything goes) to 2 bits (always the same letter), and the logo stacks the letters in proportion to $P_{ja}$. The
+  sites here are synthetic: 12 bp with a core resembling the TATA box (consensus TATAWAWR, with W = A or T and
+  R = A or G) and two fixed letters on each side, so that the motif carries enough bits to be found. A short degenerate motif alone
+  carries too little information: in a long sequence random windows score as high as real sites, which is why a real
+  TATA box is hard to find by its PWM alone. The p-value comes from scanning shuffled copies of the sequence (same
+  letters, no motif); with $2(L-m+1)$ windows a cut at $p$ lets through about $2(L-m+1)\,p$ random hits, and the
+  smallest p-value you can resolve is $1/(1 + \#\text{null scores})$. Try fewer training sites, a weaker motif or a
+  looser cut and watch planted sites go missing or false hits appear.
+params:
+  n_train: {default: 30, min: 5, max: 300, step: 5, type: int, label: 'Training sites $N$'}
+  strength: {default: 0.9, min: 0.5, max: 0.99, step: 0.01, label: Motif strength (probability of the consensus)}
+  pseudo: {default: 0.5, min: 0.05, max: 5.0, step: 0.1, label: 'Pseudocount $\beta$'}
+  length: {default: 5000, min: 500, max: 50000, step: 500, type: int, label: 'Sequence length $L$', unit: bp}
+  n_sites: {default: 8, min: 2, max: 20, step: 1, type: int, label: Planted sites}
+  log10_p: {default: -4.0, min: -6, max: -2, step: 0.5, label: 'p-value cut $\log_{10} p$'}
+  shuffles: {default: 20, min: 2, max: 100, step: 1, type: int, label: 'Shuffled sequences $R$'}
+  seed: {default: 0, min: 0, max: 1000, step: 1, type: int, label: Random seed}
