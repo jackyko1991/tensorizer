@@ -30,4 +30,4 @@ params:
   amplitude: {default: 120.0, min: 5, max: 175, step: 5, label: 'Test-orbit amplitude $q_0$', unit: °}
   n_orbits: {default: 12, min: 4, max: 24, step: 1, type: int, label: Orbits in the portrait}
   dt: {default: 0.05, min: 0.005, max: 0.2, step: 0.005, label: 'Time step $\Delta t$', unit: s}
-  t_max: {default: 50.0, min: 10, max: 200, step: 10, label: Simulated time, unit: s}
+  t_max: {default: 30.0, min: 10, max: 200, step: 10, label: Simulated time, unit: s}

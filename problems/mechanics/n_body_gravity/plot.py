@@ -43,4 +43,4 @@ def animate(times: torch.Tensor, xs: torch.Tensor, m: torch.Tensor, path: Path, 
 
     ax.view_init(elev=25, azim=-60)
     fig.tight_layout()
-    return save_gif(fig, update, frame_indices(len(t)), path)
+    return save_gif(fig, update, frame_indices(len(t)), path, fps=30)  # 1.5× the default 20 fps

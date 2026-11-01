@@ -22,7 +22,7 @@ jobs:
       - run: pixi run python scripts/notebooks.py --check
       - run: pixi run pytest -q tests/test_api.py
 
-  # Physics checks + convention/diagram/render smoke tests, one job per topic in parallel.
+  # Each problem's test.py (physics checks) + convention/diagram/render smoke tests, one job per topic in parallel.
   physics:
     runs-on: ubuntu-latest
     strategy:
@@ -36,7 +36,7 @@ jobs:
       - uses: prefix-dev/setup-pixi@v0.11.2
         with:
           cache: true
-      - run: pixi run pytest -q tests/test_physics_${{ matrix.topic }}*.py tests/test_smoke.py
+      - run: pixi run pytest -q problems/${{ matrix.topic }} tests/test_smoke.py
 
   web:
     runs-on: ubuntu-latest

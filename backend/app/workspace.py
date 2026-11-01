@@ -64,41 +64,79 @@ DATA_EXTENSIONS = {
 _DATA_NAME = re.compile(r"^\w[\w .()-]{0,99}$")
 EDITED_KEYS = {"title", "level", "summary", "animated", "vector_form", "index_form", "translation", "notes", "params"}
 
+# A new problem starts from a small working example (radioactive decay), written test-first: test.py states the
+# physics that must hold, the other files make it pass. "Boilerplate example" marks it as not yet the user's own.
 BLANK_META = """title: Untitled problem
 level: beginner
-summary: ""
+summary: 'Boilerplate example: radioactive decay $dN/dt = -\\lambda N$. Replace it with your own problem.'
 animated: false
 # Equations in LaTeX, e.g. vector_form: '\\ddot{\\mathbf{r}} = -\\frac{GM}{r^3}\\mathbf{r}'
-vector_form: ""
-index_form: ""
+vector_form: '\\frac{dN}{dt} = -\\lambda N'
+index_form: '\\frac{dN_i}{dt} = -\\lambda_i N_i'
 # One row per symbol: {symbol, code, shape, meaning}
-translation: []
+translation:
+  - {symbol: 'N_i', code: 'n', shape: '(T, K)', meaning: 'nuclei left of isotope i over time'}
+  - {symbol: '\\lambda_i', code: 'lam', shape: '(K,)', meaning: 'decay constant of isotope i'}
 notes: ""
 # name: {default, min, max, step, label, unit}  (type: int | choice for integers or options)
-params: {}
+params:
+  half_life: {default: 2.0, min: 0.5, max: 10, step: 0.5, label: 'Half-life $t_{1/2}$', unit: s}
+  t_max: {default: 10.0, min: 2, max: 40, step: 1, label: Simulated time, unit: s}
 """
 
-BLANK_MAIN = '''"""Main loop: parameters → tensors → solve → plot. Start writing your problem here."""
+BLANK_TEST = '''"""Step 0 (TDD): write the physics that must hold BEFORE the code; they run after every render.
+
+Boilerplate example (radioactive decay): replace the tests with the laws of your own problem, e.g. conservation,
+a limiting case with a known formula, a symmetry, or bounds (probabilities in [0, 1], T > 0).
+"""
+
+import math
+
+import torch
+
+from . import solve, tensors
+
+
+def test_matches_the_analytic_solution():
+    lam, n0 = tensors.decay_constants([1.0, 3.0]), tensors.initial_amounts(2)
+    times, n = solve.solve(n0, lam, t_max=5.0, dt=0.001)
+    exact = n0 * torch.exp(-lam * times[:, None])  # N(t) = N0 e^(−λt)
+    assert torch.allclose(n, exact, rtol=1e-6)
+
+
+def test_half_life_halves_the_amount():
+    lam, n0 = tensors.decay_constants([2.0]), tensors.initial_amounts(1)
+    times, n = solve.solve(n0, lam, t_max=2.0, dt=0.001)
+    assert math.isclose(n[-1, 0].item(), 0.5, rel_tol=1e-4)  # after one half-life, half is left
+
+
+def test_amount_never_grows_or_goes_negative():
+    lam, n0 = tensors.decay_constants([0.5, 1.0, 4.0]), tensors.initial_amounts(3)
+    _, n = solve.solve(n0, lam, t_max=10.0, dt=0.01)
+    assert (n >= 0).all() and (n.diff(dim=0) <= 0).all()  # decay only removes nuclei
+'''
+
+BLANK_MAIN = '''"""Main loop: parameters → tensors → solve → plot. Boilerplate example: radioactive decay."""
 
 from pathlib import Path
 
-import matplotlib.pyplot as plt
+from problems._common.runtime import cli, device
 
-from problems._common.plotting import save_png
-from problems._common.runtime import cli
-
-# from . import equation, plot, solve, tensors
+from . import equation, plot, solve, tensors
 
 
 def run(params: dict, out_dir: Path) -> Path:
-    # 1. tensors.py  — build the initial state as tensors, e.g. y0 = tensors.initial_state(params)
+    # 0. test.py     — the physics that must hold (written first; runs after each render)
+    # 1. tensors.py  — build the initial state as tensors
     # 2. equation.py — write the physics as tensor operations (einsum, broadcasting)
-    # 3. solve.py    — step the equation in time, e.g. times, traj = solve.solve(y0, params)
+    # 3. solve.py    — step the equation in time
     # 4. plot.py     — draw the result and return the saved PNG/GIF path
-    fig, ax = plt.subplots(figsize=(6, 3.5))
-    ax.text(0.5, 0.5, "Empty canvas: write your problem in main.py", ha="center", va="center", fontsize=12)
-    ax.set_axis_off()
-    return save_png(fig, out_dir / "result.png")
+    lam = tensors.decay_constants([params["half_life"], 2 * params["half_life"]], device())  # (K,)
+    n0 = tensors.initial_amounts(len(lam), device())  # (K,)
+    times, n = solve.solve(n0, lam, params["t_max"], dt=0.01)  # (T,), (T, K)
+    print(f"left after {params['t_max']:g} s: " + ", ".join(f"{v:.3f}" for v in n[-1].tolist()))
+    print(f"activity at t = 0: {equation.rate(n0, lam).neg().tolist()}")
+    return plot.draw(times, n, out_dir / "result.png")
 
 
 if __name__ == "__main__":
@@ -106,10 +144,75 @@ if __name__ == "__main__":
 '''
 
 BLANK_DOCS = {
-    "equation.py": '"""The physics written as tensor operations (einsum, broadcasting), with shapes in comments."""\n',
-    "tensors.py": '"""Build the PyTorch tensors: initial state, grids and constants."""\n',
-    "solve.py": '"""The solver: step the equation in time (or solve it directly)."""\n',
-    "plot.py": '"""Draw the result and save it as a PNG or GIF (see problems._common.plotting)."""\n',
+    "tensors.py": '''"""Build the PyTorch tensors: decay constants λ_i (K,) and initial amounts N_i(0) (K,)."""
+
+import math
+
+import torch
+
+
+def decay_constants(half_lives: list[float], device: torch.device | None = None) -> torch.Tensor:
+    """λ_i = ln 2 / t½_i, one per isotope: shape (K,)."""
+    return math.log(2) / torch.tensor(half_lives, dtype=torch.float64, device=device)
+
+
+def initial_amounts(k: int, device: torch.device | None = None) -> torch.Tensor:
+    """Every isotope starts with N = 1 (fractions): shape (K,)."""
+    return torch.ones(k, dtype=torch.float64, device=device)
+''',
+    "equation.py": '''"""The physics as tensor operations (broadcasting over isotopes), with shapes in comments."""
+
+import torch
+
+
+def rate(n: torch.Tensor, lam: torch.Tensor) -> torch.Tensor:
+    """dN_i/dt = −λ_i N_i: (K,) × (K,) → (K,)."""
+    return -lam * n
+''',
+    "solve.py": '''"""The solver: step dN/dt = f(N) with classic Runge–Kutta (RK4), all isotopes at once."""
+
+import torch
+
+from . import equation
+
+
+def solve(n0: torch.Tensor, lam: torch.Tensor, t_max: float, dt: float) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return times (T,) and amounts N (T, K)."""
+    steps = round(t_max / dt)
+    times = torch.linspace(0, steps * dt, steps + 1, dtype=n0.dtype, device=n0.device)
+    out = [n0]
+    n = n0
+    for _ in range(steps):
+        k1 = equation.rate(n, lam)
+        k2 = equation.rate(n + 0.5 * dt * k1, lam)
+        k3 = equation.rate(n + 0.5 * dt * k2, lam)
+        k4 = equation.rate(n + dt * k3, lam)
+        n = n + dt / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+        out.append(n)
+    return times, torch.stack(out)  # (T, K)
+''',
+    "plot.py": '''"""Draw the result and save it as a PNG (see problems._common.plotting for GIFs)."""
+
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import torch
+
+from problems._common.plotting import save_png
+
+
+def draw(times: torch.Tensor, n: torch.Tensor, path: Path) -> Path:
+    t, amounts = times.cpu().numpy(), n.cpu().numpy()  # (T,), (T, K)
+    fig, ax = plt.subplots(figsize=(6, 3.5))
+    for i in range(amounts.shape[1]):
+        ax.plot(t, amounts[:, i], label=f"isotope {i + 1}")
+    ax.axhline(0.5, color="#9ca3af", lw=0.8, ls="--")
+    ax.set_xlabel("t (s)")
+    ax.set_ylabel("N / N₀")
+    ax.set_title("Boilerplate example: radioactive decay")
+    ax.legend()
+    return save_png(fig, path)
+''',
 }
 
 # Runs the notebook's code cells in one fresh process (see run_notebook). argv: cells.json, result.json, package.
@@ -231,7 +334,7 @@ def _new(files: dict[str, str], diagram: Path | None = None) -> Sandbox:
 
 
 def blank_files() -> dict[str, str]:
-    return {"meta.yaml": BLANK_META, "main.py": BLANK_MAIN, **BLANK_DOCS}
+    return {"meta.yaml": BLANK_META, "test.py": BLANK_TEST, "main.py": BLANK_MAIN, **BLANK_DOCS}
 
 
 def create_blank() -> dict:
@@ -361,7 +464,9 @@ def entry(session: str) -> dict:
         "notes": text_of("notes"),
         "params": meta.get("params") or {},
         "order": 0,
-        "files": [{"name": n, "code": (folder / n).read_text(encoding="utf-8")} for n in CODE_FILES],
+        "files": [
+            {"name": n, "code": (folder / n).read_text(encoding="utf-8")} for n in CODE_FILES if (folder / n).is_file()
+        ],
         "meta": text,
         # keys the page doesn't edit (category, order, …), kept when it regenerates meta.yaml from the view
         "meta_extra": {k: v for k, v in meta.items() if k not in EDITED_KEYS},

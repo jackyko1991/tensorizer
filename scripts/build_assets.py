@@ -86,7 +86,8 @@ def discover() -> list[Path]:
 def source_hash(problem: Path) -> str:
     """Hash of everything that affects the rendered output: the problem's code, meta.yaml and _common."""
     h = hashlib.sha256()
-    for f in sorted([*problem.glob("*.py"), problem / "meta.yaml", *(PROBLEMS / "_common").glob("*.py")]):
+    code = [f for f in problem.glob("*.py") if f.name != "test.py"]  # tests don't change the picture
+    for f in sorted([*code, problem / "meta.yaml", *(PROBLEMS / "_common").glob("*.py")]):
         h.update(f.name.encode() + f.read_bytes().replace(b"\r\n", b"\n"))
     return h.hexdigest()[:16]
 
@@ -221,7 +222,11 @@ def main() -> None:
                 "category": cat,
                 "slug": slug,
                 **meta,
-                "files": [{"name": f, "code": (d / f).read_text(encoding="utf-8")} for f in CODE_FILES],
+                "files": [
+                    {"name": f, "code": (d / f).read_text(encoding="utf-8")}
+                    for f in ["test.py", *CODE_FILES]
+                    if (d / f).is_file()
+                ],
                 # ?v=mtime busts the browser cache when a GIF is re-rendered under the same name
                 "output": f"{cat}/{slug}/{existing[0].name}?v={int(existing[0].stat().st_mtime)}" if existing else None,
                 "console": console_file.read_text(encoding="utf-8") if console_file.exists() else "",

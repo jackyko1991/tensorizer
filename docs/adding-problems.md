@@ -80,12 +80,19 @@ pixi run python scripts/papers.py check   # re-verify every stored link
 The script looks each one up on Crossref or arXiv and stores the label (first author, year, venue) and the title
 from that record in `content/papers.json`, so never type citations by hand.
 
-## Tests
+## Tests (write them first)
 
-Add physics checks to `tests/test_physics_<category>.py` that compare against known results: conservation laws, analytic solutions, limits and symmetries. `tests/test_smoke.py` already checks that every problem follows the convention and renders.
+Every problem has its own `test.py`, step 0 of the workflow (test-driven development): before the solver, write
+what any correct answer must satisfy, as physical laws: conservation (energy, momentum, mass, probability), an
+analytic solution or a limiting case, a symmetry or invariant, or bounds. Then write the other files until the tests
+pass. Use relative imports (`from . import equation, solve, tensors`) and see
+`problems/mechanics/n_body_gravity/test.py` for the style. The web app runs `test.py` after every render and shows
+a green or red TDD light; mark checks that take more than a few seconds with `@pytest.mark.slow` (CI runs them, the
+after-run check skips them). `tests/test_smoke.py` already checks that every problem follows the convention and
+renders.
 
 ```bash
-pixi run pytest -q tests/test_physics_<category>.py tests/test_smoke.py -k <category>
+pixi run pytest -q problems/<category>/<slug> tests/test_smoke.py -k <slug>
 pixi run lint
 pixi run python -m problems.<category>.<slug>.main --out out/<slug>      # look at the GIF
 pixi run build-assets && pixi run readme                                   # publish to the site and README

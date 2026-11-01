@@ -6,6 +6,7 @@ import { useLang, type Key } from "../i18n";
 import type { CodeFile } from "../types";
 
 const ROLE: Record<string, Key> = {
+  "test.py": "role.test",
   "main.py": "role.main",
   "equation.py": "role.equation",
   "tensors.py": "role.tensors",
@@ -21,6 +22,8 @@ interface Props {
   editable: boolean;
   onEdit: (name: string, code: string) => void;
   onReset: () => void;
+  /** Library problems: right-click offers "Fork to Workspace" (their code is read-only). */
+  onFork?: () => void;
   /** Rendered to the right of the editor (the parameters panel). */
   side?: ReactNode;
   /** Rendered at the right of the info row (notebook export). */
@@ -35,6 +38,7 @@ export default function CodePanel({
   editable,
   onEdit,
   onReset,
+  onFork,
   side,
   toolbar,
   className = "",
@@ -96,7 +100,8 @@ export default function CodePanel({
                   : "border-transparent text-gray-500 hover:text-gray-800"
               }`}
             >
-              <span className="mr-1 text-gray-400">{i + 1}.</span>
+              {/* test.py is step 0: written first (TDD) */}
+              <span className="mr-1 text-gray-400">{files[0]?.name === "test.py" ? i : i + 1}.</span>
               {f.name}
               {edits[f.name] !== undefined && <span className="ml-1 text-amber-600">●</span>}
             </button>
@@ -118,8 +123,8 @@ export default function CodePanel({
         <div
           className="max-h-[60vh] min-h-0 flex-1 overflow-auto xl:max-h-none"
           onContextMenu={(e) => {
-            // Right-click on highlighted code: offer Explain / Fix with AI instead of the browser menu.
-            if (!selection.current) return;
+            // Right-click: Explain / Fix with AI on highlighted code, and Fork for read-only library code.
+            if (!selection.current && !onFork) return;
             e.preventDefault();
             setMenu({ x: e.clientX, y: e.clientY });
           }}
@@ -138,23 +143,34 @@ export default function CodePanel({
       </div>
       {side}
 
-      {menu && selection.current && (
+      {menu && (selection.current || onFork) && (
         <div
           role="menu"
           style={{ left: menu.x, top: menu.y }}
           className="fixed z-50 w-48 rounded-lg border border-gray-200 bg-white p-1 text-sm shadow-lg"
         >
-          {(["explain", "fix"] as const).map((action) => (
+          {onFork && (
             <button
-              key={action}
               role="menuitem"
-              onClick={() => selection.current && askAI(action, selection.current)}
+              onClick={onFork}
               className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-gray-700 hover:bg-blue-50"
             >
-              <span>{action === "explain" ? "💡" : "🔧"}</span>
-              {t(action === "explain" ? "agent.explainSel" : "agent.fixSel")}
+              <span>⑂</span>
+              {t("fork")}
             </button>
-          ))}
+          )}
+          {selection.current &&
+            (["explain", "fix"] as const).map((action) => (
+              <button
+                key={action}
+                role="menuitem"
+                onClick={() => selection.current && askAI(action, selection.current)}
+                className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-gray-700 hover:bg-blue-50"
+              >
+                <span>{action === "explain" ? "💡" : "🔧"}</span>
+                {t(action === "explain" ? "agent.explainSel" : "agent.fixSel")}
+              </button>
+            ))}
         </div>
       )}
     </section>

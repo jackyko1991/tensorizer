@@ -56,10 +56,18 @@ export async function health(): Promise<Health | null> {
   }
 }
 
+/** test.py's verdict after a run (TDD): ok = every test passed. */
+export interface TestTally {
+  passed: number;
+  failed: number;
+  ok: boolean;
+}
+
 export interface RunResult {
   output: string;
   console: string;
   cached: boolean;
+  tests?: TestTally | null;
 }
 
 export class RunFailed extends Error {

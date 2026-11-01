@@ -725,15 +725,18 @@ The interface and all problem text are available in 10 languages: English, 繁�
 Every problem page shows:
 
 1. **Equations**: vector form, index form, and a translation table (symbol → code → tensor shape → meaning).
-2. **Code**: five syntax-highlighted files:
+2. **Code**: six syntax-highlighted files, tests first:
    | File | Role |
    |---|---|
+   | `test.py` | step 0 (TDD): the physical laws the answer must satisfy (conservation, limiting cases, symmetries, bounds); runs after every render and shows a green or red TDD light |
    | `main.py` | main loop: parameters → tensors → solve → plot |
    | `equation.py` | physics → tensor translation; the law written with `einsum`, one-to-one with the index form |
    | `tensors.py` | builds the concrete PyTorch tensors (grids, operators, initial states) |
    | `solve.py` | the solver (time stepping, `linalg.solve`, `eigh`, FFT, …) |
    | `plot.py` | 2D/3D matplotlib plot rendered to a GIF (or PNG for static problems) |
 3. **Result**: an animated GIF, parameter sliders, a Run button, and the console output.
+
+Library code is read-only; **Fork to Workspace** (button above the problem, or right-click the code) copies it to edit and run. A new Workspace problem starts from a runnable boilerplate with `test.py` first.
 
 ## Quick start
 
@@ -818,7 +821,7 @@ flowchart LR
 
 1. Copy `problems/mechanics/projectile/` to `problems/<category>/<new_slug>/`.
 2. Edit `meta.yaml`: the LaTeX, translation table and parameters. In `summary`, `notes`, the translation `meaning` and parameter `label`, write math as inline LaTeX between `$…$` (for example `$2\times 2$ matrices`); the page typesets it with KaTeX. Use single-quoted or block YAML strings so backslashes survive. Then rewrite the five files, keeping `run(params, out_dir) -> Path` in `main.py`, and add a `diagram.svg` sketch of the setup (viewBox `0 0 240 160`, same style as `simple_pendulum`).
-3. Add physics checks to `tests/test_physics_<category>.py`. `tests/test_smoke.py` already checks that every problem follows the convention and renders.
+3. Write `test.py` first (TDD): physics checks that any correct solution satisfies, e.g. conservation laws, a limiting case against a known formula, a symmetry or bounds. Mark checks that take more than a few seconds with `@pytest.mark.slow`: CI runs them, the app's after-run check skips them. `tests/test_smoke.py` already checks that every problem follows the convention and renders.
 4. Run `pixi run test`, `pixi run build-assets` and `pixi run readme` (refreshes the problem library above).
 
 A new category also needs an entry in `CATEGORIES` in `scripts/build_assets.py`.

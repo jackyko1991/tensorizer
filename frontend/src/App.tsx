@@ -18,6 +18,7 @@ import {
   type BackendChoice,
   type Health,
   type LineEvent,
+  type TestTally,
   type WsEntry,
 } from "./api";
 import { yaml } from "@codemirror/lang-yaml";
@@ -183,7 +184,11 @@ export default function App() {
     const p = findWs(id);
     if (!p) throw new Error("unknown problem");
     const data = p.entry.data ?? [];
-    const entry = await wsSync(p.entry.session ?? null, filesOf(p), data.map((d) => d.name));
+    const entry = await wsSync(
+      p.entry.session ?? null,
+      filesOf(p),
+      data.map((d) => d.name),
+    );
     // data files the sandbox doesn't have yet (new, or the sandbox was re-created) go up after the files
     const there = new Map(entry.data.map((d) => [d.name, d.size]));
     for (const d of data) {
@@ -296,7 +301,9 @@ export default function App() {
         ...q,
         entry: {
           ...q.entry,
-          data: (q.entry.data ?? []).filter((d) => d.name !== clean).map((d) => (d.name === name ? { ...d, name: clean } : d)),
+          data: (q.entry.data ?? [])
+            .filter((d) => d.name !== clean)
+            .map((d) => (d.name === name ? { ...d, name: clean } : d)),
         },
       })),
     );
@@ -306,7 +313,10 @@ export default function App() {
     if (!confirm(t("ws.deleteNotebookConfirm").replace("{name}", name))) return;
     await deleteData(id, name);
     update((w) =>
-      patchProblem(w, id, (q) => ({ ...q, entry: { ...q.entry, data: (q.entry.data ?? []).filter((d) => d.name !== name) } })),
+      patchProblem(w, id, (q) => ({
+        ...q,
+        entry: { ...q.entry, data: (q.entry.data ?? []).filter((d) => d.name !== name) },
+      })),
     );
     setTimeout(() => syncProblem(id).catch(() => {}), 0);
   }
@@ -337,8 +347,16 @@ export default function App() {
           ? Object.fromEntries(
               (
                 [
-                  "title", "level", "summary", "animated", "vector_form", "index_form", "translation", "notes",
-                  "params", "meta_extra",
+                  "title",
+                  "level",
+                  "summary",
+                  "animated",
+                  "vector_form",
+                  "index_form",
+                  "translation",
+                  "notes",
+                  "params",
+                  "meta_extra",
                 ] as const
               ).map((k) => [k, entry[k]]),
             )
@@ -370,7 +388,8 @@ export default function App() {
             cells: cells.map((c) => {
               const prev = c.id ? old.get(c.id) : undefined;
               // a cell the agent kept: same id; its output stays while its source is unchanged
-              if (prev && prev.type === c.type) return prev.source === c.source ? prev : { ...prev, source: c.source, output: null };
+              if (prev && prev.type === c.type)
+                return prev.source === c.source ? prev : { ...prev, source: c.source, output: null };
               return newCell(c.type, c.source);
             }),
           };
@@ -524,7 +543,12 @@ export default function App() {
       )}
       {github && ws && manifest && (
         <GitHubDialog
-          defaultName={`tensorizer-${(ws.name || "workspace").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "workspace"}`}
+          defaultName={`tensorizer-${
+            (ws.name || "workspace")
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/^-|-$/g, "") || "workspace"
+          }`}
           files={() => workspaceFiles(ws, manifest, ws.name || t("ws.default"))}
           onClose={() => setGithub(false)}
         />
@@ -563,7 +587,9 @@ export default function App() {
                           : "text-gray-600 hover:bg-gray-200 hover:text-gray-900"
                       }`}
                     >
-                      {tab === "problems" ? t("tab.problems") : `${t("workspace")}${wsProblems.length ? ` (${wsProblems.length})` : ""}`}
+                      {tab === "problems"
+                        ? t("tab.problems")
+                        : `${t("workspace")}${wsProblems.length ? ` (${wsProblems.length})` : ""}`}
                     </button>
                   ))}
                 </div>
@@ -634,6 +660,7 @@ export default function App() {
               categoryTitle={t(`cat.${problem.category}` as Key) ?? problem.category}
               paramsOpen={paramsOpen}
               onToggleParams={() => setParamsOpen((o) => !o)}
+              onFork={wsProblem ? undefined : () => create(() => wsCopy(problem.id))}
               ws={
                 wsProblem
                   ? {
@@ -642,7 +669,9 @@ export default function App() {
                       onMeta: (fields) => patchMeta(wsProblem.id, fields),
                       sync: () => syncProblem(wsProblem.id),
                       onOutput: (url) =>
-                        update((w) => patchProblem(w, wsProblem.id, (q) => ({ ...q, entry: { ...q.entry, output: url } }))),
+                        update((w) =>
+                          patchProblem(w, wsProblem.id, (q) => ({ ...q, entry: { ...q.entry, output: url } })),
+                        ),
                     }
                   : undefined
               }
@@ -766,6 +795,8 @@ interface ProblemViewProps {
   categoryTitle: string;
   paramsOpen: boolean;
   onToggleParams: () => void;
+  /** Library problems: copy into the Workspace to edit (library code itself is read-only). */
+  onFork?: () => void;
   /** Workspace problems: the files are edited in place (saved in the browser) and synced to a sandbox to run. */
   ws?: {
     meta: string;
@@ -777,7 +808,7 @@ interface ProblemViewProps {
   };
 }
 
-function ProblemView({ problem, backend, categoryTitle, paramsOpen, onToggleParams, ws }: ProblemViewProps) {
+function ProblemView({ problem, backend, categoryTitle, paramsOpen, onToggleParams, onFork, ws }: ProblemViewProps) {
   const [params, setParams] = useState<Params>(() => defaults(problem));
   // A workspace problem's meta.yaml may add or remove parameters: start again from the new defaults.
   const paramSpecs = JSON.stringify(problem.params);
@@ -798,10 +829,11 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
     ws?.onFiles({ "meta.yaml": code });
     window.clearTimeout(syncTimer.current);
     syncTimer.current = window.setTimeout(
-      () => ws?.sync().then(
-        () => setMetaError(null),
-        (e: Error) => setMetaError(e.message),
-      ),
+      () =>
+        ws?.sync().then(
+          () => setMetaError(null),
+          (e: Error) => setMetaError(e.message),
+        ),
       800,
     );
   }
@@ -818,11 +850,14 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
   const [running, setRunning] = useState(false);
   const [verbose, setVerbose] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // test.py's verdict on the last run: the TDD light (null = not run here yet)
+  const [tests, setTests] = useState<TestTally | null>(null);
   // Workspace: which editor the user is in — the meta.yaml editor (while open and last used) or the view's mode.
   const [metaOpen, setMetaOpen] = useState(false);
   const [inYaml, setInYaml] = useState(false);
   const wsMode = metaOpen && inYaml ? "yaml" : editMode;
-  const markdown = ws && wsMode === "markdown" ? toMarkdown(pickMd({ ...problem, notes: problem.notes ?? "" })) : undefined;
+  const markdown =
+    ws && wsMode === "markdown" ? toMarkdown(pickMd({ ...problem, notes: problem.notes ?? "" })) : undefined;
   useEffect(() => {
     emitContext({
       problem: problem.id,
@@ -851,8 +886,8 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
   }, [problem.output, problem.console, hasRun, running]);
 
   const inWorkspace = !!ws;
-  // Workspace problems run in their own sandbox, so they are editable wherever workspaces are enabled.
-  const editable = !!backend?.allow_code_exec || inWorkspace;
+  // Library code is read-only (fork it to the Workspace to change it); Workspace problems run in their own sandbox.
+  const editable = inWorkspace;
   const hasEdits = Object.keys(edits).length > 0;
 
   async function run() {
@@ -860,6 +895,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
     setHasRun(true);
     setMobileTab("results");
     setError(null);
+    setTests(null);
     setConsole("");
     // Lines stream in as the run prints; a progress-bar redraw overwrites the previous redraw.
     const lines: string[] = [];
@@ -882,6 +918,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
         : await runProblemStream(problem.id, params, hasEdits ? edits : undefined, verbose, onLine, onQueued);
       setSrc(result.output);
       setConsole(result.console);
+      setTests(result.tests ?? null);
       ws?.onOutput?.(result.output);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -991,9 +1028,20 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
             </div>
           ) : (
             <div data-ai-region="summary">
-              <h2 className="text-xl font-semibold tracking-tight">
-                <RichText text={problem.title} />
-              </h2>
+              <div className="flex items-start justify-between gap-3">
+                <h2 className="text-xl font-semibold tracking-tight">
+                  <RichText text={problem.title} />
+                </h2>
+                {onFork && (
+                  <button
+                    onClick={onFork}
+                    title={t("fork.hint")}
+                    className="flex shrink-0 items-center gap-1.5 rounded-md border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-600 hover:border-blue-300 hover:text-blue-700"
+                  >
+                    <ForkIcon /> {t("fork")}
+                  </button>
+                )}
+              </div>
               <div className="mt-1.5 flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
                   {categoryTitle}
@@ -1121,6 +1169,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
           editable={editable}
           onEdit={edit}
           onReset={() => setEdits({})}
+          onFork={onFork}
           toolbar={inWorkspace ? undefined : <ExportMenu problem={problem} edits={edits} params={params} />}
           side={
             // display: contents keeps CodePanel's layout; the wrapper only labels the region for the AI panel
@@ -1151,6 +1200,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
             console={console}
             error={error}
             running={running}
+            tests={tests}
           />
           <PlotPanel
             className="border-t border-gray-200 xl:min-h-0 xl:flex-1 xl:border-t-0 xl:border-l"
@@ -1161,6 +1211,25 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
         </div>
       </section>
     </>
+  );
+}
+
+/** Git-style fork glyph: one branch splitting in two. */
+export function ForkIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      aria-hidden="true"
+    >
+      <circle cx="4" cy="3" r="1.6" />
+      <circle cx="12" cy="3" r="1.6" />
+      <circle cx="8" cy="13" r="1.6" />
+      <path d="M4 4.6v1.4a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4.6M8 8v3.4" />
+    </svg>
   );
 }
 

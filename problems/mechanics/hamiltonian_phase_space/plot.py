@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from problems._common.plotting import ACCENT, frame_indices, save_gif
+from problems._common.runtime import fast_mode
 
 COLORS = {"leapfrog": ACCENT[0], "RK4": ACCENT[2], "Euler": ACCENT[1]}
 
@@ -98,4 +99,7 @@ def animate(sol: dict, energy: dict, area: dict, scale: float, p_sep: float, sys
         clock.set_text(f"t = {t[step]:.1f} s")
 
     fig.tight_layout()
-    return save_gif(fig, update, frame_indices(len(t)), path, fps=12)  # ~10 s: slow enough to follow the blob
+    # 240 frames at 15 fps (16 s): about real time for the default 30 s, so each orbit can be followed
+    n = 240 if not fast_mode() else 5
+    frames = sorted({round(k * (len(t) - 1) / (n - 1)) for k in range(n)}) if len(t) > n else frame_indices(len(t))
+    return save_gif(fig, update, frames, path, fps=15)

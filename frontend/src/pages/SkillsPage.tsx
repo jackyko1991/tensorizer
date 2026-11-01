@@ -1,4 +1,5 @@
 import CodeBlock from "../components/CodeBlock";
+import PageToc from "../components/PageToc";
 import { RichText } from "../components/Tex";
 import { usePageText, type PageKey } from "../content/pages";
 import { useLang } from "../i18n";
@@ -13,6 +14,18 @@ interface Skill {
 
 /** The PyTorch techniques the problem library is built from, each with a minimal example and where to see it. */
 const SKILLS: Skill[] = [
+  {
+    id: "tdd",
+    code: `# test.py: step 0, written before the solver
+def test_energy_is_conserved():
+    _, xs, vs = solve.solve(m, x0, v0, G, eps=0.0, t_max=6.0, dt=0.002)
+    e0, e1 = equation.energy(xs[0], vs[0], m, G), equation.energy(xs[-1], vs[-1], m, G)
+    assert abs((e1 - e0) / e0) < 1e-5     # no external force: E is constant
+
+def test_period_matches_kepler():
+    assert measured == pytest.approx(2 * math.pi * math.sqrt(a**3 / (G * M)), rel=1e-3)`,
+    usedIn: ["mechanics/n_body_gravity", "mechanics/simple_pendulum", "thermodynamics/carnot_cycle"],
+  },
   {
     id: "tensors",
     code: `import torch
@@ -88,7 +101,12 @@ tidal = -torch.autograd.functional.hessian(lambda r: -G * M / r.norm(), x)`,
     code: `psi_t = torch.einsum("xn,n->x", phi, c * torch.exp(-1j * E * t))
 prob = (psi_t.conj() * psi_t).real
 bell = torch.einsum("abcd,cd->ab", CNOT, torch.einsum("ac,cb->ab", H1, psi0))`,
-    usedIn: ["quantum/harmonic_oscillator", "quantum/spin_precession", "quantum/two_qubit_entanglement", "nuclear/neutrino_oscillations"],
+    usedIn: [
+      "quantum/harmonic_oscillator",
+      "quantum/spin_precession",
+      "quantum/two_qubit_entanglement",
+      "nuclear/neutrino_oscillations",
+    ],
   },
 ];
 
@@ -101,41 +119,59 @@ export default function SkillsPage({ manifest }: { manifest: Manifest }) {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-50/60">
-      <article className="mx-auto max-w-4xl space-y-8 px-5 py-10">
-        <header>
-          <p className="text-sm font-medium text-blue-700">{T("skills.kicker")}</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight">{T("skills.title")}</h1>
-          <p className="mt-3 text-gray-600">{T("skills.intro")}</p>
-        </header>
+    <div id="skills-scroll" className="h-full overflow-y-auto scroll-smooth bg-gray-50/60">
+      <div className="mx-auto flex max-w-6xl gap-8 px-5 py-10">
+        <PageToc
+          scrollRoot="skills-scroll"
+          items={SKILLS.map((s, i) => ({
+            id: `skill-${s.id}`,
+            mark: i + 1,
+            label: T(`skills.${s.id}.title` as PageKey),
+          }))}
+        />
+        <article className="min-w-0 max-w-4xl flex-1 space-y-8">
+          <header>
+            <p className="text-sm font-medium text-blue-700">{T("skills.kicker")}</p>
+            <h1 className="mt-1 text-3xl font-semibold tracking-tight">{T("skills.title")}</h1>
+            <p className="mt-3 text-gray-600">{T("skills.intro")}</p>
+          </header>
 
-        {SKILLS.map((s, i) => (
-          <section key={s.id} className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="flex items-baseline gap-3 text-lg font-semibold">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm text-white">
-                {i + 1}
-              </span>
-              {T(`skills.${s.id}.title` as PageKey)}
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-gray-700">
-              <RichText text={T(`skills.${s.id}.text` as PageKey)} />
-            </p>
-            <div className="mt-4">
-              <CodeBlock code={s.code} />
-            </div>
-            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-              <span className="text-gray-500">{T("skills.usedIn")}</span>
-              {s.usedIn
-                .filter((id) => title(id))
-                .map((id) => (
-                  <a key={id} href={`#/${id}`} className="rounded-full bg-blue-50 px-2.5 py-1 text-blue-700 hover:bg-blue-100">
-                    <RichText text={title(id)!} />
-                  </a>
-                ))}
-            </div>
-          </section>
-        ))}
-      </article>
+          {SKILLS.map((s, i) => (
+            <section
+              key={s.id}
+              id={`skill-${s.id}`}
+              className="scroll-mt-6 rounded-xl border border-gray-200 bg-white p-6"
+            >
+              <h2 className="flex items-baseline gap-3 text-lg font-semibold">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm text-white">
+                  {i + 1}
+                </span>
+                {T(`skills.${s.id}.title` as PageKey)}
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-gray-700">
+                <RichText text={T(`skills.${s.id}.text` as PageKey)} />
+              </p>
+              <div className="mt-4">
+                <CodeBlock code={s.code} />
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
+                <span className="text-gray-500">{T("skills.usedIn")}</span>
+                {s.usedIn
+                  .filter((id) => title(id))
+                  .map((id) => (
+                    <a
+                      key={id}
+                      href={`#/${id}`}
+                      className="rounded-full bg-blue-50 px-2.5 py-1 text-blue-700 hover:bg-blue-100"
+                    >
+                      <RichText text={title(id)!} />
+                    </a>
+                  ))}
+              </div>
+            </section>
+          ))}
+        </article>
+      </div>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import asyncio
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -22,7 +23,8 @@ ROOT = Path(__file__).resolve().parents[2]
 PROBLEMS = ROOT / "problems"
 CACHE = Path(os.environ.get("TENSORIZER_CACHE", ROOT / ".cache" / "runs"))
 TIMEOUT_S = float(os.environ.get("TENSORIZER_TIMEOUT", "120"))
-CODE_FILES = ["main.py", "equation.py", "tensors.py", "solve.py", "plot.py"]
+CODE_FILES = ["test.py", "main.py", "equation.py", "tensors.py", "solve.py", "plot.py"]
+TEST_SUMMARY = re.compile(r"(\d+) (passed|failed|error|errors)\b")
 
 
 @dataclass
@@ -70,6 +72,37 @@ def _clean_console(text: str) -> str:
     """Progress bars redraw in place with carriage returns; keep only the final state of each line."""
     lines = text.replace("\r\n", "\n").split("\n")
     return "\n".join(line.rstrip("\r").split("\r")[-1] for line in lines)
+
+
+def _tally(lines: list[str], code: int | None) -> dict:
+    """{"passed", "failed", "ok"} from pytest's summary line ("3 passed, 1 failed in 0.4s")."""
+    counts = {"passed": 0, "failed": 0}
+    for line in lines[-5:]:
+        for n, word in TEST_SUMMARY.findall(line):
+            counts["passed" if word == "passed" else "failed"] += int(n)
+    return {**counts, "ok": code == 0 and counts["failed"] == 0 and counts["passed"] > 0}
+
+
+async def _stream_tests(test_file: Path, work: Path, env: dict[str, str]) -> AsyncIterator[dict]:
+    """Run the problem's test.py (the TDD step 0) after a successful render: line events, then {"type": "tests"}."""
+    cmd = [sys.executable, "-m", "pytest", str(test_file), "-v", "--tb=short", "--no-header", "-p", "no:cacheprovider"]
+    cmd += ["-m", "not slow", "-W", "ignore::pytest.PytestUnknownMarkWarning"]  # quick checks only (CI runs all)
+    yield {"type": "line", "text": "", "replace": False}
+    yield {"type": "line", "text": "── tests: test.py ──", "replace": False}
+    lines: list[str] = []
+    code = None
+    try:
+        async for event in _stream_process(cmd, work, env):
+            if event["type"] == "exit":
+                code = event["code"]
+                break
+            text = event["text"].replace(str(work) + os.sep, "")
+            lines.append(text)
+            yield {**event, "text": text}
+    except RunError as e:
+        lines.append(f"tests {e}")
+        yield {"type": "line", "text": f"tests {e}", "replace": False}
+    yield {"type": "tests", **_tally(lines, code), "log": "\n".join(lines)}
 
 
 def _env(out_dir: Path) -> dict[str, str]:
@@ -142,14 +175,16 @@ async def stream_problem(
         unknown = set(files) - set(CODE_FILES)
         if unknown:
             raise ValueError(f"unknown file(s): {', '.join(sorted(unknown))}")
-    run_id = _run_id(category, slug, params, files or {}, _source_hash(src), verbose, bool(root))
+    run_id = _run_id(category, slug, params, files or {}, _source_hash(src), verbose, bool(root), "tests")
     out_dir = CACHE / run_id
 
     if (name := _find_output(out_dir)) is not None:
         console = (out_dir / "console.txt").read_text(encoding="utf-8") if (out_dir / "console.txt").exists() else ""
         for line in console.splitlines():
             yield {"type": "line", "text": line, "replace": False}
-        yield {"type": "result", "run_id": run_id, "output": name, "console": console, "cached": True}
+        tests_file = out_dir / "tests.json"
+        tests = json.loads(tests_file.read_text(encoding="utf-8")) if tests_file.exists() else None
+        yield {"type": "result", "run_id": run_id, "output": name, "console": console, "cached": True, "tests": tests}
         return
 
     try:
@@ -182,6 +217,8 @@ async def stream_problem(
 
         raw: list[str] = []
         code = None
+        tests: dict | None = None
+        test_log = ""
         try:
             async for event in _stream_process(cmd, work, _env(out_dir)):
                 if event["type"] == "exit":
@@ -190,6 +227,14 @@ async def stream_problem(
                 raw.append(event["text"] + ("\r" if event.get("replace") else "\n"))
                 if not event["text"].startswith('{"output"'):  # the CLI's final machine-readable line
                     yield event
+            test_file = work / "problems" / category / slug / "test.py"  # the edited copy when there are edits
+            if code == 0 and test_file.is_file():
+                async for event in _stream_tests(test_file, work, _env(out_dir)):
+                    if event["type"] == "tests":
+                        tests = {k: event[k] for k in ("passed", "failed", "ok")}
+                        test_log = event["log"]
+                    else:
+                        yield event
         except RunError as e:
             shutil.rmtree(out_dir, ignore_errors=True)
             raise RunError(str(e), _clean_console("".join(raw))) from None
@@ -204,6 +249,9 @@ async def stream_problem(
         if code != 0:
             shutil.rmtree(out_dir, ignore_errors=True)
             raise RunError("the run failed", console)
+        if tests is not None:
+            console += "\n\n── tests: test.py ──\n" + test_log
+            (out_dir / "tests.json").write_text(json.dumps(tests), encoding="utf-8")
         (out_dir / "console.txt").write_text(console, encoding="utf-8")
     finally:
         QUEUE.leave(ticket)
@@ -211,7 +259,7 @@ async def stream_problem(
     name = _find_output(out_dir)
     if name is None:
         raise RunError("the run produced no GIF/PNG", console)
-    yield {"type": "result", "run_id": run_id, "output": name, "console": console, "cached": False}
+    yield {"type": "result", "run_id": run_id, "output": name, "console": console, "cached": False, "tests": tests}
 
 
 async def run_problem(

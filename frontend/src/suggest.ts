@@ -15,13 +15,13 @@ export interface Suggestion {
 export const LIBRARY_PROMPTS = ["agent.ex1", "agent.ex2", "agent.ex3", "agent.ex4"];
 const MAX = 4;
 
-/** A blank problem's main.py / equation.py (workspace.py BLANK_MAIN, BLANK_DOCS) or one with no real code. */
+/** A new problem's boilerplate (workspace.py BLANK_MAIN), an old empty canvas, or one with no real code. */
 export function isSkeleton(problem: Pick<Problem, "files">): boolean {
   const code = (name: string) => problem.files.find((f) => f.name === name)?.code ?? "";
   const main = code("main.py");
   const eq = code("equation.py");
   const hasDef = /^\s*def\s+\w+/m.test(eq.replace(/"""[\s\S]*?"""/g, ""));
-  return main.includes("Empty canvas: write your problem in main.py") || !hasDef;
+  return main.includes("Boilerplate example") || main.includes("Empty canvas: write your problem in main.py") || !hasDef;
 }
 
 const short = (text: string, n: number) => {

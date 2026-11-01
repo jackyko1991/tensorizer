@@ -218,7 +218,8 @@ def _build():
         instructions=(
             "Tensorizer: physics problems written in index (tensor) notation and solved with PyTorch. "
             "Use list_problems / get_problem to find one, read_file / write_file to change its files (meta.yaml, "
-            "main.py, equation.py, tensors.py, solve.py, plot.py) in a private copy, and run_problem to render it. "
+            "test.py, main.py, equation.py, tensors.py, solve.py, plot.py) in a private copy, and run_problem to "
+            "render it (it then runs test.py: write the physics tests first, TDD). "
             "Problem id 'new' starts a brand-new problem from a template (ADDING_PROBLEMS.md explains the format)."
         ),
     )

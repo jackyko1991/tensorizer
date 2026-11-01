@@ -15,7 +15,7 @@ from i18n import hidden  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 GENERATED = ROOT / "frontend" / "public" / "generated"
-CODE = ["meta.yaml", "main.py", "equation.py", "tensors.py", "solve.py", "plot.py"]
+CODE = ["meta.yaml", "test.py", "main.py", "equation.py", "tensors.py", "solve.py", "plot.py"]
 
 
 def audit() -> list[tuple[str, list[str]]]:

@@ -50,7 +50,8 @@ _active = asyncio.Semaphore(int(os.environ.get("MAX_AGENT_SESSIONS", "2")))
 
 SYSTEM = """You are the agent inside Tensorizer, an educational website where physics problems are written in
 vector form and index (tensor) form and solved with PyTorch. You are working on ONE problem, whose files are in your
-working directory: meta.yaml (title, equations, translation table, parameters), main.py (the main loop),
+working directory: meta.yaml (title, equations, translation table, parameters), test.py (the physics tests,
+written first: TDD), main.py (the main loop),
 equation.py (the physics written as tensor operations), tensors.py (building the tensors), solve.py and plot.py.
 Shared helpers live in ../../_common (read-only for you).
 
@@ -58,11 +59,16 @@ Shared helpers live in ../../_common (read-only for you).
 - When asked to change something, edit the files, then call the run_problem tool to check that it runs and
   produces its animation. If it fails, read the error, fix it and run again.
 - Keep the index-notation style: einsum and broadcasting, with shapes in comments.
+- Work test-first (recommended, not enforced): before changing the physics, add or update a test in test.py that
+  states what must hold, as a physical law: conservation (energy, momentum, mass, probability), a limiting case
+  against a known formula, a symmetry or invariant, or bounds. run_problem runs test.py after the render and reports
+  "N passed / M failed"; aim for all green, and never weaken a test just to make it pass.
 - You can only touch files in this folder. This is a free trial: one problem, nothing is saved after the visit."""
 
 NEW_PROBLEM = """
 This is a NEW problem that the user wants to create. The folder starts as a copy of the simple pendulum, as a
-template: rewrite meta.yaml and all five .py files for the user's problem, keeping the same structure (main.py has
+template: rewrite meta.yaml, test.py (first) and the five other .py files for the user's problem, keeping the
+same structure (main.py has
 run(params, out_dir) returning the saved GIF/PNG path and ends with cli(run, __file__); meta.yaml has title,
 category, level, order, summary, animated, vector_form, index_form, translation, notes, params). ADDING_PROBLEMS.md in
 this folder is the full convention. Delete or replace the pendulum's diagram.svg. Run it with run_problem until it
@@ -275,7 +281,7 @@ def _workspace_notes(s: Session, context: dict, ws: dict) -> list[str]:
     title = str(context.get("title") or "Untitled problem")[:200]
     notes = [
         f'The user is working on their own Workspace problem "{title}". The files in your folder (meta.yaml and '
-        "main.py, equation.py, tensors.py, solve.py, plot.py) are exactly what their browser holds. Edit them "
+        "test.py, main.py, equation.py, tensors.py, solve.py, plot.py) are exactly what their browser holds. Edit them "
         "directly: after your turn the page shows your changes in the Inline view, the Markdown view, the meta.yaml "
         "editor and the code editor. Title, summary, equations (vector_form, index_form), translation table, notes "
         "and parameters all live in meta.yaml."
@@ -560,7 +566,13 @@ async def run_in_session(s: Session, params: dict, client_id: str) -> tuple[str,
         out = f"/api/outputs/{result['run_id']}/{result['output']}"
         s.output, s.console = out, result["console"]
         await report({"type": "run", "output": out, "console": result["console"], "ok": True})
-        return f"Run succeeded. Output: {out}\n{result['console'][-3000:]}", False
+        tests = result.get("tests")
+        verdict = (
+            f"test.py: {tests['passed']} passed, {tests['failed']} failed ({'all green' if tests['ok'] else 'RED'})"
+            if tests
+            else "test.py: none (add physics tests first)"
+        )
+        return f"Run succeeded. Output: {out}\n{verdict}\n{result['console'][-3000:]}", False
     except (RunError, ValueError, TypeError) as e:
         console = getattr(e, "console", "")
         await report({"type": "run", "output": None, "console": f"{e}\n{console}", "ok": False})

@@ -36,15 +36,16 @@ def test_disabled_without_agent(monkeypatch):
     assert client.post("/api/ws/blank").status_code == 403
 
 
-def test_blank_problem_is_an_empty_canvas_that_runs():
+def test_blank_problem_is_a_runnable_boilerplate_with_tests():
     entry = client.post("/api/ws/blank").json()
     assert entry["category"] == "workspace" and entry["title"] == "Untitled problem"
-    assert entry["params"] == {} and entry["vector_form"] == "" and entry["translation"] == []
+    assert set(entry["params"]) == {"half_life", "t_max"} and entry["vector_form"] and entry["translation"]
     assert [f["name"] for f in entry["files"]] == workspace.CODE_FILES
     assert "def run(params" in files_of(entry)["main.py"]
-    assert files_of(entry)["equation.py"].startswith('"""')
+    assert files_of(entry)["equation.py"].startswith('"""') and "def test_" in files_of(entry)["test.py"]
     result = run_events(entry["session"])[-1]
     assert result["type"] == "result", result
+    assert result["tests"]["ok"] and result["tests"]["passed"] == 3  # the boilerplate's own test.py is green
     assert client.get(result["output"]).status_code == 200
 
 
@@ -59,7 +60,7 @@ def test_sync_writes_files_and_restores_an_expired_sandbox():
     entry = client.post("/api/ws/blank").json()
     files = files_of(entry)
     files["meta.yaml"] = files["meta.yaml"].replace("title: Untitled problem", 'title: "Falling ball"')
-    files["main.py"] = files["main.py"].replace("Empty canvas", "Falling ball")
+    files["main.py"] = files["main.py"].replace("Boilerplate example", "Falling ball")
     same = client.post("/api/ws/sync", json={"session": entry["session"], "files": files}).json()
     assert same["session"] == entry["session"] and same["title"] == "Falling ball"
 
@@ -105,7 +106,8 @@ def test_notebook_run_all_errors_and_the_problem_package():
     cells = ["from problem import main\nmain.__name__", "params", "1 / 0", "print('never')"]
     out = client.post(f"/api/ws/{session}/notebook", json={"cells": cells, "all": True}).json()["cells"]
     assert [c["index"] for c in out] == [0, 1, 2]
-    assert out[0]["stdout"].strip().endswith(".main'") and out[1]["stdout"].strip() == "{}"
+    assert out[0]["stdout"].strip().endswith(".main'")
+    assert out[1]["stdout"].strip() == "{'half_life': 2.0, 't_max': 10.0}"
     assert "ZeroDivisionError" in out[2]["error"] and "harness" not in out[2]["error"]
 
 

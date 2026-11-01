@@ -1,7 +1,9 @@
 # Tool settings only — the environment is managed by pixi (see pixi.toml).
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "problems"]
+python_files = ["test_*.py", "test.py"]  # each problem folder has its own test.py
+markers = ["slow: long physics checks; CI runs them, the after-run TDD check in the app skips them"]
 pythonpath = ["."]
 filterwarnings = ["ignore::DeprecationWarning:fastapi.testclient"]
 
