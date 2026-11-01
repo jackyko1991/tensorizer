@@ -6,6 +6,8 @@
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Problem } from "./types";
+import { AGENT_STRINGS } from "./strings.agent";
+import { WORKSPACE_STRINGS } from "./strings.workspace";
 
 export const LANGS = [
   { code: "en", name: "English" },
@@ -22,7 +24,7 @@ export const LANGS = [
 export type Lang = (typeof LANGS)[number]["code"];
 
 // One row per key: en, zh-Hant, zh-Hans, fr, de, es, ja, ru, ko, hi
-const TABLE = {
+const BASE = {
   tagline: ["Physics equations solver by GPU tensors", "以 GPU 張量求解物理方程", "用 GPU 张量求解物理方程", "Résolution d'équations physiques par tenseurs GPU", "Physikalische Gleichungen mit GPU-Tensoren lösen", "Resolución de ecuaciones físicas con tensores en GPU", "GPUテンソルで物理方程式を解く", "Решение физических уравнений на тензорах GPU", "GPU 텐서로 푸는 물리 방정식", "GPU टेंसर से भौतिकी के समीकरण हल करें"],
   "export": ["Export", "匯出", "导出", "Exporter", "Exportieren", "Exportar", "エクスポート", "Экспорт", "내보내기", "निर्यात"],
   "nb.colabHint": ["Run this problem in Google Colab (free GPU available)", "在 Google Colab 執行此題（可使用免費 GPU）", "在 Google Colab 运行此题（可用免费 GPU）", "Exécuter ce problème dans Google Colab (GPU gratuit disponible)", "Diese Aufgabe in Google Colab ausführen (kostenlose GPU verfügbar)", "Ejecuta este problema en Google Colab (GPU gratuita disponible)", "Google Colab でこの問題を実行（無料 GPU あり）", "Запустить задачу в Google Colab (доступен бесплатный GPU)", "Google Colab에서 이 문제 실행 (무료 GPU 사용 가능)", "इस समस्या को Google Colab में चलाएँ (मुफ़्त GPU उपलब्ध)"],
@@ -116,6 +118,7 @@ const TABLE = {
   "workspace.newShort": ["New", "新增", "新建", "Nouveau", "Neu", "Nuevo", "新規", "Новый", "새로", "नया"],
   "workspace.new": ["Start a blank problem from the template, to edit and run yourself", "從範本建立空白題目，自行編輯與執行", "从模板创建空白题目，自行编辑和运行", "Créer un problème vierge à partir du modèle, à modifier et lancer vous-même", "Eine leere Aufgabe aus der Vorlage anlegen, selbst bearbeiten und ausführen", "Crear un problema en blanco desde la plantilla para editarlo y ejecutarlo tú", "テンプレートから空の問題を作り、自分で編集・実行する", "Создать пустую задачу из шаблона, чтобы редактировать и запускать самому", "템플릿에서 빈 문제를 만들어 직접 편집하고 실행", "टेम्पलेट से खाली समस्या बनाएँ, खुद संपादित करें और चलाएँ"],
   "workspace.unavailable": ["Workspaces need a backend with the AI Assistant / workspace feature — choose “This computer” in the top bar if Tensorizer runs locally.", "工作區需要支援此功能的後端 — 若 Tensorizer 在本機執行，請在頂端選擇「本機」。", "工作区需要支持此功能的后端 — 若 Tensorizer 在本机运行，请在顶部选择“本机”。", "Les espaces de travail nécessitent un serveur qui les prend en charge — choisissez « Cet ordinateur » en haut si Tensorizer tourne en local.", "Arbeitsbereiche brauchen ein Backend, das sie unterstützt – wähle oben „Dieser Computer“, wenn Tensorizer lokal läuft.", "Los espacios de trabajo necesitan un servidor que los admita: elige «Este equipo» arriba si Tensorizer se ejecuta en local.", "ワークスペースには対応したバックエンドが必要です — Tensorizer をローカルで動かしている場合は上部で「このコンピューター」を選んでください。", "Рабочим областям нужен сервер с их поддержкой — выберите «Этот компьютер» вверху, если Tensorizer запущен локально.", "작업 공간은 이를 지원하는 백엔드가 필요합니다 — Tensorizer를 로컬에서 실행 중이면 상단에서 ‘이 컴퓨터’를 고르세요.", "वर्कस्पेस के लिए ऐसा बैकएंड चाहिए जो इसे सपोर्ट करे — अगर Tensorizer लोकल चल रहा है तो ऊपर “यह कंप्यूटर” चुनें।"],
+  "terminal.clear": ["Clear", "清除", "清除", "Effacer", "Leeren", "Borrar", "クリア", "Очистить", "지우기", "साफ़ करें"],
   "backend.checking": ["checking backend…", "正在檢查後端…", "正在检查后端…", "vérification du serveur…", "Backend wird geprüft…", "comprobando el servidor…", "バックエンドを確認中…", "проверка сервера…", "백엔드 확인 중…", "बैकएंड की जाँच हो रही है…"],
   "backend.edit": ["backend · code editing on", "後端 · 可編輯程式碼", "后端 · 可编辑代码", "serveur · édition du code activée", "Backend · Code bearbeitbar", "servidor · edición de código activada", "バックエンド · コード編集可", "сервер · редактирование кода включено", "백엔드 · 코드 편집 가능", "बैकएंड · कोड संपादन चालू"],
   "backend.online": ["backend online", "後端已連線", "后端已连接", "serveur en ligne", "Backend online", "servidor en línea", "バックエンド接続中", "сервер в сети", "백엔드 연결됨", "बैकएंड ऑनलाइन"],
@@ -178,6 +181,8 @@ const TABLE = {
   "plot.none": ["No output yet — press Run.", "尚無輸出 — 請按執行。", "尚无输出 — 请点击运行。", "Pas encore de résultat — cliquez sur Exécuter.", "Noch keine Ausgabe — auf Ausführen klicken.", "Aún no hay resultado — pulsa Ejecutar.", "まだ出力がありません — 実行を押してください。", "Пока нет результата — нажмите «Запуск».", "아직 출력이 없습니다 — 실행을 누르세요.", "अभी कोई आउटपुट नहीं — चलाएँ दबाएँ।"],
   "plot.close": ["click or Esc to close", "點擊或按 Esc 關閉", "点击或按 Esc 关闭", "cliquez ou Échap pour fermer", "Klicken oder Esc zum Schließen", "haz clic o pulsa Esc para cerrar", "クリックまたは Esc で閉じる", "щелкните или Esc, чтобы закрыть", "클릭하거나 Esc로 닫기", "बंद करने के लिए क्लिक करें या Esc दबाएँ"],
 } satisfies Record<string, readonly string[]>;
+// Feature strings live in their own files (same row format) so parallel work doesn't collide here.
+const TABLE = { ...BASE, ...AGENT_STRINGS, ...WORKSPACE_STRINGS };
 export type Key = keyof typeof TABLE;
 
 const STORAGE_KEY = "tensorizer.lang";
@@ -225,7 +230,8 @@ export function LangProvider({ children }: { children: ReactNode }) {
   }, []);
   const value = useMemo<LangState>(() => {
     const index = LANGS.findIndex((l) => l.code === lang);
-    return { lang, setLang, t: (key) => TABLE[key][index] ?? TABLE[key][0] };
+    // A missing key (e.g. a string not added yet) shows the key itself instead of crashing the page.
+    return { lang, setLang, t: (key) => TABLE[key]?.[index] ?? TABLE[key]?.[0] ?? key };
   }, [lang, setLang]);
   return <LangContext.Provider value={value}>{children}</LangContext.Provider>;
 }

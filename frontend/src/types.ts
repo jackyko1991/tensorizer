@@ -50,8 +50,13 @@ export interface Problem {
   output: string | null;
   console: string;
   diagram: string | null;
-  /** Workspace problems only: the agent session whose sandbox holds the files. */
+  /** Workspace problems only: the server sandbox (or agent session) holding the files. */
   session?: string;
+  /** Workspace problems only: the raw meta.yaml, and its keys the page doesn't edit (category, order, …). */
+  meta?: string;
+  meta_extra?: Record<string, unknown>;
+  /** Workspace problems only: uploaded data files (the bytes are in the browser's IndexedDB, synced to data/). */
+  data?: DataFile[];
   /** Wikipedia article titles by wiki language code (en, zh, fr, …), from content/wiki.json. */
   wiki?: { wikidata: string; titles: Record<string, string> } | null;
   /** Key papers (label, title, DOI/arXiv url), from content/papers.json. */
@@ -60,6 +65,13 @@ export interface Problem {
   pixi_zip?: string;
   /** Translations by language code; any missing field falls back to English. */
   i18n?: Record<string, ProblemTranslation>;
+}
+
+export interface DataFile {
+  name: string;
+  size: number;
+  /** MIME type as the browser reported it. */
+  type: string;
 }
 
 export type Level = "beginner" | "intermediate" | "advanced";
@@ -71,3 +83,42 @@ export interface Manifest {
 }
 
 export type Params = Record<string, number | string>;
+
+// --- Workspace (kept in the browser's IndexedDB) ------------------------------------------------------
+
+export interface CellOutput {
+  stdout: string;
+  /** PNG data URLs */
+  figures: string[];
+  error?: string | null;
+}
+
+export interface Cell {
+  id: string;
+  type: "markdown" | "code";
+  source: string;
+  output?: CellOutput | null;
+}
+
+export interface Notebook {
+  id: string;
+  title: string;
+  cells: Cell[];
+}
+
+/** A problem in a workspace: `entry` is its library-shaped view (files are the truth), `meta` its meta.yaml. */
+export interface WsProblem {
+  /** Stable local id; the page shows it at #/workspace/<id>. */
+  id: string;
+  entry: Problem;
+  meta: string;
+  notebooks: Notebook[];
+  /** When it was last changed (ms since 1970), for the Workspace home. */
+  updated?: number;
+}
+
+export interface Workspace {
+  id: string;
+  name: string;
+  problems: WsProblem[];
+}

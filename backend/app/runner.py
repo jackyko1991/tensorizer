@@ -55,6 +55,9 @@ def _source_hash(problem: Path) -> str:
     h = hashlib.sha256()
     for f in sorted([*problem.glob("*.py"), problem / "meta.yaml", *(PROBLEMS / "_common").glob("*.py")]):
         h.update(f.read_bytes())
+    for f in sorted((problem / "data").glob("*")):  # a Workspace problem's uploaded data: name, size and time
+        st = f.stat()
+        h.update(f"{f.name}:{st.st_size}:{st.st_mtime_ns}".encode())
     return h.hexdigest()
 
 

@@ -53,3 +53,4 @@ serve = { cmd = "uvicorn backend.app.main:app --port 8000", env = { ALLOW_CODE_E
 
 [pypi-dependencies]
 claude-agent-sdk = ">=0.2.176, <0.3"
+mcp = ">=2.3, <3"

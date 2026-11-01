@@ -39,7 +39,14 @@ The app has three tabs:
 
 Every problem can also be taken to a notebook: **Open in Colab** opens it in Google Colab (switch the runtime to GPU and the code uses it automatically), and **Download .ipynb** saves your current version, including edited code and parameters. The notebooks live in [notebooks/](notebooks) and are regenerated from the problem files by `pixi run build-assets` or `pixi run notebooks`.
 
-**Ask AI**: the tensor-face button at the bottom right opens a chat with Claude Code, which can explain the current problem, edit its files and run them. Tensorizer builds no agent of its own; it runs Claude Code through the [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk), limited to the files of one problem and a `run_problem` tool. On your own machine (`pixi run dev` or `pixi run api`) it uses your Claude Code login; on the public site you bring your own Anthropic API key, which stays in your browser tab. The free trial works on one problem per visit and nothing is saved.
+**Ask AI**: the tensor-face button at the bottom right opens the AI Assistant. Tensorizer builds no agent of its own; you bring one, three ways:
+- **Local**: *Search this computer* finds agent CLIs on the machine running the backend (Claude Code, and experimental adapters for the OpenAI Codex CLI, OpenCode and the Gemini CLI) and uses that machine's own login.
+- **Cloud**: Tensorizer is also an MCP connector (`/mcp`, with a per-browser token), so any cloud agent that supports custom MCP connectors can open, edit and run problems here.
+- **API**: an Anthropic or OpenRouter key (or *Sign in with OpenRouter*), kept only in your browser tab.
+
+The assistant sees what you see: the open problem or notebook, your edited code and parameters, any text you highlight (code, equations, summary, notebook cells, terminal) and, if you click 📷, a screenshot. Its edits land straight back in the editors. Agents are confined to the problem's own folder plus a `run_problem` tool.
+
+**Workspace**: next to the library (left-panel tabs *Problems | Workspace*, or click the Tensorizer logo for the workspace home) you can create your own problems: blank, copied from the library, or written by the AI. Each problem has its Source (five code files and `meta.yaml`, editable inline, as Markdown or as YAML), any number of notebooks (Markdown and Python cells with inline plots) and a Data folder for your own files (CSV, JSON, NumPy, images) that your code, notebooks and the AI can load. Everything is saved in your browser; export it as a zip (a ready-to-run pixi project) or push it to a new GitHub repository with your own token. Cloud save and GPU runs are planned for Tensorizer Pro.
 
 On phones the workspace splits into four tabs: Problem, Formulation, Code and Results. Add `?lang=<code>` to a link (for example `?lang=ja`) to open it in a given language; the address bar always shows the current one.
 

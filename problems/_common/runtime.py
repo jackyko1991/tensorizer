@@ -12,6 +12,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from pathlib import Path
 from typing import Any, Callable
 
@@ -81,5 +82,8 @@ def cli(run: Callable[[dict[str, Any], Path], Path], main_file: str) -> None:
         print(f"[verbose] torch {torch.__version__} · device {device()} · params {params}", flush=True)
         trace.install(sys.modules[run.__module__])
         run = sys.modules[run.__module__].run
+    start = time.perf_counter()
     output = run(params, out_dir)
+    if args.verbose:
+        trace.report(time.perf_counter() - start)
     print(json.dumps({"output": str(output)}))

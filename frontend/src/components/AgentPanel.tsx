@@ -1,44 +1,124 @@
 import { useEffect, useRef, useState } from "react";
-import { applyFiles, onAsk, onContext, onSelection, type CodeSelection, type ViewContext } from "../agentBus";
-import { agentChat, agentStatus, RunFailed, type AgentEvent, type AgentId, type AgentStatus } from "../api";
+import {
+  applyFiles,
+  applyNotebook,
+  onAsk,
+  onContext,
+  onOpenAgent,
+  onSelection,
+  type CodeSelection,
+  type ViewContext,
+} from "../agentBus";
+import {
+  agentChat,
+  agentStatus,
+  connectorEvents,
+  openRouterCallback,
+  RunFailed,
+  type AgentEvent,
+  type AgentId,
+  type AgentStatus,
+  type Connector,
+  type FoundAgent,
+} from "../api";
 import { useLang, type Key } from "../i18n";
+import { suggestPrompts } from "../suggest";
 import type { Problem } from "../types";
 import AgentMascot from "./AgentMascot";
+import { captureTab, CaptureError, MAX_SCREENSHOT_BYTES, pngBytes, ScreenshotPreview } from "./AgentScreenshot";
+import AgentSettings, { DEFAULT_CHOICE, type AgentChoice } from "./AgentSettings";
 import { RichText } from "./Tex";
 
 type Block =
   | { kind: "text"; text: string }
-  | { kind: "tool"; id: string; name: string; input: Record<string, unknown>; ok?: boolean; result?: string }
+  | {
+      kind: "tool";
+      id: string;
+      name: string;
+      input: Record<string, unknown>;
+      ok?: boolean;
+      result?: string;
+    }
   | { kind: "run"; output: string | null; console: string; ok: boolean }
   | { kind: "files"; problem: string; files: Record<string, string> }
   | { kind: "error"; text: string };
 interface Message {
   role: "user" | "assistant";
   blocks: Block[];
+  /** Mirrored from a cloud agent (CLOUD mode), not answered here. */
+  cloud?: boolean;
 }
 
+// The API key stays in this tab (sessionStorage), one per provider; the choice of agent is remembered.
 const KEY_STORE = "tensorizer.agent.key";
-const AGENT_STORE = "tensorizer.agent.mode";
-const EXAMPLES: Key[] = ["agent.ex1", "agent.ex2", "agent.ex3", "agent.ex4"];
+const CHOICE_STORE = "tensorizer.agent.choice";
+const FOUND_STORE = "tensorizer.agent.found";
+const CLOUD_STORE = "tensorizer.agent.connector";
 // "Create a problem" ideas: a different three from the pool each time the panel opens.
 const NEW_IDEAS = Array.from({ length: 9 }, (_, i) => `agent.newEx${i + 1}` as Key);
 const pickIdeas = () => [...NEW_IDEAS].sort(() => Math.random() - 0.5).slice(0, 3);
+const REGIONS = ["summary", "equations", "translation", "notes", "terminal", "params"] as const;
+type Region = (typeof REGIONS)[number] | "page";
+interface PageSelection {
+  region: Region;
+  /** Where in the region, untranslated: "(editing)", "Vector form", "row 2 · Meaning", … */
+  detail?: string;
+  text: string;
+}
+/** A selection inside a field being edited: which field, from the nearest [data-ai-region] and the field's label. */
+function fieldDetail(el: HTMLInputElement | HTMLTextAreaElement, region: Region): string {
+  const label = el.getAttribute("aria-label") ?? "";
+  if (region === "translation") {
+    const row = el.closest("tr");
+    const index = row ? [...(row.parentElement?.children ?? [])].indexOf(row) + 1 : 0;
+    return `row ${index}${label ? ` · ${label}` : ""}`;
+  }
+  if (region === "params") {
+    const name = el.closest("tr")?.querySelector("input")?.value;
+    return [name, label].filter(Boolean).join(" · ");
+  }
+  if (region === "equations" && label) return label;
+  return "(editing)";
+}
+const AGENT_NAMES: Record<AgentId, string> = {
+  "claude-code": "Claude Code",
+  codex: "Codex",
+  opencode: "OpenCode",
+  gemini: "Gemini CLI",
+  "claude-api": "Claude Code",
+};
 
-function load(key: string): string | null {
+function storage(kind: "session" | "local"): Storage | null {
   try {
-    return sessionStorage.getItem(key);
+    return kind === "session" ? sessionStorage : localStorage;
   } catch {
     return null;
   }
 }
-function save(key: string, value: string | null) {
+function load(key: string, kind: "session" | "local" = "session"): string | null {
   try {
-    if (value === null) sessionStorage.removeItem(key);
-    else sessionStorage.setItem(key, value);
+    return storage(kind)?.getItem(key) ?? null;
+  } catch {
+    return null;
+  }
+}
+function save(key: string, value: string | null, kind: "session" | "local" = "session") {
+  try {
+    if (value === null) storage(kind)?.removeItem(key);
+    else storage(kind)?.setItem(key, value);
   } catch {
     // storage blocked: the value lasts until the page closes
   }
 }
+function loadJson<T>(key: string, fallback: T): T {
+  try {
+    const raw = load(key, "local");
+    return raw ? { ...fallback, ...JSON.parse(raw) } : fallback;
+  } catch {
+    return fallback;
+  }
+}
+const keyStore = (provider: string) => (provider === "anthropic" ? KEY_STORE : `${KEY_STORE}.${provider}`);
 
 type Mode = "current" | "new";
 interface Chat {
@@ -52,9 +132,12 @@ const EMPTY_CHAT: Chat = { messages: [], session: null };
 export default function AgentPanel({
   problem,
   onWorkspaceProblem,
+  onSyncWorkspace,
   backendKey,
 }: {
   problem: Problem;
+  /** A Workspace problem (by its id): push the browser's files to its sandbox; returns the live sandbox id. */
+  onSyncWorkspace: (problem: string) => Promise<string>;
   /** A problem the agent created: shown in the left panel's Workspace section. */
   onWorkspaceProblem: (entry: Problem) => void;
   /** Changes whenever the backend changes (picker or reconnect), so the panel re-detects what it can use. */
@@ -63,26 +146,91 @@ export default function AgentPanel({
   const { t } = useLang();
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<AgentStatus | null | "checking">("checking");
-  const [apiKey, setApiKey] = useState<string | null>(() => load(KEY_STORE));
-  const [model, setModel] = useState<string>("");
-  const [agent, setAgent] = useState<AgentId>(() => (load(AGENT_STORE) as AgentId) || "claude-code");
-  const [provider, setProvider] = useState("anthropic");
+  const [choice, setChoiceState] = useState<AgentChoice>(() => loadJson(CHOICE_STORE, DEFAULT_CHOICE));
+  const [apiKey, setApiKey] = useState<string | null>(() => load(keyStore(choice.provider)));
+  const [found, setFoundState] = useState<FoundAgent[] | null>(() => {
+    const raw = load(FOUND_STORE, "local");
+    try {
+      return raw ? (JSON.parse(raw) as FoundAgent[]) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [connector, setConnector] = useState<Connector | null>(null); // just created: URL + token shown once
+  const [cloudToken, setCloudToken] = useState<string | null>(() => load(CLOUD_STORE, "local"));
+  const [cloudExpired, setCloudExpired] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [chats, setChats] = useState<Record<string, Chat>>({});
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState<string | null>(null); // the chat that is answering
   const [mode, setMode] = useState<Mode>("current");
   const [selection, setSelection] = useState<CodeSelection | null>(null);
+  const [pageSel, setPageSel] = useState<PageSelection | null>(null);
+  const [shot, setShot] = useState<{ image: string; original: string } | null>(null);
+  const [shotOpen, setShotOpen] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
   const [view, setView] = useState<ViewContext | null>(null);
-  // A Workspace problem continues the conversation that created it.
-  const chatKey = mode === "new" || problem.category === "workspace" ? "new" : problem.id;
+  // Each problem has its own chat; a Workspace problem the AI created continues the conversation that created it
+  // (the "new" chat, whose agent session holds the problem).
+  const inWs = problem.category === "workspace";
+  const aiOwned = inWs && !!problem.session && chats.new?.session === problem.session;
+  const chatKey = mode === "new" || aiOwned ? "new" : problem.id;
   const messages = (chats[chatKey] ?? EMPTY_CHAT).messages;
   const [ideas, setIdeas] = useState(pickIdeas);
   const abort = useRef<AbortController | null>(null);
   const bottom = useRef<HTMLDivElement>(null);
+  // The input grows with its text (up to max-h-36, then scrolls) instead of showing a one-line scrollbar.
+  const input = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    const el = input.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+    el.style.overflowY = el.scrollHeight > el.clientHeight + 1 ? "auto" : "hidden";
+  }, [draft]);
+  const panelRef = useRef<HTMLElement>(null);
 
-  // Re-detect what this backend offers whenever it changes; pick Claude Code (local) automatically when it is
-  // installed and logged in on that machine, otherwise the API.
+  function setChoice(c: AgentChoice) {
+    if (c.provider !== choice.provider) setApiKey(load(keyStore(c.provider)));
+    setChoiceState(c);
+    save(CHOICE_STORE, JSON.stringify(c), "local");
+  }
+  function setFound(f: FoundAgent[]) {
+    setFoundState(f);
+    save(FOUND_STORE, JSON.stringify(f), "local");
+    // Nothing chosen yet (or the chosen one is gone): take the first agent that is installed.
+    if (!f.some((a) => a.id === choice.local && a.installed)) {
+      const first = f.find((a) => a.installed && a.logged_in !== false) ?? f.find((a) => a.installed);
+      if (first) setChoice({ ...choice, local: first.id });
+    }
+  }
+  function saveKey(key: string | null) {
+    setApiKey(key);
+    save(keyStore(choice.provider), key);
+  }
+
+  // Back from "Sign in with OpenRouter": exchange the ?code= for a key, kept in this tab only.
+  useEffect(() => {
+    openRouterCallback()
+      .then((key) => {
+        if (!key) return;
+        save(keyStore("openrouter"), key);
+        const c = {
+          ...loadJson(CHOICE_STORE, DEFAULT_CHOICE),
+          mode: "api" as const,
+          provider: "openrouter",
+        };
+        setChoiceState(c);
+        save(CHOICE_STORE, JSON.stringify(c), "local");
+        setApiKey(key);
+        setOpen(true);
+        setSettingsOpen(true);
+        setNotice(`✓ ${t("ag.orSignedIn")}`);
+      })
+      .catch((e) => (setOpen(true), setNotice(`${t("ag.orFailed")}: ${e instanceof Error ? e.message : e}`)));
+  }, []);
+
+  // Re-detect what this backend offers whenever it changes (nothing on the machine is searched until asked).
   useEffect(() => {
     setStatus("checking");
   }, [backendKey]);
@@ -90,32 +238,119 @@ export default function AgentPanel({
     if (!open || status !== "checking") return;
     agentStatus().then((s) => {
       setStatus(s);
-      if (s?.models.length) setModel((m) => m || s.models[0]);
-      const local = s?.agents.find((a) => a.id === "claude-code");
-      if (s && (!local?.available || local.logged_in === false) && agent === "claude-code") setAgent("claude-api");
-      else if (s && load(AGENT_STORE) === null) setAgent(s.default);
+      // First visit: LOCAL when Claude Code is ready on this machine, otherwise API.
+      if (s && load(CHOICE_STORE, "local") === null) {
+        const localReady = s.modes?.local && s.default === "claude-code";
+        setChoiceState((c) => ({ ...c, mode: localReady ? "local" : "api" }));
+      }
     });
-  }, [open, status, agent]);
+  }, [open, status]);
   useEffect(() => {
     bottom.current?.scrollIntoView({ block: "end" });
   }, [messages]);
 
-  const workProblem = chatKey === "new" ? "new" : problem.id;
-  const localAgent = status !== "checking" ? status?.agents.find((a) => a.id === "claude-code") : undefined;
-  const localReady = !!localAgent?.available && localAgent.logged_in !== false;
-  const connected = status !== "checking" && !!status?.enabled && (agent === "claude-code" ? localReady : !!apiKey);
+  // The problem a message works on: the one on screen, except in a "new" chat that hasn't made it.
+  const workProblem = chatKey !== "new" || aiOwned ? problem.id : "new";
+  const st = status !== "checking" ? status : null;
+  const localClaude = st?.agents.find((a) => a.id === "claude-code");
+  const foundAgent = found?.find((a) => a.id === choice.local);
+  // Claude Code is known from the status without a search; the other CLIs need "Search this computer".
+  const localReady =
+    !!st?.modes?.local &&
+    (choice.local === "claude-code"
+      ? !!localClaude?.available && localClaude.logged_in !== false
+      : !!foundAgent?.installed);
+  const agentId: AgentId = choice.mode === "api" ? "claude-api" : choice.local;
+  const connected =
+    !!st?.enabled &&
+    (choice.mode === "local" ? localReady : choice.mode === "api" ? !!apiKey : !!cloudToken && !cloudExpired);
+  const canType = connected && choice.mode !== "cloud"; // in CLOUD mode the user's own agent does the talking
+  const agentLabel =
+    choice.mode === "cloud"
+      ? `${t("ag.cloudAgent")} (${t("ag.modeCloud")})`
+      : choice.mode === "api"
+        ? `${AGENT_NAMES[agentId]} · ${choice.provider === "openrouter" ? "OpenRouter" : "Anthropic"} (${t("ag.modeApi")})`
+        : `${AGENT_NAMES[agentId]} (${t("ag.modeLocal")})`;
   // Nothing usable yet: open the Agent form so the choice (or the key field) is right there.
   useEffect(() => {
-    if (open && status !== "checking" && status?.enabled && !connected) setSettingsOpen(true);
-  }, [open, status, connected]);
+    if (open && st?.enabled && !connected) setSettingsOpen(true);
+  }, [open, st, connected]);
   const shownSelection = mode === "current" && selection?.problem === problem.id ? selection : null;
+  // What part of a Workspace problem is open, for the "Current problem" line: "Notebook 1" or "Source (Markdown)".
+  const onScreen = view?.problem === problem.id ? view : null;
+  const wsView = inWs ? onScreen?.workspace : undefined;
+  const wsLabel = !wsView
+    ? ""
+    : wsView.kind === "notebook"
+      ? wsView.notebookTitle || t("ws.notebook")
+      : wsView.kind === "data"
+        ? t("data.title")
+        : `${t("ws.source")} (${wsView.mode === "yaml" ? "meta.yaml" : t(wsView.mode === "markdown" ? "edit.markdown" : "edit.inline")})`;
+  // Suggested prompts that follow the problem's own state (a Workspace problem) or the fixed library ones.
+  const suggestions = suggestPrompts(problem, onScreen).map(({ key, vars }) =>
+    Object.entries(vars).reduce((text, [k, v]) => text.split(`{${k}}`).join(v), t(key as Key)),
+  );
 
   // What is on screen (problem, edits, parameters) and highlighted in the editor; right-click → Explain / Fix.
   useEffect(() => {
     return onContext(setView);
   }, []);
   useEffect(() => {
-    return onSelection(setSelection);
+    return onOpenAgent((tab) => (setOpen(true), setMode(tab), setIdeas(pickIdeas())));
+  }, []);
+  // One current selection, last writer wins: an editor's (through the bus) or the page's (below).
+  useEffect(() => {
+    return onSelection((s) => {
+      setSelection(s);
+      if (s) setPageSel(null);
+    });
+  }, []);
+  // Text highlighted anywhere else on the page (summary, equations, translation table, terminal, …), labelled by
+  // the nearest [data-ai-region]. The editor reports its own precise selection; the panel itself is ignored.
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let field: Element | null = null; // the edited field the current page selection came from
+    const regionOf = (el: Element): Region => {
+      const name = el.closest<HTMLElement>("[data-ai-region]")?.dataset.aiRegion ?? "page";
+      return (REGIONS as readonly string[]).includes(name) ? (name as Region) : "page";
+    };
+    const onChange = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        // Text fields keep their selection out of window.getSelection(): read it from the focused field itself.
+        const active = document.activeElement;
+        const editable =
+          active instanceof HTMLTextAreaElement ||
+          (active instanceof HTMLInputElement && ["text", "search", ""].includes(active.type));
+        if (editable && !panelRef.current?.contains(active) && !active.closest("[data-cell], [role='dialog']")) {
+          const { selectionStart: a, selectionEnd: b, value } = active;
+          if (a === null || b === null) return;
+          if (a === b) {
+            if (field === active) setPageSel(null); // collapsed in the same field: clear its chip
+            return;
+          }
+          const text = value.slice(a, b).trim();
+          if (!text) return;
+          const region = regionOf(active);
+          field = active;
+          setPageSel({ region, detail: fieldDetail(active, region), text: text.slice(0, 4000) });
+          setSelection(null);
+          return;
+        }
+        const sel = document.getSelection();
+        const text = sel?.toString().trim() ?? "";
+        if (!sel || sel.isCollapsed || !text || !sel.anchorNode) return; // clicking elsewhere keeps the last one
+        const node = sel.anchorNode;
+        const el = node instanceof Element ? node : node.parentElement;
+        if (!el || panelRef.current?.contains(el) || el.closest(".cm-editor, [role='dialog'], input, textarea")) return;
+        field = null;
+        setPageSel({ region: regionOf(el), text: text.slice(0, 4000) });
+        setSelection(null);
+      }, 300);
+    };
+    const events = ["selectionchange", "select", "keyup", "mouseup"] as const;
+    events.forEach((e) => document.addEventListener(e, onChange, true));
+    return () => (clearTimeout(timer), events.forEach((e) => document.removeEventListener(e, onChange, true)));
   }, []);
   const askRef = useRef<(action: "explain" | "fix", sel: CodeSelection) => void>(() => {});
   useEffect(() => {
@@ -128,7 +363,13 @@ export default function AgentPanel({
     const prompt = t(action === "explain" ? "agent.explainPrompt" : "agent.fixPrompt")
       .replace("{file}", sel.file)
       .replace("{lines}", lines);
-    send(prompt, sel, sel.problem);
+    send(prompt, sel, sel.problem, sel.problem === problem.id ? chatKey : sel.problem);
+  };
+
+  const regionLabel = (p: PageSelection) => {
+    const name = t(`ag.region.${p.region}` as Key);
+    if (!p.detail) return name;
+    return p.detail === "(editing)" ? `${name} (${t("ag.editing")})` : `${name}: ${p.detail}`;
   };
 
   function edit(key: string, fn: (c: Chat) => Chat) {
@@ -139,7 +380,10 @@ export default function AgentPanel({
     const update = (fn: (blocks: Block[]) => Block[]) =>
       edit(m, (c) => {
         const last = c.messages[c.messages.length - 1];
-        return { ...c, messages: [...c.messages.slice(0, -1), { ...last, blocks: fn(last.blocks) }] };
+        return {
+          ...c,
+          messages: [...c.messages.slice(0, -1), { ...last, blocks: fn(last.blocks) }],
+        };
       });
     if (e.type === "session") edit(m, (c) => ({ ...c, session: e.id }));
     else if (e.type === "problem") onWorkspaceProblem(e.entry);
@@ -154,57 +398,167 @@ export default function AgentPanel({
     else if (e.type === "tool_result")
       update((bs) => bs.map((b) => (b.kind === "tool" && b.id === e.id ? { ...b, ok: e.ok, result: e.text } : b)));
     else if (e.type === "run") update((bs) => [...bs, { kind: "run", output: e.output, console: e.console, ok: e.ok }]);
+    else if (e.type === "notebook") applyNotebook(e);
     else if (e.type === "files") {
-      // Claude's edits go straight into that problem's code panel, so the editor always shows the latest version.
-      if (!e.problem.startsWith("new/")) applyFiles(e.problem, e.files);
+      // The agent's edits go straight into that problem's code panel, so the editor always shows the latest version
+      // (a Workspace problem: also its Inline / Markdown view and meta.yaml, from the re-parsed entry).
+      if (!e.problem.startsWith("new/")) applyFiles(e.problem, e.files, e.entry);
       update((bs) => [...bs.filter((b) => b.kind !== "files"), { kind: "files", problem: e.problem, files: e.files }]);
     } else if (e.type === "error") update((bs) => [...bs, { kind: "error", text: e.message }]);
   }
 
-  async function send(text: string, sel: CodeSelection | null = shownSelection, target = workProblem) {
+  // CLOUD: mirror what the user's own agent does through the connector into the chat on screen.
+  const cloudSeq = useRef(0);
+  const cloudChat = useRef(chatKey);
+  cloudChat.current = chatKey;
+  useEffect(() => {
+    if (choice.mode !== "cloud" || !cloudToken || cloudExpired || !st?.enabled) return;
+    let stopped = false;
+    const poll = async () => {
+      try {
+        const res = await connectorEvents(cloudToken, cloudSeq.current);
+        if (stopped) return;
+        if (res === null) return setCloudExpired(true);
+        if (!res.events.length) return;
+        cloudSeq.current = res.seq;
+        const m = cloudChat.current;
+        edit(m, (c) => {
+          const last = c.messages[c.messages.length - 1];
+          return last?.cloud
+            ? c
+            : {
+                ...c,
+                messages: [...c.messages, { role: "assistant", blocks: [], cloud: true }],
+              };
+        });
+        res.events.forEach((e) => onEvent(m, e));
+      } catch {
+        // backend restarting: try again on the next tick
+      }
+    };
+    poll();
+    const timer = setInterval(poll, 2500);
+    return () => ((stopped = true), clearInterval(timer));
+  }, [choice.mode, cloudToken, cloudExpired, st?.enabled]);
+
+  function onConnector(c: Connector) {
+    setConnector(c);
+    setCloudToken(c.token);
+    setCloudExpired(false);
+    cloudSeq.current = 0;
+    save(CLOUD_STORE, c.token, "local");
+  }
+
+  async function capture() {
+    setNotice(null);
+    try {
+      const image = await captureTab();
+      setShot({ image, original: image });
+      if (pngBytes(image) > MAX_SCREENSHOT_BYTES) setNotice(t("ag.captureTooBig"));
+    } catch (e) {
+      setNotice(
+        t(e instanceof CaptureError && e.kind === "unsupported" ? "ag.captureUnsupported" : "ag.captureDenied"),
+      );
+    }
+  }
+
+  async function send(
+    text: string,
+    sel: CodeSelection | null = shownSelection,
+    target = workProblem,
+    m: string = chatKey,
+  ) {
     const message = text.trim();
-    if (!message || busy || !connected) return;
-    const m = target;
+    if (!message || busy || !canType) return;
+    if (shot && pngBytes(shot.image) > MAX_SCREENSHOT_BYTES) return setNotice(t("ag.captureTooBig"));
+    const page = sel ? null : pageSel;
     setDraft("");
     setBusy(m);
-    const where = sel ? `${sel.file}:${sel.fromLine}${sel.toLine > sel.fromLine ? `–${sel.toLine}` : ""}` : "";
+    setNotice(null);
+    const where = sel
+      ? `${sel.region ?? sel.file}:${sel.fromLine}${sel.toLine > sel.fromLine ? `–${sel.toLine}` : ""}`
+      : page
+        ? `${regionLabel(page)}: “${page.text.slice(0, 40)}${page.text.length > 40 ? "…" : ""}”`
+        : "";
+    const attached = shot ? `${where ? " · " : ""}📷 ${t("ag.screenshot")}` : "";
     edit(m, (c) => ({
       ...c,
       messages: [
         ...c.messages,
-        { role: "user", blocks: [{ kind: "text", text: where ? `${message}\n\n› ${where}` : message }] },
+        {
+          role: "user",
+          blocks: [
+            {
+              kind: "text",
+              text: where || attached ? `${message}\n\n› ${where}${attached}` : message,
+            },
+          ],
+        },
         { role: "assistant", blocks: [] },
       ],
     }));
     abort.current = new AbortController();
-    // What the user is looking at: their current code, parameters and highlighted lines.
+    // What the user is looking at: their current code, parameters, highlighted text and an optional screenshot.
     const onScreen = view?.problem === target ? view : null;
+    const ws = onScreen?.workspace;
     const context = {
       title: onScreen?.title,
-      files: onScreen?.edits,
+      files: ws ? undefined : onScreen?.edits, // a Workspace problem's files are synced to its sandbox instead
       params: onScreen?.params,
-      selection: sel ? { file: sel.file, from_line: sel.fromLine, to_line: sel.toLine, text: sel.text } : undefined,
+      workspace: ws && {
+        kind: ws.kind,
+        mode: ws.mode,
+        markdown: ws.mode === "markdown" ? ws.markdown : undefined,
+        notebook_id: ws.notebookId,
+        notebook_title: ws.notebookTitle,
+        cells: ws.cells,
+        focused_cell: ws.focusedCell,
+      },
+      selection: sel
+        ? {
+            file: sel.file,
+            from_line: sel.fromLine,
+            to_line: sel.toLine,
+            text: sel.text,
+            region: sel.region,
+            lang: sel.lang,
+          }
+        : page
+          ? { region: page.detail ? `${page.region} ${page.detail}` : page.region, text: page.text }
+          : undefined,
+      screenshot: shot?.image,
     };
-    const body = { session: (chats[m] ?? EMPTY_CHAT).session, problem: target, message, model, context, agent };
+    setPageSel(null);
+    setShot(null);
+    const model =
+      choice.mode === "api"
+        ? choice.apiModel
+        : choice.local === "claude-code"
+          ? choice.localModel || st?.models[0]
+          : choice.cliModel;
+    const body = {
+      session: (chats[m] ?? EMPTY_CHAT).session,
+      problem: target,
+      message,
+      model: model || undefined,
+      context,
+      agent: agentId,
+      provider: choice.provider,
+      sandbox: undefined as string | undefined,
+    };
     try {
-      await agentChat(body, agent === "claude-api" ? apiKey : null, (e) => onEvent(m, e), abort.current.signal);
+      // A Workspace problem: the agent works in its sandbox, synced with the browser's files just before.
+      if (target.startsWith("workspace/")) body.sandbox = await onSyncWorkspace(target);
+      await agentChat(body, choice.mode === "api" ? apiKey : null, (e) => onEvent(m, e), abort.current.signal);
     } catch (e) {
-      onEvent(m, { type: "error", message: e instanceof RunFailed ? e.message : String(e) });
+      onEvent(m, {
+        type: "error",
+        message: e instanceof RunFailed ? e.message : String(e),
+      });
     } finally {
       setBusy(null);
       abort.current = null;
     }
-  }
-
-  function chooseAgent(a: AgentId) {
-    setAgent(a);
-    save(AGENT_STORE, a);
-  }
-
-  function saveKey(key: string) {
-    const k = key.trim() || null;
-    setApiKey(k);
-    save(KEY_STORE, k);
   }
 
   return (
@@ -224,6 +578,7 @@ export default function AgentPanel({
 
       {open && (
         <section
+          ref={panelRef}
           aria-label={t("agent.title")}
           className="fixed right-4 bottom-28 z-40 flex h-[min(640px,calc(100vh-9rem))] w-[min(440px,calc(100vw-2rem))] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl"
         >
@@ -231,17 +586,17 @@ export default function AgentPanel({
             <AgentMascot thinking={busy !== null} className="h-7 w-7" />
             <div className="min-w-0 flex-1">
               <div className="text-sm font-semibold text-gray-900">{t("agent.title")}</div>
-              <div className="truncate text-[11px] text-gray-500">
+              <div className="truncate text-[11px] text-gray-500" data-testid="agent-label">
                 {status === "checking"
                   ? t("backend.checking")
-                  : !status?.enabled
+                  : !st?.enabled
                     ? t("agent.unavailable")
                     : connected
-                      ? `${t("agent.agent")}: ${agent === "claude-code" ? t("agent.local") : `${t("agent.api")} · Anthropic`}`
+                      ? `${t("agent.agent")}: ${agentLabel}`
                       : t("agent.chooseAgent")}
               </div>
             </div>
-            {status !== "checking" && status?.enabled && (
+            {st?.enabled && (
               <button
                 onClick={() => setSettingsOpen((o) => !o)}
                 aria-expanded={settingsOpen}
@@ -267,83 +622,22 @@ export default function AgentPanel({
             </button>
           </header>
 
-          {settingsOpen && status !== "checking" && status?.enabled && (
-            <div className="space-y-2 border-b border-gray-200 bg-gray-50 px-3 py-2.5 text-xs">
-              <div className="flex items-center gap-2">
-                <span className="w-16 shrink-0 font-medium text-gray-600">{t("agent.agent")}</span>
-                <div className="grid flex-1 grid-cols-2 gap-1 rounded-md bg-white p-0.5 ring-1 ring-gray-200">
-                  {(["claude-code", "claude-api"] as const).map((a) => (
-                    <button
-                      key={a}
-                      onClick={() => chooseAgent(a)}
-                      disabled={a === "claude-code" && !localAgent?.available}
-                      className={`rounded px-2 py-1 ${agent === a ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"} disabled:cursor-not-allowed disabled:opacity-40`}
-                    >
-                      {a === "claude-code" ? t("agent.local") : t("agent.api")}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {agent === "claude-code" ? (
-                <p className={localReady ? "text-green-700" : "text-amber-700"}>
-                  {localReady
-                    ? `✓ ${t("agent.localReady")}`
-                    : localAgent?.available
-                      ? t("agent.localNoLogin")
-                      : t("agent.localUnavailable")}
-                </p>
-              ) : (
-                <>
-                  <div className="flex items-center gap-2">
-                    <span className="w-16 shrink-0 font-medium text-gray-600">{t("agent.provider")}</span>
-                    <select
-                      value={provider}
-                      onChange={(e) => setProvider(e.target.value)}
-                      className="flex-1 rounded border border-gray-300 bg-white px-1.5 py-1"
-                    >
-                      {(status.agents.find((a) => a.id === "claude-api")?.providers ?? []).map((p) => (
-                        <option key={p.id} value={p.id} disabled={!p.available}>
-                          {p.label}
-                          {p.available ? "" : ` (${t("agent.soon")})`}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-16 shrink-0 font-medium text-gray-600">{t("agent.apiKey")}</span>
-                    <input
-                      type="password"
-                      defaultValue={apiKey ?? ""}
-                      onChange={(e) => saveKey(e.target.value)}
-                      placeholder="sk-ant-…"
-                      autoComplete="off"
-                      className="min-w-0 flex-1 rounded border border-gray-300 bg-white px-2 py-1 font-mono"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-16 shrink-0 font-medium text-gray-600">{t("agent.model")}</span>
-                    <select
-                      value={model}
-                      onChange={(e) => setModel(e.target.value)}
-                      className="flex-1 rounded border border-gray-300 bg-white px-1.5 py-1"
-                    >
-                      {status.models.map((m) => (
-                        <option key={m}>{m}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <p className="text-[11px] text-gray-500">
-                    {t("agent.keyHelp")}{" "}
-                    <a
-                      href="https://console.anthropic.com/settings/keys"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-blue-700 hover:underline"
-                    >
-                      {t("agent.getKey")} ↗
-                    </a>
-                  </p>
-                </>
+          {settingsOpen && st?.enabled && (
+            <div className="max-h-[55%] shrink-0 overflow-y-auto">
+              <AgentSettings
+                status={st}
+                choice={choice}
+                onChoice={setChoice}
+                found={found}
+                onFound={setFound}
+                apiKey={apiKey}
+                onKey={saveKey}
+                connector={connector}
+                onConnector={onConnector}
+                cloudToken={cloudExpired ? null : cloudToken}
+              />
+              {choice.mode === "cloud" && cloudExpired && (
+                <p className="bg-gray-50 px-3 pb-2 text-xs text-amber-700">{t("ag.cloudExpired")}</p>
               )}
             </div>
           )}
@@ -369,10 +663,13 @@ export default function AgentPanel({
           <div className="flex items-center gap-2 border-b border-gray-100 px-3 py-1.5 text-[11px] text-gray-600">
             <span className="shrink-0 text-gray-400">{t("agent.currentProblem")}:</span>
             <span className="truncate font-medium text-gray-800">
-              {chatKey === "new" && problem.category !== "workspace" ? (
+              {workProblem === "new" ? (
                 `✨ ${t("agent.modeNew")}`
               ) : (
-                <RichText text={problem.title} />
+                <>
+                  <RichText text={problem.title} />
+                  {wsLabel && <span className="font-normal text-gray-500"> · {wsLabel}</span>}
+                </>
               )}
             </span>
             <span className="ml-auto shrink-0 rounded-full bg-amber-50 px-2 py-0.5 text-amber-700">
@@ -385,16 +682,20 @@ export default function AgentPanel({
               <p className="rounded-lg bg-gray-50 p-3 text-xs text-gray-600">{t("agent.unavailableHelp")}</p>
             )}
 
-            {messages.length === 0 && connected && (
+            {messages.length === 0 && connected && choice.mode === "cloud" && (
+              <p className="rounded-lg bg-gray-50 p-3 text-xs text-gray-600">☁ {t("ag.cloudChatHint")}</p>
+            )}
+            {messages.length === 0 && canType && (
               <div className="space-y-2">
                 <p className="text-xs text-gray-500">{t("agent.tryOne")}</p>
-                {(workProblem === "new" ? ideas : EXAMPLES).map((k) => (
+                {(workProblem === "new" ? ideas.map((k) => t(k)) : suggestions).map((text) => (
                   <button
-                    key={k}
-                    onClick={() => send(t(k))}
+                    key={text}
+                    onClick={() => send(text)}
+                    data-testid="agent-suggestion"
                     className="block w-full rounded-lg border border-gray-200 px-3 py-2 text-left text-xs text-gray-700 hover:border-blue-300 hover:bg-blue-50"
                   >
-                    {t(k)}
+                    <RichText text={text} />
                   </button>
                 ))}
               </div>
@@ -407,6 +708,7 @@ export default function AgentPanel({
                 </div>
               ) : (
                 <div key={i} className="space-y-2">
+                  {m.cloud && <div className="text-[11px] font-medium text-sky-700">☁ {t("ag.cloudAgent")}</div>}
                   {m.blocks.map((b, j) => (
                     <AgentBlock key={j} block={b} />
                   ))}
@@ -422,29 +724,46 @@ export default function AgentPanel({
           </div>
 
           <footer className="border-t border-gray-200 p-2">
-            {shownSelection && (
-              <div className="mb-1.5 flex items-start gap-2 rounded-md border border-blue-100 bg-blue-50 px-2 py-1 text-[11px] text-blue-800">
-                <span className="shrink-0">⌖</span>
-                <span className="min-w-0 flex-1">
-                  <span className="font-mono font-medium">
-                    {shownSelection.file}:{shownSelection.fromLine}
-                    {shownSelection.toLine > shownSelection.fromLine && `–${shownSelection.toLine}`}
-                  </span>
-                  <span className="block truncate font-mono text-blue-700/70">
-                    {shownSelection.text.split("\n")[0]}
-                  </span>
-                </span>
-                <button
-                  onClick={() => setSelection(null)}
-                  title={t("agent.clearSel")}
-                  className="shrink-0 text-blue-400 hover:text-blue-700"
-                >
-                  ✕
-                </button>
+            {(shownSelection || pageSel || shot || notice) && (
+              <div className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[11px]">
+                {shownSelection && (
+                  <Pill
+                    title={shownSelection.text}
+                    onRemove={() => setSelection(null)}
+                    removeLabel={t("agent.clearSel")}
+                  >
+                    <span className="font-mono">
+                      {shownSelection.region ?? shownSelection.file}:{shownSelection.fromLine}
+                      {shownSelection.toLine > shownSelection.fromLine && `–${shownSelection.toLine}`}
+                    </span>
+                  </Pill>
+                )}
+                {pageSel && (
+                  <Pill title={pageSel.text} onRemove={() => setPageSel(null)} removeLabel={t("agent.clearSel")}>
+                    <span data-testid="agent-page-selection">
+                      {regionLabel(pageSel)}: “{pageSel.text.slice(0, 18)}
+                      {pageSel.text.length > 18 ? "…" : ""}”
+                    </span>
+                  </Pill>
+                )}
+                {shot && (
+                  <Pill
+                    icon={
+                      <img src={shot.image} alt="" className="h-4 w-6 rounded-sm object-cover ring-1 ring-blue-200" />
+                    }
+                    onClick={() => setShotOpen(true)}
+                    onRemove={() => setShot(null)}
+                    removeLabel={t("ag.removeScreenshot")}
+                  >
+                    {t("ag.screenshot")}
+                  </Pill>
+                )}
+                {notice && <span className="text-amber-700">{notice}</span>}
               </div>
             )}
-            <div className="flex items-end gap-2 rounded-lg border border-gray-300 px-2 py-1.5 focus-within:border-blue-400">
+            <div className="flex items-end gap-1.5 rounded-xl border border-gray-300 py-1.5 pr-1.5 pl-3 focus-within:border-blue-400">
               <textarea
+                ref={input}
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 onKeyDown={(e) => {
@@ -453,25 +772,46 @@ export default function AgentPanel({
                     send(draft);
                   }
                 }}
-                rows={Math.min(5, Math.max(1, draft.split("\n").length))}
-                disabled={!connected}
+                rows={1}
+                disabled={!canType}
                 placeholder={t("agent.placeholder")}
-                className="min-w-0 flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-gray-400 disabled:opacity-50"
+                className="max-h-36 min-w-0 flex-1 resize-none overflow-y-hidden bg-transparent py-1.5 text-sm leading-relaxed outline-none placeholder:text-gray-400 disabled:opacity-50"
               />
+              <button
+                onClick={capture}
+                disabled={!canType || busy !== null}
+                title={t("ag.capture")}
+                aria-label={t("ag.capture")}
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-800 disabled:opacity-40"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-[18px] w-[18px]"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  aria-hidden="true"
+                >
+                  <path d="M4 8h3l2-2.5h6L17 8h3v11H4z" strokeLinejoin="round" />
+                  <circle cx="12" cy="13.5" r="3.5" />
+                </svg>
+              </button>
               {busy ? (
                 <button
                   onClick={() => abort.current?.abort()}
                   title={t("agent.stop")}
-                  className="rounded-md bg-gray-800 px-2 py-1 text-xs text-white hover:bg-gray-700"
+                  aria-label={t("agent.stop")}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-800 text-xs text-white hover:bg-gray-700"
                 >
                   ■
                 </button>
               ) : (
                 <button
                   onClick={() => send(draft)}
-                  disabled={!connected || !draft.trim()}
+                  disabled={!canType || !draft.trim()}
                   title={t("agent.send")}
-                  className="rounded-md bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700 disabled:opacity-40"
+                  aria-label={t("agent.send")}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm text-white hover:bg-blue-700 disabled:opacity-40"
                 >
                   ↑
                 </button>
@@ -490,7 +830,59 @@ export default function AgentPanel({
           </footer>
         </section>
       )}
+      {shot && shotOpen && (
+        <ScreenshotPreview
+          image={shot.image}
+          original={shot.original}
+          onChange={(image) => {
+            setShot({ ...shot, image });
+            setNotice(pngBytes(image) > MAX_SCREENSHOT_BYTES ? t("ag.captureTooBig") : null);
+          }}
+          onClose={() => setShotOpen(false)}
+        />
+      )}
     </>
+  );
+}
+
+/** A compact context chip above the chat input: "⌖ main.py:7–24 ✕". */
+function Pill({
+  children,
+  icon,
+  title,
+  onClick,
+  onRemove,
+  removeLabel,
+}: {
+  children: React.ReactNode;
+  icon?: React.ReactNode;
+  title?: string;
+  onClick?: () => void;
+  onRemove: () => void;
+  removeLabel: string;
+}) {
+  return (
+    <span
+      title={title}
+      className="inline-flex max-w-full items-center gap-1 rounded-md border border-blue-200 bg-blue-50 py-0.5 pr-1 pl-1.5 text-blue-800"
+    >
+      {icon ?? <span className="shrink-0">⌖</span>}
+      {onClick ? (
+        <button onClick={onClick} className="truncate hover:underline">
+          {children}
+        </button>
+      ) : (
+        <span className="truncate">{children}</span>
+      )}
+      <button
+        onClick={onRemove}
+        title={removeLabel}
+        aria-label={removeLabel}
+        className="shrink-0 text-blue-400 hover:text-blue-700"
+      >
+        ✕
+      </button>
+    </span>
   );
 }
 

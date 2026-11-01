@@ -1,17 +1,27 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   assetUrl,
   backendChoice,
   health,
   loadManifest,
-  newWorkspace,
   RunFailed,
   runProblemStream,
   setBackendChoice,
+  wsBlank,
+  wsCopy,
+  wsDelete,
+  wsFiles,
+  wsNotebook,
+  wsPutData,
+  wsRunStream,
+  wsSync,
   type BackendChoice,
   type Health,
   type LineEvent,
+  type WsEntry,
 } from "./api";
+import { yaml } from "@codemirror/lang-yaml";
+import CodeMirror from "@uiw/react-codemirror";
 import CodePanel from "./components/CodePanel";
 import EquationPanel from "./components/EquationPanel";
 import ParamsPanel from "./components/ParamsPanel";
@@ -19,20 +29,62 @@ import PlotPanel from "./components/PlotPanel";
 import Sidebar, { LEVEL_STYLE } from "./components/Sidebar";
 import TerminalPanel from "./components/TerminalPanel";
 import { LANGS, localize, useLang, type Key, type Lang } from "./i18n";
-import { emitContext, onApplyFiles } from "./agentBus";
+import { emitContext, emitSelection, onApplyFiles, onApplyNotebook, openAgent, selectionReporter } from "./agentBus";
 import AgentPanel from "./components/AgentPanel";
 import ExportMenu from "./components/ExportMenu";
 import { REPO_URL } from "./notebook";
 import ConceptPage from "./pages/ConceptPage";
 import SkillsPage from "./pages/SkillsPage";
 import { plainText, RichText } from "./components/Tex";
-import type { Manifest, Params, Problem } from "./types";
+import NotebookView from "./components/NotebookView";
+import DataPanel from "./components/DataPanel";
+import WorkspacePanel from "./components/WorkspacePanel";
+import WorkspaceHome from "./components/WorkspaceHome";
+import GitHubDialog from "./components/GitHubDialog";
+import { Field, InlineEquations, MarkdownEditor, ModeToggle, useEditMode } from "./components/WsEditor";
+import { metaObject, pickMd, toMarkdown, toYaml, type MetaFields } from "./metaDoc";
+import type { Level, Manifest, Notebook, Params, Problem, WsProblem } from "./types";
+import {
+  dataExtOk,
+  dataName,
+  deleteData,
+  exportWorkspace,
+  filesOf,
+  getData,
+  MAX_DATA_FILE,
+  MAX_DATA_TOTAL,
+  putData,
+  importWorkspace,
+  workspaceFiles,
+  newCell,
+  newId,
+  patchProblem,
+  toWsProblem,
+  useWorkspaces,
+  withTitle,
+} from "./workspaceStore";
 
 const currentHash = () => decodeURIComponent(window.location.hash.replace(/^#\/?/, "")) || null;
 const select = (id: string) => (window.location.hash = `/${id}`);
 const PAGES = ["problems", "concept", "skills"] as const;
-type Page = (typeof PAGES)[number];
-const TAB_KEY: Record<Page, Key> = {
+type Page = (typeof PAGES)[number] | "workspace";
+const LEFT_TAB = "tensorizer.leftTab";
+const RECENT = "tensorizer.recent";
+function stored(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+function store(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // storage blocked: remembered for this page only
+  }
+}
+const TAB_KEY: Record<(typeof PAGES)[number], Key> = {
   problems: "tab.problems",
   concept: "tab.concept",
   skills: "tab.skills",
@@ -51,8 +103,10 @@ export default function App() {
   const [backend, setBackend] = useState<Health | null | "checking">("checking");
   const [libraryOpen, setLibraryOpen] = useState(true);
   const [paramsOpen, setParamsOpen] = useState(true);
-  // Problems the agent created this visit (not saved): the left panel's Workspace section.
-  const [workspace, setWorkspace] = useState<Problem[]>([]);
+  // The Workspace (IndexedDB): problems made blank, copied from the library or created by the AI, with notebooks.
+  const { active: ws, update } = useWorkspaces();
+  const wsRef = useRef(ws);
+  wsRef.current = ws;
   const { lang, setLang, t } = useLang();
 
   useEffect(() => {
@@ -69,27 +123,324 @@ export default function App() {
     };
   }, []);
 
-  // #/concept and #/skills are pages; any other hash is a problem id (category/slug).
-  const page: Page = selected === "concept" || selected === "skills" ? selected : "problems";
+  // #/concept and #/skills are pages; any other hash is a problem id (category/slug), a workspace problem
+  // (workspace/<id>) or one of its notebooks (workspace/<id>/nb/<notebook>).
+  const page: Page =
+    selected === "concept" || selected === "skills" || selected === "workspace" ? selected : "problems";
+  // Left panel: the library (Problems) or the Workspace tree, remembered; opening a workspace problem shows it.
+  const [leftTab, setLeftTabState] = useState<"problems" | "workspace">(() =>
+    stored(LEFT_TAB) === "workspace" ? "workspace" : "problems",
+  );
+  const setLeftTab = (tab: "problems" | "workspace") => (setLeftTabState(tab), store(LEFT_TAB, tab));
+  const [github, setGithub] = useState(false);
+  // Recently viewed library problems, for the Workspace home.
+  const [recentIds, setRecentIds] = useState<string[]>(() => {
+    try {
+      return JSON.parse(stored(RECENT) ?? "[]");
+    } catch {
+      return [];
+    }
+  });
   const [lastProblemId, setLastProblemId] = useState<string | null>(null);
+  const nbRoute = selected?.match(/^workspace\/([^/]+)\/nb\/([^/]+)$/) ?? null;
+  const dataRoute = selected?.match(/^workspace\/([^/]+)\/data$/) ?? null;
+  const problemKey = nbRoute ? `workspace/${nbRoute[1]}` : dataRoute ? `workspace/${dataRoute[1]}` : selected;
+  const wsProblems = ws?.problems ?? [];
   const problem =
-    [...workspace, ...(manifest?.problems ?? [])].find(
-      (p) => p.id === (page === "problems" ? selected : lastProblemId),
+    [...wsProblems.map((p) => p.entry), ...(manifest?.problems ?? [])].find(
+      (p) => p.id === (page === "problems" ? problemKey : lastProblemId),
     ) ?? manifest?.problems[0];
+  const wsProblem = wsProblems.find((p) => p.entry.id === problem?.id) ?? null;
+  const notebook = nbRoute ? wsProblem?.notebooks.find((nb) => nb.id === nbRoute[2]) : undefined;
   useEffect(() => {
     if (page === "problems" && problem) setLastProblemId(problem.id);
   }, [page, problem]);
+  useEffect(() => {
+    if (page !== "problems" || !problem) return;
+    if (problem.category === "workspace") return setLeftTab("workspace");
+    setRecentIds((ids) => {
+      const next = [problem.id, ...ids.filter((i) => i !== problem.id)].slice(0, 6);
+      store(RECENT, JSON.stringify(next));
+      return next;
+    });
+  }, [page, problem?.id]);
   const goTo = (target: Page) =>
     (window.location.hash = target === "problems" ? `/${problem?.id ?? ""}` : `/${target}`);
+
+  // --- Workspace actions (the browser holds the files; the server keeps a disposable sandbox per problem) ---
+  const findWs = (id: string) => wsRef.current?.problems.find((p) => p.id === id);
+  const addProblem = (p: WsProblem) => {
+    update((w) => ({ ...w, problems: [p, ...w.problems] }));
+    select(p.entry.id);
+  };
+  const create = (make: () => Promise<WsEntry>) =>
+    make().then(
+      (entry) => addProblem(toWsProblem(entry, entry.meta)),
+      () => alert(t("workspace.unavailable")),
+    );
+  /** Push the problem's files to its sandbox (re-created if it expired); returns the live session. */
+  async function syncProblem(id: string): Promise<string> {
+    const p = findWs(id);
+    if (!p) throw new Error("unknown problem");
+    const data = p.entry.data ?? [];
+    const entry = await wsSync(p.entry.session ?? null, filesOf(p), data.map((d) => d.name));
+    // data files the sandbox doesn't have yet (new, or the sandbox was re-created) go up after the files
+    const there = new Map(entry.data.map((d) => [d.name, d.size]));
+    for (const d of data) {
+      if (there.get(d.name) === d.size) continue;
+      const blob = await getData(p.id, d.name);
+      if (blob) await wsPutData(entry.session, d.name, blob);
+    }
+    update((w) =>
+      patchProblem(w, id, (q) => ({
+        ...q,
+        meta: q.meta || entry.meta,
+        // parsed meta.yaml fields come from the server; the files stay the browser's
+        entry: {
+          ...entry,
+          id: q.entry.id,
+          slug: q.entry.slug,
+          files: q.entry.files,
+          data: q.entry.data,
+          output: q.entry.output,
+          diagram: entry.diagram ?? q.entry.diagram,
+        },
+      })),
+    );
+    return entry.session;
+  }
+  const patchFiles = (id: string, files: Record<string, string>) =>
+    update((w) =>
+      patchProblem(w, id, (q) => ({
+        ...q,
+        meta: files["meta.yaml"] ?? q.meta,
+        entry: { ...q.entry, files: q.entry.files.map((f) => (f.name in files ? { ...f, code: files[f.name] } : f)) },
+      })),
+    );
+  /** Fields edited in the view (inline or Markdown): update the entry and regenerate meta.yaml from it. */
+  const patchMeta = (id: string, fields: Partial<MetaFields>) =>
+    update((w) =>
+      patchProblem(w, id, (q) => {
+        const entry = { ...q.entry, ...fields };
+        return { ...q, entry, meta: toYaml(metaObject(entry)) };
+      }),
+    );
+  function renameProblem(id: string) {
+    const p = findWs(id);
+    const title = p && prompt(t("ws.renamePrompt"), plainText(p.entry.title))?.trim();
+    if (!title) return;
+    update((w) => patchProblem(w, id, (q) => ({ ...q, meta: withTitle(q.meta, title), entry: { ...q.entry, title } })));
+  }
+  function deleteProblem(id: string) {
+    const p = findWs(id);
+    if (!p || !confirm(t("ws.deleteConfirm").replace("{name}", plainText(p.entry.title)))) return;
+    if (p.entry.session) wsDelete(p.entry.session).catch(() => {});
+    update((w) => ({ ...w, problems: w.problems.filter((q) => q.id !== id) }));
+    if (problemKey === p.entry.id && manifest) select(manifest.problems[0].id);
+  }
+  function addNotebook(id: string) {
+    const p = findWs(id);
+    if (!p) return;
+    const nb: Notebook = {
+      id: newId(),
+      title: `${t("ws.notebook")} ${p.notebooks.length + 1}`,
+      cells: [
+        newCell("markdown", `# ${p.entry.title}\n\n${t("notebook.starter")}`),
+        newCell("code", "# from problem import equation, solve, plot\nprint(params)\n"),
+      ],
+    };
+    update((w) => patchProblem(w, id, (q) => ({ ...q, notebooks: [...q.notebooks, nb] })));
+    select(`${p.entry.id}/nb/${nb.id}`);
+  }
+  /** Uploaded data: kept in the browser (IndexedDB), then synced into the sandbox's data/ folder. */
+  async function uploadData(id: string, files: File[]) {
+    const p = findWs(id);
+    if (!p) return;
+    const list = [...(p.entry.data ?? [])];
+    for (const file of files) {
+      const name = dataName(file.name);
+      if (!dataExtOk(name)) {
+        alert(t("data.badType").replace("{name}", file.name));
+        continue;
+      }
+      if (file.size > MAX_DATA_FILE) {
+        alert(t("data.tooBig").replace("{name}", file.name));
+        continue;
+      }
+      const total = list.filter((d) => d.name !== name).reduce((n, d) => n + d.size, 0) + file.size;
+      if (total > MAX_DATA_TOTAL) {
+        alert(t("data.full"));
+        break;
+      }
+      await putData(id, name, file);
+      const entry = { name, size: file.size, type: file.type };
+      const at = list.findIndex((d) => d.name === name);
+      if (at >= 0) list[at] = entry;
+      else list.push(entry);
+    }
+    update((w) => patchProblem(w, id, (q) => ({ ...q, entry: { ...q.entry, data: list } })));
+    await new Promise((r) => setTimeout(r, 0)); // let the store update before syncing
+    await syncProblem(id).catch((e: Error) => alert(e.message));
+  }
+  async function renameData(id: string, name: string) {
+    const p = findWs(id);
+    const next = p && prompt(t("data.renamePrompt"), name)?.trim();
+    if (!p || !next || next === name) return;
+    const clean = dataName(next);
+    if (!dataExtOk(clean)) return alert(t("data.badType").replace("{name}", next));
+    const blob = await getData(id, name);
+    if (blob) await putData(id, clean, blob);
+    await deleteData(id, name);
+    update((w) =>
+      patchProblem(w, id, (q) => ({
+        ...q,
+        entry: {
+          ...q.entry,
+          data: (q.entry.data ?? []).filter((d) => d.name !== clean).map((d) => (d.name === name ? { ...d, name: clean } : d)),
+        },
+      })),
+    );
+    setTimeout(() => syncProblem(id).catch(() => {}), 0);
+  }
+  async function removeData(id: string, name: string) {
+    if (!confirm(t("ws.deleteNotebookConfirm").replace("{name}", name))) return;
+    await deleteData(id, name);
+    update((w) =>
+      patchProblem(w, id, (q) => ({ ...q, entry: { ...q.entry, data: (q.entry.data ?? []).filter((d) => d.name !== name) } })),
+    );
+    setTimeout(() => syncProblem(id).catch(() => {}), 0);
+  }
+  function renameNotebook(id: string, nbId: string) {
+    const nb = findWs(id)?.notebooks.find((n) => n.id === nbId);
+    const title = nb && prompt(t("ws.renameNotebookPrompt"), nb.title)?.trim();
+    if (title) patchNotebook(id, nbId, (n) => ({ ...n, title }));
+  }
+  function deleteNotebook(id: string, nbId: string) {
+    const p = findWs(id);
+    const nb = p?.notebooks.find((n) => n.id === nbId);
+    if (!p || !nb || !confirm(t("ws.deleteNotebookConfirm").replace("{name}", nb.title || t("ws.notebook")))) return;
+    update((w) => patchProblem(w, id, (q) => ({ ...q, notebooks: q.notebooks.filter((n) => n.id !== nbId) })));
+    if (selected === `${p.entry.id}/nb/${nbId}`) select(p.entry.id); // the open notebook → its Source
+  }
+  const patchNotebook = (id: string, nbId: string, fn: (nb: Notebook) => Notebook) =>
+    update((w) =>
+      patchProblem(w, id, (q) => ({ ...q, notebooks: q.notebooks.map((nb) => (nb.id === nbId ? fn(nb) : nb)) })),
+    );
+  // The agent's edits to a Workspace problem (files, re-parsed meta.yaml, notebook cells) → the browser store,
+  // so the Inline / Markdown views, the meta.yaml editor, the code editor and the notebook all update.
+  useEffect(
+    () =>
+      onApplyFiles(({ problem: entryId, files, entry }) => {
+        const p = wsRef.current?.problems.find((q) => q.entry.id === entryId);
+        if (!p) return;
+        const parsed = entry
+          ? Object.fromEntries(
+              (
+                [
+                  "title", "level", "summary", "animated", "vector_form", "index_form", "translation", "notes",
+                  "params", "meta_extra",
+                ] as const
+              ).map((k) => [k, entry[k]]),
+            )
+          : {};
+        update((w) =>
+          patchProblem(w, p.id, (q) => ({
+            ...q,
+            meta: files["meta.yaml"] ?? q.meta,
+            entry: {
+              ...q.entry,
+              ...parsed,
+              diagram: entry?.diagram ?? q.entry.diagram,
+              files: q.entry.files.map((f) => (f.name in files ? { ...f, code: files[f.name] } : f)),
+            },
+          })),
+        );
+      }),
+    [update],
+  );
+  useEffect(
+    () =>
+      onApplyNotebook(({ problem: entryId, notebook: nbId, cells }) => {
+        const p = wsRef.current?.problems.find((q) => q.entry.id === entryId);
+        if (!p) return;
+        patchNotebook(p.id, nbId, (nb) => {
+          const old = new Map(nb.cells.map((c) => [c.id, c]));
+          return {
+            ...nb,
+            cells: cells.map((c) => {
+              const prev = c.id ? old.get(c.id) : undefined;
+              // a cell the agent kept: same id; its output stays while its source is unchanged
+              if (prev && prev.type === c.type) return prev.source === c.source ? prev : { ...prev, source: c.source, output: null };
+              return newCell(c.type, c.source);
+            }),
+          };
+        });
+      }),
+    [update],
+  );
+  /** The AI created (or changed) a problem: keep it in the workspace, matched by its agent session. */
+  function onAiProblem(entry: Problem) {
+    const existing = wsRef.current?.problems.find((p) => p.entry.session === entry.session);
+    const p = existing
+      ? { ...existing, entry: { ...entry, id: existing.entry.id, category: "workspace", slug: existing.entry.slug } }
+      : toWsProblem(entry, "");
+    if (existing) update((w) => patchProblem(w, p.id, () => p));
+    else update((w) => ({ ...w, problems: [p, ...w.problems] }));
+    select(p.entry.id);
+    if (entry.session)
+      wsFiles(entry.session).then(
+        (files) => update((w) => patchProblem(w, p.id, (q) => ({ ...q, meta: files["meta.yaml"] ?? q.meta }))),
+        () => {},
+      );
+  }
+  async function importZip(file: File) {
+    try {
+      const problems = await importWorkspace(file);
+      update((w) => ({ ...w, problems: [...problems, ...w.problems] }));
+      if (problems[0]) select(problems[0].entry.id);
+      // parse each meta.yaml on the server once the new problems are in the store
+      setTimeout(() => problems.forEach((p) => syncProblem(p.id).catch(() => {})), 0);
+    } catch (e) {
+      alert(t("ws.importFailed").replace("{error}", e instanceof Error ? e.message : String(e)));
+    }
+  }
+  const workspacePanel = (className: string) =>
+    manifest && (
+      <WorkspacePanel
+        className={className}
+        manifest={manifest}
+        workspace={ws}
+        selected={page === "problems" ? selected : null}
+        onSelect={select}
+        onNewBlank={() => create(wsBlank)}
+        onCopy={(id) => create(() => wsCopy(id))}
+        onRename={renameProblem}
+        onDelete={deleteProblem}
+        onAddNotebook={addNotebook}
+        onRenameNotebook={renameNotebook}
+        onDeleteNotebook={deleteNotebook}
+        onExport={() => ws && manifest && exportWorkspace(ws, manifest, ws.name || t("ws.default"))}
+        onImport={importZip}
+        onGitHub={() => setGithub(true)}
+      />
+    );
 
   return (
     <div className="flex min-h-screen flex-col bg-white lg:h-screen lg:overflow-hidden">
       <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1.5 bg-blue-700 px-4 py-2 text-white shadow-sm sm:px-6 lg:h-[52px] lg:flex-nowrap lg:py-0">
         <div className="flex min-w-0 items-center gap-3">
-          <img src={`${import.meta.env.BASE_URL}logo-light.svg`} alt="" className="h-8 w-8" />
-          <h1 className="text-lg font-semibold tracking-tight">
-            Tensor<span className="text-blue-200">izer</span>
-          </h1>
+          <button
+            onClick={() => (window.location.hash = "/workspace")}
+            title={t("home.open")}
+            aria-label={t("home.open")}
+            className="flex items-center gap-3 rounded-md hover:opacity-90"
+            data-testid="logo"
+          >
+            <img src={`${import.meta.env.BASE_URL}logo-light.svg`} alt="" className="h-8 w-8" />
+            <h1 className="text-lg font-semibold tracking-tight">
+              Tensor<span className="text-blue-200">izer</span>
+            </h1>
+          </button>
           <span className="hidden text-sm text-blue-100 xl:inline">{t("tagline")}</span>
         </div>
         {/* On phones the tabs wrap onto their own row under the logo and language menu. */}
@@ -149,11 +500,46 @@ export default function App() {
           <SkillsPage manifest={manifest} />
         </main>
       )}
+      {manifest && page === "workspace" && (
+        <main className="min-h-0 flex-1 overflow-y-auto bg-white">
+          <WorkspaceHome
+            manifest={manifest}
+            workspace={ws}
+            recent={recentIds.map((id) => manifest.problems.find((p) => p.id === id)).filter((p): p is Problem => !!p)}
+            onOpen={select}
+            onRenameWorkspace={() => {
+              const name = prompt(t("home.renamePrompt"), ws?.name || t("ws.default"))?.trim();
+              if (name) update((w) => ({ ...w, name }));
+            }}
+            onNewBlank={() => create(wsBlank)}
+            onCopy={(id) => create(() => wsCopy(id))}
+            onAskAI={() => openAgent("new")}
+            onRename={renameProblem}
+            onDelete={deleteProblem}
+            onExport={() => ws && exportWorkspace(ws, manifest, ws.name || t("ws.default"))}
+            onImport={importZip}
+            onGitHub={() => setGithub(true)}
+          />
+        </main>
+      )}
+      {github && ws && manifest && (
+        <GitHubDialog
+          defaultName={`tensorizer-${(ws.name || "workspace").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "workspace"}`}
+          files={() => workspaceFiles(ws, manifest, ws.name || t("ws.default"))}
+          onClose={() => setGithub(false)}
+        />
+      )}
 
       {manifest && problem && page === "problems" && (
         <div className="flex flex-1 flex-col lg:min-h-0 lg:flex-row">
           <div className="border-b border-gray-200 p-3 lg:hidden">
             <ProblemSelect manifest={manifest} value={problem.id} />
+            <details className="mt-2 rounded-md border border-gray-200" open={!!wsProblem}>
+              <summary className="cursor-pointer px-3 py-1.5 text-sm font-medium text-gray-700">
+                {t("workspace")} ({wsProblems.length})
+              </summary>
+              {workspacePanel("max-h-[60vh]")}
+            </details>
           </div>
 
           {/* 1. Problem library */}
@@ -162,9 +548,25 @@ export default function App() {
               libraryOpen ? "w-64" : "w-10"
             }`}
           >
-            <div className="flex h-8 shrink-0 items-center justify-between border-b border-gray-200 bg-gray-50 px-2">
+            <div className="flex h-9 shrink-0 items-center gap-1 border-b border-gray-200 bg-gray-50 px-1.5">
               {libraryOpen && (
-                <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t("library")}</span>
+                <div role="tablist" className="grid flex-1 grid-cols-2 gap-1" data-testid="left-tabs">
+                  {(["problems", "workspace"] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      role="tab"
+                      aria-selected={leftTab === tab}
+                      onClick={() => setLeftTab(tab)}
+                      className={`rounded-md px-2 py-1 text-xs font-medium transition ${
+                        leftTab === tab
+                          ? "bg-blue-700 text-white shadow-sm"
+                          : "text-gray-600 hover:bg-gray-200 hover:text-gray-900"
+                      }`}
+                    >
+                      {tab === "problems" ? t("tab.problems") : `${t("workspace")}${wsProblems.length ? ` (${wsProblems.length})` : ""}`}
+                    </button>
+                  ))}
+                </div>
               )}
               <button
                 onClick={() => setLibraryOpen((o) => !o)}
@@ -175,46 +577,14 @@ export default function App() {
               </button>
             </div>
             {libraryOpen ? (
-              <>
+              leftTab === "problems" ? (
                 <div className="min-h-0 flex-1 overflow-y-auto p-3">
                   <Sidebar manifest={manifest} selected={problem.id} onSelect={select} />
                 </div>
-                {/* Workspace: problems created with the agent this visit */}
-                <div className="flex h-8 shrink-0 items-center justify-between border-y border-gray-200 bg-gray-50 px-2">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t("workspace")}</span>
-                  <button
-                    onClick={() =>
-                      newWorkspace().then(
-                        (entry) => (setWorkspace((ws) => [entry, ...ws]), select(entry.id)),
-                        () => alert(t("workspace.unavailable")),
-                      )
-                    }
-                    title={t("workspace.new")}
-                    className="rounded px-1.5 text-xs font-medium text-blue-700 hover:bg-blue-50"
-                  >
-                    + {t("workspace.newShort")}
-                  </button>
-                </div>
-                <div className="max-h-48 shrink-0 overflow-y-auto p-2">
-                  {workspace.length === 0 ? (
-                    <p className="px-1 py-1 text-xs text-gray-400">✨ {t("workspace.empty")}</p>
-                  ) : (
-                    workspace.map((p) => (
-                      <button
-                        key={p.id}
-                        onClick={() => select(p.id)}
-                        className={`block w-full rounded-md px-2 py-1.5 text-left text-sm ${
-                          p.id === problem.id
-                            ? "bg-blue-50 font-medium text-blue-700"
-                            : "text-gray-700 hover:bg-gray-100"
-                        }`}
-                      >
-                        <RichText text={p.title || p.id} />
-                      </button>
-                    ))
-                  )}
-                </div>
-              </>
+              ) : (
+                // Workspace: blank problems, library copies and AI-created ones, each with Source, Data, notebooks
+                workspacePanel("min-h-0 flex-1")
+              )
             ) : (
               <button
                 onClick={() => setLibraryOpen(true)}
@@ -225,14 +595,59 @@ export default function App() {
             )}
           </aside>
 
-          <ProblemView
-            key={problem.id}
-            problem={localize(problem, lang)}
-            backend={backend === "checking" ? null : backend}
-            categoryTitle={t(`cat.${problem.category}` as Key) ?? problem.category}
-            paramsOpen={paramsOpen}
-            onToggleParams={() => setParamsOpen((o) => !o)}
-          />
+          {wsProblem && dataRoute ? (
+            <DataPanel
+              problemId={wsProblem.entry.id}
+              localId={wsProblem.id}
+              problemTitle={wsProblem.entry.title}
+              params={defaults(wsProblem.entry)}
+              files={wsProblem.entry.data ?? []}
+              onUpload={(files) => uploadData(wsProblem.id, files)}
+              onRename={(name) => renameData(wsProblem.id, name)}
+              onDelete={(name) => removeData(wsProblem.id, name)}
+            />
+          ) : wsProblem && nbRoute && notebook ? (
+            <NotebookView
+              key={notebook.id}
+              notebook={notebook}
+              problemId={wsProblem.entry.id}
+              problemTitle={wsProblem.entry.title}
+              params={defaults(wsProblem.entry)}
+              canRun={!!backend && backend !== "checking"}
+              onChange={(fn) => patchNotebook(wsProblem.id, notebook.id, fn)}
+              onDelete={() => {
+                update((w) =>
+                  patchProblem(w, wsProblem.id, (q) => ({
+                    ...q,
+                    notebooks: q.notebooks.filter((nb) => nb.id !== notebook.id),
+                  })),
+                );
+                select(wsProblem.entry.id);
+              }}
+              onRun={async (code, all) => wsNotebook(await syncProblem(wsProblem.id), code, all)}
+            />
+          ) : (
+            <ProblemView
+              key={problem.id}
+              problem={localize(problem, lang)}
+              backend={backend === "checking" ? null : backend}
+              categoryTitle={t(`cat.${problem.category}` as Key) ?? problem.category}
+              paramsOpen={paramsOpen}
+              onToggleParams={() => setParamsOpen((o) => !o)}
+              ws={
+                wsProblem
+                  ? {
+                      meta: wsProblem.meta,
+                      onFiles: (files) => patchFiles(wsProblem.id, files),
+                      onMeta: (fields) => patchMeta(wsProblem.id, fields),
+                      sync: () => syncProblem(wsProblem.id),
+                      onOutput: (url) =>
+                        update((w) => patchProblem(w, wsProblem.id, (q) => ({ ...q, entry: { ...q.entry, output: url } }))),
+                    }
+                  : undefined
+              }
+            />
+          )}
         </div>
       )}
 
@@ -240,9 +655,10 @@ export default function App() {
         <AgentPanel
           problem={problem}
           backendKey={`${backendChoice()}:${backend === "checking" ? "checking" : backend ? "up" : "down"}`}
-          onWorkspaceProblem={(entry) => {
-            setWorkspace((ws) => [entry, ...ws.filter((w) => w.id !== entry.id)]);
-            select(entry.id);
+          onWorkspaceProblem={onAiProblem}
+          onSyncWorkspace={(entryId) => {
+            const p = wsRef.current?.problems.find((q) => q.entry.id === entryId);
+            return p ? syncProblem(p.id) : Promise.reject(new Error("unknown problem"));
           }}
         />
       )}
@@ -350,25 +766,78 @@ interface ProblemViewProps {
   categoryTitle: string;
   paramsOpen: boolean;
   onToggleParams: () => void;
+  /** Workspace problems: the files are edited in place (saved in the browser) and synced to a sandbox to run. */
+  ws?: {
+    meta: string;
+    onFiles: (files: Record<string, string>) => void;
+    onMeta: (fields: Partial<MetaFields>) => void;
+    sync: () => Promise<string>;
+    /** A successful run's result, kept as the problem's thumbnail. */
+    onOutput?: (url: string) => void;
+  };
 }
 
-function ProblemView({ problem, backend, categoryTitle, paramsOpen, onToggleParams }: ProblemViewProps) {
+function ProblemView({ problem, backend, categoryTitle, paramsOpen, onToggleParams, ws }: ProblemViewProps) {
   const [params, setParams] = useState<Params>(() => defaults(problem));
+  // A workspace problem's meta.yaml may add or remove parameters: start again from the new defaults.
+  const paramSpecs = JSON.stringify(problem.params);
+  const lastSpecs = useRef(paramSpecs);
+  useEffect(() => {
+    if (paramSpecs !== lastSpecs.current) setParams(defaults(problem));
+    lastSpecs.current = paramSpecs;
+  }, [paramSpecs, problem]);
+  // Editing meta.yaml re-parses it on the server after a pause (title, equations and parameters update).
+  const [metaError, setMetaError] = useState<string | null>(null);
+  const [editMode, setEditMode] = useEditMode();
+  const onMeta = (fields: Partial<MetaFields>) => {
+    ws?.onMeta(fields);
+    setMetaError(null); // meta.yaml is regenerated from the view, so it is valid again
+  };
+  const syncTimer = useRef<number | undefined>(undefined);
+  function editMeta(code: string) {
+    ws?.onFiles({ "meta.yaml": code });
+    window.clearTimeout(syncTimer.current);
+    syncTimer.current = window.setTimeout(
+      () => ws?.sync().then(
+        () => setMetaError(null),
+        (e: Error) => setMetaError(e.message),
+      ),
+      800,
+    );
+  }
+  useEffect(() => () => window.clearTimeout(syncTimer.current), []);
   const [edits, setEdits] = useState<Record<string, string>>({});
   // Claude's edits arrive here; and the Ask AI panel always knows what is on screen.
   useEffect(() => {
     return onApplyFiles(({ problem: id, files }) => {
-      if (id === problem.id) setEdits((e) => ({ ...e, ...files }));
+      if (id === problem.id && !ws) setEdits((e) => ({ ...e, ...files })); // Workspace: App updates the store
     });
-  }, [problem.id]);
-  useEffect(() => {
-    emitContext({ problem: problem.id, title: plainText(problem.title), edits, params });
-  }, [problem.id, problem.title, edits, params]);
+  }, [problem.id, !ws]);
   const [src, setSrc] = useState<string | null>(problem.output ? assetUrl(problem.output) : null);
   const [console, setConsole] = useState(problem.console);
   const [running, setRunning] = useState(false);
   const [verbose, setVerbose] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Workspace: which editor the user is in — the meta.yaml editor (while open and last used) or the view's mode.
+  const [metaOpen, setMetaOpen] = useState(false);
+  const [inYaml, setInYaml] = useState(false);
+  const wsMode = metaOpen && inYaml ? "yaml" : editMode;
+  const markdown = ws && wsMode === "markdown" ? toMarkdown(pickMd({ ...problem, notes: problem.notes ?? "" })) : undefined;
+  useEffect(() => {
+    emitContext({
+      problem: problem.id,
+      title: plainText(problem.title),
+      edits,
+      params,
+      workspace: ws ? { kind: "source", mode: wsMode, markdown } : undefined,
+      run: { output: !!src, failed: !!error },
+    });
+  }, [problem.id, problem.title, edits, params, !ws, wsMode, markdown, !!src, !!error]);
+  const yamlSelection = useMemo(
+    () => selectionReporter({ problem: problem.id, file: "meta.yaml", region: "meta.yaml", lang: "yaml" }),
+    [problem.id],
+  );
+  useEffect(() => () => emitSelection(null), [problem.id]); // the meta.yaml editor's highlight goes with the view
   const [hasRun, setHasRun] = useState(false);
   // Phones show one part of the workspace at a time; desktop shows all three columns.
   const [mobileTab, setMobileTab] = useState<MobileTab>("problem");
@@ -381,8 +850,8 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
     setConsole(problem.console);
   }, [problem.output, problem.console, hasRun, running]);
 
-  const inWorkspace = problem.category === "workspace";
-  // Workspace problems run in the agent's sandbox, so they are editable wherever the agent is.
+  const inWorkspace = !!ws;
+  // Workspace problems run in their own sandbox, so they are editable wherever workspaces are enabled.
   const editable = !!backend?.allow_code_exec || inWorkspace;
   const hasEdits = Object.keys(edits).length > 0;
 
@@ -408,16 +877,12 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
           text: t("queue.wait").replace("{n}", String(position)),
           replace: true,
         });
-      const result = await runProblemStream(
-        inWorkspace && problem.session ? { session: problem.session } : problem.id,
-        params,
-        hasEdits ? edits : undefined,
-        verbose,
-        onLine,
-        onQueued,
-      );
+      const result = ws
+        ? await wsRunStream(await ws.sync(), params, verbose, onLine, onQueued)
+        : await runProblemStream(problem.id, params, hasEdits ? edits : undefined, verbose, onLine, onQueued);
       setSrc(result.output);
       setConsole(result.console);
+      ws?.onOutput?.(result.output);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
       if (e instanceof RunFailed && e.console) setConsole(e.console);
@@ -427,6 +892,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
   }
 
   function edit(name: string, code: string) {
+    if (ws) return ws.onFiles({ [name]: code });
     const original = problem.files.find((f) => f.name === name)?.code;
     setEdits(({ [name]: _, ...rest }) => (code === original ? rest : { ...rest, [name]: code }));
   }
@@ -456,28 +922,97 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
       {/* 2. Problem body: title, tags and setup sketch pinned; equations scroll */}
       <main className="flex min-w-0 flex-col border-r border-gray-200 lg:min-h-0 lg:flex-1">
         <div className={`shrink-0 border-b border-gray-200 bg-white px-5 py-4 ${onPhone("problem")}`}>
-          <div>
-            <h2 className="text-xl font-semibold tracking-tight">
-              <RichText text={problem.title} />
-            </h2>
-            <div className="mt-1.5 flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
-                {categoryTitle}
-              </span>
-              <span
-                className={`flex items-center gap-1.5 rounded-full border border-gray-200 px-2.5 py-0.5 text-xs font-medium ${level.text}`}
-              >
-                <span className={`h-1.5 w-1.5 rounded-full ${level.dot}`} />
-                {t(level.key)}
-              </span>
-              <span className="rounded-full border border-gray-200 px-2.5 py-0.5 text-xs text-gray-500">
-                {t(problem.animated ? "tag.animated" : "tag.static")}
-              </span>
+          {ws ? (
+            <div data-ai-region="summary">
+              {/* Workspace problem: edited in place (Inline), or as one Markdown document below */}
+              <div className="mb-2 flex items-center justify-between gap-2" title={t("edit.modeHint")}>
+                <ModeToggle mode={editMode} onMode={setEditMode} />
+              </div>
+              {editMode === "inline" && (
+                <Field
+                  value={problem.title}
+                  placeholder={t("edit.title")}
+                  label={t("edit.title")}
+                  className="text-xl font-semibold tracking-tight"
+                  inputClass="text-lg font-semibold"
+                  render={(v) => (
+                    <h2 data-testid="ws-title">
+                      <RichText text={v} />
+                    </h2>
+                  )}
+                  onCommit={(title) => title.trim() && onMeta({ title: title.trim() })}
+                />
+              )}
+              <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+                  {categoryTitle}
+                </span>
+                <span
+                  className={`flex items-center gap-1.5 rounded-full border border-gray-200 py-0.5 pl-2.5 pr-1 text-xs font-medium hover:border-blue-300 ${level.text}`}
+                >
+                  <span className={`h-1.5 w-1.5 rounded-full ${level.dot}`} />
+                  <select
+                    value={problem.level}
+                    aria-label={t("edit.level")}
+                    title={t("edit.level")}
+                    onChange={(e) => onMeta({ level: e.target.value as Level })}
+                    className="cursor-pointer bg-transparent focus:outline-none"
+                  >
+                    {(["beginner", "intermediate", "advanced"] as const).map((l) => (
+                      <option key={l} value={l}>
+                        {t(LEVEL_STYLE[l].key)}
+                      </option>
+                    ))}
+                  </select>
+                </span>
+                <button
+                  onClick={() => onMeta({ animated: !problem.animated })}
+                  title={t("edit.animatedHint")}
+                  className="rounded-full border border-gray-200 px-2.5 py-0.5 text-xs text-gray-500 hover:border-blue-300 hover:text-blue-700"
+                >
+                  {problem.animated ? "🎞" : "🖼"} {t(problem.animated ? "tag.animated" : "tag.static")} ⇄
+                </button>
+              </div>
+              {editMode === "inline" && (
+                <Field
+                  multiline
+                  value={problem.summary}
+                  placeholder={t("edit.addSummary")}
+                  className="mt-2 text-sm leading-relaxed text-gray-600"
+                  inputClass="text-sm"
+                  render={(v) => (
+                    <p className="whitespace-pre-line">
+                      <RichText text={v} />
+                    </p>
+                  )}
+                  onCommit={(summary) => onMeta({ summary })}
+                />
+              )}
             </div>
-            <p className="mt-2 text-sm leading-relaxed text-gray-600">
-              <RichText text={problem.summary} />
-            </p>
-          </div>
+          ) : (
+            <div data-ai-region="summary">
+              <h2 className="text-xl font-semibold tracking-tight">
+                <RichText text={problem.title} />
+              </h2>
+              <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+                  {categoryTitle}
+                </span>
+                <span
+                  className={`flex items-center gap-1.5 rounded-full border border-gray-200 px-2.5 py-0.5 text-xs font-medium ${level.text}`}
+                >
+                  <span className={`h-1.5 w-1.5 rounded-full ${level.dot}`} />
+                  {t(level.key)}
+                </span>
+                <span className="rounded-full border border-gray-200 px-2.5 py-0.5 text-xs text-gray-500">
+                  {t(problem.animated ? "tag.animated" : "tag.static")}
+                </span>
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                <RichText text={problem.summary} />
+              </p>
+            </div>
+          )}
           {problem.diagram && (
             <img
               src={assetUrl(problem.diagram)}
@@ -534,8 +1069,45 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
 
         <div
           className={`space-y-5 bg-gray-50/60 p-5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto ${onPhone("formulation")}`}
+          onFocusCapture={(e) => {
+            if (!(e.target as HTMLElement).closest("[data-testid='ws-meta']")) setInYaml(false);
+          }}
         >
-          <EquationPanel problem={problem} />
+          {!ws ? (
+            <EquationPanel problem={problem} />
+          ) : editMode === "inline" ? (
+            <InlineEquations problem={problem} onMeta={onMeta} />
+          ) : (
+            <MarkdownEditor problem={problem} onMeta={onMeta} />
+          )}
+          {ws && (
+            <details
+              className="rounded-xl border border-gray-200 bg-white"
+              data-testid="ws-meta"
+              onToggle={(e) => setMetaOpen((e.target as HTMLDetailsElement).open)}
+              onFocus={() => setInYaml(true)}
+            >
+              <summary className="cursor-pointer px-4 py-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                meta.yaml · <span className="normal-case">{t("ws.metaHint")}</span>
+              </summary>
+              <div className="border-t border-gray-100">
+                <CodeMirror
+                  value={ws.meta}
+                  extensions={[yaml()]}
+                  theme="light"
+                  basicSetup={{ foldGutter: false }}
+                  onChange={editMeta}
+                  onUpdate={yamlSelection}
+                  className="text-sm"
+                />
+              </div>
+              {metaError && (
+                <p className="border-t border-red-100 bg-red-50 px-4 py-2 text-xs text-red-700">
+                  ⚠ {t("edit.yamlError")}: {metaError}
+                </p>
+              )}
+            </details>
+          )}
         </div>
       </main>
 
@@ -551,20 +1123,23 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
           onReset={() => setEdits({})}
           toolbar={inWorkspace ? undefined : <ExportMenu problem={problem} edits={edits} params={params} />}
           side={
-            <ParamsPanel
-              specs={problem.params}
-              values={params}
-              onChange={setParams}
-              onDefaults={() => setParams(defaults(problem))}
-              onRun={run}
-              canRun={!!backend}
-              running={running}
-              hasEdits={hasEdits}
-              verbose={verbose}
-              onVerbose={setVerbose}
-              open={paramsOpen}
-              onToggle={onToggleParams}
-            />
+            // display: contents keeps CodePanel's layout; the wrapper only labels the region for the AI panel
+            <div data-ai-region="params" className="contents">
+              <ParamsPanel
+                specs={problem.params}
+                values={params}
+                onChange={setParams}
+                onDefaults={() => setParams(defaults(problem))}
+                onRun={run}
+                canRun={!!backend}
+                running={running}
+                hasEdits={hasEdits}
+                verbose={verbose}
+                onVerbose={setVerbose}
+                open={paramsOpen}
+                onToggle={onToggleParams}
+              />
+            </div>
           }
         />
         <div

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLang } from "../i18n";
+import CategoryIcon from "./CategoryIcon";
 import { RichText } from "./Tex";
 import type { Level, Manifest } from "../types";
 
@@ -44,7 +45,10 @@ export default function Sidebar({ manifest, selected, onSelect }: Props) {
               onClick={() => toggle(cat.id)}
               className="flex w-full items-center justify-between rounded-md px-2 py-2 text-left text-sm font-semibold text-gray-800 hover:bg-gray-100"
             >
-              <span>{t(`cat.${cat.id}` as Parameters<typeof t>[0]) ?? cat.title}</span>
+              <span className="flex items-center gap-2">
+                <CategoryIcon id={cat.id} className="h-4 w-4 shrink-0 text-blue-600" />
+                {t(`cat.${cat.id}` as Parameters<typeof t>[0]) ?? cat.title}
+              </span>
               <span className="flex items-center gap-2 text-xs font-normal text-gray-400">
                 {problems.length}
                 <span className={`transition-transform ${isOpen ? "rotate-90" : ""}`}>›</span>

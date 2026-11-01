@@ -63,3 +63,36 @@ def test_context_mirrors_the_editor_and_describes_the_selection(tmp_path, monkey
     assert '"Simple pendulum"' in message and '"g": 3.7' in message and "equation.py lines 25–27" in message
     assert message.endswith("why sin?")
     assert agent._with_context(s, "hi", {}) == "hi"
+
+
+def test_a_highlight_elsewhere_on_the_page_is_described_by_its_region(tmp_path, monkeypatch):
+    monkeypatch.setattr(agent, "WORK_ROOT", tmp_path)
+    s = agent._session(None, "mechanics/simple_pendulum")
+    text = "以 (V, p) 取樣張量，功是 torch.trapezoid 求得的各曲線下面積"
+    message = agent._with_context(s, "what does this mean?", {"selection": {"region": "summary", "text": text}})
+    assert f"They highlighted this in the problem's summary: «{text}»" in message
+    assert message.endswith("what does this mean?")
+    long = agent._with_context(s, "?", {"selection": {"region": "<b>notes</b>", "text": "x" * 5000}})
+    assert "problem's bnotesb:" in long and "x" * 2000 + "»" in long and "x" * 2001 not in long
+
+
+def test_a_screenshot_lands_in_the_workspace_context_folder(tmp_path, monkeypatch):
+    import base64
+
+    import pytest
+
+    monkeypatch.setattr(agent, "WORK_ROOT", tmp_path)
+    s = agent._session(None, "mechanics/simple_pendulum")
+    png = b"\x89PNG\r\n\x1a\n" + b"\0" * 64
+    data = "data:image/png;base64," + base64.b64encode(png).decode()
+    message = agent._with_context(s, "look", {"screenshot": data})
+    shot = s.workspace / "_context" / "screenshot-1.png"
+    assert shot.read_bytes() == png and agent._inside(str(shot), s.workspace)
+    assert "_context/screenshot-1.png" in message and "Read tool" in message
+    agent._with_context(s, "again", {"screenshot": data})
+    assert (s.workspace / "_context" / "screenshot-2.png").is_file()
+    assert agent._edited_files(s) == {}  # attachments are not problem files
+    with pytest.raises(agent.ContextError, match="PNG"):
+        agent._with_context(s, "x", {"screenshot": base64.b64encode(b"GIF89a").decode()})
+    with pytest.raises(agent.ContextError, match="too large"):
+        agent._with_context(s, "x", {"screenshot": "A" * (5 * 1024 * 1024)})

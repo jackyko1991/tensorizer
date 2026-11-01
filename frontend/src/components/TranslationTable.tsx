@@ -10,7 +10,7 @@ import Tex, { RichText } from "./Tex";
 export default function TranslationTable({ rows }: { rows: TranslationRow[] }) {
   const { t } = useLang();
   return (
-    <div className="relative overflow-x-auto">
+    <div data-ai-region="translation" className="relative overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-gray-200 text-left text-xs text-gray-500">

@@ -16,6 +16,8 @@ from pydantic import BaseModel, Field
 from problems._common.runtime import load_meta, resolve_params
 
 from . import agent
+from .routes_agents import router as agents_router
+from .routes_workspace import router as workspace_router
 from .run_queue import QUEUE
 from .runner import CACHE, CODE_FILES, ROOT, RunError, problem_dir, run_problem, stream_problem
 
@@ -38,6 +40,8 @@ app.add_middleware(
     allow_headers=["*"],
     allow_private_network=True,
 )
+app.include_router(agents_router)
+app.include_router(workspace_router)
 
 
 class RunRequest(BaseModel):
