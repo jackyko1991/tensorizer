@@ -1,0 +1,19 @@
+source_hash: 31a92e6ff86f
+title: 'Allgemeine Relativitätstheorie: Bahnen und Einfall um ein Schwarzes Loch'
+summary: Geodäten in der Schwarzschild-Metrik; die Christoffel-Symbole werden aus $g_{\mu\nu}(x)$ durch automatisches Differenzieren gewonnen und mit einsum kontrahiert. Eine gebundene Bahn präzediert, statt sich zu schließen, das effektive Potential zeigt den innersten stabilen Kreisorbit (ISCO) bei $6GM/c^2$ und die Photonensphäre bei $3GM/c^2$, und ein radialer Sturz erreicht den Horizont nach endlicher Eigenzeit, während die ferne Uhr einfriert.
+notes: 'Einheiten: $G = c = M = 1$, Längen also in $GM/c^2$ (1,5 km pro Sonnenmasse), der Horizont liegt bei $r_s = 2$. Die Bahn startet im Periapsis mit der exakten Schwarzschild-Energie $E$ und dem Drehimpuls $L$ einer Bahn mit Halbparameter $p$ und Exzentrizität $e$. Sie wird in Eigenzeit $\tau$ mit RK4 integriert; die graue Newton-Ellipse mit denselben $p$ und $e$ schließt sich. Die Periheldrehung nähert sich für großes $p$ dem Wert $6\pi GM/(c^2 p)$ (43″ pro Jahrhundert beim Merkur) und wird nahe am Loch viel größer. Gebundene Bahnen gibt es nur für $p > 6 + 2e$; unterhalb des ISCO ($r = 6$) sind Kreisbahnen instabil, und bei $r = 3$ kann sogar Licht kreisen. Beim Sturz (unten rechts) erreicht die fallende Uhr den Horizont nach etwa $\tau = \tfrac{\pi}{2}\sqrt{r_0^3/2}$ (endlich), in Schwarzschild-Zeit $t$ aber verlangsamt sich der Fall und friert bei $r = 2$ ein; die Rechnung stoppt bei $r = 2.1$, wo diese Koordinaten zu versagen beginnen.'
+meanings:
+- Ereignis $(t, r, \theta, \varphi)$ auf jeder Geodäte, $G = c = M = 1$
+- Vierergeschwindigkeit $dx^\mu/d\tau$
+- Schwarzschild-Metrik, Signatur $(-, +, +, +)$
+- inverse Metrik
+- Ableitungen der Metrik per autograd, Ableitungsindex zuletzt
+- wiederholtes $\sigma$ ⇒ summiert ($z$ = Batch)
+- wiederholte $\alpha, \beta$ ⇒ summiert
+- $= -1$ für ein massives Teilchen, prüft die Integration
+labels:
+  p: Halbparameter $p$
+  e: Exzentrizität $e$
+  n_orbits: Zu simulierende Umläufe
+  dt: Eigenzeitschritt $\Delta\tau$
+  r_infall: Sturz beginnt aus der Ruhe bei

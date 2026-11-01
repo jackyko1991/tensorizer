@@ -1,0 +1,15 @@
+source_hash: 615dd7755626
+title: Monsterwellen (nichtlineare Schrödinger-Gleichung)
+summary: 'Die fokussierende nichtlineare Schrödinger-Gleichung beschreibt die Einhüllende von Wellengruppen auf tiefem Wasser und von Lichtpulsen in Glasfasern. Ein gleichförmiger Wellenzug ist instabil: Winzige Kräuselungen wachsen zu aufragenden Spitzen von etwa dreifacher Hintergrundhöhe, wie Monsterwellen. Gelöst mit der Split-Step-Fourier-Methode: Die Dispersion ist im $k$-Raum exakt, die Nichtlinearität im $x$-Raum.'
+notes: 'Strang-Zerlegung: ein halber Dispersionsschritt, ein ganzer nichtlinearer Schritt, ein halber Dispersionsschritt; von zweiter Ordnung genau und erhält $N$ bis auf Rundungsfehler. Modulationsinstabilität: Auf einem Hintergrund der Höhe 1 wachsen Störungen mit Wellenzahl $K < 2$, am schnellsten bei $K = \sqrt2$ mit Rate 1. Im Modus **modulation** startet der Hintergrund mit $10^{-3}$ zufälligem Rauschen (fester Seed): Spitzen erscheinen nach $t \approx 8$ und bilden und lösen sich immer wieder. Der Peregrine-Breather $\psi = \bigl[1 - \frac{4(1+2it)}{1+4x^2+4t^2}\bigr]e^{it}$ erhebt sich einmal aus dem Hintergrund, erreicht genau das $3\times$ seiner Höhe und verschwindet; der Modus **peregrine** startet ihn bei $t = -5$. Der Modus **soliton** startet das helle Soliton $\eta\,\mathrm{sech}(\eta x)\,e^{ivx}$, das seine Form für immer behält. Die gestrichelte Linie markiert $|\psi| = 3$. Periodischer Kasten der Länge 60.'
+meanings:
+- komplexe Welleneinhüllende auf einem periodischen Gitter (complex128)
+- halber Schritt der Dispersion $i\psi_t = -\tfrac12\psi_{xx}$, exakt für jede Fourier-Mode
+- 'wiederholtes $l$ ⇒ summiert: die diskrete Fourier-Transformation'
+- ein Schritt der Nichtlinearität $i\psi_t = -|\psi|^2\psi$, exakt, weil sich $|\psi|$ nicht ändert
+- $\int|\psi|^2$ und $\int \tfrac12|\psi_x|^2 - \tfrac12|\psi|^4$, beide erhalten
+labels:
+  mode: Anfangszustand
+  noise: Rauschamplitude (modulation)
+  eta: Solitonhöhe $\eta$
+  t_max: Simulierte Zeit

@@ -1,0 +1,44 @@
+title: Receptor–ligand binding (k_on, k_off)
+category: others
+level: beginner
+order: 1
+summary: >
+  How strongly and how long does an immune receptor (a T-cell receptor or an antibody) hold on to its target?
+  Mass-action kinetics with an on-rate $k_{on}$ and an off-rate $k_{off}$ is solved for several receptor variants
+  and a whole titration of ligand concentrations at once, in one $(B, C)$ tensor, and shown as an SPR-style
+  sensorgram next to the binding isotherms.
+animated: true
+vector_form: 'R + L \;\underset{k_{\mathrm{off}}}{\overset{k_{\mathrm{on}}}{\rightleftharpoons}}\; C,\qquad \frac{dC}{dt} = k_{\mathrm{on}}\,R\,L - k_{\mathrm{off}}\,C,\qquad R = R_T - C,\qquad K_D = \frac{k_{\mathrm{off}}}{k_{\mathrm{on}}}'
+index_form: 'J_{bc} = k^{\mathrm{on}}_b\,R_{bc}\,L_{bc} - k^{\mathrm{off}}_b\,C_{bc} \qquad \dot C_{bc} = -\dot R_{bc} = J_{bc} \qquad \theta_{bc} = \frac{L_c}{L_c + K_{D,b}}'
+translation:
+  - {symbol: 'k^{\mathrm{on}}_b,\ k^{\mathrm{off}}_b', code: 'k_on, k_off', shape: '(B,)', meaning: 'rate constants of receptor variant $b$ (weak / medium / high-affinity TCR, antibody)'}
+  - {symbol: 'L_c', code: 'L', shape: '(C,)', meaning: 'ligand concentration $c$ of the titration (nM); the last one is the sensorgram'}
+  - {symbol: 'R_{bc},\ C_{bc}', code: 'y[0], y[1]', shape: '(B, C)', meaning: 'free receptors and complexes for every variant and concentration'}
+  - {symbol: 'L_{bc}', code: 'free_ligand(L, C, depletion)', shape: '(B, C)', meaning: 'free ligand: $L_c$, or $L_c - C_{bc}$ with depletion'}
+  - {symbol: 'k^{\mathrm{on}}_b R_{bc} L_{bc}', code: "einsum('b,bc,bc->bc', k_on, R, L)", shape: '(B, C)', meaning: 'no index summed: $k_b$ is broadcast over every concentration $c$'}
+  - {symbol: '\dot C_{bc}', code: 'rhs(y, L, k_on, k_off, depletion)', shape: '(2, B, C)', meaning: 'right-hand side for RK4; $R$ and $C$ change by $\mp J$, so $R + C = R_T$'}
+  - {symbol: 'K_{D,b}', code: 'k_off / k_on', shape: '(B,)', meaning: 'dissociation constant: the ligand level that binds half the receptors'}
+  - {symbol: '\theta_{bc}', code: 'L[None, :] / (L[None, :] + K_D[:, None])', shape: '(B, C)', meaning: 'equilibrium occupancy (dashed isotherms)'}
+notes: >
+  Binding needs a free receptor and a free ligand to meet, so its rate is $k_{on} R L$; unbinding happens to each
+  complex on its own, at rate $k_{off} C$. At equilibrium the two balance and the bound fraction is
+  $\theta = L/(L + K_D)$ with $K_D = k_{off}/k_{on}$: half the receptors are occupied when $L = K_D$ (the tick on each
+  isotherm). Starting from empty receptors the approach is exponential, $C(t) = C_{eq}(1 - e^{-k_{obs} t})$ with
+  $k_{obs} = k_{on} L + k_{off}$, which is how SPR (surface plasmon resonance) instruments measure $k_{on}$; after the
+  buffer wash the complexes decay as $e^{-k_{off} t}$ with half-life $t_{1/2} = \ln 2 / k_{off}$, the dwell time.
+  The variants span realistic ranges: T-cell receptors bind peptide–MHC weakly ($K_D \sim 1$–$10\,\mu$M, dwell times of
+  seconds), an antibody binds tightly ($K_D \sim 0.1$ nM, dwell time of hours). Look at the dots on the isotherms: at
+  low concentration $k_{obs} \approx k_{off}$ is small, so the antibody has not yet reached equilibrium when the wash starts.
+  Why does $k_{off}$ matter so much for T cells? In the kinetic proofreading picture, a bound TCR must pass through
+  several signalling steps (phosphorylations) before it triggers the cell, and everything is reset if the ligand
+  falls off first. A complex that lives longer than those steps is far more likely to signal, so the T cell reads
+  the dwell time $1/k_{off}$ rather than the occupancy alone, and can tell a foreign peptide from a self peptide that
+  differs only modestly in affinity. Simplifications: one binding site per receptor (no avidity or rebinding), a
+  well-mixed solution and no mass-transport limit; with depletion on, every complex removes one ligand from a
+  closed volume and the equilibrium follows the quadratic solution instead of $L/(L + K_D)$.
+params:
+  log10_L: {default: 0.0, min: -2, max: 1, step: 0.25, label: 'Sensorgram ligand $\log_{10}(L/\mu\mathrm{M})$'}
+  t_assoc: {default: 120.0, min: 10, max: 600, step: 10, label: Association time, unit: s}
+  t_dissoc: {default: 240.0, min: 10, max: 900, step: 10, label: Dissociation time, unit: s}
+  depletion: {default: 'off', type: choice, options: ['off', 'on'], label: Ligand depletion}
+  R_T: {default: 10.0, min: 0.1, max: 1000, step: 0.1, label: 'Receptors $R_T$ (matters with depletion)', unit: nM}

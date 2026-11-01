@@ -23,6 +23,9 @@ export type Lang = (typeof LANGS)[number]["code"];
 // One row per key: en, zh-Hant, zh-Hans, fr, de, es, ja, ru, ko
 const TABLE = {
   tagline: ["Physics equations solver by GPU tensors", "以 GPU 張量求解物理方程", "用 GPU 张量求解物理方程", "Résolution d'équations physiques par tenseurs GPU", "Physikalische Gleichungen mit GPU-Tensoren lösen", "Resolución de ecuaciones físicas con tensores en GPU", "GPUテンソルで物理方程式を解く", "Решение физических уравнений на тензорах GPU", "GPU 텐서로 푸는 물리 방정식"],
+  "tab.problems": ["Problems", "題庫", "题库", "Problèmes", "Aufgaben", "Problemas", "問題", "Задачи", "문제"],
+  "tab.concept": ["Concept", "概念", "概念", "Concept", "Konzept", "Concepto", "コンセプト", "Концепция", "개념"],
+  "tab.skills": ["Coding Skills", "程式技巧", "编程技巧", "Compétences de code", "Programmiertechniken", "Técnicas de programación", "コーディング技法", "Навыки программирования", "코딩 기법"],
   language: ["Language", "語言", "语言", "Langue", "Sprache", "Idioma", "言語", "Язык", "언어"],
   "backend.checking": ["checking backend…", "正在檢查後端…", "正在检查后端…", "vérification du serveur…", "Backend wird geprüft…", "comprobando el servidor…", "バックエンドを確認中…", "проверка сервера…", "백엔드 확인 중…"],
   "backend.edit": ["backend · code editing on", "後端 · 可編輯程式碼", "后端 · 可编辑代码", "serveur · édition du code activée", "Backend · Code bearbeitbar", "servidor · edición de código activada", "バックエンド · コード編集可", "сервер · редактирование кода включено", "백엔드 · 코드 편집 가능"],
@@ -43,6 +46,7 @@ const TABLE = {
   "cat.quantum": ["Quantum", "量子力學", "量子力学", "Quantique", "Quantenmechanik", "Cuántica", "量子力学", "Квантовая механика", "양자역학"],
   "cat.astro": ["Astrophysics & Relativity", "天文物理與相對論", "天体物理与相对论", "Astrophysique et relativité", "Astrophysik & Relativität", "Astrofísica y relatividad", "天体物理・相対論", "Астрофизика и теория относительности", "천체물리와 상대론"],
   "cat.nuclear": ["Nuclear & Particle", "核與粒子物理", "核与粒子物理", "Physique nucléaire et des particules", "Kern- & Teilchenphysik", "Nuclear y de partículas", "原子核・素粒子", "Ядерная физика и частицы", "핵·입자물리"],
+  "cat.others": ["Others", "其他", "其他", "Autres", "Weitere Themen", "Otros", "その他", "Другое", "기타"],
   "tag.animated": ["animated", "動畫", "动画", "animé", "animiert", "animado", "アニメーション", "анимация", "애니메이션"],
   "tag.static": ["static", "靜態", "静态", "statique", "statisch", "estático", "静止画", "статично", "정적"],
   setup: ["Physical setup", "物理情境", "物理情境", "Dispositif physique", "Physikalischer Aufbau", "Montaje físico", "物理的な設定", "Физическая постановка", "물리적 설정"],
@@ -72,7 +76,7 @@ const TABLE = {
   "run.running": ["Running…", "執行中…", "运行中…", "Exécution…", "Läuft…", "Ejecutando…", "実行中…", "Выполняется…", "실행 중…"],
   "run.needBackend": ["Start the backend (pixi run dev) to run", "請先啟動後端（pixi run dev）才能執行", "请先启动后端（pixi run dev）才能运行", "Lancez le serveur (pixi run dev) pour exécuter", "Backend starten (pixi run dev), um auszuführen", "Inicia el servidor (pixi run dev) para ejecutar", "実行するにはバックエンドを起動してください（pixi run dev）", "Запустите сервер (pixi run dev), чтобы выполнить", "실행하려면 백엔드를 시작하세요 (pixi run dev)"],
   terminal: ["Terminal", "終端機", "终端", "Terminal", "Terminal", "Terminal", "ターミナル", "Терминал", "터미널"],
-  plot: ["Plot", "圖表", "图表", "Graphique", "Plot", "Gráfico", "プロット", "График", "그래프"],
+  plot: ["Plot / Animation", "圖表／動畫", "图表／动画", "Graphique / Animation", "Plot / Animation", "Gráfico / Animación", "プロット／アニメーション", "График / Анимация", "그래프 / 애니메이션"],
   "plot.rendering": ["rendering…", "繪製中…", "绘制中…", "rendu…", "wird gerendert…", "renderizando…", "描画中…", "отрисовка…", "렌더링 중…"],
   "plot.zoom": ["zoom", "放大", "放大", "agrandir", "vergrößern", "ampliar", "拡大", "увеличить", "확대"],
   "plot.none": ["No output yet — press Run.", "尚無輸出 — 請按執行。", "尚无输出 — 请点击运行。", "Pas encore de résultat — cliquez sur Exécuter.", "Noch keine Ausgabe — auf Ausführen klicken.", "Aún no hay resultado — pulsa Ejecutar.", "まだ出力がありません — 実行を押してください。", "Пока нет результата — нажмите «Запуск».", "아직 출력이 없습니다 — 실행을 누르세요."],

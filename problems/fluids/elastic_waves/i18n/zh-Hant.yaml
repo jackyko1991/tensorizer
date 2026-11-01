@@ -1,0 +1,18 @@
+source_hash: 36e54b56debf
+title: 彈性 P 波與 S 波
+summary: 彈性固體的 Navier–Cauchy 方程式。在一點上短暫推動會發出兩種波：快速的壓縮 P 波（見於 $\nabla\cdot\mathbf u$）與較慢的剪切 S 波（見於 $\nabla\times\mathbf u$）。兩項都是同一張二階導數表 $\partial_i\partial_j u_k$ 的縮並——兩次重複指標不同的 einsum。
+notes: 單位取 $\rho = 1$，網格大小 1。時間步進採用蛙跳法，$u^{n+1} = 2u^n - u^{n-1} + \Delta t^2\,\ddot u^n$。對方程式取散度，得到 $\theta = \partial_j u_j$ 以速率 $c_P$ 傳播的波動方程式；取旋度則得到轉動以速率 $c_S < c_P$ 傳播的波動方程式——岩石中 $c_P \approx 1.7\,c_S$，這就是地震的 P 波先到、S 波數秒後才到的原因。點力主要沿力的方向輻射 P 波，主要沿垂直方向輻射 S 波，如兩種瓣狀圖樣所示。虛線圓是預測的波前 $c\,(t - t_0)$，其中 $t_0$ 是波源子波的峰值時刻。阻尼邊界在波抵達邊緣前將其吸收（實際程式使用完美匹配層）；帕松比接近 ½（$\lambda \gg \mu$）會使 $c_P$ 很大，迫使時間步長很小。
+meanings:
+- 位移場，每個節點上的分量 $i \in \{x, y\}$
+- 以中央差分求所有二階導數
+- 重複的 $j$（第 2 與第 3 位）⇒ 散度的梯度
+- 重複的 $j$（第 1 與第 2 位）⇒ 各分量的拉普拉斯
+- 在中心沿某方向的短暫墨西哥帽形推動
+- 體積變化（P）與轉動（S）
+- 蛙跳步；Courant 數 $S > 1$ 會被拒絕，因為此法會發散
+labels:
+  lam: 拉梅常數 $\lambda$
+  mu: 剪切模數 $\mu$
+  direction: 力的方向
+  courant: Courant 數 $S$
+  t_max: 模擬時間

@@ -1,0 +1,17 @@
+source_hash: 902cc4c799f5
+title: Ondes stationnaires sur une corde
+summary: 'L''équation d''onde 1D sur une corde fixée à ses deux extrémités. La dérivée seconde devient une matrice (le stencil de différences finies $D_{ij}$), si bien qu''un seul einsum fait avancer tous les points de plusieurs cordes à la fois : les premiers harmoniques et une corde pincée.'
+notes: 'Les lignes 1 à $n$ partent avec la forme d''un seul harmonique $\sin(n\pi x/L)$ et se contentent de vibrer sur place à $f_n = nc/2L$ : une onde stationnaire. La corde pincée (un triangle) est une somme de nombreux harmoniques, donc son coin se sépare en deux morceaux qui courent vers les extrémités, se retournent et reviennent. Après une période fondamentale $2L/c$, chaque forme est revenue à son point de départ. Le pas de temps respecte la condition de Courant $c\,\Delta t \le \Delta x$ ; l''énergie $\tfrac12\int (\dot u^2 + c^2 u_x^2)\,dx$ (par unité de masse linéique) reste constante car rien n''amortit la corde.'
+meanings:
+- déplacement de la corde $b$ au point intérieur $i$ (les deux extrémités fixes sont exclues)
+- 'matrice de dérivée seconde : $-2$ sur la diagonale, $1$ à côté'
+- '$j$ répété ⇒ sommé : $\partial_x^2 u$ pour chaque corde'
+- différence centrée en temps (saute-mouton)
+- 'les valeurs propres de $D$ donnent $\omega_n^2 = -c^2\lambda_n$ : les harmoniques'
+labels:
+  n_harmonics: Harmoniques affichés
+  pluck_at: Point de pincement $x_p/L$
+  c: Célérité $c$
+  L: Longueur de la corde $L$
+  n_points: Points de grille
+  periods: Périodes fondamentales simulées

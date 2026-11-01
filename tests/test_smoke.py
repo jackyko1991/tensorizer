@@ -1,6 +1,7 @@
 """Every problem package follows the convention and renders an output in fast mode."""
 
 import importlib
+import os
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -9,7 +10,9 @@ import pytest
 from problems._common.runtime import load_meta, resolve_params
 
 ROOT = Path(__file__).resolve().parents[1] / "problems"
-PROBLEMS = sorted(p.parent for p in ROOT.glob("*/*/meta.yaml"))
+# CI splits the suite by topic: TENSORIZER_CATEGORIES=waves,fluids runs only those problems.
+_ONLY = {c for c in os.environ.get("TENSORIZER_CATEGORIES", "").split(",") if c}
+PROBLEMS = sorted(p.parent for p in ROOT.glob("*/*/meta.yaml") if not _ONLY or p.parent.parent.name in _ONLY)
 LEVELS = ["beginner", "intermediate", "advanced"]
 FILES = ["main.py", "equation.py", "tensors.py", "solve.py", "plot.py"]
 META_KEYS = {

@@ -10,6 +10,7 @@ Output layout:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -35,6 +36,7 @@ CATEGORIES = {
     "quantum": "Quantum",
     "astro": "Astrophysics & Relativity",
     "nuclear": "Nuclear & Particle",
+    "others": "Others",
 }
 
 
@@ -64,13 +66,23 @@ def discover() -> list[Path]:
     return sorted(dirs, key=key)
 
 
+def source_hash(problem: Path) -> str:
+    """Hash of everything that affects the rendered output: the problem's code, meta.yaml and _common."""
+    h = hashlib.sha256()
+    for f in sorted([*problem.glob("*.py"), problem / "meta.yaml", *(PROBLEMS / "_common").glob("*.py")]):
+        h.update(f.name.encode() + f.read_bytes().replace(b"\r\n", b"\n"))
+    return h.hexdigest()[:16]
+
+
 def stale(problem: Path, target: Path) -> bool:
-    """True when there is no output yet or any problem/_common source is newer than it."""
+    """True when there is no output yet or the code changed since it was rendered.
+
+    Content hashes rather than timestamps, so outputs restored from a CI cache (fresh checkout,
+    new mtimes) are still recognised as up to date.
+    """
     outputs = [p for p in target.glob("*") if p.suffix in {".gif", ".png"} and not p.name.startswith(".")]
-    if not outputs:
-        return True
-    sources = [*problem.glob("*.py"), problem / "meta.yaml", *(PROBLEMS / "_common").glob("*.py")]
-    return max(f.stat().st_mtime for f in sources) > min(o.stat().st_mtime for o in outputs)
+    stamp = target / ".source_hash"
+    return not outputs or not stamp.is_file() or stamp.read_text().strip() != source_hash(problem)
 
 
 def load_translations(problem: Path) -> dict:
@@ -150,6 +162,7 @@ def main() -> None:
                 d, target = futures[future]
                 output, console, seconds = future.result()
                 (target / "console.txt").write_text(console, encoding="utf-8")
+                (target / ".source_hash").write_text(source_hash(d), encoding="utf-8")
                 print(f"{d.parent.name}/{d.name}: {output.name} in {seconds:.1f}s", flush=True)
 
     problems = []

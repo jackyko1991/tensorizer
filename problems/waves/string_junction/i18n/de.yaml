@@ -1,0 +1,16 @@
+source_hash: 162fb2c64168
+title: Puls an einer Saitenverbindung
+summary: Zwei Saiten mit verschiedenen Massenbelägen sind miteinander verknotet. Ein von links kommender Puls teilt sich am Knoten in einen reflektierten und einen transmittierten Puls, deren Amplituden durch die Impedanzen $Z = \sqrt{T\mu}$ bestimmt sind. Die zweite Ableitung ist eine 1D-Faltung mit dem Stencil $(1, -2, 1)$.
+notes: 'Der Knoten kann nicht reißen, also ist $u$ stetig, und er ist masselos, also gleichen sich die Querkräfte $T u_x$ auf beiden Seiten aus. Diese beiden Bedingungen ergeben $R$ und $\mathcal T$. Eine schwerere rechte Saite ($Z_2 > Z_1$) reflektiert den Puls umgedreht, wie ein festes Ende; eine leichtere reflektiert ihn aufrecht, wie ein freies Ende. Der transmittierte Puls ist immer aufrecht und läuft mit $c_2 = \sqrt{T/\mu_2}$, wird also um $c_2/c_1$ gestaucht oder gestreckt. Die von einem Puls getragene Energie ist proportional zu $Z\,A^2$, was die Flussbilanz $R^2 + (Z_2/Z_1)\,\mathcal T^2 = 1$ ergibt. Einheiten: $T = 1$, $\mu_1 = 1$, Saite von $-1$ bis $1$. Grau gestrichelte Linien markieren die vorhergesagten Amplituden. Beobachte die schnellere Saite: Ihr Puls erreicht die ferne Wand und prallt zurück.'
+meanings:
+- Auslenkung am Gitterpunkt $i$; beide äußeren Enden sind fest
+- 'Masse pro Länge: $\mu_1$ links, $\mu_2$ rechts, der Mittelwert am Knoten'
+- 'wiederholtes $j$ ⇒ summiert: der Stencil gleitet entlang der Saite'
+- Wellenimpedanz der Saite $k$
+- Amplitudenverhältnisse aus der Stetigkeit von $u$ und der Kraft $T\,u_x$ am Knoten
+- $\sum_i \tfrac12\mu_i\dot u_i^2\Delta x + \tfrac12 T (\partial_x u)^2\Delta x$, erhalten
+labels:
+  mu_ratio: Dichteverhältnis $\mu_2/\mu_1$
+  width: Pulsbreite
+  t_max: Simulierte Zeit
+  n_points: Gitterpunkte

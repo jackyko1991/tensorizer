@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLang } from "../i18n";
+import { RichText } from "./Tex";
 import type { Level, Manifest } from "../types";
 
 export const LEVEL_STYLE: Record<Level, { key: "level.beginner" | "level.intermediate" | "level.advanced"; dot: string; text: string }> = {
@@ -71,7 +72,7 @@ export default function Sidebar({ manifest, selected, onSelect }: Props) {
                                 selected === p.id ? "bg-blue-50 font-medium text-blue-700" : "text-gray-700 hover:bg-gray-100"
                               }`}
                             >
-                              {p.i18n?.[lang]?.title ?? p.title}
+                              <RichText text={p.i18n?.[lang]?.title ?? p.title} />
                             </button>
                           </li>
                         ))}

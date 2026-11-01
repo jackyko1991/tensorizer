@@ -1,0 +1,16 @@
+source_hash: 7a350e6eef20
+title: Radiación de Hawking y evaporación de agujeros negros
+summary: 'Un agujero negro brilla como un cuerpo negro a la temperatura de Hawking $T_H = \hbar c^3/(8\pi G M k_B)$. Un solo broadcast evalúa la ley de Planck para muchas masas y longitudes de onda a la vez, y RK4 integra la pérdida de masa $dM/dt = -\alpha/M^2$: el agujero se encoge, se calienta y termina en un estallido tras $t \propto M^3$.'
+notes: 'Unidades SI en todo momento. Un agujero negro de una masa solar está a $6\times10^{-8}$ K, mucho más frío que el fondo de microondas de 2,7 K, de modo que los agujeros negros astrofísicos reales absorben más de lo que emiten. Solo los agujeros diminutos (primordiales) se evaporan: uno de unos $2\times10^{11}$ kg formado en el Big Bang estaría terminando ahora. El modelo cuenta solo fotones y trata el horizonte como un cuerpo negro perfecto de área $4\pi r_s^2$; los agujeros reales también emiten neutrinos, gravitones y, si están lo bastante calientes, partículas más pesadas, lo que acorta la vida, y los factores de cuerpo gris cambian la forma del espectro. El paso de tiempo se elige para que cada paso de RK4 consuma una fracción fija de la masa restante; la animación avanza en pasos iguales de $\log M$, así que los últimos fotogramas cubren un intervalo de tiempo diminuto. El radio del horizonte se dibuja como $M^{0.35}$ para que siga siendo visible.'
+meanings:
+- 'un lote de masas de agujeros negros (kg): Sol, Tierra, …, el agujero animado'
+- temperatura de Hawking, elemento a elemento
+- malla de longitudes de onda logarítmica
+- espectro de Planck por broadcasting de T[:, None] frente a lam[None, :]
+- ley de Wien $b/T_H$
+- potencia de Stefan–Boltzmann del horizonte
+- $-P/c^2$, integrado con RK4
+- vida analítica, comparada con la integración
+labels:
+  log10_mass: Masa inicial $\log_{10}(M_0/\mathrm{kg})$
+  burn_fraction: Fracción de masa consumida por paso de RK4

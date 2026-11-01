@@ -1,0 +1,16 @@
+source_hash: 162fb2c64168
+title: Impulsion à la jonction de deux cordes
+summary: Deux cordes de masses linéiques différentes sont nouées ensemble. Une impulsion venant de la gauche se divise au nœud en une impulsion réfléchie et une impulsion transmise dont les amplitudes sont fixées par les impédances $Z = \sqrt{T\mu}$. La dérivée seconde est une convolution 1D avec le stencil $(1, -2, 1)$.
+notes: 'Le nœud ne peut pas se rompre, donc $u$ est continu, et il est sans masse, donc les forces transverses $T u_x$ des deux côtés s''équilibrent. Ces deux conditions donnent $R$ et $\mathcal T$. Une corde de droite plus lourde ($Z_2 > Z_1$) réfléchit l''impulsion à l''envers, comme une extrémité fixe ; une plus légère la réfléchit à l''endroit, comme une extrémité libre. L''impulsion transmise est toujours à l''endroit et se déplace à $c_2 = \sqrt{T/\mu_2}$, donc elle est comprimée ou étirée d''un facteur $c_2/c_1$. L''énergie transportée par une impulsion est proportionnelle à $Z\,A^2$, ce qui donne le bilan de flux $R^2 + (Z_2/Z_1)\,\mathcal T^2 = 1$. Unités : $T = 1$, $\mu_1 = 1$, corde de $-1$ à $1$. Les tirets gris marquent les amplitudes prédites. Observez la corde la plus rapide : son impulsion atteint la paroi du fond et rebondit.'
+meanings:
+- déplacement au point de grille $i$ ; les deux extrémités sont fixes
+- 'masse linéique : $\mu_1$ à gauche, $\mu_2$ à droite, la moyenne au nœud'
+- '$j$ répété ⇒ sommé : le stencil glisse le long de la corde'
+- impédance d'onde de la corde $k$
+- rapports d'amplitude issus de la continuité de $u$ et de la force $T\,u_x$ au nœud
+- $\sum_i \tfrac12\mu_i\dot u_i^2\Delta x + \tfrac12 T (\partial_x u)^2\Delta x$, conservée
+labels:
+  mu_ratio: Rapport des masses linéiques $\mu_2/\mu_1$
+  width: Largeur de l'impulsion
+  t_max: Durée simulée
+  n_points: Points de grille

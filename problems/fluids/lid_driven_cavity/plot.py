@@ -23,13 +23,11 @@ def animate(
         interpolation="nearest",
     )  # fmt: skip
     fig.colorbar(image, ax=ax, label="vorticity ω", shrink=0.8)
-    ax.annotate("", (0.85, 1.04), (0.15, 1.04), arrowprops={"arrowstyle": "->", "color": "#dc2626", "lw": 2},
-                annotation_clip=False)  # fmt: skip
     ax.set_xlabel("x")
     ax.set_ylabel("y")
     ax.grid(False)
     centre = ax.plot([], [], "x", color="#f59e0b", ms=9, mew=2)[0]
-    title = ax.set_title(" ", pad=16)
+    title = ax.set_title(" ")
     contours = []
 
     ax2.plot([0, 0], [0, 1], color="#9ca3af", lw=0.8)
@@ -52,7 +50,7 @@ def animate(
         i, j = np.unravel_index(np.argmin(p[step]), p[step].shape)
         centre.set_data([ys[i]], [ys[j]])
         line.set_xdata(uc[step])
-        title.set_text(f"Re = {re:.0f}   t = {t[step]:.1f}")
+        title.set_text(f"lid → U = 1    Re = {re:.0f}    t = {t[step]:.1f}")
 
     fig.tight_layout()
     return save_gif(fig, update, frame_indices(len(t), 80), path, fps=12)

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Restricted three-body problem: a star and a planet rotating with angular velocity Omega, a test particle in the rotating frame, and the equilateral triangle to the L4 point">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- planet's orbit around the star -->
+    <path d="M180,125 A120,120 0 0 0 60,5" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- equilateral triangle star – planet – L4 -->
+    <path d="M60,125 L180,125 L120,21 Z" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- rotation of the frame -->
+    <path d="M40,103 A30,30 0 0 0 38,146" fill="none" stroke="#f59e0b" stroke-width="2" marker-end="url(#amber)"/>
+    <text x="14" y="128" font-style="italic" fill="#b45309">Ω</text>
+    <!-- star and planet -->
+    <circle cx="60" cy="125" r="12" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+    <text x="76" y="153" font-style="italic">1−μ</text>
+    <circle cx="180" cy="125" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="190" y="148" font-style="italic">μ</text>
+    <!-- L4 point and a test particle near it -->
+    <path d="M114,15 L126,27 M126,15 L114,27" stroke="#dc2626" stroke-width="2.5"/>
+    <text x="132" y="20" font-size="13" fill="#b91c1c">L4</text>
+    <circle cx="100" cy="44" r="4" fill="#374151"/>
+    <line x1="100" y1="44" x2="122" y2="58" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+  </g>
+</svg>

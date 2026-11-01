@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Minkowski diagram: time axis t and space axis x, the 45 degree light cone, a moving frame with tilted axes t prime and x prime at speed v, and an event">
+  <defs>
+    <marker id="axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="tilt" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- light cone (45°) -->
+    <line x1="50" y1="146" x2="174" y2="22" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="80" y1="146" x2="50" y2="116" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- rest frame axes -->
+    <line x1="60" y1="136" x2="215" y2="136" stroke="#374151" stroke-width="2" marker-end="url(#axis)"/>
+    <line x1="60" y1="136" x2="60" y2="14" stroke="#374151" stroke-width="2" marker-end="url(#axis)"/>
+    <text x="216" y="152" font-style="italic">x</text>
+    <text x="44" y="22" font-style="italic">t</text>
+    <!-- moving frame axes: t' slope 1/v, x' slope v (v = 0.5) -->
+    <line x1="60" y1="136" x2="118" y2="20" stroke="#2563eb" stroke-width="2" marker-end="url(#tilt)"/>
+    <line x1="60" y1="136" x2="206" y2="63" stroke="#2563eb" stroke-width="2" marker-end="url(#tilt)"/>
+    <text x="122" y="22" font-style="italic" fill="#1e40af">t′</text>
+    <text x="208" y="60" font-style="italic" fill="#1e40af">x′</text>
+    <!-- an event and its coordinates -->
+    <circle cx="150" cy="70" r="5" fill="#dc2626"/>
+    <line x1="150" y1="70" x2="150" y2="136" stroke="#9ca3af" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <line x1="150" y1="70" x2="60" y2="70" stroke="#9ca3af" stroke-width="1.2" stroke-dasharray="4 3"/>
+  </g>
+</svg>

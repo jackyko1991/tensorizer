@@ -10,4 +10,9 @@ meanings:
 - 科里奥利加速度，$\boldsymbol\Omega = \hat{\mathbf z}$
 - 在全部五个点上由 autograd 求梯度
 - 由 autograd 求黑塞矩阵：牛顿步是一次批量 linalg.solve
-- $-2\Phi_\mathrm{eff} - \dot x_i\d
+- $-2\Phi_\mathrm{eff} - \dot x_i\dot x_i$，守恒量
+labels:
+  mu: 行星质量分数 $\mu$
+  nudge: L4 前方的最大偏移
+  t_max: 模拟时长
+  dt: 时间步长

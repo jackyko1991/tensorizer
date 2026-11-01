@@ -66,4 +66,4 @@ def animate(
 
     fig.tight_layout()
     fig.subplots_adjust(right=0.86)
-    return save_gif(fig, update, frame_indices(len(dist), 90), path)
+    return save_gif(fig, update, frame_indices(len(dist), 72), path)

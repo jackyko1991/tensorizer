@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="A pulse travels at speed c1 along a light string of density mu1 towards a knot joining it to a heavier string of density mu2">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- fixed ends -->
+    <line x1="14" y1="70" x2="14" y2="110" stroke="#374151" stroke-width="2"/>
+    <line x1="226" y1="70" x2="226" y2="110" stroke="#374151" stroke-width="2"/>
+    <!-- light string with the incoming pulse -->
+    <path d="M14,90 L16,90.0 L20,90.0 L24,90.0 L28,90.0 L32,89.9 L36,89.5 L40,88.5 L44,85.9 L48,81.1 L52,73.8 L56,66.0 L60,60.7 L62,60.0 L64,60.7 L68,66.0 L72,73.8 L76,81.1 L80,85.9 L84,88.5 L88,89.5 L92,89.9 L96,90.0 L120,90" fill="none" stroke="#2563eb" stroke-width="2"/>
+    <!-- heavy string -->
+    <line x1="120" y1="90" x2="226" y2="90" stroke="#1e40af" stroke-width="5"/>
+    <!-- knot -->
+    <line x1="120" y1="40" x2="120" y2="130" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <circle cx="120" cy="90" r="5" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+    <!-- pulse velocity -->
+    <line x1="72" y1="48" x2="104" y2="48" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="80" y="40" font-style="italic" fill="#b91c1c">c₁</text>
+    <!-- labels -->
+    <text x="56" y="120" font-style="italic">μ₁</text>
+    <text x="166" y="120" font-style="italic">μ₂ &gt; μ₁</text>
+    <text x="127" y="146" font-size="13" fill="#b45309">knot</text>
+  </g>
+</svg>

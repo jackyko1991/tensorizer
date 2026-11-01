@@ -22,8 +22,7 @@ def animate(
     late = c[len(c) // 2 :]
 
     fig, (ax, ax2) = plt.subplots(2, 1, figsize=(7.5, 4.4), gridspec_kw={"height_ratios": [1.3, 1]})
-    cmap = plt.get_cmap("RdBu_r", 15).copy()
-    cmap.set_bad("#9ca3af")
+    cmap = plt.get_cmap("RdBu_r", 15).with_extremes(bad="#9ca3af")  # grey inside the cylinder (NaN)
     image = ax.imshow(w[0].T, origin="lower", cmap=cmap, vmin=-limit, vmax=limit, extent=(0, nx, 0, ny),
                       interpolation="nearest")  # fmt: skip
     ax.add_patch(Circle(centre, radius, fc="#9ca3af", ec="#374151", lw=1.2))

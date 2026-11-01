@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Envelope of a uniform wave train of height 1 with a rogue peak rising to three times the background, the Peregrine breather">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- axis and reference levels -->
+    <line x1="16" y1="135" x2="224" y2="135" stroke="#374151" stroke-width="2"/>
+    <line x1="16" y1="109" x2="224" y2="109" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="16" y1="57" x2="224" y2="57" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="4" y="114" font-size="13">1</text>
+    <text x="4" y="62" font-size="13" fill="#b45309">3</text>
+    <!-- envelope |psi| with the Peregrine peak -->
+    <path d="M16,109.5 L94,116.0 L100,120.3 L104,125.7 L108,134.6 L112,115.9 L116,82.6 L118,64.8 L120,57.0 L122,64.8 L124,82.6 L128,115.9 L132,134.6 L136,125.7 L140,120.3 L146,116.0 L224,109.5 L224,135 L16,135 Z" fill="#93c5fd" fill-opacity="0.45" stroke="none"/>
+    <path d="M16,109.5 L22,109.5 L28,109.6 L34,109.7 L40,109.8 L46,109.9 L52,110.1 L58,110.3 L64,110.6 L70,111.0 L76,111.6 L82,112.4 L88,113.7 L94,116.0 L100,120.3 L102,122.7 L104,125.7 L106,129.8 L108,134.6 L110,126.8 L112,115.9 L114,101.0 L116,82.6 L118,64.8 L119,59.1 L120,57.0 L121,59.1 L122,64.8 L124,82.6 L126,101.0 L128,115.9 L130,126.8 L132,134.6 L134,129.8 L136,125.7 L138,122.7 L140,120.3 L146,116.0 L152,113.7 L158,112.4 L164,111.6 L170,111.0 L176,110.6 L182,110.3 L188,110.1 L194,109.9 L200,109.8 L206,109.7 L212,109.6 L218,109.5 L224,109.5" fill="none" stroke="#2563eb" stroke-width="2.2"/>
+    <text x="22" y="40" font-style="italic">|ψ|</text>
+    <text x="134" y="48" font-size="13" fill="#b45309">rogue peak</text>
+    <text x="214" y="152" font-style="italic">x</text>
+  </g>
+</svg>

@@ -1,0 +1,18 @@
+source_hash: 36e54b56debf
+title: Elastische P- und S-Wellen
+summary: 'Die Navier–Cauchy-Gleichung für einen elastischen Festkörper. Ein kurzer Stoß an einem Punkt sendet zwei Wellen aus: eine schnelle Kompressionswelle P (sichtbar in $\nabla\cdot\mathbf u$) und eine langsamere Scherwelle S (sichtbar in $\nabla\times\mathbf u$). Beide Terme sind Kontraktionen einer einzigen Tabelle zweiter Ableitungen $\partial_i\partial_j u_k$ — zwei einsums mit verschiedenen wiederholten Indizes.'
+notes: Einheiten mit $\rho = 1$ und Zellgröße 1. Die Zeitintegration ist Leapfrog, $u^{n+1} = 2u^n - u^{n-1} + \Delta t^2\,\ddot u^n$. Bildet man die Divergenz der Gleichung, erhält man eine Wellengleichung für $\theta = \partial_j u_j$ mit der Geschwindigkeit $c_P$; die Rotation liefert eine für die Drehung mit der Geschwindigkeit $c_S < c_P$ — in Gestein ist $c_P \approx 1.7\,c_S$, weshalb bei einem Erdbeben die P-Welle zuerst und die S-Welle Sekunden später ankommt. Eine Punktkraft strahlt P-Wellen vorwiegend entlang der Kraft und S-Wellen vorwiegend quer dazu ab, wie die beiden keulenförmigen Muster zeigen. Die gestrichelten Kreise sind die vorhergesagten Fronten $c\,(t - t_0)$, wobei $t_0$ das Maximum des Quellsignals ist. Ein dämpfender Rand absorbiert die Wellen, bevor sie den Rand erreichen (echte Codes verwenden eine perfekt angepasste Schicht); eine Querkontraktionszahl nahe ½ ($\lambda \gg \mu$) macht $c_P$ groß und erzwingt einen kleinen Zeitschritt.
+meanings:
+- Verschiebungsfeld, Komponente $i \in \{x, y\}$ an jedem Knoten
+- alle zweiten Ableitungen durch zentrale Differenzen
+- wiederholtes $j$ (2. und 3. Position) ⇒ Gradient der Divergenz
+- wiederholtes $j$ (1. und 2. Position) ⇒ Laplace-Operator jeder Komponente
+- ein kurzer Mexican-Hat-Stoß im Zentrum entlang einer Richtung
+- Volumenänderung (P) und Drehung (S)
+- Leapfrog-Schritt; eine Courant-Zahl $S > 1$ wird abgelehnt, weil das Schema instabil wird
+labels:
+  lam: Lamé-Konstante $\lambda$
+  mu: Schubmodul $\mu$
+  direction: Kraftrichtung
+  courant: Courant-Zahl $S$
+  t_max: Simulierte Zeit

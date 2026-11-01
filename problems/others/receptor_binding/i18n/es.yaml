@@ -1,0 +1,21 @@
+source_hash: 702d9d9098be
+title: Unión receptor–ligando (k_on, k_off)
+summary: ¿Con qué fuerza y durante cuánto tiempo sujeta un receptor inmunitario (un receptor de linfocitos T o un anticuerpo) a su diana? La cinética de acción de masas, con una constante de asociación $k_{on}$ y una de disociación $k_{off}$, se resuelve para varias variantes del receptor y toda una titulación de concentraciones de ligando a la vez, en un solo tensor $(B, C)$, y se muestra como un sensorgrama tipo SPR junto a las isotermas de unión.
+notes: 'La unión necesita que un receptor libre y un ligando libre se encuentren, así que su velocidad es $k_{on} R L$; la disociación le ocurre a cada complejo por separado, con velocidad $k_{off} C$. En el equilibrio ambas se compensan y la fracción unida es $\theta = L/(L + K_D)$ con $K_D = k_{off}/k_{on}$: la mitad de los receptores está ocupada cuando $L = K_D$ (la marca en cada isoterma). Partiendo de receptores vacíos, la aproximación es exponencial, $C(t) = C_{eq}(1 - e^{-k_{obs} t})$ con $k_{obs} = k_{on} L + k_{off}$, que es como los instrumentos de SPR (resonancia de plasmón superficial) miden $k_{on}$; tras el lavado con tampón los complejos decaen como $e^{-k_{off} t}$ con semivida $t_{1/2} = \ln 2 / k_{off}$, el tiempo de permanencia. Las variantes abarcan rangos realistas: los receptores de linfocitos T unen péptido–MHC débilmente ($K_D \sim 1$–$10\,\mu$M, tiempos de permanencia de segundos), un anticuerpo une con fuerza ($K_D \sim 0.1$ nM, tiempo de permanencia de horas).
+  Fíjate en los puntos de las isotermas: a baja concentración $k_{obs} \approx k_{off}$ es pequeño, así que el anticuerpo aún no ha alcanzado el equilibrio cuando empieza el lavado. ¿Por qué importa tanto $k_{off}$ para los linfocitos T? En el modelo de corrección cinética (kinetic proofreading), un TCR unido debe pasar por varios pasos de señalización (fosforilaciones) antes de activar la célula, y todo se reinicia si el ligando se suelta antes. Un complejo que vive más que esos pasos tiene muchas más probabilidades de señalizar, así que el linfocito T lee el tiempo de permanencia $1/k_{off}$ y no solo la ocupación, y puede distinguir un péptido extraño de un péptido propio que difiere solo moderadamente en afinidad. Simplificaciones: un sitio de unión por receptor (sin avidez ni reunión), una solución bien mezclada y sin límite de transporte de masa; con la depleción activada, cada complejo retira un ligando de un volumen cerrado y el equilibrio sigue la solución cuadrática en lugar de
+  $L/(L + K_D)$.'
+meanings:
+- constantes de velocidad de la variante de receptor $b$ (TCR de afinidad baja / media / alta, anticuerpo)
+- concentración de ligando $c$ de la titulación (nM); la última es la del sensorgrama
+- receptores libres y complejos para cada variante y concentración
+- 'ligando libre: $L_c$, o $L_c - C_{bc}$ con depleción'
+- 'ningún índice sumado: $k_b$ se difunde (broadcast) sobre cada concentración $c$'
+- lado derecho para RK4; $R$ y $C$ cambian en $\mp J$, así que $R + C = R_T$
+- 'constante de disociación: la concentración de ligando que une la mitad de los receptores'
+- ocupación de equilibrio (isotermas discontinuas)
+labels:
+  log10_L: Ligando del sensorgrama $\log_{10}(L/\mu\mathrm{M})$
+  t_assoc: Tiempo de asociación
+  t_dissoc: Tiempo de disociación
+  depletion: Depleción de ligando
+  R_T: Concentración de receptor $R_T$

@@ -1,0 +1,18 @@
+source_hash: 36e54b56debf
+title: Ondes élastiques P et S
+summary: 'L''équation de Navier–Cauchy pour un solide élastique. Une brève poussée en un point émet deux ondes : une onde de compression P rapide (visible dans $\nabla\cdot\mathbf u$) et une onde de cisaillement S plus lente (visible dans $\nabla\times\mathbf u$). Les deux termes sont des contractions d''une même table de dérivées secondes $\partial_i\partial_j u_k$ — deux einsum avec des indices répétés différents.'
+notes: Unités avec $\rho = 1$ et taille de cellule 1. L'intégration en temps est en saute-mouton, $u^{n+1} = 2u^n - u^{n-1} + \Delta t^2\,\ddot u^n$. Prendre la divergence de l'équation donne une équation d'onde pour $\theta = \partial_j u_j$ de vitesse $c_P$ ; prendre le rotationnel en donne une pour la rotation de vitesse $c_S < c_P$ — dans la roche $c_P \approx 1.7\,c_S$, c'est pourquoi l'onde P d'un séisme arrive en premier et l'onde S quelques secondes plus tard. Une force ponctuelle rayonne les ondes P surtout dans l'axe de la force et les ondes S surtout perpendiculairement, comme le montrent les deux figures à lobes. Les cercles en tirets sont les fronts prédits $c\,(t - t_0)$, où $t_0$ est le pic de l'ondelette source. Un bord amortissant absorbe les ondes avant qu'elles n'atteignent le bord (les vrais codes utilisent une couche parfaitement adaptée) ; un coefficient de Poisson proche de ½ ($\lambda \gg \mu$) rend $c_P$ grand et impose un petit pas de temps.
+meanings:
+- champ de déplacement, composante $i \in \{x, y\}$ en chaque nœud
+- toutes les dérivées secondes par différences centrées
+- $j$ répété (2e et 3e position) ⇒ gradient de la divergence
+- $j$ répété (1re et 2e position) ⇒ laplacien de chaque composante
+- une brève poussée en chapeau mexicain au centre selon une direction
+- variation de volume (P) et rotation (S)
+- pas saute-mouton ; un nombre de Courant $S > 1$ est refusé car le schéma diverge
+labels:
+  lam: Coefficient de Lamé $\lambda$
+  mu: Module de cisaillement $\mu$
+  direction: Direction de la force
+  courant: Nombre de Courant $S$
+  t_max: Durée simulée

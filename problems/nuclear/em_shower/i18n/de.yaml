@@ -1,0 +1,16 @@
+source_hash: 24c72b95c811
+title: Elektromagnetischer Schauer
+summary: 'Ein hochenergetisches Elektron, das auf einen Bleiblock trifft, löst eine Kaskade aus: Elektronen strahlen Photonen ab, Photonen werden zu Elektron-Positron-Paaren, und die Energie halbiert sich bei jedem Schritt, bis sie die kritische Energie unterschreitet. Das Heitler-Modell wird als Verzweigungsprozess auf Tensoren simuliert — jedes Teilchen eine Zeile, jede Teilung zwei neue Zeilen — und sagt das Schauermaximum $N_{max} \approx E_0/E_c$ in der Tiefe $t_{max} \approx \ln(E_0/E_c)/\ln 2$ voraus.'
+notes: 'Die Tiefe wird in Strahlungslängen $X_0$ gemessen (0,56 cm in Blei), und $E_c$ ist die kritische Energie, etwa 7,4 MeV in Blei. Die Verdopplung stoppt, wenn die Töchter unter $E_c$ fallen würden, also wird das Maximum von etwa $E_0/E_c$ Teilchen nach etwa $\log_2(E_0/E_c)$ Strahlungslängen erreicht: Die Tiefe eines Schauers wächst nur logarithmisch mit der Energie, weshalb Kalorimeter kompakt sein können. Im Modus mit fester Länge teilt sich jedes Teilchen nach genau einem $X_0$, sodass sich eine ganze Generation im Gleichschritt bewegt und die Anzahl treppenförmig ansteigt. Der stochastische Modus (die gestrichelte Kurve zeigt zum Vergleich den anderen Modus) zieht jeden Wechselwirkungspunkt zufällig (Photonen laufen im Mittel $\tfrac97 X_0$): Die Generationen verschmieren in der Tiefe, was das niedrigere, breitere und längere Profil realer Schauer ergibt, während die Energiebilanz exakt bleibt. Die laterale Ausbreitung ist nur illustrativ (ein Winkelstoß $\propto E_c/E$). Vereinfachungen
+  des Heitler-Modells: gleiche Energieaufteilung, kein Ionisationsverlust oberhalb von $E_c$, ein Teilchen unterhalb der Schwelle deponiert seine ganze Energie auf einmal, und keine Compton-Streuung oder Photoeffekt. Der Zufalls-Seed ist fest.'
+meanings:
+- Energie (MeV) und Typ (1 = e±, 0 = γ) jedes fliegenden Teilchens; P ändert sich, während der Schauer wächst
+- 'stochastischer Modus: $1 - e^{-\Delta t/\lambda}$, $\lambda = X_0$ (e±) oder $\tfrac97 X_0$ (γ)'
+- 'boolesche Maske: wer sich vervielfacht; der Rest deponiert seine Energie'
+- e → e + γ und γ → e + e, als zwei aneinandergehängte Hälften
+- fliegende Teilchen in jeder Tiefe
+- von Teilchen unterhalb der kritischen Energie abgegebene Energie
+labels:
+  e0: Primärenergie $E_0$
+  e_crit: Kritische Energie $E_c$
+  mode: Teilungslänge

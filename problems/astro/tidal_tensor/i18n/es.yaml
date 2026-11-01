@@ -1,0 +1,20 @@
+source_hash: c221614fc472
+title: Espaguetización cerca de un agujero negro
+summary: 'Un anillo de partículas cae hacia un agujero negro de masa estelar. La diferencia de gravedad a lo largo del anillo es el tensor de marea $T_{ij} = -\partial_i\partial_j\Phi$, calculado a partir de su fórmula y como hessiana con autograd. Estira el anillo en la dirección radial ($+2GM/r^3$) y lo comprime transversalmente ($-GM/r^3$ dos veces): la espaguetización, que despedaza los cuerpos reales dentro del radio de marea.'
+notes: 'Unidades: $G = c = 1$ y longitudes en $GM/c^2$, de modo que el horizonte está en $r_s = 2$ (30 km para un agujero negro de 10 masas solares). Las partículas del anillo no se atraen entre sí: los puntos azules siguen la gravedad newtoniana exacta y la curva roja la ley lineal $\ddot\xi_i = T_{ij}\xi_j$, y coinciden mientras el anillo siga siendo pequeño frente a $r$. El círculo naranja marca dónde se despedazaría un cuerpo del tamaño del anillo y de masa $m$ mantenido unido por su propia gravedad. Para un agujero negro de masa estelar ese radio está muy fuera del horizonte, así que una estrella (o un astronauta) que cae queda destrozada antes de cruzarlo; para un agujero negro supermasivo puede estar dentro del horizonte. Aquí la gravedad es newtoniana; sorprendentemente, el tensor de marea de un observador en caída radial en relatividad general tiene exactamente los mismos autovalores $(2, -1, -1)\,GM/r^3$. La simulación se detiene antes del horizonte.'
+meanings:
+- posición del centro del anillo (agujero negro en el origen)
+- separación de la partícula del anillo $b$ respecto al centro
+- producto exterior, sin índice sumado
+- tensor de marea a partir de la fórmula
+- el mismo tensor como hessiana con autograd
+- '$j$ repetido ⇒ sumado: aceleración de marea lineal'
+- $= -\nabla^2\Phi = 0$ en el vacío
+- radio de marea (de Roche) de un cuerpo autogravitante
+labels:
+  r0: Distancia inicial
+  r_stop: Detener la caída en
+  ring_radius: Radio del anillo
+  n_particles: Partículas del anillo
+  mass_ratio: Masa del cuerpo para $r_t$, $m/M$
+  n_steps: Pasos de RK4

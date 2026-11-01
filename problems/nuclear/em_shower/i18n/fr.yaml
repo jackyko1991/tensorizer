@@ -1,0 +1,16 @@
+source_hash: 24c72b95c811
+title: Gerbe électromagnétique
+summary: 'Un électron de haute énergie frappant un bloc de plomb déclenche une cascade : les électrons rayonnent des photons, les photons se convertissent en paires électron–positron, et l''énergie est divisée par deux à chaque étape jusqu''à tomber à l''énergie critique. Le modèle de Heitler est simulé comme un processus de branchement sur des tenseurs — chaque particule est une ligne, chaque division deux nouvelles lignes — et prédit le maximum de la gerbe $N_{max} \approx E_0/E_c$ à la profondeur $t_{max} \approx \ln(E_0/E_c)/\ln 2$.'
+notes: 'La profondeur est en longueurs de radiation $X_0$ (0.56 cm dans le plomb) et $E_c$ est l''énergie critique, environ 7.4 MeV dans le plomb. Le doublement s''arrête quand les filles tomberaient sous $E_c$, si bien que le maximum d''environ $E_0/E_c$ particules est atteint après environ $\log_2(E_0/E_c)$ longueurs de radiation : la profondeur d''une gerbe ne croît que logarithmiquement avec l''énergie, c''est pourquoi les calorimètres peuvent être compacts. En mode longueur fixe, chaque particule se divise après exactement un $X_0$, donc toute une génération avance au même pas et le nombre monte en escalier. Le mode stochastique (la courbe en tirets montre l''autre mode pour comparaison) tire chaque point d''interaction au hasard (les photons parcourent $\tfrac97 X_0$ en moyenne) : les générations s''étalent en profondeur, ce qui donne le profil plus bas, plus large et plus long des gerbes réelles, tandis que le bilan d''énergie reste exact. L''étalement latéral n''est qu''illustratif
+  (un angle $\propto E_c/E$). Simplifications du modèle de Heitler : partage égal de l''énergie, pas de perte par ionisation au-dessus de $E_c$, une particule sous le seuil dépose toute son énergie d''un coup, et ni diffusion Compton ni effet photoélectrique. La graine aléatoire est fixe.'
+meanings:
+- énergie (MeV) et type (1 = e±, 0 = γ) de chaque particule en vol ; P change à mesure que la gerbe grandit
+- 'mode stochastique : $1 - e^{-\Delta t/\lambda}$, $\lambda = X_0$ (e±) ou $\tfrac97 X_0$ (γ)'
+- 'masque booléen : qui se multiplie, les autres déposent leur énergie'
+- e → e + γ et γ → e + e, en deux moitiés concaténées
+- particules en vol à chaque profondeur
+- énergie déposée par les particules sous l'énergie critique
+labels:
+  e0: Énergie primaire $E_0$
+  e_crit: Énergie critique $E_c$
+  mode: Longueur de division

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Burgers equation: a sine-shaped velocity profile u(x) whose crest moves faster than its trough, so the front steepens into a thin shock">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- axes -->
+    <line x1="20" y1="80" x2="226" y2="80" stroke="#374151" stroke-width="2" marker-end="url(#axis)"/>
+    <line x1="24" y1="148" x2="24" y2="12" stroke="#374151" stroke-width="2" marker-end="url(#axis)"/>
+    <text x="214" y="98" font-style="italic">x</text>
+    <text x="32" y="22" font-style="italic">u</text>
+    <!-- initial sine -->
+    <path d="M24,80 C44,40 64,32 84,32 C104,32 112,50 124,80 C136,110 144,128 164,128 C184,128 200,112 214,80" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- steepened profile -->
+    <path d="M24,80 C60,62 100,44 124,36 L130,124 C154,116 190,98 214,80" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+    <!-- fast crest, slow trough -->
+    <line x1="92" y1="24" x2="122" y2="24" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="156" y1="138" x2="138" y2="138" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- shock -->
+    <path d="M136,44 A10,10 0 0 1 136,60" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <text x="142" y="56" fill="#b45309">shock</text>
+    <text x="44" y="120" font-style="italic" fill="#1e40af">ν</text>
+  </g>
+</svg>

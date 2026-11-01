@@ -1,0 +1,20 @@
+source_hash: c221614fc472
+title: Spaghettification près d'un trou noir
+summary: 'Un anneau de particules tombe vers un trou noir stellaire. La différence de gravité à travers l''anneau est le tenseur de marée $T_{ij} = -\partial_i\partial_j\Phi$, calculé par sa formule et comme hessienne par autograd. Il étire l''anneau dans la direction radiale ($+2GM/r^3$) et le comprime transversalement ($-GM/r^3$ deux fois) : c''est la spaghettification, qui déchire les corps réels à l''intérieur du rayon de marée.'
+notes: 'Unités : $G = c = 1$ et longueurs en $GM/c^2$, donc l''horizon est en $r_s = 2$ (30 km pour un trou noir de 10 masses solaires). Les particules de l''anneau ne s''attirent pas entre elles : les points bleus suivent la gravité newtonienne exacte, la courbe rouge la loi linéaire $\ddot\xi_i = T_{ij}\xi_j$, et elles concordent tant que l''anneau reste petit devant $r$. Le cercle orange marque l''endroit où un corps de la taille de l''anneau et de masse $m$, tenu par sa propre gravité, serait déchiré. Pour un trou noir stellaire, ce rayon est bien à l''extérieur de l''horizon, donc une étoile (ou un astronaute) en chute est déchiquetée avant de le franchir ; pour un trou noir supermassif, il peut se trouver à l''intérieur de l''horizon. La gravité est ici newtonienne ; fait remarquable, le tenseur de marée d''un observateur en chute radiale en relativité générale a exactement les mêmes valeurs propres $(2, -1, -1)\,GM/r^3$. La simulation s''arrête avant l''horizon.'
+meanings:
+- position du centre de l'anneau (trou noir à l'origine)
+- séparation de la particule $b$ de l'anneau par rapport au centre
+- produit extérieur, aucun indice sommé
+- tenseur de marée d'après la formule
+- le même tenseur comme hessienne par autograd
+- '$j$ répété ⇒ sommé : accélération de marée linéaire'
+- $= -\nabla^2\Phi = 0$ dans le vide
+- rayon de marée (de Roche) d'un corps autogravitant
+labels:
+  r0: Distance initiale
+  r_stop: Arrêter la chute à
+  ring_radius: Rayon de l'anneau
+  n_particles: Particules de l'anneau
+  mass_ratio: Masse du corps pour $r_t$, $m/M$
+  n_steps: Pas RK4

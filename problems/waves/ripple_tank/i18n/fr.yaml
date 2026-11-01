@@ -1,0 +1,17 @@
+source_hash: 0b5328cbe1c8
+title: Interférences en cuve à ondes
+summary: Deux vibreurs oscillent en phase à la surface de l'eau et émettent des rides circulaires. L'équation d'onde 2D est intégrée avec le laplacien comme noyau de convolution $3\times3$ (conv2d), un bord amortissant absorbe les ondes sortantes, et la figure d'interférence se stabilise en lignes nodales immobiles là où la différence de marche est un nombre demi-entier impair de longueurs d'onde.
+notes: 'Unités : taille de cellule $h = 1$, célérité $c = 1$. Saute-mouton en temps avec le terme d''amortissement centré, donc le pas est explicite. Le long d''une ligne nodale, la ride d''une source arrive toujours une demi-période après celle de l''autre, si bien qu''elles s''annulent ; les courbes en tirets sont les hyperboles $|r_1 - r_2| = (m + \tfrac12)\lambda$, qui coïncident avec les lignes sombres du panneau de droite suffisamment loin des sources. Écarter les sources de plus de $\lambda$ ajoute des lignes nodales. Le bord est un absorbeur grossier (une couche de frottement), pas une couche parfaitement adaptée, donc un peu de réflexion subsiste. Le panneau de droite montre la moyenne glissante de $u^2$ ; les premières périodes sont transitoires, le temps que les ondes remplissent la cuve.'
+meanings:
+- hauteur de la surface dans la cellule $(a, b)$
+- noyau du laplacien à cinq points, décalages $\alpha, \beta \in \{-1, 0, 1\}$
+- '$\alpha, \beta$ répétés ⇒ sommés : le noyau glisse sur la grille'
+- nul à l'intérieur, croissant progressivement dans le bord absorbant
+- deux petites sources gaussiennes oscillant en phase
+- un nombre de Courant supérieur à $1/\sqrt2$ est refusé (le schéma divergerait)
+- 'moyenne glissante de $u^2$ sur environ une période : les lignes sombres sont les nœuds'
+labels:
+  wavelength: Longueur d'onde $\lambda$
+  separation: Distance entre sources $d$
+  courant: Nombre de Courant $c\,\Delta t/h$
+  t_max: Durée simulée

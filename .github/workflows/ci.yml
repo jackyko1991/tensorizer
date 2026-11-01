@@ -5,8 +5,12 @@ on:
     branches: [main]
   pull_request:
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  python:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
@@ -14,7 +18,23 @@ jobs:
         with:
           cache: true
       - run: pixi run lint
-      - run: pixi run test
+      - run: pixi run pytest -q tests/test_api.py
+
+  # Physics checks + convention/diagram/render smoke tests, one job per topic in parallel.
+  physics:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        topic: [mechanics, optics, waves, thermodynamics, em, fluids, quantum, astro, nuclear, others]
+    env:
+      TENSORIZER_CATEGORIES: ${{ matrix.topic }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: prefix-dev/setup-pixi@v0.11.2
+        with:
+          cache: true
+      - run: pixi run pytest -q tests/test_physics_${{ matrix.topic }}.py tests/test_smoke.py
 
   web:
     runs-on: ubuntu-latest
@@ -23,10 +43,5 @@ jobs:
       - uses: prefix-dev/setup-pixi@v0.11.2
         with:
           cache: true
-      # Full render of all 15 problems: checks every default-param run end to end.
-      - run: pixi run build-assets
+      - run: pixi run python scripts/build_assets.py --manifest-only
       - run: pixi run web-build
-      - uses: actions/upload-artifact@v7.0.2
-        with:
-          name: site
-          path: frontend/dist

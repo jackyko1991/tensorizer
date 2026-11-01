@@ -1,0 +1,17 @@
+source_hash: 0b5328cbe1c8
+title: Interferenz in der Wellenwanne
+summary: Zwei Erreger tauchen im Gleichtakt in eine Wasseroberfläche und senden kreisförmige Wellen aus. Die 2D-Wellengleichung wird mit dem Laplace-Operator als $3\times3$-Faltungskern (conv2d) integriert, ein dämpfender Rand schluckt die auslaufenden Wellen, und das Interferenzmuster stellt sich auf ruhende Knotenlinien ein, wo der Gangunterschied ein ungerades Vielfaches der halben Wellenlänge ist.
+notes: 'Einheiten: Zellgröße $h = 1$, Wellengeschwindigkeit $c = 1$. Leapfrog in der Zeit mit zentriertem Dämpfungsterm, sodass der Schritt explizit ist. Entlang einer Knotenlinie kommt die Welle der einen Quelle immer eine halbe Periode nach der der anderen an, sodass sie sich auslöschen; die gestrichelten Kurven sind die Hyperbeln $|r_1 - r_2| = (m + \tfrac12)\lambda$, die weit genug von den Quellen mit den dunklen Linien im rechten Panel übereinstimmen. Rückt man die Quellen weiter als $\lambda$ auseinander, kommen weitere Knotenlinien hinzu. Der Rand ist ein grober Absorber (eine Reibungsschicht), keine perfekt angepasste Schicht, daher bleibt etwas Reflexion übrig. Das rechte Panel zeigt das laufende Mittel von $u^2$; die ersten paar Perioden sind ein Einschwingvorgang, während die Wellen die Wanne füllen.'
+meanings:
+- Oberflächenhöhe in Gitterzelle $(a, b)$
+- Fünf-Punkte-Laplace-Kern, Versätze $\alpha, \beta \in \{-1, 0, 1\}$
+- 'wiederholte $\alpha, \beta$ ⇒ summiert: der Kern gleitet über das Gitter'
+- null im Inneren, im absorbierenden Rand glatt ansteigend
+- zwei kleine Gaußsche Quellen, die in Phase schwingen
+- eine Courant-Zahl über $1/\sqrt2$ wird abgelehnt (das Schema würde instabil)
+- 'laufendes Mittel von $u^2$ über etwa eine Periode: dunkle Linien sind Knoten'
+labels:
+  wavelength: Wellenlänge $\lambda$
+  separation: Quellenabstand $d$
+  courant: Courant-Zahl $c\,\Delta t/h$
+  t_max: Simulierte Zeit

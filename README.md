@@ -28,7 +28,7 @@ Here $b$ indexes a batch of balls and $i, j$ are spatial components. The repeate
 ## Problem library
 
 <!-- library:start -->
-45 problems in 5 topics, three per difficulty level. Click a topic to expand it.
+82 problems in 10 topics, three per difficulty level. Click a topic to expand it.
 
 <details>
 <summary><b>Mechanics</b> (9 problems)</summary>
@@ -101,6 +101,44 @@ Here $b$ indexes a batch of balls and $i, j$ are spatial components. The repeate
 | [Double-slit interference](problems/optics/double_slit) | $\partial_t^2 u = c^2\,\partial_i\partial_i u$ |
 | [Fraunhofer diffraction as a 2D Fourier transform](problems/optics/fourier_optics) | $U_{kl} = F_{ka}\,A_{ab}\,F_{lb}$ |
 | [Road mirage from the ray equation](problems/optics/grin_mirage) | $\frac{d}{ds}\Big(n\,\frac{dr_i}{ds}\Big) = \partial_i n$ |
+
+</details>
+
+</details>
+
+<details>
+<summary><b>Waves</b> (9 problems)</summary>
+
+<details>
+<summary>🟢 Beginner (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Standing waves on a string](problems/waves/standing_waves) | $\ddot u_{bi} = c^2\,D_{ij}\,u_{bj}$ |
+| [Beats and group velocity](problems/waves/beats_superposition) | $y_{nj} = A_s\cos\theta_{snj}$ |
+| [Doppler effect and Mach cone](problems/waves/doppler_effect) | $t_{oe} = t_e + \tfrac{1}{c}\sqrt{(o_{oi} - s_{ei})(o_{oi} - s_{ei})}$ |
+
+</details>
+
+<details>
+<summary>🟠 Intermediate (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Pulse at a string junction](problems/waves/string_junction) | $\mu_i\,\ddot u_i = T\,D_{ij}\,u_j$ |
+| [Dispersive water waves](problems/waves/dispersive_waves) | $\hat a_{nk} = \hat a_k\,e^{-i\omega_k t_n}$ |
+| [Vibrating drum modes](problems/waves/membrane_modes) | $\Delta_{(ab)(cd)} = D_{ac}\,\delta_{bd} + \delta_{ac}\,D_{bd}$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [KdV soliton collision](problems/waves/kdv_solitons) | $\partial_t \hat u_k = i k^3\,\hat u_k - 3ik\,F_{kj}\,(u_j u_j)$ |
+| [Rogue waves (nonlinear Schrödinger)](problems/waves/nonlinear_schrodinger) | $\psi_j \leftarrow F^{-1}_{jk}\,e^{-ik^2\Delta t/4}\,F_{kl}\,\psi_l$ |
+| [Ripple tank interference](problems/waves/ripple_tank) | $(\nabla^2 u)_{ab} = \frac{1}{h^2}\,K_{\alpha\beta}\,u_{a+\alpha,\,b+\beta}$ |
 
 </details>
 
@@ -183,6 +221,44 @@ Here $b$ indexes a batch of balls and $i, j$ are spatial components. The repeate
 </details>
 
 <details>
+<summary><b>Fluids & Continuum</b> (9 problems)</summary>
+
+<details>
+<summary>🟢 Beginner (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Hydrostatic pressure and buoyancy](problems/fluids/hydrostatics_buoyancy) | $p = p_0 + \rho_w\,g_i x_i$ |
+| [Bernoulli and the Venturi tube](problems/fluids/bernoulli_venturi) | $A_k\,u_k = Q$ |
+| [Draining a tank (Torricelli)](problems/fluids/torricelli_draining) | $\dot h_b = -\frac{a_b}{A}\,\sqrt{2 g\,h_b}$ |
+
+</details>
+
+<details>
+<summary>🟠 Intermediate (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Burgers equation and shock formation](problems/fluids/burgers_shock) | $\dot u_i = -\tfrac12\,D_{ij}\,u_j^2 + \nu\,L_{ij}\,u_j$ |
+| [Navier–Stokes pipe flow](problems/fluids/navier_stokes_pipe_flow) | $\rho\,(\partial_t u_i + u_j\,\partial_j u_i) = -\partial_i p + \mu\,\partial_j\partial_j u_i$ |
+| [Stress, strain and Mohr's circle](problems/fluids/stress_strain) | $\varepsilon_{ij} = \tfrac12(\partial_i u_j + \partial_j u_i)$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Lid-driven cavity (Navier–Stokes)](problems/fluids/lid_driven_cavity) | $\partial_t\omega + u_j\,\partial_j\omega = \nu\,\partial_j\partial_j\omega$ |
+| [Flow past a cylinder: drag and vortex shedding](problems/fluids/cylinder_drag) | $f_i(\mathbf x + \mathbf e_i, t + 1) = f_i - \tfrac1\tau\big(f_i - f_i^\text{eq}\big)$ |
+| [Elastic P and S waves](problems/fluids/elastic_waves) | $\rho\,\ddot u_i = (\lambda + \mu)\,\partial_i\partial_j u_j + \mu\,\partial_j\partial_j u_i + f_i$ |
+
+</details>
+
+</details>
+
+<details>
 <summary><b>Quantum</b> (9 problems)</summary>
 
 <details>
@@ -215,6 +291,96 @@ Here $b$ indexes a batch of balls and $i, j$ are spatial components. The repeate
 | [Quantum tunnelling](problems/quantum/tunneling) | $\psi_x \leftarrow F^{-1}_{xk}\,K_k\,F_{ky}\,P_y\,\psi_y$ |
 | [2D wave-packet scattering](problems/quantum/scattering_2d) | $\psi \leftarrow P\,\mathcal F^{-1} K\,\mathcal F\,P\,\psi$ |
 | [Two-qubit entanglement](problems/quantum/two_qubit_entanglement) | $\psi_{ab} \leftarrow G_{abcd}\,\psi_{cd}$ |
+
+</details>
+
+</details>
+
+<details>
+<summary><b>Astrophysics & Relativity</b> (9 problems)</summary>
+
+<details>
+<summary>🟢 Beginner (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Kepler's laws of planetary motion](problems/astro/kepler_orbits) | $\ddot x_{bi} = -GM\,(x_{bj}x_{bj})^{-3/2}\,x_{bi}$ |
+| [Escape velocity](problems/astro/escape_velocity) | $\ddot x_{bi} = -GM\,(x_{bj}x_{bj})^{-3/2}\,x_{bi}$ |
+| [Hubble expansion](problems/astro/hubble_expansion) | $x_{tgi} = a_t\,q_{gi}$ |
+
+</details>
+
+<details>
+<summary>🟠 Intermediate (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Special relativity: Minkowski diagrams and Lorentz boosts](problems/astro/minkowski_diagram) | $x'^\mu = \Lambda^\mu{}_\nu\,x^\nu$ |
+| [Lagrange points of the restricted three-body problem](problems/astro/lagrange_points) | $\ddot x_i = -m_s\,\frac{(x - x_s)_i}{\lvert x - x_s\rvert^3} - 2\,\varepsilon_{ijk}\Omega_j\dot x_k - \varepsilon_{ijk}\Omega_j\,\varepsilon_{klm}\Omega_l x_m$ |
+| [Spaghettification near a black hole](problems/astro/tidal_tensor) | $\ddot\xi_{bi} = T_{ij}\,\xi_{bj}$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [General relativity: orbits and infall around a black hole](problems/astro/black_hole_geodesics) | $\frac{d^2x^\mu}{d\tau^2} = -\Gamma^\mu{}_{\alpha\beta}\,\dot x^\alpha\dot x^\beta$ |
+| [Hawking radiation and black-hole evaporation](problems/astro/hawking_radiation) | $T_m = \frac{\hbar c^3}{8\pi G k_B}\,M_m^{-1}$ |
+| [Gravitational lensing by a black hole](problems/astro/gravitational_lensing) | $u_b'' = -u_b + 3M\,u_b^2$ |
+
+</details>
+
+</details>
+
+<details>
+<summary><b>Nuclear & Particle</b> (9 problems)</summary>
+
+<details>
+<summary>🟢 Beginner (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Radioactive decay](problems/nuclear/radioactive_decay) | $s_n(t+\Delta t) = s_n(t)\,\big[u_n \ge p\big]$ |
+| [Decay chain (Bateman equations)](problems/nuclear/decay_chain) | $\dot N_i = A_{ij}\,N_j$ |
+| [Nuclear binding energy](problems/nuclear/binding_energy) | $B_{zn} = a_V A_{zn} - a_S A_{zn}^{2/3} - a_C\,\frac{Z_z(Z_z-1)}{A_{zn}^{1/3}} - a_A\,\frac{(N_n-Z_z)^2}{A_{zn}} + \delta_{zn}$ |
+
+</details>
+
+<details>
+<summary>🟠 Intermediate (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Rutherford scattering](problems/nuclear/rutherford_scattering) | $\ddot x_{bi} = \frac{k}{m}\,\frac{x_{bi}}{(x_{bj}x_{bj})^{3/2}}$ |
+| [Neutrino oscillations](problems/nuclear/neutrino_oscillations) | $A_{k\beta\alpha} = U_{\beta i}\,U^*_{\alpha i}\,e^{-i\,m_i^2 L_k/2E}$ |
+| [Four-momentum and two-body decay](problems/nuclear/four_momentum) | $p_\mu p^\mu = \eta_{\mu\nu}\,p^\mu p^\nu = m^2$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Nuclear shell model](problems/nuclear/shell_model) | $H_{kij} = -\frac{\hbar^2}{2m}D_{ij} + \Big[V_k(r_i) + \frac{\hbar^2 l_k(l_k+1)}{2m r_i^2}\Big]\delta_{ij}$ |
+| [Reactor criticality](problems/nuclear/reactor_criticality) | $M_{ij}\,\phi_j = \frac1k\,F_{ij}\,\phi_j$ |
+| [Electromagnetic shower](problems/nuclear/em_shower) | $(E_p, s_p) \to \big(\tfrac{E_p}{2}, 1\big),\ \big(\tfrac{E_p}{2}, 1 - s_p\big)\ \text{ if } \tfrac{E_p}{2} \ge E_c$ |
+
+</details>
+
+</details>
+
+<details>
+<summary><b>Others</b> (1 problems)</summary>
+
+<details>
+<summary>🟢 Beginner (1)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Receptor–ligand binding (k_on, k_off)](problems/others/receptor_binding) | $J_{bc} = k^{\mathrm{on}}_b\,R_{bc}\,L_{bc} - k^{\mathrm{off}}_b\,C_{bc}$ |
 
 </details>
 

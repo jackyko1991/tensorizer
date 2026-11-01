@@ -1,0 +1,20 @@
+source_hash: e3dd0dc823a1
+title: Lente gravitacional de un agujero negro
+summary: 'Los rayos de luz que pasan junto a un agujero negro son geodésicas nulas, trazadas para todo un abanico de parámetros de impacto a la vez: los rayos lejanos se desvían $4GM/(c^2 b)$ y los que quedan dentro de $\sqrt{27}\,GM/c^2$ caen. En el cielo, la ecuación de la lente lleva cada píxel de vuelta al plano de la fuente en una sola operación tensorial, así que una estrella que pasa por detrás del agujero se convierte en dos arcos, un anillo de Einstein y un pico de magnificación.'
+notes: 'Panel de rayos: unidades $G = c = M = 1$; el círculo punteado es la esfera de fotones ($r = 3M$), y los rayos con $b < \sqrt{27}\,M \approx 5.2\,M$ terminan en el agujero, por eso un agujero negro proyecta una sombra 2,6 veces su radio del horizonte. Los rayos justo por fuera pueden dar una vuelta antes de escapar. Panel del cielo: masa puntual en lente delgada, en unidades del radio de Einstein (alrededor de un milisegundo de arco para un agujero negro estelar de nuestra Galaxia, por eso la microlente se ve como un aumento de brillo y no como imágenes resueltas). La lente conserva el brillo superficial, así que la imagen es simplemente la fuente evaluada en $\beta(\theta)$; la luz extra procede del estiramiento de las imágenes. El tamaño finito de la fuente limita la magnificación cerca del alineamiento perfecto, donde una fuente puntual daría $\mu \to \infty$.'
+meanings:
+- $1/r$ a lo largo del rayo $b$, partiendo de 0 (infinito) con $du/d\varphi = 1/b$
+- ecuación de la órbita de geodésicas nulas, RK4 en $\varphi$ para todos los rayos
+- ángulo de salida menos $\pi$; NaN si es capturado
+- ángulo en el cielo del píxel $p$, en unidades de $\theta_E$
+- $j$ repetido ⇒ sumado
+- adónde mira cada píxel en el plano de la fuente
+- imagen con lente para cada fotograma $f$ por broadcasting
+- 'magnificación: cociente de flujos totales'
+labels:
+  b_min: Parámetro de impacto mínimo $b$
+  b_max: Parámetro de impacto máximo $b$
+  n_rays: Rayos
+  impact: Desplazamiento de la fuente respecto a la lente $u$
+  source_radius: Radio de la fuente
+  n_pixels: Píxeles del cielo por lado

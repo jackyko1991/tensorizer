@@ -1,0 +1,16 @@
+source_hash: 24c72b95c811
+title: Cascada electromagnética
+summary: 'Un electrón de alta energía que incide sobre un bloque de plomo inicia una cascada: los electrones radian fotones, los fotones se convierten en pares electrón–positrón y la energía se reduce a la mitad en cada paso hasta caer a la energía crítica. El modelo de Heitler se simula como un proceso de ramificación sobre tensores (cada partícula una fila, cada división dos filas nuevas) y predice el máximo de la cascada $N_{max} \approx E_0/E_c$ a una profundidad $t_{max} \approx \ln(E_0/E_c)/\ln 2$.'
+notes: 'La profundidad se mide en longitudes de radiación $X_0$ (0.56 cm en plomo) y $E_c$ es la energía crítica, unos 7.4 MeV en plomo. La duplicación se detiene cuando las hijas caerían por debajo de $E_c$, así que el máximo de unas $E_0/E_c$ partículas se alcanza tras unas $\log_2(E_0/E_c)$ longitudes de radiación: la profundidad de una cascada solo crece logarítmicamente con la energía, y por eso los calorímetros pueden ser compactos. En el modo de longitud fija cada partícula se divide tras exactamente una $X_0$, de modo que toda una generación avanza a la vez y el recuento sube como una escalera. El modo estocástico (la curva discontinua muestra el otro modo para comparar) sortea al azar cada punto de interacción (los fotones recorren $\tfrac97 X_0$ en promedio): las generaciones se difuminan en profundidad, lo que da el perfil más bajo, ancho y largo de las cascadas reales, mientras la contabilidad de energía sigue siendo exacta. La dispersión lateral es solo ilustrativa (un desvío
+  angular $\propto E_c/E$). Simplificaciones del modelo de Heitler: reparto equitativo de la energía, sin pérdidas por ionización por encima de $E_c$, una partícula por debajo del umbral deposita toda su energía de golpe, y sin dispersión Compton ni efecto fotoeléctrico. La semilla aleatoria es fija.'
+meanings:
+- energía (MeV) y tipo (1 = e±, 0 = γ) de cada partícula en vuelo; P cambia a medida que crece la cascada
+- 'modo estocástico: $1 - e^{-\Delta t/\lambda}$, $\lambda = X_0$ (e±) o $\tfrac97 X_0$ (γ)'
+- 'máscara booleana: quién se multiplica; el resto deposita su energía'
+- e → e + γ y γ → e + e, como dos mitades concatenadas
+- partículas en vuelo a cada profundidad
+- energía depositada por las partículas por debajo de la energía crítica
+labels:
+  e0: Energía primaria $E_0$
+  e_crit: Energía crítica $E_c$
+  mode: Longitud de división

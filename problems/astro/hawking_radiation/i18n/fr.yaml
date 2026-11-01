@@ -1,0 +1,16 @@
+source_hash: 7a350e6eef20
+title: Rayonnement de Hawking et évaporation des trous noirs
+summary: 'Un trou noir rayonne comme un corps noir à la température de Hawking $T_H = \hbar c^3/(8\pi G M k_B)$. Un seul broadcast évalue la loi de Planck pour de nombreuses masses et longueurs d''onde à la fois, et RK4 intègre la perte de masse $dM/dt = -\alpha/M^2$ : le trou rétrécit, chauffe et finit en une explosion après $t \propto M^3$.'
+notes: 'Unités SI partout. Un trou noir d''une masse solaire est à $6\times10^{-8}$ K, bien plus froid que le fond diffus micro-onde à 2,7 K, si bien que les vrais trous noirs astrophysiques absorbent plus qu''ils n''émettent. Seuls de minuscules trous (primordiaux) s''évaporent : un trou d''environ $2\times10^{11}$ kg formé lors du Big Bang serait en train de s''achever. Le modèle ne compte que les photons et traite l''horizon comme un corps noir parfait d''aire $4\pi r_s^2$ ; les vrais trous émettent aussi des neutrinos, des gravitons et, s''ils sont assez chauds, des particules plus lourdes, ce qui raccourcit la durée de vie, et les facteurs de corps gris modifient la forme du spectre. Le pas de temps est choisi pour que chaque pas RK4 consume une fraction fixe de la masse restante ; l''animation avance par pas égaux de $\log M$, donc les dernières images couvrent un intervalle de temps minuscule. Le rayon de l''horizon est dessiné en $M^{0.35}$ pour rester visible.'
+meanings:
+- 'un lot de masses de trous noirs (kg) : Soleil, Terre, …, le trou animé'
+- température de Hawking, élément par élément
+- grille de longueurs d'onde logarithmique
+- spectre de Planck par broadcast de T[:, None] contre lam[None, :]
+- loi de Wien $b/T_H$
+- puissance de Stefan–Boltzmann de l'horizon
+- $-P/c^2$, intégré avec RK4
+- durée de vie analytique, comparée à l'intégration
+labels:
+  log10_mass: Masse initiale $\log_{10}(M_0/\mathrm{kg})$
+  burn_fraction: Fraction de masse consumée par pas RK4

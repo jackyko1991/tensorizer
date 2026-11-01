@@ -23,7 +23,8 @@ def run(params: dict, out_dir: Path) -> Path:
 
     dt = (t[1] - t[0]).item()
     print(f"phase velocity v_p = {v_p:.3f} m/s,  group velocity v_g = {v_g:.3f} m/s,  ratio {v_g / v_p:.3f}")
-    print(f"beat frequency measured {solve.beat_frequency(result['trace'], dt, f1):.3f} Hz   (|f1 - f2| = {f2 - f1:.3f} Hz)")
+    f_beat = solve.beat_frequency(result["trace"], dt, f1)
+    print(f"beat frequency measured {f_beat:.3f} Hz   (|f1 - f2| = {f2 - f1:.3f} Hz)")
     return plot.animate(x, t, result, v_p, v_g, out_dir / "beats_superposition.gif")
 
 

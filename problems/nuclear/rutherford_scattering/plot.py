@@ -65,5 +65,5 @@ def animate(
         counter.set_text(f"{seen.size} / {deg.size} alphas detected")
 
     fig.tight_layout()
-    frames = [first + i for i in frame_indices(last - first + 1, 75)]
+    frames = [first + i for i in frame_indices(last - first + 1, 60)]
     return save_gif(fig, update, frames, path)

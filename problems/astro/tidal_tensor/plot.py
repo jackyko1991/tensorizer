@@ -64,9 +64,6 @@ def animate(sol: dict, GM: float, r_t: float, path: Path) -> Path:
     ax_s.loglog(r, along_e / s0, color=ACCENT[0], lw=1, alpha=0.35)
     ax_s.loglog(r, across_e / s0, color=ACCENT[2], lw=1, alpha=0.35)
     ax_s.set_xlim(r[0] * 1.05, r[-1] * 0.95)  # r decreases to the right, as time goes on
-    ticks = [v for v in (100, 50, 40, 20, 10, 5, 3, 2) if r[-1] <= v <= r[0]]
-    ax_s.set_xticks(ticks, [f"{v:g}" for v in ticks])
-    ax_s.minorticks_off()
     ax_s.axvline(r_t, color="#f59e0b", ls="--", lw=1)
     run_along = ax_s.loglog([], [], color=ACCENT[0], lw=2, label="radial (stretch)")[0]
     run_across = ax_s.loglog([], [], color=ACCENT[2], lw=2, label="transverse (squeeze)")[0]
@@ -75,6 +72,9 @@ def animate(sol: dict, GM: float, r_t: float, path: Path) -> Path:
     ax_s.set_xlabel("distance r  (GM/c²)")
     ax_s.set_ylabel("half-length / initial radius")
     ax_s.legend(fontsize=7, loc="upper left")
+    ticks = [v for v in (100, 50, 40, 20, 10, 5, 3, 2) if r[-1] <= v <= r[0]]
+    ax_s.set_xticks(ticks, [f"{v:g}" for v in ticks])
+    ax_s.minorticks_off()
 
     def update(step: int):
         outline = ring[step, :, :2]

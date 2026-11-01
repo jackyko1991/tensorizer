@@ -75,13 +75,27 @@ export default function Tex({ tex, display = false }: { tex: string; display?: b
   );
 }
 
-/** Plain text with inline math: every `$...$` span is typeset with KaTeX (`\$` is a literal dollar). */
+/** Inline math reduced to plain text for <option> labels and alt text: "$k_{on}$" → "k_on". */
+export function plainText(text: string): string {
+  return text.replace(/(?<!\\)\$(.+?)(?<!\\)\$/gs, (_, m: string) =>
+    m.replace(/\\(mathrm|text|mathbf|boldsymbol)\{([^}]*)\}/g, "$2").replace(/\\([a-zA-Z]+)/g, "$1").replace(/[{}]/g, ""),
+  );
+}
+
+/** Plain text with inline math: every `$...$` span is typeset with KaTeX (`\$` is a literal dollar), `code` is monospaced. */
 export function RichText({ text }: { text: string }) {
   const html = useMemo(() => {
     const escape = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     return text
       .split(/(?<!\\)\$(.+?)(?<!\\)\$/s)
-      .map((part, i) => (i % 2 ? render(part, false) : escape(part.replace(/\\\$/g, "$"))))
+      .map((part, i) =>
+        i % 2
+          ? render(part, false)
+          : escape(part.replace(/\\\$/g, "$")).replace(
+              /`([^`]+)`/g,
+              '<code class="rounded bg-gray-100 px-1 py-0.5 font-mono text-[0.85em] text-gray-800">$1</code>',
+            ),
+      )
       .join("");
   }, [text]);
   return <span dangerouslySetInnerHTML={{ __html: html }} />;

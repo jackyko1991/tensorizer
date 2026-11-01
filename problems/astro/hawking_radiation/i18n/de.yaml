@@ -1,0 +1,16 @@
+source_hash: 7a350e6eef20
+title: Hawking-Strahlung und Verdampfen Schwarzer Löcher
+summary: 'Ein Schwarzes Loch leuchtet wie ein Schwarzer Körper bei der Hawking-Temperatur $T_H = \hbar c^3/(8\pi G M k_B)$. Ein einziges Broadcasting wertet das Plancksche Gesetz für viele Massen und Wellenlängen zugleich aus, und RK4 integriert den Massenverlust $dM/dt = -\alpha/M^2$: Das Loch schrumpft, heizt sich auf und endet nach $t \propto M^3$ in einem Ausbruch.'
+notes: 'Durchweg SI-Einheiten. Ein Schwarzes Loch von einer Sonnenmasse hat $6\times10^{-8}$ K, weit kälter als der 2,7-K-Mikrowellenhintergrund, daher absorbieren reale astrophysikalische Schwarze Löcher mehr, als sie abstrahlen. Nur winzige (primordiale) Löcher verdampfen: Eines von etwa $2\times10^{11}$ kg, entstanden im Urknall, wäre gerade jetzt am Ende. Das Modell zählt nur Photonen und behandelt den Horizont als idealen Schwarzen Körper der Fläche $4\pi r_s^2$; reale Löcher strahlen auch Neutrinos, Gravitonen und, wenn heiß genug, schwerere Teilchen ab, was die Lebensdauer verkürzt, und Graukörperfaktoren verändern die Form des Spektrums. Der Zeitschritt ist so gewählt, dass jeder RK4-Schritt einen festen Bruchteil der verbleibenden Masse verbrennt; die Animation läuft in gleichen Schritten von $\log M$, sodass die letzten Bilder nur eine winzige Zeitspanne abdecken. Der Horizontradius wird als $M^{0.35}$ gezeichnet, damit er sichtbar bleibt.'
+meanings:
+- 'ein Batch von Massen Schwarzer Löcher (kg): Sonne, Erde, …, das animierte Loch'
+- Hawking-Temperatur, elementweise
+- logarithmisch verteiltes Wellenlängengitter
+- Planck-Spektrum per Broadcasting von T[:, None] gegen lam[None, :]
+- Wiensches Gesetz $b/T_H$
+- Stefan–Boltzmann-Leistung des Horizonts
+- $-P/c^2$, mit RK4 integriert
+- analytische Lebensdauer, mit der Integration verglichen
+labels:
+  log10_mass: Anfangsmasse $\log_{10}(M_0/\mathrm{kg})$
+  burn_fraction: Pro RK4-Schritt verbrannter Massenanteil

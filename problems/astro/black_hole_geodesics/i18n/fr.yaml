@@ -1,0 +1,20 @@
+source_hash: 31a92e6ff86f
+title: 'Relativité générale : orbites et chute autour d''un trou noir'
+summary: Géodésiques dans la métrique de Schwarzschild, avec les symboles de Christoffel obtenus à partir de $g_{\mu\nu}(x)$ par différentiation automatique et contractés avec einsum. Une orbite liée précesse au lieu de se refermer, le potentiel effectif montre la dernière orbite circulaire stable (ISCO) à $6GM/c^2$ et la sphère de photons à $3GM/c^2$, et une chute radiale atteint l'horizon en un temps propre fini tandis que l'horloge lointaine se fige.
+notes: 'Unités : $G = c = M = 1$, donc les longueurs sont en $GM/c^2$ (1,5 km par masse solaire) et l''horizon est en $r_s = 2$. L''orbite part du périastre avec l''énergie $E$ et le moment cinétique $L$ exacts de Schwarzschild pour une orbite de paramètre $p$ (semi-latus rectum) et d''excentricité $e$. Elle est intégrée en temps propre $\tau$ avec RK4 ; l''ellipse newtonienne grise de mêmes $p$ et $e$ se referme sur elle-même. L''avance du périhélie tend vers $6\pi GM/(c^2 p)$ pour $p$ grand (43″ par siècle pour Mercure) et devient bien plus grande près du trou. Les orbites liées n''existent que pour $p > 6 + 2e$ ; sous l''ISCO ($r = 6$) les orbites circulaires sont instables, et en $r = 3$ même la lumière peut tourner. Dans la chute (en bas à droite), l''horloge qui tombe atteint l''horizon après environ $\tau = \tfrac{\pi}{2}\sqrt{r_0^3/2}$ (fini), mais en temps de Schwarzschild $t$ la chute ralentit et se fige en $r = 2$ ; la simulation s''arrête en $r = 2.1$, où ces coordonnées commencent
+  à défaillir.'
+meanings:
+- événement $(t, r, \theta, \varphi)$ sur chaque géodésique, $G = c = M = 1$
+- quadrivitesse $dx^\mu/d\tau$
+- métrique de Schwarzschild, signature $(-, +, +, +)$
+- métrique inverse
+- dérivées de la métrique par autograd, indice de dérivation en dernier
+- $\sigma$ répété ⇒ sommé ($z$ = lot)
+- $\alpha, \beta$ répétés ⇒ sommés
+- $= -1$ pour une particule massive, vérifie l'intégration
+labels:
+  p: Paramètre de l'orbite $p$
+  e: Excentricité $e$
+  n_orbits: Orbites à simuler
+  dt: Pas de temps propre $\Delta\tau$
+  r_infall: Départ de la chute (au repos) à

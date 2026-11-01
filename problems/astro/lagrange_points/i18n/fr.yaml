@@ -1,7 +1,8 @@
-source_hash: 28d4b810cb16
+source_hash: 37c952badf1f
 title: Points de Lagrange (problème restreint à trois corps)
-summary: Une étoile et une planète tournent l'une autour de l'autre ; dans leur référentiel tournant, une particule test subit la gravité, la force centrifuge et la force de Coriolis, écrite avec $\varepsilon_{ijk}$. La méthode de Newton appliquée à $\nabla\Phi_\mathrm{eff} = 0$ (gradient et hessienne par autograd) trouve les cinq points de Lagrange d'un coup, et des particules écartées de L4 décrivent des orbites en têtard et en fer à cheval.
-notes: 'Unités : séparation 1, $G(M_1 + M_2) = 1$, de sorte que le couple fait un tour tous les $2\pi$. La planète a une fraction de masse $\mu$, et les particules test sont trop légères pour perturber l''un ou l''autre corps. L1, L2 et L3 sont alignés avec les deux corps et sont des points selles de $\Phi_\mathrm{eff}$ ; L4 et L5 forment des triangles équilatéraux avec les deux corps et sont des maxima de $\Phi_\mathrm{eff}$, mais la force de Coriolis les rend stables lorsque $\mu < 0.0385$. C''est pourquoi les astéroïdes troyens de Jupiter se regroupent 60° en avant et en arrière de la planète. Des écarts plus grands transforment les petites boucles en têtard en grandes boucles, puis en orbites en fer à cheval qui contournent aussi L3. Pour $\mu$ supérieur à 0.0385, les particules s''éloignent.'
+summary: Une étoile et une planète tournent l'une autour de l'autre ; dans leur référentiel tournant, une particule test subit la gravité, la force centrifuge et la force de Coriolis, écrite avec $\varepsilon_{ijk}$. La méthode de Newton appliquée à $\nabla\Phi_\mathrm{eff} = 0$ (gradient et hessienne par autograd) trouve les cinq points de Lagrange d'un coup, et des particules écartées de L4 décrivent autour de lui des orbites en têtard.
+notes: 'Unités : séparation 1, $G(M_1 + M_2) = 1$, de sorte que le couple fait un tour tous les $2\pi$. La planète a une fraction de masse $\mu$, et les particules test sont trop légères pour perturber l''un ou l''autre corps. L1, L2 et L3 sont alignés avec les deux corps et sont des points selles de $\Phi_\mathrm{eff}$ ; L4 et L5 forment des triangles équilatéraux avec les deux corps et sont des maxima de $\Phi_\mathrm{eff}$, mais la force de Coriolis les rend stables lorsque $\mu < 0.0385$. C''est pourquoi les astéroïdes troyens de Jupiter se regroupent 60° en avant et en arrière de la planète. Les particules partent au repos sur l''orbite de la planète, quelques degrés en avant de L4 : de petits écarts donnent de petites boucles en têtard (avec des épicycles rapides superposés), de plus grands les étirent en longues boucles en forme de banane le long de l''orbite, et au-delà d''environ 20° (pour $\mu = 0.01$) la particule s''éloigne. Pour $\mu$ supérieur à 0.0385, même de minuscules écarts
+  dérivent.'
 meanings:
 - position de la particule test $b$ dans le référentiel tournant
 - étoile en $(-\mu, 0, 0)$ et planète en $(1-\mu, 0, 0)$
@@ -13,6 +14,6 @@ meanings:
 - $-2\Phi_\mathrm{eff} - \dot x_i\dot x_i$, conservée
 labels:
   mu: Fraction de masse de la planète $\mu$
-  nudge: Plus grand écart à L4 le long de l'orbite
+  nudge: Plus grand écart en avant de L4
   t_max: Durée simulée
   dt: Pas de temps

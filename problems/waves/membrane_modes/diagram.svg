@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Square drum of side L and circular drum, each clamped at the rim and vibrating in a mode with one nodal line separating regions moving up and down">
+  <defs>
+    <marker id="dim" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- square drum, mode (2, 1): halves moving in opposite directions -->
+    <rect x="20" y="24" width="45" height="90" fill="#93c5fd"/>
+    <rect x="65" y="24" width="45" height="90" fill="#dbeafe"/>
+    <rect x="20" y="24" width="90" height="90" fill="none" stroke="#374151" stroke-width="2.5"/>
+    <line x1="65" y1="24" x2="65" y2="114" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 3"/>
+    <text x="36" y="75" font-size="18" fill="#1e40af">+</text>
+    <text x="82" y="75" font-size="18" fill="#1e40af">−</text>
+    <line x1="22" y1="130" x2="108" y2="130" stroke="#6b7280" stroke-width="1.5" marker-start="url(#dim)" marker-end="url(#dim)"/>
+    <text x="61" y="148" font-style="italic">L</text>
+    <!-- circular drum, mode (1, 1) -->
+    <path d="M175,24 A45,45 0 0 0 175,114 Z" fill="#93c5fd"/>
+    <path d="M175,24 A45,45 0 0 1 175,114 Z" fill="#dbeafe"/>
+    <circle cx="175" cy="69" r="45" fill="none" stroke="#374151" stroke-width="2.5"/>
+    <line x1="175" y1="24" x2="175" y2="114" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 3"/>
+    <text x="150" y="75" font-size="18" fill="#1e40af">+</text>
+    <text x="190" y="75" font-size="18" fill="#1e40af">−</text>
+    <text x="146" y="146" font-size="13" fill="#b45309">nodal line</text>
+  </g>
+</svg>

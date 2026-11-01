@@ -1,0 +1,17 @@
+source_hash: 902cc4c799f5
+title: Stehende Wellen auf einer Saite
+summary: 'Die 1D-Wellengleichung auf einer an beiden Enden eingespannten Saite. Die zweite Ableitung wird zu einer Matrix (dem Finite-Differenzen-Stencil $D_{ij}$), sodass ein einziges einsum alle Punkte mehrerer Saiten auf einmal bewegt: die ersten Harmonischen und eine gezupfte Saite.'
+notes: 'Die Zeilen 1 bis $n$ starten in der Form einer einzelnen Harmonischen $\sin(n\pi x/L)$ und atmen einfach an Ort und Stelle mit $f_n = nc/2L$: eine stehende Welle. Die gezupfte Saite (ein Dreieck) ist eine Summe vieler Harmonischer, daher teilt sich ihr Knick in zwei Teile, die zu den Enden laufen, sich umklappen und zurückkommen. Nach einer Grundperiode $2L/c$ ist jede Form wieder am Ausgangspunkt. Der Zeitschritt erfüllt die Courant-Bedingung $c\,\Delta t \le \Delta x$; die Energie $\tfrac12\int (\dot u^2 + c^2 u_x^2)\,dx$ (pro Einheit der Massendichte) bleibt konstant, weil nichts die Saite dämpft.'
+meanings:
+- Auslenkung der Saite $b$ am inneren Gitterpunkt $i$ (die beiden festen Enden sind weggelassen)
+- 'Matrix der zweiten Ableitung: $-2$ auf der Diagonale, $1$ daneben'
+- 'wiederholtes $j$ ⇒ summiert: $\partial_x^2 u$ für jede Saite'
+- zentrale Differenz in der Zeit (Leapfrog)
+- 'die Eigenwerte von $D$ liefern $\omega_n^2 = -c^2\lambda_n$: die Harmonischen'
+labels:
+  n_harmonics: Angezeigte Harmonische
+  pluck_at: Zupfposition $x_p/L$
+  c: Wellengeschwindigkeit $c$
+  L: Saitenlänge $L$
+  n_points: Gitterpunkte
+  periods: Simulierte Grundperioden

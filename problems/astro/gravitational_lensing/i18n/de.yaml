@@ -1,0 +1,20 @@
+source_hash: e3dd0dc823a1
+title: Gravitationslinseneffekt eines Schwarzen Lochs
+summary: 'Lichtstrahlen an einem Schwarzen Loch vorbei sind Null-Geodäten, die für einen ganzen Fächer von Stoßparametern gleichzeitig verfolgt werden: Ferne Strahlen werden um $4GM/(c^2 b)$ abgelenkt, Strahlen innerhalb von $\sqrt{27}\,GM/c^2$ fallen hinein. Am Himmel bildet die Linsengleichung jedes Pixel in einer einzigen Tensoroperation auf die Quellebene zurück ab, sodass ein Stern, der hinter dem Loch vorbeizieht, zu zwei Bögen, einem Einsteinring und einer Verstärkungsspitze wird.'
+notes: 'Strahlenbild: Einheiten $G = c = M = 1$; der gepunktete Kreis ist die Photonensphäre ($r = 3M$), und Strahlen mit $b < \sqrt{27}\,M \approx 5.2\,M$ enden im Loch, weshalb ein Schwarzes Loch einen Schatten vom 2,6-Fachen seines Horizontradius wirft. Strahlen knapp außerhalb können eine Schleife drehen, bevor sie entkommen. Himmelsbild: Punktmasse als dünne Linse in Einheiten des Einsteinradius (etwa eine Millibogensekunde für ein stellares Schwarzes Loch in unserer Galaxis, weshalb Mikrolinsen als Aufhellung statt als aufgelöste Bilder beobachtet werden). Gravitationslinsen erhalten die Flächenhelligkeit, daher ist das Bild einfach die bei $\beta(\theta)$ ausgewertete Quelle; das zusätzliche Licht stammt von der Streckung der Bilder. Die endliche Quellgröße begrenzt die Verstärkung nahe perfekter Ausrichtung, wo eine Punktquelle $\mu \to \infty$ ergäbe.'
+meanings:
+- $1/r$ entlang Strahl $b$, Start bei 0 (Unendlich) mit $du/d\varphi = 1/b$
+- Bahngleichung der Null-Geodäten, RK4 in $\varphi$ für alle Strahlen
+- Austrittswinkel minus $\pi$; NaN bei Einfang
+- Himmelswinkel von Pixel $p$, in Einheiten von $\theta_E$
+- wiederholtes $j$ ⇒ summiert
+- wohin jedes Pixel in der Quellebene blickt
+- Linsenbild für jedes Einzelbild $f$ per Broadcasting
+- 'Verstärkung: Verhältnis der Gesamtflüsse'
+labels:
+  b_min: Kleinster Stoßparameter $b$
+  b_max: Größter Stoßparameter $b$
+  n_rays: Strahlen
+  impact: Abstand der Quelle von der Linse $u$
+  source_radius: Quellradius
+  n_pixels: Himmelspixel pro Seite

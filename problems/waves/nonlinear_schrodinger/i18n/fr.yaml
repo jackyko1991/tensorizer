@@ -1,0 +1,15 @@
+source_hash: 615dd7755626
+title: Vagues scélérates (Schrödinger non linéaire)
+summary: 'L''équation de Schrödinger non linéaire focalisante décrit l''enveloppe des groupes de vagues en eau profonde et des impulsions lumineuses dans les fibres. Un train d''ondes uniforme est instable : de minuscules ondulations deviennent des pics gigantesques d''environ trois fois le fond, comme des vagues scélérates. Résolu par split-step de Fourier : la dispersion est exacte dans l''espace des $k$, la non-linéarité exacte dans l''espace des $x$.'
+notes: 'Schéma de Strang : un demi-pas de dispersion, un pas non linéaire complet, un demi-pas de dispersion ; précis au second ordre, il conserve $N$ aux arrondis près. Instabilité modulationnelle : sur un fond de hauteur 1, les perturbations de nombre d''onde $K < 2$ croissent, le plus vite pour $K = \sqrt2$ avec un taux 1. En mode **modulation**, le fond part avec un bruit aléatoire de $10^{-3}$ (graine fixe) : des pics apparaissent après $t \approx 8$ et ne cessent de se former et de se dissoudre. Le breather de Peregrine $\psi = \bigl[1 - \frac{4(1+2it)}{1+4x^2+4t^2}\bigr]e^{it}$ surgit une fois du fond, atteint exactement $3\times$ sa hauteur et disparaît ; le mode **peregrine** le démarre à $t = -5$. Le mode **soliton** lance le soliton brillant $\eta\,\mathrm{sech}(\eta x)\,e^{ivx}$ qui garde sa forme indéfiniment. La ligne en tirets marque $|\psi| = 3$. Boîte périodique de longueur 60.'
+meanings:
+- enveloppe d'onde complexe sur une grille périodique (complex128)
+- un demi-pas de dispersion $i\psi_t = -\tfrac12\psi_{xx}$, exact pour chaque mode de Fourier
+- '$l$ répété ⇒ sommé : la transformée de Fourier discrète'
+- un pas de non-linéarité $i\psi_t = -|\psi|^2\psi$, exact car $|\psi|$ ne change pas
+- $\int|\psi|^2$ et $\int \tfrac12|\psi_x|^2 - \tfrac12|\psi|^4$, tous deux conservés
+labels:
+  mode: État initial
+  noise: Amplitude du bruit (modulation)
+  eta: Hauteur du soliton $\eta$
+  t_max: Durée simulée

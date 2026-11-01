@@ -1,0 +1,21 @@
+source_hash: 702d9d9098be
+title: Rezeptor–Ligand-Bindung (k_on, k_off)
+summary: Wie fest und wie lange hält ein Immunrezeptor (ein T-Zell-Rezeptor oder ein Antikörper) sein Ziel? Massenwirkungskinetik mit Assoziationsrate $k_{on}$ und Dissoziationsrate $k_{off}$ wird für mehrere Rezeptorvarianten und eine ganze Titration von Ligandkonzentrationen gleichzeitig in einem $(B, C)$-Tensor gelöst und als SPR-artiges Sensorgramm neben den Bindungsisothermen gezeigt.
+notes: 'Für eine Bindung müssen sich ein freier Rezeptor und ein freier Ligand treffen, daher ist die Rate $k_{on} R L$; die Dissoziation betrifft jeden Komplex für sich, mit Rate $k_{off} C$. Im Gleichgewicht halten sich beide die Waage, und der gebundene Anteil ist $\theta = L/(L + K_D)$ mit $K_D = k_{off}/k_{on}$: Die Hälfte der Rezeptoren ist besetzt, wenn $L = K_D$ (die Markierung auf jeder Isotherme). Ausgehend von leeren Rezeptoren verläuft die Annäherung exponentiell, $C(t) = C_{eq}(1 - e^{-k_{obs} t})$ mit $k_{obs} = k_{on} L + k_{off}$; so messen SPR-Geräte (Oberflächenplasmonenresonanz) $k_{on}$. Nach dem Pufferwaschen zerfallen die Komplexe wie $e^{-k_{off} t}$ mit der Halbwertszeit $t_{1/2} = \ln 2 / k_{off}$, der Verweildauer. Die Varianten decken realistische Bereiche ab: T-Zell-Rezeptoren binden Peptid–MHC schwach ($K_D \sim 1$–$10\,\mu$M, Verweildauer Sekunden), ein Antikörper bindet fest ($K_D \sim 0.1$ nM, Verweildauer Stunden). Achten Sie auf die Punkte auf den Isothermen:
+  Bei niedriger Konzentration ist $k_{obs} \approx k_{off}$ klein, sodass der Antikörper zu Beginn des Waschens das Gleichgewicht noch nicht erreicht hat. Warum ist $k_{off}$ für T-Zellen so wichtig? Im Bild des kinetischen Proofreadings muss ein gebundener TCR mehrere Signalschritte (Phosphorylierungen) durchlaufen, bevor er die Zelle aktiviert, und alles wird zurückgesetzt, wenn der Ligand vorher abfällt. Ein Komplex, der länger lebt als diese Schritte, signalisiert weit wahrscheinlicher; die T-Zelle liest also die Verweildauer $1/k_{off}$ statt nur der Besetzung und kann ein fremdes Peptid von einem Selbstpeptid unterscheiden, dessen Affinität sich nur mäßig unterscheidet. Vereinfachungen: eine Bindungsstelle pro Rezeptor (keine Avidität, kein Rebinding), eine gut durchmischte Lösung und keine Massentransportlimitierung; mit eingeschalteter Depletion entfernt jeder Komplex einen Liganden aus einem geschlossenen Volumen, und das Gleichgewicht folgt der quadratischen Lösung statt $L/(L
+  + K_D)$.'
+meanings:
+- Ratenkonstanten der Rezeptorvariante $b$ (TCR mit schwacher / mittlerer / hoher Affinität, Antikörper)
+- Ligandkonzentration $c$ der Titration (nM); die letzte ist das Sensorgramm
+- freie Rezeptoren und Komplexe für jede Variante und Konzentration
+- 'freier Ligand: $L_c$, oder $L_c - C_{bc}$ mit Depletion'
+- 'kein Index summiert: $k_b$ wird über jede Konzentration $c$ gebroadcastet'
+- rechte Seite für RK4; $R$ und $C$ ändern sich um $\mp J$, also $R + C = R_T$
+- 'Dissoziationskonstante: die Ligandkonzentration, die die Hälfte der Rezeptoren bindet'
+- Gleichgewichtsbesetzung (gestrichelte Isothermen)
+labels:
+  log10_L: Sensorgramm-Ligand $\log_{10}(L/\mu\mathrm{M})$
+  t_assoc: Assoziationszeit
+  t_dissoc: Dissoziationszeit
+  depletion: Liganddepletion
+  R_T: Rezeptorkonzentration $R_T$

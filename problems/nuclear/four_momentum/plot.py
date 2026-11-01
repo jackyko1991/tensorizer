@@ -78,4 +78,4 @@ def animate(
         readout.set_text(f"m_inv = √((p1+p2)·(p1+p2)) = {mass[step]:.4f} GeV")
 
     fig.tight_layout()
-    return save_gif(fig, update, frame_indices(len(deg), 90), path, fps=15)
+    return save_gif(fig, update, frame_indices(len(deg), 72), path, fps=15)

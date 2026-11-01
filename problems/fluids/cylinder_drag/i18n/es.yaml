@@ -1,0 +1,17 @@
+source_hash: fdbefecc20a0
+title: 'Flujo alrededor de un cilindro: arrastre y desprendimiento de vórtices'
+summary: 'Una simulación de Boltzmann en red (D2Q9) del flujo alrededor de un cilindro. Las poblaciones $f_{xyi}$ colisionan hacia un equilibrio construido con einsum y se propagan con torch.roll; la fuerza sobre el cilindro procede del momento que le transfiere cada población que rebota en él. Por encima de Re ≈ 47 la estela se convierte en una calle de vórtices de Kármán: el arrastre pulsa y la sustentación oscila de un lado a otro.'
+notes: 'Unidades de red: espaciado entre nodos y paso de tiempo 1, diámetro del cilindro $D = 10$, velocidad de entrada $U = 0.12$; la viscosidad $\nu = UD/\mathrm{Re}$ fija el tiempo de relajación $\tau = 3\nu + \tfrac12$. El modelo reproduce Navier–Stokes cuando $U$ está muy por debajo de la velocidad del sonido de la red $1/\sqrt3$. La entrada es un equilibrio fijo, la salida copia a su vecino, las fronteras superior e inferior son periódicas (una fila de cilindros con separación $H$) y el cilindro usa rebote completo (bounce-back), una aproximación escalonada del círculo. La fuerza por intercambio de momento cuenta cada población que choca con el cilindro: se invierte, así que transfiere $2 f_i\mathbf e_i$. Como el canal es estrecho ($D/H \approx 0.18$), el arrastre es mayor que el $C_D \approx 1.4$ de flujo libre a Re = 100, y el desprendimiento algo más rápido ($St \approx 0.16$–$0.2$). Los primeros cientos de pasos son un transitorio acústico de arranque; toma los promedios de la
+  segunda mitad. Un pequeño empujón lateral al principio adelanta el desprendimiento.'
+meanings:
+- 'poblaciones: fluido en el nodo $(x, y)$ que se mueve con la velocidad de red $i$'
+- velocidades D2Q9 (reposo, 4 ejes, 4 diagonales) y pesos
+- 'densidad: suma sobre $i$'
+- '$i$ repetido ⇒ sumado: densidad de momento'
+- velocidad proyectada sobre cada dirección de la red
+- 'propagación: desplazar cada población un enlace'
+- 1 donde una población se propagó desde el fluido hacia el cilindro
+- 'intercambio de momento: fuerza sobre el cilindro (el rebote invierte cada impacto)'
+labels:
+  re: Número de Reynolds $UD/\nu$
+  steps: Pasos de tiempo de la red

@@ -14,7 +14,7 @@ def run(params: dict, out_dir: Path) -> Path:
     title, big_m, m1, m2, name1, name2 = tensors.DECAYS[params["decay"]]
     eta = metric(dev)  # (4, 4)
     parent = tensors.parent(big_m, params["p_parent"], dev)  # (4,)
-    theta = tensors.decay_angles(90, dev)  # (B,)
+    theta = tensors.decay_angles(72, dev)  # (B,)
     p_star = rest_frame_momentum(big_m, m1, m2)
     rest1, rest2 = tensors.rest_frame_daughters(theta, p_star, big_m, m1, m2)  # (B, 4) each
 
@@ -28,7 +28,7 @@ def run(params: dict, out_dir: Path) -> Path:
     print(f"masses after the boost: {name1} {mass1:.5f}  {name2} {mass2:.5f} GeV")
     print(f"reconstructed parent mass: {m_inv.min().item():.6f} … {m_inv.max().item():.6f} GeV")
     print(f"max |p1 + p2 − P| = {(lab1 + lab2 - parent).abs().max().item():.1e} GeV")
-    for k in (0, 45, 89):
+    for k in (0, len(theta) // 2, len(theta) - 1):
         angle = math.degrees(theta[k].item())
         print(f"θ* = {angle:5.1f}°   lab energies {lab1[k, 0].item():.3f} + {lab2[k, 0].item():.3f} GeV")
     return plot.animate(

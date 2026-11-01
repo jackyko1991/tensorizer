@@ -1,0 +1,20 @@
+source_hash: 31a92e6ff86f
+title: 'Relatividad general: órbitas y caída alrededor de un agujero negro'
+summary: Geodésicas en la métrica de Schwarzschild, con los símbolos de Christoffel obtenidos de $g_{\mu\nu}(x)$ por diferenciación automática y contraídos con einsum. Una órbita ligada precesa en lugar de cerrarse, el potencial efectivo muestra la órbita circular estable más interna (ISCO) en $6GM/c^2$ y la esfera de fotones en $3GM/c^2$, y una caída radial alcanza el horizonte en un tiempo propio finito mientras el reloj lejano se congela.
+notes: 'Unidades: $G = c = M = 1$, así que las longitudes están en $GM/c^2$ (1,5 km por masa solar) y el horizonte está en $r_s = 2$. La órbita parte del periastro con la energía $E$ y el momento angular $L$ exactos de Schwarzschild de una órbita con semilado recto $p$ y excentricidad $e$. Se integra en tiempo propio $\tau$ con RK4; la elipse newtoniana gris con los mismos $p$ y $e$ se cierra sobre sí misma. El avance del perihelio tiende a $6\pi GM/(c^2 p)$ para $p$ grande (43″ por siglo para Mercurio) y crece mucho cerca del agujero. Las órbitas ligadas solo existen para $p > 6 + 2e$; por debajo de la ISCO ($r = 6$) las órbitas circulares son inestables, y en $r = 3$ incluso la luz puede circular. En la caída (abajo a la derecha), el reloj que cae alcanza el horizonte tras aproximadamente $\tau = \tfrac{\pi}{2}\sqrt{r_0^3/2}$ (finito), pero en tiempo de Schwarzschild $t$ la caída se frena y se congela en $r = 2$; la simulación se detiene en $r = 2.1$, donde estas coordenadas empiezan a
+  fallar.'
+meanings:
+- evento $(t, r, \theta, \varphi)$ en cada geodésica, $G = c = M = 1$
+- cuadrivelocidad $dx^\mu/d\tau$
+- métrica de Schwarzschild, signatura $(-, +, +, +)$
+- métrica inversa
+- derivadas de la métrica por autograd, índice de derivada al final
+- $\sigma$ repetido ⇒ sumado ($z$ = lote)
+- $\alpha, \beta$ repetidos ⇒ sumados
+- $= -1$ para una partícula masiva, comprueba la integración
+labels:
+  p: Semilado recto $p$
+  e: Excentricidad $e$
+  n_orbits: Órbitas a simular
+  dt: Paso de tiempo propio $\Delta\tau$
+  r_infall: La caída parte del reposo en

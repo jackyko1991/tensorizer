@@ -1,0 +1,17 @@
+source_hash: fdbefecc20a0
+title: 'Umströmter Zylinder: Widerstand und Wirbelablösung'
+summary: 'Eine Lattice-Boltzmann-Simulation (D2Q9) der Strömung um einen Zylinder. Die Verteilungen $f_{xyi}$ relaxieren durch Stöße zu einem per einsum aufgebauten Gleichgewicht und strömen mit torch.roll; die Kraft auf den Zylinder ergibt sich aus dem Impuls, den jede an ihm abprallende Verteilung überträgt. Oberhalb von Re ≈ 47 wird der Nachlauf zu einer Kármánschen Wirbelstraße: Der Widerstand pulsiert, und der Auftrieb schwingt von Seite zu Seite.'
+notes: 'Gittereinheiten: Knotenabstand und Zeitschritt 1, Zylinderdurchmesser $D = 10$, Anströmgeschwindigkeit $U = 0.12$; die Viskosität $\nu = UD/\mathrm{Re}$ legt die Relaxationszeit $\tau = 3\nu + \tfrac12$ fest. Das Modell reproduziert Navier–Stokes, wenn $U$ deutlich unter der Gitterschallgeschwindigkeit $1/\sqrt3$ liegt. Der Einlass ist ein festes Gleichgewicht, der Auslass kopiert seinen Nachbarn, oben und unten ist periodisch (eine Reihe von Zylindern im Abstand $H$), und der Zylinder verwendet Full-Way-Bounce-Back, eine treppenförmige Näherung des Kreises. Die Impulsaustauschkraft zählt jede Verteilung, die den Zylinder trifft: Sie kehrt sich um und überträgt daher $2 f_i\mathbf e_i$. Da der Kanal eng ist ($D/H \approx 0.18$), ist der Widerstand höher als der Freistromwert $C_D \approx 1.4$ bei Re = 100, und die Ablösung etwas schneller ($St \approx 0.16$–$0.2$). Die ersten paar hundert Schritte sind ein akustischer Einschwingvorgang; lies die Mittelwerte aus der zweiten Hälfte
+  ab. Ein kleiner seitlicher Stoß am Anfang löst die Wirbelablösung früher aus.'
+meanings:
+- 'Verteilungen: Fluid am Knoten $(x, y)$, das sich mit der Gittergeschwindigkeit $i$ bewegt'
+- D2Q9-Geschwindigkeiten (Ruhe, 4 Achsen, 4 Diagonalen) und Gewichte
+- 'Dichte: Summe über $i$'
+- 'wiederholtes $i$ ⇒ summiert: Impulsdichte'
+- Geschwindigkeit, projiziert auf jede Gitterrichtung
+- 'Strömungsschritt: jede Verteilung um eine Verbindung verschieben'
+- 1, wo eine Verteilung vom Fluid in den Zylinder geströmt ist
+- 'Impulsaustausch: Kraft auf den Zylinder (Bounce-Back kehrt jeden Treffer um)'
+labels:
+  re: Reynolds-Zahl $UD/\nu$
+  steps: Gitterzeitschritte

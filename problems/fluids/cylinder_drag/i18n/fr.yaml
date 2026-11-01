@@ -1,0 +1,17 @@
+source_hash: fdbefecc20a0
+title: 'Écoulement autour d''un cylindre : traînée et lâcher tourbillonnaire'
+summary: 'Une simulation Boltzmann sur réseau (D2Q9) de l''écoulement autour d''un cylindre. Les populations $f_{xyi}$ relaxent vers un équilibre construit avec einsum et se propagent avec torch.roll ; la force sur le cylindre provient de la quantité de mouvement cédée par chaque population qui y rebondit. Au-delà de Re ≈ 47, le sillage devient une allée de tourbillons de Kármán : la traînée pulse et la portance oscille d''un côté à l''autre.'
+notes: 'Unités du réseau : espacement des nœuds et pas de temps 1, diamètre du cylindre $D = 10$, vitesse d''entrée $U = 0.12$ ; la viscosité $\nu = UD/\mathrm{Re}$ fixe le temps de relaxation $\tau = 3\nu + \tfrac12$. Le modèle reproduit Navier–Stokes quand $U$ est bien inférieur à la vitesse du son du réseau $1/\sqrt3$. L''entrée est un équilibre fixe, la sortie copie son voisin, le haut et le bas sont périodiques (une rangée de cylindres, espacement $H$), et le cylindre utilise un rebond complet (bounce-back), approximation en escalier du cercle. La force par échange de quantité de mouvement compte chaque population qui heurte le cylindre : elle s''inverse, donc elle cède $2 f_i\mathbf e_i$. Le canal étant étroit ($D/H \approx 0.18$), la traînée est supérieure au $C_D \approx 1.4$ en écoulement libre à Re = 100, et le lâcher un peu plus rapide ($St \approx 0.16$–$0.2$). Les quelques centaines de premiers pas sont un régime transitoire acoustique ; lisez les moyennes sur la seconde moitié.
+  Une petite impulsion latérale au départ déclenche plus tôt le lâcher.'
+meanings:
+- 'populations : fluide au nœud $(x, y)$ se déplaçant avec la vitesse du réseau $i$'
+- vitesses D2Q9 (repos, 4 axes, 4 diagonales) et poids
+- 'densité : somme sur $i$'
+- '$i$ répété ⇒ sommé : densité de quantité de mouvement'
+- vitesse projetée sur chaque direction du réseau
+- 'propagation : décalage de chaque population d''un lien'
+- 1 là où une population est passée du fluide dans le cylindre
+- 'échange de quantité de mouvement : force sur le cylindre (le rebond inverse chaque impact)'
+labels:
+  re: Nombre de Reynolds $UD/\nu$
+  steps: Pas de temps du réseau

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Venturi tube: flow enters with area A1 and speed v1, speeds up to v2 in the narrow throat of area A2, where gauge tubes show a lower pressure by a height difference">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- pipe -->
+    <path d="M14,92 H70 C92,92 98,108 120,108 C142,108 150,92 172,92 H226 V140 H172 C150,140 142,124 120,124 C98,124 92,140 70,140 H14 Z" fill="#93c5fd" fill-opacity="0.45"/>
+    <path d="M14,92 H70 C92,92 98,108 120,108 C142,108 150,92 172,92 H226" fill="none" stroke="#374151" stroke-width="2"/>
+    <path d="M14,140 H70 C92,140 98,124 120,124 C142,124 150,140 172,140 H226" fill="none" stroke="#374151" stroke-width="2"/>
+    <!-- gauge tubes -->
+    <path d="M38,92 V22 M50,92 V22" stroke="#9ca3af" stroke-width="1.5"/>
+    <rect x="38" y="36" width="12" height="56" fill="#2563eb" fill-opacity="0.85"/>
+    <path d="M114,108 V22 M126,108 V22" stroke="#9ca3af" stroke-width="1.5"/>
+    <rect x="114" y="66" width="12" height="42" fill="#2563eb" fill-opacity="0.85"/>
+    <line x1="56" y1="36" x2="140" y2="36" stroke="#9ca3af" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <line x1="130" y1="38" x2="130" y2="64" stroke="#f59e0b" stroke-width="2"/>
+    <text x="136" y="56" font-style="italic" fill="#b45309">Δp</text>
+    <!-- velocities -->
+    <line x1="22" y1="116" x2="52" y2="116" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="22" y="134" font-style="italic" fill="#b91c1c">v<tspan font-size="10" dy="3" font-style="normal">1</tspan></text>
+    <line x1="96" y1="116" x2="150" y2="116" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="112" y="154" font-style="italic" fill="#b91c1c">v<tspan font-size="10" dy="3" font-style="normal">2</tspan></text>
+    <text x="186" y="84" font-style="italic">A<tspan font-size="10" dy="3" font-style="normal">1</tspan></text>
+  </g>
+</svg>

@@ -57,4 +57,4 @@ def animate(
             ratio_text.set_text(f"t = {t[step]:.0f} h\n$a_2/a_1$ = {act[step, 1] / act[step, 0]:.3f}")
 
     fig.tight_layout()
-    return save_gif(fig, update, frame_indices(len(t), 90), path)
+    return save_gif(fig, update, frame_indices(len(t), 72), path)

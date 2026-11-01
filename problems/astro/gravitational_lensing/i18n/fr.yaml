@@ -1,0 +1,20 @@
+source_hash: e3dd0dc823a1
+title: Lentille gravitationnelle d'un trou noir
+summary: 'Les rayons lumineux passant près d''un trou noir sont des géodésiques de genre lumière, tracées pour tout un éventail de paramètres d''impact à la fois : les rayons lointains sont déviés de $4GM/(c^2 b)$, ceux en deçà de $\sqrt{27}\,GM/c^2$ tombent dans le trou. Sur le ciel, l''équation de lentille renvoie chaque pixel vers le plan source en une seule opération tensorielle, si bien qu''une étoile passant derrière le trou devient deux arcs, un anneau d''Einstein et un pic d''amplification.'
+notes: 'Panneau des rayons : unités $G = c = M = 1$ ; le cercle pointillé est la sphère de photons ($r = 3M$), et les rayons avec $b < \sqrt{27}\,M \approx 5.2\,M$ finissent dans le trou, ce qui explique pourquoi un trou noir projette une ombre 2,6 fois plus grande que son rayon d''horizon. Les rayons juste à l''extérieur peuvent faire une boucle avant de s''échapper. Panneau du ciel : masse ponctuelle en lentille mince, en unités du rayon d''Einstein (environ une milliseconde d''arc pour un trou noir stellaire de notre Galaxie, d''où le fait que la microlentille se voit comme un éclaircissement plutôt que comme des images résolues). La lentille conserve la brillance de surface, donc l''image est simplement la source évaluée en $\beta(\theta)$ ; la lumière supplémentaire vient de l''étirement des images. La taille finie de la source plafonne l''amplification près de l''alignement parfait, où une source ponctuelle donnerait $\mu \to \infty$.'
+meanings:
+- $1/r$ le long du rayon $b$, partant de 0 (l'infini) avec $du/d\varphi = 1/b$
+- équation d'orbite des géodésiques de genre lumière, RK4 en $\varphi$ pour tous les rayons
+- angle de sortie moins $\pi$ ; NaN si capturé
+- angle sur le ciel du pixel $p$, en unités de $\theta_E$
+- $j$ répété ⇒ sommé
+- point du plan source vu par chaque pixel
+- image lentillée pour chaque image $f$ de l'animation par broadcast
+- 'amplification : rapport des flux totaux'
+labels:
+  b_min: Plus petit paramètre d'impact $b$
+  b_max: Plus grand paramètre d'impact $b$
+  n_rays: Rayons
+  impact: Décalage source–lentille $u$
+  source_radius: Rayon de la source
+  n_pixels: Pixels du ciel par côté

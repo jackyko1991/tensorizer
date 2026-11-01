@@ -24,7 +24,10 @@ def animate(
     r = np.linalg.norm(pos, axis=-1)  # (T, B)
     f = fractions.cpu().numpy()
     # blue shades = bound (v < v_esc), red shades = unbound (v ≥ v_esc)
-    colors = [plt.cm.Blues(np.interp(fb, [f.min(), 1], [0.4, 0.95])) if fb < 1 - 1e-6 else plt.cm.Reds(0.5 + 0.4 * (fb - 1)) for fb in f]
+    colors = [
+        plt.cm.Blues(np.interp(fb, [f.min(), 1], [0.4, 0.95])) if fb < 1 - 1e-6 else plt.cm.Reds(0.5 + 0.4 * (fb - 1))
+        for fb in f
+    ]
     B = len(f)
 
     fig, (ax, ax_r) = plt.subplots(1, 2, figsize=(8, 4), gridspec_kw={"width_ratios": [1.15, 1]})

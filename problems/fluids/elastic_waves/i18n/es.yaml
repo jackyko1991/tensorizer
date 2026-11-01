@@ -1,0 +1,18 @@
+source_hash: 36e54b56debf
+title: Ondas elásticas P y S
+summary: 'La ecuación de Navier–Cauchy para un sólido elástico. Un empujón breve en un punto emite dos ondas: una onda P de compresión, rápida (visible en $\nabla\cdot\mathbf u$), y una onda S de cizalla, más lenta (visible en $\nabla\times\mathbf u$). Ambos términos son contracciones de una única tabla de derivadas segundas $\partial_i\partial_j u_k$: dos einsums con distintos índices repetidos.'
+notes: 'Unidades con $\rho = 1$ y tamaño de celda 1. El avance temporal es leapfrog, $u^{n+1} = 2u^n - u^{n-1} + \Delta t^2\,\ddot u^n$. Tomar la divergencia de la ecuación da una ecuación de ondas para $\theta = \partial_j u_j$ con velocidad $c_P$; tomar el rotacional da otra para la rotación con velocidad $c_S < c_P$: en las rocas $c_P \approx 1.7\,c_S$, y por eso la onda P de un terremoto llega primero y la onda S segundos después. Una fuerza puntual radia ondas P sobre todo a lo largo de la fuerza y ondas S sobre todo en dirección transversal, como muestran los dos patrones lobulados. Los círculos discontinuos son los frentes previstos $c\,(t - t_0)$, donde $t_0$ es el máximo de la ondícula fuente. Un borde amortiguador absorbe las ondas antes de que lleguen al límite (los códigos reales usan una capa perfectamente adaptada); un coeficiente de Poisson cercano a ½ ($\lambda \gg \mu$) hace grande $c_P$ y obliga a un paso de tiempo pequeño.'
+meanings:
+- campo de desplazamientos, componente $i \in \{x, y\}$ en cada nodo
+- todas las derivadas segundas por diferencias centradas
+- $j$ repetido (2.ª y 3.ª posición) ⇒ gradiente de la divergencia
+- $j$ repetido (1.ª y 2.ª posición) ⇒ laplaciano de cada componente
+- un empujón breve con forma de sombrero mexicano en el centro, en una dirección
+- cambio de volumen (P) y rotación (S)
+- paso leapfrog; un número de Courant $S > 1$ se rechaza porque el esquema diverge
+labels:
+  lam: Constante de Lamé $\lambda$
+  mu: Módulo de cizalla $\mu$
+  direction: Dirección de la fuerza
+  courant: Número de Courant $S$
+  t_max: Tiempo simulado

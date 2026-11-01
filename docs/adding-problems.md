@@ -45,7 +45,7 @@ params:
   mode: {default: loop, type: choice, options: [loop, helmholtz]}
 ```
 
-- `vector_form`, `index_form` and `symbol` are pure KaTeX LaTeX. `summary`, `notes`, `meaning` and `label` are prose with inline `$…$` math.
+- `vector_form`, `index_form` and `symbol` are pure KaTeX LaTeX. `title`, `summary`, `notes`, `meaning` and `label` are prose with inline `$…$` math (titles render it in the library and heading; keep title math short).
 - Use single-quoted YAML strings (or `>` block scalars) for anything with backslashes, never double quotes.
 
 ## diagram.svg

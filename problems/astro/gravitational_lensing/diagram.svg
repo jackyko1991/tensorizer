@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Gravitational lensing: light from a source passes a lens of mass M at impact parameter b, is bent by angle alpha and reaches the observer, who sees an image displaced from the true position">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- optical axis -->
+    <line x1="14" y1="100" x2="226" y2="100" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- bent light ray: source → near lens → observer -->
+    <path d="M24,92 L120,52 L216,100" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <!-- apparent direction seen by the observer -->
+    <line x1="120" y1="52" x2="24" y2="4" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- deflection angle -->
+    <line x1="120" y1="52" x2="172" y2="30.3" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <path d="M147.7,40.5 A30,30 0 0 1 146.8,65.4" fill="none" stroke="#dc2626" stroke-width="2"/>
+    <text x="154" y="58" font-style="italic" fill="#b91c1c">α</text>
+    <!-- impact parameter -->
+    <line x1="128" y1="100" x2="128" y2="54" stroke="#374151" stroke-width="1.5"/>
+    <text x="104" y="84" font-style="italic">b</text>
+    <!-- lens mass -->
+    <circle cx="120" cy="100" r="9" fill="#111827"/>
+    <text x="112" y="128" font-style="italic">M</text>
+    <!-- source and observer -->
+    <circle cx="24" cy="92" r="6" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="10" y="120" font-size="13">source</text>
+    <circle cx="216" cy="100" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="190" y="128" font-size="13">observer</text>
+  </g>
+</svg>

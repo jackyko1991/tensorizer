@@ -38,6 +38,7 @@ function problemsLiveUpdate(): Plugin {
   let timer: NodeJS.Timeout | undefined;
   const pending = new Set<string>();
   let rendering = Promise.resolve();
+  let queued = false; // at most one incremental build waiting behind the running one
 
   return {
     name: "tensorizer-problems-live-update",
@@ -68,13 +69,17 @@ function problemsLiveUpdate(): Plugin {
         if (rendersOutput) pending.add(`${rel[0]}/${rel[1]}`);
         clearTimeout(timer);
         timer = setTimeout(async () => {
-          const ids = [...pending];
+          const changed = pending.size > 0;
           pending.clear();
           if (await buildAssets(["--manifest-only"])) notify();
-          for (const id of ids) {
+          // The incremental build renders every complete problem whose plot is missing or older than its code —
+          // the edited one, and also problems that were half-written when they first appeared.
+          if (changed && !queued) {
+            queued = true;
             rendering = rendering.then(async () => {
-              server.config.logger.info(`[tensorizer] re-rendering ${id}…`, { timestamp: true });
-              if (await buildAssets(["--only", id])) notify();
+              queued = false;
+              server.config.logger.info("[tensorizer] rendering missing/outdated plots…", { timestamp: true });
+              if (await buildAssets(["--jobs", "2"])) notify();
             });
           }
         }, 300);

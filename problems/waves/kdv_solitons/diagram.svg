@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="A tall narrow soliton moving at speed c1 catches up with a short wide soliton moving at the slower speed c2">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="dim" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- still water level -->
+    <line x1="16" y1="128" x2="222" y2="128" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="224" y="146" font-style="italic" text-anchor="end">x</text>
+    <!-- two solitons -->
+    <path d="M16,128.0 L20,128.0 L24,128.0 L28,128.0 L32,128.0 L36,128.0 L40,128.0 L44,127.9 L48,127.8 L52,127.5 L56,126.9 L60,125.2 L64,121.5 L68,113.4 L72,98.3 L76,78.4 L80,68.0 L84,78.4 L88,98.3 L92,113.4 L96,121.5 L100,125.2 L104,126.7 L108,127.3 L112,127.5 L116,127.4 L120,127.1 L124,126.7 L128,126.1 L132,125.1 L136,123.6 L140,121.6 L144,119.1 L148,116.1 L152,113.1 L156,110.9 L160,110.0 L164,110.9 L168,113.1 L172,116.1 L176,119.1 L180,121.6 L184,123.6 L188,125.1 L192,126.1 L196,126.7 L200,127.2 L204,127.5 L208,127.7 L212,127.8 L216,127.9 L220,127.9 L224,127.9 L224,128 L16,128 Z" fill="#93c5fd" fill-opacity="0.5" stroke="none"/>
+    <path d="M16,128.0 L20,128.0 L24,128.0 L28,128.0 L32,128.0 L36,128.0 L40,128.0 L44,127.9 L48,127.8 L52,127.5 L56,126.9 L60,125.2 L64,121.5 L68,113.4 L72,98.3 L76,78.4 L80,68.0 L84,78.4 L88,98.3 L92,113.4 L96,121.5 L100,125.2 L104,126.7 L108,127.3 L112,127.5 L116,127.4 L120,127.1 L124,126.7 L128,126.1 L132,125.1 L136,123.6 L140,121.6 L144,119.1 L148,116.1 L152,113.1 L156,110.9 L160,110.0 L164,110.9 L168,113.1 L172,116.1 L176,119.1 L180,121.6 L184,123.6 L188,125.1 L192,126.1 L196,126.7 L200,127.2 L204,127.5 L208,127.7 L212,127.8 L216,127.9 L220,127.9 L224,127.9" fill="none" stroke="#2563eb" stroke-width="2"/>
+    <!-- speeds: the taller one is faster -->
+    <line x1="80" y1="50" x2="122" y2="50" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="96" y="42" font-style="italic" fill="#b91c1c">c₁</text>
+    <line x1="160" y1="92" x2="176" y2="92" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="162" y="84" font-style="italic" fill="#b91c1c">c₂</text>
+    <!-- height of the tall one: c1 / 2 -->
+    <line x1="40" y1="68" x2="40" y2="126" stroke="#6b7280" stroke-width="1.5" marker-start="url(#dim)" marker-end="url(#dim)"/>
+    <line x1="36" y1="68" x2="76" y2="68" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="8" y="100" font-style="italic">c₁</text>
+    <text x="8" y="116" font-size="13">/2</text>
+  </g>
+</svg>

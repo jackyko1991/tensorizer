@@ -1,0 +1,17 @@
+source_hash: 0b5328cbe1c8
+title: Interferencia en la cubeta de ondas
+summary: Dos puntas oscilan en fase sobre la superficie del agua y emiten ondas circulares. La ecuación de ondas 2D avanza con el laplaciano como núcleo de convolución $3\times3$ (conv2d), un borde amortiguador absorbe las ondas salientes y el patrón de interferencia se estabiliza en líneas nodales quietas donde la diferencia de camino es un número semientero impar de longitudes de onda.
+notes: 'Unidades: tamaño de celda $h = 1$, velocidad de la onda $c = 1$. Leap-frog en el tiempo con el término de amortiguamiento centrado, de modo que el paso es explícito. A lo largo de una línea nodal la onda de una fuente llega siempre medio período después que la de la otra, así que se anulan; las curvas discontinuas son las hipérbolas $|r_1 - r_2| = (m + \tfrac12)\lambda$, que coinciden con las líneas oscuras del panel derecho suficientemente lejos de las fuentes. Separar las fuentes más de $\lambda$ añade más líneas nodales. El borde es un absorbente burdo (una capa de rozamiento), no una capa perfectamente adaptada, así que sobrevive algo de reflexión. El panel derecho muestra la media acumulada de $u^2$; los primeros períodos son transitorios mientras las ondas llenan la cubeta.'
+meanings:
+- altura de la superficie en la celda de malla $(a, b)$
+- núcleo del laplaciano de cinco puntos, desplazamientos $\alpha, \beta \in \{-1, 0, 1\}$
+- '$\alpha, \beta$ repetidos ⇒ sumados: el núcleo se desliza sobre la malla'
+- cero en el interior, creciendo suavemente en el borde absorbente
+- dos pequeñas fuentes gaussianas que oscilan en fase
+- un número de Courant mayor que $1/\sqrt2$ se rechaza (el esquema divergería)
+- 'promedio acumulado de $u^2$ durante aproximadamente un período: las líneas oscuras son nodos'
+labels:
+  wavelength: Longitud de onda $\lambda$
+  separation: Separación entre fuentes $d$
+  courant: Número de Courant $c\,\Delta t/h$
+  t_max: Tiempo simulado

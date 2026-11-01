@@ -7,11 +7,16 @@ import PlotPanel from "./components/PlotPanel";
 import Sidebar, { LEVEL_STYLE } from "./components/Sidebar";
 import TerminalPanel from "./components/TerminalPanel";
 import { LANGS, localize, useLang, type Key, type Lang } from "./i18n";
-import { RichText } from "./components/Tex";
+import ConceptPage from "./pages/ConceptPage";
+import SkillsPage from "./pages/SkillsPage";
+import { plainText, RichText } from "./components/Tex";
 import type { Manifest, Params, Problem } from "./types";
 
 const currentHash = () => decodeURIComponent(window.location.hash.replace(/^#\/?/, "")) || null;
 const select = (id: string) => (window.location.hash = `/${id}`);
+const PAGES = ["problems", "concept", "skills"] as const;
+type Page = (typeof PAGES)[number];
+const TAB_KEY: Record<Page, Key> = { problems: "tab.problems", concept: "tab.concept", skills: "tab.skills" };
 
 /**
  * Layout (desktop): a full-height workspace with three columns that scroll independently —
@@ -42,7 +47,15 @@ export default function App() {
     };
   }, []);
 
-  const problem = manifest?.problems.find((p) => p.id === selected) ?? manifest?.problems[0];
+  // #/concept and #/skills are pages; any other hash is a problem id (category/slug).
+  const page: Page = selected === "concept" || selected === "skills" ? selected : "problems";
+  const [lastProblemId, setLastProblemId] = useState<string | null>(null);
+  const problem =
+    manifest?.problems.find((p) => p.id === (page === "problems" ? selected : lastProblemId)) ?? manifest?.problems[0];
+  useEffect(() => {
+    if (page === "problems" && problem) setLastProblemId(problem.id);
+  }, [page, problem]);
+  const goTo = (target: Page) => (window.location.hash = target === "problems" ? `/${problem?.id ?? ""}` : `/${target}`);
 
   return (
     <div className="flex min-h-screen flex-col bg-white lg:h-screen">
@@ -52,7 +65,21 @@ export default function App() {
           <h1 className="text-lg font-semibold tracking-tight">
             Tensor<span className="text-blue-200">izer</span>
           </h1>
-          <span className="hidden text-sm text-blue-100 md:inline">{t("tagline")}</span>
+          <span className="hidden text-sm text-blue-100 xl:inline">{t("tagline")}</span>
+          <nav className="ml-2 flex items-center gap-1" aria-label="Sections">
+            {PAGES.map((target) => (
+              <button
+                key={target}
+                onClick={() => goTo(target)}
+                aria-current={page === target ? "page" : undefined}
+                className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${
+                  page === target ? "bg-white text-blue-700 shadow-sm" : "text-blue-100 hover:bg-blue-600 hover:text-white"
+                }`}
+              >
+                {t(TAB_KEY[target])}
+              </button>
+            ))}
+          </nav>
         </div>
         <div className="flex items-center gap-4">
           <BackendBadge backend={backend} />
@@ -74,7 +101,18 @@ export default function App() {
 
       {loadError && <p className="m-6 rounded-md bg-red-50 p-4 text-sm text-red-700">{loadError}</p>}
 
-      {manifest && problem && (
+      {manifest && page === "concept" && (
+        <main className="min-h-0 flex-1">
+          <ConceptPage manifest={manifest} />
+        </main>
+      )}
+      {manifest && page === "skills" && (
+        <main className="min-h-0 flex-1">
+          <SkillsPage manifest={manifest} />
+        </main>
+      )}
+
+      {manifest && problem && page === "problems" && (
         <div className="flex flex-col lg:min-h-0 lg:flex-1 lg:flex-row">
           <div className="border-b border-gray-200 p-3 lg:hidden">
             <ProblemSelect manifest={manifest} value={problem.id} />
@@ -142,7 +180,7 @@ function ProblemSelect({ manifest, value }: { manifest: Manifest; value: string 
               <optgroup key={`${cat.id}-${level}`} label={`${t(`cat.${cat.id}` as Key) ?? cat.title} · ${t(LEVEL_STYLE[level].key)}`}>
                 {inGroup.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.i18n?.[lang]?.title ?? p.title}
+                    {plainText(p.i18n?.[lang]?.title ?? p.title)}
                   </option>
                 ))}
               </optgroup>
@@ -242,7 +280,9 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
       <main className="flex min-w-0 flex-col border-r border-gray-200 lg:min-h-0 lg:flex-1">
         <div className="shrink-0 border-b border-gray-200 bg-white px-5 py-4">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight">{problem.title}</h2>
+            <h2 className="text-xl font-semibold tracking-tight">
+              <RichText text={problem.title} />
+            </h2>
             <div className="mt-1.5 flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">{categoryTitle}</span>
               <span
@@ -262,7 +302,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
           {problem.diagram && (
             <img
               src={generatedUrl(problem.diagram)}
-              alt={`Sketch of the ${problem.title} setup`}
+              alt={`Sketch of the ${plainText(problem.title)} setup`}
               title={t("setup")}
               className="mx-auto mt-3 h-36 w-full max-w-xs object-contain"
             />

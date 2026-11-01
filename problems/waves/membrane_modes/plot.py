@@ -20,8 +20,7 @@ def animate(shapes: torch.Tensor, omega: torch.Tensor, inside: torch.Tensor, per
     outside = ~inside.view(n, n).cpu().numpy()
     shapes = shapes / shapes.flatten(1).abs().max(1).values[:, None, None]  # each mode scaled to peak 1 for display
     limit = 1.0
-    cmap = plt.get_cmap("RdBu_r", 16).copy()
-    cmap.set_bad("white")  # points outside the drum
+    cmap = plt.get_cmap("RdBu_r", 16).with_extremes(bad="white")  # white = outside the drum
 
     fig, axes = plt.subplots(2, 3, figsize=(7, 4.6))
     images = []

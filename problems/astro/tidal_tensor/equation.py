@@ -49,12 +49,12 @@ def acceleration(x: torch.Tensor, GM: float) -> torch.Tensor:
 
 
 def tidal_acceleration(T: torch.Tensor, xi: torch.Tensor) -> torch.Tensor:
-    r"""\ddot ξ_{bi} = T_{ij} ξ_{bj} (j summed): linear tidal law for every ring particle b.   (3, 3), (B, 3) → (B, 3)"""
+    r"""\ddot ξ_{bi} = T_{ij} ξ_{bj} (j summed): linear tidal law for each ring particle b.   (3, 3), (B, 3) → (B, 3)"""
     return torch.einsum("ij,bj->bi", T, xi)
 
 
 def rhs(y: torch.Tensor, GM: float, n: int) -> torch.Tensor:
-    """dy/dt for y of shape (1 + 2n, 2, 3): [centre of the ring, n ring particles (exact), n separations ξ (tidal law)]."""
+    """dy/dt for y (1 + 2n, 2, 3): [ring centre, n ring particles (exact), n separations ξ (tidal law)]."""
     x, v = y[:, 0], y[:, 1]
     a_exact = acceleration(x[: 1 + n], GM)  # centre and ring particles, full gravity
     a_tidal = tidal_acceleration(tidal_tensor(x[0], GM), x[1 + n :])  # separations from the centre, linearised

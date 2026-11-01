@@ -1,7 +1,7 @@
-source_hash: 28d4b810cb16
+source_hash: 37c952badf1f
 title: Lagrange-Punkte im eingeschränkten Dreikörperproblem
-summary: Ein Stern und ein Planet umkreisen einander; in ihrem rotierenden Bezugssystem spürt ein Testteilchen Gravitation, Zentrifugalkraft und Corioliskraft, geschrieben mit $\varepsilon_{ijk}$. Das Newton-Verfahren für $\nabla\Phi_\mathrm{eff} = 0$ (Gradient und Hesse-Matrix per Autograd) findet alle fünf Lagrange-Punkte auf einmal, und Teilchen, die von L4 weggestoßen werden, beschreiben Kaulquappen- und Hufeisenbahnen.
-notes: 'Einheiten: Abstand 1, $G(M_1 + M_2) = 1$, also dreht sich das Paar einmal pro $2\pi$. Der Planet hat den Massenanteil $\mu$, und die Testteilchen sind zu leicht, um einen der Körper zu stören. L1, L2 und L3 liegen auf der Verbindungslinie der Körper und sind Sattelpunkte von $\Phi_\mathrm{eff}$; L4 und L5 bilden gleichseitige Dreiecke mit den beiden Körpern und sind Maxima von $\Phi_\mathrm{eff}$, doch die Corioliskraft macht sie für $\mu < 0.0385$ stabil. Deshalb sammeln sich Jupiters Trojaner 60° vor und hinter dem Planeten. Größere Stöße machen aus kleinen Kaulquappenschleifen große und schließlich Hufeisenbahnen, die auch L3 umrunden. Für $\mu$ über 0,0385 driften die Teilchen davon.'
+summary: Ein Stern und ein Planet umkreisen einander; in ihrem rotierenden Bezugssystem spürt ein Testteilchen Gravitation, Zentrifugalkraft und Corioliskraft, geschrieben mit $\varepsilon_{ijk}$. Das Newton-Verfahren für $\nabla\Phi_\mathrm{eff} = 0$ (Gradient und Hesse-Matrix per Autograd) findet alle fünf Lagrange-Punkte auf einmal, und Teilchen, die von L4 weggestoßen werden, beschreiben Kaulquappenbahnen um ihn herum.
+notes: 'Einheiten: Abstand 1, $G(M_1 + M_2) = 1$, also dreht sich das Paar einmal pro $2\pi$. Der Planet hat den Massenanteil $\mu$, und die Testteilchen sind zu leicht, um einen der Körper zu stören. L1, L2 und L3 liegen auf der Verbindungslinie der Körper und sind Sattelpunkte von $\Phi_\mathrm{eff}$; L4 und L5 bilden gleichseitige Dreiecke mit den beiden Körpern und sind Maxima von $\Phi_\mathrm{eff}$, doch die Corioliskraft macht sie für $\mu < 0.0385$ stabil. Deshalb sammeln sich Jupiters Trojaner 60° vor und hinter dem Planeten. Die Teilchen starten in Ruhe auf der Planetenbahn, einige Grad vor L4: Kleine Stöße ergeben kleine Kaulquappenschleifen (mit schnellen Epizykeln darauf), größere dehnen sich zu langen bananenförmigen Schleifen entlang der Bahn, und jenseits von etwa 20° (für $\mu = 0.01$) wandert das Teilchen davon. Für $\mu$ über 0,0385 driften selbst winzige Stöße davon.'
 meanings:
 - Ort des Testteilchens $b$ im rotierenden System
 - Stern bei $(-\mu, 0, 0)$ und Planet bei $(1-\mu, 0, 0)$
@@ -13,6 +13,6 @@ meanings:
 - $-2\Phi_\mathrm{eff} - \dot x_i\dot x_i$, erhalten
 labels:
   mu: Massenanteil des Planeten $\mu$
-  nudge: Größter Stoß von L4 entlang der Bahn
+  nudge: Größter Stoß vor L4
   t_max: Simulierte Zeit
   dt: Zeitschritt

@@ -1,0 +1,21 @@
+source_hash: 702d9d9098be
+title: Liaison récepteur–ligand (k_on, k_off)
+summary: Avec quelle force et combien de temps un récepteur immunitaire (récepteur des lymphocytes T ou anticorps) retient-il sa cible ? La cinétique d'action de masse, avec une constante d'association $k_{on}$ et une constante de dissociation $k_{off}$, est résolue pour plusieurs variants de récepteur et toute une titration de concentrations de ligand à la fois, dans un seul tenseur $(B, C)$, et affichée sous forme de sensorgramme type SPR à côté des isothermes de liaison.
+notes: 'La liaison exige qu''un récepteur libre et un ligand libre se rencontrent, d''où une vitesse $k_{on} R L$ ; la dissociation touche chaque complexe isolément, à la vitesse $k_{off} C$. À l''équilibre les deux se compensent et la fraction liée vaut $\theta = L/(L + K_D)$ avec $K_D = k_{off}/k_{on}$ : la moitié des récepteurs est occupée quand $L = K_D$ (le repère sur chaque isotherme). En partant de récepteurs vides, l''approche est exponentielle, $C(t) = C_{eq}(1 - e^{-k_{obs} t})$ avec $k_{obs} = k_{on} L + k_{off}$, ce qui permet aux instruments de SPR (résonance plasmonique de surface) de mesurer $k_{on}$ ; après le rinçage au tampon, les complexes décroissent en $e^{-k_{off} t}$ avec une demi-vie $t_{1/2} = \ln 2 / k_{off}$, le temps de résidence. Les variants couvrent des gammes réalistes : les récepteurs des lymphocytes T lient faiblement le complexe peptide–CMH ($K_D \sim 1$–$10\,\mu$M, temps de résidence de quelques secondes), un anticorps lie fortement ($K_D \sim 0.1$ nM,
+  temps de résidence de plusieurs heures). Observez les points sur les isothermes : à faible concentration $k_{obs} \approx k_{off}$ est petit, donc l''anticorps n''a pas encore atteint l''équilibre au début du rinçage. Pourquoi $k_{off}$ compte-t-il tant pour les lymphocytes T ? Dans le modèle de relecture cinétique (kinetic proofreading), un TCR lié doit franchir plusieurs étapes de signalisation (phosphorylations) avant d''activer la cellule, et tout est remis à zéro si le ligand se détache avant. Un complexe qui vit plus longtemps que ces étapes a bien plus de chances de signaler : le lymphocyte T lit donc le temps de résidence $1/k_{off}$ plutôt que la seule occupation, et distingue un peptide étranger d''un peptide du soi dont l''affinité ne diffère que modestement. Simplifications : un seul site de liaison par récepteur (ni avidité ni reliaison), une solution homogène et aucune limitation par le transport de masse ; avec la déplétion activée, chaque complexe retire un ligand d''un
+  volume fermé et l''équilibre suit la solution quadratique au lieu de $L/(L + K_D)$.'
+meanings:
+- constantes de vitesse du variant de récepteur $b$ (TCR de faible / moyenne / haute affinité, anticorps)
+- concentration de ligand $c$ de la titration (nM) ; la dernière sert au sensorgramme
+- récepteurs libres et complexes pour chaque variant et chaque concentration
+- 'ligand libre : $L_c$, ou $L_c - C_{bc}$ avec déplétion'
+- 'aucun indice sommé : $k_b$ est diffusé sur chaque concentration $c$'
+- second membre pour RK4 ; $R$ et $C$ varient de $\mp J$, donc $R + C = R_T$
+- 'constante de dissociation : la concentration de ligand qui occupe la moitié des récepteurs'
+- occupation à l'équilibre (isothermes en pointillés)
+labels:
+  log10_L: Ligand du sensorgramme $\log_{10}(L/\mu\mathrm{M})$
+  t_assoc: Durée d'association
+  t_dissoc: Durée de dissociation
+  depletion: Déplétion du ligand
+  R_T: Concentration de récepteurs $R_T$

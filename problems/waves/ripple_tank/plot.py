@@ -4,7 +4,6 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
-import torch
 
 from problems._common.plotting import frame_indices, save_gif
 
@@ -13,12 +12,12 @@ def animate(times, u, intensity, path_diff, s1, s2, wavelength: float, border: i
     t = times.cpu().numpy()
     inner = slice(border, u.shape[-1] - border)  # hide the absorbing border
     U = u[:, inner, inner].cpu().numpy()  # (F, m, m)
-    I = intensity[:, inner, inner].cpu().numpy()
+    W = intensity[:, inner, inner].cpu().numpy()  # running ⟨u²⟩
     D = path_diff[inner, inner].cpu().numpy()
     lo, hi = border, u.shape[-1] - border
     extent = (lo, hi, lo, hi)
     u_lim = np.quantile(np.abs(U[-1]), 0.98) + 1e-9
-    I_lim = np.quantile(I[-1], 0.98) + 1e-9
+    I_lim = np.quantile(W[-1], 0.98) + 1e-9
     m_max = int(D.max() / wavelength - 0.5)
     levels = [(m + 0.5) * wavelength for m in range(m_max + 1)]
 
@@ -33,7 +32,7 @@ def animate(times, u, intensity, path_diff, s1, s2, wavelength: float, border: i
         interpolation="nearest",
     )
     im2 = ax2.imshow(
-        I[0].T,
+        W[0].T,
         origin="lower",
         extent=extent,
         cmap=plt.get_cmap("Blues", 8),
@@ -56,7 +55,7 @@ def animate(times, u, intensity, path_diff, s1, s2, wavelength: float, border: i
 
     def update(step: int):
         im1.set_data(U[step].T)
-        im2.set_data(I[step].T)
+        im2.set_data(W[step].T)
         title.set_text(f"two coherent sources   λ = {wavelength:g}   t = {t[step]:.0f}")
 
     fig.tight_layout()

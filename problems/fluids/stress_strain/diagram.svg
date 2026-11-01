@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Square plate element loaded by a normal stress sigma_xx on its left and right faces and shear stress tau_xy along its edges; the dashed shape shows the stretched and sheared plate">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="shear" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- plate -->
+    <rect x="80" y="40" width="80" height="80" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <path d="M86,40 M74,120 L170,120 L182,40 L86,40 Z" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- normal stress -->
+    <line x1="164" y1="80" x2="206" y2="80" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <line x1="76" y1="80" x2="34" y2="80" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <text x="194" y="72" font-style="italic" fill="#b91c1c">σ<tspan font-size="10" dy="3" font-style="normal">xx</tspan></text>
+    <!-- shear -->
+    <line x1="92" y1="32" x2="148" y2="32" stroke="#f59e0b" stroke-width="2" marker-end="url(#shear)"/>
+    <line x1="148" y1="128" x2="92" y2="128" stroke="#f59e0b" stroke-width="2" marker-end="url(#shear)"/>
+    <line x1="168" y1="110" x2="168" y2="54" stroke="#f59e0b" stroke-width="2" marker-end="url(#shear)"/>
+    <line x1="72" y1="54" x2="72" y2="110" stroke="#f59e0b" stroke-width="2" marker-end="url(#shear)"/>
+    <text x="104" y="22" font-style="italic" fill="#b45309">τ<tspan font-size="10" dy="3" font-style="normal">xy</tspan></text>
+    <text x="104" y="86" font-style="italic" fill="#1e3a8a">λ, μ</text>
+  </g>
+</svg>

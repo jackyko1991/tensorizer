@@ -25,8 +25,11 @@ def run(params: dict, out_dir: Path) -> Path:
     print(f"ahead : heard {heard[0]:.3f} Hz   formula f c/|c - v_s| = {ahead:.3f} Hz")
     print(f"behind: heard {heard[1]:.3f} Hz   formula f c/(c + v_s)  = {behind:.3f} Hz")
     if params["mach"] > 1:
-        mu = equation.cone_half_angle(s, result["radii"][-1], tensors.source_position(t_e.new_tensor(t_max), v_s, x_start))
-        print(f"Mach cone half-angle {math.degrees(mu.mean().item()):.2f}°  (asin(c/v_s) = {math.degrees(math.asin(c / v_s)):.2f}°)")
+        mu = equation.cone_half_angle(
+            s, result["radii"][-1], tensors.source_position(t_e.new_tensor(t_max), v_s, x_start)
+        )
+        exact = math.degrees(math.asin(c / v_s))
+        print(f"Mach cone half-angle {math.degrees(mu.mean().item()):.2f}°  (asin(c/v_s) = {exact:.2f}°)")
         print("ahead of a supersonic source the fronts arrive in reverse order, all after the cone passes")
     return plot.animate(result, t_e, s, obs, v_s, c, out_dir / "doppler_effect.gif")
 

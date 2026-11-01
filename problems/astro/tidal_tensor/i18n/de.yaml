@@ -1,0 +1,21 @@
+source_hash: c221614fc472
+title: Spaghettisierung nahe einem Schwarzen Loch
+summary: 'Ein Ring aus Teilchen fällt auf ein stellares Schwarzes Loch zu. Der Unterschied der Gravitation über den Ring hinweg ist der Gezeitentensor $T_{ij} = -\partial_i\partial_j\Phi$, berechnet aus seiner Formel und als Autograd-Hesse-Matrix. Er dehnt den Ring in radialer Richtung ($+2GM/r^3$) und staucht ihn quer dazu (zweimal $-GM/r^3$): Spaghettisierung, die reale Körper innerhalb des Gezeitenradius zerreißt.'
+notes: 'Einheiten: $G = c = 1$ und Längen in $GM/c^2$, also liegt der Horizont bei $r_s = 2$ (30 km für ein Schwarzes Loch von 10 Sonnenmassen). Die Ringteilchen ziehen einander nicht an: Die blauen Punkte folgen exakter Newtonscher Gravitation, die rote Kurve dem linearen Gesetz $\ddot\xi_i = T_{ij}\xi_j$, und beide stimmen überein, bis der Ring nicht mehr klein gegen $r$ ist. Der orangefarbene Kreis markiert, wo ein durch seine eigene Gravitation zusammengehaltener Körper von der Größe des Rings und der Masse $m$ zerrissen würde. Bei einem stellaren Schwarzen Loch liegt dieser Radius weit außerhalb des Horizonts, sodass ein einfallender Stern (oder Astronaut) zerfetzt wird, bevor er ihn überquert; bei einem supermassereichen Schwarzen Loch kann er innerhalb des Horizonts liegen. Die Gravitation ist hier Newtonsch; bemerkenswerterweise hat der Gezeitentensor eines radial fallenden Beobachters in der Allgemeinen Relativitätstheorie genau dieselben Eigenwerte $(2, -1, -1)\,GM/r^3$. Der Lauf
+  endet vor dem Horizont.'
+meanings:
+- Ort des Ringmittelpunkts (Schwarzes Loch im Ursprung)
+- Abstand des Ringteilchens $b$ vom Mittelpunkt
+- äußeres Produkt, kein Index summiert
+- Gezeitentensor aus der Formel
+- derselbe Tensor als Autograd-Hesse-Matrix
+- 'wiederholtes $j$ ⇒ summiert: lineare Gezeitenbeschleunigung'
+- $= -\nabla^2\Phi = 0$ im Vakuum
+- Gezeitenradius (Roche-Grenze) eines selbstgravitierenden Körpers
+labels:
+  r0: Anfangsabstand
+  r_stop: Fall stoppen bei
+  ring_radius: Ringradius
+  n_particles: Ringteilchen
+  mass_ratio: Körpermasse für $r_t$, $m/M$
+  n_steps: RK4-Schritte

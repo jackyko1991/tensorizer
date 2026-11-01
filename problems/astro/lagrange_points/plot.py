@@ -52,7 +52,8 @@ def animate(
 
     colors = [ACCENT[(b + 2) % len(ACCENT)] for b in range(pos.shape[1])]
     trails = [
-        [a.plot([], [], lw=1.0, color=c, label=f"nudged {o:.1f}°")[0] for a in (ax, ax_z)] for c, o in zip(colors, nudges)
+        [a.plot([], [], lw=1.0, color=c, label=f"nudged {o:.1f}°")[0] for a in (ax, ax_z)]
+        for c, o in zip(colors, nudges)
     ]
     dots = [[a.plot([], [], "o", ms=4, color=c)[0] for a in (ax, ax_z)] for c in colors]
     ax_z.legend(fontsize=7, loc="lower left")
@@ -68,4 +69,3 @@ def animate(
 
     fig.tight_layout()
     return save_gif(fig, update, frame_indices(len(t), 90), path)
-

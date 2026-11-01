@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Moving source with velocity v_s emitting circular wavefronts that bunch up ahead and spread out behind, heard by listeners on both sides">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- wavefronts emitted earlier from points further back -->
+    <g fill="none" stroke="#2563eb" stroke-width="1.5">
+      <circle cx="96" cy="80" r="68"/>
+      <circle cx="104.5" cy="80" r="51"/>
+      <circle cx="113" cy="80" r="34"/>
+      <circle cx="121.5" cy="80" r="17"/>
+    </g>
+    <!-- path of the source -->
+    <line x1="20" y1="80" x2="130" y2="80" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- source and its velocity -->
+    <circle cx="130" cy="80" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="132" y1="96" x2="160" y2="96" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="136" y="114" font-style="italic" fill="#b91c1c">v</text>
+    <text x="144" y="118" font-size="11" font-style="italic" fill="#b91c1c">s</text>
+    <!-- listeners -->
+    <path d="M208,88 l8,-14 l8,14 z" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+    <path d="M6,88 l8,-14 l8,14 z" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+    <text x="196" y="60" font-size="13" fill="#b45309">f′ &gt; f</text>
+    <text x="4" y="60" font-size="13" fill="#b45309">f′ &lt; f</text>
+    <text x="60" y="152" font-style="italic" fill="#1e40af">c</text>
+  </g>
+</svg>

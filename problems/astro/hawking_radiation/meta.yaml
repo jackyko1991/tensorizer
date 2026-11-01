@@ -1,0 +1,31 @@
+title: Hawking radiation and black-hole evaporation
+category: astro
+level: advanced
+order: 2
+summary: >
+  A black hole glows like a black body at the Hawking temperature $T_H = \hbar c^3/(8\pi G M k_B)$. One broadcast evaluates
+  Planck's law for many masses and wavelengths at once, and RK4 integrates the mass loss $dM/dt = -\alpha/M^2$:
+  the hole shrinks, heats up and ends in a burst after $t \propto M^3$.
+animated: true
+vector_form: 'T_H = \frac{\hbar c^3}{8\pi G M k_B},\qquad P = \sigma T_H^4\,4\pi r_s^2 = \frac{\hbar c^6}{15360\,\pi G^2 M^2},\qquad \frac{dM}{dt} = -\frac{P}{c^2},\qquad t_\mathrm{life} = \frac{5120\,\pi G^2 M_0^3}{\hbar c^4}'
+index_form: 'T_m = \frac{\hbar c^3}{8\pi G k_B}\,M_m^{-1},\qquad B_{ml} = \frac{2hc^2}{\lambda_l^5}\,\Big(e^{hc/(\lambda_l k_B T_m)} - 1\Big)^{-1},\qquad \dot M_m = -\alpha\,M_m^{-2}'
+translation:
+  - {symbol: 'M_m', code: 'masses', shape: '(B,)', meaning: 'a batch of black-hole masses (kg): Sun, Earth, …, the animated hole'}
+  - {symbol: 'T_m', code: 'hawking_temperature(M)', shape: '(B,)', meaning: 'Hawking temperature, elementwise'}
+  - {symbol: '\lambda_l', code: 'wavelengths(...)', shape: '(L,)', meaning: 'log-spaced wavelength grid'}
+  - {symbol: 'B_{ml}', code: 'planck(lam, T)', shape: '(F, L)', meaning: 'Planck spectrum by broadcasting T[:, None] against lam[None, :]'}
+  - {symbol: '\lambda_\mathrm{max}', code: 'wien_peak(T)', shape: '(B,)', meaning: 'Wien''s law $b/T_H$'}
+  - {symbol: 'P_m', code: 'power(M)', shape: '(B,)', meaning: 'Stefan–Boltzmann power of the horizon'}
+  - {symbol: '\dot M_m', code: 'mass_loss_rate(M)', shape: '(B,)', meaning: '$-P/c^2$, integrated with RK4'}
+  - {symbol: 't_\mathrm{life}', code: 'lifetime(M0)', shape: '(B,)', meaning: 'analytic lifetime, compared with the integration'}
+notes: >
+  SI units throughout. A solar-mass black hole is at $6\times10^{-8}$ K, far colder than the 2.7 K microwave background, so real
+  astrophysical black holes absorb more than they emit. Only tiny (primordial) holes evaporate: one of about $2\times10^{11}$ kg formed in
+  the Big Bang would be finishing now. The model counts photons only and treats the horizon as a perfect black body of area
+  $4\pi r_s^2$; real holes also emit neutrinos, gravitons and, when hot enough, heavier particles, which shortens the lifetime, and
+  greybody factors change the spectrum's shape. The time step is chosen so that each RK4 step burns a fixed fraction of the remaining
+  mass; the animation advances in equal steps of $\log M$, so the last frames cover a tiny time span. Shown with the horizon radius
+  drawn as $M^{0.35}$ so it stays visible.
+params:
+  log10_mass: {default: 5.4, min: 3, max: 12, step: 0.1, label: 'Initial mass $\log_{10}(M_0/\mathrm{kg})$'}
+  burn_fraction: {default: 0.01, min: 0.001, max: 0.05, step: 0.001, label: Mass fraction burnt per RK4 step}

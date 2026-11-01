@@ -33,7 +33,7 @@ def animate(result: dict, t_e: torch.Tensor, s: torch.Tensor, obs: torch.Tensor,
     source = ax.plot([], [], "o", color="#1e40af", ms=8, zorder=5)[0]
     cone = [ax.plot([], [], color="#f59e0b", lw=2)[0] for _ in range(2)]
     labels = []
-    for o, name in zip(obs_np, ["ahead", "behind"]):
+    for o in obs_np:
         ax.plot([o[0] / 1000], [0], "^", color="#dc2626", ms=9, zorder=5)
         labels.append(
             ax.text(o[0] / 1000, 0.08 * half_height / 1000, "", ha="center", va="bottom", fontsize=8,

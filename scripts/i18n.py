@@ -98,7 +98,7 @@ def cmd_status(_args) -> None:
 def cmd_export(args) -> None:
     items = todo(args.lang)
     Path(args.out).write_text(json.dumps(items, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"exported {len(items)} item(s) for {args.lang} → {args.out}")
+    print(f"exported {len(items)} item(s) for {args.lang} -> {args.out}")
 
 
 def cmd_import(args) -> None:
