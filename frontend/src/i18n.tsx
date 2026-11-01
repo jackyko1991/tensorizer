@@ -4,7 +4,7 @@
  * UI strings live here. Problem content (title, summary, notes, meanings, parameter labels) comes from
  * problems/<category>/<slug>/i18n/<lang>.yaml via the manifest and falls back to English.
  */
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Problem } from "./types";
 
 export const LANGS = [
@@ -24,6 +24,13 @@ export type Lang = (typeof LANGS)[number]["code"];
 // One row per key: en, zh-Hant, zh-Hans, fr, de, es, ja, ru, ko, hi
 const TABLE = {
   tagline: ["Physics equations solver by GPU tensors", "以 GPU 張量求解物理方程", "用 GPU 张量求解物理方程", "Résolution d'équations physiques par tenseurs GPU", "Physikalische Gleichungen mit GPU-Tensoren lösen", "Resolución de ecuaciones físicas con tensores en GPU", "GPUテンソルで物理方程式を解く", "Решение физических уравнений на тензорах GPU", "GPU 텐서로 푸는 물리 방정식", "GPU टेंसर से भौतिकी के समीकरण हल करें"],
+  "mtab.problem": ["Problem", "題目", "题目", "Problème", "Aufgabe", "Problema", "問題", "Задача", "문제", "समस्या"],
+  "mtab.formulation": ["Formulation", "公式推導", "公式推导", "Formulation", "Formulierung", "Formulación", "定式化", "Формулировка", "공식화", "सूत्रीकरण"],
+  "mtab.code": ["Code", "程式碼", "代码", "Code", "Code", "Código", "コード", "Код", "코드", "कोड"],
+  "mtab.results": ["Results", "結果", "结果", "Résultats", "Ergebnisse", "Resultados", "結果", "Результаты", "결과", "परिणाम"],
+  "nb.colab": ["Open in Colab", "在 Colab 開啟", "在 Colab 打开", "Ouvrir dans Colab", "In Colab öffnen", "Abrir en Colab", "Colab で開く", "Открыть в Colab", "Colab에서 열기", "Colab में खोलें"],
+  "nb.download": ["Download .ipynb", "下載 .ipynb", "下载 .ipynb", "Télécharger .ipynb", ".ipynb herunterladen", "Descargar .ipynb", ".ipynb をダウンロード", "Скачать .ipynb", ".ipynb 다운로드", ".ipynb डाउनलोड करें"],
+  "nb.downloadHint": ["Notebook with your current code and parameters", "包含你目前程式碼與參數的筆記本", "包含你当前代码和参数的笔记本", "Notebook avec votre code et vos paramètres actuels", "Notebook mit deinem aktuellen Code und deinen Parametern", "Notebook con tu código y parámetros actuales", "現在のコードとパラメータを含むノートブック", "Блокнот с вашим текущим кодом и параметрами", "현재 코드와 매개변수가 담긴 노트북", "आपके वर्तमान कोड और पैरामीटर वाली नोटबुक"],
   "tab.problems": ["Problems", "題庫", "题库", "Problèmes", "Aufgaben", "Problemas", "問題", "Задачи", "문제", "समस्याएँ"],
   "tab.concept": ["Concept", "概念", "概念", "Concept", "Konzept", "Concepto", "コンセプト", "Концепция", "개념", "अवधारणा"],
   "tab.skills": ["Coding Skills", "程式技巧", "编程技巧", "Compétences de code", "Programmiertechniken", "Técnicas de programación", "コーディング技法", "Навыки программирования", "코딩 기법", "कोडिंग कौशल"],
@@ -88,6 +95,8 @@ export type Key = keyof typeof TABLE;
 const STORAGE_KEY = "tensorizer.lang";
 
 function initialLang(): Lang {
+  const fromUrl = new URLSearchParams(window.location.search).get("lang");
+  if (fromUrl && LANGS.some((l) => l.code === fromUrl)) return fromUrl as Lang;
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved && LANGS.some((l) => l.code === saved)) return saved as Lang;
@@ -109,9 +118,17 @@ const LangContext = createContext<LangState | null>(null);
 
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(initialLang);
+  // Keep ?lang= in the address bar so a copied link opens in the same language.
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("lang") !== lang) {
+      url.searchParams.set("lang", lang);
+      window.history.replaceState(window.history.state, "", url);
+    }
+  }, [lang]);
   const setLang = useCallback((next: Lang) => {
     setLangState(next);
-    document.documentElement.lang = next;
     try {
       localStorage.setItem(STORAGE_KEY, next);
     } catch {

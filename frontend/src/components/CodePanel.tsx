@@ -20,10 +20,12 @@ interface Props {
   onReset: () => void;
   /** Rendered to the right of the editor (the parameters panel). */
   side?: ReactNode;
+  /** Rendered at the right of the info row (notebook export). */
+  toolbar?: ReactNode;
   className?: string;
 }
 
-export default function CodePanel({ files, edits, editable, onEdit, onReset, side, className = "" }: Props) {
+export default function CodePanel({ files, edits, editable, onEdit, onReset, side, toolbar, className = "" }: Props) {
   const { t } = useLang();
   const [active, setActive] = useState(files[0]?.name);
   const file = files.find((f) => f.name === active) ?? files[0];
@@ -51,7 +53,7 @@ export default function CodePanel({ files, edits, editable, onEdit, onReset, sid
           ))}
         </div>
 
-        <div className="flex h-7 shrink-0 items-center border-b border-gray-100 px-3 text-xs text-gray-500">
+        <div className="flex h-7 shrink-0 items-center justify-between gap-3 border-b border-gray-100 px-3 text-xs text-gray-500">
           <span className="truncate">
             {t(ROLE[file.name])} · {t(editable ? "code.editable" : "code.readonly")}
             {edited && (
@@ -60,6 +62,7 @@ export default function CodePanel({ files, edits, editable, onEdit, onReset, sid
               </button>
             )}
           </span>
+          {toolbar && <span className="flex shrink-0 items-center gap-3">{toolbar}</span>}
         </div>
 
         <div className="max-h-[60vh] min-h-0 flex-1 overflow-auto lg:max-h-none">

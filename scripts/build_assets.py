@@ -22,6 +22,9 @@ from pathlib import Path
 
 import yaml
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import notebooks  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 PROBLEMS = ROOT / "problems"
 CODE_FILES = ["main.py", "equation.py", "tensors.py", "solve.py", "plot.py"]
@@ -94,6 +97,18 @@ def load_translations(problem: Path) -> dict:
         except yaml.YAMLError as e:
             print(f"warning: skipping {f}: {e}")
     return out
+
+
+def write_notebook(problem: Path, target: Path) -> str:
+    """The problem as a Jupyter notebook next to its output (served for download); return its manifest path."""
+    text = notebooks.dumps(notebooks.build(problem))
+    out = target / f"{problem.name}.ipynb"
+    committed = notebooks.OUT / problem.parent.name / f"{problem.name}.ipynb"  # what "Open in Colab" opens
+    for f in (out, committed):
+        if not f.is_file() or f.read_text(encoding="utf-8") != text:
+            f.parent.mkdir(parents=True, exist_ok=True)
+            f.write_text(text, encoding="utf-8")
+    return f"{problem.parent.name}/{problem.name}/{out.name}"
 
 
 def copy_diagram(problem: Path, target: Path) -> str | None:
@@ -185,6 +200,7 @@ def main() -> None:
                 "console": console_file.read_text(encoding="utf-8") if console_file.exists() else "",
                 "diagram": copy_diagram(d, target),
                 "i18n": load_translations(d),
+                "notebook": write_notebook(d, target),
             }
         )
 

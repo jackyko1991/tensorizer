@@ -7,6 +7,7 @@ import PlotPanel from "./components/PlotPanel";
 import Sidebar, { LEVEL_STYLE } from "./components/Sidebar";
 import TerminalPanel from "./components/TerminalPanel";
 import { LANGS, localize, useLang, type Key, type Lang } from "./i18n";
+import { colabUrl, downloadNotebook, REPO_URL } from "./notebook";
 import ConceptPage from "./pages/ConceptPage";
 import SkillsPage from "./pages/SkillsPage";
 import { plainText, RichText } from "./components/Tex";
@@ -59,20 +60,22 @@ export default function App() {
 
   return (
     <div className="flex min-h-screen flex-col bg-white lg:h-screen">
-      <header className="flex h-[52px] shrink-0 items-center justify-between bg-blue-700 px-4 text-white shadow-sm sm:px-6">
-        <div className="flex items-center gap-3">
+      <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1.5 bg-blue-700 px-4 py-2 text-white shadow-sm sm:px-6 lg:h-[52px] lg:flex-nowrap lg:py-0">
+        <div className="flex min-w-0 items-center gap-3">
           <img src={`${import.meta.env.BASE_URL}logo-light.svg`} alt="" className="h-8 w-8" />
           <h1 className="text-lg font-semibold tracking-tight">
             Tensor<span className="text-blue-200">izer</span>
           </h1>
           <span className="hidden text-sm text-blue-100 xl:inline">{t("tagline")}</span>
-          <nav className="ml-2 flex items-center gap-1" aria-label="Sections">
+        </div>
+        {/* On phones the tabs wrap onto their own row under the logo and language menu. */}
+        <nav className="order-last flex w-full items-center gap-1 overflow-x-auto lg:order-none lg:w-auto" aria-label="Sections">
             {PAGES.map((target) => (
               <button
                 key={target}
                 onClick={() => goTo(target)}
                 aria-current={page === target ? "page" : undefined}
-                className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${
+                className={`shrink-0 rounded-md px-3 py-1.5 text-sm font-medium transition ${
                   page === target ? "bg-white text-blue-700 shadow-sm" : "text-blue-100 hover:bg-blue-600 hover:text-white"
                 }`}
               >
@@ -80,8 +83,7 @@ export default function App() {
               </button>
             ))}
           </nav>
-        </div>
-        <div className="flex items-center gap-4">
+        <div className="ml-auto flex items-center gap-4">
           <BackendBadge backend={backend} />
           <select
             value={lang}
@@ -113,7 +115,7 @@ export default function App() {
       )}
 
       {manifest && problem && page === "problems" && (
-        <div className="flex flex-col lg:min-h-0 lg:flex-1 lg:flex-row">
+        <div className="flex flex-1 flex-col lg:min-h-0 lg:flex-row">
           <div className="border-b border-gray-200 p-3 lg:hidden">
             <ProblemSelect manifest={manifest} value={problem.id} />
           </div>
@@ -160,6 +162,16 @@ export default function App() {
           />
         </div>
       )}
+
+      <footer className="sticky bottom-0 z-10 flex h-7 shrink-0 items-center justify-end gap-4 border-t border-gray-200 bg-white/95 px-4 text-xs text-gray-500 backdrop-blur">
+        <span>Apache-2.0</span>
+        <a href={REPO_URL} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-gray-900">
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="currentColor" aria-hidden="true">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+          </svg>
+          GitHub
+        </a>
+      </footer>
     </div>
   );
 }
@@ -212,6 +224,9 @@ function defaults(problem: Problem): Params {
   return Object.fromEntries(Object.entries(problem.params).map(([k, s]) => [k, s.default]));
 }
 
+const MOBILE_TABS = ["problem", "formulation", "code", "results"] as const;
+type MobileTab = (typeof MOBILE_TABS)[number];
+
 interface ProblemViewProps {
   problem: Problem;
   backend: Health | null;
@@ -229,6 +244,9 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
   const [verbose, setVerbose] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasRun, setHasRun] = useState(false);
+  // Phones show one part of the workspace at a time; desktop shows all three columns.
+  const [mobileTab, setMobileTab] = useState<MobileTab>("problem");
+  const onPhone = (tab: MobileTab, display = "lg:block") => (mobileTab === tab ? "" : `hidden ${display}`);
 
   // A refreshed manifest may bring a newly rendered default result; show it unless the user ran their own.
   useEffect(() => {
@@ -243,6 +261,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
   async function run() {
     setRunning(true);
     setHasRun(true);
+    setMobileTab("results");
     setError(null);
     setConsole("");
     // Lines stream in as the run prints; a progress-bar redraw overwrites the previous redraw.
@@ -276,9 +295,25 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
 
   return (
     <>
+      <div className="sticky top-0 z-10 flex border-b border-gray-200 bg-white lg:hidden" role="tablist">
+        {MOBILE_TABS.map((tab) => (
+          <button
+            key={tab}
+            role="tab"
+            aria-selected={mobileTab === tab}
+            onClick={() => setMobileTab(tab)}
+            className={`flex-1 border-b-2 py-2.5 text-sm font-medium ${
+              mobileTab === tab ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500"
+            }`}
+          >
+            {t(`mtab.${tab}` as Key)}
+          </button>
+        ))}
+      </div>
+
       {/* 2. Problem body: title, tags and setup sketch pinned; equations scroll */}
       <main className="flex min-w-0 flex-col border-r border-gray-200 lg:min-h-0 lg:flex-1">
-        <div className="shrink-0 border-b border-gray-200 bg-white px-5 py-4">
+        <div className={`shrink-0 border-b border-gray-200 bg-white px-5 py-4 ${onPhone("problem")}`}>
           <div>
             <h2 className="text-xl font-semibold tracking-tight">
               <RichText text={problem.title} />
@@ -309,7 +344,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
           )}
         </div>
 
-        <div className="space-y-5 bg-gray-50/60 p-5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+        <div className={`space-y-5 bg-gray-50/60 p-5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto ${onPhone("formulation")}`}>
           <EquationPanel problem={problem} />
 
         </div>
@@ -318,12 +353,26 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
       {/* 3. Code (+ parameters panel), terminal and plot */}
       <section className="flex min-w-0 flex-col lg:min-h-0 lg:w-[54%] lg:shrink-0">
         <CodePanel
-          className="lg:min-h-0 lg:flex-[1.7]"
+          className={`lg:min-h-0 lg:flex-[1.7] ${onPhone("code", "lg:flex")}`}
           files={problem.files}
           edits={edits}
           editable={editable}
           onEdit={edit}
           onReset={() => setEdits({})}
+          toolbar={
+            <>
+              <button
+                onClick={() => downloadNotebook(problem, edits, params)}
+                title={t("nb.downloadHint")}
+                className="hover:text-gray-800"
+              >
+                ⬇ {t("nb.download")}
+              </button>
+              <a href={colabUrl(problem)} target="_blank" rel="noreferrer" className="font-medium text-orange-600 hover:text-orange-700">
+                {t("nb.colab")} ↗
+              </a>
+            </>
+          }
           side={
             <ParamsPanel
               specs={problem.params}
@@ -341,7 +390,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
             />
           }
         />
-        <div className="flex flex-col border-t border-gray-200 lg:min-h-0 lg:flex-1 lg:flex-row">
+        <div className={`flex flex-col border-t border-gray-200 lg:min-h-0 lg:flex-1 lg:flex-row ${onPhone("results", "lg:flex")}`}>
           <TerminalPanel
             className="h-40 lg:h-auto lg:w-1/2 lg:shrink-0"
             problem={problem}

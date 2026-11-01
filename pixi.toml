@@ -2,6 +2,8 @@
 name = "tensorizer"
 version = "0.1.0"
 description = "Study physics equations in tensor form with PyTorch: equation → index notation → code → animated solution."
+license = "Apache-2.0"
+license-file = "LICENSE"
 channels = ["conda-forge"]
 platforms = ["win-64", "osx-arm64", "linux-64"]
 
@@ -26,6 +28,8 @@ build-assets = "python scripts/build_assets.py"
 test = "pytest -q"
 # Regenerate the collapsible problem library in README.md from every meta.yaml
 readme = "python scripts/update_readme.py"
+# Regenerate notebooks/<category>/<slug>.ipynb (opened by the "Open in Colab" button)
+notebooks = "python scripts/notebooks.py"
 # Problem-content translations: coverage per language (see scripts/i18n.py for export/import)
 i18n-status = "python scripts/i18n.py status"
 lint = "ruff check . && ruff format --check ."

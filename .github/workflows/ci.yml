@@ -18,6 +18,8 @@ jobs:
         with:
           cache: true
       - run: pixi run lint
+      # Colab opens the committed notebooks/ — they must match the problem files
+      - run: pixi run python scripts/notebooks.py --check
       - run: pixi run pytest -q tests/test_api.py
 
   # Physics checks + convention/diagram/render smoke tests, one job per topic in parallel.

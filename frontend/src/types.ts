@@ -50,6 +50,7 @@ export interface Problem {
   output: string | null;
   console: string;
   diagram: string | null;
+  notebook?: string;
   /** Translations by language code; any missing field falls back to English. */
   i18n?: Record<string, ProblemTranslation>;
 }

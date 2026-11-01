@@ -37,6 +37,10 @@ The app has three tabs:
 | **Concept** | How every problem works, step by step, using the simple pendulum (its real code is shown) |
 | **Coding Skills** | The PyTorch techniques behind the library (broadcasting, einsum, RK4, eigh, FFT, autograd, …), each with an example and links to problems |
 
+Every problem can also be taken to a notebook: **Open in Colab** opens it in Google Colab (switch the runtime to GPU and the code uses it automatically), and **Download .ipynb** saves your current version, including edited code and parameters. The notebooks live in [notebooks/](notebooks) and are regenerated from the problem files by `pixi run build-assets` or `pixi run notebooks`.
+
+On phones the workspace splits into four tabs: Problem, Formulation, Code and Results. Add `?lang=<code>` to a link (for example `?lang=ja`) to open it in a given language; the address bar always shows the current one.
+
 The interface and all problem text are available in 10 languages: English, 繁體中文, 简体中文, Français, Deutsch, Español, 日本語, Русский, 한국어 and हिन्दी. Equations and code stay the same in every language. Check translation coverage with `pixi run i18n-status`; [scripts/i18n.py](scripts/i18n.py) exports what needs translating and validates imports.
 
 ## Problem library
@@ -504,7 +508,11 @@ A new category also needs an entry in `CATEGORIES` in `scripts/build_assets.py`.
 
 ## Roadmap
 
-- More problems in every category, then fluid dynamics (Burgers, Navier–Stokes) and continuum mechanics (stress/strain tensors).
+- More problems in every topic, and more topics.
 - Real datasets: compare simulations with measurements, and fit physical parameters with autograd (inverse problems, PINNs).
 - Free-form input: type LaTeX, handwrite, or photograph an equation → translated to tensor form.
-- Hosting: GitHub Pages for the static site, plus an optional backend for re-runs.
+- Tensorizer Pro (separate hosted service): sign-in page leading to personal workspaces with saved notebooks, GPU runs, and team collaboration. The open-source app in this repository stays free.
+
+## License
+
+Tensorizer is licensed under the [Apache License 2.0](LICENSE): you may use, modify and redistribute it, including commercially, provided you keep the license and [NOTICE](NOTICE). Bundled third-party components keep their own licenses (PyTorch BSD-3, KaTeX/React/CodeMirror MIT, Source Code Pro SIL OFL 1.1).
