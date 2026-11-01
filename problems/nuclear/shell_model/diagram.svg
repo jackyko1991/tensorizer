@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Shell model: nucleons fill discrete levels in a Woods-Saxon potential well of radius R; a gap separates filled shells">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- axes -->
+    <line x1="30" y1="30" x2="30" y2="142" stroke="#374151" stroke-width="2"/>
+    <line x1="30" y1="30" x2="222" y2="30" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="214" y="22" font-style="italic">r</text>
+    <!-- Woods–Saxon well: flat bottom, smooth wall near R -->
+    <path d="M30,134 L120,134 C134,134 140,124 146,90 C152,52 160,32 180,31 L222,30" fill="none" stroke="#374151" stroke-width="2"/>
+    <text x="70" y="152" font-style="italic">V(r)</text>
+    <!-- radius -->
+    <line x1="146" y1="30" x2="146" y2="142" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="150" y="150" font-style="italic">R</text>
+    <!-- filled levels -->
+    <g stroke="#2563eb" stroke-width="2">
+      <line x1="36" y1="122" x2="128" y2="122"/>
+      <line x1="36" y1="108" x2="134" y2="108"/>
+      <line x1="36" y1="100" x2="136" y2="100"/>
+    </g>
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1">
+      <circle cx="70" cy="118" r="3.5"/><circle cx="80" cy="118" r="3.5"/>
+      <circle cx="56" cy="104" r="3.5"/><circle cx="66" cy="104" r="3.5"/><circle cx="76" cy="104" r="3.5"/><circle cx="86" cy="104" r="3.5"/>
+      <circle cx="96" cy="96" r="3.5"/><circle cx="106" cy="96" r="3.5"/>
+    </g>
+    <!-- empty levels above the gap -->
+    <g stroke="#93c5fd" stroke-width="2">
+      <line x1="36" y1="70" x2="142" y2="70"/>
+      <line x1="36" y1="60" x2="143" y2="60"/>
+    </g>
+    <!-- shell gap -->
+    <line x1="176" y1="100" x2="176" y2="70" stroke="#f59e0b" stroke-width="2"/>
+    <line x1="171" y1="100" x2="181" y2="100" stroke="#f59e0b" stroke-width="2"/>
+    <line x1="171" y1="70" x2="181" y2="70" stroke="#f59e0b" stroke-width="2"/>
+    <text x="186" y="90" font-size="13" fill="#b45309">gap</text>
+  </g>
+</svg>

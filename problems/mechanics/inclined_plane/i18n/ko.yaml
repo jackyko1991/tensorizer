@@ -1,0 +1,21 @@
+source_hash: b7086dad7034
+title: 마찰이 있는 빗면 위의 블록
+summary: 블록에 작용하는 중력, 수직항력, 마찰력을 einsum 사영으로 각 빗면의 경사 방향과 법선 방향 단위 벡터로 분해합니다. 여러 경사각을 한꺼번에 계산해 정지 마찰 문턱 $\tan\theta = \mu_s$를 보여 줍니다.
+notes: 정지 마찰력은 $\mu_s N$까지 필요한 만큼 커지므로, 정지 상태에서 놓은 블록은 $\tan\theta \le \mu_s$인 동안 그대로 있습니다. 일단 미끄러지면 운동 마찰력 $\mu_k N$ ($\mu_k \le \mu_s$)이 작용해 가속도가 일정해지므로, 블록이 바닥에 닿을 때까지 거리는 $\tfrac12 at^2$로 늘어납니다. 블록은 점으로 취급하며 넘어지거나 구르지 않습니다.
+meanings:
+- 빗면 $b$의 경사 아래 방향 단위 벡터, $(\cos\theta, -\sin\theta)$
+- 빗면 $b$의 단위 법선, $(\sin\theta, \cos\theta)$
+- 중력 벡터 $(0, -g)$
+- '반복된 지표 ⇒ 합: 빗면 안쪽으로 향하는 중력 성분'
+- 단위 질량당 수직항력, 중력의 빗면 안쪽 성분을 상쇄
+- 블록을 붙잡을 수 있으면 정지 마찰, 아니면 운동 마찰 $\mu_k N$
+- '경사 방향 가속도: $g(\sin\theta - \mu_k\cos\theta)$ 또는 0'
+labels:
+  mu_static: 정지 마찰 계수 $\mu_s$
+  mu_kinetic: 운동 마찰 계수 $\mu_k$ ($\le \mu_s$)
+  n_ramps: 빗면 수
+  min_angle: 최소 각
+  max_angle: 최대 각
+  ramp_length: 빗면 길이
+  g: 중력 가속도 $g$
+  t_max: 시뮬레이션 시간

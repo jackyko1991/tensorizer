@@ -1,0 +1,18 @@
+source_hash: a8a725d373c7
+title: Partículas cargadas en campos E y B
+summary: 'La fuerza de Lorentz sobre un lote de partículas cargadas en campos eléctrico y magnético cruzados. El producto vectorial se escribe con el tensor de Levi-Civita $\varepsilon_{ijk}$, de modo que un único einsum da la fuerza magnética sobre cada partícula: cada una describe una hélice ciclotrónica mientras todo el enjambre deriva a lo largo de $\mathbf E\times\mathbf B$.'
+notes: Las unidades son adimensionales ($q$, $m$, $E$, $B$ del orden de uno). Con $\mathbf E = 0$ cada partícula gira a la frecuencia ciclotrónica $\omega = \lvert q\rvert B/m$ con radio $mv_\perp/(\lvert q\rvert B)$; las cargas positivas y negativas giran en sentidos opuestos. Al añadir $\mathbf E\perp\mathbf B$ cada centro guía deriva con velocidad $\mathbf E\times\mathbf B/B^2$, independiente de la carga y la masa.
+meanings:
+- posición de la partícula $b$, componente $i \in \{x, y, z\}$
+- velocidad de la partícula $b$
+- carga y masa de cada partícula
+- 'campos uniformes: $\mathbf E$ a lo largo de $y$, $\mathbf B$ a lo largo de $z$'
+- $+1$ para permutaciones pares de $(x, y, z)$, $-1$ para las impares, 0 si se repite un índice
+- '$j$ y $k$ repetidos ⇒ sumados: el producto vectorial $\mathbf v\times\mathbf B$'
+- velocidad de deriva $\mathbf E\times\mathbf B$, la misma para toda carga
+labels:
+  B: Campo magnético $B_z$
+  E: Campo eléctrico $E_y$
+  v_par: Velocidad inicial a lo largo de $\mathbf B$
+  n_particles: Partículas
+  t_max: Tiempo simulado

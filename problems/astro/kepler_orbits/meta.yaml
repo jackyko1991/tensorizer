@@ -1,0 +1,30 @@
+title: Kepler's laws of planetary motion
+category: astro
+level: beginner
+order: 1
+summary: >
+  Planets with different orbit sizes and eccentricities circle a star under Newton's inverse-square gravity.
+  One batched RK4 integration shows all three of Kepler's laws: ellipses with the star at a focus, equal areas
+  in equal times, and $T^2 \propto a^3$.
+animated: true
+vector_form: '\ddot{\mathbf r} = -\frac{GM}{r^3}\,\mathbf r,\qquad \frac{dA}{dt} = \tfrac12\,\lvert\mathbf r\times\dot{\mathbf r}\rvert,\qquad T^2 = \frac{4\pi^2}{GM}\,a^3'
+index_form: '\ddot x_{bi} = -GM\,(x_{bj}x_{bj})^{-3/2}\,x_{bi},\qquad L_b = \varepsilon_{ij}\,x_{bi}\,v_{bj}'
+translation:
+  - {symbol: 'x_{bi}', code: 'y[:, 0, :]', shape: '(B, 2)', meaning: 'position of planet $b$ relative to the star, $i \in \{x, y\}$'}
+  - {symbol: 'v_{bi}', code: 'y[:, 1, :]', shape: '(B, 2)', meaning: 'velocity of planet $b$'}
+  - {symbol: 'x_{bj}x_{bj}', code: "einsum('bj,bj->b', x, x)", shape: '(B,)', meaning: 'repeated $j$ ⇒ summed: squared distance $r_b^2$'}
+  - {symbol: '\ddot x_{bi}', code: 'acceleration(x, GM)', shape: '(B, 2)', meaning: 'inverse-square pull toward the star'}
+  - {symbol: '\varepsilon_{ij}', code: 'EPS2', shape: '(2, 2)', meaning: '2D Levi-Civita symbol, $\varepsilon_{xy} = 1 = -\varepsilon_{yx}$'}
+  - {symbol: 'L_b', code: "einsum('ij,bi,bj->b', EPS2, x, v)", shape: '(B,)', meaning: 'angular momentum per unit mass; $dA/dt = L_b/2$ is constant'}
+  - {symbol: 'E_b', code: 'energy(y, GM)', shape: '(B,)', meaning: '$\tfrac12 v^2 - GM/r$; gives $a = -GM/2E$'}
+notes: >
+  Units are AU, years and solar masses, so $GM_\odot = 4\pi^2$ and Kepler's third law reads simply $T^2 = a^3$.
+  Every planet starts at perihelion with the vis-viva speed $v_p = \sqrt{(GM/a)(1+e)/(1-e)}$. The shaded slices of the most
+  eccentric orbit each take the same time $T/12$: short and wide near the star, long and thin far away, but always the same area,
+  because $dA/dt = L/2$ and $L$ is conserved. The period is measured from the simulation as the time to sweep $2\pi$.
+  The star is treated as fixed (its mass is much larger than the planets') and the planets do not pull on each other.
+params:
+  n_planets: {default: 4, min: 1, max: 6, step: 1, type: int, label: Planets}
+  e_max: {default: 0.6, min: 0.0, max: 0.85, step: 0.05, label: 'Largest eccentricity $e$'}
+  t_max: {default: 3.5, min: 1, max: 10, step: 0.5, label: Simulated time, unit: yr}
+  dt: {default: 0.001, min: 0.0002, max: 0.005, step: 0.0002, label: Time step, unit: yr}

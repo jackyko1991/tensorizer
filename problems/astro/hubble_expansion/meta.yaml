@@ -1,0 +1,35 @@
+title: Hubble expansion
+category: astro
+level: beginner
+order: 3
+summary: >
+  Galaxies sit on a fixed comoving grid that is stretched by the scale factor $a(t)$. One outer product
+  $x_{gi} = a\,q_{gi}$ moves every galaxy, and from any galaxy you choose the others recede with $v = H d$.
+  A photon crossing the grid is stretched by the same factor: $1 + z = a_\mathrm{obs}/a_\mathrm{emit}$.
+animated: true
+vector_form: '\mathbf x_g = a(t)\,\mathbf q_g,\qquad \mathbf v_g - \mathbf v_o = H\,(\mathbf x_g - \mathbf x_o),\qquad H = \frac{\dot a}{a},\qquad 1 + z = \frac{a_\mathrm{obs}}{a_\mathrm{emit}}'
+index_form: 'x_{tgi} = a_t\,q_{gi},\qquad v_{tgi} = H_t\,x_{tgi},\qquad H = \frac{v_{tgi}\,x_{tgi}}{x_{tgj}\,x_{tgj}}\Big|_{\text{rel. to } o}'
+translation:
+  - {symbol: 'q_{gi}', code: 'galaxy_grid(n, spacing)', shape: '(G, 2)', meaning: 'comoving coordinates of galaxy $g$ (never change)'}
+  - {symbol: 'a_t', code: 'scale_factor(t, model, H0)', shape: '(T,)', meaning: 'scale factor at every time, $a = 1$ today'}
+  - {symbol: 'x_{tgi}', code: "einsum('t,gi->tgi', a, q)", shape: '(T, G, 2)', meaning: 'physical positions: an outer product, no index summed'}
+  - {symbol: 'H_t', code: 'hubble_rate(t, model, H0)', shape: '(T,)', meaning: '$\dot a/a$: $2/(3t)$ for matter, constant for de Sitter'}
+  - {symbol: 'v_{tgi}', code: "einsum('t,tgi->tgi', H, x)", shape: '(T, G, 2)', meaning: 'Hubble-flow velocity of every galaxy'}
+  - {symbol: 'x_{tgi} - x_{toi}', code: 'x - x[:, o:o+1]', shape: '(T, G, 2)', meaning: 'positions seen from observer $o$ (broadcast subtraction)'}
+  - {symbol: 'v_{tgi}\,x_{tgi}', code: "einsum('tgi,tgi->t', v_rel, x_rel)", shape: '(T,)', meaning: 'repeated $g, i$ ⇒ summed: least-squares slope of $v$ vs $d$'}
+  - {symbol: '1 + z', code: 'a / a[0]', shape: '(T,)', meaning: 'stretch of the photon''s wavelength since emission'}
+notes: >
+  Units: Mpc, Gyr and km/s/Mpc. In the matter-dominated (Einstein–de Sitter) model $a = (t/t_0)^{2/3}$, so $H = 2/(3t)$ falls with time;
+  in de Sitter $a = e^{H_0 (t - t_0)}$ and $H$ stays constant. Either way $v = Hd$ holds exactly for every observer: move the observer
+  and the blue dots still fall on the same line as the open circles seen from the centre. The galaxies themselves do not move
+  through space (no peculiar velocities): space between them grows. The photon covers comoving distance $c\,dt/a$ per step, and
+  speeds above $c$ for distant galaxies are allowed, because nothing overtakes light locally.
+params:
+  model: {default: matter, type: choice, options: [matter, de Sitter], label: 'Expansion law $a(t)$'}
+  H0: {default: 70.0, min: 40, max: 100, step: 1, label: 'Hubble constant today $H_0$', unit: km/s/Mpc}
+  n_grid: {default: 7, min: 3, max: 11, step: 2, type: int, label: Galaxies per side}
+  spacing: {default: 800.0, min: 100, max: 2000, step: 100, label: Comoving grid spacing, unit: Mpc}
+  observer_x: {default: -2, min: -5, max: 5, step: 1, type: int, label: Observer column (grid steps)}
+  observer_y: {default: -1, min: -5, max: 5, step: 1, type: int, label: Observer row (grid steps)}
+  a_start: {default: 0.5, min: 0.2, max: 1.0, step: 0.05, label: 'Scale factor at start $a_\mathrm{emit}$'}
+  a_end: {default: 1.5, min: 1.0, max: 3.0, step: 0.1, label: 'Scale factor at end $a_\mathrm{obs}$'}

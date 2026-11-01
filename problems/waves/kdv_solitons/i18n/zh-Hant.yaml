@@ -1,0 +1,14 @@
+source_hash: faa64f98c4b2
+title: KdV 孤立子碰撞
+summary: Korteweg–de Vries 方程式的兩個孤立波。較高的較快，追上後兩者在碰撞後保持形狀完整地分開，只發生位移。導數在傅立葉空間中計算（$\partial_x \to ik$），剛性的 $u_{xxx}$ 項以積分因子精確求解，其餘以 RK4 求解。
+notes: 慣例：$u_t + 6uu_x + u_{xxx} = 0$，其速率為 $c$ 的孤立子高度為 $c/2$，即以兩倍振幅的速率前進。愈高愈快、愈窄。碰撞後，高孤立子比沒有交互作用時更靠前，矮孤立子則更靠後；令 $\kappa = \sqrt c/2$，精確位移為向前 $\frac{1}{\kappa_1}\ln\frac{\kappa_1+\kappa_2}{\kappa_1-\kappa_2}$ 與向後 $\frac{1}{\kappa_2}\ln\frac{\kappa_1+\kappa_2}{\kappa_1-\kappa_2}$。點線：若孤立子互不理會時應在的位置。盒子是週期性的（長度 100），因此長時間模擬會繞回。FFT 把每個導數變成乘法，積分因子消除了 $u_{xxx}$ 嚴苛的時間步長限制，只剩非線性項較寬鬆的限制。
+meanings:
+- 週期性網格上的波高（float64）
+- 傅立葉係數；$\partial_x \to ik$，$\partial_x^3 \to -ik^3$
+- 非線性項 $(u^2)$ 在實空間計算，移除最高三分之一的模態（2/3 法則）
+- 色散部分在一步內的精確解（積分因子）
+- 守恆量：$\int u\,dx$ 與 $\int u^2\,dx$
+labels:
+  c_tall: 高孤立子速率 $c_1$
+  c_short: 矮孤立子速率 $c_2$
+  t_max: 模擬時間

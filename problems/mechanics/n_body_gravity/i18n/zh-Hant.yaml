@@ -1,0 +1,16 @@
+source_hash: 840ee0536fe3
+title: 三維 N 體重力
+summary: $N$ 個物體之間的牛頓重力。廣播一次建立所有兩兩間的位移 $r_{abi}$，一次 einsum 把所有物體 $b$ 對每個物體 $a$ 的引力相加，再以速度 Verlet 法推進整個系統。
+notes: 軟化長度 $\varepsilon$ 使兩物體極為接近時力仍保持有限；$\varepsilon = 0$ 時即為精確的牛頓重力。單位取 $G = 1$。速度 Verlet 法是辛積分法，因此能量誤差保持小而有界，不會漂移。8 字形是 Moore（1993）與 Chenciner & Montgomery（2000）發現的著名週期性三體軌道。
+meanings:
+- 物體 $a$ 的位置，分量 $i \in \{x, y, z\}$
+- 物體 $b$ 的質量
+- 從 $a$ 到 $b$ 的位移，以廣播求出所有配對
+- 重複的 $j$ ⇒ 求和：每對的距離平方
+- 重複的 $b$ ⇒ 求和：物體 $a$ 所受的總引力
+- 動能 + 兩兩位能，守恆
+labels:
+  scenario: 初始條件
+  t_max: 模擬時間
+  dt: 時間步長
+  softening: 軟化長度 $\varepsilon$

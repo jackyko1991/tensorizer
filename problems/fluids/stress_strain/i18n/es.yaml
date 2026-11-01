@@ -1,0 +1,17 @@
+source_hash: e7727640a017
+title: Tensión, deformación y círculo de Mohr
+summary: Mecánica de medios continuos de una placa elástica. La ley de Hooke es un tensor de rigidez de rango 4 $C_{ijkl}$ construido con einsum a partir de las constantes de Lamé; una rampa de carga (tracción y luego cizalla) deforma la placa, la deformación se obtiene del gradiente del campo de desplazamientos y las tensiones principales de eigh, representadas como elipse de tensiones y círculo de Mohr.
+notes: 'La placa es delgada y sus caras están libres, de modo que $\sigma_{zz} = 0$ (tensión plana), pero aun así adelgaza: $\varepsilon_{zz} = -\nu(\sigma_{xx} + \sigma_{yy})/E$. En la mitad uniaxial de la rampa se pueden leer el módulo de Young $E = \sigma_{xx}/\varepsilon_{xx} = \mu(3\lambda + 2\mu)/(\lambda + \mu)$ y el coeficiente de Poisson $\nu = -\varepsilon_{yy}/\varepsilon_{xx} = \lambda/2(\lambda + \mu)$. Al añadir cizalla los ejes principales giran alejándose de $x$ e $y$; en el círculo de Mohr los puntos $(\sigma_{xx}, \tau_{xy})$ y $(\sigma_{yy}, -\tau_{xy})$ son los extremos de un diámetro, y el círculo corta el eje en las tensiones principales. El radio es la tensión cortante máxima en el plano, que gobierna la plastificación en los metales dúctiles (Tresca). Los desplazamientos son minúsculos y se exageran en el dibujo.'
+meanings:
+- tres productos exteriores de $\delta$ con einsum; 81 entradas, solo 2 constantes independientes
+- 'inverso de $C$ sobre tensores simétricos: $\varepsilon = S:\sigma$ (pinv de la matriz 9×9)'
+- desplazamiento de cada punto material
+- gradiente de desplazamientos por diferencias finitas (torch.gradient)
+- parte simétrica del gradiente de desplazamientos
+- '$k, l$ repetidos ⇒ sumados: ley de Hooke'
+- tensiones principales y sus direcciones
+labels:
+  E: Módulo de Young $E$
+  poisson: Coeficiente de Poisson $\nu$
+  sigma_max: Tracción final $\sigma_{xx}$
+  tau_max: Cizalla final $\tau_{xy}$

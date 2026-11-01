@@ -1,0 +1,15 @@
+source_hash: 1470d7e1b6a9
+title: Champ électrique de charges ponctuelles
+summary: Loi de Coulomb et principe de superposition sur une grille. Le broadcasting construit d'un coup le vecteur séparant chaque charge de chaque point de la grille, et un seul einsum sur l'indice de charge additionne leurs champs. Une charge parcourt un cercle et les lignes de champ la suivent.
+notes: Unités avec $k = 1$. Les charges sont des charges ponctuelles en 3D, donc chaque champ décroît en $1/r^2$ ; on ne regarde que le plan qui les contient. Les flèches s'éloignent des charges positives (rouge) et pointent vers les négatives (bleu) ; avec deux charges de même signe, un point neutre apparaît entre elles, où le champ s'annule.
+meanings:
+- point de grille $g$, composante $i \in \{x, y\}$
+- position de la charge $q$
+- valeur de chaque charge
+- 'broadcasting : le vecteur de chaque charge vers chaque point de grille'
+- '$j$ répété ⇒ sommé : distances'
+- '$q$ répété ⇒ sommé : superposition de toutes les charges'
+labels:
+  q_fixed: Charge fixe
+  q_moving: Charge mobile
+  n_grid: Flèches par côté

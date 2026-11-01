@@ -1,0 +1,17 @@
+source_hash: 673b0fc9f634
+title: Kinetische Gastheorie des idealen Gases
+summary: Hunderte harter Scheiben springen in einem Kasten umher. Alle Scheiben starten mit derselben Geschwindigkeit, doch elastische Stöße mischen die Energie, bis die Geschwindigkeiten der Maxwell–Boltzmann-Verteilung folgen, und der Impuls, den die Scheiben an die Wände abgeben, reproduziert das ideale Gasgesetz $PA = NkT$.
+notes: 'Reduzierte Einheiten: Kastenseite 1, Masse 1, Boltzmann-Konstante 1. Die Paartensoren sind $N\times N$, was für einige hundert Scheiben in Ordnung ist (echte Codes verwenden Zelllisten). Eine Scheibe, die im selben Schritt zwei andere berührt, wartet einen Schritt, sodass jeder Stoß ein sauberer Zweikörperaustausch ist und die Energie bis auf Rundungsfehler erhalten bleibt. Der Druck ist der pro Wandstoß übertragene Impuls $2m\lvert v_\perp\rvert$, summiert über den Lauf und geteilt durch Zeit × Wandlänge. Er liegt einige Prozent über $NkT/A$, weil die Scheiben selbst Fläche einnehmen — die erste Korrektur zum idealen Gas, ungefähr $(1 + \eta^2/8)/(1 - \eta)^2$ für den Flächenanteil $\eta$.'
+meanings:
+- Ort der Scheibe $a$, Komponente $i \in \{x, y\}$
+- Geschwindigkeit der Scheibe $a$
+- alle paarweisen Verschiebungen auf einmal, per Broadcasting
+- 'wiederholtes $i$ ⇒ summiert: Abstandsquadrat jedes Paares'
+- Relativgeschwindigkeit, projiziert auf die Stoßnormale, für die $P$ stoßenden Paare
+- gesamte kinetische Energie, gleich $NkT$ in 2D
+- 2D-Geschwindigkeitsverteilung $(mv/kT)\exp(-mv^2/2kT)$
+labels:
+  n_particles: Teilchen
+  radius: Scheibenradius
+  speed: Anfangsgeschwindigkeit
+  t_max: Simulierte Zeit

@@ -1,0 +1,14 @@
+source_hash: faa64f98c4b2
+title: Stoß zweier KdV-Solitonen
+summary: Zwei solitäre Wellen der Korteweg–de-Vries-Gleichung. Die höhere ist schneller, holt auf, und beide kommen mit unveränderter Form aus dem Stoß heraus, nur verschoben. Ableitungen werden im Fourier-Raum gebildet ($\partial_x \to ik$), der steife $u_{xxx}$-Term wird exakt mit einem integrierenden Faktor gelöst und der Rest mit RK4.
+notes: 'Konvention: $u_t + 6uu_x + u_{xxx} = 0$, deren Soliton der Geschwindigkeit $c$ die Höhe $c/2$ hat, d. h. es läuft mit der doppelten Amplitude. Höher heißt schneller und schmaler. Nach dem Stoß liegt das hohe Soliton vor der Position, die es ohne Wechselwirkung hätte, und das niedrige dahinter; mit $\kappa = \sqrt c/2$ sind die exakten Verschiebungen $\frac{1}{\kappa_1}\ln\frac{\kappa_1+\kappa_2}{\kappa_1-\kappa_2}$ nach vorn und $\frac{1}{\kappa_2}\ln\frac{\kappa_1+\kappa_2}{\kappa_1-\kappa_2}$ nach hinten. Gepunktet: wo die Solitonen wären, wenn sie einander ignorierten. Der Kasten ist periodisch (Länge 100), daher läuft ein langer Lauf herum. Die FFT macht jede Ableitung zu einer Multiplikation, und der integrierende Faktor beseitigt die strenge Zeitschrittbeschränkung von $u_{xxx}$, sodass nur die mildere des nichtlinearen Terms bleibt.'
+meanings:
+- Wellenhöhe auf einem periodischen Gitter (float64)
+- Fourier-Koeffizienten; $\partial_x \to ik$, $\partial_x^3 \to -ik^3$
+- nichtlinearer Term $(u^2)$, im Ortsraum berechnet, oberes Drittel der Moden entfernt (2/3-Regel)
+- exakte Lösung des dispersiven Anteils über einen Schritt (integrierender Faktor)
+- 'erhalten: $\int u\,dx$ und $\int u^2\,dx$'
+labels:
+  c_tall: Geschwindigkeit des hohen Solitons $c_1$
+  c_short: Geschwindigkeit des niedrigen Solitons $c_2$
+  t_max: Simulierte Zeit

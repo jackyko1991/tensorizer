@@ -1,0 +1,31 @@
+title: Kinetic theory of an ideal gas
+category: thermodynamics
+level: advanced
+order: 1
+summary: >
+  Hundreds of hard disks bounce around a box. Every disk starts with the same speed, yet elastic collisions
+  shuffle the energy until the speeds follow the Maxwell–Boltzmann distribution, and the momentum the disks
+  hand to the walls reproduces the ideal gas law $PA = NkT$.
+animated: true
+vector_form: '\mathbf v_a'' = \mathbf v_a - \big[(\mathbf v_a - \mathbf v_b)\cdot\hat{\mathbf n}_{ab}\big]\,\hat{\mathbf n}_{ab},\qquad P A = N k T'
+index_form: 'v''_{ai} = v_{ai} - (\Delta v_{abj}\,n_{abj})\,n_{abi},\qquad n_{abi} = \frac{d_{abi}}{\sqrt{d_{abk}d_{abk}}},\quad d_{abi} = x_{ai} - x_{bi}'
+translation:
+  - {symbol: 'x_{ai}', code: 'x', shape: '(N, 2)', meaning: 'position of disk $a$, component $i \in \{x, y\}$'}
+  - {symbol: 'v_{ai}', code: 'v', shape: '(N, 2)', meaning: 'velocity of disk $a$'}
+  - {symbol: 'd_{abi}', code: 'x[:, None, :] - x[None, :, :]', shape: '(N, N, 2)', meaning: 'every pairwise displacement at once, by broadcasting'}
+  - {symbol: 'd_{abi}d_{abi}', code: "einsum('abi,abi->ab', d, d)", shape: '(N, N)', meaning: 'repeated $i$ ⇒ summed: squared distance of every pair'}
+  - {symbol: '\Delta v_{pj}\,n_{pj}', code: "einsum('pj,pj->p', v[a] - v[b], n)", shape: '(P,)', meaning: 'relative velocity projected on the collision normal, for the $P$ colliding pairs'}
+  - {symbol: 'E', code: "0.5 * m * einsum('ai,ai->', v, v)", shape: 'scalar', meaning: 'total kinetic energy, equal to $NkT$ in 2D'}
+  - {symbol: 'f(v)', code: 'maxwell_boltzmann_2d(v, kT)', shape: '(V,)', meaning: '2D speed distribution $(mv/kT)\exp(-mv^2/2kT)$'}
+notes: >
+  Reduced units: box side 1, mass 1, Boltzmann constant 1. The pair tensors are $N\times N$, which is fine for a few
+  hundred disks (real codes use cell lists). A disk touching two others in the same step waits one step, so every
+  collision is a clean two-body exchange and the energy is conserved to round-off. The pressure is the momentum
+  $2m\lvert v_\perp\rvert$ delivered per bounce, summed over the run and divided by time × wall length. It comes out a few percent
+  above $NkT/A$ because the disks themselves take up area — the first correction to the ideal gas, roughly
+  $(1 + \eta^2/8)/(1 - \eta)^2$ for area fraction $\eta$.
+params:
+  n_particles: {default: 300, min: 50, max: 600, step: 50, type: int, label: Particles}
+  radius: {default: 0.006, min: 0.003, max: 0.015, step: 0.001, label: Disk radius, unit: L}
+  speed: {default: 1.0, min: 0.2, max: 3.0, step: 0.1, label: Initial speed}
+  t_max: {default: 4.0, min: 0.5, max: 10, step: 0.5, label: Simulated time}

@@ -1,0 +1,28 @@
+title: Doppler effect and Mach cone
+category: waves
+level: beginner
+order: 3
+summary: >
+  A source moving at speed $v_s$ emits one circular wavefront per period. Every wavefront is a row of a tensor (emission time,
+  emission point), so its radius at any time is one subtraction. Fronts bunch up ahead and spread out behind; above the
+  speed of sound they pile up into a Mach cone.
+animated: true
+vector_form: 'r_e(t) = c\,(t - t_e),\qquad f'' = \frac{f\,c}{c \mp v_s},\qquad \sin\mu = \frac{c}{v_s}'
+index_form: 't_{oe} = t_e + \tfrac{1}{c}\sqrt{(o_{oi} - s_{ei})(o_{oi} - s_{ei})},\qquad f''_o = \frac{E - 1}{t_{o,\text{last}} - t_{o,\text{first}}}'
+translation:
+  - {symbol: 't_e', code: 'emission_times(f, t_max, dev)', shape: '(E,)', meaning: 'one wavefront every period $1/f$'}
+  - {symbol: 's_{ei}', code: 'source_position(t_e, v_s, x_start)', shape: '(E, 2)', meaning: 'where the source was when it emitted front $e$'}
+  - {symbol: 'r_e(t)', code: 'front_radii(t, t_e, c)', shape: '(E,)', meaning: 'radius of every front at time $t$ (zero if not yet emitted)'}
+  - {symbol: 'o_{oi}', code: 'observers', shape: '(O, 2)', meaning: 'listeners ahead of and behind the source'}
+  - {symbol: '(o_{oi} - s_{ei})(o_{oi} - s_{ei})', code: "einsum('oei,oei->oe', d, d)", shape: '(O, E)', meaning: 'repeated $i$ ⇒ summed: squared distance from each emission point to each listener'}
+  - {symbol: 't_{oe}', code: 'arrival_times(observers, s, t_e, c)', shape: '(O, E)', meaning: 'when front $e$ reaches listener $o$'}
+notes: >
+  The heard frequency is simply the number of fronts per second that arrive: ahead of the source the fronts were emitted
+  closer together, so $f' = f\,c/(c - v_s)$; behind, $f' = f\,c/(c + v_s)$. Listeners are placed on the line of motion
+  where these formulas are exact. For $v_s > c$ (Mach number $M = v_s/c > 1$) the source outruns its own sound: all fronts touch
+  two straight lines, the Mach cone of half-angle $\mu$ with $\sin\mu = 1/M$. The listener ahead then hears nothing until the
+  cone passes, and the fronts arrive in reverse order. Speed of sound $c = 340$ m/s; only the source moves, the air is still.
+params:
+  mach: {default: 0.6, min: 0.0, max: 2.0, step: 0.05, label: 'Mach number $v_s/c$'}
+  f: {default: 1.0, min: 0.5, max: 3.0, step: 0.25, label: 'Source frequency $f$ (fronts drawn)', unit: Hz}
+  t_max: {default: 10.0, min: 4, max: 20, step: 1, label: Simulated time, unit: s}

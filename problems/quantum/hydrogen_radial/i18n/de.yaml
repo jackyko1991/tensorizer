@@ -1,0 +1,15 @@
+source_hash: bc7b5c9d23fa
+title: Orbitale des Wasserstoffatoms
+summary: Mit dem Ansatz $\psi = (u(r)/r)\,Y_{lm}(\theta, \phi)$ wird das 3D-Wasserstoffproblem zu einer 1D-Radialgleichung mit einem zusätzlichen Zentrifugalterm $l(l+1)/2r^2$. Je ein Finite-Differenzen-Hamiltonoperator pro Drehimpuls $l$ wird zu einem $(L, N, N)$-Tensor gestapelt, und ein einziges gebündeltes torch.linalg.eigh liefert alle Orbitale auf einmal. Die Animation durchläuft 1s, 2s, 2p, 3s, … und zeigt die radiale Aufenthaltswahrscheinlichkeit und einen Schnitt durch $\lvert\psi_{nl0}\rvert^2$.
+notes: 'Atomare Einheiten ($\hbar = m_e = e = 4\pi\varepsilon_0 = 1$): Längen in Bohrschen Radien, Energien in Hartree. Die exakten Energien $E_n = -1/(2n^2)$ hängen nur von $n$ ab, daher sind 2s und 2p (oder 3s, 3p, 3d) entartet, obwohl sie Eigenwerte verschiedener Matrizen sind — die verborgene Symmetrie des $1/r$-Potentials. Die Radialfunktion zu $(n, l)$ hat $n - l - 1$ Knoten. Das Gitter endet bei $r_{\max}$, sodass Zustände, deren Größe ($\approx 2n^2$) sich $r_{\max}$ nähert, zusammengedrückt und energetisch angehoben werden; finite Differenzen binden außerdem 1s nahe der $1/r$-Singularität etwas zu schwach. Der Schnitt zeigt $m = 0$-Orbitale in der $xz$-Ebene ($z$ nach oben), $Y_{l0} \propto P_l(\cos\theta)$; die Farbe verwendet eine gestauchte Potenzskala $(\lvert\psi\rvert^2)^{0.3}$, damit schwache äußere Keulen sichtbar bleiben.'
+meanings:
+- innere Punkte $r = dr \dots r_{\max} - dr$ ($u = 0$ an beiden Enden)
+- Coulomb-Anziehung plus Zentrifugalbarriere, eine Zeile pro $l$
+- ein Stapel von $L$ Hamiltonoperatoren, einer pro Drehimpuls
+- 'gebündelt über $l$: Energien und Radialfunktionen; Hauptquantenzahl $n = l + 1 + \text{column}$'
+- Wahrscheinlichkeit pro Radiuseinheit, $r^2\lvert R\rvert^2 = u^2$
+- $\lvert R(r)\,Y_{l0}(\theta)\rvert^2$ auf einem Schnitt durch die $z$-Achse
+labels:
+  n_max: Höchste Schale $n$
+  r_max: Gitterradius $r_{\max}$
+  n_grid: Gitterpunkte

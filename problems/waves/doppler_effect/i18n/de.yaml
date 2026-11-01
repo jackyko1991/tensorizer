@@ -1,0 +1,15 @@
+source_hash: 698c7a054398
+title: Doppler-Effekt und Machscher Kegel
+summary: Eine Quelle, die sich mit der Geschwindigkeit $v_s$ bewegt, sendet pro Periode eine kreisförmige Wellenfront aus. Jede Wellenfront ist eine Zeile eines Tensors (Emissionszeit, Emissionsort), sodass ihr Radius zu jeder Zeit eine einzige Subtraktion ist. Vor der Quelle drängen sich die Fronten, hinter ihr liegen sie weiter auseinander; oberhalb der Schallgeschwindigkeit türmen sie sich zu einem Machschen Kegel auf.
+notes: 'Die gehörte Frequenz ist einfach die Anzahl der Fronten, die pro Sekunde ankommen: Vor der Quelle wurden die Fronten dichter ausgesandt, also $f'' = f\,c/(c - v_s)$; dahinter $f'' = f\,c/(c + v_s)$. Die Hörer stehen auf der Bewegungslinie, wo diese Formeln exakt gelten. Für $v_s > c$ (Machzahl $M = v_s/c > 1$) überholt die Quelle ihren eigenen Schall: Alle Fronten berühren zwei Geraden, den Machschen Kegel mit dem halben Öffnungswinkel $\mu$, $\sin\mu = 1/M$. Der Hörer vor der Quelle hört dann nichts, bis der Kegel vorbeizieht, und die Fronten kommen in umgekehrter Reihenfolge an. Schallgeschwindigkeit $c = 340$ m/s; nur die Quelle bewegt sich, die Luft ruht.'
+meanings:
+- eine Wellenfront pro Periode $1/f$
+- wo die Quelle war, als sie Front $e$ aussandte
+- Radius jeder Front zur Zeit $t$ (null, falls noch nicht ausgesandt)
+- Hörer vor und hinter der Quelle
+- 'wiederholtes $i$ ⇒ summiert: Abstandsquadrat von jedem Emissionsort zu jedem Hörer'
+- wann Front $e$ den Hörer $o$ erreicht
+labels:
+  mach: Machzahl $v_s/c$
+  f: Quellenfrequenz $f$ (gezeichnete Fronten)
+  t_max: Simulierte Zeit

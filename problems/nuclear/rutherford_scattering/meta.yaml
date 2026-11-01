@@ -1,0 +1,35 @@
+title: Rutherford scattering
+category: nuclear
+level: intermediate
+order: 1
+summary: >
+  A beam of alpha particles is fired at a gold nucleus. Every alpha is integrated through the repulsive Coulomb
+  field with RK4 in one batched tensor, and the histogram of their scattering angles reproduces Rutherford's
+  $1/\sin^4(\theta/2)$ law — the evidence that the positive charge of an atom sits in a tiny nucleus.
+animated: true
+vector_form: 'm\,\ddot{\mathbf r} = \frac{k\,\mathbf r}{r^3},\qquad \cot\frac{\theta}{2} = \frac{2Eb}{k},\qquad \frac{d\sigma}{d\Omega} = \Big(\frac{k}{4E}\Big)^2\frac{1}{\sin^4(\theta/2)}'
+index_form: '\ddot x_{bi} = \frac{k}{m}\,\frac{x_{bi}}{(x_{bj}x_{bj})^{3/2}},\qquad E_b = \tfrac12 m\,v_{bi}v_{bi} + \frac{k}{r_b},\qquad L_b = m\,\varepsilon_{ij}\,x_{bi}\,v_{bj}'
+translation:
+  - {symbol: 'k', code: 'coupling(z_target)', shape: 'scalar', meaning: '$Z_\alpha Z e^2/4\pi\varepsilon_0 = 2Z \cdot 1.44$ MeV fm'}
+  - {symbol: 'x_{bi},\ v_{bi}', code: 'y[:, 0], y[:, 1]', shape: '(B, 2)', meaning: 'position (fm) and velocity (units of $c$) of alpha $b$'}
+  - {symbol: 'x_{bj}x_{bj}', code: "einsum('bj,bj->b', x, x)", shape: '(B,)', meaning: 'repeated $j$ ⇒ summed: squared distance $r_b^2$'}
+  - {symbol: '\ddot x_{bi}', code: 'acceleration(x, k, m)', shape: '(B, 2)', meaning: 'Coulomb repulsion for the whole beam at once'}
+  - {symbol: '\varepsilon_{ij}x_{bi}v_{bj}', code: "einsum('ij,...i,...j->...', eps, x, v)", shape: '(B,)', meaning: '2D cross product: angular momentum per unit mass'}
+  - {symbol: '\theta_b', code: 'scattering_angle(v)', shape: '(B,)', meaning: 'angle of the outgoing velocity to the beam axis'}
+  - {symbol: 'd\sigma/d\Omega', code: 'rutherford_cross_section(theta, E, k)', shape: '(G,)', meaning: 'Rutherford prediction, compared with the histogram'}
+notes: >
+  Units: fm, MeV and time in fm/$c$. Energy and angular momentum are conserved along each path, so $E$ and the
+  impact parameter $b$ alone fix the deflection $\theta = 2\arctan(k/2Eb)$; a head-on alpha turns round at
+  $d = k/E$ (about 45 fm for 5 MeV on gold, still far outside the 7 fm nucleus, so the pure Coulomb law holds).
+  The beam is spread uniformly over a disc of radius $b_{\max}$ (random but with a fixed seed), so the number
+  scattered into a solid angle is (alphas per area) × $d\sigma/d\Omega$. Only one alpha in a few hundred
+  bounces back beyond 90° — Geiger and Marsden's surprise in 1909. Simplifications: the nucleus is a fixed point
+  charge (no recoil, no nuclear force) and the motion is non-relativistic ($v \approx 0.05c$). Each alpha starts
+  30 $d$ away with exactly the energy and angular momentum of an alpha coming from infinity; the remaining
+  $1/r^2$ tail of the force shifts the angles by well under a degree.
+params:
+  energy: {default: 5.0, min: 1.0, max: 10.0, step: 0.5, label: 'Alpha energy $E$', unit: MeV}
+  z_target: {default: 79, min: 6, max: 92, step: 1, type: int, label: 'Target charge $Z$'}
+  b_max: {default: 4.0, min: 1.0, max: 8.0, step: 0.5, label: 'Beam radius $b_{\max}$', unit: '× d'}
+  n_beam: {default: 2000, min: 200, max: 6000, step: 100, type: int, label: Alphas in the beam}
+  n_steps: {default: 3000, min: 1000, max: 8000, step: 500, type: int, label: RK4 steps}

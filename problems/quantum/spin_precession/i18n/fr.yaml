@@ -1,0 +1,17 @@
+source_hash: 5f40ce6b88de
+title: Précession de spin et oscillations de Rabi
+summary: Un spin $\tfrac12$ dans un champ magnétique. Le hamiltonien est une contraction du vecteur champ avec le tenseur de Pauli $\sigma_{kab}$, l'état évolue par l'exponentielle de matrice $U = \exp(-iH\Delta t)$, et le vecteur de Bloch $s_k = \langle\psi\vert\sigma_k\vert\psi\rangle$ est un einsum de plus. Un champ statique fait précesser le spin à la fréquence de Larmor ; un faible champ transverse résonant le retourne lentement (oscillation de Rabi).
+notes: 'Unités $\hbar = 1$. Avec $B_1 = 0$, le spin précesse autour de $z$ à la fréquence de Larmor $\omega = \gamma B_0$, et $\lvert\mathbf s\rvert = 1$ indéfiniment car $U$ est unitaire. Avec $B_1 > 0$ excité à $\omega \approx \gamma B_0$, le spin spirale du pôle nord vers le pôle sud et revient : dans le référentiel tournant avec l''excitation, seule la moitié co-tournante de l''excitation linéaire compte, ce qui donne la fréquence de Rabi $\Omega = \gamma B_1/2$ (approximation de l''onde tournante). Désaccordez l''excitation et le retournement devient incomplet. Les matrices de Pauli vérifient $\sigma_i\sigma_j = \delta_{ij}I + i\,\varepsilon_{ijk}\sigma_k$.'
+meanings:
+- 'tenseur de Pauli : $k \in \{x, y, z\}$ choisit la matrice, $a, b$ sont les indices spinoriels'
+- $B_0$ statique selon $z$ plus un éventuel $B_1\cos(\omega t)$ selon $x$
+- '$k$ répété ⇒ sommé : $\mathbf B\cdot\boldsymbol\sigma$ sous forme de matrice $2\times 2$ (en lot sur $t$ via tk,kab->tab)'
+- propagateur sur un pas, unitaire
+- 'vecteur de Bloch : $a$ et $b$ tous deux sommés'
+labels:
+  B0: Champ statique $B_0$ (selon $z$)
+  B1: Amplitude d'excitation $B_1$ (selon $x$)
+  drive_freq: Fréquence d'excitation $\omega$
+  gamma: Rapport gyromagnétique $\gamma$
+  theta0: Inclinaison initiale par rapport à $z$
+  t_max: Durée simulée

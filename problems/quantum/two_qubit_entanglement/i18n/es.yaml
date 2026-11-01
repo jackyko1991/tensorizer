@@ -1,0 +1,17 @@
+source_hash: e0abd4c769f3
+title: Entrelazamiento de dos cúbits
+summary: 'Dos cúbits almacenados como un tensor $(2, 2)$ $\psi_{ab}$. Las puertas son tensores de rango 4 aplicados con un único einsum: una Hadamard sobre el cúbit 1 seguida de una CNOT convierte $\lvert 00\rangle$ en un estado de Bell. La descomposición en valores singulares de $\psi_{ab}$ es la descomposición de Schmidt, que da directamente la entropía de entrelazamiento. Después el par evoluciona bajo un hamiltoniano de Ising; las trazas parciales dan la matriz densidad reducida de cada cúbit, cuyo vector de Bloch se encoge dentro de la esfera siempre que los cúbits están entrelazados.'
+notes: 'Unidades $\hbar = 1$. El producto tensorial de operadores de un cúbit $A\otimes B$ es el tensor de rango 4 $A_{ac}B_{bd}$ (torch.kron da los mismos números como matriz $4\times 4$ con índice de fila $2a + b$). Como $\psi_{ab}$ es una matriz, su SVD escribe el estado como $\sum_k s_k\lvert u_k\rangle\lvert v_k\rangle$: la descomposición de Schmidt. La entropía de entrelazamiento $S = -\sum s_k^2\ln s_k^2$ vale 0 para un estado producto y $\ln 2$ para un estado de Bell, cuyos estados reducidos están máximamente mezclados ($\rho = I/2$, vector de Bloch en el centro). La concurrencia $C = 2\lvert\det\psi\rvert$ va de 0 (producto) a 1 (máximamente entrelazado). Bajo el hamiltoniano de Ising el acoplamiento $J$ crea y destruye entrelazamiento mientras el campo transversal $h$ gira los cúbits individuales; con $h = 0$ el estado de Bell es un autoestado y nada se mueve.'
+meanings:
+- amplitud para el cúbit 1 en $\lvert a\rangle$ y el cúbit 2 en $\lvert b\rangle$
+- 'puerta de dos cúbits como tensor de rango 4: índices de salida $a\,b$, de entrada $c\,d$'
+- '$c$ y $d$ sumados: aplicar la puerta'
+- coeficientes de Schmidt; un único valor no nulo ⇔ estado producto
+- traza parcial sobre el cúbit 2 ($b$ sumado)
+- hamiltoniano de Ising construido a partir de productos tensoriales, reorganizado a (4, 4) para eigh
+- vector de Bloch $\operatorname{Tr}(\rho\,\sigma_k)$ de un cúbit; $\lvert\mathbf r\rvert < 1$ significa mezclado
+labels:
+  initial: Estado inicial (Bell desde el circuito o $\lvert 00\rangle$)
+  J: Acoplamiento de Ising $J$
+  h: Campo transversal $h$
+  t_max: Tiempo simulado

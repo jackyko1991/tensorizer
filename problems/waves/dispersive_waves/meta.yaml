@@ -1,0 +1,28 @@
+title: Dispersive water waves
+category: waves
+level: intermediate
+order: 2
+summary: >
+  A wave packet on deep water, where long waves outrun short ones: $\omega = \sqrt{g k}$. Every Fourier mode just turns its
+  phase, so the packet at any time is one FFT, a multiplication and one inverse FFT, done for all times at once.
+  The crests run through the envelope at twice its speed.
+animated: true
+vector_form: '\eta(x, t) = \mathrm{Re}\int \hat a(k)\,e^{i(kx - \omega(k)\,t)}\,dk,\qquad \omega = \sqrt{g\,|k|},\qquad v_g = \frac{d\omega}{dk} = \tfrac12\,\frac{\omega}{k}'
+index_form: '\hat a_{nk} = \hat a_k\,e^{-i\omega_k t_n},\qquad a_{nj} = F^{-1}_{jk}\,\hat a_{nk},\qquad \eta_{nj} = \mathrm{Re}\,a_{nj}'
+translation:
+  - {symbol: 'a_j(0)', code: 'wave_packet(x, x0, sigma, k0)', shape: '(J,)', meaning: 'complex packet: Gaussian envelope times $e^{ik_0x}$'}
+  - {symbol: '\hat a_k', code: 'torch.fft.fft(a0)', shape: '(K,)', meaning: 'Fourier amplitudes of the starting packet'}
+  - {symbol: '\omega_k', code: 'omega(k, g)', shape: '(K,)', meaning: 'deep-water dispersion relation for every mode'}
+  - {symbol: '\hat a_{nk}', code: 'a_hat[None, :] * exp(-1j * omega[None, :] * t[:, None])', shape: '(N, K)', meaning: 'every mode at every time, by broadcasting (exact, no time stepping)'}
+  - {symbol: 'F^{-1}_{jk}\hat a_{nk}', code: 'torch.fft.ifft(a_hat_t, dim=-1)', shape: '(N, J)', meaning: 'repeated $k$ ⇒ summed: back to real space for all times'}
+notes: >
+  Linear deep-water gravity waves (depth much larger than the wavelength, no surface tension, small slope).
+  Since $\omega \propto \sqrt k$, the group velocity $d\omega/dk$ is exactly half the phase velocity $\omega/k$: watch the red
+  crest overtake the green envelope peak, fade out at the front and get replaced by a new crest born at the back (the
+  red dot jumps back by whole wavelengths). Longer waves travel faster, so the packet slowly spreads and its front gets
+  longer waves than its back (a chirp). The FFT makes the box periodic. Because each mode only rotates its phase, $\sum|\hat a_k|^2$
+  (the wave energy, by Parseval) is exactly conserved.
+params:
+  wavelength: {default: 10.0, min: 5, max: 30, step: 1, label: 'Carrier wavelength $2\pi/k_0$', unit: m}
+  width: {default: 10.0, min: 5, max: 40, step: 1, label: 'Packet width $\sigma$', unit: m}
+  t_max: {default: 60.0, min: 10, max: 90, step: 5, label: Simulated time, unit: s}

@@ -1,0 +1,28 @@
+title: Four ideal-gas processes
+category: thermodynamics
+level: beginner
+order: 3
+summary: >
+  The same gas, starting from the same state, is taken along four textbook paths: isothermal, isobaric,
+  isochoric and adiabatic. All four paths are one (process, points, 2) tensor of $(V, p)$ samples, the work is the
+  area under each curve from torch.trapezoid, and the first law turns it into heat.
+animated: true
+vector_form: 'pV = nRT,\qquad W = \int p\,dV,\qquad \Delta U = n C_V\,\Delta T,\qquad Q = \Delta U + W'
+index_form: 'W_c = \sum_{k} \tfrac12\,(p_{c,k} + p_{c,k+1})\,(V_{c,k+1} - V_{c,k}),\qquad Q_c = n C_V\,(T_{c,K} - T_{c,0}) + W_c'
+translation:
+  - {symbol: 'V_{c,k},\ p_{c,k}', code: 'paths[..., 0], paths[..., 1]', shape: '(4, K)', meaning: 'sample $k$ along process $c$ (isothermal, isobaric, isochoric, adiabatic)'}
+  - {symbol: 'T_{c,k}', code: 'p * V / (n * R)', shape: '(4, K)', meaning: 'ideal gas law, element-wise on the whole tensor'}
+  - {symbol: '\sum_k \tfrac12 (p_k + p_{k+1}) \Delta V_k', code: 'torch.trapezoid(p, V, dim=-1)', shape: '(4,)', meaning: 'repeated $k$ ⇒ summed: work done by the gas on each path'}
+  - {symbol: '\Delta U_c', code: 'n * c_v * (T[:, -1] - T[:, 0])', shape: '(4,)', meaning: 'internal energy depends on temperature only'}
+  - {symbol: 'Q_c', code: 'dU + W', shape: '(4,)', meaning: 'first law of thermodynamics: heat added to the gas'}
+notes: >
+  Start: 1 mol at 300 K in 10 litres. The isothermal, isobaric and adiabatic paths expand to the same final volume;
+  the isochoric path keeps $V$ fixed and heats the gas until the pressure has grown by the same ratio. Because
+  $dV = 0$ on the isochore, torch.trapezoid returns exactly zero work there. On the isotherm $\Delta U = 0$ so $Q = W$; on the
+  adiabat $Q = 0$ so the gas pays for its work with internal energy and cools. The bars on the right are running
+  totals, computed with torch.cumulative_trapezoid.
+params:
+  ratio: {default: 2.5, min: 1.2, max: 5, step: 0.1, label: 'Expansion ratio $V_2/V_1$'}
+  T0: {default: 300.0, min: 100, max: 800, step: 10, label: Start temperature, unit: K}
+  n: {default: 1.0, min: 0.1, max: 5, step: 0.1, label: Amount of gas, unit: mol}
+  gas: {default: monatomic, type: choice, options: [monatomic, diatomic], label: Gas}

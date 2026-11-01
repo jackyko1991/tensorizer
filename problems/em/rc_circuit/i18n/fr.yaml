@@ -1,0 +1,21 @@
+source_hash: 6cf1e64854dc
+title: Charge d'un condensateur (circuit RC)
+summary: Un condensateur qui se charge à travers une résistance obéit à $dV/dt = (V_s - V)/(RC)$. Plusieurs circuits de résistances différentes sont empilés dans un seul tenseur de tensions, si bien qu'un seul pas de Runge–Kutta les fait tous avancer. Passez la source en signal carré pour voir les condensateurs se charger et se décharger.
+notes: 'Unités : $R$ en kΩ et $C$ en mF, donc $\tau = RC$ est en secondes et $I$ en mA. Après une constante de temps, le condensateur atteint 63 % de la tension de la source ; après $5\tau$, il est pratiquement chargé. Pendant la charge sur une pile, la source fournit une énergie $CV_s^2$ : exactement la moitié est stockée dans le condensateur, l''autre moitié est dissipée en chaleur dans $R$ — quelle que soit la valeur de $R$.'
+meanings:
+- tension aux bornes du condensateur $b$ (une entrée par circuit)
+- résistance du circuit $b$
+- capacité, la même dans tous les circuits
+- tension de la source, commune à tous les circuits (broadcast sur $b$)
+- 'terme à terme : l''indice $b$ apparaît une fois de chaque côté, rien n''est sommé'
+- courant dans chaque résistance
+- énergie stockée dans chaque condensateur
+labels:
+  V_s: Tension de la source
+  C: Capacité
+  R_min: Plus petite résistance
+  R_max: Plus grande résistance
+  n_circuits: Circuits
+  source: Source
+  period: Période du signal carré
+  t_max: Durée simulée

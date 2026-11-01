@@ -1,0 +1,17 @@
+source_hash: 539b278aa207
+title: Carnot-Prozess eines idealen Gases
+summary: Zwei Isothermen und zwei Adiabaten eines idealen Gases, abgetastet als Tensor von $(V, p)$-Punkten. Die Arbeit ist die im $p$–$V$-Diagramm eingeschlossene Fläche, berechnet mit torch.trapezoid, und der Wirkungsgrad $W/Q_h$ trifft genau Carnots Grenze $1 - T_c/T_h$.
+notes: 'Wärme überquert die Systemgrenze nur auf den Isothermen: $Q_h = nRT_h\ln(V_2/V_1)$ hinein, $Q_c = nRT_c\ln(V_3/V_4)$ hinaus. Da die Adiabaten die Volumenverhältnisse verknüpfen, gilt $V_3/V_4 = V_2/V_1$ — deshalb hängt der Wirkungsgrad nur von den beiden Temperaturen ab. Kompressionsschritte laufen zu kleinerem $V$, daher liefert torch.trapezoid für sie automatisch negative Arbeit. Im $T$–$S$-Diagramm ist der Kreisprozess ein Rechteck, und seine Fläche ist ebenfalls $W$. Die Volumina beginnen bei $V_1 = 1$ Liter.'
+meanings:
+- Stützstelle $k$ auf Teilschritt $l$ des Kreisprozesses ($l$ = heiße Isotherme, Adiabate, kalte Isotherme, Adiabate)
+- Isotherme, elementweise auf einem Tensor von Volumina
+- Adiabate durch eine Ecke des Kreisprozesses
+- 'wiederholtes $k$ ⇒ summiert: Arbeit entlang jedes Teilschritts'
+- 'Summe über die Teilschritte $l$: die eingeschlossene Fläche'
+- Entropie entlang des Weges, für das $T$–$S$-Diagramm
+labels:
+  T_h: Heißes Reservoir $T_h$
+  T_c: Kaltes Reservoir $T_c$
+  ratio: Expansionsverhältnis $V_2/V_1$
+  n: Stoffmenge
+  gas: Gas

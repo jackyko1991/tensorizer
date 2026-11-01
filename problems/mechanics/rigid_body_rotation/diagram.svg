@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Rectangular box spinning about its intermediate principal axis with angular velocity omega; the red arrow shows the flip about the long axis (tennis-racket effect)">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <line x1="18" y1="89" x2="66" y2="89" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="176" y1="89" x2="222" y2="89" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="121" y1="120" x2="121" y2="148" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <path d="M66,72 L88,58 L176,58 L154,72 Z" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M154,72 L176,58 L176,106 L154,120 Z" fill="#1e40af" stroke="#1e40af" stroke-width="1.5" stroke-linejoin="round"/>
+    <rect x="66" y="72" width="88" height="48" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="121" y1="65" x2="121" y2="14" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)"/>
+    <text x="129" y="22" font-style="italic" fill="#b45309">ω</text>
+    <path d="M96.6,38.4 A26,7 0 1 0 145.4,38.4" fill="none" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)"/>
+    <path d="M201.6,70.2 A7,20 0 1 1 201.6,107.8" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="26" y="83" font-style="italic">I</text>
+    <text x="31" y="86" font-style="italic" font-size="10">ij</text>
+  </g>
+</svg>

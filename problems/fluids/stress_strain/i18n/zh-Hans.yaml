@@ -1,0 +1,17 @@
+source_hash: e7727640a017
+title: 应力、应变与莫尔圆
+summary: 弹性板的连续介质力学。胡克定律是一个四阶刚度张量 $C_{ijkl}$，用 einsum 由拉梅常数构造；加载过程（先拉伸后剪切）使板变形，应变由位移场的梯度求得，主应力由 eigh 求得——并画成应力椭圆和莫尔圆。
+notes: 板很薄且表面自由，所以 $\sigma_{zz} = 0$（平面应力）——但它仍会变薄：$\varepsilon_{zz} = -\nu(\sigma_{xx} + \sigma_{yy})/E$。在加载的单轴阶段可以读出杨氏模量 $E = \sigma_{xx}/\varepsilon_{xx} = \mu(3\lambda + 2\mu)/(\lambda + \mu)$ 和泊松比 $\nu = -\varepsilon_{yy}/\varepsilon_{xx} = \lambda/2(\lambda + \mu)$。加上剪切后主轴偏离 $x$ 和 $y$；在莫尔圆上，点 $(\sigma_{xx}, \tau_{xy})$ 和 $(\sigma_{yy}, -\tau_{xy})$ 是一条直径的两端，圆与横轴的交点即主应力。半径是面内最大切应力，它决定延性金属的屈服（特雷斯卡准则）。位移很小，图中作了放大。
+meanings:
+- $\delta$ 的三个 einsum 外积；81 个分量，只有 2 个独立常数
+- $C$ 在对称张量上的逆：$\varepsilon = S:\sigma$（9×9 矩阵的伪逆）
+- 每个物质点的位移
+- 用有限差分求位移梯度（torch.gradient）
+- 位移梯度的对称部分
+- 重复的 $k, l$ ⇒ 求和：胡克定律
+- 主应力及其方向
+labels:
+  E: 杨氏模量 $E$
+  poisson: 泊松比 $\nu$
+  sigma_max: 最终拉应力 $\sigma_{xx}$
+  tau_max: 最终切应力 $\tau_{xy}$

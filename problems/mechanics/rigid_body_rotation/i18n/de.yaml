@@ -1,0 +1,20 @@
+source_hash: d653bb5fd1c6
+title: Freie Rotation eines starren Körpers (Tennisschläger-Effekt)
+summary: Die Eulerschen Gleichungen für einen kräftefreien Quader, geschrieben mit dem Trägheitstensor $I_{ij}$ und dem Levi-Civita-Tensor $\varepsilon_{ijk}$. Rotation um die längste oder kürzeste Achse ist stabil; Rotation um die mittlere Achse kippt immer wieder um (Dschanibekow-Effekt).
+notes: Ohne Drehmoment sind sowohl die Energie $\tfrac12\boldsymbol\omega\cdot I\boldsymbol\omega$ als auch der Betrag von $\mathbf L = I\boldsymbol\omega$ erhalten, also muss sich $\boldsymbol\omega$ auf der Schnittkurve eines Ellipsoids konstanter Energie und einer Kugel konstanten $\lvert\mathbf L\rvert$ bewegen (im $\mathbf L$-Raum). Nahe der größten und kleinsten Achse sind diese Kurven kleine Schleifen — stabil; nahe der mittleren Achse laufen sie durch einen Sattel, sodass ein winziges Wackeln anwächst und der Quader umkippt und wieder zurück. Der Drehimpuls im Weltsystem $RI\boldsymbol\omega$ (als fester Pfeil gezeichnet) bewegt sich nie. Die Parameter $a, b, c$ werden so sortiert, dass $a \ge b \ge c$.
+meanings:
+- Trägheitstensor eines massiven Quaders, $(M/12)\operatorname{diag}(b^2+c^2,\ a^2+c^2,\ a^2+b^2)$
+- Winkelgeschwindigkeit in körperfesten Komponenten
+- 'Levi-Civita-Tensor: das Kreuzprodukt als Tensor'
+- '$j, k, l$ summiert: $\boldsymbol\omega\times(I\boldsymbol\omega)$'
+- löse $I_{ij}\dot\omega_j = -\varepsilon_{ijk}\omega_j I_{kl}\omega_l$
+- 'Orientierung: Drehmatrix körperfest → Weltsystem'
+- Rotationsenergie, erhalten
+labels:
+  spin_axis: Rotation hauptsächlich um
+  spin: Drehrate
+  perturbation: Wackeln (Anteil der Drehrate)
+  a: Quaderseite $a$
+  b: Quaderseite $b$
+  c: Quaderseite $c$
+  t_max: Simulierte Zeit

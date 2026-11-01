@@ -1,0 +1,31 @@
+title: Block on an inclined plane with friction
+category: mechanics
+level: beginner
+order: 3
+summary: >
+  Gravity, the normal force and friction on a block, resolved along each ramp's slope and normal unit vectors
+  with einsum projections. A batch of incline angles shows the static-friction threshold $\tan\theta = \mu_s$.
+animated: true
+vector_form: 'm\,\mathbf a = m\,\mathbf g + \mathbf N + \mathbf f'
+index_form: 'a_{bi} = g_i + \tfrac{1}{m}N_{bi} + \tfrac{1}{m}f_{bi},\qquad \tfrac{1}{m}N_{bi} = -(g_j n_{bj})\,n_{bi},\qquad \tfrac{1}{m}f_{bi} = -\mu_k\,\tfrac{1}{m}N_b\,s_{bi}'
+translation:
+  - {symbol: 's_{bi}', code: 's', shape: '(B, 2)', meaning: 'unit vector down the slope of ramp $b$, $(\cos\theta, -\sin\theta)$'}
+  - {symbol: 'n_{bi}', code: 'n', shape: '(B, 2)', meaning: 'unit normal of ramp $b$, $(\sin\theta, \cos\theta)$'}
+  - {symbol: 'g_i', code: 'g', shape: '(2,)', meaning: 'gravity vector $(0, -g)$'}
+  - {symbol: 'g_j n_{bj}', code: "einsum('i,bi->b', g, n)", shape: '(B,)', meaning: 'repeated index ⇒ summed: component of gravity into the ramp'}
+  - {symbol: 'N_{bi}/m', code: 'normal_force(g, n)', shape: '(B, 2)', meaning: 'normal force per unit mass, cancels the into-ramp part of gravity'}
+  - {symbol: 'f_{bi}/m', code: 'friction(g, s, n, mu_s, mu_k)', shape: '(B, 2)', meaning: 'static friction if it can hold the block, otherwise kinetic $\mu_k N$'}
+  - {symbol: 'a_{bi}s_{bi}', code: "einsum('bi,bi->b', a, s)", shape: '(B,)', meaning: 'acceleration along the slope: $g(\sin\theta - \mu_k\cos\theta)$ or 0'}
+notes: >
+  Static friction is as large as it needs to be, up to $\mu_s N$, so a block released from rest stays put while
+  $\tan\theta \le \mu_s$. Once it slides, kinetic friction $\mu_k N$ (with $\mu_k \le \mu_s$) takes over and the acceleration is constant,
+  so the distance grows as $\tfrac12 at^2$ until the block reaches the bottom. The block is treated as a point: no tipping, no rolling.
+params:
+  mu_static: {default: 0.5, min: 0.0, max: 1.2, step: 0.05, label: 'Static friction $\mu_s$'}
+  mu_kinetic: {default: 0.35, min: 0.0, max: 1.2, step: 0.05, label: 'Kinetic friction $\mu_k$ ($\le \mu_s$)'}
+  n_ramps: {default: 5, min: 1, max: 6, step: 1, type: int, label: Ramps}
+  min_angle: {default: 15.0, min: 1, max: 80, step: 1, label: Smallest angle, unit: °}
+  max_angle: {default: 50.0, min: 5, max: 85, step: 1, label: Largest angle, unit: °}
+  ramp_length: {default: 4.0, min: 1, max: 10, step: 0.5, label: Ramp length, unit: m}
+  g: {default: 9.81, min: 1.0, max: 25.0, step: 0.1, label: 'Gravity $g$', unit: m/s²}
+  t_max: {default: 2.0, min: 0.5, max: 10, step: 0.5, label: Simulated time, unit: s}

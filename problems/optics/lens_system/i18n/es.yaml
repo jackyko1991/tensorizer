@@ -1,0 +1,21 @@
+source_hash: 6345d973de84
+title: Sistema de dos lentes con matrices de transferencia
+summary: 'La óptica paraxial es álgebra lineal: el espacio libre y las lentes delgadas son matrices $2\times 2$ que actúan sobre vectores de rayo (altura, ángulo). Todo el sistema es un único producto encadenado de matrices aplicado a un lote de rayos, recalculado mientras la segunda lente se aleja de la primera.'
+notes: 'El orden importa: el elemento que la luz encuentra primero es el factor de más a la derecha. Todos los factores tienen determinante 1, así que $\det M = 1$ para cualquier disposición. Observa cómo la imagen se va al infinito cuando la imagen intermedia de la lente 1 está exactamente en el foco de la lente 2 ($d = sf_1/(s - f_1) + f_2$), y luego vuelve por el otro lado como imagen virtual.'
+meanings:
+- 'rayo $r$: $j = 0$ altura $h$, $j = 1$ ángulo $\theta$'
+- propagación a lo largo de una distancia $d$ ($d$ por lotes da (..., 2, 2))
+- lente delgada de distancia focal $f$
+- encadenar un elemento más al sistema ($j$ repetido sumado); igual que torch.linalg.multi_dot
+- matriz de transferencia del objeto a cada muestra axial $z$
+- todos los rayos en cada $z$ en una sola contracción
+- donde la altura deja de depender del ángulo de salida
+labels:
+  s: Distancia del objeto
+  f1: Distancia focal de la lente 1
+  f2: Distancia focal de la lente 2
+  d_start: Separación inicial entre lentes
+  d_end: Separación final entre lentes
+  h0: Altura del objeto
+  half_angle: Semiángulo del abanico
+  n_rays: Rayos en el abanico

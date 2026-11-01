@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Three equal masses m joined by springs k between two fixed walls; amber arrows show the displacements x of a normal mode">
+  <defs>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <line x1="18" y1="52" x2="18" y2="120" stroke="#374151" stroke-width="2"/>
+    <g stroke="#9ca3af" stroke-width="1.5">
+      <line x1="18" y1="58" x2="10" y2="50"/>
+      <line x1="18" y1="72" x2="10" y2="64"/>
+      <line x1="18" y1="86" x2="10" y2="78"/>
+      <line x1="18" y1="100" x2="10" y2="92"/>
+      <line x1="18" y1="114" x2="10" y2="106"/>
+    </g>
+    <line x1="222" y1="52" x2="222" y2="120" stroke="#374151" stroke-width="2"/>
+    <g stroke="#9ca3af" stroke-width="1.5">
+      <line x1="222" y1="58" x2="230" y2="50"/>
+      <line x1="222" y1="72" x2="230" y2="64"/>
+      <line x1="222" y1="86" x2="230" y2="78"/>
+      <line x1="222" y1="100" x2="230" y2="92"/>
+      <line x1="222" y1="114" x2="230" y2="106"/>
+    </g>
+    <line x1="18" y1="104" x2="222" y2="104" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <path d="M18,86 L24,86 L25.5,92 L28.5,80 L31.5,92 L34.5,80 L37.5,92 L40.5,80 L43.5,92 L46.5,80 L48,86 L54,86" fill="none" stroke="#374151" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M74,86 L80,86 L81.5,92 L84.5,80 L87.5,92 L90.5,80 L93.5,92 L96.5,80 L99.5,92 L102.5,80 L104,86 L110,86" fill="none" stroke="#374151" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M130,86 L136,86 L137.5,92 L140.5,80 L143.5,92 L146.5,80 L149.5,92 L152.5,80 L155.5,92 L158.5,80 L160,86 L166,86" fill="none" stroke="#374151" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M186,86 L192,86 L193.5,92 L196.5,80 L199.5,92 L202.5,80 L205.5,92 L208.5,80 L211.5,92 L214.5,80 L216,86 L222,86" fill="none" stroke="#374151" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="54" y="76" width="20" height="20" rx="2" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="59" y="91" font-style="italic" fill="#ffffff" font-size="12">m</text>
+    <rect x="110" y="76" width="20" height="20" rx="2" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="115" y="91" font-style="italic" fill="#ffffff" font-size="12">m</text>
+    <rect x="166" y="76" width="20" height="20" rx="2" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="171" y="91" font-style="italic" fill="#ffffff" font-size="12">m</text>
+    <line x1="55" y1="62" x2="75" y2="62" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)"/>
+    <line x1="129" y1="62" x2="109" y2="62" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)"/>
+    <line x1="167" y1="62" x2="187" y2="62" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)"/>
+    <text x="60" y="52" font-style="italic" fill="#b45309">x</text>
+    <text x="68" y="55" fill="#b45309" font-size="10">1</text>
+    <text x="37" y="74" font-style="italic">k</text>
+  </g>
+</svg>

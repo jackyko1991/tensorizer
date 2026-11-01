@@ -1,0 +1,21 @@
+source_hash: 6345d973de84
+title: Zwei-Linsen-System mit Strahltransfermatrizen
+summary: 'Paraxiale Optik ist lineare Algebra: Freie Ausbreitung und dünne Linsen sind $2\times 2$-Matrizen, die auf Strahlvektoren (Höhe, Winkel) wirken. Das ganze System ist ein einziges verkettetes Matrixprodukt, angewendet auf einen Batch von Strahlen, und wird neu berechnet, während die zweite Linse von der ersten wegrückt.'
+notes: 'Die Reihenfolge zählt: Das Element, auf das das Licht zuerst trifft, ist der rechte Faktor. Jeder Faktor hat die Determinante 1, also gilt $\det M = 1$ für jede Anordnung. Beobachte, wie das Bild ins Unendliche läuft, wenn das Zwischenbild von Linse 1 genau im Brennpunkt von Linse 2 liegt ($d = sf_1/(s - f_1) + f_2$), und dann von der anderen Seite als virtuelles Bild zurückkommt.'
+meanings:
+- 'Strahl $r$: $j = 0$ Höhe $h$, $j = 1$ Winkel $\theta$'
+- Ausbreitung über die Strecke $d$ (gebündeltes $d$ ergibt (..., 2, 2))
+- dünne Linse der Brennweite $f$
+- ein weiteres Element an das System anhängen (wiederholtes $j$ summiert); wie torch.linalg.multi_dot
+- Transfermatrix vom Objekt zu jeder axialen Stützstelle $z$
+- jeder Strahl an jedem $z$ in einer einzigen Kontraktion
+- wo die Höhe nicht mehr vom Startwinkel abhängt
+labels:
+  s: Gegenstandsweite
+  f1: Brennweite von Linse 1
+  f2: Brennweite von Linse 2
+  d_start: Anfänglicher Linsenabstand
+  d_end: Endgültiger Linsenabstand
+  h0: Gegenstandshöhe
+  half_angle: Halber Öffnungswinkel des Fächers
+  n_rays: Strahlen im Fächer

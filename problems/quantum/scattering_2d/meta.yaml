@@ -1,0 +1,35 @@
+title: 2D wave-packet scattering
+category: quantum
+level: advanced
+order: 2
+summary: >
+  The time-dependent Schrödinger equation in two dimensions, solved with split-step Fourier on an $(N, N)$
+  grid. A Gaussian wave packet hits a wall with two slits (or a disk-shaped obstacle); torch.fft.fft2
+  switches between $x$-space, where the potential is diagonal, and $k$-space, where the kinetic energy is
+  diagonal. A detector screen behind the barrier records the time-integrated probability: an
+  interference pattern built from a single particle's wavefunction.
+animated: true
+vector_form: 'i\,\partial_t\psi = \Big(-\tfrac12\,\nabla^2 + V(x, y)\Big)\psi,\qquad \psi(t+\Delta t) \approx M\,e^{-iV\Delta t/2}\,\mathcal F^{-1} e^{-i|\mathbf k|^2\Delta t/2}\,\mathcal F\,e^{-iV\Delta t/2}\,\psi(t)'
+index_form: '\psi_{xy} \leftarrow P_{xy}\psi_{xy},\quad \tilde\psi_{pq} = F_{px}F_{qy}\,\psi_{xy},\quad \tilde\psi_{pq} \leftarrow K_{pq}\tilde\psi_{pq},\quad \psi_{xy} = F^{-1}_{xp}F^{-1}_{yq}\,\tilde\psi_{pq},\quad \psi_{xy} \leftarrow M_{xy}P_{xy}\psi_{xy}'
+translation:
+  - {symbol: '\psi_{xy}', code: 'psi', shape: '(N, N) complex', meaning: 'wavefunction on the periodic 2D grid (first index $x$, second $y$)'}
+  - {symbol: 'V_{xy}', code: 'double_slit(X, Y, ...)', shape: '(N, N)', meaning: 'barrier: a high wall at $x \approx 0$ with two openings, or a disk'}
+  - {symbol: 'P_{xy} = e^{-iV_{xy}\Delta t/2}', code: 'potential_phase(V, dt)', shape: '(N, N) complex', meaning: 'half-step potential operator, diagonal in $x$-space'}
+  - {symbol: 'K_{pq} = e^{-i(k_p^2+k_q^2)\Delta t/2}', code: 'kinetic_phase(KX, KY, dt)', shape: '(N, N) complex', meaning: 'full-step kinetic operator, diagonal in $k$-space'}
+  - {symbol: 'F_{px}F_{qy}\psi_{xy}', code: 'torch.fft.fft2(psi)', shape: '(N, N) complex', meaning: '$x$ and $y$ both summed: a 1D Fourier transform along each axis'}
+  - {symbol: 'M_{xy}', code: 'absorbing_mask(X, Y, L, width)', shape: '(N, N)', meaning: 'smooth damping near the edges, so waves leave instead of wrapping around'}
+  - {symbol: 'I_y', code: 'screen += |psi[ix_screen, :]|² dt', shape: '(N,)', meaning: 'time-integrated probability on the detector line $x = x_\text{screen}$'}
+notes: >
+  Units $\hbar = m = 1$, packet energy $E \approx k_0^2/2$. Without the mask $M$ every factor is a pure phase, so each step is
+  exactly unitary and the norm stays 1; the mask deliberately removes probability that reaches the edges
+  (otherwise the periodic FFT grid would bring it back on the opposite side), so the printed norm drops at
+  late times. For two slits of separation $d$ the fringes on a screen a distance $D$ away are spaced by about
+  $\lambda D/d$ with $\lambda = 2\pi/k_0$ (the screen is not in the far field, so this is only approximate). Choosing the disk
+  shows a shadow with a bright Poisson spot on the axis behind it. The image colour uses a square-root scale
+  normalised to each frame, so the weak scattered waves stay visible; the barrier is drawn in grey.
+params:
+  barrier: {default: double_slit, type: choice, options: [double_slit, disk], label: Barrier}
+  k0: {default: 3.0, min: 1.5, max: 5.0, step: 0.1, label: 'Packet momentum $k_0$'}
+  slit_sep: {default: 6.0, min: 2.0, max: 12.0, step: 0.5, label: 'Slit separation $d$ (disk diameter)'}
+  slit_width: {default: 1.5, min: 0.5, max: 4.0, step: 0.1, label: 'Slit width $w$'}
+  n_grid: {default: 256, min: 128, max: 384, step: 32, type: int, label: Grid points per axis}

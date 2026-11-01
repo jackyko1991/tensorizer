@@ -1,0 +1,18 @@
+source_hash: 0456b6169f6d
+title: Dispersión de un paquete de ondas en 2D
+summary: 'La ecuación de Schrödinger dependiente del tiempo en dos dimensiones, resuelta con el método split-step de Fourier sobre una malla $(N, N)$. Un paquete de ondas gaussiano incide sobre una pared con dos rendijas (o un obstáculo en forma de disco); torch.fft.fft2 alterna entre el espacio $x$, donde el potencial es diagonal, y el espacio $k$, donde la energía cinética es diagonal. Una pantalla detectora detrás de la barrera registra la probabilidad integrada en el tiempo: un patrón de interferencia construido a partir de la función de onda de una sola partícula.'
+notes: Unidades $\hbar = m = 1$, energía del paquete $E \approx k_0^2/2$. Sin la máscara $M$ todos los factores son fases puras, así que cada paso es exactamente unitario y la norma se mantiene en 1; la máscara elimina deliberadamente la probabilidad que llega a los bordes (de lo contrario la malla periódica de la FFT la devolvería por el lado opuesto), por lo que la norma impresa disminuye a tiempos largos. Para dos rendijas separadas $d$, las franjas en una pantalla a una distancia $D$ están separadas aproximadamente $\lambda D/d$ con $\lambda = 2\pi/k_0$ (la pantalla no está en el campo lejano, así que es solo aproximado). Elegir el disco muestra una sombra con una mancha de Poisson brillante en el eje detrás de él. El color de la imagen usa una escala de raíz cuadrada normalizada a cada fotograma, para que las ondas dispersadas débiles sigan siendo visibles; la barrera se dibuja en gris.
+meanings:
+- función de onda en la malla 2D periódica (primer índice $x$, segundo $y$)
+- 'barrera: una pared alta en $x \approx 0$ con dos aberturas, o un disco'
+- operador de potencial de medio paso, diagonal en el espacio $x$
+- operador cinético de paso completo, diagonal en el espacio $k$
+- '$x$ e $y$ ambos sumados: una transformada de Fourier 1D a lo largo de cada eje'
+- amortiguamiento suave cerca de los bordes, para que las ondas salgan en lugar de dar la vuelta
+- probabilidad integrada en el tiempo en la línea del detector $x = x_\text{screen}$
+labels:
+  barrier: Barrera
+  k0: Momento del paquete $k_0$
+  slit_sep: Separación entre rendijas $d$ (diámetro del disco)
+  slit_width: Anchura de rendija $w$
+  n_grid: Puntos de malla por eje

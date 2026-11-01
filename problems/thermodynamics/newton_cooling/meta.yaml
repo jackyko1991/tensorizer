@@ -1,0 +1,29 @@
+title: Newton's law of cooling
+category: thermodynamics
+level: beginner
+order: 2
+summary: >
+  A row of hot cups of coffee cools towards room temperature. Each cup has its own starting temperature and
+  its own cooling constant, yet all of them live in one tensor, so a single line of PyTorch advances every cup
+  at once — and the result matches the exponential solution.
+animated: true
+vector_form: '\frac{dT}{dt} = -k\,(T - T_{\text{env}}),\qquad T(t) = T_{\text{env}} + (T_0 - T_{\text{env}})\,e^{-kt}'
+index_form: '\dot T_b = -k_b\,(T_b - T_{\text{env}}),\qquad T_{tb} = T_{\text{env}} + (T_{0,b} - T_{\text{env}})\,e^{-k_b t_t}'
+translation:
+  - {symbol: 'T_b', code: 'T', shape: '(B,)', meaning: 'temperature of cup $b$ (°C)'}
+  - {symbol: 'k_b', code: 'k', shape: '(B,)', meaning: 'cooling constant of cup $b$ (1/min): bigger means faster cooling'}
+  - {symbol: 'T_{\text{env}}', code: 'T_env', shape: 'scalar', meaning: 'room temperature, broadcast to every cup'}
+  - {symbol: '\dot T_b', code: '-k * (T - T_env)', shape: '(B,)', meaning: 'element-wise: no index is summed, every cup cools on its own'}
+  - {symbol: 'k_b t_t', code: "einsum('t,b->tb', t, k)", shape: '(T, B)', meaning: 'outer product: every time with every cup, for the exact solution'}
+  - {symbol: 't_{1/2}', code: 'log(2) / k', shape: '(B,)', meaning: 'time for the temperature gap to halve'}
+notes: >
+  The law says the cooling rate is proportional to the temperature gap to the room. The gap therefore shrinks by
+  the same factor in equal times: it halves every $t_{1/2} = \ln 2/k$, whatever the starting temperature. The ODE is
+  solved numerically with Runge–Kutta (RK4) and the dashed lines show the exact exponential for comparison.
+  Real cups cool by convection, radiation and evaporation at once; $k$ lumps all of them into one number.
+params:
+  n_cups: {default: 5, min: 1, max: 8, step: 1, type: int, label: Cups}
+  T_env: {default: 20.0, min: 0, max: 40, step: 1, label: Room temperature, unit: °C}
+  k_min: {default: 0.03, min: 0.005, max: 0.2, step: 0.005, label: 'Slowest cooling $k$', unit: 1/min}
+  k_max: {default: 0.15, min: 0.01, max: 0.5, step: 0.01, label: 'Fastest cooling $k$', unit: 1/min}
+  t_max: {default: 60.0, min: 10, max: 180, step: 5, label: Simulated time, unit: min}

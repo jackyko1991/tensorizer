@@ -1,0 +1,16 @@
+source_hash: f581627e3195
+title: 盒中粒子
+summary: 定态薛定谔方程在网格上变成矩阵本征值问题 $H_{ij}\psi_j = E\psi_i$。torch.linalg.eigh 给出定态；它们的叠加态通过给每个定态乘上相位 $e^{-iE_n t}$ 并用 einsum 求和来演化。
+notes: 单位 $\hbar = m = 1$。精确能量为 $E_n = n^2\pi^2/(2L^2)$；网格对最低几个能级的误差远小于百分之一。每个本征态只获得一个相位，所以 $\lvert c_n\rvert$ 和归一化始终不变——$\lvert\psi\rvert^2$ 的来回晃动纯粹是态之间的干涉。经过复现时间 $T = 4L^2/\pi$ 后，所有相位 $e^{-iE_n t}$ 都回到 1，初态精确重现。浅色虚线是最低的几个定态 $\varphi_n(x)$。
+meanings:
+- $N$ 个内部格点上的哈密顿矩阵 $-\tfrac12\,D2$（壁：$\psi = 0$）
+- 有限差分 $d^2/dx^2$：$(\psi_{x-1} - 2\psi_x + \psi_{x+1})/dx^2$
+- 能量和本征矢（第 $n$ 列是第 $n$ 个态）
+- 把初态投影到本征基上（重复的 $x$ ⇒ 求和）
+- 重复的 $n$ ⇒ 求和：由带相位的分量重建 $\psi$
+labels:
+  initial: 初态
+  n_states: 叠加的态数
+  L: 盒子宽度
+  n_grid: 格点数
+  revivals: 模拟时长

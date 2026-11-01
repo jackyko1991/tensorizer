@@ -1,0 +1,20 @@
+source_hash: d653bb5fd1c6
+title: 刚体自由转动（网球拍效应）
+summary: 无外力矩长方体的欧拉方程，用惯量张量 $I_{ij}$ 和列维-奇维塔张量 $\varepsilon_{ijk}$ 写出。绕最长轴或最短轴的转动是稳定的；绕中间轴的转动会反复翻转（贾尼别科夫效应）。
+notes: 没有力矩时，能量 $\tfrac12\boldsymbol\omega\cdot I\boldsymbol\omega$ 和 $\mathbf L = I\boldsymbol\omega$ 的大小都守恒，因此 $\boldsymbol\omega$ 只能沿等能椭球面与等 $\lvert\mathbf L\rvert$ 球面的交线运动（在 $\mathbf L$ 空间中）。在最大轴和最小轴附近，这些曲线是小闭环——稳定；在中间轴附近，它们经过鞍点，所以微小的晃动会增长，物体翻转过去又翻转回来。实验室系中的角动量 $RI\boldsymbol\omega$（图中固定的箭头）始终不动。参数 $a, b, c$ 已排序，使 $a \ge b \ge c$。
+meanings:
+- 实心长方体的惯量张量 $(M/12)\operatorname{diag}(b^2+c^2,\ a^2+c^2,\ a^2+b^2)$
+- 本体系分量表示的角速度
+- 列维-奇维塔张量：叉积的张量形式
+- 对 $j, k, l$ 求和：$\boldsymbol\omega\times(I\boldsymbol\omega)$
+- 求解 $I_{ij}\dot\omega_j = -\varepsilon_{ijk}\omega_j I_{kl}\omega_l$
+- 取向：本体系 → 实验室系的转动矩阵
+- 转动动能，守恒
+labels:
+  spin_axis: 主要转轴
+  spin: 转速
+  perturbation: 晃动（占转速的比例）
+  a: 边长 $a$
+  b: 边长 $b$
+  c: 边长 $c$
+  t_max: 模拟时长

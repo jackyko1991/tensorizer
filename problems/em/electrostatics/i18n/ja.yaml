@@ -1,0 +1,16 @@
+source_hash: 6a76aa67658c
+title: 静電ポテンシャル（ポアソン方程式）
+summary: 接地された箱の中にあるいくつかの線電荷のポテンシャルについて、ポアソン方程式を解く。格子上ではラプラシアン $\partial_i\partial_i$ は、1次元の2階差分行列からクロネッカー積で組み立てた行列になるので、偏微分方程式全体が1つの連立1次方程式 $L\phi = -\rho/\varepsilon_0$ となり、torch.linalg.solve の1回の呼び出しで解ける。
+notes: 箱は単位正方形で、壁上で $\phi = 0$（接地）。問題は2次元なので、各「点」電荷は実際には無限に長い線電荷 $\lambda$（単位長さあたり）であり、ガウスの法則は $\oint \mathbf E\cdot\mathbf n\,dl = \lambda/\varepsilon_0$ となる。単位：$\varepsilon_0 = 1$。$L$ はほとんどが0である——実際のコードでは疎行列として格納するが、ここでは $N^2\times N^2$ の密行列でも直接解けるほど小さい。
+meanings:
+- 格子の行 $a$（$y$）と列 $b$（$x$）におけるポテンシャル
+- 同じ値を平坦化したもの：$m = a\cdot N + b$
+- 1次元の $\partial^2$：$(\phi_{a-1} - 2\phi_a + \phi_{a+1})/h^2$、三重対角
+- 2次元ラプラシアン $\partial_y^2 + \partial_x^2$：帯行列、各行に非零要素が5個
+- 格子上の電荷密度
+- 繰り返される $m$ ⇒ 和をとる：$\phi$ の離散ラプラシアン
+- 中心差分による $E_i = -\partial_i\phi$、$i \in \{x, y\}$
+labels:
+  config: 電荷配置
+  n_grid: 一辺あたりの格子点数
+  charge: 線あたりの電荷

@@ -1,0 +1,15 @@
+source_hash: bc7b5c9d23fa
+title: 氢原子轨道
+summary: 写成 $\psi = (u(r)/r)\,Y_{lm}(\theta, \phi)$ 后，三维氢原子问题化为带有附加离心项 $l(l+1)/2r^2$ 的一维径向方程。每个角量子数 $l$ 对应一个有限差分哈密顿量，堆叠成 $(L, N, N)$ 张量，一次批量 torch.linalg.eigh 就返回所有轨道。动画依次展示 1s、2s、2p、3s……，显示径向概率和 $\lvert\psi_{nl0}\rvert^2$ 的截面。
+notes: 原子单位（$\hbar = m_e = e = 4\pi\varepsilon_0 = 1$）：长度以玻尔半径计，能量以哈特里计。精确能量 $E_n = -1/(2n^2)$ 只依赖于 $n$，所以 2s 和 2p（或 3s、3p、3d）虽然是不同矩阵的本征值，却是简并的——这是 $1/r$ 势的隐藏对称性。$(n, l)$ 的径向函数有 $n - l - 1$ 个节点。网格截止于 $r_{\max}$，所以尺寸（$\approx 2n^2$）接近 $r_{\max}$ 的态被挤压，能量升高；有限差分在 $1/r$ 奇点附近也使 1s 的结合略微偏弱。截面显示 $xz$ 平面内 $m = 0$ 的轨道（$z$ 朝上），$Y_{l0} \propto P_l(\cos\theta)$；颜色采用压缩的幂律标度 $(\lvert\psi\rvert^2)^{0.3}$，使微弱的外层瓣仍然可见。
+meanings:
+- 内部格点 $r = dr \dots r_{\max} - dr$（两端 $u = 0$）
+- 库仑吸引加离心势垒，每个 $l$ 一行
+- $L$ 个哈密顿量的堆叠，每个角量子数一个
+- 对 $l$ 批量计算：能量和径向函数；主量子数 $n = l + 1 + \text{column}$
+- 单位半径的概率，$r^2\lvert R\rvert^2 = u^2$
+- 通过 $z$ 轴的截面上的 $\lvert R(r)\,Y_{l0}(\theta)\rvert^2$
+labels:
+  n_max: 最高壳层 $n$
+  r_max: 网格半径 $r_{\max}$
+  n_grid: 格点数

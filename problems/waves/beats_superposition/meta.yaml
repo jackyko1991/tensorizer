@@ -1,0 +1,30 @@
+title: Beats and group velocity
+category: waves
+level: beginner
+order: 2
+summary: >
+  Add up two (or more) sinusoids with close frequencies. All waves sit in one tensor indexed by wave $s$, time $n$ and
+  position $j$; a single einsum over $s$ superposes them. At a fixed point you hear beats at $|f_1 - f_2|$; in space the
+  carrier crests move at the phase velocity while the envelope moves at the group velocity.
+animated: true
+vector_form: 'y(x, t) = \sum_s A_s\cos(k_s x - \omega_s t),\qquad v_p = \frac{\bar\omega}{\bar k},\qquad v_g = \frac{\Delta\omega}{\Delta k}'
+index_form: 'y_{nj} = A_s\cos\theta_{snj},\qquad \theta_{snj} = k_s\,x_j - \omega_s\,t_n,\qquad \mathcal{E}_{nj} = \bigl|A_s\,e^{i\theta_{snj}}\bigr|'
+translation:
+  - {symbol: '\omega_s,\ k_s', code: 'omega, k', shape: '(S,)', meaning: 'angular frequency and wavenumber of wave $s$, linked by the dispersion relation $\omega \propto k^p$'}
+  - {symbol: 'x_j,\ t_n', code: 'x, t', shape: '(J,), (N,)', meaning: 'positions and times where the wave is evaluated'}
+  - {symbol: '\theta_{snj}', code: 'phase(k, omega, x, t)', shape: '(S, N, J)', meaning: 'phase of every wave at every time and place, by broadcasting'}
+  - {symbol: 'A_s\cos\theta_{snj}', code: "einsum('s,snj->nj', A, cos(theta))", shape: '(N, J)', meaning: 'repeated $s$ ⇒ summed: the superposition'}
+  - {symbol: '\mathcal{E}_{nj}', code: "einsum('s,snj->nj', A, exp(1j*theta)).abs()", shape: '(N, J)', meaning: 'envelope: length of the sum of phasors'}
+notes: >
+  For two waves $\cos a + \cos b = 2\cos\tfrac{a-b}{2}\cos\tfrac{a+b}{2}$: a fast carrier at the mean frequency inside a slow
+  envelope. The loudness $|{\rm envelope}|$ peaks $|f_1 - f_2|$ times per second, the beat frequency. With the dispersion relation
+  $\omega = c_0 k_0 (k/k_0)^p$ the group velocity is $p$ times the phase velocity: equal for sound on a string ($p = 1$),
+  half for deep-water waves ($p = \tfrac12$), one and a half for capillary ripples ($p = \tfrac32$).
+  The red dot rides a crest at $v_p$, the green dot rides the envelope peak at $v_g$. With more than two waves
+  the beats become isolated wave groups.
+params:
+  f1: {default: 1.0, min: 0.5, max: 2.0, step: 0.05, label: 'Frequency $f_1$', unit: Hz}
+  f2: {default: 1.1, min: 0.5, max: 2.0, step: 0.05, label: 'Frequency $f_2$', unit: Hz}
+  n_waves: {default: 2, min: 2, max: 8, step: 1, type: int, label: Number of waves (spread from f1 to f2)}
+  dispersion: {default: water, type: choice, options: [none, water, capillary], label: 'Dispersion $p$ = 1, ½, 3/2'}
+  t_max: {default: 20.0, min: 5, max: 40, step: 1, label: Simulated time, unit: s}

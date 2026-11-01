@@ -1,0 +1,14 @@
+source_hash: a7f6ff1f025f
+title: Ondas dispersivas en el agua
+summary: 'Un paquete de ondas en aguas profundas, donde las ondas largas adelantan a las cortas: $\omega = \sqrt{g k}$. Cada modo de Fourier solo gira su fase, así que el paquete en cualquier instante es una FFT, una multiplicación y una FFT inversa, hechas para todos los instantes a la vez. Las crestas atraviesan la envolvente al doble de su velocidad.'
+notes: 'Ondas de gravedad lineales en aguas profundas (profundidad mucho mayor que la longitud de onda, sin tensión superficial, pendiente pequeña). Como $\omega \propto \sqrt k$, la velocidad de grupo $d\omega/dk$ es exactamente la mitad de la velocidad de fase $\omega/k$: observa cómo la cresta roja adelanta al máximo verde de la envolvente, se desvanece en el frente y es sustituida por una nueva cresta nacida en la parte trasera (el punto rojo salta hacia atrás un número entero de longitudes de onda). Las ondas más largas viajan más deprisa, así que el paquete se ensancha poco a poco y su frente tiene ondas más largas que su parte trasera (un chirp). La FFT hace periódica la caja. Como cada modo solo gira su fase, $\sum|\hat a_k|^2$ (la energía de la onda, por Parseval) se conserva exactamente.'
+meanings:
+- 'paquete complejo: envolvente gaussiana por $e^{ik_0x}$'
+- amplitudes de Fourier del paquete inicial
+- relación de dispersión en aguas profundas para cada modo
+- cada modo en cada instante, con broadcasting (exacto, sin avance temporal)
+- '$k$ repetido ⇒ sumado: de vuelta al espacio real para todos los instantes'
+labels:
+  wavelength: Longitud de onda de la portadora $2\pi/k_0$
+  width: Anchura del paquete $\sigma$
+  t_max: Tiempo simulado

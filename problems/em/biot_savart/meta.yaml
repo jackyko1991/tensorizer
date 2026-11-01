@@ -1,0 +1,30 @@
+title: Magnetic field of current loops (Biot–Savart)
+category: em
+level: intermediate
+order: 2
+summary: >
+  The Biot–Savart law turns a wire into a sum over short segments. The cross product $d\mathbf l\times\mathbf r$ is the Levi-Civita
+  tensor $\varepsilon_{ijk}$ contracted with two vectors, so one einsum over ($i, j, k$, segment) gives the field of the whole coil at
+  every grid point. The loop radius swells and shrinks while the field in the $x$–$z$ plane and on the axis follow.
+animated: true
+vector_form: '\mathbf B(\mathbf x) = \frac{\mu_0 I}{4\pi}\oint\frac{d\mathbf l\times\mathbf r}{\lVert\mathbf r\rVert^3},\qquad \mathbf r = \mathbf x - \mathbf x_{\text{wire}}'
+index_form: 'B_{gi} = \frac{\mu_0 I}{4\pi}\,\varepsilon_{ijk}\,dl_{sj}\,\frac{r_{gsk}}{\big(r_{gsl}\,r_{gsl}\big)^{3/2}},\qquad r_{gsk} = x_{gk} - x_{sk}'
+translation:
+  - {symbol: 'x_{gk}', code: 'points', shape: '(G, 3)', meaning: 'field point $g$ on the plane $y = 0$'}
+  - {symbol: 'x_{sk},\ dl_{sj}', code: 'mid, dl', shape: '(S, 3)', meaning: 'midpoint and direction vector of wire segment $s$'}
+  - {symbol: 'r_{gsk}', code: 'points[:, None, :] - mid[None, :, :]', shape: '(G, S, 3)', meaning: 'from every segment to every field point (broadcasting)'}
+  - {symbol: '\varepsilon_{ijk}', code: 'levi_civita(dev)', shape: '(3, 3, 3)', meaning: 'Levi-Civita symbol: the cross product as a tensor'}
+  - {symbol: 'B_{gi}', code: "einsum('ijk,sj,gsk,gs->gi', eps, dl, r, inv_r3)", shape: '(G, 3)', meaning: 'repeated $j, k$ ⇒ cross product; repeated $s$ ⇒ sum over the wire'}
+  - {symbol: 'B_z(0, 0, z)', code: 'loop_axis_field(z, R, z_loops, currents)', shape: '(A,)', meaning: 'exact $\mu_0 I R^2/(2(R^2 + z^2)^{3/2})$ per loop, to check the sum'}
+notes: >
+  SI units ($\mu_0 = 4\pi\times 10^{-7}$ T·m/A), field shown in μT. The loops lie in horizontal planes, so the $x$–$z$ plane cuts each
+  one at two points (⊙ current out of the page, ⊗ into it). Helmholtz coils (spacing $R$, equal currents) make an
+  almost uniform field between them; anti-Helmholtz coils (opposite currents) give a field that vanishes at the centre
+  and grows linearly — the trap used for cold atoms. Grid points next to the wire use a small softening length so the
+  field stays finite.
+params:
+  layout: {default: loop, type: choice, options: [loop, helmholtz, anti_helmholtz], label: Coils}
+  current: {default: 10.0, min: 1, max: 50, step: 1, label: Current, unit: A}
+  radius: {default: 0.6, min: 0.3, max: 0.9, step: 0.05, label: Mean loop radius, unit: m}
+  n_segments: {default: 60, min: 8, max: 200, step: 4, type: int, label: Segments per loop}
+  n_grid: {default: 21, min: 11, max: 41, step: 2, type: int, label: Arrows per side}

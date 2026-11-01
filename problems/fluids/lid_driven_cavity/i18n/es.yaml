@@ -1,0 +1,16 @@
+source_hash: 87bf1a8993df
+title: Cavidad con tapa deslizante (Navier–Stokes)
+summary: 'El problema de referencia clásico de la dinámica de fluidos computacional: una caja cuadrada de fluido cuya tapa se desliza hacia la derecha. Las ecuaciones de Navier–Stokes 2D en formulación función de corriente–vorticidad avanzan en el tiempo, y la ecuación de Poisson para $\psi$ se resuelve diagonalizando el laplaciano con eigh. Se forma un vórtice primario cuya velocidad en la línea central se compara con Ghia et al. (1982).'
+notes: 'Unidades: tamaño de la cavidad 1 y velocidad de la tapa 1, de modo que $\mathrm{Re} = 1/\nu$. La función de corriente hace que el flujo tenga divergencia nula por construcción, y la presión desaparece al tomar el rotacional de Navier–Stokes. En cada paso: vorticidad en las paredes con la fórmula de Thom (no deslizamiento), un paso de Euler explícito para $\omega$ y luego la resolución de Poisson. $\nabla^2\psi = T\psi + \psi T^\mathsf T$ se vuelve diagonal en la base propia de $T$: la misma idea que una transformada seno rápida. Con Re = 100 el centro del vórtice está cerca de (0.62, 0.74), por encima y a la derecha del centro; con Re menor se desplaza a (0.5, 0.76), con Re mayor hacia el centro, y aparecen pequeños remolinos contrarrotantes en las esquinas inferiores. Un Re mayor requiere una malla más fina.'
+meanings:
+- vorticidad y función de corriente en la malla, indexadas [x, y], paredes incluidas
+- $(\partial_y\psi, -\partial_x\psi)$ por diferencias centradas
+- '$j$ repetido ⇒ sumado: advección de la vorticidad'
+- plantilla de cinco puntos
+- laplaciano 1D con paredes $\psi = 0$, diagonalizado una sola vez
+- transformada; después $\hat\psi_{ab} = \hat f_{ab}/(\Lambda_a + \Lambda_b)$ y vuelta
+- 'Thom: $-2\psi_\text{next}/h^2$, menos $2U/h$ bajo la tapa'
+labels:
+  re: Número de Reynolds $UL/\nu$
+  n: Puntos de malla por lado
+  t_max: Tiempo simulado

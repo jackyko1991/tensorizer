@@ -1,0 +1,30 @@
+title: Polarization with Jones matrices
+category: optics
+level: intermediate
+order: 3
+summary: >
+  The polarization of light is a complex 2-vector $(E_x, E_y)$ and every polarizer or wave plate is a complex
+  $2\times 2$ matrix. Light passes a wave plate and then a rotating polarizer: the $\mathbf E$-field ellipse and the
+  transmitted intensity follow from einsum, reproducing Malus's law and turning linear into circular light.
+animated: true
+vector_form: '\mathbf E_{\text{out}} = P(\theta)\,W(\Gamma,\alpha)\,\mathbf E_{\text{in}},\quad P(\theta) = R(\theta)\begin{pmatrix}1&0\\0&0\end{pmatrix}R(-\theta),\ W = R(\alpha)\begin{pmatrix}1&0\\0&e^{i\Gamma}\end{pmatrix}R(-\alpha),\quad I = \mathbf E^\dagger\mathbf E'
+index_form: 'E^{\text{out}}_i = P_{ij}\,W_{jk}\,E^{\text{in}}_k,\qquad I = E^{*}_i\,E_i,\qquad \mathcal E_i(t) = \operatorname{Re}\big(E_i\,e^{-i\omega t}\big)'
+translation:
+  - {symbol: 'E_i', code: 'e_in', shape: '(2,) complex', meaning: 'Jones vector: complex amplitudes of $E_x$ and $E_y$ (the phase difference sets the shape)'}
+  - {symbol: 'R_{ij}(\theta)', code: 'rotation(theta)', shape: '(2, 2)', meaning: 'rotates the lab frame onto the element''s own axes'}
+  - {symbol: 'P_{ij}(\theta)', code: 'polarizer(theta)', shape: '(2, 2) complex', meaning: 'keeps only the field along the transmission axis at angle $\theta$'}
+  - {symbol: 'W_{jk}(\Gamma, \alpha)', code: 'wave_plate(retardance, alpha)', shape: '(2, 2) complex', meaning: 'delays the slow axis by $\Gamma$: $\Gamma = \pi/2$ quarter-wave, $\Gamma = \pi$ half-wave'}
+  - {symbol: 'M_{ik} = P_{ij}W_{jk}', code: "einsum('ij,jk->ik', p, w)", shape: '(2, 2) complex', meaning: 'chain elements (repeated $j$ summed); the first element the light meets is on the right'}
+  - {symbol: 'E^{out}_i = M_{ij}E_j', code: "einsum('ij,j->i', m, e)", shape: '(2,) complex', meaning: 'send the light through the optics'}
+  - {symbol: 'I = E^*_i E_i', code: "einsum('i,i->', e.conj(), e).real", shape: '()', meaning: 'repeated $i$ ⇒ summed: intensity'}
+  - {symbol: '\mathcal E_i(t)', code: "einsum('i,t->ti', e, exp(-1j*wt)).real", shape: '(T, 2)', meaning: 'the real field over one period: it traces the polarization ellipse'}
+notes: >
+  The light starts linearly polarized at the input angle with intensity $I_0 = 1$. The dashed grey curve on the right is
+  Malus's law $I_0\cos^2\theta$ (no wave plate); the blue curve is what passes after the plate. A quarter-wave plate at 45° to the
+  input makes circular light (equal $\lvert E_x\rvert$ and $\lvert E_y\rvert$, 90° out of phase), so every polarizer angle passes $I_0/2$. A half-wave
+  plate at $\alpha$ rotates linear light by $2\alpha$. A single Jones vector is always fully polarized; unpolarized light is handled
+  by averaging the intensities of two orthogonal inputs (used for the three-polarizer check printed by main.py).
+params:
+  plate: {default: quarter, type: choice, options: [none, quarter, half], label: Wave plate}
+  plate_angle: {default: 45.0, min: 0, max: 180, step: 5, label: 'Plate fast axis $\alpha$', unit: °}
+  input_angle: {default: 0.0, min: 0, max: 180, step: 5, label: Input polarization angle, unit: °}

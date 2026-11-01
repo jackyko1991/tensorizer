@@ -1,0 +1,17 @@
+source_hash: b693da8b6e0e
+title: 相對論性帶電粒子
+summary: 以協變形式寫出的勞侖茲力 $dU^\mu/d\tau = (q/m)\,F^\mu{}_\nu U^\nu$：場張量的第二個指標以閔考斯基度規降下，並在一次 einsum 中與四維速度縮並。以固有時積分可見，高速粒子的繞行比牛頓力學預測的慢，而恆定電場把粒子推得愈來愈接近光速——但永不超過。
+notes: 單位取 $c = 1$。方程式以 RK4 按各粒子的固有時 $\tau$ 積分，再重新取樣到實驗室時間 $t = X^0$ 以製作動畫。迴旋運動：磁力不作功，因此 $\gamma$ 保持不變，但軌道比牛頓圓大 $\gamma$ 倍、慢 $\gamma$ 倍（$\omega = qB/(\gamma m)$）。加速：在均勻 $E$ 中從靜止出發，運動為雙曲線型，$x = (\sqrt{1 + (at)^2} - 1)/a$，其中 $a = qE/m$，因此 $v \to 1$；而牛頓的 $\tfrac12 at^2$ 在 $t = 2/a$ 之後就會超過光速。
+meanings:
+- 粒子 $p$ 的四維位置 $(t, x, y, z)$ 與四維速度 $\gamma(1, \mathbf v)$
+- 閔考斯基度規 $\operatorname{diag}(+1, -1, -1, -1)$，$c = 1$
+- $F^{0i} = -E_i$，$F^{ij} = -\varepsilon_{ijk}B_k$
+- 重複的 $\alpha$ ⇒ 求和：降下第二個指標
+- 重複的 $\nu$ ⇒ 求和：每個粒子所受的四維力
+- $U$ 的閔考斯基長度，必須保持為 1
+labels:
+  config: 情境
+  strength: 場強（$B$ 或 $E$）
+  v_max: 最快初速（迴旋）
+  n_particles: 粒子數
+  t_max: 實驗室時間

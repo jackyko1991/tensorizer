@@ -1,0 +1,33 @@
+title: Navier–Stokes pipe flow
+category: fluids
+level: intermediate
+order: 2
+summary: >
+  The full incompressible Navier–Stokes equations, applied to water in a round pipe that is suddenly pushed by a pressure gradient.
+  For axial flow the nonlinear term drops out exactly, leaving a radial diffusion equation: momentum spreads in from the no-slip wall
+  and the profile grows into the Hagen–Poiseuille parabola within a few times $R^2/\nu$.
+animated: true
+vector_form: '\rho\big(\partial_t\mathbf u + (\mathbf u\cdot\nabla)\mathbf u\big) = -\nabla p + \mu\,\nabla^2\mathbf u,\qquad \nabla\cdot\mathbf u = 0'
+index_form: '\rho\,(\partial_t u_i + u_j\,\partial_j u_i) = -\partial_i p + \mu\,\partial_j\partial_j u_i,\quad \partial_i u_i = 0 \qquad \xrightarrow{\ \mathbf u = u_z(r,t)\,\hat{\mathbf z}\ }\qquad \partial_t u_z = \frac{G}{\rho} + \frac{\nu}{r}\,\partial_r(r\,\partial_r u_z),\quad \dot u_i = \frac G\rho + \nu\,L_{ij}u_j'
+translation:
+  - {symbol: 'u_j\,\partial_j u_i', code: '(vanishes)', shape: '—', meaning: 'only $u_z \ne 0$ and $\partial_z u_z = 0$, so the advection term is exactly zero'}
+  - {symbol: '\partial_i u_i', code: '(vanishes)', shape: '—', meaning: 'continuity holds automatically: $u_z$ does not change along the pipe'}
+  - {symbol: 'r_i', code: 'grid(N, R, dev)', shape: '(N+1,)', meaning: 'radial points from the axis ($i = 0$) to the wall ($i = N$)'}
+  - {symbol: 'u_i', code: 'u', shape: '(N,)', meaning: 'axial velocity $u_z(r_i)$; the wall value $u_N = 0$ (no slip)'}
+  - {symbol: 'L_{ij}', code: 'radial_laplacian(r, dr)', shape: '(N, N)', meaning: '$\tfrac1r\partial_r(r\partial_r\,\cdot)$ as a matrix, with the $r \to 0$ limit $2\partial_r^2$ on the axis'}
+  - {symbol: 'L_{ij}\,u_j', code: "einsum('ij,j->i', L, u)", shape: '(N,)', meaning: 'repeated $j$ ⇒ summed: viscous term $\nu\nabla^2 u_z$'}
+  - {symbol: 'G = -\partial_z p', code: "params['G']", shape: 'scalar', meaning: 'driving pressure gradient in Pa/m'}
+  - {symbol: 'Q = \int 2\pi r\,u_z\,dr', code: 'flow_rate(u, r)', shape: '(T,)', meaning: 'volume flow rate; steady value $\pi G R^4/8\mu$'}
+  - {symbol: '\tau_w = -\mu\,\partial_r u_z|_R', code: 'wall_shear_stress(u, dr, mu)', shape: '(T,)', meaning: 'drag per area on the wall; steady value $GR/2$'}
+notes: >
+  This is one of the rare exact solutions of Navier–Stokes: because the flow is parallel, $(\mathbf u\cdot\nabla)\mathbf u = 0$ and only the
+  pressure gradient and viscosity remain. The steady Hagen–Poiseuille flow has $u_z = G(R^2 - r^2)/4\mu$, flow rate $Q = \pi G R^4/8\mu$
+  (the famous $R^4$ law) and wall shear stress $\tau_w = GR/2$ — the force balance $G\,\pi R^2 = \tau_w\,2\pi R$ per unit length.
+  The start-up approaches it like $e^{-\lambda_1^2\nu t/R^2}$ with $\lambda_1 = 2.405$ (first zero of $J_0$), so by $t \approx 0.6\,R^2/\nu$
+  the profile is within a few percent of the parabola. Early on the core moves as a plug and only the fluid near the wall feels the drag — watch the dye lines.
+  The solution is laminar; above a Reynolds number of about 2000 real pipe flow becomes turbulent.
+params:
+  G: {default: 0.5, min: 0.05, max: 5.0, step: 0.05, label: 'Pressure gradient $G$', unit: Pa/m}
+  R: {default: 5.0, min: 1, max: 15, step: 0.5, label: 'Pipe radius $R$', unit: mm}
+  nu: {default: 1.0, min: 0.2, max: 20, step: 0.1, label: 'Kinematic viscosity $\nu$', unit: mm²/s}
+  t_max: {default: 0.6, min: 0.05, max: 1.0, step: 0.05, label: 'Simulated time in units of $R^2/\nu$'}

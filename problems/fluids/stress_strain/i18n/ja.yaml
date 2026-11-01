@@ -1,0 +1,17 @@
+source_hash: e7727640a017
+title: 応力・ひずみとモールの応力円
+summary: 弾性板の連続体力学。フックの法則は、ラメ定数から einsum で組み立てた4階の弾性テンソル $C_{ijkl}$ で表される。荷重を段階的に加え（引張、次にせん断）板を変形させる。ひずみは変位場の勾配から、主応力は eigh から求め、応力楕円とモールの応力円として描く。
+notes: 板は薄く表面は自由なので $\sigma_{zz} = 0$（平面応力）——それでも板は薄くなる：$\varepsilon_{zz} = -\nu(\sigma_{xx} + \sigma_{yy})/E$。荷重過程の単軸引張の段階では、ヤング率 $E = \sigma_{xx}/\varepsilon_{xx} = \mu(3\lambda + 2\mu)/(\lambda + \mu)$ とポアソン比 $\nu = -\varepsilon_{yy}/\varepsilon_{xx} = \lambda/2(\lambda + \mu)$ を読み取れる。せん断を加えると主軸が $x$ と $y$ から回転する。モールの応力円上では点 $(\sigma_{xx}, \tau_{xy})$ と $(\sigma_{yy}, -\tau_{xy})$ が直径の両端であり、円は主応力で軸と交わる。半径は面内最大せん断応力であり、延性金属の降伏を支配する（トレスカ）。変位はごく小さいので、図では誇張して描いている。
+meanings:
+- $\delta$ の3つの einsum 外積；81成分だが独立な定数は2つだけ
+- 対称テンソル上での $C$ の逆：$\varepsilon = S:\sigma$（9×9 行列の pinv）
+- 各物質点の変位
+- 差分による変位勾配（torch.gradient）
+- 変位勾配の対称部分
+- 繰り返される $k, l$ ⇒ 和をとる：フックの法則
+- 主応力とその方向
+labels:
+  E: ヤング率 $E$
+  poisson: ポアソン比 $\nu$
+  sigma_max: 最終引張応力 $\sigma_{xx}$
+  tau_max: 最終せん断応力 $\tau_{xy}$

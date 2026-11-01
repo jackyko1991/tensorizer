@@ -1,0 +1,19 @@
+source_hash: db9343501d33
+title: Écoulement de Navier–Stokes en conduite
+summary: 'Les équations de Navier–Stokes incompressibles complètes, appliquées à de l''eau dans une conduite circulaire soudain mise en mouvement par un gradient de pression. Pour un écoulement axial, le terme non linéaire disparaît exactement et il reste une équation de diffusion radiale : la quantité de mouvement diffuse depuis la paroi (non-glissement) et le profil devient la parabole de Hagen–Poiseuille en quelques $R^2/\nu$.'
+notes: 'C''est l''une des rares solutions exactes de Navier–Stokes : l''écoulement étant parallèle, $(\mathbf u\cdot\nabla)\mathbf u = 0$ et il ne reste que le gradient de pression et la viscosité. L''écoulement stationnaire de Hagen–Poiseuille a $u_z = G(R^2 - r^2)/4\mu$, un débit $Q = \pi G R^4/8\mu$ (la célèbre loi en $R^4$) et une contrainte pariétale $\tau_w = GR/2$ — le bilan des forces $G\,\pi R^2 = \tau_w\,2\pi R$ par unité de longueur. Le régime transitoire s''en approche comme $e^{-\lambda_1^2\nu t/R^2}$ avec $\lambda_1 = 2.405$ (premier zéro de $J_0$), donc vers $t \approx 0.6\,R^2/\nu$ le profil est à quelques pour cent de la parabole. Au début, le cœur se déplace en bloc et seul le fluide proche de la paroi ressent le frottement — observez les filets de colorant. La solution est laminaire ; au-delà d''un nombre de Reynolds d''environ 2000, l''écoulement réel en conduite devient turbulent.'
+meanings:
+- seul $u_z \ne 0$ et $\partial_z u_z = 0$, donc le terme d'advection est exactement nul
+- 'la continuité est automatiquement vérifiée : $u_z$ ne varie pas le long de la conduite'
+- points radiaux de l'axe ($i = 0$) à la paroi ($i = N$)
+- vitesse axiale $u_z(r_i)$ ; à la paroi $u_N = 0$ (non-glissement)
+- $\tfrac1r\partial_r(r\partial_r\,\cdot)$ sous forme de matrice, avec la limite $r \to 0$ $2\partial_r^2$ sur l'axe
+- '$j$ répété ⇒ sommé : terme visqueux $\nu\nabla^2 u_z$'
+- gradient de pression moteur en Pa/m
+- débit volumique ; valeur stationnaire $\pi G R^4/8\mu$
+- frottement par unité de surface sur la paroi ; valeur stationnaire $GR/2$
+labels:
+  G: Gradient de pression $G$
+  R: Rayon de la conduite $R$
+  nu: Viscosité cinématique $\nu$
+  t_max: Durée simulée en unités de $R^2/\nu$

@@ -1,0 +1,34 @@
+title: Spaghettification near a black hole
+category: astro
+level: intermediate
+order: 3
+summary: >
+  A ring of particles falls toward a stellar-mass black hole. The difference in gravity across the ring is the tidal tensor
+  $T_{ij} = -\partial_i\partial_j\Phi$, computed from its formula and as an autograd Hessian. It stretches the ring along the radial
+  direction ($+2GM/r^3$) and squeezes it across ($-GM/r^3$ twice): spaghettification, which tears real bodies apart inside the tidal radius.
+animated: true
+vector_form: '\ddot{\boldsymbol\xi} = -(\boldsymbol\xi\cdot\nabla)\nabla\Phi,\qquad \Phi = -\frac{GM}{r},\qquad r_t = R\left(\frac{2M}{m}\right)^{1/3}'
+index_form: '\ddot\xi_{bi} = T_{ij}\,\xi_{bj},\qquad T_{ij} = -\partial_i\partial_j\Phi = \frac{GM}{r^5}\left(3x_ix_j - r^2\delta_{ij}\right)'
+translation:
+  - {symbol: 'x_i', code: 'centre = y[0, 0]', shape: '(3,)', meaning: 'position of the ring''s centre (black hole at the origin)'}
+  - {symbol: '\xi_{bi}', code: 'y[1 + n:, 0]', shape: '(n, 3)', meaning: 'separation of ring particle $b$ from the centre'}
+  - {symbol: 'x_ix_j', code: "einsum('i,j->ij', x, x)", shape: '(3, 3)', meaning: 'outer product, no index summed'}
+  - {symbol: 'T_{ij}', code: 'tidal_tensor(x, GM)', shape: '(3, 3)', meaning: 'tidal tensor from the formula'}
+  - {symbol: '-\partial_i\partial_j\Phi', code: '-vmap(jacrev(grad(potential)))(x)', shape: '(P, 3, 3)', meaning: 'the same tensor as an autograd Hessian'}
+  - {symbol: 'T_{ij}\xi_{bj}', code: "einsum('ij,bj->bi', T, xi)", shape: '(n, 3)', meaning: 'repeated $j$ ⇒ summed: linear tidal acceleration'}
+  - {symbol: 'T_{ii}', code: 'torch.trace(T)', shape: '()', meaning: '$= -\nabla^2\Phi = 0$ in vacuum'}
+  - {symbol: 'r_t', code: 'tidal_radius(R, m/M)', shape: '()', meaning: 'tidal (Roche) radius of a self-gravitating body'}
+notes: >
+  Units: $G = c = 1$ and lengths in $GM/c^2$, so the horizon is at $r_s = 2$ (30 km for a 10-solar-mass black hole). The ring particles do not
+  attract each other: the blue dots follow exact Newtonian gravity, the red curve the linear law $\ddot\xi_i = T_{ij}\xi_j$, and they agree
+  until the ring is no longer small compared with $r$. The orange circle marks where a body of the ring's size and mass $m$ held together by its
+  own gravity would be torn apart. For a stellar-mass black hole that radius lies far outside the horizon, so an infalling star (or astronaut) is
+  shredded before it crosses; for a supermassive black hole it can lie inside the horizon. Gravity is Newtonian here; remarkably, the tidal tensor
+  of a radially falling observer in general relativity has exactly the same eigenvalues $(2, -1, -1)\,GM/r^3$. The run stops before the horizon.
+params:
+  r0: {default: 40.0, min: 10, max: 100, step: 5, label: Starting distance, unit: GM/c²}
+  r_stop: {default: 3.0, min: 2.5, max: 10, step: 0.5, label: Stop the fall at, unit: GM/c²}
+  ring_radius: {default: 0.2, min: 0.1, max: 2.0, step: 0.1, label: Ring radius, unit: GM/c²}
+  n_particles: {default: 24, min: 8, max: 64, step: 4, type: int, label: Ring particles}
+  mass_ratio: {default: 0.0001, min: 0.00001, max: 0.1, step: 0.00001, label: 'Body mass for $r_t$, $m/M$'}
+  n_steps: {default: 3000, min: 500, max: 10000, step: 500, type: int, label: RK4 steps}

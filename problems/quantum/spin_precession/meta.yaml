@@ -1,0 +1,31 @@
+title: Spin precession and Rabi flopping
+category: quantum
+level: intermediate
+order: 1
+summary: >
+  A spin-$\tfrac12$ in a magnetic field. The Hamiltonian is a contraction of the field vector with the Pauli
+  tensor $\sigma_{kab}$, the state is evolved with the matrix exponential $U = \exp(-iH\Delta t)$, and the Bloch vector
+  $s_k = \langle\psi\vert\sigma_k\vert\psi\rangle$ is one more einsum. A static field makes the spin precess at the Larmor frequency;
+  a weak resonant transverse field slowly flips it (Rabi oscillation).
+animated: true
+vector_form: 'i\,\partial_t|\psi\rangle = \hat H|\psi\rangle,\quad \hat H = -\tfrac{\gamma}{2}\,\mathbf B\cdot\boldsymbol\sigma,\quad \mathbf s = \langle\psi|\boldsymbol\sigma|\psi\rangle'
+index_form: 'H_{ab} = -\tfrac{\gamma}{2}\,B_k\,\sigma_{kab},\qquad \psi_a(t+\Delta t) = U_{ab}\,\psi_b(t),\qquad s_k = \psi^*_a\,\sigma_{kab}\,\psi_b'
+translation:
+  - {symbol: '\sigma_{kab}', code: 'pauli()', shape: '(3, 2, 2) complex', meaning: 'Pauli tensor: $k \in \{x, y, z\}$ picks the matrix, $a, b$ are spinor indices'}
+  - {symbol: 'B_k(t)', code: 'field(t, B0, B1, w)', shape: '(T, 3)', meaning: 'static $B_0$ along $z$ plus an optional $B_1\cos(\omega t)$ along $x$'}
+  - {symbol: 'H_{ab}', code: "einsum('k,kab->ab', B, sigma)", shape: '(2, 2)', meaning: 'repeated $k$ ⇒ summed: $\mathbf B\cdot\boldsymbol\sigma$ as a $2\times 2$ matrix (batched over $t$ as tk,kab->tab)'}
+  - {symbol: 'U_{ab}', code: 'torch.linalg.matrix_exp(-1j * H * dt)', shape: '(T, 2, 2)', meaning: 'one-step propagator, unitary'}
+  - {symbol: 's_k', code: "einsum('a,kab,b->k', psi.conj(), sigma, psi)", shape: '(3,)', meaning: 'Bloch vector: $a$ and $b$ both summed'}
+notes: >
+  Units $\hbar = 1$. With $B_1 = 0$ the spin precesses about $z$ at the Larmor frequency $\omega = \gamma B_0$, and $\lvert\mathbf s\rvert = 1$
+  forever because $U$ is unitary. With $B_1 > 0$ driven at $\omega \approx \gamma B_0$ the spin spirals from the north pole
+  towards the south pole and back: in the frame rotating with the drive only the co-rotating half of the
+  linear drive matters, giving the Rabi frequency $\Omega = \gamma B_1/2$ (rotating-wave approximation). Detune the
+  drive and the flip becomes incomplete. The Pauli matrices obey $\sigma_i\sigma_j = \delta_{ij}I + i\,\varepsilon_{ijk}\sigma_k$.
+params:
+  B0: {default: 1.0, min: 0.0, max: 3.0, step: 0.1, label: 'Static field $B_0$ (along $z$)'}
+  B1: {default: 0.2, min: 0.0, max: 1.0, step: 0.02, label: 'Drive amplitude $B_1$ (along $x$)'}
+  drive_freq: {default: 1.0, min: 0.0, max: 3.0, step: 0.05, label: 'Drive frequency $\omega$', unit: rad/time}
+  gamma: {default: 1.0, min: 0.1, max: 3.0, step: 0.1, label: 'Gyromagnetic ratio $\gamma$'}
+  theta0: {default: 20.0, min: 0.0, max: 180.0, step: 5, label: 'Initial tilt from $z$', unit: °}
+  t_max: {default: 32.0, min: 2.0, max: 100.0, step: 1, label: Simulated time}

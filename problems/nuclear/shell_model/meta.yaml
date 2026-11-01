@@ -1,0 +1,35 @@
+title: Nuclear shell model
+category: nuclear
+level: advanced
+order: 1
+summary: >
+  Nucleons orbit independently in a Woods–Saxon well. Solving the radial Schrödinger equation for every
+  $(l, j)$ channel as one batch of finite-difference Hamiltonians and turning up the spin–orbit force makes the
+  magic numbers 2, 8, 20, 28, 50, 82, 126 — the nucleon counts of especially stable nuclei — appear as the
+  biggest gaps in the level scheme.
+animated: true
+vector_form: '-\frac{\hbar^2}{2m}u'''' + \Big[V(r) + \frac{\hbar^2 l(l+1)}{2mr^2}\Big]u = E\,u,\qquad V(r) = -V_0 f(r) + V_{so}\,r_0^2\,\frac1r\frac{df}{dr}\,\langle\mathbf l\cdot\mathbf s\rangle,\quad f = \frac{1}{1+e^{(r-R)/a}}'
+index_form: 'H_{kij} = -\frac{\hbar^2}{2m}D_{ij} + \Big[V_k(r_i) + \frac{\hbar^2 l_k(l_k+1)}{2m r_i^2}\Big]\delta_{ij},\qquad H_{kij}\,u_{kjn} = E_{kn}\,u_{kin}'
+translation:
+  - {symbol: 'r_i', code: 'radial_grid(N, 18.0)', shape: '(N,)', meaning: 'interior grid points; $u = 0$ at $r = 0$ and at the box edge'}
+  - {symbol: 'D_{ij}', code: 'second_difference(N, h)', shape: '(N, N)', meaning: 'finite-difference $d^2/dr^2$'}
+  - {symbol: 'l_k,\ j_k', code: 'channels(8)', shape: '(K,)', meaning: 'every channel $(l, j = l \pm \tfrac12)$ up to $l = 8$'}
+  - {symbol: '\langle\mathbf l\cdot\mathbf s\rangle_k', code: 'ls_factor(ell, j)', shape: '(K,)', meaning: '$+l/2$ for $j = l+\tfrac12$, $-(l+1)/2$ for $j = l-\tfrac12$'}
+  - {symbol: 'V_k(r_i)', code: 'potential(r, ell, j, ...)', shape: '(K, N)', meaning: "well + spin–orbit + centrifugal, via einsum('k,i->ki')"}
+  - {symbol: 'H_{kij}', code: 'hamiltonian(d2, v)', shape: '(K, N, N)', meaning: 'one Hamiltonian per channel, stacked'}
+  - {symbol: 'E_{kn}', code: 'torch.linalg.eigvalsh(H)', shape: '(K, N)', meaning: 'batched over $k$; keep the bound levels $E < 0$'}
+  - {symbol: '\sum (2j+1)', code: 'cumsum(occupancy(j[k]))', shape: '(M,)', meaning: 'nucleons filled up to each sorted level: the magic numbers sit at the big gaps'}
+notes: >
+  Without spin–orbit the levels bunch like those of a 3D harmonic oscillator and the gaps fall after 2, 8, 20 and
+  40 nucleons (the flat bottom of the Woods–Saxon well also splits off 58, 92 and 138). The spin–orbit term lowers
+  $j = l + \tfrac12$ and raises $j = l - \tfrac12$ by an amount growing with $l$, so the high-$j$ partner of each
+  oscillator shell (1f7/2, 1g9/2, 1h11/2, 1i13/2) drops into the shell below — Mayer and Jensen's 1949
+  explanation of 28, 50, 82 and 126. Default parameters are for neutrons in ²⁰⁸Pb: $V_0 = 51 - 33(N-Z)/A \approx 44$ MeV,
+  $r_0 = 1.27$ fm, $a = 0.67$ fm. Simplifications: one fixed well for all levels (no self-consistency, no
+  pairing), no Coulomb term (so these are neutron levels), and a box of 18 fm, so only bound levels are shown.
+params:
+  v_so: {default: 22.0, min: 0.0, max: 40.0, step: 1.0, label: 'Final spin–orbit strength $V_{so}$', unit: MeV}
+  v0: {default: 44.0, min: 30.0, max: 70.0, step: 1.0, label: 'Well depth $V_0$', unit: MeV}
+  mass_number: {default: 208, min: 16, max: 260, step: 1, type: int, label: 'Mass number $A$ (sets $R = r_0 A^{1/3}$)'}
+  diffuseness: {default: 0.67, min: 0.3, max: 1.0, step: 0.01, label: 'Surface diffuseness $a$', unit: fm}
+  n_grid: {default: 300, min: 150, max: 600, step: 50, type: int, label: Grid points}

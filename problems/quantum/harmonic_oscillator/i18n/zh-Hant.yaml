@@ -1,0 +1,16 @@
+source_hash: 213c96e488f8
+title: 量子諧振子
+summary: Hamiltonian $H = -\tfrac12\,d^2/dx^2 + \tfrac12\omega^2x^2$ 在網格上變成矩陣，torch.linalg.eigh 給出其等間距的能階梯 $E_n = \omega(n + \tfrac12)$。把一個平移後的高斯（同調態）寫成本徵態之和；為每個本徵態加上相位 $e^{-iE_n t}$，波包便像古典彈簧上的質量一樣來回擺動。
+notes: 單位 $\hbar = m = 1$。網格是一個大盒子，牆上 $\psi = 0$，牆壁遠到完全不影響結果。淡色曲線是最低的幾個定態 $\varphi_n(x)$，畫在其能量 $E_n$ 的高度上；能階間距恰為 $\omega$。初始態是平移到 $x_0$ 的基態高斯。其權重 $\lvert c_n\rvert^2$ 構成平均為 $\omega x_0^2/2$ 的帕松分佈，且因為所有能量都相差 $\omega$ 的整數倍，波包每經過一個週期 $2\pi/\omega$ 就回到 $x_0$ 而不擴散。$\langle x\rangle$ 遵循古典運動 $x_0\cos\omega t$（對二次位能，Ehrenfest 定理是精確的）。
+meanings:
+- 每個格點上的彈簧位能 $\tfrac12\omega^2x^2$
+- 動能 $-\tfrac12\,D2$ 加上對角線上的位能
+- 能量與特徵向量（第 $n$ 行是態 $n$）
+- 重複的 $x$ ⇒ 求和：初始態與態 $n$ 的重疊
+- 重複的 $n$ ⇒ 求和：由加上相位的分量重建 $\psi$
+- 平均位置，與古典的 $x_0\cos\omega t$ 比較
+labels:
+  omega: 角頻率 $\omega$
+  x0: 初始位移 $x_0$
+  periods: 模擬時間
+  n_grid: 格點數

@@ -1,0 +1,17 @@
+source_hash: 5f40ce6b88de
+title: Precesión del espín y oscilaciones de Rabi
+summary: Un espín $\tfrac12$ en un campo magnético. El hamiltoniano es una contracción del vector campo con el tensor de Pauli $\sigma_{kab}$, el estado evoluciona con la exponencial matricial $U = \exp(-iH\Delta t)$ y el vector de Bloch $s_k = \langle\psi\vert\sigma_k\vert\psi\rangle$ es un einsum más. Un campo estático hace que el espín precese a la frecuencia de Larmor; un campo transversal resonante débil lo invierte lentamente (oscilación de Rabi).
+notes: 'Unidades $\hbar = 1$. Con $B_1 = 0$ el espín precesa alrededor de $z$ a la frecuencia de Larmor $\omega = \gamma B_0$, y $\lvert\mathbf s\rvert = 1$ siempre porque $U$ es unitario. Con $B_1 > 0$ excitado a $\omega \approx \gamma B_0$ el espín describe una espiral desde el polo norte hacia el polo sur y de vuelta: en el sistema que gira con la excitación solo importa la mitad corrotante de la excitación lineal, lo que da la frecuencia de Rabi $\Omega = \gamma B_1/2$ (aproximación de onda rotante). Si se desintoniza la excitación, la inversión queda incompleta. Las matrices de Pauli cumplen $\sigma_i\sigma_j = \delta_{ij}I + i\,\varepsilon_{ijk}\sigma_k$.'
+meanings:
+- 'tensor de Pauli: $k \in \{x, y, z\}$ elige la matriz, $a, b$ son índices espinoriales'
+- $B_0$ estático a lo largo de $z$ más un $B_1\cos(\omega t)$ opcional a lo largo de $x$
+- '$k$ repetido ⇒ sumado: $\mathbf B\cdot\boldsymbol\sigma$ como matriz $2\times 2$ (por lotes sobre $t$ como tk,kab->tab)'
+- propagador de un paso, unitario
+- 'vector de Bloch: $a$ y $b$ ambos sumados'
+labels:
+  B0: Campo estático $B_0$ (a lo largo de $z$)
+  B1: Amplitud de excitación $B_1$ (a lo largo de $x$)
+  drive_freq: Frecuencia de excitación $\omega$
+  gamma: Razón giromagnética $\gamma$
+  theta0: Inclinación inicial respecto a $z$
+  t_max: Tiempo simulado

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Rutherford scattering: an alpha particle with impact parameter b is deflected by angle theta by the Coulomb repulsion of a nucleus">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- beam axis through the nucleus -->
+    <line x1="14" y1="112" x2="226" y2="112" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- incoming direction and outgoing asymptote, meeting where theta is measured -->
+    <line x1="123" y1="80" x2="224" y2="80" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="123" y1="80" x2="150" y2="54" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- trajectory: straight in, bends round the nucleus, out at angle theta -->
+    <path d="M14,80 L92,80 C118,80 134,74 146,58 L192,14" fill="none" stroke="#374151" stroke-width="2"/>
+    <!-- alpha particle -->
+    <circle cx="44" cy="80" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="38" y="70" font-style="italic">α</text>
+    <!-- nucleus and Coulomb force on the alpha -->
+    <circle cx="132" cy="112" r="9" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="127" y="117" font-size="11" fill="#ffffff">+</text>
+    <line x1="117" y1="79" x2="110" y2="58" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- impact parameter -->
+    <line x1="70" y1="82" x2="70" y2="110" stroke="#374151" stroke-width="1.5"/>
+    <line x1="65" y1="80" x2="75" y2="80" stroke="#374151" stroke-width="1.5"/>
+    <line x1="65" y1="112" x2="75" y2="112" stroke="#374151" stroke-width="1.5"/>
+    <text x="56" y="101" font-style="italic">b</text>
+    <!-- scattering angle -->
+    <path d="M173,80 A50,50 0 0 0 159,45.3" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <text x="176" y="66" font-style="italic" fill="#b45309">θ</text>
+  </g>
+</svg>

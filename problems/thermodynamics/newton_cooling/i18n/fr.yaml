@@ -1,0 +1,17 @@
+source_hash: 66c98bbdd023
+title: Loi de refroidissement de Newton
+summary: Une rangée de tasses de café chaud refroidit vers la température ambiante. Chaque tasse a sa propre température initiale et sa propre constante de refroidissement, mais toutes sont dans un seul tenseur, si bien qu'une seule ligne de PyTorch fait avancer toutes les tasses à la fois — et le résultat coïncide avec la solution exponentielle.
+notes: 'La loi dit que la vitesse de refroidissement est proportionnelle à l''écart de température avec la pièce. L''écart diminue donc du même facteur en des temps égaux : il est divisé par deux tous les $t_{1/2} = \ln 2/k$, quelle que soit la température initiale. L''EDO est résolue numériquement par Runge–Kutta (RK4) et les tirets montrent l''exponentielle exacte pour comparaison. Les vraies tasses refroidissent à la fois par convection, rayonnement et évaporation ; $k$ regroupe tout cela en un seul nombre.'
+meanings:
+- température de la tasse $b$ (°C)
+- 'constante de refroidissement de la tasse $b$ (1/min) : plus elle est grande, plus le refroidissement est rapide'
+- température ambiante, diffusée à toutes les tasses
+- 'terme à terme : aucun indice n''est sommé, chaque tasse refroidit seule'
+- 'produit extérieur : chaque instant avec chaque tasse, pour la solution exacte'
+- temps au bout duquel l'écart de température est divisé par deux
+labels:
+  n_cups: Tasses
+  T_env: Température ambiante
+  k_min: Refroidissement le plus lent $k$
+  k_max: Refroidissement le plus rapide $k$
+  t_max: Durée simulée

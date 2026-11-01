@@ -1,0 +1,20 @@
+source_hash: d653bb5fd1c6
+title: 剛體自由轉動（網球拍效應）
+summary: 無力矩長方體的歐拉方程式，以慣性張量 $I_{ij}$ 與 Levi-Civita 張量 $\varepsilon_{ijk}$ 表示。繞最長軸或最短軸的自轉是穩定的；繞中間軸的自轉則一再翻轉（Dzhanibekov 效應）。
+notes: 沒有力矩時，能量 $\tfrac12\boldsymbol\omega\cdot I\boldsymbol\omega$ 與 $\mathbf L = I\boldsymbol\omega$ 的大小都守恆，因此 $\boldsymbol\omega$ 必須沿著等能量橢球與等 $\lvert\mathbf L\rvert$ 球面的交線運動（在 $\mathbf L$ 空間中）。在最大軸與最小軸附近，這些曲線是小迴圈——穩定；在中間軸附近，它們通過鞍點，因此微小的晃動會增長，長方體翻轉過去，然後再翻回來。世界座標系中的角動量 $RI\boldsymbol\omega$（畫成固定箭頭）始終不動。參數 $a, b, c$ 已排序使 $a \ge b \ge c$。
+meanings:
+- 實心長方體的慣性張量 $(M/12)\operatorname{diag}(b^2+c^2,\ a^2+c^2,\ a^2+b^2)$
+- 本體座標系分量的角速度
+- Levi-Civita 張量：以張量表示外積
+- $j, k, l$ 求和：$\boldsymbol\omega\times(I\boldsymbol\omega)$
+- 求解 $I_{ij}\dot\omega_j = -\varepsilon_{ijk}\omega_j I_{kl}\omega_l$
+- 姿態：本體 → 世界的旋轉矩陣
+- 轉動動能，守恆
+labels:
+  spin_axis: 主要自轉軸
+  spin: 自轉角速率
+  perturbation: 晃動（自轉的比例）
+  a: 長方體邊長 $a$
+  b: 長方體邊長 $b$
+  c: 長方體邊長 $c$
+  t_max: 模擬時間

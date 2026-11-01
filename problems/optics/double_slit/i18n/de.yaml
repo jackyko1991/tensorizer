@@ -1,0 +1,18 @@
+source_hash: b846fb498443
+title: Doppelspalt-Interferenz
+summary: 'Die 2D-skalare Wellengleichung, gelöst mit finiten Differenzen: Der Laplace-Operator ist ein $3\times 3$-Stencil-Tensor, angewendet mit conv2d. Eine ebene Welle trifft auf eine Wand mit zwei Spalten, und auf einem Schirm dahinter bauen sich die Interferenzstreifen auf.'
+notes: Längen sind in Gitterzellen angegeben ($h = 1$), und $c = 1$. Gepunktete Linien auf dem Schirm markieren, wo der Gangunterschied ein ganzzahliges Vielfaches der Wellenlänge ist, $y_m = L\tan(\arcsin(m\lambda/d))$; für kleine Winkel ist ihr Abstand $\lambda L/d$. Die Spalte sind nicht winzig gegenüber $\lambda$, daher dämpft die Beugungseinhüllende jedes einzelnen Spalts die äußeren Streifen.
+meanings:
+- Wellenfeld auf dem Gitter, Zeile $a = y$, Spalte $b = x$
+- '$\left[\begin{smallmatrix}0&1&0\\1&-4&1\\0&1&0\end{smallmatrix}\right]$: der Fünf-Punkte-Laplace-Stencil'
+- 'wiederholtes $i$ ⇒ summiert über $x$ und $y$: der Laplace-Operator als Faltung'
+- 'Leapfrog: $2u^n - u^{n-1} + (c\Delta t)^2\,\nabla^2 u^n$, gedämpft durch $\sigma$'
+- Schwammdämpfung, nur im absorbierenden Rahmen ungleich null
+- CFL-Stabilitätsbedingung des expliziten Schemas in 2D
+- zeitgemittelte Intensität entlang der Schirmspalte
+labels:
+  wavelength: Wellenlänge $\lambda$
+  slit_sep: Spaltabstand $d$
+  slit_width: Spaltbreite
+  screen_dist: Abstand Blende → Schirm $L$
+  t_max: Simulierte Zeit

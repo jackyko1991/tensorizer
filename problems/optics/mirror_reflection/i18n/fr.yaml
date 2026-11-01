@@ -1,0 +1,14 @@
+source_hash: d32c883229aa
+title: Réflexion sur miroirs plan et courbe
+summary: 'La loi de la réflexion écrite en une seule formule vectorielle : on inverse la partie de la direction du rayon qui suit la normale à la surface. Les rayons d''une lampe se réfléchissent sur un miroir plan, et des rayons parallèles se réfléchissent sur un miroir concave et se rassemblent près de son foyer $F = R/2$.'
+notes: 'La formule n''inverse que la composante de $\mathbf d$ selon $\mathbf n$, donc l''angle d''incidence est automatiquement égal à l''angle de réflexion. Les tirets prolongent les rayons réfléchis derrière le miroir plan : ils se rejoignent tous à l''image virtuelle de la lampe. Pour le miroir concave, seuls les rayons proches de l''axe (rayons paraxiaux) passent par $F = R/2$ ; les rayons plus éloignés coupent l''axe plus près du miroir (aberration sphérique).'
+meanings:
+- direction unitaire du rayon incident $r$, composante $i \in \{x, y\}$
+- normale unitaire au miroir au point d'impact du rayon $r$
+- '$j$ répété ⇒ sommé : un produit scalaire par rayon (${}= -\cos\theta_i$)'
+- direction réfléchie, toujours un vecteur unitaire
+- la normale au miroir courbe pointe vers son centre $c$
+labels:
+  radius: Rayon de courbure du miroir $R$
+  n_rays: Rayons par miroir
+  aperture: Rayon le plus haut (fraction de $R$)

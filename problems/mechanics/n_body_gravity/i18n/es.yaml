@@ -1,0 +1,16 @@
+source_hash: 840ee0536fe3
+title: Gravedad de N cuerpos en 3D
+summary: Gravedad newtoniana entre $N$ cuerpos. Todas las separaciones por pares $r_{abi}$ se construyen a la vez con broadcasting, un einsum suma las atracciones de todos los cuerpos $b$ sobre cada cuerpo $a$ y el método de Verlet en velocidades hace avanzar todo el sistema.
+notes: La longitud de suavizado $\varepsilon$ mantiene finita la fuerza cuando dos cuerpos pasan muy cerca; con $\varepsilon = 0$ es la gravedad newtoniana exacta. Las unidades se eligen de modo que $G = 1$. El Verlet en velocidades es simpléctico, así que el error en la energía se mantiene pequeño y acotado en lugar de derivar. El ocho es la famosa órbita periódica de tres cuerpos hallada por Moore (1993) y Chenciner y Montgomery (2000).
+meanings:
+- posición del cuerpo $a$, componente $i \in \{x, y, z\}$
+- masa del cuerpo $b$
+- separación de $a$ a $b$, todos los pares con broadcasting
+- '$j$ repetido ⇒ sumado: distancia al cuadrado de cada par'
+- '$b$ repetido ⇒ sumado: atracción total sobre el cuerpo $a$'
+- cinética + potencial por pares, conservada
+labels:
+  scenario: Condición inicial
+  t_max: Tiempo simulado
+  dt: Paso de tiempo
+  softening: Suavizado $\varepsilon$

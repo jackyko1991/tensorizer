@@ -1,0 +1,16 @@
+source_hash: b20963373157
+title: Imagen formada por una lente delgada
+summary: La ecuación de las lentes delgadas indica dónde aparece la imagen de un objeto y qué tamaño tiene. Se trazan tres rayos principales para todas las posiciones del objeto a la vez, mientras el objeto se desplaza desde más allá de $2f$ hasta dentro de la distancia focal y la imagen real e invertida se convierte en virtual y derecha.
+notes: 'Las distancias se miden desde la lente: el objeto está en $x = -s$ y una imagen real en $x = +s''$. Los tres rayos principales son (1) paralelo al eje y luego por el foco del otro lado; (2) recto por el centro; (3) por el foco del lado del objeto y luego paralelo. Todos se deducen de la única regla $\theta'' = \theta - y/f$. Dentro de $f$ los rayos divergen tras la lente; sus prolongaciones discontinuas se cortan en la imagen virtual. En $s = f$ la imagen se va al infinito.'
+meanings:
+- distancia del objeto en el fotograma $k$ de la animación
+- distancia de la imagen; negativa ⇒ imagen virtual del lado del objeto
+- altura de la imagen / altura del objeto; negativo ⇒ invertida
+- pendiente del rayo principal $r \in \{\text{parallel, centre, focal}\}$ antes de la lente
+- donde cada rayo principal corta la lente
+- 'pendiente tras la lente: cada rayo se desvía $-y/f$'
+labels:
+  f: Distancia focal $f$
+  h: Altura del objeto $h$
+  s_start: Distancia inicial del objeto
+  s_end: Distancia final del objeto

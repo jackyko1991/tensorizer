@@ -1,0 +1,15 @@
+source_hash: 16ad9ff3967d
+title: Zufallsbewegung und Diffusion
+summary: Tausende Brownsche Teilchen erhalten jeweils zufällige Stöße. Als ein (Zeit, Walker, 2)-Tensor gespeichert, ist die Irrfahrt ein einziges cumsum, und die mittlere quadratische Verschiebung $\langle x_i x_i\rangle$ — ein einsum — wächst linear mit der Zeit wie $2dDt$, während sich die Wolke der Walker als Gauß-Verteilung ausbreitet.
+notes: Jeder Schritt ist ein Gaußscher Stoß der Varianz $2D\Delta t$ pro Komponente, sodass nach der Zeit $t$ jede Koordinate die Varianz $2Dt$ hat und das Abstandsquadrat vom Start im Mittel $2dDt$ in $d$ Dimensionen beträgt (hier $d = 2$). Die Summe über den Walker-Index $n$ macht aus der zufälligen Wolke ein glattes, vorhersagbares Gesetz — das ist Diffusion. Die endliche Zahl von Walkern lässt die gemessene MSD relativ um etwa $\sqrt{2/N}$ schwanken; der Seed ist fest, damit das Bild reproduzierbar ist. Die Einheiten sind beliebig (etwa µm und s).
+meanings:
+- unabhängiger standardnormalverteilter Stoß für Schritt $s$, Walker $n$, Komponente $i$
+- 'Ort des Walkers $n$ zur Zeit $t$: die laufende Summe seiner Stöße'
+- 'wiederholte $n$ und $i$ ⇒ summiert: mittlere quadratische Verschiebung zu jeder Zeit'
+- Steigung der MSD gegen $t$ nach kleinsten Quadraten durch den Ursprung, geteilt durch $2d$
+- Lösung der Diffusionsgleichung $\partial_t\rho = D\,\partial_i\partial_i\rho$ für eine Punktquelle
+labels:
+  n_walkers: Walker
+  D: Diffusionskonstante $D$
+  t_max: Simulierte Zeit
+  n_steps: Zeitschritte

@@ -1,0 +1,31 @@
+title: Equations of motion from a Lagrangian by autograd
+category: mechanics
+level: advanced
+order: 2
+summary: >
+  Type in only the Lagrangian $L = T - V$ and let torch.autograd derive the Euler–Lagrange equations: the Hessian
+  $\partial^2L/\partial\dot q_i\partial\dot q_j$ is the mass matrix and one linear solve gives $\ddot q$. Applied to a spring (elastic) pendulum.
+animated: true
+vector_form: '\frac{d}{dt}\frac{\partial L}{\partial \dot{\mathbf q}} = \frac{\partial L}{\partial \mathbf q},\qquad L = \tfrac12 m(\dot r^2 + r^2\dot\theta^2) + mgr\cos\theta - \tfrac12 k(r-\ell_0)^2'
+index_form: '\ddot q_i = H^{-1}_{ij}\Big(\frac{\partial L}{\partial q_j} - C_{jk}\,\dot q_k\Big),\qquad H_{ij} = \frac{\partial^2 L}{\partial\dot q_i\,\partial\dot q_j},\quad C_{ij} = \frac{\partial^2 L}{\partial\dot q_i\,\partial q_j}'
+translation:
+  - {symbol: 'q_i', code: 'y[0]', shape: '(2,)', meaning: 'generalised coordinates $(r, \theta)$: spring length and angle'}
+  - {symbol: '\dot q_i', code: 'y[1]', shape: '(2,)', meaning: 'generalised velocities'}
+  - {symbol: 'L(q, \dot q)', code: 'spring_pendulum(m, k, l0, g)', shape: '()', meaning: 'the only physics typed in by hand'}
+  - {symbol: '\partial L/\partial q_i,\ p_i', code: 'autograd.grad(L, (q, q_dot), create_graph=True)', shape: '(2,), (2,)', meaning: 'first derivatives; $p_i = \partial L/\partial\dot q_i$ is the canonical momentum'}
+  - {symbol: 'H_{ij},\ C_{ij}', code: 'autograd.grad(p[i], (q_dot, q))', shape: '(2, 2) each', meaning: 'row $i$ of the mass matrix and of the mixed second derivatives'}
+  - {symbol: 'C_{jk}\dot q_k', code: "einsum('jk,k->j', C, q_dot)", shape: '(2,)', meaning: 'repeated $k$ ⇒ summed'}
+  - {symbol: '\ddot q_i', code: 'torch.linalg.solve(H, dL_dq - C q_dot)', shape: '(2,)', meaning: 'Euler–Lagrange equations solved for the accelerations'}
+  - {symbol: 'E = \dot q_i p_i - L', code: 'energy(L, q, q_dot)', shape: '(T,)', meaning: 'energy function, also by autograd; conserved'}
+notes: >
+  Nothing about the spring pendulum's equations was written by hand: change the Lagrangian and the dynamics follow.
+  Here $H = \operatorname{diag}(m, mr^2)$ depends on $r$, and $C$ contains the Coriolis-like coupling $2mr\dot\theta$. With the default $k \approx 3mg/\ell_0$
+  the spring frequency is about twice the swing frequency (2:1 resonance), so energy sloshes between bouncing and swinging.
+  The same code works for any number of coordinates; the cost is a few extra backward passes per step.
+params:
+  m: {default: 1.0, min: 0.1, max: 5, step: 0.1, label: 'Mass $m$', unit: kg}
+  k: {default: 30.0, min: 5, max: 200, step: 1, label: 'Spring constant $k$', unit: N/m}
+  rest_length: {default: 1.0, min: 0.3, max: 2, step: 0.1, label: 'Natural length $\ell_0$', unit: m}
+  r0: {default: 1.4, min: 0.3, max: 3, step: 0.05, label: 'Initial length $r_0$', unit: m}
+  theta0: {default: 30.0, min: -90, max: 90, step: 5, label: 'Initial angle $\theta_0$', unit: °}
+  t_max: {default: 15.0, min: 2, max: 30, step: 1, label: Simulated time, unit: s}

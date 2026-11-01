@@ -1,0 +1,16 @@
+source_hash: f581627e3195
+title: Particule dans une boîte
+summary: L'équation de Schrödinger indépendante du temps sur une grille devient un problème matriciel aux valeurs propres $H_{ij}\psi_j = E\psi_i$. torch.linalg.eigh donne les états stationnaires, et une superposition de ceux-ci évolue en attachant à chacun une phase $e^{-iE_n t}$ et en sommant avec einsum.
+notes: Unités $\hbar = m = 1$. Les énergies exactes sont $E_n = n^2\pi^2/(2L^2)$ ; la grille reproduit les plus basses à une petite fraction de pour cent près. Chaque état propre ne fait qu'acquérir une phase, donc $\lvert c_n\rvert$ et la norme ne changent jamais — le ballottement de $\lvert\psi\rvert^2$ est une pure interférence entre états. Après le temps de résurgence $T = 4L^2/\pi$, chaque phase $e^{-iE_n t}$ revient à 1 et l'état initial réapparaît exactement. Les courbes pâles en tirets sont les états stationnaires les plus bas $\varphi_n(x)$.
+meanings:
+- 'matrice hamiltonienne $-\tfrac12\,D2$ sur les $N$ points intérieurs de la grille (parois : $\psi = 0$)'
+- '$d^2/dx^2$ aux différences finies : $(\psi_{x-1} - 2\psi_x + \psi_{x+1})/dx^2$'
+- énergies et vecteurs propres (la colonne $n$ est l'état $n$)
+- projection de l'état initial sur la base propre ($x$ répété ⇒ sommé)
+- '$n$ répété ⇒ sommé : reconstruction de $\psi$ à partir de ses composantes déphasées'
+labels:
+  initial: État initial
+  n_states: États superposés
+  L: Largeur de la boîte
+  n_grid: Points de grille
+  revivals: Durée simulée

@@ -1,0 +1,17 @@
+source_hash: 63ee714594c5
+title: Ecuación de Burgers y formación de choques
+summary: 'La ecuación de fluidos no lineal más sencilla: las partes rápidas de una onda alcanzan a las lentas, el perfil se empina y, cerca de $t^* = 1/\max(-u_0'')$, se forma un choque que la viscosidad mantiene estrecho pero suave. Las derivadas son matrices $N\times N$, de modo que la EDP es un einsum por término, contrastado con la solución exacta de Cole–Hopf.'
+notes: Escribir $u\,u_x$ como $(\tfrac12u^2)_x$ (forma conservativa) hace que el esquema conserve $\int u\,dx$ exactamente. Sin viscosidad las características $x = x_0 + u_0(x_0)\,t$ se cruzan en $t^* = 1/\max(-u_0')$ y la solución se volvería multivaluada; con viscosidad se forma en su lugar un choque de anchura $\sim\nu/\Delta u$. Las diferencias centradas requieren $|u|\Delta x/\nu \lesssim 2$, por eso $\nu$ no puede bajar demasiado con 512 puntos. La transformación de Cole–Hopf $u = -2\nu\,\partial_x\ln\varphi$ convierte Burgers en la ecuación del calor y da la curva exacta discontinua. Un desplazamiento $U_0$ no nulo hace que el choque se desplace.
+meanings:
+- velocidad en el punto de malla $x_i$ (periódico)
+- diferencia centrada $(f_{i+1} - f_{i-1})/2\Delta x$ como matriz
+- segunda diferencia $(f_{i+1} - 2f_i + f_{i-1})/\Delta x^2$
+- '$j$ repetido ⇒ sumado: derivada del flujo $\tfrac12 u^2$'
+- término viscoso
+- 'conservada: las columnas de $D$ y $L$ suman cero'
+- solución exacta, un promedio ponderado con softmax sobre los puntos de partida
+labels:
+  nu: Viscosidad $\nu$
+  amplitude: Amplitud $A$ en $u_0 = U_0 + A\sin x$
+  offset: Desplazamiento $U_0$
+  t_max: Tiempo simulado

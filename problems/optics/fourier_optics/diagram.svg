@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Fraunhofer diffraction: a plane wave passes a circular hole in a mask A; the far-field intensity I on the screen is the Fourier transform of the aperture, an Airy disc with rings">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <line x1="14" y1="68" x2="52" y2="68" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="14" y1="84" x2="52" y2="84" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="14" y1="100" x2="52" y2="100" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M55.1,132.3 L76.9,115.7 L76.9,35.7 L55.1,52.3 Z" fill="#374151" stroke="#374151" stroke-width="1.5" fill-opacity="0.85" stroke-linejoin="round"/>
+    <path d="M69.8,81.1 L69.7,79.7 L69.6,78.5 L69.4,77.3 L69.1,76.4 L68.7,75.6 L68.2,75 L67.7,74.7 L67.2,74.6 L66.6,74.7 L66,75 L65.4,75.6 L64.8,76.3 L64.3,77.3 L63.8,78.4 L63.3,79.7 L62.9,81 L62.6,82.5 L62.4,84 L62.3,85.4 L62.2,86.9 L62.3,88.3 L62.4,89.5 L62.6,90.7 L62.9,91.6 L63.3,92.4 L63.8,93 L64.3,93.3 L64.8,93.4 L65.4,93.3 L66,93 L66.6,92.4 L67.2,91.7 L67.7,90.7 L68.2,89.6 L68.7,88.3 L69.1,87 L69.4,85.5 L69.6,84 L69.7,82.6 L69.8,81.1 Z" fill="#ffffff" stroke="#ffffff" stroke-width="1"/>
+    <line x1="66" y1="75" x2="188" y2="44" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="66" y1="93" x2="188" y2="124" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <path d="M175.4,139.6 L200.6,120.4 L200.6,28.4 L175.4,47.6 Z" fill="#ffffff" stroke="#374151" stroke-width="1.5" fill-opacity="1" stroke-linejoin="round"/>
+    <path d="M202.3,73.1 L202.2,68.8 L201.8,64.7 L201.2,60.9 L200.4,57.6 L199.3,54.7 L198.1,52.3 L196.7,50.4 L195.1,49.1 L193.5,48.4 L191.7,48.3 L189.9,48.9 L188,50 L186.1,51.7 L184.3,54 L182.5,56.8 L180.9,60 L179.3,63.6 L177.9,67.7 L176.7,71.9 L175.6,76.4 L174.8,81 L174.2,85.7 L173.8,90.3 L173.7,94.9 L173.8,99.2 L174.2,103.3 L174.8,107.1 L175.6,110.4 L176.7,113.3 L177.9,115.7 L179.3,117.6 L180.9,118.9 L182.5,119.6 L184.3,119.7 L186.1,119.1 L188,118 L189.9,116.3 L191.7,114 L193.5,111.2 L195.1,108 L196.7,104.4 L198.1,100.3 L199.3,96.1 L200.4,91.6 L201.2,87 L201.8,82.3 L202.2,77.7 L202.3,73.1 Z" fill="none" stroke="#2563eb" stroke-width="2" stroke-opacity="0.35"/>
+    <path d="M198.1,76.3 L198,73.3 L197.7,70.4 L197.3,67.7 L196.7,65.3 L196,63.3 L195.1,61.6 L194.1,60.3 L193,59.4 L191.9,58.9 L190.6,58.8 L189.3,59.2 L188,60 L186.7,61.2 L185.4,62.8 L184.1,64.8 L183,67.1 L181.9,69.6 L180.9,72.5 L180,75.5 L179.3,78.7 L178.7,81.9 L178.3,85.2 L178,88.5 L177.9,91.7 L178,94.7 L178.3,97.6 L178.7,100.3 L179.3,102.7 L180,104.7 L180.9,106.4 L181.9,107.7 L183,108.6 L184.1,109.1 L185.4,109.2 L186.7,108.8 L188,108 L189.3,106.8 L190.6,105.2 L191.9,103.2 L193,100.9 L194.1,98.4 L195.1,95.5 L196,92.5 L196.7,89.3 L197.3,86.1 L197.7,82.8 L198,79.5 L198.1,76.3 Z" fill="none" stroke="#2563eb" stroke-width="2" stroke-opacity="0.6"/>
+    <path d="M192.6,80.5 L192.6,78.8 L192.4,77.3 L192.1,75.9 L191.7,74.7 L191.3,73.7 L190.7,73 L190.1,72.6 L189.4,72.5 L188.7,72.6 L188,73 L187.3,73.7 L186.6,74.6 L185.9,75.8 L185.3,77.2 L184.7,78.7 L184.3,80.4 L183.9,82.1 L183.6,83.9 L183.4,85.8 L183.4,87.5 L183.4,89.2 L183.6,90.7 L183.9,92.1 L184.3,93.3 L184.7,94.3 L185.3,95 L185.9,95.4 L186.6,95.5 L187.3,95.4 L188,95 L188.7,94.3 L189.4,93.4 L190.1,92.2 L190.7,90.8 L191.3,89.3 L191.7,87.6 L192.1,85.9 L192.4,84.1 L192.6,82.2 L192.6,80.5 Z" fill="#2563eb" stroke="#1e40af" stroke-width="1"/>
+    <path d="M80,30 Q127,2 172,26" fill="none" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)"/>
+    <text x="120" y="26" fill="#b45309">ℱ</text>
+    <text x="56" y="146" font-style="italic">A</text>
+    <text x="182" y="152" font-style="italic">I</text>
+  </g>
+</svg>

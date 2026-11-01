@@ -1,0 +1,14 @@
+source_hash: 1bc9d739c88e
+title: Paquete de ondas libre
+summary: 'Una partícula libre no necesita ningún avance temporal: en el espacio de momentos la ecuación de Schrödinger se resuelve multiplicando cada componente de Fourier por su propia fase $e^{-ik^2t/2}$. Una FFT, una multiplicación y una FFT inversa dan $\psi$ en cualquier instante, y para todos los instantes a la vez como un tensor $(T, N)$. El paquete se desplaza a la velocidad de grupo $k_0$ y se ensancha porque sus distintos momentos viajan a velocidades diferentes.'
+notes: 'Unidades $\hbar = m = 1$. $\sigma$ es la desviación típica de $\lvert\psi\rvert^2$ (de modo que $\psi \propto \exp(-(x - x_0)^2/(4\sigma_0^2) + ik_0x)$). Los resultados exactos son $\langle x\rangle = x_0 + k_0 t$ (velocidad de grupo $v_g = dE/dk = k$) y $\sigma(t) = \sigma_0\sqrt{1 + (t/(2\sigma_0^2))^2}$: un paquete estrecho tiene una gran dispersión de momentos y por eso se ensancha deprisa. Las líneas discontinuas marcan $\langle x\rangle \pm \sigma(t)$ según esa fórmula. Las ondulaciones de $\operatorname{Re}\psi$ se mueven a la velocidad de fase $k/2$, la mitad que la envolvente. La malla es periódica, así que un paquete que sale por un lado vuelve por el otro.'
+meanings:
+- gaussiana de anchura $\sigma_0$ que se mueve con momento $k_0$
+- '$x$ repetido ⇒ sumado: cambio de base a ondas planas $e^{ikx}$'
+- 'fase de partícula libre de cada modo $k$ en cada instante $t$ (sin índice sumado: un producto exterior)'
+- de vuelta al espacio $x$, las $T$ instantáneas en una sola llamada
+- centro y anchura de $\lvert\psi\rvert^2$ en cada instante
+labels:
+  k0: Momento del paquete $k_0$
+  sigma0: Anchura inicial $\sigma_0$
+  t_max: Tiempo simulado

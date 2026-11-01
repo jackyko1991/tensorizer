@@ -1,0 +1,18 @@
+source_hash: ea8025a41e84
+title: Osciladores acoplados y modos normales
+summary: $N$ masas iguales unidas por muelles entre dos paredes fijas. Los muelles se convierten en un único tensor de rigidez $K_{ij}$, sus autovectores son los modos normales y el movimiento es una superposición de modos sumada con un único einsum.
+notes: Como $K_{ij}$ es simétrico, eigh da frecuencias reales y modos ortonormales, de modo que todo movimiento es una suma de cosenos independientes y no hace falta avanzar en el tiempo. Si se parte de un único modo, la cadena conserva esa forma para siempre; si se desplaza una sola masa, la energía va y viene a lo largo de la cadena. Las frecuencias analíticas son $\omega_n = 2\sqrt{k/m}\,\sin\tfrac{n\pi}{2(N+1)}$.
+meanings:
+- desplazamiento de la masa $i$ respecto a su posición de reposo
+- 'tensor de rigidez: $2k$ en la diagonal, $-k$ junto a ella'
+- '$j$ repetido ⇒ sumado: fuerza neta de los muelles sobre la masa $i$'
+- autovalores y autovectores (columna $n$) = modos normales
+- '$i$ repetido ⇒ sumado: proyectar el estado inicial sobre cada modo'
+- '$n$ repetido ⇒ sumado: superposición de modos'
+labels:
+  n_masses: Número de masas
+  k: Constante del muelle
+  m: Masa
+  start: Desplazamiento inicial
+  amplitude: Amplitud inicial
+  t_max: Tiempo simulado

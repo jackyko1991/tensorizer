@@ -1,0 +1,18 @@
+source_hash: b846fb498443
+title: 이중 슬릿 간섭
+summary: '유한 차분으로 푸는 2차원 스칼라 파동 방정식: 라플라시안은 conv2d로 적용하는 $3\times 3$ 스텐실 텐서입니다. 평면파가 두 개의 슬릿이 있는 벽에 부딪히고, 뒤쪽 스크린에 간섭무늬가 쌓입니다.'
+notes: 길이는 격자 칸 단위($h = 1$)이고 $c = 1$입니다. 스크린 위의 점선은 경로차가 파장의 정수배인 위치 $y_m = L\tan(\arcsin(m\lambda/d))$를 표시하며, 작은 각에서 그 간격은 $\lambda L/d$입니다. 슬릿이 $\lambda$에 비해 아주 작지는 않으므로 각 슬릿 자체의 회절 포락선이 바깥쪽 무늬를 어둡게 합니다.
+meanings:
+- 격자 위의 파동장, 행 $a = y$, 열 $b = x$
+- '$\left[\begin{smallmatrix}0&1&0\\1&-4&1\\0&1&0\end{smallmatrix}\right]$: 5점 라플라시안 스텐실'
+- '반복된 $i$ ⇒ $x$와 $y$에 대해 합: 합성곱으로 쓴 라플라시안'
+- '립프로그: $2u^n - u^{n-1} + (c\Delta t)^2\,\nabla^2 u^n$, $\sigma$로 감쇠'
+- 스펀지 감쇠, 흡수 테두리에서만 0이 아님
+- 2차원 양해법의 CFL 안정성 조건
+- 스크린 열을 따른 시간 평균 세기
+labels:
+  wavelength: 파장 $\lambda$
+  slit_sep: 슬릿 간격 $d$
+  slit_width: 슬릿 너비
+  screen_dist: 벽 → 스크린 거리 $L$
+  t_max: 시뮬레이션 시간

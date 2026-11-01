@@ -1,0 +1,21 @@
+source_hash: 9f4f33f51aa8
+title: Oscilaciones de neutrinos
+summary: Los neutrinos se producen con un sabor definido ($\nu_e, \nu_\mu, \nu_\tau$) pero viajan como tres estados de masa con fases ligeramente distintas. La matriz de mezcla PMNS y un único einsum complejo sobre el índice de masa dan la probabilidad de cada cambio de sabor para toda una malla de distancias, mostrando cómo un haz de $\nu_\mu$ se convierte en $\nu_\tau$ y $\nu_e$ mientras vuela.
+notes: 'Como $U$ es unitaria, $\sum_\beta P(\alpha\to\beta) = 1$ a cualquier distancia: los neutrinos cambian de sabor pero no se pierde ninguno. Con solo dos sabores la fórmula se reduce a $P = \sin^2 2\theta\,\sin^2(1.267\,\Delta m^2 L/E)$. Aquí el gran $\Delta m^2_{31}$ da la oscilación rápida "atmosférica" (primer mínimo de $\nu_\mu$ cerca de $L/E \approx 500$ km/GeV, sobre todo hacia $\nu_\tau$ porque $\theta_{23} \approx 45°$) y el pequeño $\Delta m^2_{21}$ la lenta "solar" (cerca de $15\,000$ km/GeV). Los puntos de abajo son neutrinos de muestra: cada uno muestra el sabor que registraría un detector a su distancia, sorteado con las probabilidades calculadas (semilla fija). Simplificaciones: solo oscilaciones en el vacío (se omite el efecto MSW de la materia dentro de la Tierra o el Sol) y ordenamiento normal de masas. Los parámetros por defecto se aproximan a los ajustes globales actuales. Prueba $\delta_{CP}$ = 0 frente a 270° para un haz $\nu_\mu \to \nu_e$.'
+meanings:
+- sabor $\alpha$ × estado de masa $i$; producto de tres rotaciones mediante einsum('ab,bc,ci->ai')
+- solo importan las diferencias $\Delta m^2_{21}, \Delta m^2_{31}$; $m_1^2 = 0$
+- distancias con espaciado logarítmico en km
+- fase de cada estado de masa a cada distancia ($2.534\,m^2 L/E$ en eV², km, GeV)
+- '$i$ repetido ⇒ sumado: los tres estados de masa interfieren'
+- las nueve probabilidades de transición a cada distancia
+labels:
+  energy: Energía del neutrino $E$
+  l_max: Distancia máxima $L_{\max}$
+  flavour: Sabor inicial
+  theta12: $\theta_{12}$
+  theta13: $\theta_{13}$
+  theta23: $\theta_{23}$
+  delta_cp: $\delta_{CP}$
+  dm21: $\Delta m^2_{21}$
+  dm31: $\Delta m^2_{31}$

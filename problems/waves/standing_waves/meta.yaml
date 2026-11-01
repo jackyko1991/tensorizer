@@ -1,0 +1,29 @@
+title: Standing waves on a string
+category: waves
+level: beginner
+order: 1
+summary: >
+  The 1D wave equation on a string with both ends fixed. The second derivative becomes a matrix (the finite-difference
+  stencil $D_{ij}$), so one einsum moves every point of several strings at once: the first harmonics and a plucked string.
+animated: true
+vector_form: '\frac{\partial^2 u}{\partial t^2} = c^2\,\frac{\partial^2 u}{\partial x^2},\qquad u(0,t) = u(L,t) = 0'
+index_form: '\ddot u_{bi} = c^2\,D_{ij}\,u_{bj},\qquad D_{ij} = \frac{\delta_{i+1,j} - 2\,\delta_{ij} + \delta_{i-1,j}}{\Delta x^2},\qquad f_n = \frac{n\,c}{2L}'
+translation:
+  - {symbol: 'u_{bi}', code: 'u', shape: '(B, M)', meaning: 'displacement of string $b$ at interior grid point $i$ (the two fixed ends are left out)'}
+  - {symbol: 'D_{ij}', code: 'stencil(M, dx, dev)', shape: '(M, M)', meaning: 'second-derivative matrix: $-2$ on the diagonal, $1$ next to it'}
+  - {symbol: 'D_{ij}u_{bj}', code: "einsum('ij,bj->bi', D, u)", shape: '(B, M)', meaning: 'repeated $j$ ⇒ summed: $\partial_x^2 u$ for every string'}
+  - {symbol: 'u^{n+1} = 2u^n - u^{n-1} + \Delta t^2\,\ddot u^n', code: 'leapfrog_step(u, u_prev, D, c, dt)', shape: '(B, M)', meaning: 'centred difference in time (leap-frog)'}
+  - {symbol: 'f_n', code: 'mode_frequencies(D, c)', shape: '(M,)', meaning: 'eigenvalues of $D$ give $\omega_n^2 = -c^2\lambda_n$: the harmonics'}
+notes: >
+  Rows 1 to $n$ start in the shape of a single harmonic $\sin(n\pi x/L)$ and just breathe in place at $f_n = nc/2L$: a
+  standing wave. The plucked string (a triangle) is a sum of many harmonics, so its kink splits into two pieces that run
+  to the ends, flip over and come back. After one fundamental period $2L/c$ every shape is back where it started.
+  The time step obeys the Courant condition $c\,\Delta t \le \Delta x$; the energy
+  $\tfrac12\int (\dot u^2 + c^2 u_x^2)\,dx$ (per unit mass density) stays constant because nothing damps the string.
+params:
+  n_harmonics: {default: 3, min: 1, max: 4, step: 1, type: int, label: Harmonics shown}
+  pluck_at: {default: 0.25, min: 0.05, max: 0.95, step: 0.05, label: 'Pluck position $x_p/L$'}
+  c: {default: 1.0, min: 0.2, max: 3.0, step: 0.1, label: 'Wave speed $c$', unit: m/s}
+  L: {default: 1.0, min: 0.5, max: 3.0, step: 0.1, label: 'String length $L$', unit: m}
+  n_points: {default: 101, min: 21, max: 301, step: 10, type: int, label: Grid points}
+  periods: {default: 2.0, min: 0.5, max: 5.0, step: 0.5, label: Fundamental periods simulated}

@@ -1,0 +1,31 @@
+title: Quantum tunnelling
+category: quantum
+level: advanced
+order: 1
+summary: >
+  A Gaussian wave packet hits a rectangular barrier. The time-dependent Schrödinger equation is
+  solved with the split-step Fourier method: the potential is a diagonal operator in $x$-space and the
+  kinetic energy is a diagonal operator in $k$-space, so each half of a time step is just an elementwise
+  tensor multiply, with torch.fft switching between the two bases.
+animated: true
+vector_form: 'i\,\partial_t\psi = \Big(-\tfrac12\,\partial_x^2 + V(x)\Big)\psi,\qquad \psi(t+\Delta t) \approx e^{-iV\Delta t/2}\,\mathcal F^{-1} e^{-ik^2\Delta t/2}\,\mathcal F\,e^{-iV\Delta t/2}\,\psi(t)'
+index_form: '\psi_x \leftarrow P_x\,\psi_x,\qquad \tilde\psi_k = F_{kx}\psi_x,\qquad \tilde\psi_k \leftarrow K_k\,\tilde\psi_k,\qquad \psi_x = F^{-1}_{xk}\tilde\psi_k,\qquad \psi_x \leftarrow P_x\,\psi_x'
+translation:
+  - {symbol: '\psi_x', code: 'psi', shape: '(N,) complex', meaning: 'wavefunction on the periodic grid $x$'}
+  - {symbol: 'P_x = e^{-iV_x\Delta t/2}', code: 'potential_phase(V, dt)', shape: '(N,) complex', meaning: 'half-step potential operator: diagonal in $x$, applied as psi * P'}
+  - {symbol: 'K_k = e^{-ik^2\Delta t/2}', code: 'kinetic_phase(k, dt)', shape: '(N,) complex', meaning: 'full-step kinetic operator: diagonal in $k$, applied as psi_k * K'}
+  - {symbol: 'F_{kx}\psi_x', code: 'torch.fft.fft(psi)', shape: '(N,) complex', meaning: 'change of basis $x \to k$ (a fast matrix product, never built explicitly)'}
+  - {symbol: 'P_T', code: 'probability(psi[x > a/2], dx)', shape: '()', meaning: 'transmission: probability found to the right of the barrier'}
+notes: >
+  Units $\hbar = m = 1$, packet energy $E \approx k_0^2/2$. A diagonal operator $D_{xy} = d_x\,\delta_{xy}$ acting on $\psi$ is
+  $D_{xy}\psi_y = d_x\psi_x$ — no matrix needed, just an elementwise multiply. The Strang splitting
+  $P\cdot K\cdot P$ is second-order accurate in $\Delta t$ and exactly unitary, so the norm stays 1 to round-off.
+  The simulated time is chosen automatically ($45/k_0$) so the packet centre travels from $x = -25$ to
+  about $x = +20$. For $E < V_0$ a classical particle would always bounce back; the transmitted lump on the right is tunnelling.
+  The plane-wave transmission coefficient $T(k_0)$ printed for comparison ignores the packet's spread of momenta
+  (and uses the barrier width as it lands on the grid); a wider packet (larger $\sigma_0$) has a sharper momentum and matches it more closely.
+params:
+  k0: {default: 2.0, min: 0.5, max: 5.0, step: 0.1, label: 'Packet momentum $k_0$'}
+  V0: {default: 2.5, min: 0.0, max: 10.0, step: 0.1, label: 'Barrier height $V_0$'}
+  width: {default: 1.0, min: 0.1, max: 4.0, step: 0.1, label: 'Barrier width $a$'}
+  sigma: {default: 2.0, min: 0.5, max: 6.0, step: 0.1, label: 'Packet width $\sigma_0$'}

@@ -1,0 +1,20 @@
+source_hash: c4a4275e3bd7
+title: 场张量的洛伦兹变换
+summary: 在相对论中，$\mathbf E$ 和 $\mathbf B$ 不是两个独立的矢量，而是一个反对称 $4\times 4$ 张量 $F^{\mu\nu}$ 的六个分量。洛伦兹变换对每个指标作用一个 $\Lambda$，即 $F' = \Lambda F\Lambda^{\mathsf T}$，写成一次 einsum。扫描变换速度可以看到电场和磁场相互混合，而 $F_{\mu\nu}F^{\mu\nu}$ 和 $\mathbf E\cdot\mathbf B$ 保持不变。
+notes: 取 $c = 1$ 的单位，度规符号差为 $(+, -, -, -)$。变换沿 $x$ 方向，所以 $E_x$ 和 $B_x$ 不变，只有横向分量相互混合。对于纯电场（$\mathbf B = 0$），运动观测者看到磁场 $\mathbf B' = -\gamma\,\boldsymbol\beta\times\mathbf E$。两个洛伦兹不变量在整个扫描过程中保持恒定。
+meanings:
+- 反对称场张量，$\mu, \nu \in \{t, x, y, z\}$
+- 闵可夫斯基度规 $\operatorname{diag}(+1, -1, -1, -1)$，$c = 1$
+- 对 $S$ 个速度 $\beta$ 各做一次沿 $x$ 的变换
+- 重复的 $\alpha$ 和 $\beta$ ⇒ 求和：$F$ 的每个指标各一个 $\Lambda$
+- 用度规降指标
+- 不变量 $2(B^2 - E^2)$
+- 不变量 $-4\,\mathbf E\cdot\mathbf B$，用到对偶张量 $\tfrac12\varepsilon^{\mu\nu\rho\sigma}F_{\rho\sigma}$
+labels:
+  Ex: $E_x$
+  Ey: $E_y$
+  Ez: $E_z$
+  Bx: $B_x$
+  By: $B_y$
+  Bz: $B_z$
+  beta_max: 最终变换速度 $\beta = v/c$

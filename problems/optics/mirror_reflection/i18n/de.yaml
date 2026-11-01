@@ -1,0 +1,14 @@
+source_hash: d32c883229aa
+title: Reflexion an ebenen und gekrümmten Spiegeln
+summary: 'Das Reflexionsgesetz als eine einzige Vektorformel: Kehre den Anteil der Strahlrichtung um, der entlang der Flächennormale zeigt. Strahlen einer Lampe werden an einem ebenen Spiegel reflektiert, und parallele Strahlen werden an einem Hohlspiegel reflektiert und sammeln sich nahe seinem Brennpunkt $F = R/2$.'
+notes: 'Die Formel kehrt nur die Komponente von $\mathbf d$ entlang $\mathbf n$ um, also ist der Einfallswinkel automatisch gleich dem Reflexionswinkel. Gestrichelte Linien verlängern die reflektierten Strahlen hinter den ebenen Spiegel: Sie treffen sich alle im virtuellen Bild der Lampe. Beim Hohlspiegel gehen nur achsennahe (paraxiale) Strahlen durch $F = R/2$; weiter außen liegende Strahlen kreuzen die Achse näher am Spiegel (sphärische Aberration).'
+meanings:
+- Einheitsrichtung des einfallenden Strahls $r$, Komponente $i \in \{x, y\}$
+- Normaleneinheitsvektor des Spiegels am Auftreffpunkt von Strahl $r$
+- 'wiederholtes $j$ ⇒ summiert: ein Skalarprodukt pro Strahl (${}= -\cos\theta_i$)'
+- reflektierte Richtung, weiterhin ein Einheitsvektor
+- die Normale des gekrümmten Spiegels zeigt zu seinem Mittelpunkt $c$
+labels:
+  radius: Krümmungsradius des Spiegels $R$
+  n_rays: Strahlen pro Spiegel
+  aperture: Höchster Strahl (Anteil von $R$)

@@ -1,0 +1,18 @@
+source_hash: 85a6136cffba
+title: Snelliussches Brechungsgesetz in Schichtmedien
+summary: Ein Fächer von Lichtstrahlen durchquert drei Schichten mit verschiedenen Brechungsindizes. Die Vektorform des Snelliusschen Gesetzes bricht alle Strahlen auf einmal mit einem einzigen einsum und schaltet auf Spiegelreflexion um, wo Totalreflexion einsetzt.
+notes: 'Strahlen laufen mit der Geschwindigkeit $c/n$, daher ist die gestrichelte Linie durch die Strahlspitzen eine Wellenfront: Sie bleibt in dichten Schichten zurück. Mit den Standardwerten ist die unterste Schicht Luft ($n = 1$); Strahlen, die steiler als der Grenzwinkel $\arcsin(n_3/n_2)$ auf diese Grenzfläche treffen, werden totalreflektiert und laufen wieder nach oben. Setze zwei Indizes gleich, um eine Grenzfläche verschwinden zu lassen.'
+meanings:
+- Einheitsrichtung des Strahls $r$, Komponente $i \in \{x, y\}$
+- Flächennormaleneinheitsvektor, dem einfallenden Strahl zugewandt
+- Indexverhältnis $n_1/n_2$ an der Grenzfläche, die jeder Strahl trifft
+- 'wiederholtes $j$ ⇒ summiert: $\cos\theta_i$ jedes Strahls'
+- gebrochene Richtung (weiterhin ein Einheitsvektor)
+- Spiegelrichtung, verwendet wo $1 - \eta^2(1 - c^2) < 0$ (Totalreflexion)
+labels:
+  n1: Index der oberen Schicht $n_1$
+  n2: Index der mittleren Schicht $n_2$
+  n3: Index der unteren Schicht $n_3$
+  n_rays: Strahlen im Fächer
+  max_angle: Größter Strahlwinkel
+  t_max: Simulierte Zeit

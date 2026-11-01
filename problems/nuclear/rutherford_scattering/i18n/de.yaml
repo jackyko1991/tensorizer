@@ -1,0 +1,19 @@
+source_hash: 0b86e0abca1f
+title: Rutherford-Streuung
+summary: Ein Strahl von Alphateilchen wird auf einen Goldkern geschossen. Jedes Alphateilchen wird in einem gebündelten Tensor mit RK4 durch das abstoßende Coulombfeld integriert, und das Histogramm der Streuwinkel reproduziert Rutherfords $1/\sin^4(\theta/2)$-Gesetz — der Beleg dafür, dass die positive Ladung eines Atoms in einem winzigen Kern sitzt.
+notes: 'Einheiten: fm, MeV und Zeit in fm/$c$. Energie und Drehimpuls sind entlang jeder Bahn erhalten, daher legen $E$ und der Stoßparameter $b$ allein die Ablenkung $\theta = 2\arctan(k/2Eb)$ fest; ein zentral auftreffendes Alphateilchen kehrt bei $d = k/E$ um (etwa 45 fm für 5 MeV auf Gold, noch weit außerhalb des 7 fm großen Kerns, also gilt das reine Coulombgesetz). Der Strahl ist gleichmäßig über eine Kreisscheibe vom Radius $b_{\max}$ verteilt (zufällig, aber mit festem Seed), sodass die Anzahl der in einen Raumwinkel gestreuten Teilchen (Alphas pro Fläche) × $d\sigma/d\Omega$ ist. Nur eines von einigen hundert Alphateilchen prallt über 90° hinaus zurück — die Überraschung von Geiger und Marsden 1909. Vereinfachungen: Der Kern ist eine feste Punktladung (kein Rückstoß, keine Kernkraft), und die Bewegung ist nichtrelativistisch ($v \approx 0.05c$). Jedes Alphateilchen startet 30 $d$ entfernt mit genau der Energie und dem Drehimpuls eines aus dem Unendlichen kommenden Teilchens; der
+  verbleibende $1/r^2$-Ausläufer der Kraft verschiebt die Winkel um deutlich weniger als ein Grad.'
+meanings:
+- $Z_\alpha Z e^2/4\pi\varepsilon_0 = 2Z \cdot 1.44$ MeV fm
+- Ort (fm) und Geschwindigkeit (in Einheiten von $c$) des Alphateilchens $b$
+- 'wiederholtes $j$ ⇒ summiert: Abstandsquadrat $r_b^2$'
+- Coulombabstoßung für den ganzen Strahl auf einmal
+- '2D-Kreuzprodukt: Drehimpuls pro Masse'
+- Winkel der auslaufenden Geschwindigkeit zur Strahlachse
+- Rutherfords Vorhersage, verglichen mit dem Histogramm
+labels:
+  energy: Alphaenergie $E$
+  z_target: Ladung des Targets $Z$
+  b_max: Strahlradius $b_{\max}$
+  n_beam: Alphateilchen im Strahl
+  n_steps: RK4-Schritte

@@ -1,0 +1,16 @@
+source_hash: 2765022e4b7f
+title: Schwebung und Gruppengeschwindigkeit
+summary: Addiere zwei (oder mehr) Sinusschwingungen mit nahe beieinanderliegenden Frequenzen. Alle Wellen sitzen in einem Tensor, indiziert nach Welle $s$, Zeit $n$ und Ort $j$; ein einziges einsum über $s$ überlagert sie. An einem festen Punkt hört man Schwebungen mit $|f_1 - f_2|$; im Raum laufen die Wellenberge des Trägers mit der Phasengeschwindigkeit, die Einhüllende dagegen mit der Gruppengeschwindigkeit.
+notes: 'Für zwei Wellen gilt $\cos a + \cos b = 2\cos\tfrac{a-b}{2}\cos\tfrac{a+b}{2}$: ein schneller Träger mit der mittleren Frequenz in einer langsamen Einhüllenden. Die Lautstärke $|{\rm envelope}|$ erreicht $|f_1 - f_2|$-mal pro Sekunde ein Maximum, die Schwebungsfrequenz. Mit der Dispersionsrelation $\omega = c_0 k_0 (k/k_0)^p$ ist die Gruppengeschwindigkeit $p$-mal die Phasengeschwindigkeit: gleich für Schall auf einer Saite ($p = 1$), halb so groß für Tiefwasserwellen ($p = \tfrac12$), anderthalbmal so groß für Kapillarwellen ($p = \tfrac32$). Der rote Punkt reitet mit $v_p$ auf einem Wellenberg, der grüne mit $v_g$ auf dem Maximum der Einhüllenden. Mit mehr als zwei Wellen werden die Schwebungen zu isolierten Wellengruppen.'
+meanings:
+- Kreisfrequenz und Wellenzahl der Welle $s$, verknüpft durch die Dispersionsrelation $\omega \propto k^p$
+- Orte und Zeiten, an denen die Welle ausgewertet wird
+- Phase jeder Welle zu jeder Zeit an jedem Ort, per Broadcasting
+- 'wiederholtes $s$ ⇒ summiert: die Überlagerung'
+- 'Einhüllende: Länge der Summe der Zeiger'
+labels:
+  f1: Frequenz $f_1$
+  f2: Frequenz $f_2$
+  n_waves: Anzahl der Wellen (verteilt von f1 bis f2)
+  dispersion: Dispersion $p$ = 1, ½, 3/2
+  t_max: Simulierte Zeit

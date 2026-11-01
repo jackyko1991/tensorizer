@@ -1,0 +1,17 @@
+source_hash: 66c98bbdd023
+title: Newtonsches Abkühlungsgesetz
+summary: Eine Reihe heißer Kaffeetassen kühlt auf Raumtemperatur ab. Jede Tasse hat ihre eigene Anfangstemperatur und ihre eigene Abkühlkonstante, doch alle leben in einem Tensor, sodass eine einzige Zeile PyTorch alle Tassen gleichzeitig vorantreibt — und das Ergebnis stimmt mit der Exponentiallösung überein.
+notes: 'Das Gesetz besagt, dass die Abkühlrate proportional zur Temperaturdifferenz zum Raum ist. Die Differenz schrumpft daher in gleichen Zeiten um denselben Faktor: Sie halbiert sich alle $t_{1/2} = \ln 2/k$, unabhängig von der Anfangstemperatur. Die DGL wird numerisch mit Runge–Kutta (RK4) gelöst, und die gestrichelten Linien zeigen zum Vergleich die exakte Exponentialfunktion. Echte Tassen kühlen gleichzeitig durch Konvektion, Strahlung und Verdunstung ab; $k$ fasst all das in einer Zahl zusammen.'
+meanings:
+- Temperatur der Tasse $b$ (°C)
+- 'Abkühlkonstante der Tasse $b$ (1/min): größer heißt schneller'
+- Raumtemperatur, per Broadcasting an jede Tasse
+- 'elementweise: kein Index wird summiert, jede Tasse kühlt für sich ab'
+- 'äußeres Produkt: jede Zeit mit jeder Tasse, für die exakte Lösung'
+- Zeit, in der sich die Temperaturdifferenz halbiert
+labels:
+  n_cups: Tassen
+  T_env: Raumtemperatur
+  k_min: Langsamste Abkühlung $k$
+  k_max: Schnellste Abkühlung $k$
+  t_max: Simulierte Zeit

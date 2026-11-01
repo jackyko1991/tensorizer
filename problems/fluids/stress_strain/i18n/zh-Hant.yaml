@@ -1,0 +1,17 @@
+source_hash: e7727640a017
+title: 應力、應變與莫耳圓
+summary: 彈性板的連體力學。虎克定律是一個四階剛度張量 $C_{ijkl}$，由拉梅常數以 einsum 構成；加載過程（先拉伸、再剪切）使板變形，應變由位移場的梯度求得，主應力則由 eigh 求得——並畫成應力橢圓與莫耳圓。
+notes: 板很薄且表面自由，因此 $\sigma_{zz} = 0$（平面應力）——但它仍會變薄：$\varepsilon_{zz} = -\nu(\sigma_{xx} + \sigma_{yy})/E$。在加載的單軸階段，可以讀出楊氏模數 $E = \sigma_{xx}/\varepsilon_{xx} = \mu(3\lambda + 2\mu)/(\lambda + \mu)$ 與帕松比 $\nu = -\varepsilon_{yy}/\varepsilon_{xx} = \lambda/2(\lambda + \mu)$。加入剪切會使主軸偏離 $x$ 與 $y$；在莫耳圓上，點 $(\sigma_{xx}, \tau_{xy})$ 與 $(\sigma_{yy}, -\tau_{xy})$ 是一條直徑的兩端，圓與橫軸的交點即為主應力。半徑是最大面內剪應力，它決定延性金屬的降伏（Tresca 準則）。位移非常小，圖中已放大。
+meanings:
+- $\delta$ 的三個 einsum 外積；81 個元素，只有 2 個獨立常數
+- $C$ 在對稱張量上的反運算：$\varepsilon = S:\sigma$（9×9 矩陣的 pinv）
+- 每個物質點的位移
+- 以有限差分求位移梯度（torch.gradient）
+- 位移梯度的對稱部分
+- 重複的 $k, l$ ⇒ 求和：虎克定律
+- 主應力及其方向
+labels:
+  E: 楊氏模數 $E$
+  poisson: 帕松比 $\nu$
+  sigma_max: 最終拉應力 $\sigma_{xx}$
+  tau_max: 最終剪應力 $\tau_{xy}$

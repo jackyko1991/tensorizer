@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Two coaxial circular current loops (Helmholtz pair) carrying current I in the same sense, producing a magnetic field B along their common axis">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrow-o" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <line x1="120.0" y1="10.0" x2="120.0" y2="150.0" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <path d="M128,20 C245,-8 245,168 128,140" fill="none" stroke="#9333ea" stroke-width="1.4" opacity="0.55"/>
+    <path d="M112,20 C-5,-8 -5,168 112,140" fill="none" stroke="#9333ea" stroke-width="1.4" opacity="0.55"/>
+    <path d="M58,52 A62,15 0 0 1 182,52" fill="none" stroke="#93c5fd" stroke-width="3" />
+    <path d="M58,110 A62,15 0 0 1 182,110" fill="none" stroke="#93c5fd" stroke-width="3" />
+    <line x1="120.0" y1="132.0" x2="120.0" y2="22.0" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M58,52 A62,15 0 0 0 182,52" fill="none" stroke="#2563eb" stroke-width="3.5" />
+    <path d="M108,67 L132,67" fill="none" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#arrow-o)"/>
+    <path d="M58,110 A62,15 0 0 0 182,110" fill="none" stroke="#2563eb" stroke-width="3.5" />
+    <path d="M108,125 L132,125" fill="none" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#arrow-o)"/>
+    <text x="128" y="26" font-style="italic" fill="#b91c1c">B</text>
+    <text x="140" y="142" font-style="italic" fill="#b45309">I</text>
+    <text x="140" y="84" font-style="italic" fill="#b45309">I</text>
+  </g>
+</svg>

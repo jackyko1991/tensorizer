@@ -1,0 +1,15 @@
+source_hash: f24d1ad2823c
+title: 2D-Ising-Modell
+summary: Ein Gitter von $\pm 1$-Spins, die sich bevorzugt parallel zu ihren Nachbarn ausrichten. Die Nachbarsumme jedes Platzes ist ein einziges conv2d mit einem kreuzförmigen Kern, und ein Schachbrett-Metropolis-Update klappt die Hälfte des Gitters parallel um. Unterhalb der kritischen Temperatur wachsen Domänen, bis der Magnet geordnet ist; oberhalb bleiben die Spins ungeordnet.
+notes: 'Einheiten: $J = k_B = 1$, also $T_c = 2/\ln(1 + \sqrt2) \approx 2.269$. Drei Gitter laufen nebeneinander im Batch: das gewählte $T$, $T_c$ und $T = 3.5$. Alle starten mit zufälligen Spins (unendliche Temperatur) und werden plötzlich abgekühlt. Alle Plätze auf einmal zu aktualisieren wäre falsch — Nachbarn würden auf Basis veralteter Werte umklappen —, aber Plätze einer Schachbrettfarbe berühren nur die andere Farbe, sodass jede Hälfte parallel aktualisiert werden kann. Ein Abschrecken auf tiefes $T$ kann lange in zwei streifenförmigen Domänen steckenbleiben, eine echte Eigenschaft der Dynamik auf einem periodischen Gitter. Auf einem endlichen Gitter ist $\lvert m\rvert$ oberhalb von $T_c$ nicht exakt null, und nahe $T_c$ schwankt es stark (kritische Verlangsamung). $E/N$ reicht von $-2$ (perfekte Ordnung) bis 0.'
+meanings:
+- Spin $\pm 1$ in Zeile $i$, Spalte $j$ — für einen Batch von $B$ Temperaturen (die 1 ist der conv2d-Kanal)
+- Faltungskern, der die vier nächsten Nachbarn auswählt
+- 'wiederholte $k, l$ ⇒ summiert: Nachbarsumme, periodische Ränder'
+- Kosten für das Umklappen jedes einzelnen Spins
+- 'wiederholte $i, j$ ⇒ summiert: doppelte Bindungsenergie (jede Bindung wird von beiden Enden gesehen)'
+- eine Temperatur pro Gitter, per Broadcasting auf die Plätze verteilt
+labels:
+  T: Temperatur $T$
+  L: Gittergröße $L$
+  n_sweeps: Monte-Carlo-Sweeps

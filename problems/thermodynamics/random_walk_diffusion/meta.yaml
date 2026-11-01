@@ -1,0 +1,28 @@
+title: Random walk and diffusion
+category: thermodynamics
+level: intermediate
+order: 2
+summary: >
+  Thousands of Brownian particles each take random kicks. Stored as one (time, walker, 2) tensor, the walk is a
+  single cumsum, and the mean-squared displacement $\langle x_i x_i\rangle$ — one einsum — grows linearly in time as $2dDt$,
+  while the cloud of walkers spreads out as a Gaussian.
+animated: true
+vector_form: '\mathbf x(t + \Delta t) = \mathbf x(t) + \sqrt{2D\Delta t}\;\boldsymbol\xi,\qquad \langle \lVert\mathbf x\rVert^2 \rangle = 2dDt,\qquad \rho(\mathbf x, t) = \frac{e^{-\lVert\mathbf x\rVert^2 / 4Dt}}{4\pi D t}'
+index_form: 'x_{tni} = \sum_{s \le t} \sqrt{2D\Delta t}\;\xi_{sni},\qquad \mathrm{MSD}_t = \frac1N\,x_{tni}\,x_{tni} = 2dD\,t_t'
+translation:
+  - {symbol: '\xi_{sni}', code: 'torch.randn(S, N, 2)', shape: '(S, N, 2)', meaning: 'independent standard-normal kick for step $s$, walker $n$, component $i$'}
+  - {symbol: 'x_{tni}', code: 'cumsum(steps, dim=0)', shape: '(T, N, 2)', meaning: 'position of walker $n$ at time $t$: the running sum of its kicks'}
+  - {symbol: 'x_{tni}x_{tni}', code: "einsum('tni,tni->t', x, x) / N", shape: '(T,)', meaning: 'repeated $n$ and $i$ ⇒ summed: mean-squared displacement at each time'}
+  - {symbol: 'D_{\text{fit}}', code: "einsum('t,t->', t, msd) / (2d einsum('t,t->', t, t))", shape: 'scalar', meaning: 'least-squares slope of MSD vs $t$ through the origin, divided by $2d$'}
+  - {symbol: '\rho(\mathbf x, t)', code: 'gaussian_density(X, Y, t, D)', shape: '(G, G)', meaning: 'solution of the diffusion equation $\partial_t\rho = D\,\partial_i\partial_i\rho$ from a point source'}
+notes: >
+  Each step is a Gaussian kick of variance $2D\Delta t$ per component, so after time $t$ every coordinate has variance $2Dt$
+  and the squared distance from the start averages $2dDt$ in $d$ dimensions (here $d = 2$). Summing over the walker
+  index $n$ turns the random cloud into a smooth, predictable law — that is diffusion. The finite number of walkers
+  makes the measured MSD wobble by roughly $\sqrt{2/N}$ relative; the seed is fixed so the picture is repeatable.
+  Units are arbitrary (µm and s, say).
+params:
+  n_walkers: {default: 2000, min: 100, max: 10000, step: 100, type: int, label: Walkers}
+  D: {default: 1.0, min: 0.1, max: 5, step: 0.1, label: 'Diffusion constant $D$', unit: µm²/s}
+  t_max: {default: 10.0, min: 1, max: 50, step: 1, label: Simulated time, unit: s}
+  n_steps: {default: 200, min: 20, max: 1000, step: 10, type: int, label: Time steps}

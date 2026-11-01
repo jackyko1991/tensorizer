@@ -1,0 +1,17 @@
+source_hash: e7727640a017
+title: 응력, 변형률과 모어 원
+summary: 탄성 판의 연속체 역학. 훅 법칙은 라메 상수로부터 einsum으로 만든 4차 강성 텐서 $C_{ijkl}$입니다. 하중을 점차 늘려(인장 후 전단) 판을 변형시키고, 변형률은 변위장의 기울기에서, 주응력은 eigh에서 얻어 응력 타원과 모어 원으로 그립니다.
+notes: '판은 얇고 양면이 자유로우므로 $\sigma_{zz} = 0$(평면 응력)이지만, 그래도 두께는 얇아집니다: $\varepsilon_{zz} = -\nu(\sigma_{xx} + \sigma_{yy})/E$. 하중 과정의 단축 인장 구간에서는 영률 $E = \sigma_{xx}/\varepsilon_{xx} = \mu(3\lambda + 2\mu)/(\lambda + \mu)$와 푸아송 비 $\nu = -\varepsilon_{yy}/\varepsilon_{xx} = \lambda/2(\lambda + \mu)$를 읽어 낼 수 있습니다. 전단을 더하면 주축이 $x$, $y$에서 회전합니다. 모어 원에서 점 $(\sigma_{xx}, \tau_{xy})$와 $(\sigma_{yy}, -\tau_{xy})$는 지름의 양 끝이며, 원이 가로축과 만나는 점이 주응력입니다. 반지름은 면내 최대 전단 응력으로, 연성 금속의 항복을 결정합니다(트레스카). 변위는 매우 작아서 그림에서는 과장해 그립니다.'
+meanings:
+- $\delta$의 einsum 외적 세 개; 원소 81개 중 독립 상수는 2개뿐
+- '대칭 텐서에 대한 $C$의 역: $\varepsilon = S:\sigma$ (9×9 행렬의 pinv)'
+- 모든 물질점의 변위
+- 유한 차분으로 구한 변위 기울기 (torch.gradient)
+- 변위 기울기의 대칭 부분
+- '반복된 $k, l$ ⇒ 합: 훅 법칙'
+- 주응력과 그 방향
+labels:
+  E: 영률 $E$
+  poisson: 푸아송 비 $\nu$
+  sigma_max: 최종 인장 $\sigma_{xx}$
+  tau_max: 최종 전단 $\tau_{xy}$

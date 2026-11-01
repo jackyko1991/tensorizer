@@ -1,0 +1,17 @@
+source_hash: 3434371fc2c6
+title: Polarisation mit Jones-Matrizen
+summary: 'Die Polarisation von Licht ist ein komplexer 2-Vektor $(E_x, E_y)$, und jeder Polarisator oder jedes Verzögerungsplättchen ist eine komplexe $2\times 2$-Matrix. Licht durchläuft ein Verzögerungsplättchen und dann einen rotierenden Polarisator: Die $\mathbf E$-Feld-Ellipse und die durchgelassene Intensität folgen aus einsum, reproduzieren das Gesetz von Malus und machen aus linearem zirkulares Licht.'
+notes: Das Licht startet linear polarisiert unter dem Eingangswinkel mit der Intensität $I_0 = 1$. Die gestrichelte graue Kurve rechts ist das Gesetz von Malus $I_0\cos^2\theta$ (ohne Plättchen); die blaue Kurve ist das, was nach dem Plättchen durchkommt. Ein λ/4-Plättchen unter 45° zum Eingang erzeugt zirkulares Licht (gleiche $\lvert E_x\rvert$ und $\lvert E_y\rvert$, 90° phasenverschoben), sodass jeder Polarisatorwinkel $I_0/2$ durchlässt. Ein λ/2-Plättchen unter $\alpha$ dreht lineares Licht um $2\alpha$. Ein einzelner Jones-Vektor ist immer vollständig polarisiert; unpolarisiertes Licht wird behandelt, indem man die Intensitäten zweier orthogonaler Eingänge mittelt (verwendet für den Drei-Polarisatoren-Test, den main.py ausgibt).
+meanings:
+- 'Jones-Vektor: komplexe Amplituden von $E_x$ und $E_y$ (die Phasendifferenz legt die Form fest)'
+- dreht das Laborsystem auf die eigenen Achsen des Elements
+- lässt nur das Feld entlang der Durchlassachse unter dem Winkel $\theta$ durch
+- 'verzögert die langsame Achse um $\Gamma$: $\Gamma = \pi/2$ λ/4, $\Gamma = \pi$ λ/2'
+- Elemente verketten (wiederholtes $j$ summiert); das erste Element, auf das das Licht trifft, steht rechts
+- das Licht durch die Optik schicken
+- 'wiederholtes $i$ ⇒ summiert: Intensität'
+- 'das reelle Feld über eine Periode: es beschreibt die Polarisationsellipse'
+labels:
+  plate: Verzögerungsplättchen
+  plate_angle: Schnelle Achse des Plättchens $\alpha$
+  input_angle: Eingangspolarisationswinkel

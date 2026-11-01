@@ -1,0 +1,35 @@
+title: Electromagnetic shower
+category: nuclear
+level: advanced
+order: 3
+summary: >
+  A high-energy electron hitting a block of lead starts a cascade: electrons radiate photons, photons turn into
+  electron–positron pairs, and the energy is halved at each step until it drops to the critical energy. The
+  Heitler model is simulated as a branching process on tensors — each particle a row, each split two new rows —
+  and predicts the shower maximum $N_{max} \approx E_0/E_c$ at depth $t_{max} \approx \ln(E_0/E_c)/\ln 2$.
+animated: true
+vector_form: 'e^\pm \to e^\pm + \gamma,\quad \gamma \to e^+e^-,\quad E \to \tfrac{E}{2}\ \text{per } X_0,\qquad N(t) = 2^t\ \text{until}\ \tfrac{E_0}{2^t} \approx E_c\ \Rightarrow\ N_{max} \approx \frac{E_0}{E_c},\ \ t_{max} \approx \frac{\ln(E_0/E_c)}{\ln 2}'
+index_form: '(E_p, s_p) \to \big(\tfrac{E_p}{2}, 1\big),\ \big(\tfrac{E_p}{2}, 1 - s_p\big)\ \text{ if } \tfrac{E_p}{2} \ge E_c,\qquad N(t) = \textstyle\sum_p 1,\qquad \sum_p E_p(t) + E_{dep}(t) = E_0'
+translation:
+  - {symbol: 'E_p,\ s_p', code: "state['energy'], state['kind']", shape: '(P,)', meaning: 'energy (MeV) and type (1 = e±, 0 = γ) of every particle in flight; P changes as the shower grows'}
+  - {symbol: 'p_{int}', code: 'interaction_probability(kind, dt)', shape: '(P,)', meaning: 'stochastic mode: $1 - e^{-\Delta t/\lambda}$, $\lambda = X_0$ (e±) or $\tfrac97 X_0$ (γ)'}
+  - {symbol: 'E_p/2 \ge E_c', code: 'can_split(energy, e_crit)', shape: '(P,)', meaning: 'boolean mask: who multiplies, the rest deposit their energy'}
+  - {symbol: '(\tfrac{E_p}{2}, 1), (\tfrac{E_p}{2}, 1-s_p)', code: 'children(energy[split], kind[split])', shape: '(2S,)', meaning: 'e → e + γ and γ → e + e, as two concatenated halves'}
+  - {symbol: 'N(t)', code: "result['counts'].sum(dim=1)", shape: '(T,)', meaning: 'particles in flight at each depth'}
+  - {symbol: 'E_{dep}(t)', code: "result['deposited']", shape: '(T,)', meaning: 'energy dropped by particles below the critical energy'}
+notes: >
+  Depth is in radiation lengths $X_0$ (0.56 cm in lead) and $E_c$ is the critical energy, about 7.4 MeV in lead.
+  The doubling stops when the daughters would fall below $E_c$, so the maximum of about $E_0/E_c$ particles is reached
+  after about $\log_2(E_0/E_c)$ radiation lengths: the depth of a shower grows only logarithmically with energy,
+  which is why calorimeters can be compact. In the fixed-length mode every particle splits after exactly one $X_0$,
+  so a whole generation moves in step and the count climbs like a staircase. The stochastic mode (the dashed
+  curve shows the other mode for comparison) draws each interaction point at random (photons travel
+  $\tfrac97 X_0$ on average): the generations smear out in depth, giving the lower, broader and longer profile of
+  real showers, while the energy bookkeeping stays exact. The lateral spread is only illustrative (an angle kick
+  $\propto E_c/E$). Simplifications of the Heitler model: equal energy sharing, no ionisation loss above $E_c$, a
+  particle below threshold deposits all its energy at once, and no Compton scattering or photoelectric effect.
+  The random seed is fixed.
+params:
+  e0: {default: 10.0, min: 0.5, max: 50.0, step: 0.5, label: 'Primary energy $E_0$', unit: GeV}
+  e_crit: {default: 7.4, min: 5.0, max: 100.0, step: 0.1, label: 'Critical energy $E_c$', unit: MeV}
+  mode: {default: fixed, type: choice, options: [fixed, stochastic], label: Splitting length}

@@ -1,0 +1,15 @@
+source_hash: 7be6ce46bf01
+title: Schwarzkörperstrahlung
+summary: Das Plancksche Strahlungsgesetz liefert die Energiedichte der Wärmestrahlung bei jeder Wellenlänge. Broadcasting einer Spalte von Temperaturen gegen eine Zeile von Wellenlängen baut die ganze $(T, \lambda)$-Spektraltabelle in einer Zeile auf; argmax findet das Wiensche Maximum, und torch.trapezoid integriert das Spektrum zum Stefan–Boltzmann-Gesetz $T^4$.
+notes: 'Das Wellenlängengitter ist logarithmisch von 10 nm bis 100 µm, breit genug, dass die fehlenden Ausläufer das Integral um weniger als $10^{-5}$ ändern, und die Rechnung läuft für die Genauigkeit in float64 mit expm1. Die Wiensche Konstante $b \approx 2.898\times 10^{-3}$ m·K ergibt sich aus argmax bis auf die Gitterauflösung (etwa 0,2 %). Die Kurvenfarbe tastet das Spektrum bei drei Wellenlängen ab, die für Rot, Grün und Blau stehen — ein grober Ersatz für eine echte Farbmetrik-Rechnung, aber sie zeigt das Glühen von Orange über Weiß bis Hellblau. Der Plot wird in jedem Bild neu skaliert: Die Höhe des Maximums wächst wie $T^5$. Das schattierte Band markiert den sichtbaren Bereich 380–750 nm.'
+meanings:
+- Batch von Temperaturen, als Spalte
+- Wellenlängengitter, als Zeile
+- Broadcasting der Spalte gegen die Zeile füllt die ganze Tabelle
+- Wiensches Maximum jedes Spektrums auf einmal
+- 'wiederholtes $b$ ⇒ summiert: gesamte Energiedichte, $\propto T_a^4$'
+- 'Planck bei 610, 550 und 465 nm, normiert: eine grobe sichtbare Farbe'
+labels:
+  T_min: Anfangstemperatur
+  T_max: Endtemperatur
+  n_temps: Temperaturen (Bilder)

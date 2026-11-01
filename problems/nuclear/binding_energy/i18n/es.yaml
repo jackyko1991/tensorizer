@@ -1,0 +1,19 @@
+source_hash: 895c388f37ef
+title: Energía de enlace nuclear
+summary: 'La fórmula semiempírica de masas (modelo de la gota líquida) da la energía de enlace de cada núcleo a partir de cinco términos: volumen, superficie, Coulomb, asimetría y apareamiento. Evaluarla de una vez sobre toda una malla $(Z, N)$ con broadcasting muestra por qué el hierro y el níquel son los núcleos más fuertemente ligados y por dónde discurre el valle de estabilidad.'
+notes: 'El enlace de volumen crece como $A$, pero los nucleones de la superficie tienen menos vecinos ($-A^{2/3}$) y la repulsión entre protones crece como $Z^2/A^{1/3}$; el equilibrio sitúa el máximo de $B/A$ cerca de $A \approx 56$–$62$, y por eso tanto la fusión de núcleos ligeros como la fisión de núcleos pesados liberan energía. El término de asimetría atrae los núcleos hacia $N = Z$ y el término de Coulomb empuja los núcleos pesados hacia $N > Z$: juntos dan el valle de estabilidad curvado $Z_0 \approx A/(2 + 0.0154\,A^{2/3})$. La fórmula es precisa en torno al 1 % para núcleos medianos y pesados, pero falla con los muy ligeros (el ⁴He está mucho más ligado que una gota líquida) y con los efectos de capas en los números mágicos. Los coeficientes por defecto son un ajuste por mínimos cuadrados habitual; cambiarlos muestra qué término da forma a cada rasgo.'
+meanings:
+- números de protones en una columna, números de neutrones en una fila
+- el broadcasting de una columna más una fila llena toda la tabla
+- $+a_P/\sqrt A$ par-par, $-a_P/\sqrt A$ impar-impar, 0 para $A$ impar
+- energía de enlace de cada núcleo de la carta, MeV
+- energía de enlace por nucleón (mapa de calor)
+- isóbaro más ligado para cada número másico (línea roja)
+- $A/(2 + \tfrac{a_C}{2a_A}A^{2/3})$ a partir de $\partial B/\partial Z = 0$
+labels:
+  a_V: Volumen $a_V$
+  a_S: Superficie $a_S$
+  a_C: Coulomb $a_C$
+  a_A: Asimetría $a_A$
+  a_P: Apareamiento $a_P$
+  z_max: $Z$ máximo de la malla

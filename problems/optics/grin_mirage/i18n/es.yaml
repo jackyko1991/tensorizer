@@ -1,0 +1,19 @@
+source_hash: cd1d0cc0a127
+title: Espejismo en la carretera a partir de la ecuación del rayo
+summary: Sobre una carretera caliente el aire es menos denso, de modo que su índice de refracción $n(y)$ disminuye cerca del suelo. La ecuación del rayo de la óptica geométrica curva la luz hacia mayor $n$; integrarla con RK4 para un abanico de direcciones de observación muestra cómo los rayos dirigidos hacia la carretera se curvan hacia arriba, de modo que el ojo ve una segunda imagen invertida de un objeto lejano.
+notes: 'Los rayos se trazan hacia atrás desde el ojo (las trayectorias de la luz son reversibles): cada rayo responde a "¿qué ve el ojo al mirar en esta dirección?". Los rayos dirigidos ligeramente hacia abajo se curvan hacia arriba en la capa de bajo índice y alcanzan el objeto desde abajo, así que los ángulos de observación más bajos muestran partes más altas del objeto: la imagen está invertida. Los rayos más inclinados llegan a la carretera (gris). La escala vertical está exagerada unas 100×: las diferencias de índice reales son $\sim 10^{-5}$ y los ángulos son de milirradianes. Los cálculos usan float64 porque $n\cos\theta$ solo cambia en la séptima cifra decimal.'
+meanings:
+- posición $(x, y)$ del rayo $r$
+- 'vector de dirección óptica: tangente unitaria por $n$'
+- índice de refracción, mínimo en la superficie caliente de la carretera $y = 0$
+- 'solo la componente $y$ es no nula: $(0,\ \tfrac{\Delta n}{h}\,e^{-y/h})$'
+- la ecuación del rayo como sistema de primer orden, integrada con RK4
+- '$j$ repetido ⇒ sumado: $\lvert\mathbf p\rvert$ debe seguir siendo igual a $n$ (comprobación de precisión)'
+- 'ley de Snell para capas horizontales: se conserva a lo largo de cada rayo'
+labels:
+  delta_n: Caída del índice en la carretera $\Delta n$
+  scale_height: Espesor de la capa caliente $h$
+  eye_height: Altura del ojo
+  distance: Distancia al objeto
+  max_dip: Mirada más inclinada hacia abajo
+  n_rays: Rayos en el abanico

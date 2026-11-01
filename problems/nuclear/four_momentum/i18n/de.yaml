@@ -1,0 +1,14 @@
+source_hash: 045c5b4ab526
+title: Viererimpuls und Zweikörperzerfall
+summary: Ein bewegtes Teilchen zerfällt in zwei. In seinem Ruhesystem fliegen die Produkte mit festem Impuls $p^*$ in entgegengesetzte Richtungen; ein Lorentz-Boost $\Lambda^\mu{}_\nu$ (ein einsum) überträgt alle Zerfallswinkel auf einmal ins Laborsystem, wo die Impulse nach vorn gerissen werden. Die Minkowski-Metrik $\eta_{\mu\nu}$ macht aus den Viererimpulsen der Produkte wieder die Masse des Mutterteilchens — der Trick der invarianten Masse, mit dem neue Teilchen entdeckt werden.
+notes: 'Die Impulse im Ruhesystem liegen auf einer Kugel vom Radius $p^*$; der Boost streckt sie zu einer Ellipse (den gezeichneten Kurven), die um den Impuls des Mutterteilchens nach vorn verschoben ist, sodass schnelle Mutterteilchen beide Produkte in einen engen Vorwärtskegel werfen. Energie und Laborwinkel ändern sich mit $\theta^*$, aber $p_\mu p^\mu = m^2$ für jedes Produkt und $(p_1+p_2)_\mu(p_1+p_2)^\mu = M^2$ ändern sich nie — ein Detektor, der die beiden Impulse misst, kann $M$ immer rekonstruieren. Für $\pi^0 \to \gamma\gamma$ sind die Photonen masselos ($p_\mu p^\mu = 0$), und der kleinste Öffnungswinkel ist $2\arcsin(1/\gamma)$. Alle drei Zerfälle sind real: $K^0_S \to \pi^+\pi^-$, $\pi^0 \to \gamma\gamma$, $\Lambda \to p\,\pi^-$. Nur die Kinematik wird modelliert: Die Zerfallswinkel werden gleichmäßig abgetastet statt zufällig gezogen, und Spin und Polarisation werden ignoriert.'
+meanings:
+- diag(1, −1, −1, −1), Einheiten mit $c = 1$
+- Viererimpulse der Töchter für B Zerfallswinkel $\theta^*$ im Ruhesystem
+- $\gamma$, $\gamma\beta_i$ und $\delta_{ij} + (\gamma-1)\beta_i\beta_j/\beta^2$ für die Geschwindigkeit des Mutterteilchens $\boldsymbol\beta = \mathbf P/E$
+- 'wiederholtes $\nu$ ⇒ summiert: alle Zerfälle auf einmal boosten'
+- 'Minkowski-Produkt: in jedem System gleich'
+- rekonstruierte Masse des Mutterteilchens für jede Konfiguration
+labels:
+  decay: Zerfall
+  p_parent: Impuls des Mutterteilchens $|\mathbf P|$

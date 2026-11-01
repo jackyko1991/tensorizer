@@ -1,0 +1,28 @@
+title: Vibrating drum modes
+category: waves
+level: intermediate
+order: 3
+summary: >
+  The normal modes of a square or circular drum skin. The 2D Laplacian on a grid is built from the 1D one with
+  Kronecker products, $\Delta = D\otimes I + I\otimes D$, and a single symmetric eigensolver (eigh) returns every mode shape
+  and frequency at once.
+animated: true
+vector_form: '\frac{\partial^2 u}{\partial t^2} = c^2\,\nabla^2 u\quad\Rightarrow\quad -\nabla^2\phi = \frac{\omega^2}{c^2}\,\phi,\qquad u = \phi\,\cos\omega t'
+index_form: '\Delta_{(ab)(cd)} = D_{ac}\,\delta_{bd} + \delta_{ac}\,D_{bd},\qquad -\Delta_{pq}\,\phi_{qm} = \frac{\omega_m^2}{c^2}\,\phi_{pm},\qquad \phi_{pm}\phi_{pn} = \delta_{mn}'
+translation:
+  - {symbol: 'D_{ac}', code: 'second_difference(n, h, dev)', shape: '(n, n)', meaning: '1D second derivative with the edges clamped ($u = 0$ outside)'}
+  - {symbol: '\Delta_{(ab)(cd)}', code: 'kron(D, I) + kron(I, D)', shape: '(n², n²)', meaning: 'pair index $p = (a, b)$ numbers the grid points: the 2D Laplacian'}
+  - {symbol: '\Delta_{pq}', code: 'lap[inside][:, inside]', shape: '(P, P)', meaning: 'keep only the points inside the drum (circle mask); the rim is clamped'}
+  - {symbol: '\omega_m,\ \phi_{pm}', code: 'torch.linalg.eigh(-lap)', shape: '(P,), (P, P)', meaning: 'eigenvalues $\omega^2/c^2$ and orthonormal mode shapes in the columns'}
+  - {symbol: '\phi_{pm}\phi_{pn}', code: "einsum('pm,pn->mn', phi, phi)", shape: '(P, P)', meaning: 'repeated $p$ ⇒ summed: the identity matrix'}
+notes: >
+  Each panel shows one mode $\phi_m(x, y)\cos(\omega_m t)$; white lines inside are nodal lines that never move.
+  For a square of side $L$ the exact frequencies are $\omega_{mn} = \frac{c\pi}{L}\sqrt{m^2 + n^2}$, so the ratios to the
+  fundamental are $\sqrt{(m^2+n^2)/2}$ = 1, 1.58, 1.58, 2, 2.24 …: not whole numbers, which is why a drum does not sound like a
+  string. Pairs like $(1,2)$ and $(2,1)$ share a frequency, and eigh returns some mixture of them. For a circle the exact
+  ratios come from zeros of Bessel functions (1, 1.59, 2.14, 2.30 …); the staircase rim of the grid shifts them by a few
+  percent. Units: $c = 1$, square side or circle diameter $L = 1$; time is shown in fundamental periods.
+params:
+  shape: {default: square, type: choice, options: [square, circle], label: Drum shape}
+  n_grid: {default: 30, min: 15, max: 50, step: 5, type: int, label: Grid points per side}
+  periods: {default: 3.0, min: 1, max: 6, step: 0.5, label: Fundamental periods shown}

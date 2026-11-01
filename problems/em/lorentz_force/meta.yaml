@@ -1,0 +1,29 @@
+title: Charged particles in E and B fields
+category: em
+level: beginner
+order: 1
+summary: >
+  The Lorentz force on a batch of charged particles in crossed electric and magnetic fields.
+  The cross product is written with the Levi-Civita tensor $\varepsilon_{ijk}$, so one einsum gives the magnetic force on every
+  particle: each one spirals in a cyclotron helix while the whole swarm drifts along $\mathbf E\times\mathbf B$.
+animated: true
+vector_form: 'm\,\dot{\mathbf v} = q\,(\mathbf E + \mathbf v \times \mathbf B)'
+index_form: 'm_b\,\dot v_{bi} = q_b\,\big(E_i + \varepsilon_{ijk}\,v_{bj}\,B_k\big)'
+translation:
+  - {symbol: 'x_{bi}', code: 'y[:, 0, :]', shape: '(P, 3)', meaning: 'position of particle $b$, component $i \in \{x, y, z\}$'}
+  - {symbol: 'v_{bi}', code: 'y[:, 1, :]', shape: '(P, 3)', meaning: 'velocity of particle $b$'}
+  - {symbol: 'q_b,\ m_b', code: 'q, m', shape: '(P,)', meaning: 'charge and mass of each particle'}
+  - {symbol: 'E_i,\ B_k', code: 'E, B', shape: '(3,)', meaning: 'uniform fields: $\mathbf E$ along $y$, $\mathbf B$ along $z$'}
+  - {symbol: '\varepsilon_{ijk}', code: 'levi_civita(dev)', shape: '(3, 3, 3)', meaning: '$+1$ for even permutations of $(x, y, z)$, $-1$ for odd ones, 0 if an index repeats'}
+  - {symbol: '\varepsilon_{ijk}v_{bj}B_k', code: "einsum('ijk,bj,k->bi', eps, v, B)", shape: '(P, 3)', meaning: 'repeated $j$ and $k$ ⇒ summed: the cross product $\mathbf v\times\mathbf B$'}
+  - {symbol: '\varepsilon_{ijk}E_jB_k/B_lB_l', code: 'drift_velocity(E, B, eps)', shape: '(3,)', meaning: '$\mathbf E\times\mathbf B$ drift velocity, the same for every charge'}
+notes: >
+  Units are dimensionless ($q$, $m$, $E$, $B$ of order one). With $\mathbf E = 0$ each particle circles at the cyclotron
+  frequency $\omega = \lvert q\rvert B/m$ with radius $mv_\perp/(\lvert q\rvert B)$; positive and negative charges turn in opposite senses.
+  Adding $\mathbf E\perp\mathbf B$ makes every guiding centre drift with velocity $\mathbf E\times\mathbf B/B^2$, independent of charge and mass.
+params:
+  B: {default: 1.0, min: 0.2, max: 3.0, step: 0.1, label: 'Magnetic field $B_z$'}
+  E: {default: 0.3, min: 0.0, max: 1.0, step: 0.05, label: 'Electric field $E_y$'}
+  v_par: {default: 0.15, min: 0.0, max: 1.0, step: 0.05, label: 'Initial velocity along $\mathbf B$'}
+  n_particles: {default: 4, min: 1, max: 6, step: 1, type: int, label: Particles}
+  t_max: {default: 25.0, min: 5, max: 60, step: 1, label: Simulated time}

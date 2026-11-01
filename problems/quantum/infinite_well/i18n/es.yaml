@@ -1,0 +1,16 @@
+source_hash: f581627e3195
+title: Partícula en una caja
+summary: La ecuación de Schrödinger independiente del tiempo sobre una malla se convierte en un problema de autovalores matricial $H_{ij}\psi_j = E\psi_i$. torch.linalg.eigh da los estados estacionarios, y una superposición de ellos evoluciona añadiendo una fase $e^{-iE_n t}$ a cada uno y sumando con einsum.
+notes: 'Unidades $\hbar = m = 1$. Las energías exactas son $E_n = n^2\pi^2/(2L^2)$; la malla reproduce las más bajas con un error de una pequeña fracción de un uno por ciento. Cada autoestado solo adquiere una fase, así que $\lvert c_n\rvert$ y la norma nunca cambian: el vaivén de $\lvert\psi\rvert^2$ es pura interferencia entre estados. Tras el tiempo de reconstrucción $T = 4L^2/\pi$ todas las fases $e^{-iE_n t}$ vuelven a valer 1 y el estado inicial reaparece exactamente. Las curvas discontinuas tenues son los estados estacionarios más bajos $\varphi_n(x)$.'
+meanings:
+- 'matriz hamiltoniana $-\tfrac12\,D2$ en los $N$ puntos interiores de la malla (paredes: $\psi = 0$)'
+- '$d^2/dx^2$ en diferencias finitas: $(\psi_{x-1} - 2\psi_x + \psi_{x+1})/dx^2$'
+- energías y autovectores (la columna $n$ es el estado $n$)
+- proyectar el estado inicial sobre la base propia ($x$ repetido ⇒ sumado)
+- '$n$ repetido ⇒ sumado: reconstruir $\psi$ a partir de sus componentes con fase'
+labels:
+  initial: Estado inicial
+  n_states: Estados en la superposición
+  L: Anchura de la caja
+  n_grid: Puntos de malla
+  revivals: Tiempo simulado

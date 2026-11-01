@@ -1,0 +1,30 @@
+title: Burgers equation and shock formation
+category: fluids
+level: intermediate
+order: 1
+summary: >
+  The simplest nonlinear fluid equation: fast parts of a wave catch up with slow parts, the profile steepens and, near $t^* = 1/\max(-u_0')$,
+  a shock forms that viscosity keeps thin but smooth. Derivatives are $N\times N$ matrices, so the PDE is one einsum per term, checked
+  against the exact Cole–Hopf solution.
+animated: true
+vector_form: '\partial_t u + u\,\partial_x u = \nu\,\partial_x^2 u'
+index_form: '\dot u_i = -\tfrac12\,D_{ij}\,u_j^2 + \nu\,L_{ij}\,u_j,\qquad u(x, t) = -2\nu\,\partial_x\ln\varphi,\quad \varphi_t = \nu\,\varphi_{xx}'
+translation:
+  - {symbol: 'u_i', code: 'u', shape: '(N,)', meaning: 'velocity at grid point $x_i$ (periodic)'}
+  - {symbol: 'D_{ij}', code: 'derivative_matrices(...)[0]', shape: '(N, N)', meaning: 'central difference $(f_{i+1} - f_{i-1})/2\Delta x$ as a matrix'}
+  - {symbol: 'L_{ij}', code: 'derivative_matrices(...)[1]', shape: '(N, N)', meaning: 'second difference $(f_{i+1} - 2f_i + f_{i-1})/\Delta x^2$'}
+  - {symbol: 'D_{ij}\,u_j^2', code: "einsum('ij,j->i', D, 0.5 * u**2)", shape: '(N,)', meaning: 'repeated $j$ ⇒ summed: derivative of the flux $\tfrac12 u^2$'}
+  - {symbol: 'L_{ij}\,u_j', code: "einsum('ij,j->i', L, u)", shape: '(N,)', meaning: 'viscous term'}
+  - {symbol: '\textstyle\sum_i u_i\,\Delta x', code: 'mass(u, dx)', shape: '(T,)', meaning: 'conserved: the columns of $D$ and $L$ sum to zero'}
+  - {symbol: 'u_\text{CH}(x, t)', code: 'cole_hopf(x, t, nu, A, U0)', shape: '(N,)', meaning: 'exact solution, a softmax-weighted average over starting points'}
+notes: >
+  Writing $u\,u_x$ as $(\tfrac12u^2)_x$ (conservation form) makes the scheme conserve $\int u\,dx$ exactly. Without viscosity the
+  characteristics $x = x_0 + u_0(x_0)\,t$ cross at $t^* = 1/\max(-u_0')$ and the solution would become multivalued; viscosity instead
+  forms a shock of width $\sim\nu/\Delta u$. Central differences need $|u|\Delta x/\nu \lesssim 2$, which is why $\nu$ cannot go too low on
+  512 points. The Cole–Hopf transform $u = -2\nu\,\partial_x\ln\varphi$ turns Burgers into the heat equation, giving the dashed exact curve.
+  A non-zero offset $U_0$ makes the shock travel.
+params:
+  nu: {default: 0.02, min: 0.01, max: 0.3, step: 0.01, label: 'Viscosity $\nu$'}
+  amplitude: {default: 1.0, min: 0.5, max: 2.0, step: 0.1, label: 'Amplitude $A$ in $u_0 = U_0 + A\sin x$'}
+  offset: {default: 0.0, min: -1.0, max: 1.0, step: 0.1, label: 'Offset $U_0$'}
+  t_max: {default: 3.0, min: 1, max: 6, step: 0.5, label: Simulated time}

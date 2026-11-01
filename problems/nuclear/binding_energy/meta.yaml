@@ -1,0 +1,34 @@
+title: Nuclear binding energy
+category: nuclear
+level: beginner
+order: 3
+summary: >
+  The semi-empirical (liquid-drop) mass formula gives the binding energy of every nucleus from five terms:
+  volume, surface, Coulomb, asymmetry and pairing. Evaluating it on a whole $(Z, N)$ grid at once by
+  broadcasting shows why iron and nickel are the most tightly bound and where the valley of stability runs.
+animated: false
+vector_form: 'B(Z,N) = a_V A - a_S A^{2/3} - a_C\,\frac{Z(Z-1)}{A^{1/3}} - a_A\,\frac{(N-Z)^2}{A} + \delta(Z,N),\qquad A = Z + N'
+index_form: 'B_{zn} = a_V A_{zn} - a_S A_{zn}^{2/3} - a_C\,\frac{Z_z(Z_z-1)}{A_{zn}^{1/3}} - a_A\,\frac{(N_n-Z_z)^2}{A_{zn}} + \delta_{zn},\qquad A_{zn} = Z_z + N_n'
+translation:
+  - {symbol: 'Z_z,\ N_n', code: 'grid(z_max, n_max)', shape: '(Z, 1), (1, N)', meaning: 'proton numbers down a column, neutron numbers along a row'}
+  - {symbol: 'A_{zn}', code: 'z + n', shape: '(Z, N)', meaning: 'broadcasting a column plus a row fills the whole table'}
+  - {symbol: '\delta_{zn}', code: 'pairing(z, n, a_P)', shape: '(Z, N)', meaning: '$+a_P/\sqrt A$ even-even, $-a_P/\sqrt A$ odd-odd, 0 for odd $A$'}
+  - {symbol: 'B_{zn}', code: 'binding_energy(z, n, coeff)', shape: '(Z, N)', meaning: 'binding energy of every nucleus on the chart, MeV'}
+  - {symbol: 'B_{zn}/A_{zn}', code: 'per_nucleon(b, z, n)', shape: '(Z, N)', meaning: 'binding energy per nucleon (heatmap)'}
+  - {symbol: '\max_{z} B_{zn}\big|_{A}', code: 'most_stable(b, z, n)', shape: '(K,)', meaning: 'most bound isobar for each mass number (red line)'}
+  - {symbol: 'Z_0(A)', code: 'stability_line(mass, coeff)', shape: '(K,)', meaning: '$A/(2 + \tfrac{a_C}{2a_A}A^{2/3})$ from $\partial B/\partial Z = 0$'}
+notes: >
+  Volume binding grows like $A$, but surface nucleons have fewer neighbours ($-A^{2/3}$) and the proton repulsion
+  grows like $Z^2/A^{1/3}$; the balance puts the maximum of $B/A$ near $A \approx 56$–$62$, which is why fusion of
+  light nuclei and fission of heavy ones both release energy. The asymmetry term pulls nuclei towards $N = Z$,
+  the Coulomb term pushes heavy nuclei to $N > Z$: together they give the curved valley of stability
+  $Z_0 \approx A/(2 + 0.0154\,A^{2/3})$. The formula is good to about 1 % for medium and heavy nuclei but misses
+  the very light ones (⁴He is far more bound than a liquid drop) and the shell effects at magic numbers.
+  The default coefficients are a common least-squares fit; changing them shows which term shapes which feature.
+params:
+  a_V: {default: 15.8, min: 10.0, max: 20.0, step: 0.1, label: 'Volume $a_V$', unit: MeV}
+  a_S: {default: 18.3, min: 10.0, max: 25.0, step: 0.1, label: 'Surface $a_S$', unit: MeV}
+  a_C: {default: 0.714, min: 0.0, max: 1.5, step: 0.01, label: 'Coulomb $a_C$', unit: MeV}
+  a_A: {default: 23.2, min: 0.0, max: 40.0, step: 0.1, label: 'Asymmetry $a_A$', unit: MeV}
+  a_P: {default: 12.0, min: 0.0, max: 20.0, step: 0.5, label: 'Pairing $a_P$', unit: MeV}
+  z_max: {default: 110, min: 30, max: 130, step: 5, type: int, label: 'Largest $Z$ on the grid'}

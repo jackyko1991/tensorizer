@@ -1,0 +1,17 @@
+source_hash: 3434371fc2c6
+title: Polarización con matrices de Jones
+summary: 'La polarización de la luz es un 2-vector complejo $(E_x, E_y)$ y cada polarizador o lámina de onda es una matriz compleja $2\times 2$. La luz atraviesa una lámina de onda y luego un polarizador giratorio: la elipse del campo $\mathbf E$ y la intensidad transmitida se obtienen con einsum, reproduciendo la ley de Malus y convirtiendo luz lineal en circular.'
+notes: La luz parte polarizada linealmente con el ángulo de entrada e intensidad $I_0 = 1$. La curva gris discontinua de la derecha es la ley de Malus $I_0\cos^2\theta$ (sin lámina de onda); la curva azul es lo que pasa tras la lámina. Una lámina de cuarto de onda a 45° de la entrada produce luz circular ($\lvert E_x\rvert$ y $\lvert E_y\rvert$ iguales, desfasadas 90°), así que con cualquier ángulo del polarizador pasa $I_0/2$. Una lámina de media onda a $\alpha$ gira la luz lineal $2\alpha$. Un vector de Jones individual siempre está totalmente polarizado; la luz no polarizada se trata promediando las intensidades de dos entradas ortogonales (usado para la comprobación con tres polarizadores que imprime main.py).
+meanings:
+- 'vector de Jones: amplitudes complejas de $E_x$ y $E_y$ (la diferencia de fase fija la forma)'
+- gira el sistema del laboratorio hacia los ejes propios del elemento
+- conserva solo el campo a lo largo del eje de transmisión con ángulo $\theta$
+- 'retrasa el eje lento en $\Gamma$: $\Gamma = \pi/2$ cuarto de onda, $\Gamma = \pi$ media onda'
+- encadenar elementos ($j$ repetido sumado); el primer elemento que encuentra la luz está a la derecha
+- hacer pasar la luz por la óptica
+- '$i$ repetido ⇒ sumado: intensidad'
+- 'el campo real a lo largo de un período: traza la elipse de polarización'
+labels:
+  plate: Lámina de onda
+  plate_angle: Eje rápido de la lámina $\alpha$
+  input_angle: Ángulo de polarización de entrada

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Neutrino oscillations: a source emits muon neutrinos of energy E; after a baseline L a detector may see a different flavour">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- source -->
+    <rect x="14" y="58" width="30" height="40" rx="4" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <!-- detector -->
+    <rect x="196" y="50" width="30" height="56" rx="4" fill="none" stroke="#374151" stroke-width="2"/>
+    <line x1="203" y1="60" x2="203" y2="96" stroke="#9ca3af" stroke-width="1.5"/>
+    <line x1="211" y1="60" x2="211" y2="96" stroke="#9ca3af" stroke-width="1.5"/>
+    <line x1="219" y1="60" x2="219" y2="96" stroke="#9ca3af" stroke-width="1.5"/>
+    <!-- flight path with the flavour mixture wiggling along it -->
+    <line x1="44" y1="78" x2="196" y2="78" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <path d="M48,78 C58,62 68,62 78,78 C88,94 98,94 108,78 C118,62 128,62 138,78 C148,94 158,94 168,78 C174,68 180,66 186,70" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <!-- neutrinos in flight -->
+    <circle cx="62" cy="78" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="150" cy="78" r="6" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="70" y1="78" x2="100" y2="78" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="52" y="52" font-style="italic">ν</text><text x="60" y="56" font-size="10" font-style="italic">μ</text>
+    <text x="80" y="110" font-style="italic">E</text>
+    <!-- baseline -->
+    <line x1="44" y1="130" x2="196" y2="130" stroke="#374151" stroke-width="1.5"/>
+    <line x1="44" y1="124" x2="44" y2="136" stroke="#374151" stroke-width="1.5"/>
+    <line x1="196" y1="124" x2="196" y2="136" stroke="#374151" stroke-width="1.5"/>
+    <text x="116" y="148" font-style="italic">L</text>
+    <text x="186" y="40" font-style="italic">ν</text><text x="194" y="44" font-size="10">e, μ, τ</text>
+  </g>
+</svg>

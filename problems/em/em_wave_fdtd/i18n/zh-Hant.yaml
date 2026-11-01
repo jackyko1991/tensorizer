@@ -1,0 +1,17 @@
+source_hash: 8807e34cb0a8
+title: 電磁波（FDTD）
+summary: 在 Yee 網格上將馬克士威的兩條旋度方程式隨時間推進。旋度寫成 $\varepsilon_{ijk}\,\partial_j F_k$：一張有限差分表在一次 einsum 中與 Levi-Civita 符號縮並。來自點源或線源的波撞上介電質塊，減速、偏折並部分反射，而阻尼邊界吸收離開盒子的波。
+notes: 單位取 $c = \varepsilon_0 = \mu_0 = 1$，網格大小 $\Delta x = 1$。$\mathbf E$ 與 $\mathbf H$ 相隔半格（$\partial\mathbf E$ 用前向差分，$\partial\mathbf H$ 用後向差分），交替更新——即蛙跳式 Yee 法。波源是「軟」的：它加到 $E_z$ 上，因此反射波可直接穿過。吸收邊界只是把場乘上一個略小於 1、朝牆壁平滑增強的因子；實際程式改用完美匹配層（PML）。在介質塊內波長縮短為原來的 $n = \sqrt{\varepsilon_r}$ 分之一；正向入射時振幅反射比例為 $(1 - n)/(1 + n)$。
+meanings:
+- 網格上的場分量；TM 模態：只有 $E_z$、$H_x$、$H_y$ 不為零
+- 有限差分表；二維中第 $j = z$ 列為零
+- Levi-Civita 符號
+- 重複的 $j, k$ ⇒ 求和：每個網格的旋度
+- 相對電容率：真空中為 1，介質塊中為 $\varepsilon_\text{block}$（$n = \sqrt{\varepsilon_r}$）
+- 時間步長 $S\,\Delta x/(c\sqrt2)$；$S > 1$ 會被拒絕，因為此法會發散
+labels:
+  source: 波源
+  eps_block: 介質塊電容率 $\varepsilon_r$
+  wavelength: 真空波長
+  courant: Courant 數 $S$
+  t_max: 模擬時間

@@ -1,0 +1,18 @@
+source_hash: b846fb498443
+title: Interferencia de doble rendija
+summary: 'La ecuación de ondas escalar 2D resuelta por diferencias finitas: el laplaciano es un tensor de plantilla $3\times 3$ aplicado con conv2d. Una onda plana incide sobre una pared con dos rendijas y las franjas de interferencia se forman en una pantalla detrás.'
+notes: Las longitudes están en celdas de malla ($h = 1$) y $c = 1$. Las líneas punteadas de la pantalla marcan dónde la diferencia de camino es un número entero de longitudes de onda, $y_m = L\tan(\arcsin(m\lambda/d))$; para ángulos pequeños su separación es $\lambda L/d$. Las rendijas no son diminutas frente a $\lambda$, así que la envolvente de difracción de cada rendija atenúa las franjas exteriores.
+meanings:
+- campo de ondas en la malla, fila $a = y$, columna $b = x$
+- '$\left[\begin{smallmatrix}0&1&0\\1&-4&1\\0&1&0\end{smallmatrix}\right]$: la plantilla del laplaciano de 5 puntos'
+- '$i$ repetido ⇒ sumado sobre $x$ e $y$: el laplaciano como convolución'
+- 'leapfrog: $2u^n - u^{n-1} + (c\Delta t)^2\,\nabla^2 u^n$, amortiguado por $\sigma$'
+- amortiguamiento de esponja, no nulo solo en el marco absorbente
+- condición de estabilidad CFL del esquema explícito en 2D
+- intensidad promediada en el tiempo a lo largo de la columna de la pantalla
+labels:
+  wavelength: Longitud de onda $\lambda$
+  slit_sep: Separación entre rendijas $d$
+  slit_width: Anchura de rendija
+  screen_dist: Distancia barrera → pantalla $L$
+  t_max: Tiempo simulado

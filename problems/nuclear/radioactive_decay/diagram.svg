@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Radioactive decay: a sample of nuclei, some already decayed; one nucleus emits a particle with decay constant lambda">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- sample container -->
+    <rect x="22" y="28" width="128" height="104" rx="8" fill="none" stroke="#374151" stroke-width="2"/>
+    <!-- undecayed nuclei -->
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1.5">
+      <circle cx="44" cy="50" r="8"/><circle cx="96" cy="50" r="8"/><circle cx="122" cy="50" r="8"/>
+      <circle cx="70" cy="76" r="8"/><circle cx="122" cy="76" r="8"/>
+      <circle cx="44" cy="102" r="8"/><circle cx="96" cy="102" r="8"/>
+      <circle cx="70" cy="114" r="8"/>
+    </g>
+    <!-- decayed nuclei -->
+    <g fill="#e5e7eb" stroke="#9ca3af" stroke-width="1.5">
+      <circle cx="70" cy="50" r="8"/><circle cx="44" cy="76" r="8"/><circle cx="122" cy="102" r="8"/>
+    </g>
+    <!-- the one decaying now -->
+    <circle cx="96" cy="76" r="8" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="96" cy="76" r="13" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 3"/>
+    <line x1="110" y1="70" x2="196" y2="40" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <circle cx="200" cy="38" r="4" fill="#dc2626"/>
+    <text x="138" y="50" font-style="italic" fill="#b91c1c">λ</text>
+    <!-- labels -->
+    <text x="162" y="100" font-style="italic">N(t)</text>
+    <text x="162" y="120" font-size="13" fill="#374151">nuclei left</text>
+  </g>
+</svg>

@@ -1,0 +1,18 @@
+source_hash: 85a6136cffba
+title: Loi de Snell-Descartes en milieux stratifiés
+summary: Un éventail de rayons lumineux traverse trois couches d'indices de réfraction différents. La forme vectorielle de la loi de Snell-Descartes réfracte tous les rayons à la fois en un seul einsum, et passe à une réflexion miroir partout où la réflexion totale interne intervient.
+notes: 'Les rayons se propagent à la vitesse $c/n$, donc la ligne en tirets passant par l''extrémité des rayons est un front d''onde : il prend du retard dans les couches denses. Par défaut, la couche inférieure est de l''air ($n = 1$) ; les rayons plus inclinés que l''angle critique $\arcsin(n_3/n_2)$ à cette interface subissent une réflexion totale interne et remontent. Rendez deux indices égaux pour faire disparaître une interface.'
+meanings:
+- direction unitaire du rayon $r$, composante $i \in \{x, y\}$
+- normale unitaire à la surface, tournée vers le rayon incident
+- rapport d'indices $n_1/n_2$ à l'interface atteinte par chaque rayon
+- '$j$ répété ⇒ sommé : $\cos\theta_i$ de chaque rayon'
+- direction réfractée (toujours un vecteur unitaire)
+- direction miroir, utilisée là où $1 - \eta^2(1 - c^2) < 0$ (RTI)
+labels:
+  n1: Indice de la couche supérieure $n_1$
+  n2: Indice de la couche médiane $n_2$
+  n3: Indice de la couche inférieure $n_3$
+  n_rays: Rayons de l'éventail
+  max_angle: Angle du rayon le plus ouvert
+  t_max: Durée simulée

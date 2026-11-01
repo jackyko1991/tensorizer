@@ -1,0 +1,17 @@
+source_hash: 673b0fc9f634
+title: Teoría cinética de un gas ideal
+summary: Cientos de discos duros rebotan dentro de una caja. Todos los discos parten con la misma rapidez, pero las colisiones elásticas redistribuyen la energía hasta que las velocidades siguen la distribución de Maxwell–Boltzmann, y el momento que los discos transfieren a las paredes reproduce la ley de los gases ideales $PA = NkT$.
+notes: 'Unidades reducidas: lado de la caja 1, masa 1, constante de Boltzmann 1. Los tensores de pares son $N\times N$, lo cual está bien para unos cientos de discos (los códigos reales usan listas de celdas). Un disco que toca a otros dos en el mismo paso espera un paso, de modo que cada colisión es un intercambio limpio entre dos cuerpos y la energía se conserva salvo errores de redondeo. La presión es el momento $2m\lvert v_\perp\rvert$ entregado en cada rebote, sumado durante toda la simulación y dividido entre tiempo × longitud de pared. Resulta unos pocos por ciento mayor que $NkT/A$ porque los propios discos ocupan área: la primera corrección al gas ideal, aproximadamente $(1 + \eta^2/8)/(1 - \eta)^2$ para una fracción de área $\eta$.'
+meanings:
+- posición del disco $a$, componente $i \in \{x, y\}$
+- velocidad del disco $a$
+- todos los desplazamientos por pares a la vez, con broadcasting
+- '$i$ repetido ⇒ sumado: distancia al cuadrado de cada par'
+- velocidad relativa proyectada sobre la normal de colisión, para los $P$ pares que colisionan
+- energía cinética total, igual a $NkT$ en 2D
+- distribución de velocidades 2D $(mv/kT)\exp(-mv^2/2kT)$
+labels:
+  n_particles: Partículas
+  radius: Radio de los discos
+  speed: Rapidez inicial
+  t_max: Tiempo simulado

@@ -1,0 +1,17 @@
+source_hash: 4d0cdb4cbe20
+title: Campo magnético de espiras (Biot–Savart)
+summary: La ley de Biot–Savart convierte un hilo en una suma sobre segmentos cortos. El producto vectorial $d\mathbf l\times\mathbf r$ es el tensor de Levi-Civita $\varepsilon_{ijk}$ contraído con dos vectores, así que un único einsum sobre ($i, j, k$, segmento) da el campo de toda la bobina en cada punto de la malla. El radio de la espira crece y decrece mientras el campo en el plano $x$–$z$ y sobre el eje lo siguen.
+notes: 'Unidades SI ($\mu_0 = 4\pi\times 10^{-7}$ T·m/A), campo mostrado en μT. Las espiras están en planos horizontales, de modo que el plano $x$–$z$ corta cada una en dos puntos (⊙ corriente saliendo de la página, ⊗ entrando). Las bobinas de Helmholtz (separación $R$, corrientes iguales) producen un campo casi uniforme entre ellas; las bobinas anti-Helmholtz (corrientes opuestas) dan un campo que se anula en el centro y crece linealmente: la trampa usada para átomos fríos. Los puntos de la malla junto al hilo usan una pequeña longitud de suavizado para que el campo siga siendo finito.'
+meanings:
+- punto de campo $g$ en el plano $y = 0$
+- punto medio y vector director del segmento de hilo $s$
+- de cada segmento a cada punto de campo (broadcasting)
+- 'símbolo de Levi-Civita: el producto vectorial como tensor'
+- $j, k$ repetidos ⇒ producto vectorial; $s$ repetido ⇒ suma sobre el hilo
+- valor exacto $\mu_0 I R^2/(2(R^2 + z^2)^{3/2})$ por espira, para comprobar la suma
+labels:
+  layout: Bobinas
+  current: Corriente
+  radius: Radio medio de la espira
+  n_segments: Segmentos por espira
+  n_grid: Flechas por lado

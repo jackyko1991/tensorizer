@@ -1,0 +1,19 @@
+source_hash: cd1d0cc0a127
+title: Luftspiegelung aus der Strahlgleichung
+summary: Über einer heißen Straße ist die Luft dünner, daher sinkt ihr Brechungsindex $n(y)$ nahe am Boden. Die Strahlgleichung der geometrischen Optik krümmt Licht zu höherem $n$ hin; ihre Integration mit RK4 für einen Fächer von Blickrichtungen zeigt, dass auf die Straße gerichtete Strahlen wieder nach oben biegen, sodass das Auge ein zweites, auf dem Kopf stehendes Bild eines fernen Objekts sieht.
+notes: 'Die Strahlen werden vom Auge aus rückwärts verfolgt (Lichtwege sind umkehrbar): Jeder Strahl beantwortet die Frage „Was sieht das Auge, wenn es in diese Richtung blickt?“. Leicht abwärts gerichtete Strahlen biegen in der Schicht mit kleinerem Index nach oben und treffen das Objekt von unten, sodass tiefere Blickwinkel höhere Teile des Objekts zeigen — das Bild ist umgekehrt. Steilere Strahlen erreichen die Straße (grau). Die vertikale Skala ist etwa 100-fach überhöht: Echte Indexunterschiede sind $\sim 10^{-5}$, und die Winkel liegen im Milliradiant-Bereich. Gerechnet wird in float64, weil sich $n\cos\theta$ erst in der 7. Nachkommastelle ändert.'
+meanings:
+- Ort $(x, y)$ des Strahls $r$
+- 'optischer Richtungsvektor: Tangenteneinheitsvektor mal $n$'
+- Brechungsindex, am kleinsten an der heißen Straßenoberfläche $y = 0$
+- 'nur die $y$-Komponente ist ungleich null: $(0,\ \tfrac{\Delta n}{h}\,e^{-y/h})$'
+- die Strahlgleichung als System erster Ordnung, mit RK4 integriert
+- 'wiederholtes $j$ ⇒ summiert: $\lvert\mathbf p\rvert$ muss gleich $n$ bleiben (Genauigkeitstest)'
+- 'Snelliussches Gesetz für horizontale Schichten: entlang jedes Strahls erhalten'
+labels:
+  delta_n: Indexabfall an der Straße $\Delta n$
+  scale_height: Dicke der heißen Schicht $h$
+  eye_height: Augenhöhe
+  distance: Abstand zum Objekt
+  max_dip: Steilster Blick nach unten
+  n_rays: Strahlen im Fächer

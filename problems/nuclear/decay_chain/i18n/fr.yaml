@@ -1,0 +1,16 @@
+source_hash: 006d4ce1966d
+title: Chaîne de désintégration (équations de Bateman)
+summary: Un noyau père se désintègre en un noyau fils radioactif, qui se désintègre en un produit final stable. Les trois équations cinétiques forment un seul système linéaire $\dot N_i = A_{ij} N_j$, résolu exactement par l'exponentielle de matrice $e^{At}$ pour tous les instants à la fois et vérifié avec RK4. La chaîne par défaut est le générateur médical $^{99}$Mo → $^{99m}$Tc → $^{99}$Tc.
+notes: 'Chaque colonne de $\mathsf A$ est de somme nulle, donc $\sum_i N_i$ ne change jamais : chaque désintégration fait descendre un noyau dans la chaîne. Pour deux membres, la solution exacte (de Bateman) est $N_2 = N_1(0)\,\frac{\lambda_1}{\lambda_2 - \lambda_1}\,(e^{-\lambda_1 t} - e^{-\lambda_2 t})$. Quand le fils a une vie plus courte ($\lambda_2 > \lambda_1$), les activités s''accrochent : le rapport $a_2/a_1$ tend vers $\lambda_2/(\lambda_2-\lambda_1)$ (équilibre transitoire), et vers 1 quand le père vit bien plus longtemps (équilibre séculaire, essayez une demi-vie du père de 1000 h). Donnez au fils une vie plus longue et aucun équilibre ne s''établit. Simplifications : le $^{99}$Mo n''alimente en réalité le $^{99m}$Tc que dans environ 88 % des désintégrations, et le $^{99}$Tc (demi-vie 211 000 ans) est traité comme stable.'
+meanings:
+- $\ln 2/T_i$, avec $\lambda_3 = 0$ pour le produit final stable
+- $-\lambda_i$ sur la diagonale, $+\lambda_i$ juste en dessous
+- '$j$ répété ⇒ sommé : le second membre utilisé par RK4'
+- une exponentielle de matrice par instant, en lot sur $t$
+- populations à chaque instant à partir du vecteur initial
+- 'activité : désintégrations par heure de chaque membre'
+labels:
+  half_life_parent: Demi-vie du père $T_1$
+  half_life_daughter: Demi-vie du fils $T_2$
+  t_max: Durée
+  rk4_steps: Pas RK4

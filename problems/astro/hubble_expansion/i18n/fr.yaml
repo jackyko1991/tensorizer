@@ -1,0 +1,22 @@
+source_hash: b6ae9044b340
+title: Expansion de Hubble
+summary: 'Les galaxies occupent une grille comobile fixe, étirée par le facteur d''échelle $a(t)$. Un seul produit extérieur $x_{gi} = a\,q_{gi}$ déplace toutes les galaxies et, depuis n''importe quelle galaxie choisie, les autres s''éloignent selon $v = H d$. Un photon qui traverse la grille est étiré du même facteur : $1 + z = a_\mathrm{obs}/a_\mathrm{emit}$.'
+notes: 'Unités : Mpc, Gyr et km/s/Mpc. Dans le modèle dominé par la matière (Einstein–de Sitter), $a = (t/t_0)^{2/3}$, donc $H = 2/(3t)$ décroît avec le temps ; dans le modèle de de Sitter, $a = e^{H_0 (t - t_0)}$ et $H$ reste constant. Dans les deux cas, $v = Hd$ est exacte pour tout observateur : déplacez l''observateur et les points bleus restent sur la même droite que les cercles vides vus depuis le centre. Les galaxies elles-mêmes ne se déplacent pas dans l''espace (pas de vitesses propres) : c''est l''espace entre elles qui grandit. Le photon parcourt une distance comobile $c\,dt/a$ à chaque pas, et des vitesses supérieures à $c$ pour les galaxies lointaines sont permises, car rien ne dépasse la lumière localement.'
+meanings:
+- coordonnées comobiles de la galaxie $g$ (constantes)
+- facteur d'échelle à chaque instant, $a = 1$ aujourd'hui
+- 'positions physiques : un produit extérieur, aucun indice sommé'
+- '$\dot a/a$ : $2/(3t)$ pour la matière, constant pour de Sitter'
+- vitesse de flot de Hubble de chaque galaxie
+- positions vues depuis l'observateur $o$ (soustraction par broadcasting)
+- '$g, i$ répétés ⇒ sommés : pente des moindres carrés de $v$ en fonction de $d$'
+- étirement de la longueur d'onde du photon depuis l'émission
+labels:
+  model: Loi d'expansion $a(t)$
+  H0: Constante de Hubble actuelle $H_0$
+  n_grid: Galaxies par côté
+  spacing: Pas de la grille comobile
+  observer_x: Colonne de l'observateur (pas de grille)
+  observer_y: Ligne de l'observateur (pas de grille)
+  a_start: Facteur d'échelle initial $a_\mathrm{emit}$
+  a_end: Facteur d'échelle final $a_\mathrm{obs}$

@@ -1,0 +1,16 @@
+source_hash: f581627e3195
+title: Teilchen im Kasten
+summary: Die zeitunabhängige Schrödinger-Gleichung auf einem Gitter wird zu einem Matrix-Eigenwertproblem $H_{ij}\psi_j = E\psi_i$. torch.linalg.eigh liefert die stationären Zustände, und eine Überlagerung von ihnen entwickelt sich in der Zeit, indem man jedem eine Phase $e^{-iE_n t}$ anhängt und mit einsum summiert.
+notes: Einheiten $\hbar = m = 1$. Die exakten Energien sind $E_n = n^2\pi^2/(2L^2)$; das Gitter reproduziert die tiefsten auf einen kleinen Bruchteil eines Prozents. Jeder Eigenzustand erhält nur eine Phase, daher ändern sich $\lvert c_n\rvert$ und die Norm nie — das Hin- und Herschwappen von $\lvert\psi\rvert^2$ ist reine Interferenz zwischen Zuständen. Nach der Wiederkehrzeit $T = 4L^2/\pi$ ist jede Phase $e^{-iE_n t}$ wieder 1, und der Anfangszustand erscheint exakt wieder. Die blassen gestrichelten Kurven sind die tiefsten stationären Zustände $\varphi_n(x)$.
+meanings:
+- 'Hamilton-Matrix $-\tfrac12\,D2$ auf den $N$ inneren Gitterpunkten (Wände: $\psi = 0$)'
+- 'Finite-Differenzen-$d^2/dx^2$: $(\psi_{x-1} - 2\psi_x + \psi_{x+1})/dx^2$'
+- Energien und Eigenvektoren (Spalte $n$ ist Zustand $n$)
+- Projektion des Anfangszustands auf die Eigenbasis (wiederholtes $x$ ⇒ summiert)
+- 'wiederholtes $n$ ⇒ summiert: $\psi$ aus seinen phasenverschobenen Komponenten wieder aufbauen'
+labels:
+  initial: Anfangszustand
+  n_states: Zustände in der Überlagerung
+  L: Kastenbreite
+  n_grid: Gitterpunkte
+  revivals: Simulierte Zeit

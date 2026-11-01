@@ -1,0 +1,15 @@
+source_hash: 1470d7e1b6a9
+title: Elektrisches Feld von Punktladungen
+summary: Coulombsches Gesetz und Superposition auf einem Gitter. Broadcasting baut den Abstandsvektor von jeder Ladung zu jedem Gitterpunkt in einem Schritt auf, und ein einziges einsum über den Ladungsindex addiert ihre Felder. Eine Ladung bewegt sich auf einem Kreis, und die Feldlinien folgen ihr.
+notes: Einheiten mit $k = 1$. Die Ladungen sind Punktladungen in 3D, also fällt jedes Feld wie $1/r^2$ ab; wir betrachten nur die Ebene, die sie enthält. Die Pfeile zeigen von positiven Ladungen (rot) weg und zu negativen (blau) hin; bei zwei gleichen Vorzeichen entsteht zwischen ihnen ein neutraler Punkt, an dem das Feld verschwindet.
+meanings:
+- Gitterpunkt $g$, Komponente $i \in \{x, y\}$
+- Ort der Ladung $q$
+- Wert jeder Ladung
+- 'Broadcasting: der Vektor von jeder Ladung zu jedem Gitterpunkt'
+- 'wiederholtes $j$ ⇒ summiert: Abstände'
+- 'wiederholtes $q$ ⇒ summiert: Superposition aller Ladungen'
+labels:
+  q_fixed: Feste Ladung
+  q_moving: Bewegte Ladung
+  n_grid: Pfeile pro Seite

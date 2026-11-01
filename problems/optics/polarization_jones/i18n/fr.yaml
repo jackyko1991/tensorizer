@@ -1,0 +1,17 @@
+source_hash: 3434371fc2c6
+title: Polarisation et matrices de Jones
+summary: 'La polarisation de la lumière est un 2-vecteur complexe $(E_x, E_y)$ et chaque polariseur ou lame d''onde est une matrice complexe $2\times 2$. La lumière traverse une lame d''onde puis un polariseur tournant : l''ellipse du champ $\mathbf E$ et l''intensité transmise découlent d''einsum, ce qui reproduit la loi de Malus et transforme une lumière rectiligne en lumière circulaire.'
+notes: La lumière part polarisée rectilignement selon l'angle d'entrée avec une intensité $I_0 = 1$. La courbe grise en tirets à droite est la loi de Malus $I_0\cos^2\theta$ (sans lame) ; la courbe bleue est ce qui passe après la lame. Une lame quart d'onde à 45° de l'entrée produit une lumière circulaire ($\lvert E_x\rvert$ et $\lvert E_y\rvert$ égaux, déphasés de 90°), si bien que chaque angle du polariseur transmet $I_0/2$. Une lame demi-onde à $\alpha$ fait tourner une lumière rectiligne de $2\alpha$. Un vecteur de Jones est toujours totalement polarisé ; la lumière non polarisée est traitée en moyennant les intensités de deux entrées orthogonales (utilisé pour le test à trois polariseurs affiché par main.py).
+meanings:
+- 'vecteur de Jones : amplitudes complexes de $E_x$ et $E_y$ (le déphasage fixe la forme)'
+- fait tourner le repère du laboratoire sur les axes propres de l'élément
+- ne garde que le champ selon l'axe de transmission à l'angle $\theta$
+- 'retarde l''axe lent de $\Gamma$ : $\Gamma = \pi/2$ quart d''onde, $\Gamma = \pi$ demi-onde'
+- chaînage des éléments ($j$ répété sommé) ; le premier élément rencontré par la lumière est à droite
+- envoie la lumière à travers l'optique
+- '$i$ répété ⇒ sommé : intensité'
+- 'le champ réel sur une période : il décrit l''ellipse de polarisation'
+labels:
+  plate: Lame d'onde
+  plate_angle: Axe rapide de la lame $\alpha$
+  input_angle: Angle de polarisation d'entrée

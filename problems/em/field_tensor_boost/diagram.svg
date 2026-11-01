@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="A pure electric field E in frame S; an observer frame S-prime boosted with velocity beta along x sees a stronger E-prime plus a magnetic field B-prime into the page">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrow-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrow-o" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrow-gy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9ca3af"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <line x1="26.0" y1="132.0" x2="104.0" y2="132.0" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow-k)"/>
+    <line x1="26.0" y1="132.0" x2="26.0" y2="54.0" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow-k)"/>
+    <text x="22" y="150" font-style="italic" fill="#4b5563" font-size="13">S</text>
+    <line x1="136.0" y1="132.0" x2="214.0" y2="132.0" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow-k)"/>
+    <line x1="136.0" y1="132.0" x2="136.0" y2="54.0" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow-k)"/>
+    <text x="132" y="150" font-style="italic" fill="#4b5563" font-size="13">S′</text>
+    <line x1="62.0" y1="122.0" x2="62.0" y2="66.0" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <text x="70" y="82" font-style="italic" fill="#b91c1c">E</text>
+    <line x1="168.0" y1="124.0" x2="168.0" y2="50.0" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <text x="176" y="68" font-style="italic" fill="#b91c1c">E′</text>
+    <circle cx="206" cy="100" r="8" fill="none" stroke="#9333ea" stroke-width="1.5"/><path d="M201.0,95.0 L211.0,105.0 M211.0,95.0 L201.0,105.0" stroke="#9333ea" stroke-width="1.5"/>
+    <text x="200" y="126" font-style="italic" fill="#7e22ce">B′</text>
+    <line x1="140.0" y1="26.0" x2="196.0" y2="26.0" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#arrow-o)"/>
+    <text x="202" y="31" font-style="italic" fill="#b45309">β</text>
+    <path d="M96,92 Q113,80 128,92" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-gy)"/>
+  </g>
+</svg>

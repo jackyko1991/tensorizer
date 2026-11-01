@@ -1,0 +1,17 @@
+source_hash: e7727640a017
+title: Contraintes, déformations et cercle de Mohr
+summary: Mécanique des milieux continus d'une plaque élastique. La loi de Hooke est un tenseur de rigidité d'ordre 4 $C_{ijkl}$ construit à partir des coefficients de Lamé avec einsum ; une rampe de chargement (traction, puis cisaillement) déforme la plaque, la déformation provient du gradient du champ de déplacement, et les contraintes principales de eigh — représentées par une ellipse des contraintes et le cercle de Mohr.
+notes: 'La plaque est mince et ses faces sont libres, donc $\sigma_{zz} = 0$ (contraintes planes) — mais elle s''amincit tout de même : $\varepsilon_{zz} = -\nu(\sigma_{xx} + \sigma_{yy})/E$. Dans la moitié uniaxiale de la rampe, on lit le module de Young $E = \sigma_{xx}/\varepsilon_{xx} = \mu(3\lambda + 2\mu)/(\lambda + \mu)$ et le coefficient de Poisson $\nu = -\varepsilon_{yy}/\varepsilon_{xx} = \lambda/2(\lambda + \mu)$. L''ajout de cisaillement fait tourner les axes principaux par rapport à $x$ et $y$ ; sur le cercle de Mohr, les points $(\sigma_{xx}, \tau_{xy})$ et $(\sigma_{yy}, -\tau_{xy})$ sont les extrémités d''un diamètre, et le cercle coupe l''axe aux contraintes principales. Le rayon est la contrainte de cisaillement maximale dans le plan, qui gouverne la plasticité des métaux ductiles (Tresca). Les déplacements sont minuscules et exagérés sur le dessin.'
+meanings:
+- trois produits extérieurs einsum de $\delta$ ; 81 composantes, seulement 2 constantes indépendantes
+- 'inverse de $C$ sur les tenseurs symétriques : $\varepsilon = S:\sigma$ (pinv de la matrice 9×9)'
+- déplacement de chaque point matériel
+- gradient du déplacement par différences finies (torch.gradient)
+- partie symétrique du gradient du déplacement
+- '$k, l$ répétés ⇒ sommés : loi de Hooke'
+- contraintes principales et leurs directions
+labels:
+  E: Module de Young $E$
+  poisson: Coefficient de Poisson $\nu$
+  sigma_max: Traction finale $\sigma_{xx}$
+  tau_max: Cisaillement final $\tau_{xy}$

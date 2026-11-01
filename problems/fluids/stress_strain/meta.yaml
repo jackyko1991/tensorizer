@@ -1,0 +1,30 @@
+title: Stress, strain and Mohr's circle
+category: fluids
+level: intermediate
+order: 3
+summary: >
+  Continuum mechanics of an elastic plate. Hooke's law is a rank-4 stiffness tensor $C_{ijkl}$ built from the Lamé constants with einsum;
+  a loading ramp (tension, then shear) deforms the plate, the strain comes from the gradient of the displacement field, and the principal
+  stresses from eigh — drawn as a stress ellipse and Mohr's circle.
+animated: true
+vector_form: '\boldsymbol\varepsilon = \tfrac12\big(\nabla\mathbf u + (\nabla\mathbf u)^\mathsf T\big),\qquad \boldsymbol\sigma = \mathsf C : \boldsymbol\varepsilon = \lambda\,(\operatorname{tr}\boldsymbol\varepsilon)\,\mathbf I + 2\mu\,\boldsymbol\varepsilon'
+index_form: '\varepsilon_{ij} = \tfrac12(\partial_i u_j + \partial_j u_i),\qquad \sigma_{ij} = C_{ijkl}\,\varepsilon_{kl},\qquad C_{ijkl} = \lambda\,\delta_{ij}\delta_{kl} + \mu\,(\delta_{ik}\delta_{jl} + \delta_{il}\delta_{jk}),\qquad \sigma_{ij}n_j = \sigma\,n_i'
+translation:
+  - {symbol: 'C_{ijkl}', code: 'stiffness(lam, mu, delta)', shape: '(3, 3, 3, 3)', meaning: 'three einsum outer products of $\delta$; 81 entries, only 2 independent constants'}
+  - {symbol: 'S_{ijkl}', code: 'compliance(C)', shape: '(3, 3, 3, 3)', meaning: 'inverse of $C$ on symmetric tensors: $\varepsilon = S:\sigma$ (pinv of the 9×9 matrix)'}
+  - {symbol: 'u_i = \varepsilon_{ij}x_j', code: "einsum('ij,...j->...i', eps, x)", shape: '(n, n, 3, 3)', meaning: 'displacement of every material point'}
+  - {symbol: '\partial_i u_j', code: 'gradient(u, x)', shape: '(n, n, 3, 3, 3)', meaning: 'displacement gradient by finite differences (torch.gradient)'}
+  - {symbol: '\varepsilon_{ij}', code: 'strain(grad_u)', shape: '(..., 3, 3)', meaning: 'symmetric part of the displacement gradient'}
+  - {symbol: 'C_{ijkl}\varepsilon_{kl}', code: "einsum('ijkl,...kl->...ij', C, eps)", shape: '(..., 3, 3)', meaning: 'repeated $k, l$ ⇒ summed: Hooke''s law'}
+  - {symbol: '\sigma_{ij}n_j = \sigma\,n_i', code: 'torch.linalg.eigh(sigma)', shape: '(3,), (3, 3)', meaning: 'principal stresses and their directions'}
+notes: >
+  The plate is thin and its faces are free, so $\sigma_{zz} = 0$ (plane stress) — but it still gets thinner: $\varepsilon_{zz} = -\nu(\sigma_{xx} + \sigma_{yy})/E$.
+  In the uniaxial half of the ramp you can read off Young's modulus $E = \sigma_{xx}/\varepsilon_{xx} = \mu(3\lambda + 2\mu)/(\lambda + \mu)$ and Poisson's
+  ratio $\nu = -\varepsilon_{yy}/\varepsilon_{xx} = \lambda/2(\lambda + \mu)$. Adding shear rotates the principal axes away from $x$ and $y$; on Mohr's circle the
+  points $(\sigma_{xx}, \tau_{xy})$ and $(\sigma_{yy}, -\tau_{xy})$ are the ends of a diameter, and the circle meets the axis at the principal stresses.
+  The radius is the maximum in-plane shear stress, which governs yielding in ductile metals (Tresca). Displacements are tiny and are exaggerated in the drawing.
+params:
+  E: {default: 200.0, min: 1, max: 400, step: 1, label: 'Young''s modulus $E$', unit: GPa}
+  poisson: {default: 0.3, min: 0.0, max: 0.49, step: 0.01, label: 'Poisson''s ratio $\nu$'}
+  sigma_max: {default: 100.0, min: -200, max: 300, step: 5, label: 'Final tension $\sigma_{xx}$', unit: MPa}
+  tau_max: {default: 60.0, min: -150, max: 150, step: 5, label: 'Final shear $\tau_{xy}$', unit: MPa}

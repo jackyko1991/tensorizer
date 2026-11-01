@@ -1,0 +1,16 @@
+source_hash: 840ee0536fe3
+title: Gravitation à N corps en 3D
+summary: Gravitation newtonienne entre $N$ corps. Toutes les séparations par paires $r_{abi}$ sont construites d'un coup par broadcasting, un einsum somme les attractions de tous les corps $b$ sur chaque corps $a$, et Verlet vitesse fait avancer tout le système.
+notes: 'La longueur d''adoucissement $\varepsilon$ garde la force finie quand deux corps passent très près ; avec $\varepsilon = 0$, c''est la gravitation newtonienne exacte. Les unités sont choisies de sorte que $G = 1$. Verlet vitesse est symplectique : l''erreur sur l''énergie reste petite et bornée au lieu de dériver. Le huit est la célèbre orbite périodique à trois corps trouvée par Moore (1993) puis Chenciner et Montgomery (2000).'
+meanings:
+- position du corps $a$, composante $i \in \{x, y, z\}$
+- masse du corps $b$
+- séparation de $a$ à $b$, toutes les paires par broadcasting
+- '$j$ répété ⇒ sommé : distance au carré de chaque paire'
+- '$b$ répété ⇒ sommé : attraction totale sur le corps $a$'
+- cinétique + potentiel par paires, conservée
+labels:
+  scenario: Condition initiale
+  t_max: Durée simulée
+  dt: Pas de temps
+  softening: Adoucissement $\varepsilon$

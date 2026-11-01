@@ -1,0 +1,16 @@
+source_hash: 9c89c68f4f20
+title: 矩形波導模態
+summary: 哪些場分佈能沿中空金屬管傳播？每個模態都是截面上二維亥姆霍茲方程式 $(\partial_i\partial_i + k_c^2)\psi = 0$ 的解——TM 用 Dirichlet 邊界，TE 用 Neumann 邊界。以 torch.kron 組出離散拉普拉斯，torch.linalg.eigh 一次給出所有模態與截止頻率。
+notes: 預設尺寸為標準 WR-90 X 波段波導（2.286 cm × 1.016 cm），其 $\text{TE}_{10}$ 模態的截止頻率為 6.56 GHz。模態只有在高於截止頻率時才能傳播，且 $\beta = \sqrt{(\omega/c)^2 - k_c^2}$。$(m, n \ge 1)$ 相同的 TE 與 TM 模態有相同的截止頻率。常數 TE 解（$k_c = 0$）不攜帶波，予以捨去。在預設解析度下，二階有限差分求得的 $k_c$ 與精確值相差約百分之一。
+meanings:
+- 格點 $(x_a, y_b)$ 上的 $E_z$（TM）或 $H_z$（TE）
+- 同一組值攤平：$m = a\cdot N_y + b$
+- 一維 $\partial^2$，牆壁條件寫入角落元素
+- 二維拉普拉斯 $\partial_i\partial_i$（$i$ 對 $x, y$ 求和）
+- 特徵值與正交歸一特徵向量：截止值與模態形狀
+- $\pi\sqrt{(m/a)^2 + (n/b)^2}$，用來核對數值
+labels:
+  a: 寬度 $a$
+  b: 高度 $b$
+  n_modes: 模態數
+  n_grid: 沿 $b$ 的格點數

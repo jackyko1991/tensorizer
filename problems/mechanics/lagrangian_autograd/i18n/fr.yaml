@@ -1,0 +1,20 @@
+source_hash: bd0f5adb6f78
+title: Équations du mouvement à partir d'un lagrangien par autograd
+summary: 'On saisit seulement le lagrangien $L = T - V$ et torch.autograd en déduit les équations d''Euler–Lagrange : la hessienne $\partial^2L/\partial\dot q_i\partial\dot q_j$ est la matrice de masse et une seule résolution linéaire donne $\ddot q$. Appliqué à un pendule élastique (à ressort).'
+notes: 'Aucune équation du pendule élastique n''a été écrite à la main : changez le lagrangien et la dynamique suit. Ici, $H = \operatorname{diag}(m, mr^2)$ dépend de $r$, et $C$ contient le couplage de type Coriolis $2mr\dot\theta$. Avec la valeur par défaut $k \approx 3mg/\ell_0$, la fréquence du ressort vaut environ deux fois celle du balancement (résonance 2:1), et l''énergie oscille entre rebond et balancement. Le même code fonctionne pour un nombre quelconque de coordonnées ; le coût est de quelques rétropropagations supplémentaires par pas.'
+meanings:
+- 'coordonnées généralisées $(r, \theta)$ : longueur du ressort et angle'
+- vitesses généralisées
+- la seule physique saisie à la main
+- dérivées premières ; $p_i = \partial L/\partial\dot q_i$ est le moment conjugué
+- ligne $i$ de la matrice de masse et des dérivées secondes croisées
+- $k$ répété ⇒ sommé
+- équations d'Euler–Lagrange résolues pour les accélérations
+- fonction énergie, aussi par autograd ; conservée
+labels:
+  m: Masse $m$
+  k: Raideur $k$
+  rest_length: Longueur à vide $\ell_0$
+  r0: Longueur initiale $r_0$
+  theta0: Angle initial $\theta_0$
+  t_max: Durée simulée

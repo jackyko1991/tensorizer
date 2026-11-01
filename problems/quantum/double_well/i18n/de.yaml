@@ -1,0 +1,16 @@
+source_hash: dc1d9350a90f
+title: Tunneln im Doppelmuldenpotential
+summary: 'Ein Teilchen in einem symmetrischen Doppelmuldenpotential. torch.linalg.eigh zeigt, dass die beiden tiefsten Zustände ein enges Paar bilden: ein gerader und ein ungerader Zustand, getrennt durch eine winzige Tunnelaufspaltung $\Delta E$. Ihre Summe ist ein Teilchen in der linken Mulde; während die beiden relativen Phasen auseinanderlaufen, tunnelt es mit der Periode $2\pi/\Delta E$ in die rechte Mulde und zurück, obwohl seine Energie unter der Barriere liegt.'
+notes: 'Einheiten $\hbar = m = 1$. Die Energien des Dubletts liegen unter dem Barrierenmaximum $V_0$, klassisch könnte das Teilchen also nie hinüber. Da nur zwei Zustände beteiligt sind, gilt $\psi(t) \propto \varphi_0 + e^{-i\Delta E\,t}\varphi_1$ (bis auf eine globale Phase): Bei $t = 0$ ist es $(\varphi_0 + \varphi_1)$ links und bei $t = \pi/\Delta E$ $(\varphi_0 - \varphi_1)$ rechts. $P_L(t) = \cos^2(\Delta E\,t/2)$ gilt bis auf den kleinen Überlapp jedes Zustands mit der „falschen“ Mulde. $\Delta E$ schrumpft ungefähr exponentiell mit Höhe und Breite der Barriere (ein WKB-Faktor $e^{-\int\kappa\,dx}$), sodass eine etwas höhere Barriere das Tunneln enorm verlangsamt — die simulierte Zeit wird in Tunnelperioden $2\pi/\Delta E$ gemessen, damit die Animation immer ganze Oszillationen zeigt.'
+meanings:
+- 'Potential vierter Ordnung: Minima bei $x = \pm a$, Barriere $V_0$ bei $x = 0$'
+- kinetisch $-\tfrac12\,D2$ plus $V$ auf der Diagonale
+- Energien und Zustände; $\varphi_0$ gerade, $\varphi_1$ ungerade, $\Delta E = E_1 - E_0$
+- '$(1, 1, 0, 0, \dots)/\sqrt2$: gleiche Mischung des Dubletts, links lokalisiert'
+- 'wiederholtes $n$ ⇒ summiert: exakte Zeitentwicklung in der Eigenbasis'
+- Stufenfunktion, die die linke Hälfte auswählt; $P_L$ summiert über $x$
+labels:
+  V0: Barrierenhöhe $V_0$
+  a: Muldenabstand $a$ (Minima bei $\pm a$)
+  periods: Simulierte Zeit
+  n_grid: Gitterpunkte

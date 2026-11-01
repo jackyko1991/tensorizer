@@ -1,0 +1,16 @@
+source_hash: 213c96e488f8
+title: Oscillateur harmonique quantique
+summary: Le hamiltonien $H = -\tfrac12\,d^2/dx^2 + \tfrac12\omega^2x^2$ devient une matrice sur une grille, et torch.linalg.eigh renvoie son échelle d'énergies régulièrement espacées $E_n = \omega(n + \tfrac12)$. Une gaussienne décalée (un état cohérent) s'écrit comme une somme d'états propres ; donner à chacun sa phase $e^{-iE_n t}$ fait osciller le paquet exactement comme une masse classique au bout d'un ressort.
+notes: Unités $\hbar = m = 1$. La grille est une grande boîte avec $\psi = 0$ aux parois, suffisamment éloignées pour ne jamais intervenir. Les courbes pâles sont les états stationnaires les plus bas $\varphi_n(x)$, tracés à la hauteur de leur énergie $E_n$ ; l'écart entre barreaux vaut exactement $\omega$. L'état initial est la gaussienne de l'état fondamental décalée en $x_0$. Ses poids $\lvert c_n\rvert^2$ suivent une loi de Poisson de moyenne $\omega x_0^2/2$, et comme toutes les énergies diffèrent de multiples entiers de $\omega$, le paquet revient en $x_0$ après chaque période $2\pi/\omega$ sans s'étaler. $\langle x\rangle$ suit le mouvement classique $x_0\cos\omega t$ (le théorème d'Ehrenfest est exact pour un potentiel quadratique).
+meanings:
+- potentiel du ressort $\tfrac12\omega^2x^2$ en chaque point de grille
+- cinétique $-\tfrac12\,D2$ plus le potentiel sur la diagonale
+- énergies et vecteurs propres (la colonne $n$ est l'état $n$)
+- '$x$ répété ⇒ sommé : recouvrement de l''état initial avec l''état $n$'
+- '$n$ répété ⇒ sommé : reconstruction de $\psi$ à partir de ses composantes déphasées'
+- position moyenne, comparée au mouvement classique $x_0\cos\omega t$
+labels:
+  omega: Pulsation $\omega$
+  x0: Déplacement initial $x_0$
+  periods: Durée simulée
+  n_grid: Points de grille

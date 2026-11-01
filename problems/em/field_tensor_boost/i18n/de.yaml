@@ -1,0 +1,20 @@
+source_hash: c4a4275e3bd7
+title: Lorentz-Boost des Feldstärketensors
+summary: In der Relativitätstheorie sind $\mathbf E$ und $\mathbf B$ keine getrennten Vektoren, sondern die sechs Komponenten eines einzigen antisymmetrischen $4\times 4$-Tensors $F^{\mu\nu}$. Ein Lorentz-Boost transformiert ihn mit einem $\Lambda$ pro Index, $F' = \Lambda F\Lambda^{\mathsf T}$, geschrieben als ein einziges einsum. Variiert man die Boost-Geschwindigkeit, sieht man elektrische und magnetische Felder ineinander übergehen, während $F_{\mu\nu}F^{\mu\nu}$ und $\mathbf E\cdot\mathbf B$ fest bleiben.
+notes: Einheiten mit $c = 1$, Signatur der Metrik $(+, -, -, -)$. Der Boost erfolgt entlang $x$, also ändern sich $E_x$ und $B_x$ nie; nur die transversalen Komponenten mischen. Für ein rein elektrisches Feld ($\mathbf B = 0$) sieht der bewegte Beobachter ein Magnetfeld $\mathbf B' = -\gamma\,\boldsymbol\beta\times\mathbf E$. Beide Lorentz-Invarianten bleiben über den ganzen Bereich konstant.
+meanings:
+- antisymmetrischer Feldstärketensor, $\mu, \nu \in \{t, x, y, z\}$
+- Minkowski-Metrik $\operatorname{diag}(+1, -1, -1, -1)$, $c = 1$
+- Boost entlang $x$ für jede der $S$ Geschwindigkeiten $\beta$
+- 'wiederholte $\alpha$ und $\beta$ ⇒ summiert: ein $\Lambda$ pro Index von $F$'
+- Indizes mit der Metrik heruntergezogen
+- Invariante $2(B^2 - E^2)$
+- Invariante $-4\,\mathbf E\cdot\mathbf B$, mit dem dualen Tensor $\tfrac12\varepsilon^{\mu\nu\rho\sigma}F_{\rho\sigma}$
+labels:
+  Ex: $E_x$
+  Ey: $E_y$
+  Ez: $E_z$
+  Bx: $B_x$
+  By: $B_y$
+  Bz: $B_z$
+  beta_max: End-Boost-Geschwindigkeit $\beta = v/c$

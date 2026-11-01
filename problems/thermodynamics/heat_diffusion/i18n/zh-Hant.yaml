@@ -1,0 +1,18 @@
+source_hash: 2b849cfef0cb
+title: 平板上的熱擴散
+summary: 傅立葉定律把溫度梯度轉為熱通量，能量守恆則把該通量的散度轉為溫度變化。在網格上兩個導數都是小小的卷積核，因此一個時間步只是對整塊平板呼叫兩次 conv2d。
+notes: 先前向、後後向的差分組合成熟悉的五點拉普拉斯，因此 $\partial_i\partial_i T$ 從不需要另外撰寫：它由梯度核與散度核的組合自然得到。顯式法只有在 $\alpha\,dt/dx^2 \le 1/4$ 時才穩定（下方的「穩定數」）。採用 Dirichlet 邊界時，邊緣是 20 °C 的熱浴，熱會流失；採用 Neumann（絕熱）邊界時，沒有通量穿越邊界，總熱量守恆而溫度逐漸均勻。正弦模態 $\sin(\pi x/L)\sin(\pi y/L)$ 按 $\exp(-2\pi^2\alpha t/L^2)$ 衰減。
+meanings:
+- 每個格子的溫度（conv2d 所需的批次與通道維度）
+- 前向差分模板，每個方向 $i \in \{x, y\}$ 一個輸出通道
+- 傅立葉定律：熱通量，通道 $i$ 為其分量
+- 重複的 $i$ ⇒ 求和：conv2d 把 2 個輸入通道相加——即散度
+- 熱擴散率（m²/s）
+- 右端項；前向歐拉：$T \leftarrow T + dt\,\partial_t T$
+labels:
+  alpha: 擴散率 $\alpha$
+  t_max: 模擬時間
+  n_spots: 熱點數
+  n_grid: 每邊格子數
+  r: 穩定數 $\alpha\,dt/dx^2$
+  boundary: 邊界

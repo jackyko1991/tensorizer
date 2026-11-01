@@ -1,0 +1,17 @@
+source_hash: 63ee714594c5
+title: Burgers-Gleichung und Stoßbildung
+summary: 'Die einfachste nichtlineare Strömungsgleichung: Schnelle Teile einer Welle holen langsame ein, das Profil wird steiler, und nahe $t^* = 1/\max(-u_0'')$ bildet sich ein Stoß, den die Viskosität dünn, aber glatt hält. Ableitungen sind $N\times N$-Matrizen, also ist die PDE ein einsum pro Term, geprüft an der exakten Cole–Hopf-Lösung.'
+notes: Schreibt man $u\,u_x$ als $(\tfrac12u^2)_x$ (Erhaltungsform), erhält das Schema $\int u\,dx$ exakt. Ohne Viskosität kreuzen sich die Charakteristiken $x = x_0 + u_0(x_0)\,t$ bei $t^* = 1/\max(-u_0')$, und die Lösung würde mehrdeutig; mit Viskosität bildet sich stattdessen ein Stoß der Breite $\sim\nu/\Delta u$. Zentrale Differenzen benötigen $|u|\Delta x/\nu \lesssim 2$, deshalb darf $\nu$ auf 512 Punkten nicht zu klein werden. Die Cole–Hopf-Transformation $u = -2\nu\,\partial_x\ln\varphi$ macht aus Burgers die Wärmeleitungsgleichung und liefert die gestrichelte exakte Kurve. Ein Offset $U_0$ ungleich null lässt den Stoß wandern.
+meanings:
+- Geschwindigkeit am Gitterpunkt $x_i$ (periodisch)
+- zentrale Differenz $(f_{i+1} - f_{i-1})/2\Delta x$ als Matrix
+- zweite Differenz $(f_{i+1} - 2f_i + f_{i-1})/\Delta x^2$
+- 'wiederholtes $j$ ⇒ summiert: Ableitung des Flusses $\tfrac12 u^2$'
+- viskoser Term
+- 'erhalten: die Spalten von $D$ und $L$ summieren sich zu null'
+- exakte Lösung, ein softmax-gewichtetes Mittel über Startpunkte
+labels:
+  nu: Viskosität $\nu$
+  amplitude: Amplitude $A$ in $u_0 = U_0 + A\sin x$
+  offset: Offset $U_0$
+  t_max: Simulierte Zeit

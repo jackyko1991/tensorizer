@@ -1,0 +1,17 @@
+source_hash: f68c4a9fe179
+title: Vidange d'un réservoir (Torricelli)
+summary: 'L''eau sort d''un orifice à la vitesse de Torricelli $\sqrt{2gh}$ : le niveau baisse vite au début et lentement à la fin. Des réservoirs aux orifices de tailles différentes sont intégrés ensemble comme un seul tenseur par lot et comparés à la solution exacte $h(t) = (\sqrt{h_0} - \tfrac aA\sqrt{g/2}\,t)^2$.'
+notes: 'La loi de Torricelli découle de Bernoulli entre la surface libre (au repos, puisque $A \gg a$) et le jet, tous deux à la pression atmosphérique. Les orifices réels contractent le jet à environ 60 % de leur section (la vena contracta), si bien que les réservoirs réels se vident plus lentement : multipliez $a$ par un coefficient de débit $C_d \approx 0.6$. Doubler le diamètre de l''orifice divise le temps de vidange par quatre ; doubler la hauteur initiale ne le multiplie que par $\sqrt2$. Le jet qui tombe se resserre en accélérant — encore la continuité.'
+meanings:
+- niveau d'eau du réservoir $b$ au cours du temps
+- section de l'orifice du réservoir $b$ — l'indice de lot
+- section de chaque réservoir
+- vitesse d'écoulement de Torricelli
+- second membre intégré par RK4
+- 'pas d''indice répété ⇒ produit extérieur : chaque instant avec chaque orifice'
+labels:
+  n_tanks: Nombre de réservoirs
+  d_min: Plus petit diamètre d'orifice
+  d_max: Plus grand diamètre d'orifice
+  tank_diameter: Diamètre du réservoir $D$
+  h0: Niveau initial $h_0$

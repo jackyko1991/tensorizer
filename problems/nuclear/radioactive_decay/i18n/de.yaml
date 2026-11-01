@@ -1,0 +1,16 @@
+source_hash: 8bd75af0e44c
+title: Radioaktiver Zerfall
+summary: Jeder Kern zerfällt zufällig mit derselben Wahrscheinlichkeit pro Sekunde $\lambda$. Die Simulation eines ganzen Gitters von Kernen als ein boolescher Tensor — ein Münzwurf pro Kern und Zeitschritt — reproduziert das glatte Exponentialgesetz $N(t) = N_0 e^{-\lambda t}$ und die Halbwertszeit $T_{1/2} = \ln 2/\lambda$.
+notes: Das Exponentialgesetz ist eine Aussage über Mittelwerte. Mit $N_0$ Kernen ist die Anzahl nach der Zeit $t$ binomialverteilt mit Mittelwert $N_0 e^{-\lambda t}$ und Standardabweichung $\sqrt{N_0 e^{-\lambda t}(1 - e^{-\lambda t})}$, sodass ein kleines Gitter sichtbar um die Kurve schwankt, während ein großes ihr eng folgt. Nach jeder Halbwertszeit ist etwa die Hälfte der verbliebenen Kerne zerfallen, egal wie viele es waren. Der Schritt $\Delta t$ muss nur klein gegen $T_{1/2}$ sein; die exakte Wahrscheinlichkeit pro Schritt $1 - e^{-\lambda\Delta t}$ macht den Mittelwert für jede Schrittweite korrekt. Der Zufalls-Seed ist fest, damit das Bild reproduzierbar ist.
+meanings:
+- Zerfallskonstante $\ln 2 / T_{1/2}$
+- True, solange Kern $n$ nicht zerfallen ist; das Gitter dient nur zum Zeichnen von $n$
+- eine gleichverteilte Zufallszahl pro Kern und Schritt
+- Wahrscheinlichkeit, innerhalb eines Schritts $\Delta t$ zu zerfallen
+- ein zerfallener Kern bleibt zerfallen
+- 'Summe über alle Kerne: die Anzahl $N(t)$'
+labels:
+  n_side: Gitterseite (Seite² Kerne)
+  half_life: Halbwertszeit $T_{1/2}$
+  t_max: Simulierte Zeit
+  dt: Zeitschritt $\Delta t$

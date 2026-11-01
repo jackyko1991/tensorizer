@@ -1,0 +1,20 @@
+source_hash: d40b53524521
+title: Velocidad de escape
+summary: 'Un lote de cohetes abandona un planeta con velocidades en torno a la velocidad de escape $v_\mathrm{esc} = \sqrt{2GM/R}$. El signo de la energía decide el destino de cada cohete: los ligados ($E < 0$) vuelven a caer y los no ligados ($E \ge 0$) nunca regresan.'
+notes: 'Unidades: radio del planeta $R = 1$ y $GM = 1$, de modo que $v_\mathrm{esc} = \sqrt 2$ (para la Tierra, 11.2 km/s). Los cohetes vuelan con el motor apagado, no hay aire y el planeta no gira. Justo por debajo de $v_\mathrm{esc}$ la altura máxima se dispara como $1/(1 - v^2/v_\mathrm{esc}^2)$ y el viaje dura cada vez más. Exactamente a $v_\mathrm{esc}$ el cohete se frena para siempre pero nunca se detiene. Inclina los lanzamientos para ver que la velocidad de escape no depende de la dirección (siempre que la trayectoria no choque con el planeta): solo importa la energía. Estrellas oscuras: comprime el planeta hasta que $v_\mathrm{esc}$ alcance la velocidad de la luz $c$ y obtendrás $R = 2GM/c^2$. Michell (1783) y Laplace argumentaron que una estrella así sería invisible. La relatividad general da exactamente el mismo radio para el horizonte de un agujero negro (el radio de Schwarzschild, 3 km para el Sol), aunque el razonamiento newtoniano no es la verdadera explicación.'
+meanings:
+- posición del cohete $b$ respecto al centro del planeta
+- velocidad del cohete $b$
+- '$j$ repetido ⇒ sumado: distancia al cuadrado $r_b^2$'
+- gravedad del planeta
+- 'energía por unidad de masa: negativa ⇒ ligado'
+- velocidad con $E = 0$ en la superficie
+- '$2GM/c^2$: radio en el que $v_\mathrm{esc} = c$'
+- $R/(1 - v^2/v_\mathrm{esc}^2)$, punto más alto de un lanzamiento vertical
+labels:
+  n_rockets: Cohetes
+  f_min: Lanzamiento más lento $v/v_\mathrm{esc}$
+  f_max: Lanzamiento más rápido $v/v_\mathrm{esc}$
+  tilt: Inclinación respecto a la vertical
+  t_max: Tiempo simulado
+  dt: Paso de tiempo

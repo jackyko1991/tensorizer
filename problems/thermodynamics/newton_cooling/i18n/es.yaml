@@ -1,0 +1,17 @@
+source_hash: 66c98bbdd023
+title: Ley de enfriamiento de Newton
+summary: Una fila de tazas de café caliente se enfría hacia la temperatura ambiente. Cada taza tiene su propia temperatura inicial y su propia constante de enfriamiento, pero todas viven en un único tensor, así que una sola línea de PyTorch hace avanzar todas las tazas a la vez, y el resultado coincide con la solución exponencial.
+notes: 'La ley dice que el ritmo de enfriamiento es proporcional a la diferencia de temperatura con el ambiente. Por tanto, esa diferencia se reduce en el mismo factor en tiempos iguales: se reduce a la mitad cada $t_{1/2} = \ln 2/k$, sea cual sea la temperatura inicial. La EDO se resuelve numéricamente con Runge–Kutta (RK4) y las líneas discontinuas muestran la exponencial exacta para comparar. Las tazas reales se enfrían a la vez por convección, radiación y evaporación; $k$ las agrupa todas en un solo número.'
+meanings:
+- temperatura de la taza $b$ (°C)
+- 'constante de enfriamiento de la taza $b$ (1/min): mayor significa enfriamiento más rápido'
+- temperatura ambiente, con broadcasting a todas las tazas
+- 'elemento a elemento: no se suma ningún índice, cada taza se enfría por su cuenta'
+- 'producto exterior: cada instante con cada taza, para la solución exacta'
+- tiempo en que la diferencia de temperatura se reduce a la mitad
+labels:
+  n_cups: Tazas
+  T_env: Temperatura ambiente
+  k_min: Enfriamiento más lento $k$
+  k_max: Enfriamiento más rápido $k$
+  t_max: Tiempo simulado

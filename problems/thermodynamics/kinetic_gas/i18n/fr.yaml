@@ -1,0 +1,17 @@
+source_hash: 673b0fc9f634
+title: Théorie cinétique du gaz parfait
+summary: Des centaines de disques durs rebondissent dans une boîte. Tous les disques partent avec la même vitesse, mais les collisions élastiques redistribuent l'énergie jusqu'à ce que les vitesses suivent la distribution de Maxwell–Boltzmann, et la quantité de mouvement transmise aux parois reproduit la loi des gaz parfaits $PA = NkT$.
+notes: 'Unités réduites : côté de la boîte 1, masse 1, constante de Boltzmann 1. Les tenseurs de paires sont $N\times N$, ce qui convient pour quelques centaines de disques (les vrais codes utilisent des listes de cellules). Un disque qui en touche deux autres au même pas attend un pas, si bien que chaque collision est un échange propre à deux corps et l''énergie est conservée aux arrondis près. La pression est la quantité de mouvement $2m\lvert v_\perp\rvert$ transmise à chaque rebond, sommée sur toute la simulation et divisée par durée × longueur de paroi. Elle dépasse $NkT/A$ de quelques pour cent parce que les disques occupent eux-mêmes de la surface — la première correction au gaz parfait, environ $(1 + \eta^2/8)/(1 - \eta)^2$ pour une fraction surfacique $\eta$.'
+meanings:
+- position du disque $a$, composante $i \in \{x, y\}$
+- vitesse du disque $a$
+- tous les déplacements relatifs par paires à la fois, par broadcasting
+- '$i$ répété ⇒ sommé : distance au carré de chaque paire'
+- vitesse relative projetée sur la normale de collision, pour les $P$ paires en collision
+- énergie cinétique totale, égale à $NkT$ en 2D
+- distribution des vitesses en 2D $(mv/kT)\exp(-mv^2/2kT)$
+labels:
+  n_particles: Particules
+  radius: Rayon des disques
+  speed: Vitesse initiale
+  t_max: Durée simulée

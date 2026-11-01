@@ -1,0 +1,20 @@
+source_hash: bd0f5adb6f78
+title: Ecuaciones de movimiento a partir de un lagrangiano con autograd
+summary: 'Escribe solo el lagrangiano $L = T - V$ y deja que torch.autograd deduzca las ecuaciones de Euler–Lagrange: la hessiana $\partial^2L/\partial\dot q_i\partial\dot q_j$ es la matriz de masas y una resolución lineal da $\ddot q$. Aplicado a un péndulo elástico (de muelle).'
+notes: 'Ninguna de las ecuaciones del péndulo elástico se escribió a mano: cambia el lagrangiano y la dinámica cambia con él. Aquí $H = \operatorname{diag}(m, mr^2)$ depende de $r$, y $C$ contiene el acoplamiento de tipo Coriolis $2mr\dot\theta$. Con el valor por defecto $k \approx 3mg/\ell_0$ la frecuencia del muelle es aproximadamente el doble de la del balanceo (resonancia 2:1), así que la energía pasa de un lado a otro entre el rebote y el balanceo. El mismo código funciona con cualquier número de coordenadas; el coste son unas pocas pasadas hacia atrás extra por paso.'
+meanings:
+- 'coordenadas generalizadas $(r, \theta)$: longitud del muelle y ángulo'
+- velocidades generalizadas
+- la única física escrita a mano
+- primeras derivadas; $p_i = \partial L/\partial\dot q_i$ es el momento canónico
+- fila $i$ de la matriz de masas y de las derivadas segundas mixtas
+- $k$ repetido ⇒ sumado
+- ecuaciones de Euler–Lagrange resueltas para las aceleraciones
+- función energía, también con autograd; conservada
+labels:
+  m: Masa $m$
+  k: Constante del muelle $k$
+  rest_length: Longitud natural $\ell_0$
+  r0: Longitud inicial $r_0$
+  theta0: Ángulo inicial $\theta_0$
+  t_max: Tiempo simulado

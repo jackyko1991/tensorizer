@@ -1,0 +1,14 @@
+source_hash: d32c883229aa
+title: Reflexión en espejos planos y curvos
+summary: 'La ley de la reflexión escrita como una única fórmula vectorial: invertir la parte de la dirección del rayo que apunta a lo largo de la normal a la superficie. Los rayos de una lámpara se reflejan en un espejo plano, y los rayos paralelos se reflejan en un espejo cóncavo y se concentran cerca de su foco $F = R/2$.'
+notes: 'La fórmula solo invierte la componente de $\mathbf d$ a lo largo de $\mathbf n$, así que el ángulo de incidencia es igual al de reflexión automáticamente. Las líneas discontinuas prolongan los rayos reflejados detrás del espejo plano: todas se cortan en la imagen virtual de la lámpara. En el espejo cóncavo solo los rayos próximos al eje (rayos paraxiales) pasan por $F = R/2$; los rayos más alejados cortan el eje más cerca del espejo (aberración esférica).'
+meanings:
+- dirección unitaria del rayo incidente $r$, componente $i \in \{x, y\}$
+- normal unitaria del espejo donde incide el rayo $r$
+- '$j$ repetido ⇒ sumado: un producto escalar por rayo (${}= -\cos\theta_i$)'
+- dirección reflejada, sigue siendo un vector unitario
+- la normal del espejo curvo apunta hacia su centro $c$
+labels:
+  radius: Radio de curvatura del espejo $R$
+  n_rays: Rayos por espejo
+  aperture: Rayo más alto (fracción de $R$)

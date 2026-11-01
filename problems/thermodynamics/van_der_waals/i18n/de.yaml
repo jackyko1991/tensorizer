@@ -1,0 +1,18 @@
+source_hash: db1c9922ad65
+title: Van-der-Waals-Gas und Maxwell-Konstruktion
+summary: Die Van-der-Waals-Gleichung ergänzt das ideale Gas um Anziehung und Eigenvolumen der Moleküle, und plötzlich erscheint ein Flüssig-Gas-Übergang. Eine ganze Schar von Isothermen ist ein einziges $(T, V)$-Broadcasting; unterhalb der kritischen Temperatur wird die unphysikalische Schleife durch Maxwells Gerade gleicher Flächen ersetzt, deren Druck durch Bisektion für einen Batch von Temperaturen auf einmal gefunden wird.
+notes: '$a$ misst die Anziehung zwischen Molekülen (sie senkt den Druck) und $b$ das Volumen, das ein Mol Moleküle einnimmt ($V$ kann nicht unter $nb$ fallen). Unterhalb von $T_c$ hat die Isotherme einen Abschnitt, in dem Kompression den Druck senken würde — mechanisch instabil. In Wirklichkeit kondensiert das Gas bei konstantem Druck $p^*$, dem Dampfdruck: Flüssigkeit mit dem molaren Volumen $V_l$ koexistiert mit Gas des Volumens $V_g$. Maxwells Regel legt $p^*$ fest, indem sie gleiche Flächen über und unter der Geraden verlangt (gleichbedeutend mit gleichen Gibbs-Energien beider Phasen). Die gestrichelte Kuppel verbindet alle $(V_l, p^*)$ und $(V_g, p^*)$; ihr Scheitel ist der kritische Punkt, an dem Flüssigkeit und Gas identisch werden. Die Achsen sind auf die kritischen Werte skaliert, in denen jedes Van-der-Waals-Gas gleich aussieht (Theorem der übereinstimmenden Zustände); die Volumenachse ist linear, damit man die schattierten Flächen mit bloßem Auge vergleichen kann. Das Van-der-Waals-Modell
+  ist für reale Fluide nur qualitativ: Zum Beispiel überschätzt sein $V_c = 3nb$ reale kritische Volumina.'
+meanings:
+- Durchlauf von Temperaturen, als Spalte
+- Volumengitter, als Zeile
+- alle Isothermen auf einmal per Broadcasting
+- Nullstellen der kubischen Gleichung $p(V) = p^*$ für einen Batch von Temperaturen
+- 'vorzeichenbehaftete Fläche zwischen Kurve und Gerade: null bei der Lösung'
+- 'Bisektion: torch.where verschiebt alle Intervalle auf einmal'
+labels:
+  gas: Gas
+  n: Stoffmenge
+  T_high: Anfangstemperatur
+  T_low: Endtemperatur
+  n_temps: Temperaturen (Bilder)

@@ -1,0 +1,17 @@
+source_hash: 4d0cdb4cbe20
+title: Champ magnétique de spires (Biot–Savart)
+summary: La loi de Biot–Savart transforme un fil en une somme sur de petits segments. Le produit vectoriel $d\mathbf l\times\mathbf r$ est le tenseur de Levi-Civita $\varepsilon_{ijk}$ contracté avec deux vecteurs, de sorte qu'un seul einsum sur ($i, j, k$, segment) donne le champ de toute la bobine en chaque point de la grille. Le rayon des spires grandit et diminue tandis que le champ dans le plan $x$–$z$ et sur l'axe suit.
+notes: Unités SI ($\mu_0 = 4\pi\times 10^{-7}$ T·m/A), champ affiché en μT. Les spires sont dans des plans horizontaux, donc le plan $x$–$z$ coupe chacune en deux points (⊙ courant sortant de la page, ⊗ entrant). Les bobines de Helmholtz (espacement $R$, courants égaux) créent un champ presque uniforme entre elles ; les bobines anti-Helmholtz (courants opposés) donnent un champ nul au centre qui croît linéairement — le piège utilisé pour les atomes froids. Les points de grille proches du fil utilisent une petite longueur d'adoucissement pour que le champ reste fini.
+meanings:
+- point de champ $g$ dans le plan $y = 0$
+- milieu et vecteur directeur du segment de fil $s$
+- de chaque segment vers chaque point de champ (broadcasting)
+- 'symbole de Levi-Civita : le produit vectoriel comme tenseur'
+- $j, k$ répétés ⇒ produit vectoriel ; $s$ répété ⇒ somme sur le fil
+- valeur exacte $\mu_0 I R^2/(2(R^2 + z^2)^{3/2})$ par spire, pour vérifier la somme
+labels:
+  layout: Bobines
+  current: Courant
+  radius: Rayon moyen des spires
+  n_segments: Segments par spire
+  n_grid: Flèches par côté

@@ -1,0 +1,16 @@
+source_hash: 6a76aa67658c
+title: Elektrostatisches Potential (Poisson-Gleichung)
+summary: Löse die Poisson-Gleichung für das Potential einiger Linienladungen in einem geerdeten Kasten. Auf einem Gitter wird der Laplace-Operator $\partial_i\partial_i$ zu einer Matrix, die aus der 1D-Matrix der zweiten Differenzen mit Kronecker-Produkten aufgebaut wird; so wird die ganze PDE zu einem einzigen linearen Gleichungssystem $L\phi = -\rho/\varepsilon_0$, das torch.linalg.solve in einem Aufruf löst.
+notes: 'Der Kasten ist das Einheitsquadrat mit $\phi = 0$ auf den Wänden (geerdet). Das Problem ist 2D, also ist jede „Punkt“-Ladung in Wahrheit eine unendlich lange Linienladung $\lambda$ (pro Längeneinheit), und der Gaußsche Satz lautet $\oint \mathbf E\cdot\mathbf n\,dl = \lambda/\varepsilon_0$. Einheiten: $\varepsilon_0 = 1$. $L$ besteht größtenteils aus Nullen — ein echter Code würde sie als dünnbesetzte Matrix speichern; hier ist $N^2\times N^2$ dicht noch klein genug für eine direkte Lösung.'
+meanings:
+- Potential in Gitterzeile $a$ ($y$) und Spalte $b$ ($x$)
+- 'dieselben Werte abgeflacht: $m = a\cdot N + b$'
+- '1D-$\partial^2$: $(\phi_{a-1} - 2\phi_a + \phi_{a+1})/h^2$, tridiagonal'
+- '2D-Laplace-Operator $\partial_y^2 + \partial_x^2$: Bandmatrix, fünf Nicht-Null-Einträge pro Zeile'
+- Ladungsdichte auf dem Gitter
+- 'wiederholtes $m$ ⇒ summiert: der diskrete Laplace-Operator von $\phi$'
+- $E_i = -\partial_i\phi$ durch zentrale Differenzen, $i \in \{x, y\}$
+labels:
+  config: Ladungsanordnung
+  n_grid: Gitterpunkte pro Seite
+  charge: Ladung pro Linie

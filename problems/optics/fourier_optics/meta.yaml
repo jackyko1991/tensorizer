@@ -1,0 +1,27 @@
+title: Fraunhofer diffraction as a 2D Fourier transform
+category: optics
+level: advanced
+order: 2
+summary: >
+  In the far field, the diffraction pattern of an aperture is the 2D Fourier transform of its transmission
+  function. One call to torch.fft.fft2 turns a square, a circular hole, a double slit and a grating into their
+  far-field patterns, and the Airy rings shrink as the hole grows.
+animated: true
+vector_form: 'U(\mathbf q) \propto \iint A(\mathbf r)\,e^{-i\,\mathbf q\cdot\mathbf r}\,d^2 r,\quad \mathbf q = k\,(\sin\theta_x, \sin\theta_y),\qquad I = \lvert U\rvert^2'
+index_form: 'U_{kl} = F_{ka}\,A_{ab}\,F_{lb},\qquad F_{ka} = e^{-2\pi i\,k a/N},\qquad I_{kl} = U^{*}_{kl}U_{kl}'
+translation:
+  - {symbol: 'A_{ab}', code: 'aperture', shape: '(N, N)', meaning: 'transmission of the mask: 1 = open, 0 = opaque; row $a = y$, column $b = x$'}
+  - {symbol: 'F_{ka}', code: 'dft_matrix(N)', shape: '(N, N) complex', meaning: 'discrete Fourier transform matrix'}
+  - {symbol: 'U_{kl} = F_{ka}A_{ab}F_{lb}', code: "einsum('ka,ab,lb->kl', F, A, F)", shape: '(N, N) complex', meaning: 'repeated $a$ and $b$ ⇒ summed: a 1D transform along $y$ and one along $x$'}
+  - {symbol: 'U_{kl}', code: 'fftshift(fft2(aperture))', shape: '(N, N) complex', meaning: 'the same transform via the fast Fourier transform, zero frequency moved to the centre'}
+  - {symbol: 'I_{kl}', code: 'U.abs() ** 2', shape: '(N, N)', meaning: 'far-field intensity, shown as $\log_{10}(I/I_{\max})$'}
+  - {symbol: '1.22\,N/D', code: 'airy_radius(N, D)', shape: '()', meaning: 'first dark ring of a circular hole of diameter $D$, in frequency pixels'}
+notes: >
+  Lengths in the aperture plane are in pixels of size $\Delta x$; frequency pixel $(k, l)$ of the transform corresponds to
+  the direction $\sin\theta = \lambda k/(N\Delta x)$. The circular hole's first dark ring at $\sin\theta = 1.22\,\lambda/D$ therefore sits
+  $1.22\,N/D$ frequency pixels from the centre (dashed circle). Big apertures give small patterns: the transform
+  of a wide function is narrow. The einsum form is the same transform as fft2, only $O(N^3)$ instead of $O(N^2\log N)$.
+params:
+  size_min: {default: 12, min: 8, max: 40, step: 2, type: int, label: 'Starting aperture size $D$', unit: px}
+  size_max: {default: 40, min: 12, max: 64, step: 2, type: int, label: 'Final aperture size $D$', unit: px}
+  frames_per_aperture: {default: 15, min: 5, max: 30, step: 1, type: int, label: Frames per aperture shape}

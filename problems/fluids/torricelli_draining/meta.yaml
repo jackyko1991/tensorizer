@@ -1,0 +1,28 @@
+title: Draining a tank (Torricelli)
+category: fluids
+level: beginner
+order: 3
+summary: >
+  Water leaves a hole at Torricelli's speed $\sqrt{2gh}$, so the level falls fast at first and slowly at the end. Tanks with
+  different hole sizes are integrated together as one batched tensor and compared with the exact solution $h(t) = (\sqrt{h_0} - \tfrac aA\sqrt{g/2}\,t)^2$.
+animated: true
+vector_form: 'A\,\frac{dh}{dt} = -a\,\sqrt{2 g h}'
+index_form: '\dot h_b = -\frac{a_b}{A}\,\sqrt{2 g\,h_b},\qquad h_b(t) = \Big(\sqrt{h_0} - \frac{a_b}{A}\sqrt{\tfrac g2}\;t\Big)^2,\qquad T_b = \frac{A}{a_b}\sqrt{\frac{2h_0}{g}}'
+translation:
+  - {symbol: 'h_b', code: 'levels[:, b]', shape: '(T, B)', meaning: 'water level in tank $b$ over time'}
+  - {symbol: 'a_b', code: 'circle_area(d)', shape: '(B,)', meaning: 'hole area of tank $b$ — the batch index'}
+  - {symbol: 'A', code: 'circle_area(D)', shape: 'scalar', meaning: 'cross-section of every tank'}
+  - {symbol: '\sqrt{2 g h_b}', code: 'outflow_speed(h, g)', shape: '(B,)', meaning: 'Torricelli outflow speed'}
+  - {symbol: '\dot h_b', code: 'rhs(h, a, A, g)', shape: '(B,)', meaning: 'right-hand side integrated with RK4'}
+  - {symbol: 't\,a_b', code: "einsum('t,b->tb', t, a / A)", shape: '(T, B)', meaning: 'no repeated index ⇒ outer product: every time with every hole'}
+notes: >
+  Torricelli's law follows from Bernoulli between the free surface (at rest, since $A \gg a$) and the jet, both at atmospheric pressure.
+  Real holes squeeze the jet to about 60 % of the hole area (the vena contracta), so real tanks drain more slowly: multiply $a$ by a
+  discharge coefficient $C_d \approx 0.6$. Doubling the hole diameter quarters the drain time; doubling the initial height only multiplies it by $\sqrt2$.
+  The falling jet narrows as it accelerates — continuity again.
+params:
+  n_tanks: {default: 4, min: 1, max: 6, step: 1, type: int, label: Number of tanks}
+  d_min: {default: 1.0, min: 0.5, max: 5, step: 0.1, label: Smallest hole diameter, unit: cm}
+  d_max: {default: 2.5, min: 0.5, max: 5, step: 0.1, label: Largest hole diameter, unit: cm}
+  tank_diameter: {default: 0.4, min: 0.2, max: 1.0, step: 0.05, label: 'Tank diameter $D$', unit: m}
+  h0: {default: 1.0, min: 0.2, max: 2.0, step: 0.1, label: 'Initial level $h_0$', unit: m}

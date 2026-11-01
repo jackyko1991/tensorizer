@@ -1,0 +1,17 @@
+source_hash: 63ee714594c5
+title: 伯格斯方程式與震波形成
+summary: 最簡單的非線性流體方程式：波中快的部分追上慢的部分，波形變陡，並在 $t^* = 1/\max(-u_0')$ 附近形成震波，黏滯性使其保持窄而平滑。導數是 $N\times N$ 矩陣，因此每一項都是一次 einsum，並與精確的 Cole–Hopf 解比較。
+notes: 把 $u\,u_x$ 寫成 $(\tfrac12u^2)_x$（守恆形式），使數值方法嚴格守恆 $\int u\,dx$。若無黏滯性，特徵線 $x = x_0 + u_0(x_0)\,t$ 會在 $t^* = 1/\max(-u_0')$ 相交，解將變成多值；黏滯性則形成寬度約 $\sim\nu/\Delta u$ 的震波。中央差分需要 $|u|\Delta x/\nu \lesssim 2$，所以在 512 個點上 $\nu$ 不能太小。Cole–Hopf 變換 $u = -2\nu\,\partial_x\ln\varphi$ 把伯格斯方程式化為熱傳導方程式，給出虛線的精確曲線。非零偏移 $U_0$ 會使震波移動。
+meanings:
+- 格點 $x_i$ 上的速度（週期性）
+- 中央差分 $(f_{i+1} - f_{i-1})/2\Delta x$ 寫成矩陣
+- 二階差分 $(f_{i+1} - 2f_i + f_{i-1})/\Delta x^2$
+- 重複的 $j$ ⇒ 求和：通量 $\tfrac12 u^2$ 的導數
+- 黏滯項
+- 守恆：$D$ 與 $L$ 的各行總和為零
+- 精確解，對起始點作 softmax 加權平均
+labels:
+  nu: 黏滯係數 $\nu$
+  amplitude: $u_0 = U_0 + A\sin x$ 中的振幅 $A$
+  offset: 偏移 $U_0$
+  t_max: 模擬時間

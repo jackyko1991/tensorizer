@@ -1,0 +1,29 @@
+title: Black-body radiation
+category: thermodynamics
+level: intermediate
+order: 3
+summary: >
+  Planck's law gives the energy density of thermal radiation at every wavelength. Broadcasting a column of
+  temperatures against a row of wavelengths builds the whole $(T, \lambda)$ spectrum table in one line; argmax finds Wien's
+  peak and torch.trapezoid integrates the spectrum to the Stefan–Boltzmann $T^4$ law.
+animated: true
+vector_form: 'u(\lambda, T) = \frac{8\pi h c}{\lambda^5}\,\frac{1}{e^{hc/\lambda k T} - 1},\qquad \lambda_{\max} T = b,\qquad \int_0^\infty u\,d\lambda = \frac{4\sigma}{c}\,T^4'
+index_form: 'u_{ab} = \frac{8\pi h c}{\lambda_b^5}\,\frac{1}{\exp\!\big(hc / \lambda_b k T_a\big) - 1},\qquad U_a = \sum_b \tfrac12\,(u_{ab} + u_{a,b+1})\,(\lambda_{b+1} - \lambda_b)'
+translation:
+  - {symbol: 'T_a', code: 'T[:, None]', shape: '(A, 1)', meaning: 'batch of temperatures, as a column'}
+  - {symbol: '\lambda_b', code: 'lam[None, :]', shape: '(1, L)', meaning: 'wavelength grid, as a row'}
+  - {symbol: 'u_{ab}', code: 'planck(lam, T)', shape: '(A, L)', meaning: 'broadcasting the column against the row fills the whole table'}
+  - {symbol: '\lambda_{\max,a}', code: 'lam[u.argmax(dim=-1)]', shape: '(A,)', meaning: "Wien's peak of every spectrum at once"}
+  - {symbol: 'U_a', code: 'torch.trapezoid(u, lam, dim=-1)', shape: '(A,)', meaning: 'repeated $b$ ⇒ summed: total energy density, $\propto T_a^4$'}
+  - {symbol: 'RGB_a', code: 'approximate_color(T)', shape: '(A, 3)', meaning: 'Planck at 610, 550 and 465 nm, normalised: a rough visible colour'}
+notes: >
+  The wavelength grid is logarithmic from 10 nm to 100 µm, wide enough that the missing tails change the integral by
+  less than $10^{-5}$, and the computation runs in float64 with expm1 for accuracy. Wien's constant $b \approx 2.898\times 10^{-3}$ m·K
+  comes out of the argmax to the grid resolution (about 0.2 %). The curve colour samples the spectrum at three
+  wavelengths standing in for red, green and blue — a crude stand-in for a real colour-matching calculation, but it
+  shows the glow going from orange through white to pale blue. The plot is rescaled every frame: the peak height
+  grows like $T^5$. The shaded band marks the visible range 380–750 nm.
+params:
+  T_min: {default: 3000.0, min: 1000, max: 6000, step: 100, label: Start temperature, unit: K}
+  T_max: {default: 10000.0, min: 6000, max: 20000, step: 500, label: End temperature, unit: K}
+  n_temps: {default: 90, min: 10, max: 120, step: 10, type: int, label: Temperatures (frames)}

@@ -1,0 +1,18 @@
+source_hash: 2b849cfef0cb
+title: Diffusion de la chaleur dans une plaque
+summary: La loi de Fourier transforme un gradient de température en flux de chaleur, et la conservation de l'énergie transforme la divergence de ce flux en variation de température. Sur une grille, les deux dérivées sont de minuscules noyaux de convolution, donc un pas de temps se réduit à deux appels conv2d sur toute la plaque.
+notes: 'Les différences avant puis arrière se combinent en le laplacien à 5 points bien connu, donc $\partial_i\partial_i T$ n''est jamais codé séparément : il découle de la composition des noyaux de gradient et de divergence. Le schéma explicite n''est stable que pour $\alpha\,dt/dx^2 \le 1/4$ (le « nombre de stabilité » ci-dessous). Avec des conditions de Dirichlet, les bords sont un bain à 20 °C et la chaleur s''échappe ; avec des bords de Neumann (isolés), aucun flux ne traverse la frontière et la chaleur totale est conservée tandis que la température s''uniformise. Un mode sinusoïdal $\sin(\pi x/L)\sin(\pi y/L)$ décroît comme $\exp(-2\pi^2\alpha t/L^2)$.'
+meanings:
+- température de chaque cellule de la grille (dimensions de lot et de canal pour conv2d)
+- stencils de différences avant, un canal de sortie par direction $i \in \{x, y\}$
+- 'loi de Fourier : flux de chaleur, le canal $i$ est la composante'
+- '$i$ répété ⇒ sommé : conv2d additionne ses 2 canaux d''entrée — la divergence'
+- diffusivité thermique (m²/s)
+- 'second membre ; Euler explicite : $T \leftarrow T + dt\,\partial_t T$'
+labels:
+  alpha: Diffusivité $\alpha$
+  t_max: Durée simulée
+  n_spots: Points chauds
+  n_grid: Cellules par côté
+  r: Nombre de stabilité $\alpha\,dt/dx^2$
+  boundary: Bords

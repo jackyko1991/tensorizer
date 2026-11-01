@@ -1,0 +1,19 @@
+source_hash: 0b86e0abca1f
+title: Dispersión de Rutherford
+summary: 'Un haz de partículas alfa se lanza contra un núcleo de oro. Cada alfa se integra a través del campo de Coulomb repulsivo con RK4 en un único tensor por lotes, y el histograma de sus ángulos de dispersión reproduce la ley de Rutherford $1/\sin^4(\theta/2)$: la prueba de que la carga positiva de un átomo se concentra en un núcleo diminuto.'
+notes: 'Unidades: fm, MeV y tiempo en fm/$c$. La energía y el momento angular se conservan a lo largo de cada trayectoria, así que $E$ y el parámetro de impacto $b$ determinan por sí solos la desviación $\theta = 2\arctan(k/2Eb)$; una alfa que incide de frente da la vuelta a $d = k/E$ (unos 45 fm para 5 MeV sobre oro, todavía muy fuera del núcleo de 7 fm, así que vale la ley de Coulomb pura). El haz se distribuye uniformemente sobre un disco de radio $b_{\max}$ (al azar pero con semilla fija), de modo que el número dispersado en un ángulo sólido es (alfas por unidad de área) × $d\sigma/d\Omega$. Solo una alfa de cada pocos cientos rebota más allá de 90°: la sorpresa de Geiger y Marsden en 1909. Simplificaciones: el núcleo es una carga puntual fija (sin retroceso ni fuerza nuclear) y el movimiento es no relativista ($v \approx 0.05c$). Cada alfa parte a 30 $d$ de distancia con exactamente la energía y el momento angular de una alfa que viene del infinito; la cola restante $1/r^2$ de la fuerza
+  desplaza los ángulos mucho menos de un grado.'
+meanings:
+- $Z_\alpha Z e^2/4\pi\varepsilon_0 = 2Z \cdot 1.44$ MeV fm
+- posición (fm) y velocidad (unidades de $c$) de la alfa $b$
+- '$j$ repetido ⇒ sumado: distancia al cuadrado $r_b^2$'
+- repulsión de Coulomb para todo el haz a la vez
+- 'producto vectorial 2D: momento angular por unidad de masa'
+- ángulo de la velocidad de salida respecto al eje del haz
+- predicción de Rutherford, comparada con el histograma
+labels:
+  energy: Energía de las alfas $E$
+  z_target: Carga del blanco $Z$
+  b_max: Radio del haz $b_{\max}$
+  n_beam: Alfas en el haz
+  n_steps: Pasos de RK4

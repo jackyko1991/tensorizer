@@ -1,0 +1,20 @@
+source_hash: c4a4275e3bd7
+title: 電磁場テンソルのローレンツブースト
+summary: 相対論では $\mathbf E$ と $\mathbf B$ は別々のベクトルではなく、1つの反対称 $4\times 4$ テンソル $F^{\mu\nu}$ の6成分である。ローレンツブーストは各添字に1つずつ $\Lambda$ を作用させて変換し、$F' = \Lambda F\Lambda^{\mathsf T}$ は1回の einsum で書ける。ブースト速度を掃引すると、電場と磁場が互いに混ざり合う一方で、$F_{\mu\nu}F^{\mu\nu}$ と $\mathbf E\cdot\mathbf B$ は一定に保たれることがわかる。
+notes: $c = 1$ の単位系、計量の符号 $(+, -, -, -)$。ブーストは $x$ 方向なので $E_x$ と $B_x$ は変わらず、横成分だけが混ざる。純粋な電場（$\mathbf B = 0$）に対して、運動する観測者は磁場 $\mathbf B' = -\gamma\,\boldsymbol\beta\times\mathbf E$ を見る。2つのローレンツ不変量は掃引全体を通じて一定である。
+meanings:
+- 反対称な電磁場テンソル、$\mu, \nu \in \{t, x, y, z\}$
+- ミンコフスキー計量 $\operatorname{diag}(+1, -1, -1, -1)$、$c = 1$
+- $S$ 個の速さ $\beta$ それぞれに対する $x$ 方向のブースト
+- 繰り返される $\alpha$ と $\beta$ ⇒ 和をとる：$F$ の各添字に1つずつ $\Lambda$
+- 計量で添字を下げたもの
+- 不変量 $2(B^2 - E^2)$
+- 双対テンソル $\tfrac12\varepsilon^{\mu\nu\rho\sigma}F_{\rho\sigma}$ を用いた不変量 $-4\,\mathbf E\cdot\mathbf B$
+labels:
+  Ex: $E_x$
+  Ey: $E_y$
+  Ez: $E_z$
+  Bx: $B_x$
+  By: $B_y$
+  Bz: $B_z$
+  beta_max: 最終ブースト速度 $\beta = v/c$

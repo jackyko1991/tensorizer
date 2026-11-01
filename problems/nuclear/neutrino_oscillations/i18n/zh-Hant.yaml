@@ -1,0 +1,21 @@
+source_hash: 9f4f33f51aa8
+title: 微中子振盪
+summary: 微中子以確定的味（$\nu_e, \nu_\mu, \nu_\tau$）產生，卻以三個相位略有不同的質量態傳播。PMNS 混合矩陣與一次對質量指標的複數 einsum，給出整組基線距離上每種味轉換的機率，顯示 $\nu_\mu$ 束在飛行中轉變為 $\nu_\tau$ 與 $\nu_e$。
+notes: 因為 $U$ 是么正矩陣，在每個距離上 $\sum_\beta P(\alpha\to\beta) = 1$：微中子改變味，但沒有一個消失。若只有兩種味，公式簡化為 $P = \sin^2 2\theta\,\sin^2(1.267\,\Delta m^2 L/E)$。此處較大的 $\Delta m^2_{31}$ 給出快速的「大氣」振盪（$\nu_\mu$ 第一個低谷在 $L/E \approx 500$ km/GeV 附近，主要轉為 $\nu_\tau$，因為 $\theta_{23} \approx 45°$），較小的 $\Delta m^2_{21}$ 則給出緩慢的「太陽」振盪（在 $15\,000$ km/GeV 附近）。下方的點是取樣的微中子：每個點顯示位於該距離的偵測器會記錄到的味，依計算出的機率抽樣（固定隨機種子）。簡化：只考慮真空振盪——忽略地球或太陽內部的 MSW 物質效應——並採用正常質量排序。預設參數接近目前的全域擬合值。對 $\nu_\mu \to \nu_e$ 束試試 $\delta_{CP}$ = 0 與 270° 的差別。
+meanings:
+- 味 $\alpha$ × 質量態 $i$；三個旋轉的乘積，以 einsum('ab,bc,ci->ai') 計算
+- 只有差值 $\Delta m^2_{21}, \Delta m^2_{31}$ 才重要；$m_1^2 = 0$
+- 以對數間隔取的距離，單位 km
+- 每個質量態在每個基線上的相位（$2.534\,m^2 L/E$，單位 eV²、km、GeV）
+- 重複的 $i$ ⇒ 求和：三個質量態互相干涉
+- 每個基線上全部九個轉換機率
+labels:
+  energy: 微中子能量 $E$
+  l_max: 最長基線 $L_{\max}$
+  flavour: 產生時的味
+  theta12: $\theta_{12}$
+  theta13: $\theta_{13}$
+  theta23: $\theta_{23}$
+  delta_cp: $\delta_{CP}$
+  dm21: $\Delta m^2_{21}$
+  dm31: $\Delta m^2_{31}$

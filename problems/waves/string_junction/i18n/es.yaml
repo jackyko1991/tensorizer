@@ -1,0 +1,16 @@
+source_hash: 162fb2c64168
+title: Pulso en la unión de dos cuerdas
+summary: Dos cuerdas con distintas densidades de masa están atadas entre sí. Un pulso que llega por la izquierda se divide en el nudo en un pulso reflejado y otro transmitido, cuyas amplitudes vienen dadas por las impedancias $Z = \sqrt{T\mu}$. La derivada segunda es una convolución 1D con la plantilla $(1, -2, 1)$.
+notes: 'El nudo no puede romperse, así que $u$ es continua, y no tiene masa, así que las fuerzas transversales $T u_x$ a ambos lados se equilibran. Estas dos condiciones dan $R$ y $\mathcal T$. Una cuerda derecha más pesada ($Z_2 > Z_1$) refleja el pulso invertido, como un extremo fijo; una más ligera lo refleja derecho, como un extremo libre. El pulso transmitido siempre va derecho y se mueve a $c_2 = \sqrt{T/\mu_2}$, de modo que se comprime o se estira en un factor $c_2/c_1$. La energía que transporta un pulso es proporcional a $Z\,A^2$, lo que da el balance de flujo $R^2 + (Z_2/Z_1)\,\mathcal T^2 = 1$. Unidades: $T = 1$, $\mu_1 = 1$, cuerda de $-1$ a $1$. Las líneas grises discontinuas marcan las amplitudes previstas. Observa la cuerda más rápida: su pulso llega a la pared del fondo y rebota.'
+meanings:
+- desplazamiento en el punto de malla $i$; ambos extremos lejanos están fijos
+- 'masa por unidad de longitud: $\mu_1$ a la izquierda, $\mu_2$ a la derecha, el promedio en el nudo'
+- '$j$ repetido ⇒ sumado: la plantilla se desliza a lo largo de la cuerda'
+- impedancia de onda de la cuerda $k$
+- cocientes de amplitud a partir de la continuidad de $u$ y de la fuerza $T\,u_x$ en el nudo
+- $\sum_i \tfrac12\mu_i\dot u_i^2\Delta x + \tfrac12 T (\partial_x u)^2\Delta x$, conservada
+labels:
+  mu_ratio: Razón de densidades $\mu_2/\mu_1$
+  width: Anchura del pulso
+  t_max: Tiempo simulado
+  n_points: Puntos de malla

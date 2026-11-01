@@ -1,0 +1,31 @@
+title: Tunnelling in a double well
+category: quantum
+level: intermediate
+order: 3
+summary: >
+  A particle in a symmetric double-well potential. torch.linalg.eigh shows that the two lowest states
+  form a close pair: an even state and an odd state, split by a tiny tunnelling energy $\Delta E$. Their sum is a
+  particle sitting in the left well; as the two relative phases drift apart it tunnels to the right
+  well and back with period $2\pi/\Delta E$, although its energy is below the barrier.
+animated: true
+vector_form: '\hat H = -\tfrac12\,\frac{d^2}{dx^2} + V_0\Big(\frac{x^2}{a^2} - 1\Big)^2,\qquad \psi(0) = \frac{\varphi_0 + \varphi_1}{\sqrt2},\qquad P_L(t) = \int_{-\infty}^0 |\psi|^2 dx \approx \cos^2\frac{\Delta E\,t}{2}'
+index_form: 'H_{xy}\,\varphi_{yn} = E_n\,\varphi_{xn},\qquad \psi_x(t) = \varphi_{xn}\,c_n\,e^{-iE_n t},\qquad P_L(t) = \psi^*_x\,\Theta_x\,\psi_x\,dx'
+translation:
+  - {symbol: 'V_x', code: 'double_well(x, V0, a)', shape: '(N,)', meaning: 'quartic potential: minima at $x = \pm a$, barrier $V_0$ at $x = 0$'}
+  - {symbol: 'H_{xy}', code: 'hamiltonian(x, dx, V)', shape: '(N, N)', meaning: 'kinetic $-\tfrac12\,D2$ plus $V$ on the diagonal'}
+  - {symbol: 'E_n,\ \varphi_{xn}', code: 'torch.linalg.eigh(H)', shape: '(N,), (N, N)', meaning: 'energies and states; $\varphi_0$ even, $\varphi_1$ odd, $\Delta E = E_1 - E_0$'}
+  - {symbol: 'c_n', code: 'left_state(N)', shape: '(N,) complex', meaning: '$(1, 1, 0, 0, \dots)/\sqrt2$: equal mix of the doublet, localised on the left'}
+  - {symbol: '\psi_x(t)', code: "einsum('xn,n->x', phi, c * exp(-1j*E*t))", shape: '(N,) complex', meaning: 'repeated $n$ ⇒ summed: exact evolution in the eigenbasis'}
+  - {symbol: '\Theta_x', code: '(x < 0)', shape: '(N,)', meaning: 'step function selecting the left half; $P_L$ sums over $x$'}
+notes: >
+  Units $\hbar = m = 1$. The doublet energies lie below the barrier top $V_0$, so classically the particle could
+  never cross. With only two states in play, $\psi(t) \propto \varphi_0 + e^{-i\Delta E\,t}\varphi_1$ (up to a global phase): it is
+  $(\varphi_0 + \varphi_1)$ on the left at $t = 0$ and $(\varphi_0 - \varphi_1)$ on the right at $t = \pi/\Delta E$. $P_L(t) = \cos^2(\Delta E\,t/2)$ holds up
+  to the small overlap of each state with the "wrong" well. $\Delta E$ shrinks roughly exponentially with the barrier
+  height and width (a WKB factor $e^{-\int\kappa\,dx}$), so a slightly higher barrier slows tunnelling enormously —
+  the simulated time is measured in tunnelling periods $2\pi/\Delta E$ so the animation always shows whole oscillations.
+params:
+  V0: {default: 3.0, min: 1.0, max: 6.0, step: 0.1, label: 'Barrier height $V_0$'}
+  a: {default: 1.5, min: 1.0, max: 2.0, step: 0.05, label: 'Well separation $a$ (minima at $\pm a$)'}
+  periods: {default: 2.0, min: 0.5, max: 4.0, step: 0.5, label: Simulated time, unit: tunnelling periods}
+  n_grid: {default: 400, min: 100, max: 800, step: 10, type: int, label: Grid points}

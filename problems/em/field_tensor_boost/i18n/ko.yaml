@@ -1,0 +1,20 @@
+source_hash: c4a4275e3bd7
+title: 장 텐서의 로렌츠 변환
+summary: 상대성 이론에서 $\mathbf E$와 $\mathbf B$는 별개의 벡터가 아니라 하나의 반대칭 $4\times 4$ 텐서 $F^{\mu\nu}$의 여섯 성분입니다. 로렌츠 부스트는 지표마다 $\Lambda$ 하나씩, 즉 $F' = \Lambda F\Lambda^{\mathsf T}$로 변환하며 einsum 하나로 씁니다. 부스트 속력을 바꿔 가면 전기장과 자기장이 서로 섞이는 반면 $F_{\mu\nu}F^{\mu\nu}$와 $\mathbf E\cdot\mathbf B$는 변하지 않음을 볼 수 있습니다.
+notes: $c = 1$인 단위계, 계량 부호 $(+, -, -, -)$. 부스트는 $x$ 방향이므로 $E_x$와 $B_x$는 변하지 않고 가로 성분만 섞입니다. 순수한 전기장($\mathbf B = 0$)에 대해 움직이는 관측자는 자기장 $\mathbf B' = -\gamma\,\boldsymbol\beta\times\mathbf E$를 봅니다. 두 로렌츠 불변량은 전 구간에서 일정하게 유지됩니다.
+meanings:
+- 반대칭 장 텐서, $\mu, \nu \in \{t, x, y, z\}$
+- 민코프스키 계량 $\operatorname{diag}(+1, -1, -1, -1)$, $c = 1$
+- $S$개의 속력 $\beta$ 각각에 대한 $x$ 방향 부스트
+- '반복된 $\alpha$와 $\beta$ ⇒ 합: $F$의 지표마다 $\Lambda$ 하나'
+- 계량으로 내린 지표
+- 불변량 $2(B^2 - E^2)$
+- 쌍대 텐서 $\tfrac12\varepsilon^{\mu\nu\rho\sigma}F_{\rho\sigma}$를 이용한 불변량 $-4\,\mathbf E\cdot\mathbf B$
+labels:
+  Ex: $E_x$
+  Ey: $E_y$
+  Ez: $E_z$
+  Bx: $B_x$
+  By: $B_y$
+  Bz: $B_z$
+  beta_max: 최종 부스트 속력 $\beta = v/c$

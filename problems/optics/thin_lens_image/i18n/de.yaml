@@ -1,0 +1,16 @@
+source_hash: b20963373157
+title: Abbildung durch eine dünne Linse
+summary: Die Linsengleichung sagt, wo das Bild eines Gegenstands entsteht und wie groß es ist. Drei Hauptstrahlen werden für jede Gegenstandsposition auf einmal verfolgt, während der Gegenstand von jenseits $2f$ bis innerhalb der Brennweite wandert und das reelle, umgekehrte Bild zu einem virtuellen, aufrechten wird.
+notes: 'Abstände werden von der Linse aus gemessen: Der Gegenstand steht bei $x = -s$ und ein reelles Bild bei $x = +s''$. Die drei Hauptstrahlen sind (1) der Parallelstrahl, danach durch den hinteren Brennpunkt; (2) der Mittelpunktstrahl geradeaus durch die Mitte; (3) der Brennpunktstrahl durch den vorderen Brennpunkt, danach parallel. Alle folgen aus der einen Regel $\theta'' = \theta - y/f$. Innerhalb von $f$ divergieren die Strahlen nach der Linse; die gestrichelten Verlängerungen treffen sich im virtuellen Bild. Bei $s = f$ läuft das Bild ins Unendliche.'
+meanings:
+- Gegenstandsweite im Animationsbild $k$
+- Bildweite; negativ ⇒ virtuelles Bild auf der Gegenstandsseite
+- Bildgröße / Gegenstandsgröße; negativ ⇒ umgekehrt
+- Steigung des Hauptstrahls $r \in \{\text{parallel, centre, focal}\}$ vor der Linse
+- wo jeder Hauptstrahl die Linse kreuzt
+- 'Steigung nach der Linse: jeder Strahl wird um $-y/f$ geknickt'
+labels:
+  f: Brennweite $f$
+  h: Gegenstandshöhe $h$
+  s_start: Anfängliche Gegenstandsweite
+  s_end: Endgültige Gegenstandsweite

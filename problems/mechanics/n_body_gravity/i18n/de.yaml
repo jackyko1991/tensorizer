@@ -1,0 +1,16 @@
+source_hash: 840ee0536fe3
+title: N-Körper-Gravitation in 3D
+summary: Newtonsche Gravitation zwischen $N$ Körpern. Alle paarweisen Abstandsvektoren $r_{abi}$ werden per Broadcasting auf einmal aufgebaut, ein einsum summiert die Anziehung aller Körper $b$ auf jeden Körper $a$, und Velocity-Verlet integriert das ganze System.
+notes: Die Glättungslänge $\varepsilon$ hält die Kraft endlich, wenn zwei Körper sehr nahe aneinander vorbeifliegen; mit $\varepsilon = 0$ ist dies exakte Newtonsche Gravitation. Die Einheiten sind so gewählt, dass $G = 1$. Velocity-Verlet ist symplektisch, daher bleibt der Energiefehler klein und beschränkt, statt zu driften. Die Acht ist die berühmte periodische Dreikörperbahn, gefunden von Moore (1993) sowie Chenciner & Montgomery (2000).
+meanings:
+- Ort des Körpers $a$, Komponente $i \in \{x, y, z\}$
+- Masse des Körpers $b$
+- Abstandsvektor von $a$ nach $b$, alle Paare per Broadcasting
+- 'wiederholtes $j$ ⇒ summiert: Abstandsquadrat jedes Paares'
+- 'wiederholtes $b$ ⇒ summiert: Gesamtanziehung auf Körper $a$'
+- kinetische + paarweise potentielle Energie, erhalten
+labels:
+  scenario: Anfangsbedingung
+  t_max: Simulierte Zeit
+  dt: Zeitschritt
+  softening: Glättung $\varepsilon$

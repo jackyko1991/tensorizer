@@ -1,0 +1,18 @@
+source_hash: db1c9922ad65
+title: Gaz de van der Waals et construction de Maxwell
+summary: L'équation de van der Waals ajoute l'attraction et la taille des molécules au gaz parfait, et une transition liquide–gaz apparaît soudain. Toute une famille d'isothermes s'obtient par un seul broadcasting $(T, V)$ ; sous la température critique, la boucle non physique est remplacée par le palier d'aires égales de Maxwell, dont la pression est trouvée par dichotomie sur un lot de températures à la fois.
+notes: '$a$ mesure l''attraction entre molécules (elle abaisse la pression) et $b$ le volume occupé par une mole de molécules ($V$ ne peut pas descendre sous $nb$). Sous $T_c$, l''isotherme a une portion où comprimer le gaz abaisserait sa pression — mécaniquement instable. En réalité, le gaz se condense à pression constante $p^*$, la pression de vapeur saturante : un liquide de volume molaire $V_l$ coexiste avec un gaz de volume $V_g$. La règle de Maxwell fixe $p^*$ en imposant des aires égales au-dessus et en dessous du palier (de manière équivalente, des enthalpies libres égales pour les deux phases). Le dôme en tirets relie tous les $(V_l, p^*)$ et $(V_g, p^*)$ ; son sommet est le point critique, où liquide et gaz deviennent identiques. Les axes sont rapportés aux valeurs critiques, pour lesquelles tous les gaz de van der Waals se ressemblent (loi des états correspondants) ; l''axe des volumes est linéaire pour que les aires ombrées puissent être comparées à l''œil. Le modèle de van der
+  Waals n''est que qualitatif pour les fluides réels : par exemple, son $V_c = 3nb$ surestime les volumes critiques réels.'
+meanings:
+- balayage de températures, en colonne
+- grille de volumes, en ligne
+- toutes les isothermes à la fois par broadcasting
+- racines de la cubique $p(V) = p^*$ pour un lot de températures
+- 'aire algébrique entre la courbe et le palier : nulle à la solution'
+- 'dichotomie : torch.where déplace tous les encadrements à la fois'
+labels:
+  gas: Gaz
+  n: Quantité de gaz
+  T_high: Température initiale
+  T_low: Température finale
+  n_temps: Températures (images)

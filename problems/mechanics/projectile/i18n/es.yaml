@@ -1,0 +1,15 @@
+source_hash: bb811720bfea
+title: Proyectil con resistencia del aire
+summary: La segunda ley de Newton para una pelota con resistencia cuadrática del aire. Se resuelven varios ángulos de lanzamiento a la vez apilándolos en un único tensor por lotes, de modo que un solo einsum se encarga de todas las trayectorias.
+notes: 'El índice de lote $b$ no es física: es el truco tensorial que permite a PyTorch resolver $B$ proyectiles en una sola pasada. Con resistencia nula se recupera la parábola de los libros de texto, con alcance máximo a 45°.'
+meanings:
+- posición de la pelota $b$, componente $i \in \{x, z\}$
+- velocidad de la pelota $b$
+- vector gravedad $(0, -9.81)$
+- '$j$ repetido ⇒ sumado: velocidad al cuadrado de cada pelota'
+- segundo miembro de la EDO
+labels:
+  v0: Velocidad de lanzamiento
+  drag: Resistencia $c/m$
+  n_angles: Ángulos de lanzamiento
+  t_max: Tiempo simulado

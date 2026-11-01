@@ -1,0 +1,20 @@
+source_hash: d653bb5fd1c6
+title: Rotación libre de un sólido rígido (efecto raqueta de tenis)
+summary: Las ecuaciones de Euler para una caja sin momento externo, escritas con el tensor de inercia $I_{ij}$ y el tensor de Levi-Civita $\varepsilon_{ijk}$. El giro alrededor del eje más largo o del más corto es estable; el giro alrededor del eje intermedio se invierte una y otra vez (efecto Dzhanibekov).
+notes: 'Sin momento externo se conservan tanto la energía $\tfrac12\boldsymbol\omega\cdot I\boldsymbol\omega$ como el módulo de $\mathbf L = I\boldsymbol\omega$, así que $\boldsymbol\omega$ debe moverse sobre la intersección de un elipsoide de energía constante y una esfera de $\lvert\mathbf L\rvert$ constante (en el espacio de $\mathbf L$). Cerca de los ejes mayor y menor estas curvas son pequeños lazos: estables; cerca del eje intermedio pasan por un punto de silla, así que un pequeño bamboleo crece y la caja se da la vuelta y luego vuelve. El momento angular en el sistema del laboratorio $RI\boldsymbol\omega$ (dibujado como la flecha fija) nunca se mueve. Los parámetros $a, b, c$ se ordenan de modo que $a \ge b \ge c$.'
+meanings:
+- tensor de inercia de una caja maciza, $(M/12)\operatorname{diag}(b^2+c^2,\ a^2+c^2,\ a^2+b^2)$
+- velocidad angular en componentes del sistema del cuerpo
+- 'tensor de Levi-Civita: el producto vectorial como tensor'
+- '$j, k, l$ sumados: $\boldsymbol\omega\times(I\boldsymbol\omega)$'
+- resolver $I_{ij}\dot\omega_j = -\varepsilon_{ijk}\omega_j I_{kl}\omega_l$
+- 'orientación: matriz de rotación cuerpo → laboratorio'
+- energía cinética de rotación, conservada
+labels:
+  spin_axis: Giro principalmente alrededor de
+  spin: Velocidad de giro
+  perturbation: Bamboleo (fracción del giro)
+  a: Lado de la caja $a$
+  b: Lado de la caja $b$
+  c: Lado de la caja $c$
+  t_max: Tiempo simulado

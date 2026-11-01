@@ -1,0 +1,14 @@
+source_hash: faa64f98c4b2
+title: Collision de solitons KdV
+summary: Deux ondes solitaires de l'équation de Korteweg–de Vries. La plus haute est plus rapide, rattrape l'autre, et toutes deux sortent de la collision avec leur forme intacte, seulement décalées. Les dérivées sont prises dans l'espace de Fourier ($\partial_x \to ik$), le terme raide $u_{xxx}$ est résolu exactement avec un facteur intégrant et le reste avec RK4.
+notes: 'Convention : $u_t + 6uu_x + u_{xxx} = 0$, dont le soliton de vitesse $c$ a une hauteur $c/2$, c''est-à-dire qu''il se déplace à deux fois son amplitude. Plus haut signifie plus rapide et plus étroit. Après la collision, le grand soliton est en avance sur la position qu''il aurait sans interaction et le petit en retard ; avec $\kappa = \sqrt c/2$, les décalages exacts sont $\frac{1}{\kappa_1}\ln\frac{\kappa_1+\kappa_2}{\kappa_1-\kappa_2}$ vers l''avant et $\frac{1}{\kappa_2}\ln\frac{\kappa_1+\kappa_2}{\kappa_1-\kappa_2}$ vers l''arrière. En pointillés : où seraient les solitons s''ils s''ignoraient. La boîte est périodique (longueur 100), donc une longue simulation fait le tour. La FFT transforme chaque dérivée en multiplication, et le facteur intégrant supprime la sévère limite de pas de temps due à $u_{xxx}$, ne laissant que celle, plus douce, du terme non linéaire.'
+meanings:
+- hauteur de l'onde sur une grille périodique (float64)
+- coefficients de Fourier ; $\partial_x \to ik$, $\partial_x^3 \to -ik^3$
+- terme non linéaire $(u^2)$ calculé dans l'espace réel, tiers supérieur des modes supprimé (règle des 2/3)
+- solution exacte de la partie dispersive sur un pas (facteur intégrant)
+- 'conservées : $\int u\,dx$ et $\int u^2\,dx$'
+labels:
+  c_tall: Vitesse du grand soliton $c_1$
+  c_short: Vitesse du petit soliton $c_2$
+  t_max: Durée simulée

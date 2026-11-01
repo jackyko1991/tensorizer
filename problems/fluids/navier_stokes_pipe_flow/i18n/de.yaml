@@ -1,0 +1,19 @@
+source_hash: db9343501d33
+title: Navier–Stokes-Rohrströmung
+summary: 'Die vollen inkompressiblen Navier–Stokes-Gleichungen, angewandt auf Wasser in einem runden Rohr, das plötzlich von einem Druckgradienten angetrieben wird. Bei axialer Strömung fällt der nichtlineare Term exakt weg, und es bleibt eine radiale Diffusionsgleichung: Impuls breitet sich von der haftenden Wand nach innen aus, und das Profil wächst innerhalb weniger $R^2/\nu$ zur Hagen–Poiseuille-Parabel heran.'
+notes: 'Dies ist eine der seltenen exakten Lösungen der Navier–Stokes-Gleichungen: Weil die Strömung parallel ist, gilt $(\mathbf u\cdot\nabla)\mathbf u = 0$, und nur Druckgradient und Viskosität bleiben übrig. Die stationäre Hagen–Poiseuille-Strömung hat $u_z = G(R^2 - r^2)/4\mu$, den Volumenstrom $Q = \pi G R^4/8\mu$ (das berühmte $R^4$-Gesetz) und die Wandschubspannung $\tau_w = GR/2$ — das Kräftegleichgewicht $G\,\pi R^2 = \tau_w\,2\pi R$ pro Längeneinheit. Der Anlaufvorgang nähert sich ihr wie $e^{-\lambda_1^2\nu t/R^2}$ mit $\lambda_1 = 2.405$ (erste Nullstelle von $J_0$), sodass das Profil bei $t \approx 0.6\,R^2/\nu$ nur noch wenige Prozent von der Parabel abweicht. Anfangs bewegt sich der Kern als Pfropfen, und nur das Fluid nahe der Wand spürt die Reibung — beobachte die Farbstofflinien. Die Lösung ist laminar; oberhalb einer Reynolds-Zahl von etwa 2000 wird echte Rohrströmung turbulent.'
+meanings:
+- nur $u_z \ne 0$ und $\partial_z u_z = 0$, also ist der Advektionsterm exakt null
+- 'die Kontinuität gilt automatisch: $u_z$ ändert sich entlang des Rohrs nicht'
+- radiale Punkte von der Achse ($i = 0$) bis zur Wand ($i = N$)
+- Axialgeschwindigkeit $u_z(r_i)$; der Wandwert $u_N = 0$ (Haftbedingung)
+- $\tfrac1r\partial_r(r\partial_r\,\cdot)$ als Matrix, mit dem Grenzwert $r \to 0$ $2\partial_r^2$ auf der Achse
+- 'wiederholtes $j$ ⇒ summiert: viskoser Term $\nu\nabla^2 u_z$'
+- antreibender Druckgradient in Pa/m
+- Volumenstrom; stationärer Wert $\pi G R^4/8\mu$
+- Reibung pro Fläche an der Wand; stationärer Wert $GR/2$
+labels:
+  G: Druckgradient $G$
+  R: Rohrradius $R$
+  nu: Kinematische Viskosität $\nu$
+  t_max: Simulierte Zeit in Einheiten von $R^2/\nu$

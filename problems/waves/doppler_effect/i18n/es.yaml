@@ -1,0 +1,15 @@
+source_hash: 698c7a054398
+title: Efecto Doppler y cono de Mach
+summary: Una fuente que se mueve a velocidad $v_s$ emite un frente de onda circular por período. Cada frente de onda es una fila de un tensor (instante de emisión, punto de emisión), así que su radio en cualquier instante es una simple resta. Los frentes se agolpan por delante y se separan por detrás; por encima de la velocidad del sonido se apilan en un cono de Mach.
+notes: 'La frecuencia percibida es simplemente el número de frentes por segundo que llegan: por delante de la fuente los frentes se emitieron más juntos, así que $f'' = f\,c/(c - v_s)$; por detrás, $f'' = f\,c/(c + v_s)$. Los oyentes se sitúan sobre la línea del movimiento, donde estas fórmulas son exactas. Para $v_s > c$ (número de Mach $M = v_s/c > 1$) la fuente adelanta a su propio sonido: todos los frentes son tangentes a dos rectas, el cono de Mach de semiángulo $\mu$ con $\sin\mu = 1/M$. El oyente situado delante no oye nada hasta que pasa el cono, y los frentes llegan en orden inverso. Velocidad del sonido $c = 340$ m/s; solo se mueve la fuente, el aire está en reposo.'
+meanings:
+- un frente de onda cada período $1/f$
+- dónde estaba la fuente cuando emitió el frente $e$
+- radio de cada frente en el instante $t$ (cero si aún no se ha emitido)
+- oyentes delante y detrás de la fuente
+- '$i$ repetido ⇒ sumado: distancia al cuadrado de cada punto de emisión a cada oyente'
+- cuándo llega el frente $e$ al oyente $o$
+labels:
+  mach: Número de Mach $v_s/c$
+  f: Frecuencia de la fuente $f$ (frentes dibujados)
+  t_max: Tiempo simulado

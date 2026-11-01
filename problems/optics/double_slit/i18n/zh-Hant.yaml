@@ -1,0 +1,18 @@
+source_hash: b846fb498443
+title: 雙狹縫干涉
+summary: 以有限差分求解二維純量波動方程式：拉普拉斯算子是以 conv2d 作用的 $3\times 3$ 模板張量。平面波撞上有兩條狹縫的牆，干涉條紋在其後方的屏幕上逐漸形成。
+notes: 長度以網格數計（$h = 1$），且 $c = 1$。屏幕上的虛線標示路程差為整數個波長的位置 $y_m = L\tan(\arcsin(m\lambda/d))$；小角度時其間距為 $\lambda L/d$。狹縫寬度相對於 $\lambda$ 並不算小，因此各狹縫本身的繞射包絡使外側條紋變暗。
+meanings:
+- 網格上的波場，列 $a = y$，行 $b = x$
+- $\left[\begin{smallmatrix}0&1&0\\1&-4&1\\0&1&0\end{smallmatrix}\right]$：五點拉普拉斯模板
+- 重複的 $i$ ⇒ 對 $x$ 與 $y$ 求和：以卷積表示拉普拉斯
+- 蛙跳法：$2u^n - u^{n-1} + (c\Delta t)^2\,\nabla^2 u^n$，以 $\sigma$ 阻尼
+- 海綿阻尼，只在吸收邊框中不為零
+- 二維顯式法的 CFL 穩定條件
+- 沿屏幕行的時間平均強度
+labels:
+  wavelength: 波長 $\lambda$
+  slit_sep: 狹縫間距 $d$
+  slit_width: 狹縫寬度
+  screen_dist: 障板 → 屏幕距離 $L$
+  t_max: 模擬時間

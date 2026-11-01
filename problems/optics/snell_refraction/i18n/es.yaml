@@ -1,0 +1,18 @@
+source_hash: 85a6136cffba
+title: Ley de Snell en medios estratificados
+summary: Un abanico de rayos de luz atraviesa tres capas con distintos índices de refracción. La forma vectorial de la ley de Snell desvía todos los rayos a la vez con un único einsum, y pasa a una reflexión especular allí donde se produce la reflexión total interna.
+notes: 'Los rayos viajan a velocidad $c/n$, así que la línea discontinua que une las puntas de los rayos es un frente de onda: se retrasa en las capas densas. Con los valores por defecto la capa inferior es aire ($n = 1$); los rayos más inclinados que el ángulo crítico $\arcsin(n_3/n_2)$ en esa interfaz sufren reflexión total interna y vuelven hacia arriba. Iguala dos índices para hacer desaparecer una interfaz.'
+meanings:
+- dirección unitaria del rayo $r$, componente $i \in \{x, y\}$
+- normal unitaria a la superficie orientada hacia el rayo incidente
+- cociente de índices $n_1/n_2$ en la interfaz que alcanza cada rayo
+- '$j$ repetido ⇒ sumado: $\cos\theta_i$ de cada rayo'
+- dirección refractada (sigue siendo un vector unitario)
+- dirección especular, usada donde $1 - \eta^2(1 - c^2) < 0$ (RTI)
+labels:
+  n1: Índice de la capa superior $n_1$
+  n2: Índice de la capa intermedia $n_2$
+  n3: Índice de la capa inferior $n_3$
+  n_rays: Rayos en el abanico
+  max_angle: Ángulo máximo de los rayos
+  t_max: Tiempo simulado

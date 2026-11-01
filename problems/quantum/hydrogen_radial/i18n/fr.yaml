@@ -1,0 +1,15 @@
+source_hash: bc7b5c9d23fa
+title: Orbitales de l'atome d'hydrogène
+summary: Écrire $\psi = (u(r)/r)\,Y_{lm}(\theta, \phi)$ ramène le problème 3D de l'hydrogène à une équation radiale 1D avec un terme centrifuge supplémentaire $l(l+1)/2r^2$. Un hamiltonien aux différences finies par moment cinétique $l$ est empilé dans un tenseur $(L, N, N)$ et un seul torch.linalg.eigh en lot renvoie toutes les orbitales d'un coup. L'animation parcourt 1s, 2s, 2p, 3s, … en montrant la probabilité radiale et une coupe de $\lvert\psi_{nl0}\rvert^2$.
+notes: 'Unités atomiques ($\hbar = m_e = e = 4\pi\varepsilon_0 = 1$) : longueurs en rayons de Bohr, énergies en hartrees. Les énergies exactes $E_n = -1/(2n^2)$ ne dépendent que de $n$, donc 2s et 2p (ou 3s, 3p, 3d) sont dégénérées bien qu''elles soient valeurs propres de matrices différentes — la symétrie cachée du potentiel en $1/r$. La fonction radiale de $(n, l)$ a $n - l - 1$ nœuds. La grille s''arrête à $r_{\max}$, donc les états dont la taille ($\approx 2n^2$) approche $r_{\max}$ sont comprimés et remontent en énergie ; les différences finies sous-estiment aussi légèrement la liaison de 1s près de la singularité en $1/r$. La coupe montre les orbitales $m = 0$ dans le plan $xz$ ($z$ vers le haut), $Y_{l0} \propto P_l(\cos\theta)$ ; la couleur utilise une échelle en loi de puissance compressée $(\lvert\psi\rvert^2)^{0.3}$ pour que les lobes extérieurs faibles restent visibles.'
+meanings:
+- points intérieurs $r = dr \dots r_{\max} - dr$ ($u = 0$ aux deux extrémités)
+- attraction coulombienne plus barrière centrifuge, une ligne par $l$
+- une pile de $L$ hamiltoniens, un par moment cinétique
+- 'en lot sur $l$ : énergies et fonctions radiales ; nombre principal $n = l + 1 + \text{column}$'
+- probabilité par unité de rayon, $r^2\lvert R\rvert^2 = u^2$
+- $\lvert R(r)\,Y_{l0}(\theta)\rvert^2$ sur une coupe passant par l'axe $z$
+labels:
+  n_max: Couche la plus haute $n$
+  r_max: Rayon de la grille $r_{\max}$
+  n_grid: Points de grille

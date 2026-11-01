@@ -1,0 +1,19 @@
+source_hash: 0b86e0abca1f
+title: Diffusion de Rutherford
+summary: Un faisceau de particules alpha est envoyé sur un noyau d'or. Chaque alpha est intégrée dans le champ coulombien répulsif avec RK4 dans un seul tenseur par lot, et l'histogramme des angles de diffusion reproduit la loi de Rutherford en $1/\sin^4(\theta/2)$ — la preuve que la charge positive d'un atome se trouve dans un minuscule noyau.
+notes: 'Unités : fm, MeV et temps en fm/$c$. L''énergie et le moment cinétique sont conservés le long de chaque trajectoire, donc $E$ et le paramètre d''impact $b$ suffisent à fixer la déviation $\theta = 2\arctan(k/2Eb)$ ; une alpha frontale rebrousse chemin à $d = k/E$ (environ 45 fm pour 5 MeV sur l''or, encore loin du noyau de 7 fm, donc la loi de Coulomb pure s''applique). Le faisceau est réparti uniformément sur un disque de rayon $b_{\max}$ (aléatoire mais avec graine fixe), si bien que le nombre de particules diffusées dans un angle solide vaut (alphas par unité de surface) × $d\sigma/d\Omega$. Seule une alpha sur quelques centaines rebondit au-delà de 90° — la surprise de Geiger et Marsden en 1909. Simplifications : le noyau est une charge ponctuelle fixe (pas de recul, pas de force nucléaire) et le mouvement est non relativiste ($v \approx 0.05c$). Chaque alpha part à 30 $d$ avec exactement l''énergie et le moment cinétique d''une alpha venant de l''infini ; la queue restante en
+  $1/r^2$ de la force décale les angles de bien moins d''un degré.'
+meanings:
+- $Z_\alpha Z e^2/4\pi\varepsilon_0 = 2Z \cdot 1.44$ MeV fm
+- position (fm) et vitesse (en unités de $c$) de l'alpha $b$
+- '$j$ répété ⇒ sommé : distance au carré $r_b^2$'
+- répulsion coulombienne pour tout le faisceau à la fois
+- 'produit vectoriel 2D : moment cinétique par unité de masse'
+- angle de la vitesse sortante par rapport à l'axe du faisceau
+- prédiction de Rutherford, comparée à l'histogramme
+labels:
+  energy: Énergie des alphas $E$
+  z_target: Charge de la cible $Z$
+  b_max: Rayon du faisceau $b_{\max}$
+  n_beam: Alphas dans le faisceau
+  n_steps: Pas RK4

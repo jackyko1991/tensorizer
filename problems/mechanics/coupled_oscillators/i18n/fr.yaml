@@ -1,0 +1,18 @@
+source_hash: ea8025a41e84
+title: Oscillateurs couplés et modes propres
+summary: $N$ masses identiques reliées par des ressorts entre deux parois fixes. Les ressorts deviennent un seul tenseur de raideur $K_{ij}$, ses vecteurs propres sont les modes propres, et le mouvement est une superposition de modes sommée en un seul einsum.
+notes: 'Comme $K_{ij}$ est symétrique, eigh donne des pulsations réelles et des modes orthonormés : tout mouvement est une somme de cosinus indépendants et aucune intégration pas à pas n''est nécessaire. Partez d''un seul mode et la chaîne garde cette forme indéfiniment ; écartez une seule masse et l''énergie se propage le long de la chaîne. Les pulsations analytiques sont $\omega_n = 2\sqrt{k/m}\,\sin\tfrac{n\pi}{2(N+1)}$.'
+meanings:
+- déplacement de la masse $i$ par rapport à sa position d'équilibre
+- 'tenseur de raideur : $2k$ sur la diagonale, $-k$ à côté'
+- '$j$ répété ⇒ sommé : force résultante des ressorts sur la masse $i$'
+- valeurs propres et vecteurs propres (colonne $n$) = modes propres
+- '$i$ répété ⇒ sommé : projection de l''état initial sur chaque mode'
+- '$n$ répété ⇒ sommé : superposition des modes'
+labels:
+  n_masses: Nombre de masses
+  k: Raideur des ressorts
+  m: Masse
+  start: Déplacement initial
+  amplitude: Amplitude initiale
+  t_max: Durée simulée

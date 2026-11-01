@@ -1,0 +1,21 @@
+source_hash: b7086dad7034
+title: Klotz auf der schiefen Ebene mit Reibung
+summary: Gewichtskraft, Normalkraft und Reibung an einem Klotz, per einsum-Projektion zerlegt in die Einheitsvektoren entlang und senkrecht zu jeder Rampe. Ein Batch von Neigungswinkeln zeigt die Haftreibungsschwelle $\tan\theta = \mu_s$.
+notes: 'Die Haftreibung ist genau so groß wie nötig, höchstens $\mu_s N$, sodass ein aus der Ruhe losgelassener Klotz liegen bleibt, solange $\tan\theta \le \mu_s$. Sobald er rutscht, übernimmt die Gleitreibung $\mu_k N$ (mit $\mu_k \le \mu_s$), und die Beschleunigung ist konstant, also wächst der Weg wie $\tfrac12 at^2$, bis der Klotz unten ankommt. Der Klotz wird als Punkt behandelt: kein Kippen, kein Rollen.'
+meanings:
+- Einheitsvektor hangabwärts auf Rampe $b$, $(\cos\theta, -\sin\theta)$
+- Normaleneinheitsvektor der Rampe $b$, $(\sin\theta, \cos\theta)$
+- Schwerevektor $(0, -g)$
+- 'wiederholter Index ⇒ summiert: Komponente der Schwerkraft in die Rampe hinein'
+- Normalkraft pro Masse, hebt den in die Rampe gerichteten Anteil der Schwerkraft auf
+- Haftreibung, wenn sie den Klotz halten kann, sonst Gleitreibung $\mu_k N$
+- 'Beschleunigung hangabwärts: $g(\sin\theta - \mu_k\cos\theta)$ oder 0'
+labels:
+  mu_static: Haftreibung $\mu_s$
+  mu_kinetic: Gleitreibung $\mu_k$ ($\le \mu_s$)
+  n_ramps: Rampen
+  min_angle: Kleinster Winkel
+  max_angle: Größter Winkel
+  ramp_length: Rampenlänge
+  g: Fallbeschleunigung $g$
+  t_max: Simulierte Zeit

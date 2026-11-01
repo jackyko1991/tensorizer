@@ -1,0 +1,15 @@
+source_hash: f24d1ad2823c
+title: Modelo de Ising 2D
+summary: Una red de espines $\pm 1$ que prefieren alinearse con sus vecinos. La suma de vecinos de cada sitio es un único conv2d con un núcleo en forma de cruz, y una actualización de Metropolis en tablero de ajedrez invierte la mitad de la red en paralelo. Por debajo de la temperatura crítica los dominios crecen hasta que el imán se ordena; por encima, los espines siguen desordenados.
+notes: 'Unidades: $J = k_B = 1$, de modo que $T_c = 2/\ln(1 + \sqrt2) \approx 2.269$. En el lote corren tres redes en paralelo: la $T$ elegida, $T_c$ y $T = 3.5$. Todas parten de espines aleatorios (temperatura infinita) y se enfrían bruscamente. Actualizar todos los sitios a la vez sería incorrecto (los vecinos se invertirían según valores obsoletos), pero los sitios de un color del tablero solo tocan sitios del otro color, así que cada mitad puede actualizarse en paralelo. Un enfriamiento brusco a $T$ baja puede quedarse atascado mucho tiempo en dos dominios en forma de franja, un rasgo real de la dinámica en una red periódica. En una red finita $\lvert m\rvert$ no es exactamente cero por encima de $T_c$, y cerca de $T_c$ fluctúa fuertemente (ralentización crítica). $E/N$ va de $-2$ (orden perfecto) a 0.'
+meanings:
+- espín $\pm 1$ en la fila $i$, columna $j$, para un lote de $B$ temperaturas (el 1 es el canal de conv2d)
+- núcleo de convolución que selecciona los cuatro vecinos más próximos
+- '$k, l$ repetidos ⇒ sumados: suma de vecinos, bordes periódicos'
+- coste de invertir cada espín por separado
+- '$i, j$ repetidos ⇒ sumados: el doble de la energía de enlace (cada enlace se ve desde ambos extremos)'
+- una temperatura por red, con broadcasting sobre los sitios
+labels:
+  T: Temperatura $T$
+  L: Tamaño de la red $L$
+  n_sweeps: Barridos de Monte Carlo

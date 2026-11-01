@@ -1,0 +1,27 @@
+title: Electrostatic potential (Poisson equation)
+category: em
+level: intermediate
+order: 1
+summary: >
+  Solve Poisson's equation for the potential of a few line charges inside a grounded box. On a grid the Laplacian
+  $\partial_i\partial_i$ becomes a matrix built from the 1D second-difference matrix with Kronecker products, so the whole PDE turns
+  into one linear system $L\phi = -\rho/\varepsilon_0$ that torch.linalg.solve handles in a single call.
+animated: false
+vector_form: '\nabla^2\phi = -\rho/\varepsilon_0,\qquad \mathbf E = -\nabla\phi'
+index_form: '\partial_i\partial_i\,\phi = -\rho/\varepsilon_0 \;\;\longrightarrow\;\; L_{nm}\,\phi_m = -\rho_n/\varepsilon_0,\qquad E_i = -\partial_i\phi'
+translation:
+  - {symbol: '\phi_{ab}', code: 'phi', shape: '(N, N)', meaning: 'potential at grid row $a$ ($y$) and column $b$ ($x$)'}
+  - {symbol: '\phi_m', code: 'phi.reshape(-1)', shape: '(N²,)', meaning: 'same values flattened: $m = a\cdot N + b$'}
+  - {symbol: 'D_{ab}', code: 'second_difference(N, h)', shape: '(N, N)', meaning: '1D $\partial^2$: $(\phi_{a-1} - 2\phi_a + \phi_{a+1})/h^2$, tridiagonal'}
+  - {symbol: 'L_{nm}', code: 'kron(D, I) + kron(I, D)', shape: '(N², N²)', meaning: '2D Laplacian $\partial_y^2 + \partial_x^2$: banded, five non-zeros per row'}
+  - {symbol: '\rho_n', code: 'rho.reshape(-1)', shape: '(N²,)', meaning: 'charge density on the grid'}
+  - {symbol: 'L_{nm}\phi_m', code: "einsum('nm,m->n', L, phi)", shape: '(N²,)', meaning: 'repeated $m$ ⇒ summed: the discrete Laplacian of $\phi$'}
+  - {symbol: 'E_i', code: 'electric_field(phi, h)', shape: '(2, N, N)', meaning: '$E_i = -\partial_i\phi$ by central differences, $i \in \{x, y\}$'}
+notes: >
+  The box is the unit square with $\phi = 0$ on its walls (grounded). The problem is 2D, so each "point" charge is
+  really an infinite line charge $\lambda$ (per unit length) and Gauss's law reads $\oint \mathbf E\cdot\mathbf n\,dl = \lambda/\varepsilon_0$. Units: $\varepsilon_0 = 1$.
+  $L$ is mostly zeros — a real code would store it as a sparse matrix; here $N^2\times N^2$ dense is still small enough to solve directly.
+params:
+  config: {default: dipole, type: choice, options: [dipole, quadrupole, capacitor, same_sign], label: Charge layout}
+  n_grid: {default: 60, min: 20, max: 80, step: 5, type: int, label: Grid points per side}
+  charge: {default: 1.0, min: 0.1, max: 5.0, step: 0.1, label: Charge per line, unit: λ}

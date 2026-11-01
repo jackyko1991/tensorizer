@@ -1,0 +1,26 @@
+title: Simple pendulum beyond small angles
+category: mechanics
+level: beginner
+order: 1
+summary: >
+  The full nonlinear pendulum equation for several release amplitudes at once. All pendulums live in one
+  batched tensor, and each is compared with the small-angle cosine you learn in school.
+animated: true
+vector_form: '\ddot\theta = -\frac{g}{L}\,\sin\theta'
+index_form: '\ddot\theta_b = -\frac{g}{L}\,\sin\theta_b,\qquad \theta_b^{\text{small}}(t) = \theta_b(0)\cos\!\big(\sqrt{g/L}\,t\big)'
+translation:
+  - {symbol: '\theta_b', code: 'y[:, 0]', shape: '(B,)', meaning: 'angle of pendulum $b$ from the vertical'}
+  - {symbol: '\omega_b = \dot\theta_b', code: 'y[:, 1]', shape: '(B,)', meaning: 'angular velocity of pendulum $b$'}
+  - {symbol: '\ddot\theta_b', code: 'angular_acceleration(theta, g, L)', shape: '(B,)', meaning: 'right-hand side: $-(g/L)\sin\theta$ for every pendulum at once'}
+  - {symbol: '\theta_b(0)\cos(\Omega t)', code: "einsum('t,b->tb', cos(Ω t), theta0)", shape: '(T, B)', meaning: 'small-angle solution: an outer product, no index summed'}
+  - {symbol: 'E_b', code: 'energy(y, g, L)', shape: '(B,)', meaning: 'energy per unit mass $\tfrac12L^2\omega^2 + gL(1 - \cos\theta)$, conserved'}
+notes: >
+  For small swings $\sin\theta \approx \theta$ and every pendulum has the same period $2\pi\sqrt{L/g}$. Bigger swings take longer:
+  the exact period is $4\sqrt{L/g}\,K(\sin(\theta_0/2))$ with the complete elliptic integral $K$, about 18% longer at 90°.
+  Watch the large-amplitude pendulum fall behind its dashed small-angle partner.
+params:
+  length: {default: 1.0, min: 0.2, max: 3.0, step: 0.1, label: 'Rod length $L$', unit: m}
+  g: {default: 9.81, min: 1.0, max: 25.0, step: 0.1, label: 'Gravity $g$', unit: m/s²}
+  n_pendulums: {default: 4, min: 1, max: 6, step: 1, type: int, label: Pendulums}
+  max_amplitude: {default: 150.0, min: 10, max: 175, step: 5, label: Largest amplitude, unit: °}
+  t_max: {default: 6.0, min: 2, max: 20, step: 1, label: Simulated time, unit: s}

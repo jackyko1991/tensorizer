@@ -1,0 +1,16 @@
+source_hash: 9c89c68f4f20
+title: Modos de una guía de ondas rectangular
+summary: '¿Qué patrones de campo pueden propagarse por un tubo metálico hueco? Cada modo resuelve la ecuación de Helmholtz 2D $(\partial_i\partial_i + k_c^2)\psi = 0$ en la sección transversal: paredes de Dirichlet para TM y de Neumann para TE. El laplaciano discreto se ensambla con torch.kron y torch.linalg.eigh devuelve a la vez todos los modos y frecuencias de corte.'
+notes: El tamaño por defecto es el de la guía estándar WR-90 de banda X (2.286 cm × 1.016 cm), cuyo modo $\text{TE}_{10}$ tiene su corte en 6.56 GHz. Un modo solo se propaga por encima de su frecuencia de corte, con $\beta = \sqrt{(\omega/c)^2 - k_c^2}$. Los modos TE y TM con el mismo $(m, n \ge 1)$ comparten frecuencia de corte. La solución TE constante ($k_c = 0$) no transporta ninguna onda y se descarta. Las diferencias finitas de segundo orden sitúan $k_c$ a menos de un uno por ciento del valor exacto con la resolución por defecto.
+meanings:
+- $E_z$ (TM) o $H_z$ (TE) en el punto de malla $(x_a, y_b)$
+- 'los mismos valores aplanados: $m = a\cdot N_y + b$'
+- $\partial^2$ en 1D con la condición de pared incorporada en las entradas de las esquinas
+- el laplaciano 2D $\partial_i\partial_i$ ($i$ sumado sobre $x, y$)
+- 'autovalores y autovectores ortonormales: cortes y formas de los modos'
+- $\pi\sqrt{(m/a)^2 + (n/b)^2}$, para comprobar los números
+labels:
+  a: Anchura $a$
+  b: Altura $b$
+  n_modes: Modos
+  n_grid: Puntos de malla a lo largo de $b$

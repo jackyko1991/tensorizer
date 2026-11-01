@@ -1,0 +1,17 @@
+source_hash: 8807e34cb0a8
+title: Ondes électromagnétiques (FDTD)
+summary: 'Les deux équations de Maxwell en rotationnel sont intégrées dans le temps sur une grille de Yee. Le rotationnel s''écrit $\varepsilon_{ijk}\,\partial_j F_k$ : une table de différences finies contractée avec le symbole de Levi-Civita en un seul einsum. Une onde issue d''une source ponctuelle ou linéique frappe un bloc diélectrique, ralentit, se réfracte et se réfléchit en partie, tandis qu''un bord amortissant absorbe ce qui sort de la boîte.'
+notes: 'Unités avec $c = \varepsilon_0 = \mu_0 = 1$ et taille de cellule $\Delta x = 1$. $\mathbf E$ et $\mathbf H$ sont décalés d''une demi-cellule (différences avant pour $\partial\mathbf E$, arrière pour $\partial\mathbf H$) et mis à jour alternativement — le schéma saute-mouton de Yee. La source est « douce » : elle s''ajoute à $E_z$, si bien que les ondes réfléchies la traversent. Le bord absorbant multiplie simplement les champs par un facteur légèrement inférieur à 1 qui croît progressivement vers les parois ; les vrais codes utilisent plutôt une couche parfaitement adaptée (PML). Dans le bloc, la longueur d''onde est divisée par $n = \sqrt{\varepsilon_r}$ ; en incidence normale, une fraction $(1 - n)/(1 + n)$ de l''amplitude est réfléchie.'
+meanings:
+- 'composantes du champ sur la grille ; mode TM : seuls $E_z$, $H_x$, $H_y$ sont non nuls'
+- table de différences finies ; la ligne $j = z$ est nulle en 2D
+- symbole de Levi-Civita
+- '$j, k$ répétés ⇒ sommés : le rotationnel dans chaque cellule'
+- 'permittivité relative : 1 dans le vide, $\varepsilon_\text{block}$ dans le bloc ($n = \sqrt{\varepsilon_r}$)'
+- pas de temps $S\,\Delta x/(c\sqrt2)$ ; $S > 1$ est refusé car le schéma divergerait
+labels:
+  source: Source
+  eps_block: Permittivité du bloc $\varepsilon_r$
+  wavelength: Longueur d'onde dans le vide
+  courant: Nombre de Courant $S$
+  t_max: Durée simulée

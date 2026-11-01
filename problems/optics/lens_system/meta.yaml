@@ -1,0 +1,32 @@
+title: Two-lens system with ray-transfer matrices
+category: optics
+level: intermediate
+order: 1
+summary: >
+  Paraxial optics is linear algebra: free space and thin lenses are $2\times 2$ matrices acting on
+  (height, angle) ray vectors. The whole system is one chained matrix product applied to a batch
+  of rays, recomputed as the second lens slides away from the first.
+animated: true
+vector_form: 'M = L_2\,P(d)\,L_1\,P(s),\quad P(d) = \begin{pmatrix}1 & d\\ 0 & 1\end{pmatrix},\ L(f) = \begin{pmatrix}1 & 0\\ -1/f & 1\end{pmatrix},\quad \mathbf y'' = M\,\mathbf y'
+index_form: 'y''_{ri} = M_{ij}\,y_{rj},\qquad M_{im} = L^{(2)}_{ij}\,P^{(d)}_{jk}\,L^{(1)}_{kl}\,P^{(s)}_{lm}'
+translation:
+  - {symbol: 'y_{rj}', code: 'rays', shape: '(R, 2)', meaning: 'ray $r$: $j = 0$ height $h$, $j = 1$ angle $\theta$'}
+  - {symbol: 'P_{ij}(d)', code: 'free_space(d)', shape: '(2, 2)', meaning: 'propagation over distance $d$ (batched $d$ gives (..., 2, 2))'}
+  - {symbol: 'L_{ij}(f)', code: 'thin_lens(f)', shape: '(2, 2)', meaning: 'thin lens of focal length $f$'}
+  - {symbol: 'M_{ik} = E_{ij}M_{jk}', code: "einsum('ij,jk->ik', e, m)", shape: '(2, 2)', meaning: 'chain one more element onto the system (repeated $j$ summed); same as torch.linalg.multi_dot'}
+  - {symbol: 'M_{ij}(z)', code: "einsum('zij,zjk->zik', P, B)", shape: '(Z, 2, 2)', meaning: 'transfer matrix from the object to every axial sample $z$'}
+  - {symbol: 'y''_{zri} = M_{ij}(z)\,y_{rj}', code: "einsum('zij,rj->zri', m, rays)", shape: '(Z, R, 2)', meaning: 'every ray at every $z$ in one contraction'}
+  - {symbol: 'z_{\text{img}} = -B/D', code: 'image_distance(m)', shape: '()', meaning: 'where the height stops depending on the launch angle'}
+notes: >
+  Order matters: the element the light meets first is the rightmost factor. Every factor has determinant 1, so
+  $\det M = 1$ for any arrangement. Watch the image run off to infinity when the intermediate image of lens 1 sits
+  exactly at the focal point of lens 2 ($d = sf_1/(s - f_1) + f_2$), then come back from the other side as a virtual image.
+params:
+  s: {default: 20.0, min: 5, max: 50, step: 1, label: Object distance, unit: cm}
+  f1: {default: 10.0, min: 3, max: 40, step: 1, label: Focal length of lens 1, unit: cm}
+  f2: {default: 15.0, min: 3, max: 40, step: 1, label: Focal length of lens 2, unit: cm}
+  d_start: {default: 10.0, min: 1, max: 80, step: 1, label: Initial lens gap, unit: cm}
+  d_end: {default: 60.0, min: 1, max: 100, step: 1, label: Final lens gap, unit: cm}
+  h0: {default: 1.0, min: 0.2, max: 3, step: 0.1, label: Object height, unit: cm}
+  half_angle: {default: 0.08, min: 0.01, max: 0.3, step: 0.01, label: Fan half-angle, unit: rad}
+  n_rays: {default: 9, min: 2, max: 21, step: 1, type: int, label: Rays in the fan}

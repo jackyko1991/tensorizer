@@ -1,0 +1,16 @@
+source_hash: 6a76aa67658c
+title: 정전기 퍼텐셜 (푸아송 방정식)
+summary: 접지된 상자 안에 있는 몇 개의 선전하가 만드는 퍼텐셜을 푸아송 방정식으로 구합니다. 격자 위에서 라플라시안 $\partial_i\partial_i$는 1차원 2계 차분 행렬로부터 크로네커 곱으로 만든 행렬이 되므로, 편미분 방정식 전체가 선형 연립방정식 하나 $L\phi = -\rho/\varepsilon_0$가 되고 torch.linalg.solve 한 번으로 풀립니다.
+notes: '상자는 벽에서 $\phi = 0$(접지)인 단위 정사각형입니다. 문제가 2차원이므로 각 "점"전하는 실제로는 (단위 길이당) $\lambda$인 무한 선전하이고, 가우스 법칙은 $\oint \mathbf E\cdot\mathbf n\,dl = \lambda/\varepsilon_0$가 됩니다. 단위: $\varepsilon_0 = 1$. $L$은 대부분 0입니다. 실제 코드라면 희소 행렬로 저장하겠지만, 여기서는 $N^2\times N^2$ 밀집 행렬도 직접 풀 수 있을 만큼 작습니다.'
+meanings:
+- 격자 행 $a$($y$), 열 $b$($x$)에서의 퍼텐셜
+- '같은 값을 평탄화: $m = a\cdot N + b$'
+- '1차원 $\partial^2$: $(\phi_{a-1} - 2\phi_a + \phi_{a+1})/h^2$, 삼중대각'
+- '2차원 라플라시안 $\partial_y^2 + \partial_x^2$: 띠 행렬, 행마다 0이 아닌 원소 5개'
+- 격자 위의 전하 밀도
+- '반복된 $m$ ⇒ 합: $\phi$의 이산 라플라시안'
+- 중심 차분으로 구한 $E_i = -\partial_i\phi$, $i \in \{x, y\}$
+labels:
+  config: 전하 배치
+  n_grid: 한 변의 격자점 수
+  charge: 선당 전하

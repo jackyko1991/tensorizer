@@ -1,0 +1,18 @@
+source_hash: b846fb498443
+title: Interférences des fentes d'Young
+summary: 'L''équation d''onde scalaire 2D résolue par différences finies : le laplacien est un tenseur de stencil $3\times 3$ appliqué avec conv2d. Une onde plane frappe une paroi percée de deux fentes, et les franges d''interférence se forment sur un écran derrière.'
+notes: Les longueurs sont en cellules de grille ($h = 1$) et $c = 1$. Les lignes pointillées sur l'écran marquent les points où la différence de marche est un nombre entier de longueurs d'onde, $y_m = L\tan(\arcsin(m\lambda/d))$ ; aux petits angles, leur espacement vaut $\lambda L/d$. Les fentes ne sont pas minuscules devant $\lambda$, donc l'enveloppe de diffraction de chaque fente atténue les franges extérieures.
+meanings:
+- champ d'onde sur la grille, ligne $a = y$, colonne $b = x$
+- '$\left[\begin{smallmatrix}0&1&0\\1&-4&1\\0&1&0\end{smallmatrix}\right]$ : le stencil du laplacien à 5 points'
+- '$i$ répété ⇒ sommé sur $x$ et $y$ : le laplacien comme convolution'
+- 'saute-mouton : $2u^n - u^{n-1} + (c\Delta t)^2\,\nabla^2 u^n$, amorti par $\sigma$'
+- amortissement éponge, non nul seulement dans le cadre absorbant
+- condition de stabilité CFL du schéma explicite en 2D
+- intensité moyennée dans le temps le long de la colonne de l'écran
+labels:
+  wavelength: Longueur d'onde $\lambda$
+  slit_sep: Distance entre les fentes $d$
+  slit_width: Largeur des fentes
+  screen_dist: Distance paroi → écran $L$
+  t_max: Durée simulée

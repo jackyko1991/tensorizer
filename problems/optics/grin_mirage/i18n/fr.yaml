@@ -1,0 +1,19 @@
+source_hash: cd1d0cc0a127
+title: Mirage routier et équation des rayons
+summary: Au-dessus d'une route chaude, l'air est moins dense, donc son indice de réfraction $n(y)$ diminue près du sol. L'équation des rayons de l'optique géométrique courbe la lumière vers les $n$ plus élevés ; l'intégrer avec RK4 pour un éventail de directions de visée montre que les rayons dirigés vers la route remontent, si bien que l'œil voit une seconde image, renversée, d'un objet lointain.
+notes: 'Les rayons sont tracés à rebours depuis l''œil (les trajets lumineux sont réversibles) : chaque rayon répond à la question « que voit l''œil en regardant dans cette direction ? ». Les rayons légèrement descendants se courbent vers le haut dans la couche d''indice faible et atteignent l''objet par en dessous, si bien que les angles de visée plus bas montrent des parties plus hautes de l''objet — l''image est renversée. Les rayons plus inclinés atteignent la route (gris). L''échelle verticale est exagérée d''environ 100× : les écarts d''indice réels sont $\sim 10^{-5}$ et les angles sont de l''ordre du milliradian. Les calculs sont en float64 car $n\cos\theta$ ne varie qu''à la 7e décimale.'
+meanings:
+- position $(x, y)$ du rayon $r$
+- 'vecteur direction optique : tangente unitaire multipliée par $n$'
+- indice de réfraction, minimal à la surface chaude de la route $y = 0$
+- 'seule la composante $y$ est non nulle : $(0,\ \tfrac{\Delta n}{h}\,e^{-y/h})$'
+- l'équation des rayons comme système du premier ordre, intégré par RK4
+- '$j$ répété ⇒ sommé : $\lvert\mathbf p\rvert$ doit rester égal à $n$ (contrôle de précision)'
+- 'loi de Snell-Descartes pour des couches horizontales : conservée le long de chaque rayon'
+labels:
+  delta_n: Baisse d'indice au niveau de la route $\Delta n$
+  scale_height: Épaisseur de la couche chaude $h$
+  eye_height: Hauteur de l'œil
+  distance: Distance à l'objet
+  max_dip: Visée la plus plongeante
+  n_rays: Rayons de l'éventail

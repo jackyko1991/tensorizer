@@ -1,0 +1,16 @@
+source_hash: a761e752552d
+title: Péndulo simple más allá de ángulos pequeños
+summary: La ecuación completa no lineal del péndulo para varias amplitudes iniciales a la vez. Todos los péndulos viven en un único tensor por lotes, y cada uno se compara con el coseno de ángulos pequeños que se aprende en el instituto.
+notes: 'Para oscilaciones pequeñas $\sin\theta \approx \theta$ y todos los péndulos tienen el mismo período $2\pi\sqrt{L/g}$. Las oscilaciones mayores tardan más: el período exacto es $4\sqrt{L/g}\,K(\sin(\theta_0/2))$ con la integral elíptica completa $K$, aproximadamente un 18% más a 90°. Observa cómo el péndulo de gran amplitud se queda atrás respecto a su compañero discontinuo de ángulos pequeños.'
+meanings:
+- ángulo del péndulo $b$ respecto a la vertical
+- velocidad angular del péndulo $b$
+- 'segundo miembro: $-(g/L)\sin\theta$ para todos los péndulos a la vez'
+- 'solución de ángulos pequeños: un producto exterior, sin índice sumado'
+- energía por unidad de masa $\tfrac12L^2\omega^2 + gL(1 - \cos\theta)$, conservada
+labels:
+  length: Longitud de la varilla $L$
+  g: Gravedad $g$
+  n_pendulums: Péndulos
+  max_amplitude: Amplitud máxima
+  t_max: Tiempo simulado

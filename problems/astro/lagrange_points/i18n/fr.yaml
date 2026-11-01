@@ -1,0 +1,18 @@
+source_hash: 28d4b810cb16
+title: Points de Lagrange (problème restreint à trois corps)
+summary: Une étoile et une planète tournent l'une autour de l'autre ; dans leur référentiel tournant, une particule test subit la gravité, la force centrifuge et la force de Coriolis, écrite avec $\varepsilon_{ijk}$. La méthode de Newton appliquée à $\nabla\Phi_\mathrm{eff} = 0$ (gradient et hessienne par autograd) trouve les cinq points de Lagrange d'un coup, et des particules écartées de L4 décrivent des orbites en têtard et en fer à cheval.
+notes: 'Unités : séparation 1, $G(M_1 + M_2) = 1$, de sorte que le couple fait un tour tous les $2\pi$. La planète a une fraction de masse $\mu$, et les particules test sont trop légères pour perturber l''un ou l''autre corps. L1, L2 et L3 sont alignés avec les deux corps et sont des points selles de $\Phi_\mathrm{eff}$ ; L4 et L5 forment des triangles équilatéraux avec les deux corps et sont des maxima de $\Phi_\mathrm{eff}$, mais la force de Coriolis les rend stables lorsque $\mu < 0.0385$. C''est pourquoi les astéroïdes troyens de Jupiter se regroupent 60° en avant et en arrière de la planète. Des écarts plus grands transforment les petites boucles en têtard en grandes boucles, puis en orbites en fer à cheval qui contournent aussi L3. Pour $\mu$ supérieur à 0.0385, les particules s''éloignent.'
+meanings:
+- position de la particule test $b$ dans le référentiel tournant
+- étoile en $(-\mu, 0, 0)$ et planète en $(1-\mu, 0, 0)$
+- '$s$ répété ⇒ sommé : gravité des deux corps'
+- symbole de Levi-Civita pour les produits vectoriels
+- accélération de Coriolis, $\boldsymbol\Omega = \hat{\mathbf z}$
+- gradient par autograd aux cinq points
+- 'hessienne par autograd : le pas de Newton est un seul linalg.solve vectorisé'
+- $-2\Phi_\mathrm{eff} - \dot x_i\dot x_i$, conservée
+labels:
+  mu: Fraction de masse de la planète $\mu$
+  nudge: Plus grand écart à L4 le long de l'orbite
+  t_max: Durée simulée
+  dt: Pas de temps

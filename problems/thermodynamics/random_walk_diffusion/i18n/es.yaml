@@ -1,0 +1,15 @@
+source_hash: 16ad9ff3967d
+title: Paseo aleatorio y difusión
+summary: Miles de partículas brownianas reciben impulsos aleatorios. Guardado como un único tensor (tiempo, caminante, 2), el paseo es un solo cumsum, y el desplazamiento cuadrático medio $\langle x_i x_i\rangle$ (un einsum) crece linealmente con el tiempo como $2dDt$, mientras la nube de caminantes se extiende como una gaussiana.
+notes: 'Cada paso es un impulso gaussiano de varianza $2D\Delta t$ por componente, así que tras un tiempo $t$ cada coordenada tiene varianza $2Dt$ y la distancia al cuadrado al punto de partida vale en promedio $2dDt$ en $d$ dimensiones (aquí $d = 2$). Sumar sobre el índice de caminante $n$ convierte la nube aleatoria en una ley suave y predecible: eso es la difusión. El número finito de caminantes hace que el DCM medido fluctúe aproximadamente $\sqrt{2/N}$ en términos relativos; la semilla es fija para que la imagen sea reproducible. Las unidades son arbitrarias (µm y s, por ejemplo).'
+meanings:
+- impulso normal estándar independiente para el paso $s$, caminante $n$, componente $i$
+- 'posición del caminante $n$ en el instante $t$: la suma acumulada de sus impulsos'
+- '$n$ e $i$ repetidos ⇒ sumados: desplazamiento cuadrático medio en cada instante'
+- pendiente por mínimos cuadrados del DCM frente a $t$ por el origen, dividida entre $2d$
+- solución de la ecuación de difusión $\partial_t\rho = D\,\partial_i\partial_i\rho$ a partir de una fuente puntual
+labels:
+  n_walkers: Caminantes
+  D: Coeficiente de difusión $D$
+  t_max: Tiempo simulado
+  n_steps: Pasos de tiempo

@@ -1,0 +1,18 @@
+source_hash: a8a725d373c7
+title: 帶電粒子在電場與磁場中
+summary: 一批帶電粒子在正交電場與磁場中所受的勞侖茲力。外積以 Levi-Civita 張量 $\varepsilon_{ijk}$ 表示，因此一次 einsum 便得到每個粒子所受的磁力：每個粒子沿迴旋螺旋線運動，而整群粒子沿 $\mathbf E\times\mathbf B$ 漂移。
+notes: 單位無因次（$q$、$m$、$E$、$B$ 均為 1 的量級）。當 $\mathbf E = 0$ 時，每個粒子以迴旋頻率 $\omega = \lvert q\rvert B/m$ 繞圈，半徑為 $mv_\perp/(\lvert q\rvert B)$；正、負電荷的旋轉方向相反。加上 $\mathbf E\perp\mathbf B$ 後，每個導引中心都以速度 $\mathbf E\times\mathbf B/B^2$ 漂移，與電荷和質量無關。
+meanings:
+- 粒子 $b$ 的位置，分量 $i \in \{x, y, z\}$
+- 粒子 $b$ 的速度
+- 各粒子的電荷與質量
+- 均勻場：$\mathbf E$ 沿 $y$，$\mathbf B$ 沿 $z$
+- $(x, y, z)$ 的偶排列為 $+1$，奇排列為 $-1$，有指標重複則為 0
+- 重複的 $j$ 與 $k$ ⇒ 求和：外積 $\mathbf v\times\mathbf B$
+- $\mathbf E\times\mathbf B$ 漂移速度，對所有電荷都相同
+labels:
+  B: 磁場 $B_z$
+  E: 電場 $E_y$
+  v_par: 沿 $\mathbf B$ 的初速度
+  n_particles: 粒子數
+  t_max: 模擬時間

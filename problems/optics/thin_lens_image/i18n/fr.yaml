@@ -1,0 +1,16 @@
+source_hash: b20963373157
+title: Image formée par une lentille mince
+summary: La relation de conjugaison des lentilles minces indique où apparaît l'image d'un objet et quelle est sa taille. Trois rayons principaux sont tracés pour toutes les positions de l'objet à la fois, tandis que l'objet passe d'au-delà de $2f$ à l'intérieur de la distance focale et que l'image réelle et renversée devient virtuelle et droite.
+notes: 'Les distances sont mesurées depuis la lentille : l''objet est en $x = -s$ et une image réelle en $x = +s''$. Les trois rayons principaux sont (1) parallèle à l''axe, puis passant par le foyer image ; (2) passant tout droit par le centre ; (3) passant par le foyer objet, puis parallèle. Tous découlent de la seule règle $\theta'' = \theta - y/f$. À l''intérieur de $f$, les rayons divergent après la lentille ; leurs prolongements en tirets se rejoignent à l''image virtuelle. Pour $s = f$, l''image part à l''infini.'
+meanings:
+- distance de l'objet dans l'image d'animation $k$
+- distance de l'image ; négative ⇒ image virtuelle du côté de l'objet
+- hauteur de l'image / hauteur de l'objet ; négatif ⇒ renversée
+- pente du rayon principal $r \in \{\text{parallel, centre, focal}\}$ avant la lentille
+- point où chaque rayon principal traverse la lentille
+- 'pente après la lentille : chaque rayon est dévié de $-y/f$'
+labels:
+  f: Distance focale $f$
+  h: Hauteur de l'objet $h$
+  s_start: Distance initiale de l'objet
+  s_end: Distance finale de l'objet

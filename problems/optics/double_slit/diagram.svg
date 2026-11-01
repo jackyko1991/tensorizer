@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Double slit: a plane wave of wavelength lambda passes two slits a distance d apart; circular waves from the slits interfere and make bright and dark fringes on a screen at distance L">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <clipPath id="double-slit-clip"><rect x="92" y="14" width="112" height="128"/></clipPath>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <line x1="22" y1="28" x2="22" y2="132" stroke="#93c5fd" stroke-width="2"/>
+    <line x1="38" y1="28" x2="38" y2="132" stroke="#93c5fd" stroke-width="2"/>
+    <line x1="54" y1="28" x2="54" y2="132" stroke="#93c5fd" stroke-width="2"/>
+    <line x1="70" y1="28" x2="70" y2="132" stroke="#93c5fd" stroke-width="2"/>
+    <line x1="14" y1="20" x2="80" y2="20" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="42" y="15" font-style="italic" fill="#b91c1c">λ</text>
+    <g clip-path="url(#double-slit-clip)">
+      <path d="M92,50 A16,16 0 0 1 92,82" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+      <path d="M92,34 A32,32 0 0 1 92,98" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+      <path d="M92,18 A48,48 0 0 1 92,114" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+      <path d="M92,2 A64,64 0 0 1 92,130" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+      <path d="M92,-14 A80,80 0 0 1 92,146" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+      <path d="M92,-30 A96,96 0 0 1 92,162" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+      <path d="M92,78 A16,16 0 0 1 92,110" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+      <path d="M92,62 A32,32 0 0 1 92,126" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+      <path d="M92,46 A48,48 0 0 1 92,142" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+      <path d="M92,30 A64,64 0 0 1 92,158" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+      <path d="M92,14 A80,80 0 0 1 92,174" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+      <path d="M92,-2 A96,96 0 0 1 92,190" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+    </g>
+    <line x1="92" y1="16" x2="92" y2="61" stroke="#374151" stroke-width="5"/>
+    <line x1="92" y1="71" x2="92" y2="89" stroke="#374151" stroke-width="5"/>
+    <line x1="92" y1="99" x2="92" y2="144" stroke="#374151" stroke-width="5"/>
+    <line x1="208" y1="16" x2="208" y2="144" stroke="#374151" stroke-width="2"/>
+    <path d="M211.2,16 L211.6,17 L212.1,18 L212.6,19 L213.1,20 L213.5,21 L214,22 L214.3,23 L214.6,24 L214.8,25 L214.8,26 L214.7,27 L214.5,28 L214.2,29 L213.7,30 L213.2,31 L212.6,32 L212,33 L211.4,34 L210.8,35 L210.4,36 L210.1,37 L210,38 L210.1,39 L210.4,40 L211,41 L211.8,42 L212.8,43 L214,44 L215.3,45 L216.7,46 L218,47 L219.4,48 L220.6,49 L221.6,50 L222.3,51 L222.8,52 L223,53 L222.8,54 L222.2,55 L221.4,56 L220.3,57 L218.9,58 L217.4,59 L215.9,60 L214.4,61 L212.9,62 L211.7,63 L210.8,64 L210.2,65 L210,66 L210.2,67 L210.8,68 L211.9,69 L213.2,70 L214.9,71 L216.8,72 L218.8,73 L220.8,74 L222.8,75 L224.5,76 L226,77 L227.1,78 L227.8,79 L228,80 L227.8,81 L227.1,82 L226,83 L224.5,84 L222.8,85 L220.8,86 L218.8,87 L216.8,88 L214.9,89 L213.2,90 L211.9,91 L210.8,92 L210.2,93 L210,94 L210.2,95 L210.8,96 L211.7,97 L212.9,98 L214.4,99 L215.9,100 L217.4,101 L218.9,102 L220.3,103 L221.4,104 L222.2,105 L222.8,106 L223,107 L222.8,108 L222.3,109 L221.6,110 L220.6,111 L219.4,112 L218,113 L216.7,114 L215.3,115 L214,116 L212.8,117 L211.8,118 L211,119 L210.4,120 L210.1,121 L210,122 L210.1,123 L210.4,124 L210.8,125 L211.4,126 L212,127 L212.6,128 L213.2,129 L213.7,130 L214.2,131 L214.5,132 L214.7,133 L214.8,134 L214.8,135 L214.6,136 L214.3,137 L214,138 L213.5,139 L213.1,140 L212.6,141 L212.1,142 L211.6,143 L211.2,144" fill="#93c5fd" stroke="#2563eb" stroke-width="1.5" fill-opacity="0.6" stroke-linejoin="round"/>
+    <text x="74" y="85" font-style="italic">d</text>
+    <line x1="92" y1="152" x2="208" y2="152" stroke="#9ca3af" stroke-width="1.5"/>
+    <line x1="92" y1="148" x2="92" y2="156" stroke="#9ca3af" stroke-width="1.5"/>
+    <line x1="208" y1="148" x2="208" y2="156" stroke="#9ca3af" stroke-width="1.5"/>
+    <text x="146" y="148" font-style="italic">L</text>
+  </g>
+</svg>

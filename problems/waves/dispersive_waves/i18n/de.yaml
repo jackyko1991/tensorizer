@@ -1,0 +1,14 @@
+source_hash: a7f6ff1f025f
+title: Dispersive Wasserwellen
+summary: 'Ein Wellenpaket auf tiefem Wasser, wo lange Wellen kurzen davonlaufen: $\omega = \sqrt{g k}$. Jede Fourier-Mode dreht nur ihre Phase, also ist das Paket zu jeder Zeit eine FFT, eine Multiplikation und eine inverse FFT, für alle Zeiten auf einmal ausgeführt. Die Wellenberge laufen mit doppelter Geschwindigkeit durch die Einhüllende.'
+notes: 'Lineare Schwerewellen auf tiefem Wasser (Tiefe viel größer als die Wellenlänge, keine Oberflächenspannung, kleine Steigung). Da $\omega \propto \sqrt k$, ist die Gruppengeschwindigkeit $d\omega/dk$ genau halb so groß wie die Phasengeschwindigkeit $\omega/k$: Beobachte, wie der rote Wellenberg das grüne Maximum der Einhüllenden überholt, vorne verblasst und durch einen neuen, hinten entstehenden Wellenberg ersetzt wird (der rote Punkt springt um ganze Wellenlängen zurück). Längere Wellen laufen schneller, daher breitet sich das Paket langsam aus, und an seiner Front liegen längere Wellen als an seinem Ende (ein Chirp). Die FFT macht den Kasten periodisch. Da jede Mode nur ihre Phase dreht, ist $\sum|\hat a_k|^2$ (nach Parseval die Wellenenergie) exakt erhalten.'
+meanings:
+- 'komplexes Paket: Gauß-Einhüllende mal $e^{ik_0x}$'
+- Fourier-Amplituden des Anfangspakets
+- Tiefwasser-Dispersionsrelation für jede Mode
+- jede Mode zu jeder Zeit, per Broadcasting (exakt, keine Zeitschritte)
+- 'wiederholtes $k$ ⇒ summiert: zurück in den Ortsraum für alle Zeiten'
+labels:
+  wavelength: Trägerwellenlänge $2\pi/k_0$
+  width: Paketbreite $\sigma$
+  t_max: Simulierte Zeit

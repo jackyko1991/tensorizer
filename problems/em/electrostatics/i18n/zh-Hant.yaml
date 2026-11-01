@@ -1,0 +1,16 @@
+source_hash: 6a76aa67658c
+title: 靜電位（帕松方程式）
+summary: 求解帕松方程式，得到接地盒內幾條線電荷的電位。在網格上，拉普拉斯算子 $\partial_i\partial_i$ 變成由一維二階差分矩陣經克羅內克積構成的矩陣，整個偏微分方程式便化為一個線性方程組 $L\phi = -\rho/\varepsilon_0$，torch.linalg.solve 一次即可解出。
+notes: 盒子為單位正方形，牆上 $\phi = 0$（接地）。問題是二維的，因此每個「點」電荷實際上是一條無限長線電荷 $\lambda$（每單位長度），高斯定律寫成 $\oint \mathbf E\cdot\mathbf n\,dl = \lambda/\varepsilon_0$。單位：$\varepsilon_0 = 1$。$L$ 大多是零——實際程式會以稀疏矩陣儲存；此處 $N^2\times N^2$ 的稠密矩陣仍小到可以直接求解。
+meanings:
+- 網格第 $a$ 列（$y$）、第 $b$ 行（$x$）的電位
+- 同一組值攤平：$m = a\cdot N + b$
+- 一維 $\partial^2$：$(\phi_{a-1} - 2\phi_a + \phi_{a+1})/h^2$，三對角
+- 二維拉普拉斯算子 $\partial_y^2 + \partial_x^2$：帶狀，每列五個非零元素
+- 網格上的電荷密度
+- 重複的 $m$ ⇒ 求和：$\phi$ 的離散拉普拉斯
+- 以中央差分求 $E_i = -\partial_i\phi$，$i \in \{x, y\}$
+labels:
+  config: 電荷配置
+  n_grid: 每邊格點數
+  charge: 每條線的電荷

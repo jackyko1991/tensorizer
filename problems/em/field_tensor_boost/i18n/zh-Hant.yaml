@@ -1,0 +1,20 @@
+source_hash: c4a4275e3bd7
+title: 場張量的勞侖茲變換
+summary: 在相對論中，$\mathbf E$ 與 $\mathbf B$ 不是兩個獨立向量，而是同一個反對稱 $4\times 4$ 張量 $F^{\mu\nu}$ 的六個分量。勞侖茲變換對每個指標各作用一個 $\Lambda$，$F' = \Lambda F\Lambda^{\mathsf T}$，寫成一次 einsum。掃過不同變換速度，可見電場與磁場互相混合，而 $F_{\mu\nu}F^{\mu\nu}$ 與 $\mathbf E\cdot\mathbf B$ 保持不變。
+notes: 單位取 $c = 1$，度規符號為 $(+, -, -, -)$。變換沿 $x$ 方向，因此 $E_x$ 與 $B_x$ 永不改變；只有橫向分量混合。對純電場（$\mathbf B = 0$），運動觀測者看到磁場 $\mathbf B' = -\gamma\,\boldsymbol\beta\times\mathbf E$。兩個勞侖茲不變量在整個掃描中保持常數。
+meanings:
+- 反對稱場張量，$\mu, \nu \in \{t, x, y, z\}$
+- 閔考斯基度規 $\operatorname{diag}(+1, -1, -1, -1)$，$c = 1$
+- 沿 $x$ 的變換，對 $S$ 個速率 $\beta$ 各一個
+- 重複的 $\alpha$ 與 $\beta$ ⇒ 求和：$F$ 的每個指標各一個 $\Lambda$
+- 以度規降指標
+- 不變量 $2(B^2 - E^2)$
+- 不變量 $-4\,\mathbf E\cdot\mathbf B$，使用對偶張量 $\tfrac12\varepsilon^{\mu\nu\rho\sigma}F_{\rho\sigma}$
+labels:
+  Ex: $E_x$
+  Ey: $E_y$
+  Ez: $E_z$
+  Bx: $B_x$
+  By: $B_y$
+  Bz: $B_z$
+  beta_max: 最終變換速度 $\beta = v/c$

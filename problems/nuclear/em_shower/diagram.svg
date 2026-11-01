@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Electromagnetic shower: an electron enters a block of absorber and branches into electrons and photons every radiation length X0">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- absorber block -->
+    <rect x="40" y="18" width="186" height="118" fill="#e5e7eb" fill-opacity="0.6" stroke="#374151" stroke-width="2"/>
+    <!-- radiation-length guides -->
+    <g stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3">
+      <line x1="84" y1="18" x2="84" y2="136"/><line x1="128" y1="18" x2="128" y2="136"/><line x1="172" y1="18" x2="172" y2="136"/>
+    </g>
+    <!-- incoming electron -->
+    <line x1="8" y1="77" x2="84" y2="77" stroke="#2563eb" stroke-width="2.5"/>
+    <text x="10" y="68" font-style="italic" fill="#1e40af">e</text><text x="19" y="62" font-size="10" fill="#1e40af">−</text>
+    <!-- generation 1: e → e + γ -->
+    <line x1="84" y1="77" x2="128" y2="53" stroke="#2563eb" stroke-width="2"/>
+    <line x1="84" y1="77" x2="128" y2="101" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 3"/>
+    <!-- generation 2 -->
+    <line x1="128" y1="53" x2="172" y2="39" stroke="#2563eb" stroke-width="1.8"/>
+    <line x1="128" y1="53" x2="172" y2="65" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="4 3"/>
+    <line x1="128" y1="101" x2="172" y2="89" stroke="#2563eb" stroke-width="1.8"/>
+    <line x1="128" y1="101" x2="172" y2="115" stroke="#2563eb" stroke-width="1.8"/>
+    <!-- generation 3 -->
+    <g stroke-width="1.5">
+      <line x1="172" y1="39" x2="216" y2="31" stroke="#2563eb"/><line x1="172" y1="39" x2="216" y2="45" stroke="#f59e0b" stroke-dasharray="3 3"/>
+      <line x1="172" y1="65" x2="216" y2="58" stroke="#2563eb"/><line x1="172" y1="65" x2="216" y2="72" stroke="#2563eb"/>
+      <line x1="172" y1="89" x2="216" y2="83" stroke="#2563eb"/><line x1="172" y1="89" x2="216" y2="96" stroke="#f59e0b" stroke-dasharray="3 3"/>
+      <line x1="172" y1="115" x2="216" y2="109" stroke="#2563eb"/><line x1="172" y1="115" x2="216" y2="123" stroke="#f59e0b" stroke-dasharray="3 3"/>
+    </g>
+    <text x="104" y="128" font-style="italic" fill="#b45309">γ</text>
+    <!-- one radiation length -->
+    <line x1="84" y1="148" x2="128" y2="148" stroke="#374151" stroke-width="1.5"/>
+    <line x1="84" y1="143" x2="84" y2="153" stroke="#374151" stroke-width="1.5"/>
+    <line x1="128" y1="143" x2="128" y2="153" stroke="#374151" stroke-width="1.5"/>
+    <text x="136" y="153" font-style="italic">X</text><text x="146" y="157" font-size="10">0</text>
+  </g>
+</svg>

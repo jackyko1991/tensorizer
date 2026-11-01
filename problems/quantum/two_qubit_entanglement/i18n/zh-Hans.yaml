@@ -1,0 +1,17 @@
+source_hash: e0abd4c769f3
+title: 双量子比特纠缠
+summary: 两个量子比特存储为 $(2, 2)$ 张量 $\psi_{ab}$。量子门是四阶张量，用一次 einsum 作用：对量子比特 1 作用 Hadamard 门再作用 CNOT 门，把 $\lvert 00\rangle$ 变成贝尔态。$\psi_{ab}$ 的奇异值分解就是施密特分解，直接给出纠缠熵。随后这对量子比特在伊辛哈密顿量下演化；偏迹给出每个量子比特的约化密度矩阵，只要两者纠缠，其布洛赫矢量就缩进球内。
+notes: 单位 $\hbar = 1$。单比特算符的张量积 $A\otimes B$ 是四阶张量 $A_{ac}B_{bd}$（torch.kron 给出相同数值的 $4\times 4$ 矩阵，行指标为 $2a + b$）。由于 $\psi_{ab}$ 是矩阵，其 SVD 把态写成 $\sum_k s_k\lvert u_k\rangle\lvert v_k\rangle$：即施密特分解。纠缠熵 $S = -\sum s_k^2\ln s_k^2$ 对直积态为 0，对贝尔态为 $\ln 2$，后者的约化态是最大混合态（$\rho = I/2$，布洛赫矢量位于球心）。共生纠缠度 $C = 2\lvert\det\psi\rvert$ 从 0（直积态）到 1（最大纠缠）。在伊辛哈密顿量下，耦合 $J$ 产生和消除纠缠，横场 $h$ 旋转各个量子比特；$h = 0$ 时贝尔态是本征态，什么都不变。
+meanings:
+- 量子比特 1 处于 $\lvert a\rangle$、量子比特 2 处于 $\lvert b\rangle$ 的振幅
+- 双比特门写成四阶张量：输出指标 $a\,b$，输入指标 $c\,d$
+- 对 $c$ 和 $d$ 求和：作用量子门
+- 施密特系数；只有一个非零值 ⇔ 直积态
+- 对量子比特 2 求偏迹（对 $b$ 求和）
+- 由张量积构造的伊辛哈密顿量，重塑为 (4, 4) 供 eigh 使用
+- 单个量子比特的布洛赫矢量 $\operatorname{Tr}(\rho\,\sigma_k)$；$\lvert\mathbf r\rvert < 1$ 表示混合态
+labels:
+  initial: 初态（由电路得到的贝尔态或 $\lvert 00\rangle$）
+  J: 伊辛耦合 $J$
+  h: 横场 $h$
+  t_max: 模拟时长

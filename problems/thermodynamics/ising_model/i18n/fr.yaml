@@ -1,0 +1,15 @@
+source_hash: f24d1ad2823c
+title: Modèle d'Ising 2D
+summary: Un réseau de spins $\pm 1$ qui préfèrent s'aligner avec leurs voisins. La somme des voisins de chaque site est un seul conv2d avec un noyau en croix, et une mise à jour de Metropolis en damier retourne la moitié du réseau en parallèle. Sous la température critique, des domaines croissent jusqu'à ce que l'aimant s'ordonne ; au-dessus, les spins restent désordonnés.
+notes: 'Unités : $J = k_B = 1$, donc $T_c = 2/\ln(1 + \sqrt2) \approx 2.269$. Trois réseaux tournent côte à côte dans le lot : le $T$ choisi, $T_c$ et $T = 3.5$. Tous partent de spins aléatoires (température infinie) et sont brusquement refroidis. Mettre à jour tous les sites à la fois serait faux — des voisins se retourneraient d''après des valeurs périmées — mais les sites d''une couleur du damier ne touchent que l''autre couleur, donc chaque moitié peut être mise à jour en parallèle. Une trempe à basse $T$ peut rester longtemps bloquée dans deux domaines en bandes, une vraie propriété de la dynamique sur un réseau périodique. Sur un réseau fini, $\lvert m\rvert$ n''est pas exactement nul au-dessus de $T_c$, et près de $T_c$ il fluctue fortement (ralentissement critique). $E/N$ va de $-2$ (ordre parfait) à 0.'
+meanings:
+- spin $\pm 1$ à la ligne $i$, colonne $j$ — pour un lot de $B$ températures (le 1 est le canal de conv2d)
+- noyau de convolution sélectionnant les quatre plus proches voisins
+- '$k, l$ répétés ⇒ sommés : somme des voisins, bords périodiques'
+- coût du retournement de chaque spin pris isolément
+- '$i, j$ répétés ⇒ sommés : deux fois l''énergie des liaisons (chaque liaison est vue depuis ses deux extrémités)'
+- une température par réseau, diffusée sur les sites
+labels:
+  T: Température $T$
+  L: Taille du réseau $L$
+  n_sweeps: Balayages Monte-Carlo

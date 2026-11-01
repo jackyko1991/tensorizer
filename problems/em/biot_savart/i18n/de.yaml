@@ -1,0 +1,17 @@
+source_hash: 4d0cdb4cbe20
+title: Magnetfeld von Leiterschleifen (Biot–Savart)
+summary: Das Biot–Savart-Gesetz zerlegt einen Draht in eine Summe kurzer Segmente. Das Kreuzprodukt $d\mathbf l\times\mathbf r$ ist der Levi-Civita-Tensor $\varepsilon_{ijk}$, kontrahiert mit zwei Vektoren, sodass ein einziges einsum über ($i, j, k$, Segment) das Feld der ganzen Spule an jedem Gitterpunkt liefert. Der Schleifenradius wächst und schrumpft, während das Feld in der $x$–$z$-Ebene und auf der Achse folgt.
+notes: SI-Einheiten ($\mu_0 = 4\pi\times 10^{-7}$ T·m/A), Feld in μT angezeigt. Die Schleifen liegen in horizontalen Ebenen, sodass die $x$–$z$-Ebene jede in zwei Punkten schneidet (⊙ Strom aus der Bildebene heraus, ⊗ hinein). Helmholtz-Spulen (Abstand $R$, gleiche Ströme) erzeugen zwischen sich ein nahezu homogenes Feld; Anti-Helmholtz-Spulen (entgegengesetzte Ströme) ergeben ein Feld, das im Zentrum verschwindet und linear anwächst — die Falle für kalte Atome. Gitterpunkte nahe am Draht verwenden eine kleine Glättungslänge, damit das Feld endlich bleibt.
+meanings:
+- Feldpunkt $g$ in der Ebene $y = 0$
+- Mittelpunkt und Richtungsvektor des Drahtsegments $s$
+- von jedem Segment zu jedem Feldpunkt (Broadcasting)
+- 'Levi-Civita-Symbol: das Kreuzprodukt als Tensor'
+- wiederholte $j, k$ ⇒ Kreuzprodukt; wiederholtes $s$ ⇒ Summe über den Draht
+- exakt $\mu_0 I R^2/(2(R^2 + z^2)^{3/2})$ pro Schleife, zur Kontrolle der Summe
+labels:
+  layout: Spulen
+  current: Strom
+  radius: Mittlerer Schleifenradius
+  n_segments: Segmente pro Schleife
+  n_grid: Pfeile pro Seite

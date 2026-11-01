@@ -1,0 +1,16 @@
+source_hash: 8adb8e4369f3
+title: 'Spezielle Relativität: Minkowski-Diagramme und Lorentz-Boosts'
+summary: 'Ereignisse sind 2-Vektoren $x^\mu = (t, x)$, und ein Wechsel des Inertialsystems ist eine einzige Matrix $\Lambda^\mu{}_\nu$, die per einsum auf alle angewendet wird. Ein Zwilling fliegt zu einem Stern und zurück: Das Diagramm im Ruhesystem und in einem geboosteten System zeigt geneigte Gleichzeitigkeitslinien, den invarianten Lichtkegel und die Uhr des Reisenden, die $\int\sqrt{1 - v^2}\,dt$ anzeigt — weniger als beim daheimgebliebenen Zwilling.'
+notes: 'Einheiten: Jahre und Lichtjahre, also $c = 1$, und Lichtstrahlen sind die gestrichelten 45°-Linien. Der Reisende fliegt mit Geschwindigkeit $v$ zu einem Stern im Abstand $L$, kehrt sofort um und fliegt zurück. Die bernsteinfarbene Linie ist die Menge der Ereignisse, die der Reisende „jetzt“ nennt: Auf dem Hinweg um $v$ geneigt, schwenkt sie beim Umkehren über die Weltlinie des daheimgebliebenen Zwillings — dort bleiben dessen „fehlende“ Jahre. Das Paradoxon ist nicht symmetrisch, weil nur der Reisende das Inertialsystem wechselt. Setze den Boost des rechten Panels gleich $v$, um im Hinflug-System des Reisenden zu sitzen, oder auf $-v$ für den Rückflug. Der Lichtkegel behält in jedem System seine Form.'
+meanings:
+- ein Ereignis $(t, x)$, $\mu \in \{0, 1\}$, $c = 1$
+- Minkowski-Metrik $\operatorname{diag}(-1, +1)$
+- $\begin{pmatrix}\gamma & -\gamma\beta\\ -\gamma\beta & \gamma\end{pmatrix}$
+- 'wiederholtes $\nu$ ⇒ summiert: alle Ereignisse einer Weltlinie oder eines Gitters auf einmal geboostet'
+- Quadrat des Abstands, in jedem System gleich
+- laufende Summe von $\sqrt{-\Delta s^2}$ entlang der Weltlinie
+- gleich $\Lambda\big((\beta_1 + \beta_2)/(1 + \beta_1\beta_2)\big)$
+labels:
+  v: Geschwindigkeit des Reisenden $v/c$
+  distance: Abstand zum Stern $L$
+  beta_view: Boost des rechten Panels $\beta$

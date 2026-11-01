@@ -1,0 +1,15 @@
+source_hash: 16ad9ff3967d
+title: Marche aléatoire et diffusion
+summary: Des milliers de particules browniennes reçoivent chacune des impulsions aléatoires. Stockée dans un seul tenseur (temps, marcheur, 2), la marche est un seul cumsum, et le déplacement quadratique moyen $\langle x_i x_i\rangle$ — un seul einsum — croît linéairement avec le temps comme $2dDt$, tandis que le nuage de marcheurs s'étale en gaussienne.
+notes: Chaque pas est une impulsion gaussienne de variance $2D\Delta t$ par composante, donc après un temps $t$ chaque coordonnée a une variance $2Dt$ et le carré de la distance au point de départ vaut en moyenne $2dDt$ en dimension $d$ (ici $d = 2$). Sommer sur l'indice de marcheur $n$ transforme le nuage aléatoire en une loi lisse et prévisible — c'est la diffusion. Le nombre fini de marcheurs fait fluctuer le MSD mesuré d'environ $\sqrt{2/N}$ en relatif ; la graine est fixe pour que l'image soit reproductible. Les unités sont arbitraires (µm et s, par exemple).
+meanings:
+- impulsion normale centrée réduite indépendante pour le pas $s$, le marcheur $n$, la composante $i$
+- 'position du marcheur $n$ à l''instant $t$ : la somme cumulée de ses impulsions'
+- '$n$ et $i$ répétés ⇒ sommés : déplacement quadratique moyen à chaque instant'
+- pente des moindres carrés du MSD en fonction de $t$ passant par l'origine, divisée par $2d$
+- solution de l'équation de diffusion $\partial_t\rho = D\,\partial_i\partial_i\rho$ pour une source ponctuelle
+labels:
+  n_walkers: Marcheurs
+  D: Coefficient de diffusion $D$
+  t_max: Durée simulée
+  n_steps: Pas de temps

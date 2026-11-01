@@ -1,0 +1,17 @@
+source_hash: 8807e34cb0a8
+title: 전자기파 (FDTD)
+summary: 맥스웰의 두 회전 방정식을 Yee 격자 위에서 시간에 따라 전진시킵니다. 회전은 $\varepsilon_{ijk}\,\partial_j F_k$로 씁니다. 유한 차분 표를 레비치비타 기호와 einsum 하나로 축약한 것입니다. 점광원이나 선광원에서 나온 파동이 유전체 블록에 부딪혀 느려지고, 휘고, 일부 반사되며, 감쇠 경계가 상자를 벗어나는 파동을 흡수합니다.
+notes: $c = \varepsilon_0 = \mu_0 = 1$, 셀 크기 $\Delta x = 1$인 단위계. $\mathbf E$와 $\mathbf H$는 반 셀 떨어져 있고($\partial\mathbf E$는 전진 차분, $\partial\mathbf H$는 후진 차분) 번갈아 갱신됩니다. 이것이 립프로그 Yee 기법입니다. 광원은 "소프트" 광원으로 $E_z$에 더해지기만 하므로 반사파는 그대로 통과합니다. 흡수 경계는 단순히 벽 쪽으로 갈수록 매끄럽게 커지는, 1보다 약간 작은 인자를 장에 곱합니다. 실제 코드는 대신 완전 정합층(PML)을 씁니다. 블록 안에서 파장은 $n = \sqrt{\varepsilon_r}$배만큼 줄어들며, 수직 입사 시 진폭의 $(1 - n)/(1 + n)$만큼이 반사됩니다.
+meanings:
+- '격자 위의 장 성분; TM 모드: $E_z$, $H_x$, $H_y$만 0이 아님'
+- 유한 차분 표; 2차원에서 행 $j = z$는 0
+- 레비치비타 기호
+- '반복된 $j, k$ ⇒ 합: 모든 셀에서의 회전'
+- '상대 유전율: 진공에서 1, 블록 안에서 $\varepsilon_\text{block}$ ($n = \sqrt{\varepsilon_r}$)'
+- 시간 간격 $S\,\Delta x/(c\sqrt2)$; $S > 1$이면 기법이 발산하므로 거부
+labels:
+  source: 광원
+  eps_block: 블록 유전율 $\varepsilon_r$
+  wavelength: 진공 파장
+  courant: 쿠랑 수 $S$
+  t_max: 시뮬레이션 시간

@@ -1,0 +1,35 @@
+title: Van der Waals gas and Maxwell's construction
+category: thermodynamics
+level: advanced
+order: 3
+summary: >
+  The van der Waals equation adds molecular attraction and size to the ideal gas, and suddenly a liquid–gas
+  transition appears. A whole family of isotherms is one $(T, V)$ broadcast; below the critical temperature the
+  unphysical loop is replaced by Maxwell's equal-area line, whose pressure is found by bisection on a batch of
+  temperatures at once.
+animated: true
+vector_form: '\Big(p + \frac{a n^2}{V^2}\Big)(V - nb) = nRT,\qquad T_c = \frac{8a}{27Rb},\ V_c = 3nb,\ p_c = \frac{a}{27b^2},\qquad \int_{V_l}^{V_g} \big(p - p^*\big)\,dV = 0'
+index_form: 'p_{tv} = \frac{nRT_t}{V_v - nb} - \frac{an^2}{V_v^2},\qquad \Big[nRT\ln(V - nb) + \frac{an^2}{V}\Big]_{V_{l,t}}^{V_{g,t}} = p^*_t\,(V_{g,t} - V_{l,t})'
+translation:
+  - {symbol: 'T_t', code: 'T[:, None]', shape: '(T, 1)', meaning: 'sweep of temperatures, as a column'}
+  - {symbol: 'V_v', code: 'V[None, :]', shape: '(1, V)', meaning: 'volume grid, as a row'}
+  - {symbol: 'p_{tv}', code: 'pressure(V, T, n, a, b)', shape: '(T, V)', meaning: 'every isotherm at once by broadcasting'}
+  - {symbol: 'V_{l,t},\ V_{g,t}', code: 'eigvals(companion).real.sort()', shape: '(B, 3)', meaning: 'roots of the cubic $p(V) = p^*$ for a batch of temperatures'}
+  - {symbol: '\int (p - p^*)\,dV', code: 'area_mismatch(p_star, T, ...)', shape: '(B,)', meaning: 'signed area between curve and line: zero at the answer'}
+  - {symbol: 'p^*_t', code: 'coexistence_pressure(T, ...)', shape: '(B,)', meaning: 'bisection: torch.where moves every bracket at once'}
+notes: >
+  $a$ measures attraction between molecules (it lowers the pressure) and $b$ the volume one mole of molecules takes up
+  ($V$ cannot go below $nb$). Below $T_c$ the isotherm has a section where compressing the gas would lower its pressure —
+  mechanically unstable. In reality the gas condenses at constant pressure $p^*$, the vapour pressure: liquid of molar
+  volume $V_l$ coexists with gas of volume $V_g$. Maxwell's rule fixes $p^*$ by requiring equal areas above and below the
+  line (equivalently, equal Gibbs energies of the two phases). The dashed dome joins all $(V_l, p^*)$ and $(V_g, p^*)$;
+  its top is the critical point, where liquid and gas become identical. Axes are scaled by the critical values,
+  in which every van der Waals gas looks the same (law of corresponding states); the volume axis is linear so the
+  shaded areas can be compared by eye. The van der Waals model is only
+  qualitative for real fluids: e.g. its $V_c = 3nb$ overestimates real critical volumes.
+params:
+  gas: {default: CO2, type: choice, options: [CO2, water, nitrogen, argon], label: Gas}
+  n: {default: 1.0, min: 0.1, max: 5, step: 0.1, label: Amount of gas, unit: mol}
+  T_high: {default: 1.15, min: 1.0, max: 1.5, step: 0.05, label: Start temperature, unit: T_c}
+  T_low: {default: 0.8, min: 0.7, max: 0.99, step: 0.01, label: End temperature, unit: T_c}
+  n_temps: {default: 90, min: 10, max: 120, step: 10, type: int, label: Temperatures (frames)}

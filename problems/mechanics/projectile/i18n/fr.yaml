@@ -1,0 +1,15 @@
+source_hash: bb811720bfea
+title: Projectile avec frottement de l'air
+summary: Deuxième loi de Newton pour une balle soumise à une traînée quadratique. Plusieurs angles de tir sont résolus en même temps en les empilant dans un seul tenseur par lot, si bien qu'un seul einsum traite toutes les trajectoires.
+notes: 'L''indice de lot $b$ n''est pas de la physique : c''est l''astuce tensorielle qui permet à PyTorch de résoudre $B$ projectiles en une passe. Avec une traînée nulle, on retrouve la parabole des manuels, de portée maximale à 45°.'
+meanings:
+- position de la balle $b$, composante $i \in \{x, z\}$
+- vitesse de la balle $b$
+- vecteur pesanteur $(0, -9.81)$
+- '$j$ répété ⇒ sommé : carré de la vitesse de chaque balle'
+- second membre de l'EDO
+labels:
+  v0: Vitesse de lancement
+  drag: Traînée $c/m$
+  n_angles: Angles de tir
+  t_max: Durée simulée

@@ -1,0 +1,20 @@
+source_hash: c4a4275e3bd7
+title: Boost de Lorentz du tenseur électromagnétique
+summary: En relativité, $\mathbf E$ et $\mathbf B$ ne sont pas des vecteurs séparés mais les six composantes d'un seul tenseur antisymétrique $4\times 4$ $F^{\mu\nu}$. Un boost de Lorentz le transforme avec un $\Lambda$ par indice, $F' = \Lambda F\Lambda^{\mathsf T}$, écrit en un seul einsum. En faisant varier la vitesse du boost, on voit les champs électrique et magnétique se mélanger tandis que $F_{\mu\nu}F^{\mu\nu}$ et $\mathbf E\cdot\mathbf B$ restent fixes.
+notes: Unités avec $c = 1$, signature de la métrique $(+, -, -, -)$. Le boost est selon $x$, donc $E_x$ et $B_x$ ne changent jamais ; seules les composantes transverses se mélangent. Pour un champ purement électrique ($\mathbf B = 0$), l'observateur en mouvement voit un champ magnétique $\mathbf B' = -\gamma\,\boldsymbol\beta\times\mathbf E$. Les deux invariants de Lorentz restent constants tout au long du balayage.
+meanings:
+- tenseur électromagnétique antisymétrique, $\mu, \nu \in \{t, x, y, z\}$
+- métrique de Minkowski $\operatorname{diag}(+1, -1, -1, -1)$, $c = 1$
+- boost selon $x$ pour chacune des $S$ vitesses $\beta$
+- '$\alpha$ et $\beta$ répétés ⇒ sommés : un $\Lambda$ par indice de $F$'
+- indices abaissés avec la métrique
+- invariant $2(B^2 - E^2)$
+- invariant $-4\,\mathbf E\cdot\mathbf B$, à l'aide du tenseur dual $\tfrac12\varepsilon^{\mu\nu\rho\sigma}F_{\rho\sigma}$
+labels:
+  Ex: $E_x$
+  Ey: $E_y$
+  Ez: $E_z$
+  Bx: $B_x$
+  By: $B_y$
+  Bz: $B_z$
+  beta_max: Vitesse de boost finale $\beta = v/c$

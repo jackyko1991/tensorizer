@@ -1,0 +1,14 @@
+source_hash: 1bc9d739c88e
+title: 自由波包
+summary: 自由粒子根本不需要時間步進：在動量空間中，薛丁格方程式的解就是把每個傅立葉分量乘上各自的相位 $e^{-ik^2t/2}$。一次 FFT、一次乘法、一次反 FFT 就得到任意時刻的 $\psi$——以 $(T, N)$ 張量一次得到所有時刻。波包以群速度 $k_0$ 漂移，並因不同動量以不同速度前進而擴散。
+notes: 單位 $\hbar = m = 1$。$\sigma$ 是 $\lvert\psi\rvert^2$ 的標準差（因此 $\psi \propto \exp(-(x - x_0)^2/(4\sigma_0^2) + ik_0x)$）。精確結果為 $\langle x\rangle = x_0 + k_0 t$（群速度 $v_g = dE/dk = k$）與 $\sigma(t) = \sigma_0\sqrt{1 + (t/(2\sigma_0^2))^2}$：窄的波包動量分佈寬，因此擴散得快。虛線標示由該公式得到的 $\langle x\rangle \pm \sigma(t)$。$\operatorname{Re}\psi$ 的漣漪以相速度 $k/2$ 移動，是包絡速度的一半。網格是週期性的，因此從一側跑出的波包會從另一側回來。
+meanings:
+- 寬度 $\sigma_0$、以動量 $k_0$ 運動的高斯波包
+- 重複的 $x$ ⇒ 求和：換到平面波 $e^{ikx}$ 的基底
+- 每個模態 $k$ 在每個時刻 $t$ 的自由粒子相位（不求和：外積）
+- 回到 $x$ 空間，一次呼叫得到全部 $T$ 個快照
+- 每個時刻 $\lvert\psi\rvert^2$ 的中心與寬度
+labels:
+  k0: 波包動量 $k_0$
+  sigma0: 初始寬度 $\sigma_0$
+  t_max: 模擬時間

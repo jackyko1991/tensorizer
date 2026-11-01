@@ -1,0 +1,31 @@
+title: Heat diffusion on a plate
+category: thermodynamics
+level: intermediate
+order: 1
+summary: >
+  Fourier's law turns a temperature gradient into a heat flux, and energy conservation turns the
+  divergence of that flux into a change of temperature. On a grid both derivatives are tiny convolution
+  kernels, so one time step is just two conv2d calls over the whole plate.
+animated: true
+vector_form: '\mathbf q = -k\,\nabla T,\qquad \rho c\,\partial_t T = -\nabla\cdot\mathbf q = k\,\nabla^2 T'
+index_form: 'q_i = -k\,\partial_i T,\qquad \partial_t T = -\tfrac{1}{\rho c}\,\partial_i q_i = \alpha\,\partial_i\partial_i T'
+translation:
+  - {symbol: 'T', code: 'T', shape: '(1, 1, H, W)', meaning: 'temperature of every grid cell (batch and channel dims for conv2d)'}
+  - {symbol: '\partial_i', code: 'gradient_kernel(dx)', shape: '(2, 1, 3, 3)', meaning: 'forward-difference stencils, one output channel per direction $i \in \{x, y\}$'}
+  - {symbol: 'q_i', code: '-k * conv2d(T_padded, grad)', shape: '(1, 2, H+2, W+2)', meaning: "Fourier's law: heat flux, channel $i$ is the component"}
+  - {symbol: '\partial_i q_i', code: 'conv2d(q, div)', shape: '(1, 1, H, W)', meaning: 'repeated $i$ ⇒ summed: conv2d adds up its 2 input channels — the divergence'}
+  - {symbol: '\alpha', code: 'k / rho_c', shape: 'scalar', meaning: 'thermal diffusivity (m²/s)'}
+  - {symbol: '\partial_t T', code: 'dT_dt(T, ...)', shape: '(1, 1, H, W)', meaning: 'right-hand side; forward Euler: $T \leftarrow T + dt\,\partial_t T$'}
+notes: >
+  Forward-then-backward differences combine into the familiar 5-point Laplacian, so $\partial_i\partial_i T$ is never coded
+  separately: it falls out of composing the gradient and divergence kernels. The explicit scheme is only stable
+  for $\alpha\,dt/dx^2 \le 1/4$ (the "stability number" below). With Dirichlet boundaries the edges are a 20 °C bath
+  and heat drains away; with Neumann (insulated) edges no flux crosses the boundary and the total heat is
+  conserved while the temperature evens out. A sine mode $\sin(\pi x/L)\sin(\pi y/L)$ decays as $\exp(-2\pi^2\alpha t/L^2)$.
+params:
+  alpha: {default: 20.0, min: 2, max: 200, step: 5, label: 'Diffusivity $\alpha$', unit: mm²/s}
+  t_max: {default: 20.0, min: 1, max: 60, step: 1, label: Simulated time, unit: s}
+  n_spots: {default: 3, min: 1, max: 6, step: 1, type: int, label: Hot spots}
+  n_grid: {default: 64, min: 24, max: 128, step: 8, type: int, label: Grid cells per side}
+  r: {default: 0.2, min: 0.02, max: 0.25, step: 0.01, label: 'Stability number $\alpha\,dt/dx^2$'}
+  boundary: {default: dirichlet, type: choice, options: [dirichlet, neumann], label: Edges}

@@ -1,0 +1,29 @@
+title: Diffraction grating as a sum of phasors
+category: optics
+level: intermediate
+order: 2
+summary: >
+  The far-field of $N$ slits is the sum of $N$ complex phasors, one per slit, each delayed by the extra path
+  $d\sin\theta$. With complex tensors the whole pattern is one einsum. As $N$ grows from 2 to 20 the principal maxima
+  stay put but get sharper, and $N-2$ faint secondary maxima appear between them.
+animated: true
+vector_form: 'E(\theta) = \frac{1}{N}\sum_{n=0}^{N-1} e^{\,i k d n \sin\theta},\qquad I(\theta) = \operatorname{sinc}^2\!\Big(\frac{a\sin\theta}{\lambda}\Big)\,\lvert E(\theta)\rvert^2'
+index_form: 'E_t = A_n\,P_{nt},\quad P_{nt} = e^{\,i k d\, n \sin\theta_t},\quad A_n = \tfrac{1}{N},\qquad I_t = S_t\,E_t^{*}E_t'
+translation:
+  - {symbol: 'n', code: 'torch.arange(N)', shape: '(N,)', meaning: 'slit number; slit $n$ is a distance $nd$ from slit 0'}
+  - {symbol: '\sin\theta_t', code: 'sin_theta', shape: '(T,)', meaning: 'direction of observation, sampled on a fine grid'}
+  - {symbol: 'P_{nt}', code: 'phasors(n, sin_theta, k, d)', shape: '(N, T) complex', meaning: 'phase factor of slit $n$ seen at angle $t$'}
+  - {symbol: 'E_t = A_n P_{nt}', code: "einsum('n,nt->t', A, P)", shape: '(T,) complex', meaning: 'repeated $n$ ⇒ summed: add the waves of all slits'}
+  - {symbol: 'S_t', code: 'envelope(sin_theta, a, wavelength)', shape: '(T,)', meaning: 'single-slit diffraction envelope $\operatorname{sinc}^2(a\sin\theta/\lambda)$'}
+  - {symbol: 'E^*_t E_t', code: '(E.conj() * E).real', shape: '(T,)', meaning: 'intensity = squared magnitude of the complex amplitude'}
+  - {symbol: '\frac{\sin^2(N\phi/2)}{N^2\sin^2(\phi/2)}', code: 'closed_form(sin_theta, N, k, d)', shape: '(T,)', meaning: 'the same sum done by hand (geometric series), $\phi = kd\sin\theta$'}
+notes: >
+  The right panel draws the $N$ phasors head to tail at one angle. At a principal maximum ($d\sin\theta = m\lambda$) they all
+  point the same way and add to length $N$. Moving off the maximum, the chain curls up and closes into a polygon
+  when $N\phi = 2\pi$: the first zero, at an angle that shrinks like $1/N$. Intensities are normalised to 1 at the central
+  peak; dotted lines mark $d\sin\theta = m\lambda$. Only the single-slit envelope depends on the slit width $a$.
+params:
+  wavelength: {default: 500.0, min: 400, max: 700, step: 10, label: 'Wavelength $\lambda$', unit: nm}
+  d: {default: 2.0, min: 0.8, max: 5, step: 0.1, label: 'Slit spacing $d$', unit: µm}
+  a: {default: 0.5, min: 0.1, max: 2, step: 0.05, label: 'Slit width $a$', unit: µm}
+  n_max: {default: 20, min: 3, max: 30, step: 1, type: int, label: 'Largest number of slits $N$'}

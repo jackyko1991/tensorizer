@@ -1,0 +1,17 @@
+source_hash: b1957b563a0a
+title: Keplersche Gesetze
+summary: 'Planeten mit verschiedenen Bahngrößen und Exzentrizitäten umkreisen einen Stern unter Newtons Gravitationsgesetz (umgekehrt quadratisch im Abstand). Eine einzige gebündelte RK4-Integration zeigt alle drei Keplerschen Gesetze: Ellipsen mit dem Stern in einem Brennpunkt, gleiche Flächen in gleichen Zeiten und $T^2 \propto a^3$.'
+notes: 'Einheiten sind AE, Jahre und Sonnenmassen, also $GM_\odot = 4\pi^2$, und das dritte Keplersche Gesetz lautet einfach $T^2 = a^3$. Jeder Planet startet im Perihel mit der Vis-viva-Geschwindigkeit $v_p = \sqrt{(GM/a)(1+e)/(1-e)}$. Die schattierten Sektoren der exzentrischsten Bahn benötigen jeweils dieselbe Zeit $T/12$: kurz und breit nahe am Stern, lang und schmal weit weg, aber immer mit gleicher Fläche, weil $dA/dt = L/2$ und $L$ erhalten ist. Die Umlaufzeit wird aus der Simulation als Zeit für das Überstreichen von $2\pi$ gemessen. Der Stern wird als ruhend behandelt (seine Masse ist viel größer als die der Planeten), und die Planeten ziehen nicht aneinander.'
+meanings:
+- Ort des Planeten $b$ relativ zum Stern, $i \in \{x, y\}$
+- Geschwindigkeit des Planeten $b$
+- 'wiederholtes $j$ ⇒ summiert: Abstandsquadrat $r_b^2$'
+- Anziehung zum Stern, umgekehrt proportional zum Abstandsquadrat
+- 2D-Levi-Civita-Symbol, $\varepsilon_{xy} = 1 = -\varepsilon_{yx}$
+- Drehimpuls pro Masse; $dA/dt = L_b/2$ ist konstant
+- $\tfrac12 v^2 - GM/r$; liefert $a = -GM/2E$
+labels:
+  n_planets: Planeten
+  e_max: Größte Exzentrizität $e$
+  t_max: Simulierte Zeit
+  dt: Zeitschritt

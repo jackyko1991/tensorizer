@@ -1,0 +1,18 @@
+source_hash: 0456b6169f6d
+title: Diffusion d'un paquet d'ondes en 2D
+summary: 'L''équation de Schrödinger dépendante du temps en deux dimensions, résolue par la méthode split-step de Fourier sur une grille $(N, N)$. Un paquet d''ondes gaussien frappe une paroi percée de deux fentes (ou un obstacle en forme de disque) ; torch.fft.fft2 passe de l''espace des $x$, où le potentiel est diagonal, à l''espace des $k$, où l''énergie cinétique est diagonale. Un écran détecteur derrière la barrière enregistre la probabilité intégrée dans le temps : une figure d''interférence construite à partir de la fonction d''onde d''une seule particule.'
+notes: Unités $\hbar = m = 1$, énergie du paquet $E \approx k_0^2/2$. Sans le masque $M$, chaque facteur est une phase pure, donc chaque pas est exactement unitaire et la norme reste égale à 1 ; le masque retire délibérément la probabilité qui atteint les bords (sinon la grille FFT périodique la ramènerait du côté opposé), si bien que la norme affichée diminue aux temps longs. Pour deux fentes séparées de $d$, les franges sur un écran à la distance $D$ sont espacées d'environ $\lambda D/d$ avec $\lambda = 2\pi/k_0$ (l'écran n'est pas en champ lointain, c'est donc approximatif). Le disque montre une ombre avec une tache de Poisson brillante sur l'axe derrière lui. La couleur de l'image utilise une échelle en racine carrée normalisée à chaque image, pour que les faibles ondes diffusées restent visibles ; la barrière est dessinée en gris.
+meanings:
+- fonction d'onde sur la grille 2D périodique (premier indice $x$, second $y$)
+- 'barrière : une paroi haute en $x \approx 0$ avec deux ouvertures, ou un disque'
+- opérateur potentiel sur un demi-pas, diagonal dans l'espace des $x$
+- opérateur cinétique sur un pas entier, diagonal dans l'espace des $k$
+- '$x$ et $y$ tous deux sommés : une transformée de Fourier 1D selon chaque axe'
+- amortissement progressif près des bords, pour que les ondes sortent au lieu de revenir
+- probabilité intégrée dans le temps sur la ligne du détecteur $x = x_\text{screen}$
+labels:
+  barrier: Barrière
+  k0: Impulsion du paquet $k_0$
+  slit_sep: Distance entre fentes $d$ (diamètre du disque)
+  slit_width: Largeur des fentes $w$
+  n_grid: Points de grille par axe

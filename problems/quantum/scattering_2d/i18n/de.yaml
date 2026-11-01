@@ -1,0 +1,18 @@
+source_hash: 0456b6169f6d
+title: Streuung eines Wellenpakets in 2D
+summary: 'Die zeitabhängige Schrödinger-Gleichung in zwei Dimensionen, gelöst mit der Split-Step-Fourier-Methode auf einem $(N, N)$-Gitter. Ein Gaußsches Wellenpaket trifft auf eine Wand mit zwei Spalten (oder ein scheibenförmiges Hindernis); torch.fft.fft2 wechselt zwischen dem $x$-Raum, in dem das Potential diagonal ist, und dem $k$-Raum, in dem die kinetische Energie diagonal ist. Ein Detektorschirm hinter der Barriere registriert die zeitintegrierte Wahrscheinlichkeit: ein Interferenzmuster, aufgebaut aus der Wellenfunktion eines einzigen Teilchens.'
+notes: Einheiten $\hbar = m = 1$, Paketenergie $E \approx k_0^2/2$. Ohne die Maske $M$ ist jeder Faktor eine reine Phase, also ist jeder Schritt exakt unitär und die Norm bleibt 1; die Maske entfernt absichtlich Wahrscheinlichkeit, die die Ränder erreicht (sonst würde das periodische FFT-Gitter sie auf der gegenüberliegenden Seite zurückbringen), daher fällt die ausgegebene Norm zu späten Zeiten ab. Bei zwei Spalten im Abstand $d$ haben die Streifen auf einem Schirm im Abstand $D$ etwa den Abstand $\lambda D/d$ mit $\lambda = 2\pi/k_0$ (der Schirm liegt nicht im Fernfeld, daher ist das nur näherungsweise). Wählt man die Scheibe, sieht man einen Schatten mit einem hellen Poisson-Fleck auf der Achse dahinter. Die Bildfarbe verwendet eine auf jedes Bild normierte Wurzelskala, damit die schwachen Streuwellen sichtbar bleiben; die Barriere ist grau gezeichnet.
+meanings:
+- Wellenfunktion auf dem periodischen 2D-Gitter (erster Index $x$, zweiter $y$)
+- 'Barriere: eine hohe Wand bei $x \approx 0$ mit zwei Öffnungen, oder eine Scheibe'
+- Potentialoperator für einen halben Schritt, diagonal im $x$-Raum
+- kinetischer Operator für einen ganzen Schritt, diagonal im $k$-Raum
+- '$x$ und $y$ beide summiert: eine 1D-Fourier-Transformation entlang jeder Achse'
+- glatte Dämpfung nahe den Rändern, damit Wellen hinauslaufen statt herumzuwickeln
+- zeitintegrierte Wahrscheinlichkeit auf der Detektorlinie $x = x_\text{screen}$
+labels:
+  barrier: Barriere
+  k0: Impuls des Pakets $k_0$
+  slit_sep: Spaltabstand $d$ (Scheibendurchmesser)
+  slit_width: Spaltbreite $w$
+  n_grid: Gitterpunkte pro Achse

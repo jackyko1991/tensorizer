@@ -1,0 +1,15 @@
+source_hash: e1ad81688a05
+title: Diffraction de Fraunhofer par transformée de Fourier 2D
+summary: En champ lointain, la figure de diffraction d'une ouverture est la transformée de Fourier 2D de sa fonction de transmission. Un seul appel à torch.fft.fft2 transforme un carré, un trou circulaire, des fentes d'Young et un réseau en leurs figures de champ lointain, et les anneaux d'Airy rétrécissent quand le trou s'agrandit.
+notes: 'Les longueurs dans le plan de l''ouverture sont en pixels de taille $\Delta x$ ; le pixel de fréquence $(k, l)$ de la transformée correspond à la direction $\sin\theta = \lambda k/(N\Delta x)$. Le premier anneau sombre du trou circulaire, à $\sin\theta = 1.22\,\lambda/D$, se trouve donc à $1.22\,N/D$ pixels de fréquence du centre (cercle en tirets). Les grandes ouvertures donnent de petites figures : la transformée d''une fonction large est étroite. La forme einsum est la même transformée que fft2, simplement en $O(N^3)$ au lieu de $O(N^2\log N)$.'
+meanings:
+- 'transmission du masque : 1 = ouvert, 0 = opaque ; ligne $a = y$, colonne $b = x$'
+- matrice de la transformée de Fourier discrète
+- '$a$ et $b$ répétés ⇒ sommés : une transformée 1D selon $y$ et une selon $x$'
+- la même transformée par FFT, fréquence nulle ramenée au centre
+- intensité en champ lointain, affichée en $\log_{10}(I/I_{\max})$
+- premier anneau sombre d'un trou circulaire de diamètre $D$, en pixels de fréquence
+labels:
+  size_min: Taille initiale de l'ouverture $D$
+  size_max: Taille finale de l'ouverture $D$
+  frames_per_aperture: Images par forme d'ouverture

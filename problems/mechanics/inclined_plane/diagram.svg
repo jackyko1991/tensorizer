@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Block of mass m on a ramp inclined at angle theta, with gravity mg, normal force N and friction f acting up the slope">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <line x1="10" y1="140" x2="230" y2="140" stroke="#374151" stroke-width="2"/>
+    <g stroke="#9ca3af" stroke-width="1.5">
+      <line x1="16" y1="140" x2="8" y2="148"/>
+      <line x1="30" y1="140" x2="22" y2="148"/>
+      <line x1="44" y1="140" x2="36" y2="148"/>
+      <line x1="58" y1="140" x2="50" y2="148"/>
+      <line x1="72" y1="140" x2="64" y2="148"/>
+      <line x1="86" y1="140" x2="78" y2="148"/>
+      <line x1="100" y1="140" x2="92" y2="148"/>
+      <line x1="114" y1="140" x2="106" y2="148"/>
+      <line x1="128" y1="140" x2="120" y2="148"/>
+      <line x1="142" y1="140" x2="134" y2="148"/>
+      <line x1="156" y1="140" x2="148" y2="148"/>
+      <line x1="170" y1="140" x2="162" y2="148"/>
+      <line x1="184" y1="140" x2="176" y2="148"/>
+      <line x1="198" y1="140" x2="190" y2="148"/>
+      <line x1="212" y1="140" x2="204" y2="148"/>
+      <line x1="226" y1="140" x2="218" y2="148"/>
+    </g>
+    <path d="M20,140 L220,140 L220,40 Z" fill="#93c5fd" stroke="#374151" stroke-width="2" fill-opacity="0.45" stroke-linejoin="round"/>
+    <path d="M54,140 A34,34 0 0 0 50.4,124.8" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <text x="60" y="135" font-style="italic" fill="#b45309">θ</text>
+    <rect x="-18" y="-12" width="36" height="24" fill="#2563eb" stroke="#1e40af" stroke-width="1.5" transform="translate(134.6,69.3) rotate(-26.6)"/>
+    <line x1="134.6" y1="69.3" x2="134.6" y2="119.3" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="140.6" y="117.3" font-style="italic" fill="#b91c1c">mg</text>
+    <line x1="134.6" y1="69.3" x2="114.1" y2="28.1" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="100.1" y="34.1" font-style="italic" fill="#b91c1c">N</text>
+    <line x1="134.6" y1="69.3" x2="174" y2="49.6" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="176" y="43.6" font-style="italic" fill="#b91c1c">f</text>
+    <circle cx="134.6" cy="69.3" r="2.5" fill="#ffffff"/>
+  </g>
+</svg>

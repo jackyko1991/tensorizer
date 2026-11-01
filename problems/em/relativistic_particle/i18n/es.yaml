@@ -1,0 +1,17 @@
+source_hash: b693da8b6e0e
+title: Partícula cargada relativista
+summary: 'La fuerza de Lorentz en forma covariante, $dU^\mu/d\tau = (q/m)\,F^\mu{}_\nu U^\nu$: el segundo índice del tensor de campo se baja con la métrica de Minkowski y se contrae con la cuadrivelocidad en un único einsum. Integrar en tiempo propio muestra partículas rápidas que giran más despacio de lo que predice Newton, y un campo eléctrico constante que empuja una partícula cada vez más cerca de la velocidad de la luz, pero sin superarla nunca.'
+notes: 'Unidades con $c = 1$. Las ecuaciones se integran en el tiempo propio $\tau$ de cada partícula con RK4 y luego se remuestrean al tiempo de laboratorio $t = X^0$ para la animación. Ciclotrón: la fuerza magnética no realiza trabajo, así que $\gamma$ permanece constante, pero la órbita es $\gamma$ veces mayor y $\gamma$ veces más lenta que la circunferencia newtoniana ($\omega = qB/(\gamma m)$). Aceleración: partiendo del reposo en un $E$ uniforme el movimiento es hiperbólico, $x = (\sqrt{1 + (at)^2} - 1)/a$ con $a = qE/m$, de modo que $v \to 1$, mientras que el $\tfrac12 at^2$ de Newton superaría a la luz tras $t = 2/a$.'
+meanings:
+- cuadriposición $(t, x, y, z)$ y cuadrivelocidad $\gamma(1, \mathbf v)$ de la partícula $p$
+- métrica de Minkowski $\operatorname{diag}(+1, -1, -1, -1)$, $c = 1$
+- $F^{0i} = -E_i$, $F^{ij} = -\varepsilon_{ijk}B_k$
+- '$\alpha$ repetido ⇒ sumado: segundo índice bajado'
+- '$\nu$ repetido ⇒ sumado: cuadrifuerza sobre cada partícula'
+- norma de Minkowski de $U$, debe seguir siendo 1
+labels:
+  config: Escenario
+  strength: Intensidad del campo ($B$ o $E$)
+  v_max: Velocidad inicial máxima (ciclotrón)
+  n_particles: Partículas
+  t_max: Tiempo de laboratorio

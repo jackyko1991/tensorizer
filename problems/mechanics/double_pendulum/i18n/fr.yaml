@@ -1,0 +1,20 @@
+source_hash: 75e6d7e3dc93
+title: Pendule double et chaos
+summary: Les équations de Lagrange d'un pendule double écrites sous la forme $M_{ij}(q)\,\ddot q_j = f_i(q, \dot q)$. Chaque étape RK4 construit le tenseur de la matrice de masse $2\times 2$ et appelle torch.linalg.solve ; deux conditions initiales presque identiques divergent, ce qui révèle le chaos.
+notes: Le lot contient deux pendules dont $\theta_2$ diffère de $\delta$. Leur écart croît à peu près exponentiellement jusqu'à ce que les mouvements n'aient plus rien à voir, bien que l'énergie de chacun reste constante avec une grande précision (float64 + RK4 à petit pas). Pour de petites oscillations, le système a deux modes propres ; avec des masses et longueurs égales, $\omega^2 = (2 \mp \sqrt2)\,g/L$. Les tiges sont sans masse et le pivot sans frottement.
+meanings:
+- angles $(\theta_1, \theta_2)$ du pendule $b$ par rapport à la verticale descendante
+- vitesses angulaires
+- matrice de masse dépendant de la configuration, hors diagonale $m_2L_1L_2\cos(\theta_1-\theta_2)$
+- 'forces généralisées : couplage centrifuge + pesanteur'
+- résolution de $M\ddot q = f$ pour tout le lot en un appel
+- '$i$ et $j$ sommés : deux fois l''énergie cinétique'
+labels:
+  theta1: $\theta_1$ initial
+  theta2: $\theta_2$ initial
+  delta: Perturbation $\delta$ de $\theta_2$
+  m1: Masse supérieure $m_1$
+  m2: Masse inférieure $m_2$
+  L1: Tige supérieure $L_1$
+  L2: Tige inférieure $L_2$
+  t_max: Durée simulée

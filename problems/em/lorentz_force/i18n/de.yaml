@@ -1,0 +1,18 @@
+source_hash: a8a725d373c7
+title: Geladene Teilchen in E- und B-Feldern
+summary: 'Die Lorentzkraft auf eine Schar geladener Teilchen in gekreuzten elektrischen und magnetischen Feldern. Das Kreuzprodukt wird mit dem Levi-Civita-Tensor $\varepsilon_{ijk}$ geschrieben, sodass ein einziges einsum die magnetische Kraft auf jedes Teilchen liefert: Jedes läuft auf einer Zyklotron-Schraubenbahn, während der ganze Schwarm entlang $\mathbf E\times\mathbf B$ driftet.'
+notes: Die Einheiten sind dimensionslos ($q$, $m$, $E$, $B$ von der Größenordnung eins). Bei $\mathbf E = 0$ kreist jedes Teilchen mit der Zyklotronfrequenz $\omega = \lvert q\rvert B/m$ auf dem Radius $mv_\perp/(\lvert q\rvert B)$; positive und negative Ladungen laufen in entgegengesetzter Richtung. Kommt $\mathbf E\perp\mathbf B$ hinzu, driftet jedes Führungszentrum mit der Geschwindigkeit $\mathbf E\times\mathbf B/B^2$, unabhängig von Ladung und Masse.
+meanings:
+- Ort des Teilchens $b$, Komponente $i \in \{x, y, z\}$
+- Geschwindigkeit des Teilchens $b$
+- Ladung und Masse jedes Teilchens
+- 'homogene Felder: $\mathbf E$ entlang $y$, $\mathbf B$ entlang $z$'
+- $+1$ für gerade Permutationen von $(x, y, z)$, $-1$ für ungerade, 0 bei wiederholtem Index
+- 'wiederholte $j$ und $k$ ⇒ summiert: das Kreuzprodukt $\mathbf v\times\mathbf B$'
+- $\mathbf E\times\mathbf B$-Driftgeschwindigkeit, für jede Ladung gleich
+labels:
+  B: Magnetfeld $B_z$
+  E: Elektrisches Feld $E_y$
+  v_par: Anfangsgeschwindigkeit entlang $\mathbf B$
+  n_particles: Teilchen
+  t_max: Simulierte Zeit

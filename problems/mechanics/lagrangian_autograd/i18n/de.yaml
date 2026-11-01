@@ -1,0 +1,20 @@
+source_hash: bd0f5adb6f78
+title: Bewegungsgleichungen aus der Lagrange-Funktion per Autograd
+summary: 'Gib nur die Lagrange-Funktion $L = T - V$ ein und lass torch.autograd die Euler–Lagrange-Gleichungen herleiten: Die Hesse-Matrix $\partial^2L/\partial\dot q_i\partial\dot q_j$ ist die Massenmatrix, und ein einziges lineares Gleichungssystem liefert $\ddot q$. Angewandt auf ein Federpendel (elastisches Pendel).'
+notes: 'Keine der Gleichungen des Federpendels wurde von Hand geschrieben: Ändere die Lagrange-Funktion, und die Dynamik folgt. Hier hängt $H = \operatorname{diag}(m, mr^2)$ von $r$ ab, und $C$ enthält die Coriolis-artige Kopplung $2mr\dot\theta$. Mit dem Standardwert $k \approx 3mg/\ell_0$ ist die Federfrequenz etwa doppelt so groß wie die Pendelfrequenz (2:1-Resonanz), sodass die Energie zwischen Federn und Schwingen hin und her wandert. Derselbe Code funktioniert für beliebig viele Koordinaten; der Preis sind ein paar zusätzliche Backward-Durchläufe pro Schritt.'
+meanings:
+- 'verallgemeinerte Koordinaten $(r, \theta)$: Federlänge und Winkel'
+- verallgemeinerte Geschwindigkeiten
+- die einzige von Hand eingegebene Physik
+- erste Ableitungen; $p_i = \partial L/\partial\dot q_i$ ist der kanonische Impuls
+- Zeile $i$ der Massenmatrix und der gemischten zweiten Ableitungen
+- wiederholtes $k$ ⇒ summiert
+- Euler–Lagrange-Gleichungen, nach den Beschleunigungen aufgelöst
+- Energiefunktion, ebenfalls per Autograd; erhalten
+labels:
+  m: Masse $m$
+  k: Federkonstante $k$
+  rest_length: Ruhelänge $\ell_0$
+  r0: Anfangslänge $r_0$
+  theta0: Anfangswinkel $\theta_0$
+  t_max: Simulierte Zeit

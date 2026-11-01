@@ -1,0 +1,30 @@
+title: Rogue waves (nonlinear Schrödinger)
+category: waves
+level: advanced
+order: 2
+summary: >
+  The focusing nonlinear Schrödinger equation describes the envelope of deep-water wave groups and light pulses in fibres.
+  A uniform wave train is unstable: tiny ripples grow into towering peaks about three times the background, like rogue waves.
+  Solved by split-step Fourier: dispersion is exact in $k$-space, the nonlinearity is exact in $x$-space.
+animated: true
+vector_form: 'i\,\psi_t + \tfrac12\,\psi_{xx} + |\psi|^2\,\psi = 0'
+index_form: '\psi_j \leftarrow F^{-1}_{jk}\,e^{-ik^2\Delta t/4}\,F_{kl}\,\psi_l,\qquad \psi_j \leftarrow e^{i\,\psi_j^*\psi_j\,\Delta t}\,\psi_j,\qquad N = \sum_j \psi_j^*\psi_j\,\Delta x'
+translation:
+  - {symbol: '\psi_j', code: 'psi', shape: '(J,)', meaning: 'complex wave envelope on a periodic grid (complex128)'}
+  - {symbol: 'e^{-ik^2\Delta t/4}', code: 'half_linear', shape: '(K,)', meaning: 'half a step of dispersion $i\psi_t = -\tfrac12\psi_{xx}$, exact for each Fourier mode'}
+  - {symbol: 'F_{kl}\psi_l', code: 'torch.fft.fft(psi)', shape: '(K,)', meaning: 'repeated $l$ ⇒ summed: the discrete Fourier transform'}
+  - {symbol: 'e^{i|\psi_j|^2\Delta t}', code: 'exp(1j * psi.abs()**2 * dt)', shape: '(J,)', meaning: 'one step of the nonlinearity $i\psi_t = -|\psi|^2\psi$, exact because $|\psi|$ does not change'}
+  - {symbol: 'N,\ H', code: 'norm(psi, dx), hamiltonian(psi, k, dx)', shape: 'scalar', meaning: '$\int|\psi|^2$ and $\int \tfrac12|\psi_x|^2 - \tfrac12|\psi|^4$, both conserved'}
+notes: >
+  Strang splitting: half a dispersion step, a full nonlinear step, half a dispersion step; second-order accurate and it
+  keeps $N$ to round-off. Modulational instability: on a background of height 1 perturbations with wavenumber $K < 2$ grow,
+  fastest at $K = \sqrt2$ with rate 1. In **modulation** mode the background starts with $10^{-3}$ random noise (fixed seed): peaks
+  appear after $t \approx 8$ and keep forming and dissolving. The Peregrine breather $\psi = \bigl[1 - \frac{4(1+2it)}{1+4x^2+4t^2}\bigr]e^{it}$
+  rises out of the background once, reaches exactly $3\times$ its height and vanishes; **peregrine** mode starts it at $t = -5$.
+  **soliton** mode launches the bright soliton $\eta\,\mathrm{sech}(\eta x)\,e^{ivx}$ that keeps its shape forever.
+  The dashed line marks $|\psi| = 3$. Periodic box of length 60.
+params:
+  mode: {default: modulation, type: choice, options: [modulation, peregrine, soliton], label: Initial state}
+  noise: {default: 0.001, min: 0.0001, max: 0.05, step: 0.0001, label: Noise amplitude (modulation)}
+  eta: {default: 1.5, min: 0.5, max: 3.0, step: 0.1, label: 'Soliton height $\eta$'}
+  t_max: {default: 25.0, min: 5, max: 40, step: 1, label: Simulated time}

@@ -1,0 +1,16 @@
+source_hash: 006d4ce1966d
+title: Cadena de desintegración (ecuaciones de Bateman)
+summary: Un núcleo padre se desintegra en un hijo radiactivo, que a su vez se desintegra en un producto final estable. Las tres ecuaciones de ritmo forman un único sistema lineal $\dot N_i = A_{ij} N_j$, resuelto exactamente con la exponencial matricial $e^{At}$ para todos los instantes a la vez y contrastado con RK4. La cadena por defecto es el generador médico $^{99}$Mo → $^{99m}$Tc → $^{99}$Tc.
+notes: 'Cada columna de $\mathsf A$ suma cero, así que $\sum_i N_i$ nunca cambia: cada desintegración baja un núcleo un eslabón de la cadena. Para dos miembros la solución exacta (de Bateman) es $N_2 = N_1(0)\,\frac{\lambda_1}{\lambda_2 - \lambda_1}\,(e^{-\lambda_1 t} - e^{-\lambda_2 t})$. Cuando el hijo vive menos ($\lambda_2 > \lambda_1$) las actividades quedan acopladas: el cociente $a_2/a_1$ tiende a $\lambda_2/(\lambda_2-\lambda_1)$ (equilibrio transitorio), y a 1 cuando el padre vive mucho más (equilibrio secular; prueba un período de semidesintegración del padre de 1000 h). Si el hijo vive más, no se alcanza el equilibrio. Simplificaciones: en realidad el $^{99}$Mo solo alimenta al $^{99m}$Tc en un 88 % de las desintegraciones, y el $^{99}$Tc (período de semidesintegración 211 000 años) se trata como estable.'
+meanings:
+- $\ln 2/T_i$, con $\lambda_3 = 0$ para el final estable
+- $-\lambda_i$ en la diagonal, $+\lambda_i$ justo debajo
+- '$j$ repetido ⇒ sumado: el segundo miembro usado por RK4'
+- una exponencial matricial por instante, por lotes sobre $t$
+- poblaciones en cada instante a partir del vector inicial
+- 'actividad: desintegraciones por hora de cada miembro'
+labels:
+  half_life_parent: Semivida del padre $T_1$
+  half_life_daughter: Semivida del hijo $T_2$
+  t_max: Intervalo de tiempo
+  rk4_steps: Pasos de RK4

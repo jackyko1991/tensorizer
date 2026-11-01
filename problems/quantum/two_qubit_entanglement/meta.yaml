@@ -1,0 +1,34 @@
+title: Two-qubit entanglement
+category: quantum
+level: advanced
+order: 3
+summary: >
+  Two qubits stored as a $(2, 2)$ tensor $\psi_{ab}$. Gates are rank-4 tensors applied with one einsum: a Hadamard on
+  qubit 1 followed by a CNOT turns $\lvert 00\rangle$ into a Bell state. The singular value decomposition of $\psi_{ab}$ is the
+  Schmidt decomposition, giving the entanglement entropy directly. The pair then evolves under an Ising
+  Hamiltonian; partial traces give each qubit's reduced density matrix, whose Bloch vector shrinks inside the
+  sphere whenever the qubits are entangled.
+animated: true
+vector_form: '|\psi\rangle = \sum_{ab}\psi_{ab}\,|a\rangle|b\rangle,\quad |\Phi^+\rangle = \mathrm{CNOT}\,(H\otimes I)\,|00\rangle,\quad \hat H = J\,\sigma_z\otimes\sigma_z + h\,(\sigma_x\otimes I + I\otimes\sigma_x),\quad S = -\mathrm{Tr}\,\rho_1\ln\rho_1'
+index_form: '\psi_{ab} \leftarrow G_{abcd}\,\psi_{cd},\qquad \psi_{ab} = U_{ak}\,s_k\,V^*_{bk},\quad S = -s_k^2\ln s_k^2,\qquad \rho^{(1)}_{ac} = \psi_{ab}\,\psi^*_{cb},\quad r_k = \sigma_{kca}\,\rho^{(1)}_{ac}'
+translation:
+  - {symbol: '\psi_{ab}', code: 'basis_state(0, 0)', shape: '(2, 2) complex', meaning: 'amplitude for qubit 1 in $\lvert a\rangle$ and qubit 2 in $\lvert b\rangle$'}
+  - {symbol: 'G_{abcd}', code: "einsum('ac,bd->abcd', Hd, I)  /  cnot()", shape: '(2, 2, 2, 2) complex', meaning: 'two-qubit gate as a rank-4 tensor: output indices $a\,b$, input indices $c\,d$'}
+  - {symbol: 'G_{abcd}\psi_{cd}', code: "einsum('abcd,cd->ab', G, psi)", shape: '(2, 2)', meaning: '$c$ and $d$ summed: apply the gate'}
+  - {symbol: 's_k', code: 'torch.linalg.svdvals(psi)', shape: '(2,)', meaning: 'Schmidt coefficients; one nonzero value ⇔ product state'}
+  - {symbol: '\rho^{(1)}_{ac}', code: "einsum('ab,cb->ac', psi, psi.conj())", shape: '(2, 2)', meaning: 'partial trace over qubit 2 ($b$ summed)'}
+  - {symbol: 'H_{abcd}', code: "J*einsum('ac,bd->abcd', Z, Z) + h*(...)", shape: '(2, 2, 2, 2)', meaning: 'Ising Hamiltonian built from tensor products, reshaped to (4, 4) for eigh'}
+  - {symbol: 'r_k', code: "einsum('kca,ac->k', sigma, rho)", shape: '(3,)', meaning: 'Bloch vector $\operatorname{Tr}(\rho\,\sigma_k)$ of one qubit; $\lvert\mathbf r\rvert < 1$ means mixed'}
+notes: >
+  Units $\hbar = 1$. The tensor product of single-qubit operators $A\otimes B$ is the rank-4 tensor $A_{ac}B_{bd}$
+  (torch.kron gives the same numbers as a $4\times 4$ matrix with row index $2a + b$). Because $\psi_{ab}$ is a matrix, its SVD
+  writes the state as $\sum_k s_k\lvert u_k\rangle\lvert v_k\rangle$: the Schmidt decomposition. The entanglement entropy
+  $S = -\sum s_k^2\ln s_k^2$ is 0 for a product state and $\ln 2$ for a Bell state, whose reduced states are
+  maximally mixed ($\rho = I/2$, Bloch vector at the centre). The concurrence $C = 2\lvert\det\psi\rvert$ runs from 0 (product)
+  to 1 (maximally entangled). Under the Ising Hamiltonian the coupling $J$ creates and destroys entanglement
+  while the transverse field $h$ rotates the individual qubits; with $h = 0$ the Bell state is an eigenstate and nothing moves.
+params:
+  initial: {default: bell, type: choice, options: [bell, product], label: 'Start state (Bell from the circuit or $\lvert 00\rangle$)'}
+  J: {default: 1.0, min: 0.0, max: 2.0, step: 0.05, label: 'Ising coupling $J$'}
+  h: {default: 0.6, min: 0.0, max: 2.0, step: 0.05, label: 'Transverse field $h$'}
+  t_max: {default: 10.0, min: 2.0, max: 30.0, step: 1, label: Simulated time}

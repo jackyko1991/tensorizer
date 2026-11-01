@@ -1,0 +1,30 @@
+title: Radioactive decay
+category: nuclear
+level: beginner
+order: 1
+summary: >
+  Each nucleus decays at random with the same probability per second $\lambda$. Simulating a whole grid of
+  nuclei as one boolean tensor — one coin toss per nucleus per time step — reproduces the smooth exponential law
+  $N(t) = N_0 e^{-\lambda t}$ and the half-life $T_{1/2} = \ln 2/\lambda$.
+animated: true
+vector_form: '\frac{dN}{dt} = -\lambda N \;\;\Rightarrow\;\; N(t) = N_0\,e^{-\lambda t},\qquad T_{1/2} = \frac{\ln 2}{\lambda}'
+index_form: 's_n(t+\Delta t) = s_n(t)\,\big[u_n \ge p\big],\quad p = 1 - e^{-\lambda\Delta t},\qquad N(t) = \textstyle\sum_n s_n(t)'
+translation:
+  - {symbol: '\lambda', code: 'decay_constant(half_life)', shape: 'scalar', meaning: 'decay constant $\ln 2 / T_{1/2}$'}
+  - {symbol: 's_n', code: 'alive', shape: '(S, S)', meaning: 'True while nucleus $n$ has not decayed; the grid is just a way to draw $n$'}
+  - {symbol: 'u_n', code: 'torch.rand(alive.shape, generator=gen)', shape: '(S, S)', meaning: 'one uniform random number per nucleus per step'}
+  - {symbol: 'p', code: 'decay_probability(lam, dt)', shape: 'scalar', meaning: 'chance to decay within one step $\Delta t$'}
+  - {symbol: 's_n(t+\Delta t)', code: 'alive & (u >= p)', shape: '(S, S)', meaning: 'a decayed nucleus stays decayed'}
+  - {symbol: '\sum_n s_n', code: 'alive.sum(dim=(-2, -1))', shape: '(T,)', meaning: 'sum over all nuclei: the count $N(t)$'}
+notes: >
+  The exponential law is a statement about averages. With $N_0$ nuclei the count after time $t$ is binomial with
+  mean $N_0 e^{-\lambda t}$ and standard deviation $\sqrt{N_0 e^{-\lambda t}(1 - e^{-\lambda t})}$, so a small grid
+  wobbles visibly around the curve while a large grid follows it closely. After each half-life about half of the
+  remaining nuclei are gone, however many there were. The step $\Delta t$ only needs to be small compared with
+  $T_{1/2}$; the exact per-step probability $1 - e^{-\lambda\Delta t}$ makes the mean correct for any step.
+  The random seed is fixed so the picture is repeatable.
+params:
+  n_side: {default: 30, min: 5, max: 80, step: 1, type: int, label: 'Grid side (side² nuclei)'}
+  half_life: {default: 2.0, min: 0.5, max: 10.0, step: 0.5, label: 'Half-life $T_{1/2}$', unit: s}
+  t_max: {default: 10.0, min: 2.0, max: 40.0, step: 1.0, label: Simulated time, unit: s}
+  dt: {default: 0.05, min: 0.01, max: 0.5, step: 0.01, label: 'Time step $\Delta t$', unit: s}

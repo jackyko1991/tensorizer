@@ -1,0 +1,18 @@
+source_hash: a8a725d373c7
+title: 带电粒子在电磁场中的运动
+summary: 一批带电粒子在正交电场和磁场中所受的洛伦兹力。叉积用列维-奇维塔张量 $\varepsilon_{ijk}$ 写出，因此一次 einsum 就给出每个粒子所受的磁场力：每个粒子沿回旋螺旋线运动，同时整个粒子群沿 $\mathbf E\times\mathbf B$ 漂移。
+notes: 采用无量纲单位（$q$、$m$、$E$、$B$ 均为 1 的量级）。当 $\mathbf E = 0$ 时，每个粒子以回旋频率 $\omega = \lvert q\rvert B/m$ 做圆周运动，半径为 $mv_\perp/(\lvert q\rvert B)$；正负电荷旋转方向相反。加上 $\mathbf E\perp\mathbf B$ 后，每个导向中心都以速度 $\mathbf E\times\mathbf B/B^2$ 漂移，与电荷和质量无关。
+meanings:
+- 粒子 $b$ 的位置，分量 $i \in \{x, y, z\}$
+- 粒子 $b$ 的速度
+- 各粒子的电荷和质量
+- 均匀场：$\mathbf E$ 沿 $y$，$\mathbf B$ 沿 $z$
+- $(x, y, z)$ 的偶置换为 $+1$，奇置换为 $-1$，指标重复时为 0
+- 重复的 $j$ 和 $k$ ⇒ 求和：叉积 $\mathbf v\times\mathbf B$
+- $\mathbf E\times\mathbf B$ 漂移速度，对所有电荷都相同
+labels:
+  B: 磁场 $B_z$
+  E: 电场 $E_y$
+  v_par: 沿 $\mathbf B$ 的初速度
+  n_particles: 粒子数
+  t_max: 模拟时长

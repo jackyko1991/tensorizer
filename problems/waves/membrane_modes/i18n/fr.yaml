@@ -1,0 +1,14 @@
+source_hash: a794040c9063
+title: Modes de vibration d'un tambour
+summary: Les modes propres d'une peau de tambour carrée ou circulaire. Le laplacien 2D sur une grille se construit à partir du laplacien 1D par produits de Kronecker, $\Delta = D\otimes I + I\otimes D$, et un seul solveur aux valeurs propres symétrique (eigh) renvoie d'un coup toutes les formes et fréquences des modes.
+notes: 'Chaque panneau montre un mode $\phi_m(x, y)\cos(\omega_m t)$ ; les lignes blanches à l''intérieur sont des lignes nodales qui ne bougent jamais. Pour un carré de côté $L$, les fréquences exactes sont $\omega_{mn} = \frac{c\pi}{L}\sqrt{m^2 + n^2}$, donc les rapports au fondamental valent $\sqrt{(m^2+n^2)/2}$ = 1, 1.58, 1.58, 2, 2.24 … : pas des nombres entiers, c''est pourquoi un tambour ne sonne pas comme une corde. Des paires comme $(1,2)$ et $(2,1)$ ont la même fréquence, et eigh en renvoie un certain mélange. Pour un cercle, les rapports exacts viennent des zéros des fonctions de Bessel (1, 1.59, 2.14, 2.30 …) ; le bord en escalier de la grille les décale de quelques pour cent. Unités : $c = 1$, côté du carré ou diamètre du cercle $L = 1$ ; le temps est affiché en périodes du fondamental.'
+meanings:
+- dérivée seconde 1D avec bords fixés ($u = 0$ à l'extérieur)
+- 'l''indice de paire $p = (a, b)$ numérote les points de grille : le laplacien 2D'
+- on ne garde que les points à l'intérieur du tambour (masque circulaire) ; le bord est fixé
+- valeurs propres $\omega^2/c^2$ et formes propres orthonormées dans les colonnes
+- '$p$ répété ⇒ sommé : la matrice identité'
+labels:
+  shape: Forme du tambour
+  n_grid: Points de grille par côté
+  periods: Périodes du fondamental affichées

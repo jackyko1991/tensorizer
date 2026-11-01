@@ -1,0 +1,26 @@
+title: N-body gravity in 3D
+category: mechanics
+level: advanced
+order: 1
+summary: >
+  Newtonian gravity between $N$ bodies. Every pairwise separation $r_{abi}$ is built at once by broadcasting,
+  one einsum sums the pulls of all bodies $b$ on each body $a$, and velocity Verlet steps the whole system forward.
+animated: true
+vector_form: '\ddot{\mathbf r}_a = G\sum_{b\neq a} m_b\,\frac{\mathbf r_b - \mathbf r_a}{\left(\lVert\mathbf r_b - \mathbf r_a\rVert^2 + \varepsilon^2\right)^{3/2}}'
+index_form: 'r_{abi} = x_{bi} - x_{ai},\qquad \ddot x_{ai} = G\,m_b\,\left(r_{abj}r_{abj} + \varepsilon^2\right)^{-3/2}\,r_{abi}'
+translation:
+  - {symbol: 'x_{ai}', code: 'x', shape: '(N, 3)', meaning: 'position of body $a$, component $i \in \{x, y, z\}$'}
+  - {symbol: 'm_b', code: 'm', shape: '(N,)', meaning: 'mass of body $b$'}
+  - {symbol: 'r_{abi}', code: 'x[None, :, :] - x[:, None, :]', shape: '(N, N, 3)', meaning: 'separation from $a$ to $b$, all pairs by broadcasting'}
+  - {symbol: 'r_{abj}r_{abj}', code: "einsum('abj,abj->ab', r, r)", shape: '(N, N)', meaning: 'repeated $j$ ⇒ summed: squared distance of every pair'}
+  - {symbol: '\ddot x_{ai}', code: "G * einsum('b,ab,abi->ai', m, inv_d3, r)", shape: '(N, 3)', meaning: 'repeated $b$ ⇒ summed: total pull on body $a$'}
+  - {symbol: 'E', code: 'energy(x, v, m, G, eps)', shape: '()', meaning: 'kinetic + pairwise potential, conserved'}
+notes: >
+  The softening length $\varepsilon$ keeps the force finite when two bodies pass very close; with $\varepsilon = 0$ this is exact Newtonian gravity.
+  Units are chosen so that $G = 1$. Velocity Verlet is symplectic, so the energy error stays small and bounded instead of drifting.
+  The figure-8 is the famous periodic three-body orbit found by Moore (1993) and Chenciner & Montgomery (2000).
+params:
+  scenario: {default: figure-8, type: choice, options: [figure-8, star and planets, binary and planet], label: Initial condition}
+  t_max: {default: 12.0, min: 2, max: 40, step: 1, label: Simulated time, unit: time units}
+  dt: {default: 0.002, min: 0.0005, max: 0.01, step: 0.0005, label: Time step, unit: time units}
+  softening: {default: 0.01, min: 0.0, max: 0.2, step: 0.01, label: 'Softening $\varepsilon$', unit: length units}

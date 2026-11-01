@@ -1,0 +1,30 @@
+title: Electromagnetic waves (FDTD)
+category: em
+level: intermediate
+order: 3
+summary: >
+  Maxwell's two curl equations marched forward in time on a Yee grid. The curl is written as $\varepsilon_{ijk}\,\partial_j F_k$: a table
+  of finite differences contracted with the Levi-Civita symbol in one einsum. A wave from a point or line source hits
+  a dielectric block, slows down, bends and partly reflects, while a damping border swallows what leaves the box.
+animated: true
+vector_form: '\partial_t\mathbf H = -\nabla\times\mathbf E,\qquad \varepsilon_r\,\partial_t\mathbf E = \nabla\times\mathbf H'
+index_form: '\partial_t H_i = -\varepsilon_{ijk}\,\partial_j E_k,\qquad \varepsilon_r\,\partial_t E_i = \varepsilon_{ijk}\,\partial_j H_k,\qquad c\,\Delta t \le \Delta x/\sqrt{2}'
+translation:
+  - {symbol: 'E_i,\ H_i', code: 'E, H', shape: '(3, Nx, Ny)', meaning: 'field components on the grid; TM mode: only $E_z$, $H_x$, $H_y$ are non-zero'}
+  - {symbol: '\partial_j F_k', code: 'forward_diff(F, h) / backward_diff(F, h)', shape: '(3, 3, Nx, Ny)', meaning: 'table of finite differences; row $j = z$ is zero in 2D'}
+  - {symbol: '\varepsilon_{ijk}', code: 'levi_civita(dev)', shape: '(3, 3, 3)', meaning: 'Levi-Civita symbol'}
+  - {symbol: '\varepsilon_{ijk}\partial_j F_k', code: "einsum('ijk,jk...->i...', eps, D)", shape: '(3, Nx, Ny)', meaning: 'repeated $j, k$ ⇒ summed: the curl at every cell'}
+  - {symbol: '\varepsilon_r(x, y)', code: 'permittivity(Nx, Ny, eps_block, dev)', shape: '(Nx, Ny)', meaning: 'relative permittivity: 1 in vacuum, $\varepsilon_\text{block}$ in the block ($n = \sqrt{\varepsilon_r}$)'}
+  - {symbol: '\Delta t', code: 'courant_time_step(h, S, dim=2)', shape: 'scalar', meaning: 'time step $S\,\Delta x/(c\sqrt2)$; $S > 1$ is refused because the scheme would blow up'}
+notes: >
+  Units with $c = \varepsilon_0 = \mu_0 = 1$ and cell size $\Delta x = 1$. $\mathbf E$ and $\mathbf H$ sit half a cell apart (forward differences for $\partial\mathbf E$,
+  backward for $\partial\mathbf H$) and are updated alternately — the leap-frog Yee scheme. The source is "soft": it adds to $E_z$, so
+  reflected waves pass straight through it. The absorbing border simply multiplies the fields by a factor slightly
+  below 1 that grows smoothly towards the walls; real codes use a perfectly matched layer (PML) instead. Inside the
+  block the wavelength shrinks by $n = \sqrt{\varepsilon_r}$; at normal incidence a fraction $(1 - n)/(1 + n)$ of the amplitude reflects.
+params:
+  source: {default: point, type: choice, options: [point, line], label: Source}
+  eps_block: {default: 4.0, min: 1.0, max: 9.0, step: 0.5, label: 'Block permittivity $\varepsilon_r$'}
+  wavelength: {default: 14.0, min: 8, max: 30, step: 1, label: Vacuum wavelength, unit: cells}
+  courant: {default: 0.7, min: 0.1, max: 1.0, step: 0.05, label: 'Courant number $S$'}
+  t_max: {default: 220.0, min: 50, max: 400, step: 10, label: Simulated time, unit: cells/c}

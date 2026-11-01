@@ -1,0 +1,14 @@
+source_hash: a794040c9063
+title: Schwingungsmoden einer Trommel
+summary: Die Normalmoden eines quadratischen oder kreisförmigen Trommelfells. Der 2D-Laplace-Operator auf einem Gitter wird mit Kronecker-Produkten aus dem 1D-Operator aufgebaut, $\Delta = D\otimes I + I\otimes D$, und ein einziger symmetrischer Eigenwertlöser (eigh) liefert alle Modenformen und Frequenzen auf einmal.
+notes: 'Jedes Panel zeigt eine Mode $\phi_m(x, y)\cos(\omega_m t)$; weiße Linien im Inneren sind Knotenlinien, die sich nie bewegen. Für ein Quadrat der Seitenlänge $L$ sind die exakten Frequenzen $\omega_{mn} = \frac{c\pi}{L}\sqrt{m^2 + n^2}$, die Verhältnisse zur Grundfrequenz also $\sqrt{(m^2+n^2)/2}$ = 1, 1,58, 1,58, 2, 2,24 …: keine ganzen Zahlen, weshalb eine Trommel nicht wie eine Saite klingt. Paare wie $(1,2)$ und $(2,1)$ haben dieselbe Frequenz, und eigh liefert irgendeine Mischung davon. Für einen Kreis stammen die exakten Verhältnisse aus Nullstellen von Bessel-Funktionen (1, 1,59, 2,14, 2,30 …); der treppenförmige Rand des Gitters verschiebt sie um einige Prozent. Einheiten: $c = 1$, Quadratseite oder Kreisdurchmesser $L = 1$; die Zeit wird in Grundperioden angezeigt.'
+meanings:
+- 1D-zweite Ableitung mit eingespannten Rändern ($u = 0$ außerhalb)
+- 'Paarindex $p = (a, b)$ nummeriert die Gitterpunkte: der 2D-Laplace-Operator'
+- nur die Punkte innerhalb der Trommel behalten (Kreismaske); der Rand ist eingespannt
+- Eigenwerte $\omega^2/c^2$ und orthonormale Modenformen in den Spalten
+- 'wiederholtes $p$ ⇒ summiert: die Einheitsmatrix'
+labels:
+  shape: Trommelform
+  n_grid: Gitterpunkte pro Seite
+  periods: Angezeigte Grundperioden

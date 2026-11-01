@@ -1,0 +1,14 @@
+source_hash: 1bc9d739c88e
+title: Paquet d'ondes libre
+summary: 'Une particule libre ne nécessite aucune intégration pas à pas : dans l''espace des impulsions, l''équation de Schrödinger se résout en multipliant chaque composante de Fourier par sa propre phase $e^{-ik^2t/2}$. Une FFT, une multiplication et une FFT inverse donnent $\psi$ à n''importe quel instant — pour tous les instants à la fois sous forme de tenseur $(T, N)$. Le paquet dérive à la vitesse de groupe $k_0$ et s''étale parce que ses différentes impulsions se propagent à des vitesses différentes.'
+notes: 'Unités $\hbar = m = 1$. $\sigma$ est l''écart-type de $\lvert\psi\rvert^2$ (donc $\psi \propto \exp(-(x - x_0)^2/(4\sigma_0^2) + ik_0x)$). Les résultats exacts sont $\langle x\rangle = x_0 + k_0 t$ (vitesse de groupe $v_g = dE/dk = k$) et $\sigma(t) = \sigma_0\sqrt{1 + (t/(2\sigma_0^2))^2}$ : un paquet étroit a une large dispersion d''impulsions et s''étale donc vite. Les tirets marquent $\langle x\rangle \pm \sigma(t)$ d''après cette formule. Les ondulations de $\operatorname{Re}\psi$ se déplacent à la vitesse de phase $k/2$, moitié de celle de l''enveloppe. La grille est périodique : un paquet qui sort d''un côté revient de l''autre.'
+meanings:
+- gaussienne de largeur $\sigma_0$ se déplaçant avec l'impulsion $k_0$
+- '$x$ répété ⇒ sommé : changement de base vers les ondes planes $e^{ikx}$'
+- 'phase de particule libre de chaque mode $k$ à chaque instant $t$ (aucun indice sommé : un produit extérieur)'
+- retour dans l'espace des $x$, les $T$ instantanés en un appel
+- centre et largeur de $\lvert\psi\rvert^2$ à chaque instant
+labels:
+  k0: Impulsion du paquet $k_0$
+  sigma0: Largeur initiale $\sigma_0$
+  t_max: Durée simulée

@@ -1,0 +1,32 @@
+title: Road mirage from the ray equation
+category: optics
+level: advanced
+order: 3
+summary: >
+  Above a hot road the air is thinner, so its refractive index $n(y)$ dips near the ground. The ray equation
+  of geometrical optics bends light towards higher $n$; integrating it with RK4 for a fan of viewing directions
+  shows rays aimed at the road curving back up, so the eye sees a second, upside-down image of a distant object.
+animated: true
+vector_form: '\frac{d}{ds}\Big(n\,\frac{d\mathbf r}{ds}\Big) = \nabla n,\qquad n(y) = n_\infty - \Delta n\,e^{-y/h}'
+index_form: '\frac{dr_i}{ds} = \frac{p_i}{n},\quad \frac{dp_i}{ds} = \partial_i n,\quad p_i = n\,\frac{dr_i}{ds},\qquad p_j p_j = n^2,\quad n(y)\cos\theta = \text{const}'
+translation:
+  - {symbol: 'r_{ri}', code: 'state[:, 0, :]', shape: '(R, 2)', meaning: 'position $(x, y)$ of ray $r$'}
+  - {symbol: 'p_{ri} = n\,dr_{ri}/ds', code: 'state[:, 1, :]', shape: '(R, 2)', meaning: 'optical direction vector: unit tangent times $n$'}
+  - {symbol: 'n(y)', code: 'index(y, dn, h)', shape: '(R,)', meaning: 'refractive index, lowest at the hot road surface $y = 0$'}
+  - {symbol: '\partial_i n', code: 'grad_index(r, dn, h)', shape: '(R, 2)', meaning: 'only the $y$-component is non-zero: $(0,\ \tfrac{\Delta n}{h}\,e^{-y/h})$'}
+  - {symbol: 'd(r_i, p_i)/ds', code: 'rhs(state, dn, h)', shape: '(R, 2, 2)', meaning: 'the ray equation as a first-order system, stepped with RK4'}
+  - {symbol: 'p_j p_j = n^2', code: "einsum('rj,rj->r', p, p)", shape: '(R,)', meaning: 'repeated $j$ ⇒ summed: $\lvert\mathbf p\rvert$ must stay equal to $n$ (accuracy check)'}
+  - {symbol: 'n\cos\theta', code: 'snell_invariant(path, dn, h)', shape: '(S, R)', meaning: 'Snell''s law for horizontal layers: conserved along each ray'}
+notes: >
+  Rays are traced backwards from the eye (light paths are reversible): each ray answers "what does the eye see when
+  looking in this direction?". Rays aimed slightly downward bend upward in the low-index layer and hit the object
+  from below, so lower viewing angles show higher parts of the object — the image is inverted. Steeper rays reach the
+  road (grey). The vertical scale is exaggerated about 100×: real index differences are $\sim 10^{-5}$ and the angles are
+  milliradians. Computations use float64 because $n\cos\theta$ changes only in the 7th decimal place.
+params:
+  delta_n: {default: 3.0, min: 0, max: 10, step: 0.5, label: 'Index drop at the road $\Delta n$', unit: ×10⁻⁵}
+  scale_height: {default: 0.3, min: 0.1, max: 1.0, step: 0.05, label: 'Thickness of the hot layer $h$', unit: m}
+  eye_height: {default: 1.6, min: 0.5, max: 3, step: 0.1, label: Eye height, unit: m}
+  distance: {default: 400.0, min: 100, max: 1000, step: 50, label: Distance to the object, unit: m}
+  max_dip: {default: 10.0, min: 1, max: 20, step: 0.5, label: Steepest downward view, unit: mrad}
+  n_rays: {default: 25, min: 5, max: 41, step: 1, type: int, label: Rays in the fan}

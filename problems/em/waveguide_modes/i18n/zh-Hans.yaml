@@ -1,0 +1,16 @@
+source_hash: 9c89c68f4f20
+title: 矩形波导的模式
+summary: 哪些场分布能沿空心金属管传播？每个模式都是横截面上二维亥姆霍兹方程 $(\partial_i\partial_i + k_c^2)\psi = 0$ 的解——TM 模用狄利克雷边界，TE 模用诺伊曼边界。离散拉普拉斯算子用 torch.kron 组装，torch.linalg.eigh 一次返回所有模式和截止频率。
+notes: 默认尺寸为标准 WR-90 X 波段波导（2.286 cm × 1.016 cm），其 $\text{TE}_{10}$ 模的截止频率为 6.56 GHz。模式只有在截止频率以上才能传播，传播常数 $\beta = \sqrt{(\omega/c)^2 - k_c^2}$。具有相同 $(m, n \ge 1)$ 的 TE 模和 TM 模截止频率相同。常数 TE 解（$k_c = 0$）不携带波，予以舍去。在默认分辨率下，二阶有限差分得到的 $k_c$ 与精确值相差约百分之一。
+meanings:
+- 格点 $(x_a, y_b)$ 处的 $E_z$（TM）或 $H_z$（TE）
+- 展平后的同一组值：$m = a\cdot N_y + b$
+- 一维 $\partial^2$，边界条件体现在角上的矩阵元中
+- 二维拉普拉斯算子 $\partial_i\partial_i$（$i$ 对 $x, y$ 求和）
+- 本征值和正交归一本征矢：截止频率与模式形状
+- $\pi\sqrt{(m/a)^2 + (n/b)^2}$，用于检验数值
+labels:
+  a: 宽度 $a$
+  b: 高度 $b$
+  n_modes: 模式数
+  n_grid: 沿 $b$ 方向的格点数

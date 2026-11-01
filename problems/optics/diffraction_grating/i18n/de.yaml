@@ -1,0 +1,17 @@
+source_hash: e3a181f70abb
+title: Beugungsgitter als Summe von Zeigern
+summary: Das Fernfeld von $N$ Spalten ist die Summe von $N$ komplexen Zeigern, einer pro Spalt, jeder um den Gangunterschied $d\sin\theta$ verzögert. Mit komplexen Tensoren ist das ganze Muster ein einziges einsum. Wächst $N$ von 2 auf 20, bleiben die Hauptmaxima an ihrem Platz, werden aber schärfer, und dazwischen erscheinen $N-2$ schwache Nebenmaxima.
+notes: 'Das rechte Panel zeichnet die $N$ Zeiger unter einem Winkel aneinandergereiht. In einem Hauptmaximum ($d\sin\theta = m\lambda$) zeigen alle in dieselbe Richtung und addieren sich zur Länge $N$. Entfernt man sich vom Maximum, rollt sich die Kette ein und schließt sich zu einem Polygon, wenn $N\phi = 2\pi$: die erste Nullstelle, bei einem Winkel, der wie $1/N$ schrumpft. Die Intensitäten sind auf 1 im zentralen Maximum normiert; gepunktete Linien markieren $d\sin\theta = m\lambda$. Nur die Einzelspalt-Einhüllende hängt von der Spaltbreite $a$ ab.'
+meanings:
+- Spaltnummer; Spalt $n$ liegt im Abstand $nd$ von Spalt 0
+- Beobachtungsrichtung, auf einem feinen Gitter abgetastet
+- Phasenfaktor des Spalts $n$ unter dem Winkel $t$
+- 'wiederholtes $n$ ⇒ summiert: addiere die Wellen aller Spalte'
+- Einzelspalt-Beugungseinhüllende $\operatorname{sinc}^2(a\sin\theta/\lambda)$
+- Intensität = Betragsquadrat der komplexen Amplitude
+- dieselbe Summe von Hand (geometrische Reihe), $\phi = kd\sin\theta$
+labels:
+  wavelength: Wellenlänge $\lambda$
+  d: Spaltabstand $d$
+  a: Spaltbreite $a$
+  n_max: Größte Spaltanzahl $N$

@@ -1,0 +1,21 @@
+source_hash: b7086dad7034
+title: 有摩擦斜面上的物块
+summary: 物块所受的重力、支持力和摩擦力，用 einsum 投影分解到各斜面的沿斜面和法向单位矢量上。一批倾角展示静摩擦的临界条件 $\tan\theta = \mu_s$。
+notes: 静摩擦力按需要取值，最大为 $\mu_s N$，因此只要 $\tan\theta \le \mu_s$，由静止释放的物块就保持不动。一旦滑动，滑动摩擦 $\mu_k N$（$\mu_k \le \mu_s$）起作用，加速度恒定，距离按 $\tfrac12 at^2$ 增长，直到物块到达底端。物块视为质点：不倾倒，不滚动。
+meanings:
+- 斜面 $b$ 沿斜面向下的单位矢量 $(\cos\theta, -\sin\theta)$
+- 斜面 $b$ 的单位法向量 $(\sin\theta, \cos\theta)$
+- 重力矢量 $(0, -g)$
+- 重复指标 ⇒ 求和：重力垂直压向斜面的分量
+- 单位质量的支持力，抵消重力压向斜面的部分
+- 若能维持静止则为静摩擦，否则为滑动摩擦 $\mu_k N$
+- 沿斜面的加速度：$g(\sin\theta - \mu_k\cos\theta)$ 或 0
+labels:
+  mu_static: 静摩擦因数 $\mu_s$
+  mu_kinetic: 动摩擦因数 $\mu_k$（$\le \mu_s$）
+  n_ramps: 斜面数
+  min_angle: 最小倾角
+  max_angle: 最大倾角
+  ramp_length: 斜面长度
+  g: 重力加速度 $g$
+  t_max: 模拟时长

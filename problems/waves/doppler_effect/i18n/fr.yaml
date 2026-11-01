@@ -1,0 +1,15 @@
+source_hash: 698c7a054398
+title: Effet Doppler et cône de Mach
+summary: Une source se déplaçant à la vitesse $v_s$ émet un front d'onde circulaire par période. Chaque front est une ligne d'un tenseur (instant d'émission, point d'émission), donc son rayon à tout instant s'obtient par une seule soustraction. Les fronts se resserrent à l'avant et s'espacent à l'arrière ; au-delà de la vitesse du son, ils s'accumulent en un cône de Mach.
+notes: 'La fréquence perçue est simplement le nombre de fronts qui arrivent par seconde : devant la source, les fronts ont été émis plus rapprochés, donc $f'' = f\,c/(c - v_s)$ ; derrière, $f'' = f\,c/(c + v_s)$. Les auditeurs sont placés sur la ligne du mouvement, où ces formules sont exactes. Pour $v_s > c$ (nombre de Mach $M = v_s/c > 1$), la source dépasse son propre son : tous les fronts sont tangents à deux droites, le cône de Mach de demi-angle $\mu$ avec $\sin\mu = 1/M$. L''auditeur placé devant n''entend alors rien avant le passage du cône, et les fronts arrivent dans l''ordre inverse. Vitesse du son $c = 340$ m/s ; seule la source bouge, l''air est immobile.'
+meanings:
+- un front d'onde à chaque période $1/f$
+- position de la source quand elle a émis le front $e$
+- rayon de chaque front à l'instant $t$ (nul s'il n'est pas encore émis)
+- auditeurs devant et derrière la source
+- '$i$ répété ⇒ sommé : distance au carré de chaque point d''émission à chaque auditeur'
+- instant où le front $e$ atteint l'auditeur $o$
+labels:
+  mach: Nombre de Mach $v_s/c$
+  f: Fréquence de la source $f$ (fronts dessinés)
+  t_max: Durée simulée

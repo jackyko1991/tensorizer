@@ -1,0 +1,38 @@
+title: Neutrino oscillations
+category: nuclear
+level: intermediate
+order: 2
+summary: >
+  Neutrinos are made in a definite flavour ($\nu_e, \nu_\mu, \nu_\tau$) but travel as three mass states with
+  slightly different phases. The PMNS mixing matrix and one complex einsum over the mass index give the
+  probability of every flavour change for a whole grid of baselines, showing a $\nu_\mu$ beam turning into
+  $\nu_\tau$ and $\nu_e$ as it flies.
+animated: true
+vector_form: 'P(\nu_\alpha\to\nu_\beta) = \Big|\sum_i U_{\beta i}\,U^*_{\alpha i}\,e^{-i m_i^2 L/2E}\Big|^2,\qquad U = R_{23}\,U_{13}(\delta)\,R_{12}'
+index_form: 'A_{k\beta\alpha} = U_{\beta i}\,U^*_{\alpha i}\,e^{-i\,m_i^2 L_k/2E},\qquad P_{k\beta\alpha} = |A_{k\beta\alpha}|^2,\qquad U_{\alpha i} = [R_{23}]_{\alpha\beta}[U_{13}]_{\beta\gamma}[R_{12}]_{\gamma i}'
+translation:
+  - {symbol: 'U_{\alpha i}', code: 'pmns(theta12, theta13, theta23, delta)', shape: '(3, 3) complex', meaning: "flavour $\\alpha$ × mass state $i$; product of three rotations via einsum('ab,bc,ci->ai')"}
+  - {symbol: 'm_i^2', code: 'squared_masses(dm21, dm31)', shape: '(3,)', meaning: 'only the differences $\Delta m^2_{21}, \Delta m^2_{31}$ matter; $m_1^2 = 0$'}
+  - {symbol: 'L_k', code: 'baselines(10, l_max, K)', shape: '(K,)', meaning: 'log-spaced distances in km'}
+  - {symbol: 'e^{-i m_i^2 L_k/2E}', code: 'phases(m2, dist / energy)', shape: '(K, 3) complex', meaning: 'phase of each mass state at each baseline ($2.534\,m^2 L/E$ in eV², km, GeV)'}
+  - {symbol: 'A_{k\beta\alpha}', code: "einsum('bi,ai,ki->kba', u, u.conj(), ph)", shape: '(K, 3, 3) complex', meaning: 'repeated $i$ ⇒ summed: the three mass states interfere'}
+  - {symbol: 'P_{k\beta\alpha}', code: 'amplitude(...).abs() ** 2', shape: '(K, 3, 3)', meaning: 'all nine transition probabilities at every baseline'}
+notes: >
+  Because $U$ is unitary, $\sum_\beta P(\alpha\to\beta) = 1$ at every distance: neutrinos change flavour but none
+  are lost. With only two flavours the formula collapses to $P = \sin^2 2\theta\,\sin^2(1.267\,\Delta m^2 L/E)$.
+  Here the large $\Delta m^2_{31}$ gives the fast "atmospheric" oscillation (first $\nu_\mu$ dip near
+  $L/E \approx 500$ km/GeV, mostly into $\nu_\tau$ because $\theta_{23} \approx 45°$) and the small $\Delta m^2_{21}$ the slow
+  "solar" one (near $15\,000$ km/GeV). The dots below are sample neutrinos: each shows the flavour a detector at
+  its distance would record, drawn with the computed probabilities (fixed seed). Simplifications: vacuum
+  oscillations only — the MSW matter effect inside the Earth or Sun is left out — and normal mass ordering.
+  Default parameters are close to current global fits. Try $\delta_{CP}$ = 0 vs 270° for a $\nu_\mu \to \nu_e$ beam.
+params:
+  energy: {default: 1.0, min: 0.1, max: 10.0, step: 0.1, label: 'Neutrino energy $E$', unit: GeV}
+  l_max: {default: 40000.0, min: 1000.0, max: 100000.0, step: 1000.0, label: 'Longest baseline $L_{\max}$', unit: km}
+  flavour: {default: mu, type: choice, options: [e, mu, tau], label: Flavour at birth}
+  theta12: {default: 33.4, min: 0.0, max: 90.0, step: 0.1, label: '$\theta_{12}$', unit: °}
+  theta13: {default: 8.6, min: 0.0, max: 90.0, step: 0.1, label: '$\theta_{13}$', unit: °}
+  theta23: {default: 49.0, min: 0.0, max: 90.0, step: 0.5, label: '$\theta_{23}$', unit: °}
+  delta_cp: {default: 195.0, min: 0.0, max: 360.0, step: 5.0, label: '$\delta_{CP}$', unit: °}
+  dm21: {default: 7.4, min: 1.0, max: 20.0, step: 0.1, label: '$\Delta m^2_{21}$', unit: '10⁻⁵ eV²'}
+  dm31: {default: 2.5, min: 0.5, max: 5.0, step: 0.05, label: '$\Delta m^2_{31}$', unit: '10⁻³ eV²'}

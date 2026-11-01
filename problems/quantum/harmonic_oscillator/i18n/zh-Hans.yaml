@@ -1,0 +1,16 @@
+source_hash: 213c96e488f8
+title: 量子谐振子
+summary: 哈密顿量 $H = -\tfrac12\,d^2/dx^2 + \tfrac12\omega^2x^2$ 在网格上变成矩阵，torch.linalg.eigh 返回其等间距能级 $E_n = \omega(n + \tfrac12)$。移位的高斯波包（相干态）写成本征态之和；给每个本征态乘上相位 $e^{-iE_n t}$，波包就像经典弹簧振子一样来回摆动。
+notes: 单位 $\hbar = m = 1$。网格是一个大盒子，盒壁处 $\psi = 0$，盒壁足够远，不起作用。浅色曲线是最低的几个定态 $\varphi_n(x)$，画在其能量 $E_n$ 的高度上；相邻能级间距恰为 $\omega$。初态是平移到 $x_0$ 的基态高斯函数。其权重 $\lvert c_n\rvert^2$ 构成均值为 $\omega x_0^2/2$ 的泊松分布；由于所有能量都相差 $\omega$ 的整数倍，波包每经过一个周期 $2\pi/\omega$ 就回到 $x_0$ 且不扩展。$\langle x\rangle$ 遵循经典运动 $x_0\cos\omega t$（对二次势，埃伦费斯特定理严格成立）。
+meanings:
+- 每个格点上的弹簧势 $\tfrac12\omega^2x^2$
+- 动能 $-\tfrac12\,D2$ 加上对角线上的势能
+- 能量和本征矢（第 $n$ 列是第 $n$ 个态）
+- 重复的 $x$ ⇒ 求和：初态与第 $n$ 个态的重叠
+- 重复的 $n$ ⇒ 求和：由带相位的分量重建 $\psi$
+- 平均位置，与经典的 $x_0\cos\omega t$ 比较
+labels:
+  omega: 角频率 $\omega$
+  x0: 初始位移 $x_0$
+  periods: 模拟时长
+  n_grid: 格点数

@@ -1,0 +1,21 @@
+source_hash: 9f4f33f51aa8
+title: 中微子振荡
+summary: 中微子产生时具有确定的味（$\nu_e, \nu_\mu, \nu_\tau$），但以三个相位略有不同的质量本征态传播。PMNS 混合矩阵加上对质量指标的一次复数 einsum，就给出整组基线上每种味转换的概率，显示 $\nu_\mu$ 束在飞行中逐渐变为 $\nu_\tau$ 和 $\nu_e$。
+notes: 由于 $U$ 是幺正的，在任何距离上都有 $\sum_\beta P(\alpha\to\beta) = 1$：中微子改变味，但不会丢失。只有两种味时，公式简化为 $P = \sin^2 2\theta\,\sin^2(1.267\,\Delta m^2 L/E)$。这里较大的 $\Delta m^2_{31}$ 给出快速的“大气”振荡（$\nu_\mu$ 的第一个凹陷在 $L/E \approx 500$ km/GeV 附近，主要转为 $\nu_\tau$，因为 $\theta_{23} \approx 45°$），较小的 $\Delta m^2_{21}$ 给出缓慢的“太阳”振荡（在 $15\,000$ km/GeV 附近）。下方的点是样本中微子：每个点显示位于该距离的探测器会记录到的味，按计算出的概率抽取（固定随机种子）。简化：只考虑真空振荡——忽略地球或太阳内部的 MSW 物质效应——并采用正常质量顺序。默认参数接近当前的全局拟合值。对 $\nu_\mu \to \nu_e$ 束，可比较 $\delta_{CP}$ = 0 与 270°。
+meanings:
+- 味 $\alpha$ × 质量态 $i$；三个转动的乘积，用 einsum('ab,bc,ci->ai') 计算
+- 只有差值 $\Delta m^2_{21}, \Delta m^2_{31}$ 起作用；$m_1^2 = 0$
+- 对数间隔的距离，单位 km
+- 各质量态在各基线上的相位（$2.534\,m^2 L/E$，单位 eV²、km、GeV）
+- 重复的 $i$ ⇒ 求和：三个质量态相互干涉
+- 每条基线上全部九个跃迁概率
+labels:
+  energy: 中微子能量 $E$
+  l_max: 最长基线 $L_{\max}$
+  flavour: 产生时的味
+  theta12: $\theta_{12}$
+  theta13: $\theta_{13}$
+  theta23: $\theta_{23}$
+  delta_cp: $\delta_{CP}$
+  dm21: $\Delta m^2_{21}$
+  dm31: $\Delta m^2_{31}$

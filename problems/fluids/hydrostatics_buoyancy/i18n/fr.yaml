@@ -1,0 +1,19 @@
+source_hash: 7be98e686941
+title: Pression hydrostatique et poussée d'Archimède
+summary: 'La pression dans une cuve d''eau croît linéairement avec la profondeur, $p = p_0 + \rho_w g h$. Des blocs de densités différentes sont lâchés en même temps (un seul tenseur par lot) : les légers oscillent et flottent avec une fraction $\rho_b/\rho_w$ immergée, les lourds coulent jusqu''au fond.'
+notes: Chaque bloc est un cube de côté $s$ ; la poussée $\rho_w g s^2 d_b$ est le poids de l'eau déplacée (Archimède), et elle résulte de la pression $p_0 + \rho_w g h$ qui pousse plus fort sur la face inférieure que sur la face supérieure. Un bloc flottant se stabilise là où la poussée équilibre le poids, $d_b/s = \rho_b/\rho_w$ — la glace ($\rho \approx 917$) flotte avec 92 % de son volume immergé. La traînée est un simple amortissement linéaire proportionnel au volume immergé ; la traînée réelle est plutôt quadratique, et les vagues ainsi que la masse ajoutée sont ignorées. Les blocs qui coulent reposent sur le fond.
+meanings:
+- grille de points dans l'eau, composante $i \in \{x, z\}$
+- vecteur pesanteur $(0, -g)$
+- '$i$ répété ⇒ sommé : $g\,h$ à la profondeur $h = -z$'
+- hauteur de la face inférieure et vitesse du bloc $b$
+- densité du bloc $b$ — l'indice de lot
+- profondeur immergée, entre 0 (hors de l'eau) et $s$ (entièrement immergé)
+- poussée moins poids moins traînée, par unité de masse
+labels:
+  n_blocks: Nombre de blocs
+  rho_min: Densité la plus faible $\rho_\text{min}$
+  rho_max: Densité la plus forte $\rho_\text{max}$
+  size: Taille des blocs $s$
+  drag: Amortissement $\gamma$
+  t_max: Durée simulée

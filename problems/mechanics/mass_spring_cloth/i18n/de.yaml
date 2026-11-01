@@ -1,0 +1,17 @@
+source_hash: 6bb6cb4a204f
+title: Masse-Feder-Tuch
+summary: 'Ein quadratisches Gitter von Punktmassen, verbunden durch Struktur-, Scher- und Biegefedern, an zwei Ecken aufgehängt und unter der Schwerkraft losgelassen. Eine Inzidenzmatrix $D_{ea}$ macht das Netz zu Tensoren: Ein einsum liefert jeden Federvektor, ein weiteres summiert die Kräfte auf jeden Knoten.'
+notes: Scherfedern entlang der Diagonalen verhindern, dass die Quadrate zu Rauten zusammenklappen, und Federn, die einen Knoten überspringen, geben dem Tuch etwas Biegesteifigkeit. Die beiden aufgehängten Ecken erhalten einfach die Beschleunigung null. Die Luftdämpfung $\gamma$ ist der einzige Verlust, daher kann die Gesamtenergie nur abnehmen ($dE/dt = -m\gamma\lvert\mathbf v\rvert^2$), und bei $\gamma = 0$ ist sie erhalten. Die Federn sind steif, daher ist der Zeitschritt an $\sqrt{m/k}$ gebunden. Selbstkollisionen werden ignoriert. Jeder Knoten hat die Masse 10 g, und der Gitterabstand beträgt 10 cm.
+meanings:
+- Ort des Knotens $a$; $N = n^2$ Massen
+- 'Inzidenzmatrix: $-1$ / $+1$ an den beiden Enden der Feder $e$'
+- 'wiederholtes $a$ ⇒ summiert: Vektor entlang jeder Feder'
+- aktuelle Federlängen; $\ell^0_e$ sind die Ruhelängen
+- 'wiederholtes $e$ ⇒ summiert: resultierende Federkraft auf Knoten $a$'
+- dieselbe Summe als Scatter über die Kantenliste
+- kinetische + elastische + potentielle Energie
+labels:
+  n_side: Massen pro Seite
+  k: Federkonstante $k$
+  damping: Luftdämpfung $\gamma$
+  t_max: Simulierte Zeit

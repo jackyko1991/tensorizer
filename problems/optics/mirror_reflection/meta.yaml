@@ -1,0 +1,26 @@
+title: Reflection from plane and curved mirrors
+category: optics
+level: beginner
+order: 2
+summary: >
+  The law of reflection written as one vector formula: flip the part of the ray direction that points
+  along the surface normal. Rays from a lamp bounce off a flat mirror, and parallel rays bounce off a
+  concave mirror and gather near its focal point $F = R/2$.
+animated: true
+vector_form: '\mathbf r = \mathbf d - 2\,(\mathbf d\cdot\mathbf n)\,\mathbf n'
+index_form: 'r_{ri} = d_{ri} - 2\,(d_{rj}\,n_{rj})\,n_{ri}'
+translation:
+  - {symbol: 'd_{ri}', code: 'd', shape: '(R, 2)', meaning: 'unit direction of incoming ray $r$, component $i \in \{x, y\}$'}
+  - {symbol: 'n_{ri}', code: 'normal', shape: '(R, 2)', meaning: 'unit normal of the mirror where ray $r$ hits it'}
+  - {symbol: 'd_{rj}n_{rj}', code: "einsum('rj,rj->r', d, n)", shape: '(R,)', meaning: 'repeated $j$ ⇒ summed: one dot product per ray (${}= -\cos\theta_i$)'}
+  - {symbol: 'r_{ri}', code: 'reflect(d, n)', shape: '(R, 2)', meaning: 'reflected direction, still a unit vector'}
+  - {symbol: 'n_{ri} = (c_i - p_{ri})/R', code: 'sphere_normal(p_hit, centre, R)', shape: '(R, 2)', meaning: 'normal of the curved mirror points to its centre $c$'}
+notes: >
+  The formula only flips the component of $\mathbf d$ along $\mathbf n$, so the angle of incidence equals the angle of
+  reflection automatically. Dashed lines continue the reflected rays behind the flat mirror: they all
+  meet at the virtual image of the lamp. For the concave mirror only rays close to the axis (paraxial rays)
+  pass through $F = R/2$; rays further out cross the axis closer to the mirror (spherical aberration).
+params:
+  radius: {default: 4.0, min: 2, max: 8, step: 0.5, label: 'Mirror radius of curvature $R$', unit: m}
+  n_rays: {default: 9, min: 3, max: 15, step: 1, type: int, label: Rays per mirror}
+  aperture: {default: 0.6, min: 0.1, max: 0.9, step: 0.05, label: 'Highest ray (fraction of $R$)'}

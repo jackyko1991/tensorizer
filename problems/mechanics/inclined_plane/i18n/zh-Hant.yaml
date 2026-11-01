@@ -1,0 +1,21 @@
+source_hash: b7086dad7034
+title: 斜面上有摩擦的木塊
+summary: 木塊所受的重力、正向力與摩擦力，以 einsum 投影分解到各斜面的沿坡與法向單位向量上。一批不同傾角的斜面顯示了靜摩擦的臨界條件 $\tan\theta = \mu_s$。
+notes: 靜摩擦力需要多大就有多大，最多到 $\mu_s N$，因此只要 $\tan\theta \le \mu_s$，從靜止釋放的木塊就會留在原地。一旦滑動，便由動摩擦力 $\mu_k N$（$\mu_k \le \mu_s$）接手，加速度為常數，所以距離按 $\tfrac12 at^2$ 增加，直到木塊抵達底部。木塊視為質點：不翻倒、不滾動。
+meanings:
+- 斜面 $b$ 沿坡向下的單位向量 $(\cos\theta, -\sin\theta)$
+- 斜面 $b$ 的單位法向量 $(\sin\theta, \cos\theta)$
+- 重力向量 $(0, -g)$
+- 重複指標 ⇒ 求和：重力垂直壓向斜面的分量
+- 每單位質量的正向力，抵消重力壓向斜面的部分
+- 若能維持靜止則為靜摩擦，否則為動摩擦 $\mu_k N$
+- 沿坡加速度：$g(\sin\theta - \mu_k\cos\theta)$ 或 0
+labels:
+  mu_static: 靜摩擦係數 $\mu_s$
+  mu_kinetic: 動摩擦係數 $\mu_k$（$\le \mu_s$）
+  n_ramps: 斜面數
+  min_angle: 最小角度
+  max_angle: 最大角度
+  ramp_length: 斜面長度
+  g: 重力 $g$
+  t_max: 模擬時間

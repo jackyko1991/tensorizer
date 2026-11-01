@@ -1,0 +1,16 @@
+source_hash: 8adb8e4369f3
+title: 'Relatividad especial: diagramas de Minkowski y boosts de Lorentz'
+summary: 'Los sucesos son 2-vectores $x^\mu = (t, x)$ y un cambio de sistema inercial es una única matriz $\Lambda^\mu{}_\nu$ aplicada a todos ellos con einsum. Un gemelo viaja a una estrella y vuelve: el diagrama en el sistema de casa y en un sistema con boost muestra líneas de simultaneidad inclinadas, el cono de luz invariante y el reloj del viajero marcando $\int\sqrt{1 - v^2}\,dt$, menos que el gemelo que se quedó en casa.'
+notes: 'Unidades: años y años luz, de modo que $c = 1$ y los rayos de luz son las líneas discontinuas a 45°. El viajero vuela a velocidad $v$ hasta una estrella a distancia $L$, da la vuelta instantáneamente y regresa. La línea ámbar es el conjunto de sucesos que el viajero considera "ahora": inclinada según $v$ a la ida, barre la línea de universo del gemelo de casa en el momento de la vuelta, y ahí es donde van los años "perdidos" del gemelo de casa. La paradoja no es simétrica porque solo el viajero cambia de sistema inercial. Pon el boost del panel derecho igual a $v$ para situarte en el sistema de ida del viajero, o en $-v$ para el de vuelta. El cono de luz conserva su forma en todos los sistemas.'
+meanings:
+- un suceso $(t, x)$, $\mu \in \{0, 1\}$, $c = 1$
+- métrica de Minkowski $\operatorname{diag}(-1, +1)$
+- $\begin{pmatrix}\gamma & -\gamma\beta\\ -\gamma\beta & \gamma\end{pmatrix}$
+- '$\nu$ repetido ⇒ sumado: todos los sucesos de una línea de universo o de una red transformados a la vez'
+- intervalo al cuadrado, el mismo en todos los sistemas
+- suma acumulada de $\sqrt{-\Delta s^2}$ a lo largo de la línea de universo
+- igual a $\Lambda\big((\beta_1 + \beta_2)/(1 + \beta_1\beta_2)\big)$
+labels:
+  v: Velocidad del viajero $v/c$
+  distance: Distancia a la estrella $L$
+  beta_view: Boost del panel derecho $\beta$

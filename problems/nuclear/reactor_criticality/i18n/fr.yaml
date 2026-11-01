@@ -1,0 +1,19 @@
+source_hash: f81a85fc73c6
+title: Criticité d'un réacteur
+summary: Une plaque de matière fissile est-elle critique ? La diffusion neutronique à un groupe ramène la question à un problème aux valeurs propres généralisé $M\phi = \tfrac1k F\phi$ sur une grille. La méthode de la puissance itérée — résoudre à répétition pour la génération suivante de neutrons — converge vers le mode fondamental du flux et le facteur de multiplication $k_{eff}$, et une résolution aux valeurs propres en lot sur de nombreuses épaisseurs de plaque trouve la taille critique.
+notes: '$k$ est le rapport du nombre de neutrons d''une génération à celui de la précédente. Chaque itération de la puissance est une génération : les modes spatiaux supérieurs diminuent du facteur $k_2/k_1 = (\Sigma_a + DB^2)/(\Sigma_a + 4DB^2)$ à chaque pas, si bien que le profil initial déséquilibré relaxe vers la forme symétrique $\sin(\pi x/L)$. Une plaque mince laisse fuir trop de neutrons ($k < 1$) ; au-delà de l''épaisseur critique $L_c = \pi\sqrt{D/(\nu\Sigma_f - \Sigma_a)}$, la réaction en chaîne croît. Les constantes à un groupe par défaut sont représentatives d''un réacteur thermique ($k_\infty \approx 1.06$). Simplifications : un seul groupe d''énergie, une plaque nue homogène sans réflecteur, $L$ mesurée entre faces extrapolées, et ni neutrons retardés ni contre-réactions — c''est un calcul statique aux valeurs propres, pas un calcul dépendant du temps.'
+meanings:
+- points intérieurs ; $\phi = 0$ aux faces (extrapolées) de la plaque
+- matrice des différences secondes $(1, -2, 1)/h^2$
+- neutrons perdus par fuite et absorption
+- neutrons nés de fissions
+- '$j$ répété ⇒ sommé : la source de fission de la génération suivante'
+- une itération de la méthode de la puissance
+- résolution directe, en lot sur $S$ épaisseurs de plaque
+labels:
+  width: Épaisseur de la plaque $L$
+  diffusion: Coefficient de diffusion $D$
+  sigma_a: Absorption $\Sigma_a$
+  nu_sigma_f: Production $\nu\Sigma_f$
+  n_iter: Itérations de la puissance
+  n_grid: Points de grille

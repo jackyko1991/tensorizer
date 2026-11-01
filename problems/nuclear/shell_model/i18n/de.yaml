@@ -1,0 +1,19 @@
+source_hash: f7213dbb7c33
+title: Schalenmodell des Kerns
+summary: Nukleonen bewegen sich unabhängig in einem Woods–Saxon-Potentialtopf. Löst man die radiale Schrödinger-Gleichung für jeden $(l, j)$-Kanal als einen Batch von Finite-Differenzen-Hamiltonoperatoren und dreht die Spin-Bahn-Kraft hoch, erscheinen die magischen Zahlen 2, 8, 20, 28, 50, 82, 126 — die Nukleonenzahlen besonders stabiler Kerne — als größte Lücken im Termschema.
+notes: 'Ohne Spin-Bahn-Kopplung bündeln sich die Niveaus wie beim 3D-harmonischen Oszillator, und die Lücken liegen nach 2, 8, 20 und 40 Nukleonen (der flache Boden des Woods–Saxon-Topfs spaltet außerdem 58, 92 und 138 ab). Der Spin-Bahn-Term senkt $j = l + \tfrac12$ ab und hebt $j = l - \tfrac12$ an, um einen mit $l$ wachsenden Betrag, sodass der Partner mit großem $j$ jeder Oszillatorschale (1f7/2, 1g9/2, 1h11/2, 1i13/2) in die darunterliegende Schale fällt — Mayers und Jensens Erklärung von 28, 50, 82 und 126 aus dem Jahr 1949. Die Standardparameter gelten für Neutronen in ²⁰⁸Pb: $V_0 = 51 - 33(N-Z)/A \approx 44$ MeV, $r_0 = 1.27$ fm, $a = 0.67$ fm. Vereinfachungen: ein fester Topf für alle Niveaus (keine Selbstkonsistenz, keine Paarung), kein Coulombterm (es sind also Neutronenniveaus) und ein Kasten von 18 fm, sodass nur gebundene Niveaus gezeigt werden.'
+meanings:
+- innere Gitterpunkte; $u = 0$ bei $r = 0$ und am Kastenrand
+- Finite-Differenzen-$d^2/dr^2$
+- jeder Kanal $(l, j = l \pm \tfrac12)$ bis $l = 8$
+- $+l/2$ für $j = l+\tfrac12$, $-(l+1)/2$ für $j = l-\tfrac12$
+- Topf + Spin-Bahn + Zentrifugalterm, via einsum('k,i->ki')
+- ein Hamiltonoperator pro Kanal, gestapelt
+- gebündelt über $k$; behalte die gebundenen Niveaus $E < 0$
+- 'Nukleonen bis zu jedem sortierten Niveau aufgefüllt: die magischen Zahlen liegen an den großen Lücken'
+labels:
+  v_so: End-Spin-Bahn-Stärke $V_{so}$
+  v0: Topftiefe $V_0$
+  mass_number: Massenzahl $A$ (legt $R = r_0 A^{1/3}$ fest)
+  diffuseness: Oberflächendiffusität $a$
+  n_grid: Gitterpunkte

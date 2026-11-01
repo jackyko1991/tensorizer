@@ -1,0 +1,22 @@
+source_hash: b6ae9044b340
+title: Hubble-Expansion
+summary: 'Galaxien sitzen auf einem festen mitbewegten Gitter, das um den Skalenfaktor $a(t)$ gestreckt wird. Ein einziges äußeres Produkt $x_{gi} = a\,q_{gi}$ bewegt alle Galaxien, und von jeder gewählten Galaxie aus entfernen sich die anderen mit $v = H d$. Ein Photon, das das Gitter durchquert, wird um denselben Faktor gestreckt: $1 + z = a_\mathrm{obs}/a_\mathrm{emit}$.'
+notes: 'Einheiten: Mpc, Gyr und km/s/Mpc. Im materiedominierten (Einstein–de-Sitter-)Modell ist $a = (t/t_0)^{2/3}$, also fällt $H = 2/(3t)$ mit der Zeit; im de-Sitter-Modell ist $a = e^{H_0 (t - t_0)}$ und $H$ bleibt konstant. In beiden Fällen gilt $v = Hd$ exakt für jeden Beobachter: Verschiebe den Beobachter, und die blauen Punkte liegen weiterhin auf derselben Geraden wie die offenen Kreise, die vom Zentrum aus gesehen werden. Die Galaxien selbst bewegen sich nicht durch den Raum (keine Pekuliargeschwindigkeiten): Der Raum zwischen ihnen wächst. Das Photon legt pro Schritt die mitbewegte Strecke $c\,dt/a$ zurück, und Geschwindigkeiten über $c$ für ferne Galaxien sind erlaubt, weil lokal nichts das Licht überholt.'
+meanings:
+- mitbewegte Koordinaten der Galaxie $g$ (ändern sich nie)
+- Skalenfaktor zu jedem Zeitpunkt, heute $a = 1$
+- 'physikalische Orte: ein äußeres Produkt, kein Index summiert'
+- '$\dot a/a$: $2/(3t)$ für Materie, konstant für de Sitter'
+- Hubble-Fluss-Geschwindigkeit jeder Galaxie
+- Orte vom Beobachter $o$ aus gesehen (Broadcast-Subtraktion)
+- 'wiederholte $g, i$ ⇒ summiert: Steigung von $v$ gegen $d$ nach kleinsten Quadraten'
+- Streckung der Photonenwellenlänge seit der Emission
+labels:
+  model: Expansionsgesetz $a(t)$
+  H0: Heutige Hubble-Konstante $H_0$
+  n_grid: Galaxien pro Seite
+  spacing: Mitbewegter Gitterabstand
+  observer_x: Beobachterspalte (Gitterschritte)
+  observer_y: Beobachterzeile (Gitterschritte)
+  a_start: Skalenfaktor am Anfang $a_\mathrm{emit}$
+  a_end: Skalenfaktor am Ende $a_\mathrm{obs}$

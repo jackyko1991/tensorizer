@@ -1,0 +1,19 @@
+source_hash: 895c388f37ef
+title: Énergie de liaison nucléaire
+summary: 'La formule semi-empirique de masse (modèle de la goutte liquide) donne l''énergie de liaison de chaque noyau à partir de cinq termes : volume, surface, Coulomb, asymétrie et appariement. L''évaluer d''un coup sur toute une grille $(Z, N)$ par broadcasting montre pourquoi le fer et le nickel sont les plus liés et où passe la vallée de stabilité.'
+notes: 'L''énergie de volume croît comme $A$, mais les nucléons de surface ont moins de voisins ($-A^{2/3}$) et la répulsion entre protons croît comme $Z^2/A^{1/3}$ ; l''équilibre place le maximum de $B/A$ vers $A \approx 56$–$62$, c''est pourquoi la fusion des noyaux légers comme la fission des noyaux lourds libèrent de l''énergie. Le terme d''asymétrie attire les noyaux vers $N = Z$, le terme coulombien pousse les noyaux lourds vers $N > Z$ : ensemble, ils donnent la vallée de stabilité incurvée $Z_0 \approx A/(2 + 0.0154\,A^{2/3})$. La formule est précise à environ 1 % pour les noyaux moyens et lourds, mais rate les très légers (⁴He est bien plus lié qu''une goutte liquide) et les effets de couches aux nombres magiques. Les coefficients par défaut sont un ajustement courant par moindres carrés ; les modifier montre quel terme façonne quelle caractéristique.'
+meanings:
+- nombres de protons le long d'une colonne, nombres de neutrons le long d'une ligne
+- le broadcasting d'une colonne plus une ligne remplit tout le tableau
+- $+a_P/\sqrt A$ pair-pair, $-a_P/\sqrt A$ impair-impair, 0 pour $A$ impair
+- énergie de liaison de chaque noyau de la carte, en MeV
+- énergie de liaison par nucléon (carte de chaleur)
+- isobare le plus lié pour chaque nombre de masse (ligne rouge)
+- $A/(2 + \tfrac{a_C}{2a_A}A^{2/3})$ à partir de $\partial B/\partial Z = 0$
+labels:
+  a_V: Volume $a_V$
+  a_S: Surface $a_S$
+  a_C: Coulomb $a_C$
+  a_A: Asymétrie $a_A$
+  a_P: Appariement $a_P$
+  z_max: $Z$ maximal de la grille

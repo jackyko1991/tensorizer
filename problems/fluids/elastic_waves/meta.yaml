@@ -1,0 +1,31 @@
+title: Elastic P and S waves
+category: fluids
+level: advanced
+order: 3
+summary: >
+  The Navier–Cauchy equation for an elastic solid. A short push at one point sends out two waves: a fast compressional P wave (seen in
+  $\nabla\cdot\mathbf u$) and a slower shear S wave (seen in $\nabla\times\mathbf u$). Both terms are contractions of one table of second
+  derivatives $\partial_i\partial_j u_k$ — two einsums with different repeated indices.
+animated: true
+vector_form: '\rho\,\ddot{\mathbf u} = (\lambda + \mu)\,\nabla(\nabla\cdot\mathbf u) + \mu\,\nabla^2\mathbf u + \mathbf f'
+index_form: '\rho\,\ddot u_i = (\lambda + \mu)\,\partial_i\partial_j u_j + \mu\,\partial_j\partial_j u_i + f_i,\qquad c_P = \sqrt{\frac{\lambda + 2\mu}{\rho}},\quad c_S = \sqrt{\frac{\mu}{\rho}},\qquad \Delta t\,\sqrt{c_P^2 + c_S^2} \le \Delta x'
+translation:
+  - {symbol: 'u_i', code: 'u', shape: '(2, N, N)', meaning: 'displacement field, component $i \in \{x, y\}$ at every node'}
+  - {symbol: 'H_{ijk} = \partial_i\partial_j u_k', code: 'hessian(u, h)', shape: '(2, 2, 2, N, N)', meaning: 'all second derivatives by central differences'}
+  - {symbol: '\partial_i\partial_j u_j', code: "einsum('ijj...->i...', H)", shape: '(2, N, N)', meaning: 'repeated $j$ (2nd and 3rd slot) ⇒ gradient of the divergence'}
+  - {symbol: '\partial_j\partial_j u_i', code: "einsum('jji...->i...', H)", shape: '(2, N, N)', meaning: 'repeated $j$ (1st and 2nd slot) ⇒ Laplacian of each component'}
+  - {symbol: 'f_i', code: 'ricker(t, f0) * point_force(...)', shape: '(2, N, N)', meaning: 'a short Mexican-hat push at the centre along one direction'}
+  - {symbol: '\partial_j u_j,\ \epsilon_{ij}\partial_i u_j', code: 'divergence(u, h), curl(u, h)', shape: '(N, N)', meaning: 'volume change (P) and rotation (S)'}
+  - {symbol: '\Delta t', code: 'stable_time_step(h, c_p, c_s, S)', shape: 'scalar', meaning: 'leapfrog step; a Courant number $S > 1$ is refused because the scheme blows up'}
+notes: >
+  Units with $\rho = 1$ and cell size 1. Time stepping is leapfrog, $u^{n+1} = 2u^n - u^{n-1} + \Delta t^2\,\ddot u^n$. Taking the divergence of the equation gives a wave
+  equation for $\theta = \partial_j u_j$ with speed $c_P$; taking the curl gives one for the rotation with speed $c_S < c_P$ — in rock $c_P \approx 1.7\,c_S$, which is why an earthquake's P wave
+  arrives first and the S wave seconds later. A point force radiates P waves mostly along the force and S waves mostly across it, as the two lobed patterns show.
+  The dashed circles are the predicted fronts $c\,(t - t_0)$, where $t_0$ is the peak of the source wavelet. A damping border absorbs waves before they reach the edge
+  (real codes use a perfectly matched layer); a Poisson ratio near ½ ($\lambda \gg \mu$) makes $c_P$ large and forces a small time step.
+params:
+  lam: {default: 2.0, min: 0.0, max: 8.0, step: 0.5, label: 'Lamé constant $\lambda$'}
+  mu: {default: 1.0, min: 0.25, max: 3.0, step: 0.25, label: 'Shear modulus $\mu$'}
+  direction: {default: 0.0, min: 0, max: 90, step: 15, label: Force direction, unit: °}
+  courant: {default: 0.6, min: 0.1, max: 1.0, step: 0.05, label: 'Courant number $S$'}
+  t_max: {default: 45.0, min: 20, max: 70, step: 5, label: Simulated time}

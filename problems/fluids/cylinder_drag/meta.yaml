@@ -1,0 +1,30 @@
+title: 'Flow past a cylinder: drag and vortex shedding'
+category: fluids
+level: advanced
+order: 2
+summary: >
+  A lattice Boltzmann (D2Q9) simulation of flow past a cylinder. Populations $f_{xyi}$ collide towards an einsum-built equilibrium and
+  stream with torch.roll; the force on the cylinder comes from the momentum handed over by every population that bounces off it.
+  Above Re ≈ 47 the wake becomes a Kármán vortex street: the drag pulses and the lift swings from side to side.
+animated: true
+vector_form: '\partial_t\mathbf u + (\mathbf u\cdot\nabla)\mathbf u = -\tfrac1\rho\nabla p + \nu\nabla^2\mathbf u,\qquad C_D = \frac{F_x}{\tfrac12\rho U^2 D},\quad C_L = \frac{F_y}{\tfrac12\rho U^2 D}'
+index_form: 'f_i(\mathbf x + \mathbf e_i, t + 1) = f_i - \tfrac1\tau\big(f_i - f_i^\text{eq}\big),\quad f^\text{eq}_{xyi} = w_i\,\rho\,\big(1 + 3e_{ia}u_a + \tfrac92(e_{ia}u_a)^2 - \tfrac32u_au_a\big),\quad F_a = 2\,L_{xyi}\,f_{xyi}\,e_{ia}'
+translation:
+  - {symbol: 'f_{xyi}', code: 'f', shape: '(Nx, Ny, 9)', meaning: 'populations: fluid at node $(x, y)$ moving with lattice velocity $i$'}
+  - {symbol: 'e_{ia},\ w_i', code: 'lattice(dev)', shape: '(9, 2), (9,)', meaning: 'D2Q9 velocities (rest, 4 axes, 4 diagonals) and weights'}
+  - {symbol: '\rho = f_{xyi}\,\mathbb 1_i', code: "einsum('xyi->xy', f)", shape: '(Nx, Ny)', meaning: 'density: sum over $i$'}
+  - {symbol: '\rho u_a = f_{xyi}e_{ia}', code: "einsum('xyi,ia->xya', f, e)", shape: '(Nx, Ny, 2)', meaning: 'repeated $i$ ⇒ summed: momentum density'}
+  - {symbol: 'e_{ia}u_a', code: "einsum('ia,xya->xyi', e, u)", shape: '(Nx, Ny, 9)', meaning: 'velocity projected on each lattice direction'}
+  - {symbol: 'f(\mathbf x + \mathbf e_i)', code: 'torch.roll(f[..., i], (ex, ey))', shape: '(Nx, Ny)', meaning: 'streaming: shift each population one link'}
+  - {symbol: 'L_{xyi}', code: 'boundary_links(solid, e)', shape: '(Nx, Ny, 9)', meaning: '1 where a population streamed from fluid into the cylinder'}
+  - {symbol: '2\,L_{xyi}f_{xyi}e_{ia}', code: "2 * einsum('xyi,xyi,ia->a', L, f, e)", shape: '(2,)', meaning: 'momentum exchange: force on the cylinder (bounce-back reverses each hit)'}
+notes: >
+  Lattice units: node spacing and time step 1, cylinder diameter $D = 10$, inflow $U = 0.12$; the viscosity $\nu = UD/\mathrm{Re}$ sets the relaxation time
+  $\tau = 3\nu + \tfrac12$. The model reproduces Navier–Stokes when $U$ is well below the lattice sound speed $1/\sqrt3$. Inflow is a fixed equilibrium,
+  outflow copies its neighbour, top and bottom are periodic (a row of cylinders, spacing $H$), and the cylinder uses full-way bounce-back,
+  a staircase approximation of the circle. The momentum-exchange force counts every population that hits the cylinder: it reverses, so it hands over
+  $2 f_i\mathbf e_i$. Because the channel is narrow ($D/H \approx 0.18$) the drag is higher than the free-stream $C_D \approx 1.4$ at Re = 100, and the shedding a little faster
+  ($St \approx 0.16$–$0.2$). The first few hundred steps are an acoustic start-up transient; read the averages from the second half. A small sideways kick at the start triggers the shedding sooner.
+params:
+  re: {default: 100.0, min: 20, max: 150, step: 5, label: 'Reynolds number $UD/\nu$'}
+  steps: {default: 5000, min: 1000, max: 12000, step: 500, type: int, label: Lattice time steps}

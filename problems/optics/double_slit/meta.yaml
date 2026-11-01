@@ -1,0 +1,29 @@
+title: Double-slit interference
+category: optics
+level: advanced
+order: 1
+summary: >
+  The 2D scalar wave equation solved by finite differences: the Laplacian is a $3\times 3$ stencil tensor
+  applied with conv2d. A plane wave hits a wall with two slits, and the interference fringes build
+  up on a screen behind it.
+animated: true
+vector_form: '\partial_t^2 u = c^2\,\nabla^2 u'
+index_form: '\partial_t^2 u = c^2\,\partial_i\partial_i u,\qquad (\partial_i\partial_i u)_{ab} \approx \tfrac{1}{h^2}\textstyle\sum_{kl} S_{kl}\,u_{a+k,\,b+l}'
+translation:
+  - {symbol: 'u_{ab}', code: 'u', shape: '(Ny, Nx)', meaning: 'wave field on the grid, row $a = y$, column $b = x$'}
+  - {symbol: 'S_{kl}', code: 'LAPLACIAN_STENCIL', shape: '(3, 3)', meaning: '$\left[\begin{smallmatrix}0&1&0\\1&-4&1\\0&1&0\end{smallmatrix}\right]$: the 5-point Laplacian stencil'}
+  - {symbol: '\partial_i\partial_i u', code: 'conv2d(u[None, None], S[None, None], padding=1) / h**2', shape: '(Ny, Nx)', meaning: 'repeated $i$ ⇒ summed over $x$ and $y$: the Laplacian as a convolution'}
+  - {symbol: 'u^{n+1}', code: 'step(u, u_prev, sigma, c, dt, h)', shape: '(Ny, Nx)', meaning: 'leapfrog: $2u^n - u^{n-1} + (c\Delta t)^2\,\nabla^2 u^n$, damped by $\sigma$'}
+  - {symbol: '\sigma_{ab}', code: 'sigma', shape: '(Ny, Nx)', meaning: 'sponge damping, non-zero only in the absorbing frame'}
+  - {symbol: 'c\Delta t/h \le 1/\sqrt2', code: 'courant(c, dt, h)', shape: '()', meaning: 'CFL stability condition of the explicit scheme in 2D'}
+  - {symbol: '\langle u^2\rangle', code: 'intensity_sum / n_averaged', shape: '(Ny,)', meaning: 'time-averaged intensity along the screen column'}
+notes: >
+  Lengths are in grid cells ($h = 1$) and $c = 1$. Dotted lines on the screen mark where the path difference
+  is a whole number of wavelengths, $y_m = L\tan(\arcsin(m\lambda/d))$; for small angles their spacing is $\lambda L/d$.
+  The slits are not tiny compared with $\lambda$, so each slit's own diffraction envelope dims the outer fringes.
+params:
+  wavelength: {default: 12.0, min: 6, max: 24, step: 1, label: 'Wavelength $\lambda$', unit: cells}
+  slit_sep: {default: 48.0, min: 16, max: 100, step: 2, label: 'Slit separation $d$', unit: cells}
+  slit_width: {default: 6.0, min: 2, max: 16, step: 1, label: Slit width, unit: cells}
+  screen_dist: {default: 150.0, min: 60, max: 179, step: 1, label: 'Barrier → screen distance $L$', unit: cells}
+  t_max: {default: 450.0, min: 150, max: 800, step: 10, label: Simulated time, unit: h/c}

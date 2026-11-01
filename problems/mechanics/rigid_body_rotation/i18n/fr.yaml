@@ -1,0 +1,20 @@
+source_hash: d653bb5fd1c6
+title: Rotation libre d'un solide (effet raquette de tennis)
+summary: Les équations d'Euler pour une boîte sans couple, écrites avec le tenseur d'inertie $I_{ij}$ et le tenseur de Levi-Civita $\varepsilon_{ijk}$. La rotation autour de l'axe le plus long ou le plus court est stable ; celle autour de l'axe intermédiaire se retourne encore et encore (effet Djanibekov).
+notes: Sans couple, l'énergie $\tfrac12\boldsymbol\omega\cdot I\boldsymbol\omega$ et la norme de $\mathbf L = I\boldsymbol\omega$ sont toutes deux conservées, donc $\boldsymbol\omega$ doit se déplacer sur l'intersection d'un ellipsoïde d'énergie constante et d'une sphère de $\lvert\mathbf L\rvert$ constant (dans l'espace des $\mathbf L$). Près des axes majeur et mineur, ces courbes sont de petites boucles — stables ; près de l'axe intermédiaire, elles passent par un point selle, si bien qu'une infime oscillation s'amplifie et la boîte se retourne, puis revient. Le moment cinétique dans le référentiel fixe $RI\boldsymbol\omega$ (la flèche fixe) ne bouge jamais. Les paramètres $a, b, c$ sont triés de sorte que $a \ge b \ge c$.
+meanings:
+- tenseur d'inertie d'une boîte pleine, $(M/12)\operatorname{diag}(b^2+c^2,\ a^2+c^2,\ a^2+b^2)$
+- vitesse angulaire en composantes du référentiel du corps
+- 'tenseur de Levi-Civita : le produit vectoriel comme tenseur'
+- '$j, k, l$ sommés : $\boldsymbol\omega\times(I\boldsymbol\omega)$'
+- résolution de $I_{ij}\dot\omega_j = -\varepsilon_{ijk}\omega_j I_{kl}\omega_l$
+- 'orientation : matrice de rotation corps → monde'
+- énergie cinétique de rotation, conservée
+labels:
+  spin_axis: Rotation principalement autour de
+  spin: Vitesse de rotation
+  perturbation: Oscillation (fraction de la rotation)
+  a: Côté de la boîte $a$
+  b: Côté de la boîte $b$
+  c: Côté de la boîte $c$
+  t_max: Durée simulée

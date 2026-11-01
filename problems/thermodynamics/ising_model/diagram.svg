@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Square lattice of up and down spins s = plus or minus 1 forming domains; a cross-shaped highlight marks one site and its four coupled neighbours J">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <path d="M108,38 H132 V64 H160 V88 H132 V114 H108 V88 H80 V64 H108 Z" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" stroke-linejoin="round"/>
+    <line x1="36.0" y1="33.0" x2="36.0" y2="19.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M36,15 L31,22 L41,22 Z" fill="#2563eb"/>
+    <line x1="64.0" y1="33.0" x2="64.0" y2="19.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M64,15 L59,22 L69,22 Z" fill="#2563eb"/>
+    <line x1="92.0" y1="33.0" x2="92.0" y2="19.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M92,15 L87,22 L97,22 Z" fill="#2563eb"/>
+    <line x1="120.0" y1="15.0" x2="120.0" y2="29.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M120,33 L115,28 L125,28 Z" fill="#60a5fa"/>
+    <line x1="148.0" y1="33.0" x2="148.0" y2="19.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M148,15 L143,22 L153,22 Z" fill="#2563eb"/>
+    <line x1="176.0" y1="15.0" x2="176.0" y2="29.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M176,33 L171,28 L181,28 Z" fill="#60a5fa"/>
+    <line x1="204.0" y1="15.0" x2="204.0" y2="29.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M204,33 L199,28 L209,28 Z" fill="#60a5fa"/>
+    <line x1="36.0" y1="59.0" x2="36.0" y2="45.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M36,41 L31,48 L41,48 Z" fill="#2563eb"/>
+    <line x1="64.0" y1="59.0" x2="64.0" y2="45.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M64,41 L59,48 L69,48 Z" fill="#2563eb"/>
+    <line x1="92.0" y1="59.0" x2="92.0" y2="45.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M92,41 L87,48 L97,48 Z" fill="#2563eb"/>
+    <line x1="120.0" y1="59.0" x2="120.0" y2="45.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M120,41 L115,48 L125,48 Z" fill="#2563eb"/>
+    <line x1="148.0" y1="41.0" x2="148.0" y2="55.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M148,59 L143,54 L153,54 Z" fill="#60a5fa"/>
+    <line x1="176.0" y1="41.0" x2="176.0" y2="55.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M176,59 L171,54 L181,54 Z" fill="#60a5fa"/>
+    <line x1="204.0" y1="41.0" x2="204.0" y2="55.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M204,59 L199,54 L209,54 Z" fill="#60a5fa"/>
+    <line x1="36.0" y1="85.0" x2="36.0" y2="71.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M36,67 L31,74 L41,74 Z" fill="#2563eb"/>
+    <line x1="64.0" y1="85.0" x2="64.0" y2="71.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M64,67 L59,74 L69,74 Z" fill="#2563eb"/>
+    <line x1="92.0" y1="85.0" x2="92.0" y2="71.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M92,67 L87,74 L97,74 Z" fill="#2563eb"/>
+    <line x1="120.0" y1="85.0" x2="120.0" y2="71.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M120,67 L115,74 L125,74 Z" fill="#2563eb"/>
+    <line x1="148.0" y1="67.0" x2="148.0" y2="81.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M148,85 L143,80 L153,80 Z" fill="#60a5fa"/>
+    <line x1="176.0" y1="67.0" x2="176.0" y2="81.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M176,85 L171,80 L181,80 Z" fill="#60a5fa"/>
+    <line x1="204.0" y1="67.0" x2="204.0" y2="81.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M204,85 L199,80 L209,80 Z" fill="#60a5fa"/>
+    <line x1="36.0" y1="111.0" x2="36.0" y2="97.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M36,93 L31,100 L41,100 Z" fill="#2563eb"/>
+    <line x1="64.0" y1="111.0" x2="64.0" y2="97.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M64,93 L59,100 L69,100 Z" fill="#2563eb"/>
+    <line x1="92.0" y1="93.0" x2="92.0" y2="107.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M92,111 L87,106 L97,106 Z" fill="#60a5fa"/>
+    <line x1="120.0" y1="93.0" x2="120.0" y2="107.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M120,111 L115,106 L125,106 Z" fill="#60a5fa"/>
+    <line x1="148.0" y1="93.0" x2="148.0" y2="107.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M148,111 L143,106 L153,106 Z" fill="#60a5fa"/>
+    <line x1="176.0" y1="93.0" x2="176.0" y2="107.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M176,111 L171,106 L181,106 Z" fill="#60a5fa"/>
+    <line x1="204.0" y1="93.0" x2="204.0" y2="107.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M204,111 L199,106 L209,106 Z" fill="#60a5fa"/>
+    <line x1="36.0" y1="137.0" x2="36.0" y2="123.0" stroke="#2563eb" stroke-width="2.5" />
+    <path d="M36,119 L31,126 L41,126 Z" fill="#2563eb"/>
+    <line x1="64.0" y1="119.0" x2="64.0" y2="133.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M64,137 L59,132 L69,132 Z" fill="#60a5fa"/>
+    <line x1="92.0" y1="119.0" x2="92.0" y2="133.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M92,137 L87,132 L97,132 Z" fill="#60a5fa"/>
+    <line x1="120.0" y1="119.0" x2="120.0" y2="133.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M120,137 L115,132 L125,132 Z" fill="#60a5fa"/>
+    <line x1="148.0" y1="119.0" x2="148.0" y2="133.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M148,137 L143,132 L153,132 Z" fill="#60a5fa"/>
+    <line x1="176.0" y1="119.0" x2="176.0" y2="133.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M176,137 L171,132 L181,132 Z" fill="#60a5fa"/>
+    <line x1="204.0" y1="119.0" x2="204.0" y2="133.0" stroke="#60a5fa" stroke-width="2.5" />
+    <path d="M204,137 L199,132 L209,132 Z" fill="#60a5fa"/>
+    <text x="134" y="81" font-style="italic" fill="#b45309" font-size="13" text-anchor="middle">J</text>
+    <text x="120" y="154" font-size="13" text-anchor="middle"><tspan font-style="italic">s</tspan> = ±1</text>
+  </g>
+</svg>

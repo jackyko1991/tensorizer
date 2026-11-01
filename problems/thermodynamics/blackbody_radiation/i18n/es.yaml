@@ -1,0 +1,15 @@
+source_hash: 7be6ce46bf01
+title: Radiación del cuerpo negro
+summary: La ley de Planck da la densidad de energía de la radiación térmica a cada longitud de onda. El broadcasting de una columna de temperaturas contra una fila de longitudes de onda construye toda la tabla espectral $(T, \lambda)$ en una línea; argmax encuentra el pico de Wien y torch.trapezoid integra el espectro hasta la ley $T^4$ de Stefan–Boltzmann.
+notes: 'La malla de longitudes de onda es logarítmica de 10 nm a 100 µm, lo bastante amplia para que las colas que faltan cambien la integral menos de $10^{-5}$, y el cálculo se hace en float64 con expm1 para mayor precisión. La constante de Wien $b \approx 2.898\times 10^{-3}$ m·K sale del argmax con la resolución de la malla (alrededor del 0.2 %). El color de la curva muestrea el espectro en tres longitudes de onda que representan el rojo, el verde y el azul: un sustituto burdo de un cálculo real de igualación de colores, pero muestra cómo el brillo pasa del naranja al blanco y al azul pálido. La gráfica se reescala en cada fotograma: la altura del pico crece como $T^5$. La banda sombreada marca el rango visible 380–750 nm.'
+meanings:
+- lote de temperaturas, como columna
+- malla de longitudes de onda, como fila
+- el broadcasting de la columna contra la fila llena toda la tabla
+- el pico de Wien de todos los espectros a la vez
+- '$b$ repetido ⇒ sumado: densidad de energía total, $\propto T_a^4$'
+- 'Planck a 610, 550 y 465 nm, normalizado: un color visible aproximado'
+labels:
+  T_min: Temperatura inicial
+  T_max: Temperatura final
+  n_temps: Temperaturas (fotogramas)

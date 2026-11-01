@@ -1,0 +1,17 @@
+source_hash: e7727640a017
+title: Spannung, Dehnung und Mohrscher Kreis
+summary: Kontinuumsmechanik einer elastischen Platte. Das Hookesche Gesetz ist ein Steifigkeitstensor vierter Stufe $C_{ijkl}$, der per einsum aus den Lamé-Konstanten aufgebaut wird; eine Belastungsrampe (erst Zug, dann Scherung) verformt die Platte, die Verzerrung folgt aus dem Gradienten des Verschiebungsfelds und die Hauptspannungen aus eigh — dargestellt als Spannungsellipse und Mohrscher Kreis.
+notes: 'Die Platte ist dünn und ihre Oberflächen sind frei, also $\sigma_{zz} = 0$ (ebener Spannungszustand) — aber sie wird trotzdem dünner: $\varepsilon_{zz} = -\nu(\sigma_{xx} + \sigma_{yy})/E$. In der einachsigen Hälfte der Rampe kann man den Elastizitätsmodul $E = \sigma_{xx}/\varepsilon_{xx} = \mu(3\lambda + 2\mu)/(\lambda + \mu)$ und die Querkontraktionszahl $\nu = -\varepsilon_{yy}/\varepsilon_{xx} = \lambda/2(\lambda + \mu)$ ablesen. Hinzukommende Scherung dreht die Hauptachsen von $x$ und $y$ weg; auf dem Mohrschen Kreis sind die Punkte $(\sigma_{xx}, \tau_{xy})$ und $(\sigma_{yy}, -\tau_{xy})$ die Enden eines Durchmessers, und der Kreis schneidet die Achse bei den Hauptspannungen. Der Radius ist die maximale Schubspannung in der Ebene, die das Fließen duktiler Metalle bestimmt (Tresca). Die Verschiebungen sind winzig und in der Zeichnung überhöht dargestellt.'
+meanings:
+- drei einsum-äußere Produkte von $\delta$; 81 Einträge, nur 2 unabhängige Konstanten
+- 'Inverse von $C$ auf symmetrischen Tensoren: $\varepsilon = S:\sigma$ (pinv der 9×9-Matrix)'
+- Verschiebung jedes materiellen Punkts
+- Verschiebungsgradient durch finite Differenzen (torch.gradient)
+- symmetrischer Teil des Verschiebungsgradienten
+- 'wiederholte $k, l$ ⇒ summiert: Hookesches Gesetz'
+- Hauptspannungen und ihre Richtungen
+labels:
+  E: Elastizitätsmodul $E$
+  poisson: Querkontraktionszahl $\nu$
+  sigma_max: End-Zugspannung $\sigma_{xx}$
+  tau_max: End-Schubspannung $\tau_{xy}$

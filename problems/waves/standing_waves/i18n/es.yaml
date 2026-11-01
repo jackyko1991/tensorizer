@@ -1,0 +1,17 @@
+source_hash: 902cc4c799f5
+title: Ondas estacionarias en una cuerda
+summary: 'La ecuación de ondas 1D en una cuerda con ambos extremos fijos. La derivada segunda se convierte en una matriz (la plantilla de diferencias finitas $D_{ij}$), así que un único einsum mueve todos los puntos de varias cuerdas a la vez: los primeros armónicos y una cuerda pulsada.'
+notes: 'Las filas 1 a $n$ parten con la forma de un único armónico $\sin(n\pi x/L)$ y simplemente oscilan en su sitio a $f_n = nc/2L$: una onda estacionaria. La cuerda pulsada (un triángulo) es una suma de muchos armónicos, así que su vértice se divide en dos partes que corren hacia los extremos, se invierten y vuelven. Tras un período fundamental $2L/c$ todas las formas vuelven a su posición inicial. El paso de tiempo cumple la condición de Courant $c\,\Delta t \le \Delta x$; la energía $\tfrac12\int (\dot u^2 + c^2 u_x^2)\,dx$ (por unidad de densidad de masa) se mantiene constante porque nada amortigua la cuerda.'
+meanings:
+- desplazamiento de la cuerda $b$ en el punto interior de la malla $i$ (los dos extremos fijos se omiten)
+- 'matriz de derivada segunda: $-2$ en la diagonal, $1$ junto a ella'
+- '$j$ repetido ⇒ sumado: $\partial_x^2 u$ para cada cuerda'
+- diferencia centrada en el tiempo (leap-frog)
+- 'los autovalores de $D$ dan $\omega_n^2 = -c^2\lambda_n$: los armónicos'
+labels:
+  n_harmonics: Armónicos mostrados
+  pluck_at: Posición del punteo $x_p/L$
+  c: Velocidad de la onda $c$
+  L: Longitud de la cuerda $L$
+  n_points: Puntos de malla
+  periods: Períodos fundamentales simulados

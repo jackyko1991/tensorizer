@@ -1,0 +1,17 @@
+source_hash: e3a181f70abb
+title: 衍射光栅：相量求和
+summary: $N$ 条缝的远场是 $N$ 个复相量之和，每条缝一个，各自因附加光程 $d\sin\theta$ 而延迟。使用复数张量，整个图样就是一次 einsum。当 $N$ 从 2 增加到 20 时，主极大位置不变但变得更尖锐，其间出现 $N-2$ 个微弱的次极大。
+notes: 右图在一个角度上把 $N$ 个相量首尾相接画出。在主极大处（$d\sin\theta = m\lambda$），它们方向一致，合成长度为 $N$。离开主极大，链条卷曲，当 $N\phi = 2\pi$ 时闭合成多边形：这就是第一个零点，其角度按 $1/N$ 缩小。强度以中央峰归一化为 1；虚线标出 $d\sin\theta = m\lambda$。只有单缝包络与缝宽 $a$ 有关。
+meanings:
+- 缝的编号；缝 $n$ 距缝 0 为 $nd$
+- 观察方向，在细网格上取样
+- 在角度 $t$ 看到的缝 $n$ 的相位因子
+- 重复的 $n$ ⇒ 求和：把所有缝的波相加
+- 单缝衍射包络 $\operatorname{sinc}^2(a\sin\theta/\lambda)$
+- 强度 = 复振幅模的平方
+- 手算同一求和（等比级数），$\phi = kd\sin\theta$
+labels:
+  wavelength: 波长 $\lambda$
+  d: 缝间距 $d$
+  a: 缝宽 $a$
+  n_max: 最大缝数 $N$

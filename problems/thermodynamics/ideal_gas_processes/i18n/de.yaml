@@ -1,0 +1,15 @@
+source_hash: 7f418c1e4166
+title: Vier Zustandsänderungen des idealen Gases
+summary: 'Dasselbe Gas wird vom selben Anfangszustand aus entlang vier Lehrbuchwegen geführt: isotherm, isobar, isochor und adiabatisch. Alle vier Wege bilden einen (Prozess, Punkte, 2)-Tensor von $(V, p)$-Stützstellen, die Arbeit ist die Fläche unter jeder Kurve aus torch.trapezoid, und der erste Hauptsatz macht daraus Wärme.'
+notes: 'Start: 1 mol bei 300 K in 10 Litern. Der isotherme, isobare und adiabatische Weg expandieren auf dasselbe Endvolumen; der isochore Weg hält $V$ fest und erwärmt das Gas, bis der Druck um dasselbe Verhältnis gestiegen ist. Da auf der Isochore $dV = 0$ ist, liefert torch.trapezoid dort exakt null Arbeit. Auf der Isotherme ist $\Delta U = 0$, also $Q = W$; auf der Adiabate ist $Q = 0$, also bezahlt das Gas seine Arbeit mit innerer Energie und kühlt ab. Die Balken rechts sind laufende Summen, berechnet mit torch.cumulative_trapezoid.'
+meanings:
+- Stützstelle $k$ entlang Prozess $c$ (isotherm, isobar, isochor, adiabatisch)
+- ideales Gasgesetz, elementweise auf dem ganzen Tensor
+- 'wiederholtes $k$ ⇒ summiert: vom Gas auf jedem Weg verrichtete Arbeit'
+- die innere Energie hängt nur von der Temperatur ab
+- 'erster Hauptsatz der Thermodynamik: dem Gas zugeführte Wärme'
+labels:
+  ratio: Expansionsverhältnis $V_2/V_1$
+  T0: Anfangstemperatur
+  n: Stoffmenge
+  gas: Gas

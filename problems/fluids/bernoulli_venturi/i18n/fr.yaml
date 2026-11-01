@@ -1,0 +1,16 @@
+source_hash: 6140ba04c201
+title: Bernoulli et le tube de Venturi
+summary: L'eau qui traverse un tuyau qui se rétrécit doit accélérer pour garder le même débit ($A u = Q$) et, selon la loi de Bernoulli, sa pression chute dans le col. Section, vitesse et pression sont des tenseurs le long de l'axe du tuyau ; un lot de particules traceuses montre l'accélération.
+notes: 'L''écoulement est traité comme unidimensionnel : la vitesse est uniforme sur chaque section et les frottements sont négligés, ce qui rend ici la loi de Bernoulli exacte. Les traceurs placés à une fraction fixe du rayon local suivent la paroi. Les manomètres sont des tubes ouverts dont la colonne de liquide $h = p/(\rho g)$ croît avec la pression relative locale. Mesurer $p_1 - p_2$ donne le débit, $Q = A_2\sqrt{2\Delta p/(\rho(1 - A_2^2/A_1^2))}$ — c''est le principe du débitmètre de Venturi. Si la pression au col descend sous la pression atmosphérique, un écoulement réel pourrait caviter ; ici, un avertissement est affiché à la place.'
+meanings:
+- points le long de l'axe du tuyau, indice $k$
+- section en chaque point de l'axe
+- 'continuité : le même volume par seconde traverse chaque section'
+- 'Bernoulli : écoulement plus rapide ⇒ pression plus faible'
+- positions du lot de traceurs, déplacés par RK4
+- débit volumique $A_1 u_1$ en m³/s
+labels:
+  u1: Vitesse d'entrée $u_1$
+  area_ratio: Rapport des sections $A_1/A_2$
+  p1: Pression relative d'entrée $p_1$
+  t_max: Durée simulée

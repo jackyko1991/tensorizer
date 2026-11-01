@@ -1,0 +1,18 @@
+source_hash: b846fb498443
+title: 双缝干涉
+summary: 用有限差分求解二维标量波动方程：拉普拉斯算子是一个 $3\times 3$ 模板张量，用 conv2d 作用。平面波射到有两条缝的挡板上，干涉条纹在其后的屏上逐渐形成。
+notes: 长度以网格单元计（$h = 1$），$c = 1$。屏上的虚线标出光程差为波长整数倍的位置 $y_m = L\tan(\arcsin(m\lambda/d))$；小角度时间距为 $\lambda L/d$。缝宽相对 $\lambda$ 不算很小，所以每条缝自身的衍射包络使外侧条纹变暗。
+meanings:
+- 网格上的波场，行 $a = y$，列 $b = x$
+- $\left[\begin{smallmatrix}0&1&0\\1&-4&1\\0&1&0\end{smallmatrix}\right]$：五点拉普拉斯模板
+- 重复的 $i$ ⇒ 对 $x$ 和 $y$ 求和：拉普拉斯算子写成卷积
+- 蛙跳格式：$2u^n - u^{n-1} + (c\Delta t)^2\,\nabla^2 u^n$，由 $\sigma$ 阻尼
+- 海绵层阻尼，只在吸收边框内非零
+- 二维显式格式的 CFL 稳定性条件
+- 沿屏所在列的时间平均强度
+labels:
+  wavelength: 波长 $\lambda$
+  slit_sep: 缝间距 $d$
+  slit_width: 缝宽
+  screen_dist: 挡板到屏的距离 $L$
+  t_max: 模拟时长

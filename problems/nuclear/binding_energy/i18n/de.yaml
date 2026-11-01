@@ -1,0 +1,19 @@
+source_hash: 895c388f37ef
+title: Kernbindungsenergie
+summary: 'Die semiempirische Massenformel (Tröpfchenmodell) liefert die Bindungsenergie jedes Kerns aus fünf Termen: Volumen, Oberfläche, Coulomb, Asymmetrie und Paarung. Ihre Auswertung auf einem ganzen $(Z, N)$-Gitter auf einmal per Broadcasting zeigt, warum Eisen und Nickel am stärksten gebunden sind und wo das Stabilitätstal verläuft.'
+notes: 'Die Volumenbindung wächst wie $A$, aber Nukleonen an der Oberfläche haben weniger Nachbarn ($-A^{2/3}$), und die Protonenabstoßung wächst wie $Z^2/A^{1/3}$; das Gleichgewicht legt das Maximum von $B/A$ in die Nähe von $A \approx 56$–$62$, weshalb sowohl die Fusion leichter als auch die Spaltung schwerer Kerne Energie freisetzt. Der Asymmetrieterm zieht Kerne zu $N = Z$, der Coulombterm drängt schwere Kerne zu $N > Z$: Zusammen ergeben sie das gekrümmte Stabilitätstal $Z_0 \approx A/(2 + 0.0154\,A^{2/3})$. Die Formel ist für mittlere und schwere Kerne auf etwa 1 % genau, versagt aber bei sehr leichten Kernen (⁴He ist viel stärker gebunden als ein Flüssigkeitstropfen) und bei den Schaleneffekten an den magischen Zahlen. Die Standardkoeffizienten sind eine gängige Anpassung nach kleinsten Quadraten; ändert man sie, sieht man, welcher Term welches Merkmal prägt.'
+meanings:
+- Protonenzahlen in einer Spalte, Neutronenzahlen in einer Zeile
+- Broadcasting einer Spalte plus einer Zeile füllt die ganze Tabelle
+- $+a_P/\sqrt A$ gerade-gerade, $-a_P/\sqrt A$ ungerade-ungerade, 0 für ungerades $A$
+- Bindungsenergie jedes Kerns der Nuklidkarte, MeV
+- Bindungsenergie pro Nukleon (Heatmap)
+- am stärksten gebundenes Isobar für jede Massenzahl (rote Linie)
+- $A/(2 + \tfrac{a_C}{2a_A}A^{2/3})$ aus $\partial B/\partial Z = 0$
+labels:
+  a_V: Volumen $a_V$
+  a_S: Oberfläche $a_S$
+  a_C: Coulomb $a_C$
+  a_A: Asymmetrie $a_A$
+  a_P: Paarung $a_P$
+  z_max: Größtes $Z$ im Gitter

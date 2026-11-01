@@ -1,0 +1,21 @@
+source_hash: 6345d973de84
+title: Système à deux lentilles et matrices de transfert
+summary: 'L''optique paraxiale est de l''algèbre linéaire : la propagation libre et les lentilles minces sont des matrices $2\times 2$ agissant sur des vecteurs rayons (hauteur, angle). Tout le système est un seul produit matriciel chaîné appliqué à un lot de rayons, recalculé à mesure que la seconde lentille s''éloigne de la première.'
+notes: 'L''ordre compte : l''élément rencontré en premier par la lumière est le facteur le plus à droite. Chaque facteur a un déterminant égal à 1, donc $\det M = 1$ pour toute configuration. Regardez l''image partir à l''infini quand l''image intermédiaire de la lentille 1 se trouve exactement au foyer de la lentille 2 ($d = sf_1/(s - f_1) + f_2$), puis revenir de l''autre côté sous forme d''image virtuelle.'
+meanings:
+- 'rayon $r$ : $j = 0$ hauteur $h$, $j = 1$ angle $\theta$'
+- propagation sur une distance $d$ ($d$ en lot donne (..., 2, 2))
+- lentille mince de distance focale $f$
+- ajoute un élément à la chaîne du système ($j$ répété sommé) ; équivaut à torch.linalg.multi_dot
+- matrice de transfert de l'objet à chaque position axiale $z$
+- chaque rayon à chaque $z$ en une seule contraction
+- là où la hauteur cesse de dépendre de l'angle de départ
+labels:
+  s: Distance de l'objet
+  f1: Distance focale de la lentille 1
+  f2: Distance focale de la lentille 2
+  d_start: Écart initial entre lentilles
+  d_end: Écart final entre lentilles
+  h0: Hauteur de l'objet
+  half_angle: Demi-angle de l'éventail
+  n_rays: Rayons de l'éventail

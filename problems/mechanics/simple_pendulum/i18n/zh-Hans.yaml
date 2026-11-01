@@ -1,0 +1,16 @@
+source_hash: a761e752552d
+title: 超越小角度的单摆
+summary: 对几个释放振幅同时求解完整的非线性单摆方程。所有单摆都在一个批量张量中，每个都与中学学过的小角度余弦解比较。
+notes: 小幅摆动时 $\sin\theta \approx \theta$，每个单摆的周期都是 $2\pi\sqrt{L/g}$。摆幅越大周期越长：精确周期为 $4\sqrt{L/g}\,K(\sin(\theta_0/2))$，其中 $K$ 为第一类完全椭圆积分，90° 时约长 18%。观察大振幅单摆如何落后于对应的小角度虚线。
+meanings:
+- 单摆 $b$ 偏离竖直方向的角度
+- 单摆 $b$ 的角速度
+- 右端项：对所有单摆同时计算 $-(g/L)\sin\theta$
+- 小角度解：外积，没有指标求和
+- 单位质量能量 $\tfrac12L^2\omega^2 + gL(1 - \cos\theta)$，守恒
+labels:
+  length: 摆长 $L$
+  g: 重力加速度 $g$
+  n_pendulums: 单摆数
+  max_amplitude: 最大振幅
+  t_max: 模拟时长

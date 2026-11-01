@@ -1,0 +1,29 @@
+title: 'Special relativity: Minkowski diagrams and Lorentz boosts'
+category: astro
+level: intermediate
+order: 1
+summary: >
+  Events are 2-vectors $x^\mu = (t, x)$ and a change of inertial frame is one matrix $\Lambda^\mu{}_\nu$ applied to all of them with einsum.
+  A twin flies to a star and back: the diagram in the home frame and in a boosted frame shows tilted lines of simultaneity,
+  the invariant light cone, and the traveller's clock ticking $\int\sqrt{1 - v^2}\,dt$ — less than the twin who stayed home.
+animated: true
+vector_form: '\Delta s^2 = -c^2\Delta t^2 + \Delta x^2,\qquad t'' = \gamma\,(t - vx/c^2),\;\; x'' = \gamma\,(x - vt),\qquad \tau = \int\sqrt{1 - v^2/c^2}\;dt'
+index_form: 'x''^\mu = \Lambda^\mu{}_\nu\,x^\nu,\qquad \Delta s^2 = \eta_{\mu\nu}\,\Delta x^\mu\Delta x^\nu,\qquad d\tau = \sqrt{-\eta_{\mu\nu}\,dx^\mu dx^\nu}'
+translation:
+  - {symbol: 'x^\mu', code: 'events[..., :]', shape: '(…, 2)', meaning: 'an event $(t, x)$, $\mu \in \{0, 1\}$, $c = 1$'}
+  - {symbol: '\eta_{\mu\nu}', code: 'metric()', shape: '(2, 2)', meaning: 'Minkowski metric $\operatorname{diag}(-1, +1)$'}
+  - {symbol: '\Lambda^\mu{}_\nu', code: 'boost(beta)', shape: '(…, 2, 2)', meaning: '$\begin{pmatrix}\gamma & -\gamma\beta\\ -\gamma\beta & \gamma\end{pmatrix}$'}
+  - {symbol: '\Lambda^\mu{}_\nu\,x^\nu', code: "einsum('mn,...n->...m', Lam, x)", shape: '(…, 2)', meaning: 'repeated $\nu$ ⇒ summed: every event of a world line or grid boosted at once'}
+  - {symbol: '\eta_{\mu\nu}\Delta x^\mu\Delta x^\nu', code: "einsum('mn,...m,...n->...', eta, dx, dx)", shape: '(…)', meaning: 'squared interval, the same in every frame'}
+  - {symbol: '\tau', code: 'proper_time(events, eta)', shape: '(N,)', meaning: 'running sum of $\sqrt{-\Delta s^2}$ along the world line'}
+  - {symbol: '\Lambda(\beta_1)\Lambda(\beta_2)', code: 'boost(b1) @ boost(b2)', shape: '(2, 2)', meaning: 'equals $\Lambda\big((\beta_1 + \beta_2)/(1 + \beta_1\beta_2)\big)$'}
+notes: >
+  Units: years and light-years, so $c = 1$ and light rays are the dashed 45° lines. The traveller flies at speed $v$ to a star at distance
+  $L$, turns around instantly, and flies back. The amber line is the set of events the traveller calls "now": tilted by $v$ on the way out,
+  it swings across the home twin's world line at the turnaround, which is where the "missing" years of the home twin go.
+  The paradox is not symmetric because only the traveller changes inertial frame. Set the boost of the right panel equal to $v$
+  to sit in the traveller's outbound frame, or to $-v$ for the return leg. The light cone keeps its shape in every frame.
+params:
+  v: {default: 0.8, min: 0.1, max: 0.98, step: 0.02, label: 'Traveller speed $v/c$'}
+  distance: {default: 4.0, min: 1, max: 10, step: 0.5, label: 'Distance to the star $L$', unit: light-years}
+  beta_view: {default: 0.8, min: -0.95, max: 0.95, step: 0.05, label: 'Boost of the right panel $\beta$'}

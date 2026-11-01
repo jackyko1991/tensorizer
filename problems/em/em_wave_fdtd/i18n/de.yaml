@@ -1,0 +1,17 @@
+source_hash: 8807e34cb0a8
+title: Elektromagnetische Wellen (FDTD)
+summary: 'Die beiden Rotationsgleichungen von Maxwell, auf einem Yee-Gitter in der Zeit vorwärts integriert. Die Rotation wird als $\varepsilon_{ijk}\,\partial_j F_k$ geschrieben: eine Tabelle finiter Differenzen, in einem einsum mit dem Levi-Civita-Symbol kontrahiert. Eine Welle aus einer Punkt- oder Linienquelle trifft auf einen dielektrischen Block, wird langsamer, gebrochen und teilweise reflektiert, während ein dämpfender Rand alles schluckt, was den Kasten verlässt.'
+notes: 'Einheiten mit $c = \varepsilon_0 = \mu_0 = 1$ und Zellgröße $\Delta x = 1$. $\mathbf E$ und $\mathbf H$ liegen eine halbe Zelle versetzt (Vorwärtsdifferenzen für $\partial\mathbf E$, Rückwärtsdifferenzen für $\partial\mathbf H$) und werden abwechselnd aktualisiert — das Leapfrog-Yee-Schema. Die Quelle ist „weich“: Sie addiert zu $E_z$, sodass reflektierte Wellen ungehindert durch sie hindurchlaufen. Der absorbierende Rand multipliziert die Felder einfach mit einem Faktor knapp unter 1, der zu den Wänden hin glatt anwächst; echte Codes verwenden stattdessen eine perfekt angepasste Schicht (PML). Im Block schrumpft die Wellenlänge um $n = \sqrt{\varepsilon_r}$; bei senkrechtem Einfall wird ein Anteil $(1 - n)/(1 + n)$ der Amplitude reflektiert.'
+meanings:
+- 'Feldkomponenten auf dem Gitter; TM-Mode: nur $E_z$, $H_x$, $H_y$ sind ungleich null'
+- Tabelle finiter Differenzen; Zeile $j = z$ ist in 2D null
+- Levi-Civita-Symbol
+- 'wiederholte $j, k$ ⇒ summiert: die Rotation in jeder Zelle'
+- 'relative Permittivität: 1 im Vakuum, $\varepsilon_\text{block}$ im Block ($n = \sqrt{\varepsilon_r}$)'
+- Zeitschritt $S\,\Delta x/(c\sqrt2)$; $S > 1$ wird abgelehnt, weil das Schema instabil würde
+labels:
+  source: Quelle
+  eps_block: Permittivität des Blocks $\varepsilon_r$
+  wavelength: Vakuumwellenlänge
+  courant: Courant-Zahl $S$
+  t_max: Simulierte Zeit

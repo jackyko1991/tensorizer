@@ -1,0 +1,15 @@
+source_hash: e1ad81688a05
+title: Fraunhofer-Beugung als 2D-Fourier-Transformation
+summary: Im Fernfeld ist das Beugungsbild einer Blende die 2D-Fourier-Transformierte ihrer Transmissionsfunktion. Ein einziger Aufruf von torch.fft.fft2 macht aus einem Quadrat, einer Kreisblende, einem Doppelspalt und einem Gitter ihre Fernfeldmuster, und die Airy-Ringe schrumpfen, wenn das Loch größer wird.
+notes: 'Längen in der Blendenebene werden in Pixeln der Größe $\Delta x$ gemessen; das Frequenzpixel $(k, l)$ der Transformierten entspricht der Richtung $\sin\theta = \lambda k/(N\Delta x)$. Der erste dunkle Ring der Kreisblende bei $\sin\theta = 1.22\,\lambda/D$ liegt daher $1.22\,N/D$ Frequenzpixel vom Zentrum entfernt (gestrichelter Kreis). Große Blenden ergeben kleine Muster: Die Transformierte einer breiten Funktion ist schmal. Die einsum-Form ist dieselbe Transformation wie fft2, nur $O(N^3)$ statt $O(N^2\log N)$.'
+meanings:
+- 'Transmission der Maske: 1 = offen, 0 = undurchsichtig; Zeile $a = y$, Spalte $b = x$'
+- Matrix der diskreten Fourier-Transformation
+- 'wiederholte $a$ und $b$ ⇒ summiert: eine 1D-Transformation entlang $y$ und eine entlang $x$'
+- dieselbe Transformation per schneller Fourier-Transformation, Nullfrequenz ins Zentrum verschoben
+- Fernfeldintensität, dargestellt als $\log_{10}(I/I_{\max})$
+- erster dunkler Ring einer Kreisblende mit Durchmesser $D$, in Frequenzpixeln
+labels:
+  size_min: Anfangsgröße der Blende $D$
+  size_max: Endgröße der Blende $D$
+  frames_per_aperture: Bilder pro Blendenform

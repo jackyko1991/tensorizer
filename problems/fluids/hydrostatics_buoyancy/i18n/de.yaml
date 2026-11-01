@@ -1,0 +1,19 @@
+source_hash: 7be98e686941
+title: Hydrostatischer Druck und Auftrieb
+summary: 'Der Druck in einem Wassertank wächst linear mit der Tiefe, $p = p_0 + \rho_w g h$. Blöcke verschiedener Dichte werden gleichzeitig hineingeworfen (ein gebündelter Tensor): Die leichten wippen und schwimmen mit einem Anteil $\rho_b/\rho_w$ unter Wasser, die schweren sinken auf den Boden.'
+notes: Jeder Block ist ein Würfel der Kantenlänge $s$; die Auftriebskraft $\rho_w g s^2 d_b$ ist das Gewicht des verdrängten Wassers (Archimedes) und entsteht, weil der Druck $p_0 + \rho_w g h$ stärker auf die Unterseite drückt als auf die Oberseite. Ein schwimmender Block kommt dort zur Ruhe, wo Auftrieb und Gewicht sich ausgleichen, $d_b/s = \rho_b/\rho_w$ — Eis ($\rho \approx 917$) schwimmt zu 92 % unter Wasser. Der Widerstand ist eine einfache lineare Dämpfung proportional zum eingetauchten Volumen; echter Strömungswiderstand ist eher quadratisch, und echte Wellen sowie die mitbewegte Masse werden vernachlässigt. Sinkende Blöcke bleiben auf dem Boden liegen.
+meanings:
+- Gitter von Punkten im Wasser, Komponente $i \in \{x, z\}$
+- Schwerevektor $(0, -g)$
+- 'wiederholtes $i$ ⇒ summiert: $g\,h$ in der Tiefe $h = -z$'
+- Höhe der Unterseite und Geschwindigkeit des Blocks $b$
+- Dichte des Blocks $b$ — der Batch-Index
+- Eintauchtiefe, zwischen 0 (in der Luft) und $s$ (ganz untergetaucht)
+- Auftrieb minus Gewicht minus Widerstand, pro Masse
+labels:
+  n_blocks: Anzahl der Blöcke
+  rho_min: Kleinste Dichte $\rho_\text{min}$
+  rho_max: Größte Dichte $\rho_\text{max}$
+  size: Blockgröße $s$
+  drag: Dämpfung $\gamma$
+  t_max: Simulierte Zeit

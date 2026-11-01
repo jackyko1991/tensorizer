@@ -1,0 +1,35 @@
+title: Reactor criticality
+category: nuclear
+level: advanced
+order: 2
+summary: >
+  Is a slab of fissile material critical? One-group neutron diffusion turns the question into a generalised
+  eigenvalue problem $M\phi = \tfrac1k F\phi$ on a grid. Power iteration — repeatedly solving for the next
+  neutron generation — converges to the fundamental flux mode and the multiplication factor $k_{eff}$, and a
+  batched eigen solve over many slab widths finds the critical size.
+animated: true
+vector_form: '-D\,\nabla^2\phi + \Sigma_a\,\phi = \frac{1}{k}\,\nu\Sigma_f\,\phi,\qquad k = \frac{\nu\Sigma_f}{\Sigma_a + D B^2},\quad B = \frac{\pi}{L}'
+index_form: 'M_{ij}\,\phi_j = \frac1k\,F_{ij}\,\phi_j,\quad M_{ij} = -D\,\Delta_{ij} + \Sigma_a\delta_{ij},\quad F_{ij} = \nu\Sigma_f\,\delta_{ij},\qquad M_{ij}\,\phi^{(n+1)}_j = \frac{F_{ij}\,\phi^{(n)}_j}{k^{(n)}}'
+translation:
+  - {symbol: 'x_i', code: 'grid(width, N)', shape: '(N,)', meaning: 'interior points; $\phi = 0$ at the (extrapolated) slab faces'}
+  - {symbol: '\Delta_{ij}', code: 'laplacian(N, h)', shape: '(N, N)', meaning: 'second-difference matrix $(1, -2, 1)/h^2$'}
+  - {symbol: 'M_{ij}', code: 'loss_operator(lap, D, sigma_a)', shape: '(N, N)', meaning: 'neutrons lost by leakage and absorption'}
+  - {symbol: 'F_{ij}', code: 'production_operator(N, nu_sigma_f)', shape: '(N, N)', meaning: 'neutrons born in fission'}
+  - {symbol: 'F_{ij}\phi_j', code: "einsum('ij,j->i', f, phi)", shape: '(N,)', meaning: 'repeated $j$ ⇒ summed: the fission source of the next generation'}
+  - {symbol: '\phi^{(n+1)}_j', code: 'torch.linalg.solve(m, source / k)', shape: '(N,)', meaning: 'one power-iteration step'}
+  - {symbol: 'k_{eff}', code: 'eigvals(solve(m, f)).real.max()', shape: '(S,)', meaning: 'direct solve, batched over $S$ slab widths'}
+notes: >
+  $k$ is the ratio of neutrons in one generation to the previous one. Each power-iteration step is one
+  generation: the higher spatial modes shrink by the factor $k_2/k_1 = (\Sigma_a + DB^2)/(\Sigma_a + 4DB^2)$ every
+  step, so the lopsided start relaxes to the symmetric $\sin(\pi x/L)$ shape. A thin slab leaks too many neutrons
+  ($k < 1$); above the critical width $L_c = \pi\sqrt{D/(\nu\Sigma_f - \Sigma_a)}$ the chain reaction grows. The default
+  one-group constants are illustrative of a thermal reactor ($k_\infty \approx 1.06$). Simplifications: one energy
+  group, a homogeneous bare slab with no reflector, $L$ measured between extrapolated faces, and no delayed
+  neutrons or feedback — this is a static eigenvalue calculation, not a time-dependent one.
+params:
+  width: {default: 60.0, min: 20.0, max: 200.0, step: 1.0, label: 'Slab width $L$', unit: cm}
+  diffusion: {default: 0.9, min: 0.2, max: 3.0, step: 0.05, label: 'Diffusion coefficient $D$', unit: cm}
+  sigma_a: {default: 0.066, min: 0.01, max: 0.2, step: 0.001, label: 'Absorption $\Sigma_a$', unit: 1/cm}
+  nu_sigma_f: {default: 0.070, min: 0.01, max: 0.2, step: 0.001, label: 'Production $\nu\Sigma_f$', unit: 1/cm}
+  n_iter: {default: 60, min: 5, max: 200, step: 5, type: int, label: Power iterations}
+  n_grid: {default: 200, min: 50, max: 400, step: 10, type: int, label: Grid points}

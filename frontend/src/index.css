@@ -1,0 +1,42 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: #ffffff;
+  color: #111827;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Long equations scroll sideways; the vertical padding keeps fractions, roots and
+   superscripts from being clipped by overflow-y: hidden. */
+.katex-display {
+  margin: 0;
+  padding: 0.5em 0.25em;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Code font: Source Code Pro (SIL OFL, bundled via @fontsource). Named explicitly because the generic
+   `monospace` is resolved per page language, so with
+   lang="zh-Hant"/"ja"/"ko" browsers would switch the editor to a CJK font (e.g. MingLiU on Windows). */
+:root {
+  --font-code: "Source Code Pro", ui-monospace, "Cascadia Mono", Consolas, "SF Mono", Menlo, "DejaVu Sans Mono",
+    "Liberation Mono", "Noto Sans Mono CJK SC", monospace;
+}
+
+.cm-editor {
+  font-size: 13px;
+}
+
+.cm-editor .cm-scroller,
+.cm-editor .cm-content,
+.cm-editor .cm-gutters,
+.font-mono,
+code,
+pre {
+  font-family: var(--font-code);
+}

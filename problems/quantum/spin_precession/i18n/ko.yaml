@@ -1,0 +1,17 @@
+source_hash: 5f40ce6b88de
+title: 스핀 세차와 라비 진동
+summary: 자기장 속의 스핀-$\tfrac12$. 해밀토니안은 자기장 벡터와 파울리 텐서 $\sigma_{kab}$의 축약이고, 상태는 행렬 지수 $U = \exp(-iH\Delta t)$로 시간 전개하며, 블로흐 벡터 $s_k = \langle\psi\vert\sigma_k\vert\psi\rangle$도 einsum 하나입니다. 정적인 자기장은 스핀을 라모어 진동수로 세차 운동시키고, 약한 공명 가로 자기장은 스핀을 천천히 뒤집습니다(라비 진동).
+notes: 단위 $\hbar = 1$. $B_1 = 0$이면 스핀은 라모어 진동수 $\omega = \gamma B_0$로 $z$축 주위를 세차하며, $U$가 유니터리이므로 $\lvert\mathbf s\rvert = 1$이 영원히 유지됩니다. $B_1 > 0$을 $\omega \approx \gamma B_0$로 구동하면 스핀은 북극에서 남극으로 나선을 그리며 내려갔다가 돌아옵니다. 구동과 함께 회전하는 좌표계에서는 선형 구동 중 함께 도는 절반만 중요하므로 라비 진동수 $\Omega = \gamma B_1/2$를 얻습니다(회전파 근사). 구동 진동수를 어긋나게 하면 뒤집힘이 불완전해집니다. 파울리 행렬은 $\sigma_i\sigma_j = \delta_{ij}I + i\,\varepsilon_{ijk}\sigma_k$를 만족합니다.
+meanings:
+- '파울리 텐서: $k \in \{x, y, z\}$가 행렬을 고르고, $a, b$는 스피너 지표'
+- $z$ 방향의 정적인 $B_0$에 선택적으로 $x$ 방향 $B_1\cos(\omega t)$를 더함
+- '반복된 $k$ ⇒ 합: $2\times 2$ 행렬로 쓴 $\mathbf B\cdot\boldsymbol\sigma$ (tk,kab->tab로 $t$에 대해 배치)'
+- 한 단계 전파 연산자, 유니터리
+- '블로흐 벡터: $a$와 $b$ 모두 합'
+labels:
+  B0: 정적 자기장 $B_0$ ($z$ 방향)
+  B1: 구동 진폭 $B_1$ ($x$ 방향)
+  drive_freq: 구동 진동수 $\omega$
+  gamma: 자기 회전 비 $\gamma$
+  theta0: $z$축에서 기운 처음 각
+  t_max: 시뮬레이션 시간

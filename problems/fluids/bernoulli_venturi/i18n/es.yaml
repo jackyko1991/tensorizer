@@ -1,0 +1,16 @@
+source_hash: 6140ba04c201
+title: Bernoulli y el tubo de Venturi
+summary: El agua que fluye por una tubería que se estrecha debe acelerarse para mantener el mismo caudal ($A u = Q$) y, según la ley de Bernoulli, su presión disminuye en la garganta. Área, velocidad y presión son tensores sobre el eje de la tubería; un lote de partículas trazadoras muestra la aceleración.
+notes: 'El flujo se trata como unidimensional: la velocidad es uniforme en cada sección y se desprecia el rozamiento, que es lo que hace exacta aquí la ley de Bernoulli. Las trazadoras situadas a una fracción fija del radio local siguen la pared. Los manómetros son tubos abiertos cuya columna de líquido $h = p/(\rho g)$ crece con la presión manométrica local. Medir $p_1 - p_2$ da el caudal, $Q = A_2\sqrt{2\Delta p/(\rho(1 - A_2^2/A_1^2))}$: así funciona un medidor Venturi. Si la presión en la garganta cae por debajo de la atmosférica, un flujo real podría cavitar; aquí, en cambio, se muestra un aviso.'
+meanings:
+- puntos a lo largo del eje de la tubería, índice $k$
+- sección transversal en cada punto del eje
+- 'continuidad: el mismo volumen por segundo atraviesa cada sección'
+- 'Bernoulli: flujo más rápido ⇒ menor presión'
+- posiciones del lote de trazadoras, movidas con RK4
+- caudal volumétrico $A_1 u_1$ en m³/s
+labels:
+  u1: Velocidad de entrada $u_1$
+  area_ratio: Razón de áreas $A_1/A_2$
+  p1: Presión manométrica de entrada $p_1$
+  t_max: Tiempo simulado

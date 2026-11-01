@@ -1,0 +1,15 @@
+source_hash: 7f418c1e4166
+title: Quatre transformations d'un gaz parfait
+summary: 'Le même gaz, partant du même état, suit quatre chemins classiques : isotherme, isobare, isochore et adiabatique. Les quatre chemins forment un seul tenseur (transformation, points, 2) d''échantillons $(V, p)$, le travail est l''aire sous chaque courbe obtenue par torch.trapezoid, et le premier principe le convertit en chaleur.'
+notes: 'Départ : 1 mol à 300 K dans 10 litres. Les chemins isotherme, isobare et adiabatique se détendent jusqu''au même volume final ; le chemin isochore garde $V$ fixe et chauffe le gaz jusqu''à ce que la pression ait augmenté du même rapport. Comme $dV = 0$ sur l''isochore, torch.trapezoid y renvoie un travail exactement nul. Sur l''isotherme, $\Delta U = 0$ donc $Q = W$ ; sur l''adiabatique, $Q = 0$ donc le gaz paie son travail avec son énergie interne et se refroidit. Les barres à droite sont des cumuls, calculés avec torch.cumulative_trapezoid.'
+meanings:
+- échantillon $k$ le long de la transformation $c$ (isotherme, isobare, isochore, adiabatique)
+- loi des gaz parfaits, terme à terme sur tout le tenseur
+- '$k$ répété ⇒ sommé : travail fourni par le gaz sur chaque chemin'
+- l'énergie interne ne dépend que de la température
+- 'premier principe de la thermodynamique : chaleur reçue par le gaz'
+labels:
+  ratio: Rapport de détente $V_2/V_1$
+  T0: Température initiale
+  n: Quantité de gaz
+  gas: Gaz

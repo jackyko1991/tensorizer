@@ -1,0 +1,17 @@
+source_hash: e0abd4c769f3
+title: 雙量子位元糾纏
+summary: 兩個量子位元存成 $(2, 2)$ 張量 $\psi_{ab}$。量子閘是以一次 einsum 作用的四階張量：先對量子位元 1 作用 Hadamard 閘，再作用 CNOT，便把 $\lvert 00\rangle$ 變成貝爾態。$\psi_{ab}$ 的奇異值分解就是 Schmidt 分解，直接給出糾纏熵。接著這對量子位元在 Ising Hamiltonian 下演化；部分跡給出各量子位元的約化密度矩陣，只要兩者糾纏，其布洛赫向量就縮進球內。
+notes: 單位 $\hbar = 1$。單量子位元算符的張量積 $A\otimes B$ 是四階張量 $A_{ac}B_{bd}$（torch.kron 給出相同的數字，形式為列指標 $2a + b$ 的 $4\times 4$ 矩陣）。因為 $\psi_{ab}$ 是矩陣，其 SVD 把態寫成 $\sum_k s_k\lvert u_k\rangle\lvert v_k\rangle$：即 Schmidt 分解。糾纏熵 $S = -\sum s_k^2\ln s_k^2$ 對乘積態為 0，對貝爾態為 $\ln 2$，後者的約化態是最大混合態（$\rho = I/2$，布洛赫向量位於中心）。共生度 $C = 2\lvert\det\psi\rvert$ 從 0（乘積態）到 1（最大糾纏）。在 Ising Hamiltonian 下，耦合 $J$ 產生並破壞糾纏，而橫向場 $h$ 旋轉個別量子位元；當 $h = 0$ 時貝爾態是本徵態，什麼都不動。
+meanings:
+- 量子位元 1 處於 $\lvert a\rangle$、量子位元 2 處於 $\lvert b\rangle$ 的振幅
+- 以四階張量表示的雙量子位元閘：輸出指標 $a\,b$，輸入指標 $c\,d$
+- $c$ 與 $d$ 求和：作用量子閘
+- Schmidt 係數；只有一個非零值 ⇔ 乘積態
+- 對量子位元 2 取部分跡（$b$ 求和）
+- 由張量積構成的 Ising Hamiltonian，重塑為 (4, 4) 供 eigh 使用
+- 單一量子位元的布洛赫向量 $\operatorname{Tr}(\rho\,\sigma_k)$；$\lvert\mathbf r\rvert < 1$ 表示混合態
+labels:
+  initial: 起始態（電路產生的貝爾態或 $\lvert 00\rangle$）
+  J: Ising 耦合 $J$
+  h: 橫向場 $h$
+  t_max: 模擬時間

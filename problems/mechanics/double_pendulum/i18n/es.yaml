@@ -1,0 +1,20 @@
+source_hash: 75e6d7e3dc93
+title: Péndulo doble y caos
+summary: Las ecuaciones de Lagrange de un péndulo doble escritas como $M_{ij}(q)\,\ddot q_j = f_i(q, \dot q)$. Cada etapa de RK4 construye el tensor de la matriz de masas $2\times 2$ y llama a torch.linalg.solve; dos condiciones iniciales casi idénticas se separan, mostrando el caos.
+notes: El lote contiene dos péndulos cuyo $\theta_2$ difiere en $\delta$. Su diferencia crece de forma aproximadamente exponencial hasta que los movimientos no guardan relación, aunque la energía de cada uno se mantiene constante con gran precisión (float64 + RK4 con un paso pequeño). Para oscilaciones pequeñas el sistema tiene dos modos normales; con masas y longitudes iguales $\omega^2 = (2 \mp \sqrt2)\,g/L$. Las varillas no tienen masa y el pivote no tiene rozamiento.
+meanings:
+- ángulos $(\theta_1, \theta_2)$ del péndulo $b$ respecto a la vertical descendente
+- velocidades angulares
+- matriz de masas dependiente de la configuración, fuera de la diagonal $m_2L_1L_2\cos(\theta_1-\theta_2)$
+- 'fuerzas generalizadas: acoplamiento centrífugo + gravedad'
+- resolver $M\ddot q = f$ para todo el lote en una sola llamada
+- '$i$ y $j$ sumados: el doble de la energía cinética'
+labels:
+  theta1: $\theta_1$ inicial
+  theta2: $\theta_2$ inicial
+  delta: Perturbación $\delta$ de $\theta_2$
+  m1: Masa superior $m_1$
+  m2: Masa inferior $m_2$
+  L1: Varilla superior $L_1$
+  L2: Varilla inferior $L_2$
+  t_max: Tiempo simulado

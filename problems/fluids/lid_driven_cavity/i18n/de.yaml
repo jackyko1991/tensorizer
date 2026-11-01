@@ -1,0 +1,16 @@
+source_hash: 87bf1a8993df
+title: Deckelgetriebene Kavität (Navier–Stokes)
+summary: 'Der klassische Benchmark der numerischen Strömungsmechanik: ein quadratischer Kasten voll Fluid, dessen Deckel nach rechts gleitet. Die 2D-Navier–Stokes-Gleichungen in Stromfunktion-Wirbelstärke-Form werden in der Zeit integriert, wobei die Poisson-Gleichung für $\psi$ durch Diagonalisieren des Laplace-Operators mit eigh gelöst wird. Ein Primärwirbel baut sich auf, und seine Geschwindigkeit auf der Mittellinie wird mit Ghia et al. (1982) verglichen.'
+notes: 'Einheiten: Kavitätsgröße 1 und Deckelgeschwindigkeit 1, also $\mathrm{Re} = 1/\nu$. Die Stromfunktion macht die Strömung per Konstruktion divergenzfrei, und der Druck verschwindet, wenn man die Rotation der Navier–Stokes-Gleichungen bildet. Jeder Schritt: Wirbelstärke an den Wänden aus der Thom-Formel (Haftbedingung), ein expliziter Euler-Schritt für $\omega$, dann die Poisson-Lösung. $\nabla^2\psi = T\psi + \psi T^\mathsf T$ wird in der Eigenbasis von $T$ diagonal — dieselbe Idee wie eine schnelle Sinustransformation. Bei Re = 100 liegt das Wirbelzentrum nahe (0,62, 0,74), rechts oberhalb der Mitte; bei kleinerem Re wandert es nach (0,5, 0,76), bei größerem Re zur Mitte hin, und in den unteren Ecken entstehen kleine gegenläufige Wirbel. Größeres Re erfordert ein feineres Gitter.'
+meanings:
+- Wirbelstärke und Stromfunktion auf dem Gitter, indiziert [x, y], Wände eingeschlossen
+- $(\partial_y\psi, -\partial_x\psi)$ durch zentrale Differenzen
+- 'wiederholtes $j$ ⇒ summiert: Advektion der Wirbelstärke'
+- Fünf-Punkte-Stern
+- 1D-Laplace-Operator mit $\psi = 0$ an den Wänden, einmal diagonalisiert
+- Transformation; dann $\hat\psi_{ab} = \hat f_{ab}/(\Lambda_a + \Lambda_b)$ und zurück
+- 'Thom: $-2\psi_\text{next}/h^2$, unter dem Deckel minus $2U/h$'
+labels:
+  re: Reynolds-Zahl $UL/\nu$
+  n: Gitterpunkte pro Seite
+  t_max: Simulierte Zeit

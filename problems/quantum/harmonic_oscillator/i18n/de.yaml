@@ -1,0 +1,16 @@
+source_hash: 213c96e488f8
+title: Quantenmechanischer harmonischer Oszillator
+summary: Der Hamiltonoperator $H = -\tfrac12\,d^2/dx^2 + \tfrac12\omega^2x^2$ wird auf einem Gitter zu einer Matrix, und torch.linalg.eigh liefert seine äquidistante Energieleiter $E_n = \omega(n + \tfrac12)$. Ein verschobenes Gauß-Paket (ein kohärenter Zustand) wird als Summe von Eigenzuständen geschrieben; gibt man jedem seine Phase $e^{-iE_n t}$, schwingt das Paket genau wie eine klassische Masse an einer Feder hin und her.
+notes: Einheiten $\hbar = m = 1$. Das Gitter ist ein großer Kasten mit $\psi = 0$ an den Wänden, weit genug draußen, dass die Wände keine Rolle spielen. Die blassen Kurven sind die tiefsten stationären Zustände $\varphi_n(x)$, gezeichnet auf der Höhe ihrer Energie $E_n$; der Abstand zwischen den Sprossen ist genau $\omega$. Der Anfangszustand ist das Gauß-Paket des Grundzustands, verschoben nach $x_0$. Seine Gewichte $\lvert c_n\rvert^2$ bilden eine Poisson-Verteilung mit Mittelwert $\omega x_0^2/2$, und weil sich alle Energien um ganzzahlige Vielfache von $\omega$ unterscheiden, kehrt das Paket nach jeder Periode $2\pi/\omega$ nach $x_0$ zurück, ohne zu zerfließen. $\langle x\rangle$ folgt der klassischen Bewegung $x_0\cos\omega t$ (das Ehrenfest-Theorem ist für ein quadratisches Potential exakt).
+meanings:
+- Federpotential $\tfrac12\omega^2x^2$ an jedem Gitterpunkt
+- kinetisch $-\tfrac12\,D2$ plus das Potential auf der Diagonale
+- Energien und Eigenvektoren (Spalte $n$ ist Zustand $n$)
+- 'wiederholtes $x$ ⇒ summiert: Überlapp des Anfangszustands mit Zustand $n$'
+- 'wiederholtes $n$ ⇒ summiert: $\psi$ aus seinen phasenverschobenen Komponenten wieder aufbauen'
+- mittlerer Ort, verglichen mit dem klassischen $x_0\cos\omega t$
+labels:
+  omega: Kreisfrequenz $\omega$
+  x0: Anfangsauslenkung $x_0$
+  periods: Simulierte Zeit
+  n_grid: Gitterpunkte

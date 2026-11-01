@@ -1,0 +1,17 @@
+source_hash: 6bb6cb4a204f
+title: Tela de masas y muelles
+summary: 'Una malla cuadrada de masas puntuales unidas por muelles estructurales, de cizalla y de flexión, sujeta por dos esquinas y soltada bajo la gravedad. Una matriz de incidencia $D_{ea}$ convierte la malla en tensores: un einsum da todos los vectores de los muelles y otro suma las fuerzas sobre cada nodo.'
+notes: Los muelles de cizalla en las diagonales impiden que los cuadrados se colapsen en rombos, y los muelles que se saltan un nodo dan a la tela cierta rigidez a flexión. Las dos esquinas sujetas simplemente tienen aceleración nula. El amortiguamiento del aire $\gamma$ es la única pérdida, así que la energía total solo puede disminuir ($dE/dt = -m\gamma\lvert\mathbf v\rvert^2$) y con $\gamma = 0$ se conserva. Los muelles son rígidos, por lo que el paso de tiempo está ligado a $\sqrt{m/k}$. Se ignoran las autocolisiones. Cada nodo tiene una masa de 10 g y el espaciado de la malla es de 10 cm.
+meanings:
+- posición del nodo $a$; $N = n^2$ masas
+- 'matriz de incidencia: $-1$ / $+1$ en los dos extremos del muelle $e$'
+- '$a$ repetido ⇒ sumado: vector a lo largo de cada muelle'
+- longitudes actuales de los muelles; $\ell^0_e$ son las longitudes en reposo
+- '$e$ repetido ⇒ sumado: fuerza neta de los muelles sobre el nodo $a$'
+- la misma suma como scatter sobre la lista de aristas
+- energía cinética + elástica + gravitatoria
+labels:
+  n_side: Masas por lado
+  k: Constante del muelle $k$
+  damping: Amortiguamiento del aire $\gamma$
+  t_max: Tiempo simulado

@@ -1,0 +1,17 @@
+source_hash: e0abd4c769f3
+title: Verschränkung zweier Qubits
+summary: 'Zwei Qubits, gespeichert als $(2, 2)$-Tensor $\psi_{ab}$. Gatter sind Tensoren vierter Stufe, angewendet mit einem einzigen einsum: Ein Hadamard-Gatter auf Qubit 1, gefolgt von einem CNOT, macht aus $\lvert 00\rangle$ einen Bell-Zustand. Die Singulärwertzerlegung von $\psi_{ab}$ ist die Schmidt-Zerlegung und liefert direkt die Verschränkungsentropie. Das Paar entwickelt sich dann unter einem Ising-Hamiltonoperator; partielle Spuren ergeben die reduzierte Dichtematrix jedes Qubits, deren Bloch-Vektor ins Innere der Kugel schrumpft, sobald die Qubits verschränkt sind.'
+notes: 'Einheiten $\hbar = 1$. Das Tensorprodukt von Ein-Qubit-Operatoren $A\otimes B$ ist der Tensor vierter Stufe $A_{ac}B_{bd}$ (torch.kron liefert dieselben Zahlen als $4\times 4$-Matrix mit Zeilenindex $2a + b$). Da $\psi_{ab}$ eine Matrix ist, schreibt ihre SVD den Zustand als $\sum_k s_k\lvert u_k\rangle\lvert v_k\rangle$: die Schmidt-Zerlegung. Die Verschränkungsentropie $S = -\sum s_k^2\ln s_k^2$ ist 0 für einen Produktzustand und $\ln 2$ für einen Bell-Zustand, dessen reduzierte Zustände maximal gemischt sind ($\rho = I/2$, Bloch-Vektor im Zentrum). Die Concurrence $C = 2\lvert\det\psi\rvert$ reicht von 0 (Produkt) bis 1 (maximal verschränkt). Unter dem Ising-Hamiltonoperator erzeugt und zerstört die Kopplung $J$ Verschränkung, während das Querfeld $h$ die einzelnen Qubits dreht; bei $h = 0$ ist der Bell-Zustand ein Eigenzustand, und nichts bewegt sich.'
+meanings:
+- Amplitude für Qubit 1 in $\lvert a\rangle$ und Qubit 2 in $\lvert b\rangle$
+- 'Zwei-Qubit-Gatter als Tensor vierter Stufe: Ausgangsindizes $a\,b$, Eingangsindizes $c\,d$'
+- '$c$ und $d$ summiert: das Gatter anwenden'
+- Schmidt-Koeffizienten; genau ein Wert ungleich null ⇔ Produktzustand
+- partielle Spur über Qubit 2 ($b$ summiert)
+- Ising-Hamiltonoperator aus Tensorprodukten, für eigh zu (4, 4) umgeformt
+- Bloch-Vektor $\operatorname{Tr}(\rho\,\sigma_k)$ eines Qubits; $\lvert\mathbf r\rvert < 1$ bedeutet gemischt
+labels:
+  initial: Anfangszustand (Bell aus der Schaltung oder $\lvert 00\rangle$)
+  J: Ising-Kopplung $J$
+  h: Querfeld $h$
+  t_max: Simulierte Zeit

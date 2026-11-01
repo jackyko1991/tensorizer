@@ -1,0 +1,16 @@
+source_hash: 9c89c68f4f20
+title: Moden im Rechteckhohlleiter
+summary: Welche Feldmuster können sich in einem hohlen Metallrohr ausbreiten? Jede Mode löst die 2D-Helmholtz-Gleichung $(\partial_i\partial_i + k_c^2)\psi = 0$ auf dem Querschnitt — Dirichlet-Wände für TM, Neumann-Wände für TE. Der diskrete Laplace-Operator wird mit torch.kron aufgebaut, und torch.linalg.eigh liefert alle Moden und Grenzfrequenzen auf einmal.
+notes: Die Standardgröße ist der übliche WR-90-Hohlleiter für das X-Band (2,286 cm × 1,016 cm), dessen $\text{TE}_{10}$-Mode bei 6,56 GHz abschneidet. Eine Mode breitet sich nur oberhalb ihrer Grenzfrequenz aus, mit $\beta = \sqrt{(\omega/c)^2 - k_c^2}$. TE- und TM-Moden mit demselben $(m, n \ge 1)$ haben dieselbe Grenzfrequenz. Die konstante TE-Lösung ($k_c = 0$) trägt keine Welle und wird verworfen. Finite Differenzen zweiter Ordnung treffen $k_c$ bei der Standardauflösung auf etwa ein Prozent genau.
+meanings:
+- $E_z$ (TM) oder $H_z$ (TE) am Gitterpunkt $(x_a, y_b)$
+- 'dieselben Werte abgeflacht: $m = a\cdot N_y + b$'
+- 1D-$\partial^2$ mit der Randbedingung in den Eckeinträgen
+- der 2D-Laplace-Operator $\partial_i\partial_i$ ($i$ summiert über $x, y$)
+- 'Eigenwerte und orthonormale Eigenvektoren: Grenzwellenzahlen und Modenformen'
+- $\pi\sqrt{(m/a)^2 + (n/b)^2}$, zur Kontrolle der Zahlen
+labels:
+  a: Breite $a$
+  b: Höhe $b$
+  n_modes: Moden
+  n_grid: Gitterpunkte über $b$

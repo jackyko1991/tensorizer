@@ -1,0 +1,22 @@
+source_hash: b6ae9044b340
+title: Expansión de Hubble
+summary: 'Las galaxias ocupan una red comóvil fija que se estira con el factor de escala $a(t)$. Un único producto exterior $x_{gi} = a\,q_{gi}$ mueve todas las galaxias, y desde cualquier galaxia elegida las demás se alejan con $v = H d$. Un fotón que cruza la red se estira en el mismo factor: $1 + z = a_\mathrm{obs}/a_\mathrm{emit}$.'
+notes: 'Unidades: Mpc, Gaño (Gyr) y km/s/Mpc. En el modelo dominado por materia (Einstein–de Sitter) $a = (t/t_0)^{2/3}$, de modo que $H = 2/(3t)$ disminuye con el tiempo; en de Sitter $a = e^{H_0 (t - t_0)}$ y $H$ permanece constante. En ambos casos $v = Hd$ se cumple exactamente para todo observador: mueve el observador y los puntos azules siguen cayendo sobre la misma recta que los círculos vacíos vistos desde el centro. Las galaxias no se mueven a través del espacio (sin velocidades peculiares): es el espacio entre ellas el que crece. El fotón recorre una distancia comóvil $c\,dt/a$ por paso, y se permiten velocidades mayores que $c$ para galaxias lejanas, porque localmente nada adelanta a la luz.'
+meanings:
+- coordenadas comóviles de la galaxia $g$ (nunca cambian)
+- factor de escala en cada instante, $a = 1$ hoy
+- 'posiciones físicas: un producto exterior, sin índice sumado'
+- '$\dot a/a$: $2/(3t)$ para materia, constante para de Sitter'
+- velocidad del flujo de Hubble de cada galaxia
+- posiciones vistas desde el observador $o$ (resta con broadcasting)
+- '$g, i$ repetidos ⇒ sumados: pendiente por mínimos cuadrados de $v$ frente a $d$'
+- estiramiento de la longitud de onda del fotón desde su emisión
+labels:
+  model: Ley de expansión $a(t)$
+  H0: Constante de Hubble actual $H_0$
+  n_grid: Galaxias por lado
+  spacing: Espaciado comóvil de la red
+  observer_x: Columna del observador (pasos de red)
+  observer_y: Fila del observador (pasos de red)
+  a_start: Factor de escala inicial $a_\mathrm{emit}$
+  a_end: Factor de escala final $a_\mathrm{obs}$

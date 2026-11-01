@@ -1,0 +1,29 @@
+title: Carnot cycle of an ideal gas
+category: thermodynamics
+level: beginner
+order: 1
+summary: >
+  Two isotherms and two adiabats of an ideal gas, sampled as a tensor of $(V, p)$ points. The work is the area
+  enclosed in the $p$–$V$ diagram, computed with torch.trapezoid, and the efficiency $W/Q_h$ lands exactly on
+  Carnot's limit $1 - T_c/T_h$.
+animated: true
+vector_form: 'pV = nRT,\qquad pV^{\gamma} = \text{const},\qquad W = \oint p\,dV,\qquad \eta = \frac{W}{Q_h} = 1 - \frac{T_c}{T_h}'
+index_form: 'W = \sum_{l}\sum_{k} \tfrac12\,(p_{l,k} + p_{l,k+1})\,(V_{l,k+1} - V_{l,k}),\qquad Q_h = nRT_h \ln\frac{V_2}{V_1}'
+translation:
+  - {symbol: 'V_{l,k},\ p_{l,k}', code: 'legs[..., 0], legs[..., 1]', shape: '(4, K)', meaning: 'sample $k$ on leg $l$ of the cycle ($l$ = hot isotherm, adiabat, cold isotherm, adiabat)'}
+  - {symbol: 'p = nRT/V', code: 'isotherm_pressure(V, n, T)', shape: '(K,)', meaning: 'isotherm, element-wise on a tensor of volumes'}
+  - {symbol: 'p = p_0 (V_0/V)^\gamma', code: 'adiabat_pressure(V, p0, V0, gamma)', shape: '(K,)', meaning: 'adiabat through a corner of the cycle'}
+  - {symbol: '\sum_k \tfrac12 (p_k + p_{k+1}) \Delta V_k', code: 'torch.trapezoid(p, V, dim=-1)', shape: '(4,)', meaning: 'repeated $k$ ⇒ summed: work along each leg'}
+  - {symbol: '\oint p\,dV', code: 'W_legs.sum()', shape: 'scalar', meaning: 'sum over the legs $l$: the enclosed area'}
+  - {symbol: 'S', code: 'n*c_v*log(T) + n*R*log(V)', shape: '(4, K)', meaning: 'entropy along the path, for the $T$–$S$ diagram'}
+notes: >
+  Heat only crosses the boundary on the isotherms: $Q_h = nRT_h\ln(V_2/V_1)$ in, $Q_c = nRT_c\ln(V_3/V_4)$ out. Because
+  the adiabats link the volume ratios, $V_3/V_4 = V_2/V_1$, which is why the efficiency depends only on the two
+  temperatures. Compression legs run towards smaller $V$, so torch.trapezoid gives them negative work automatically.
+  In the $T$–$S$ diagram the cycle is a rectangle and its area is also $W$. Volumes start at $V_1 = 1$ litre.
+params:
+  T_h: {default: 500.0, min: 400, max: 1000, step: 10, label: 'Hot reservoir $T_h$', unit: K}
+  T_c: {default: 300.0, min: 200, max: 390, step: 10, label: 'Cold reservoir $T_c$', unit: K}
+  ratio: {default: 3.0, min: 1.5, max: 6, step: 0.5, label: 'Expansion ratio $V_2/V_1$'}
+  n: {default: 1.0, min: 0.1, max: 5, step: 0.1, label: Amount of gas, unit: mol}
+  gas: {default: monatomic, type: choice, options: [monatomic, diatomic], label: Gas}

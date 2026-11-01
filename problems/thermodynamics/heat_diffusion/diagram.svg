@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Square plate with a hot spot in the middle fading to cold edges held by a bath; heat flux arrows q point from hot to cold">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <radialGradient id="hot" cx="0.42" cy="0.45" r="0.62">
+      <stop offset="0" stop-color="#dc2626"/><stop offset="0.3" stop-color="#f59e0b"/>
+      <stop offset="0.65" stop-color="#93c5fd"/><stop offset="1" stop-color="#2563eb"/>
+    </radialGradient>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <rect x="60" y="14" width="124" height="124" fill="url(#hot)" stroke="#374151" stroke-width="2"/>
+    <circle cx="112.1" cy="69.8" r="18" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.8"/>
+    <circle cx="112.1" cy="69.8" r="34" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.8"/>
+    <text x="112.08" y="74.8" font-style="italic" fill="#ffffff" text-anchor="middle">T</text>
+    <line x1="162.1" y1="69.8" x2="212.1" y2="69.8" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="82.1" y1="73.8" x2="40.1" y2="81.8" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="204.08" y="61.8" font-style="italic" fill="#b91c1c">q</text>
+    <text x="122" y="154" fill="#4b5563" font-size="12" text-anchor="middle">edges: cold bath</text>
+  </g>
+</svg>

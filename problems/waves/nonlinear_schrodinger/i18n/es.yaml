@@ -1,0 +1,15 @@
+source_hash: 615dd7755626
+title: Olas gigantes (Schrödinger no lineal)
+summary: 'La ecuación de Schrödinger no lineal focalizante describe la envolvente de los grupos de olas en aguas profundas y de los pulsos de luz en fibras. Un tren de ondas uniforme es inestable: pequeñas ondulaciones crecen hasta formar picos enormes de unas tres veces el fondo, como olas gigantes. Se resuelve con split-step de Fourier: la dispersión es exacta en el espacio $k$ y la no linealidad es exacta en el espacio $x$.'
+notes: 'Descomposición de Strang: medio paso de dispersión, un paso no lineal completo y otro medio paso de dispersión; precisa a segundo orden y conserva $N$ salvo errores de redondeo. Inestabilidad modulacional: sobre un fondo de altura 1 crecen las perturbaciones con número de onda $K < 2$, más deprisa en $K = \sqrt2$ con tasa 1. En el modo **modulation** el fondo parte con un ruido aleatorio de $10^{-3}$ (semilla fija): los picos aparecen tras $t \approx 8$ y siguen formándose y disolviéndose. El breather de Peregrine $\psi = \bigl[1 - \frac{4(1+2it)}{1+4x^2+4t^2}\bigr]e^{it}$ surge del fondo una sola vez, alcanza exactamente $3\times$ su altura y desaparece; el modo **peregrine** lo inicia en $t = -5$. El modo **soliton** lanza el solitón brillante $\eta\,\mathrm{sech}(\eta x)\,e^{ivx}$, que conserva su forma para siempre. La línea discontinua marca $|\psi| = 3$. Caja periódica de longitud 60.'
+meanings:
+- envolvente compleja de la onda en una malla periódica (complex128)
+- medio paso de dispersión $i\psi_t = -\tfrac12\psi_{xx}$, exacto para cada modo de Fourier
+- '$l$ repetido ⇒ sumado: la transformada de Fourier discreta'
+- un paso de la no linealidad $i\psi_t = -|\psi|^2\psi$, exacto porque $|\psi|$ no cambia
+- $\int|\psi|^2$ y $\int \tfrac12|\psi_x|^2 - \tfrac12|\psi|^4$, ambas conservadas
+labels:
+  mode: Estado inicial
+  noise: Amplitud del ruido (modulation)
+  eta: Altura del solitón $\eta$
+  t_max: Tiempo simulado

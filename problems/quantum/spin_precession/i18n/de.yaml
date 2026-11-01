@@ -1,0 +1,17 @@
+source_hash: 5f40ce6b88de
+title: Spinpräzession und Rabi-Oszillation
+summary: Ein Spin-$\tfrac12$ in einem Magnetfeld. Der Hamiltonoperator ist eine Kontraktion des Feldvektors mit dem Pauli-Tensor $\sigma_{kab}$, der Zustand wird mit der Matrixexponentialfunktion $U = \exp(-iH\Delta t)$ propagiert, und der Bloch-Vektor $s_k = \langle\psi\vert\sigma_k\vert\psi\rangle$ ist ein weiteres einsum. Ein statisches Feld lässt den Spin mit der Larmorfrequenz präzedieren; ein schwaches resonantes Querfeld klappt ihn langsam um (Rabi-Oszillation).
+notes: 'Einheiten $\hbar = 1$. Bei $B_1 = 0$ präzediert der Spin mit der Larmorfrequenz $\omega = \gamma B_0$ um $z$, und $\lvert\mathbf s\rvert = 1$ für immer, weil $U$ unitär ist. Bei $B_1 > 0$, getrieben mit $\omega \approx \gamma B_0$, spiralt der Spin vom Nordpol zum Südpol und zurück: Im mit dem Antrieb rotierenden System zählt nur die mitrotierende Hälfte des linearen Antriebs, was die Rabi-Frequenz $\Omega = \gamma B_1/2$ ergibt (Drehwellennäherung). Verstimmt man den Antrieb, wird das Umklappen unvollständig. Die Pauli-Matrizen erfüllen $\sigma_i\sigma_j = \delta_{ij}I + i\,\varepsilon_{ijk}\sigma_k$.'
+meanings:
+- 'Pauli-Tensor: $k \in \{x, y, z\}$ wählt die Matrix, $a, b$ sind Spinorindizes'
+- statisches $B_0$ entlang $z$ plus optional $B_1\cos(\omega t)$ entlang $x$
+- 'wiederholtes $k$ ⇒ summiert: $\mathbf B\cdot\boldsymbol\sigma$ als $2\times 2$-Matrix (gebündelt über $t$ als tk,kab->tab)'
+- Ein-Schritt-Propagator, unitär
+- 'Bloch-Vektor: $a$ und $b$ beide summiert'
+labels:
+  B0: Statisches Feld $B_0$ (entlang $z$)
+  B1: Antriebsamplitude $B_1$ (entlang $x$)
+  drive_freq: Antriebsfrequenz $\omega$
+  gamma: Gyromagnetisches Verhältnis $\gamma$
+  theta0: Anfangsneigung gegen $z$
+  t_max: Simulierte Zeit

@@ -1,0 +1,16 @@
+source_hash: a761e752552d
+title: Fadenpendel jenseits kleiner Winkel
+summary: Die volle nichtlineare Pendelgleichung für mehrere Anfangsamplituden gleichzeitig. Alle Pendel leben in einem gebündelten Tensor, und jedes wird mit der Kleinwinkel-Kosinuslösung aus der Schule verglichen.
+notes: 'Für kleine Ausschläge ist $\sin\theta \approx \theta$, und jedes Pendel hat dieselbe Periode $2\pi\sqrt{L/g}$. Größere Ausschläge dauern länger: Die exakte Periode ist $4\sqrt{L/g}\,K(\sin(\theta_0/2))$ mit dem vollständigen elliptischen Integral $K$, bei 90° etwa 18 % länger. Beobachte, wie das Pendel mit großer Amplitude hinter seinem gestrichelten Kleinwinkel-Partner zurückbleibt.'
+meanings:
+- Winkel des Pendels $b$ gegen die Senkrechte
+- Winkelgeschwindigkeit des Pendels $b$
+- 'rechte Seite: $-(g/L)\sin\theta$ für alle Pendel auf einmal'
+- 'Kleinwinkellösung: ein äußeres Produkt, kein Index summiert'
+- Energie pro Masse $\tfrac12L^2\omega^2 + gL(1 - \cos\theta)$, erhalten
+labels:
+  length: Stablänge $L$
+  g: Fallbeschleunigung $g$
+  n_pendulums: Pendel
+  max_amplitude: Größte Amplitude
+  t_max: Simulierte Zeit

@@ -1,0 +1,17 @@
+source_hash: 5f40ce6b88de
+title: 自旋进动与拉比振荡
+summary: 磁场中的自旋 $\tfrac12$。哈密顿量是场矢量与泡利张量 $\sigma_{kab}$ 的缩并，态用矩阵指数 $U = \exp(-iH\Delta t)$ 演化，布洛赫矢量 $s_k = \langle\psi\vert\sigma_k\vert\psi\rangle$ 又是一次 einsum。静磁场使自旋以拉莫尔频率进动；弱的共振横向场使其缓慢翻转（拉比振荡）。
+notes: 单位 $\hbar = 1$。$B_1 = 0$ 时，自旋以拉莫尔频率 $\omega = \gamma B_0$ 绕 $z$ 进动，并且由于 $U$ 幺正，$\lvert\mathbf s\rvert = 1$ 始终成立。$B_1 > 0$ 且驱动频率 $\omega \approx \gamma B_0$ 时，自旋从北极螺旋到南极再返回：在随驱动旋转的参考系中，只有线性驱动中同向旋转的一半起作用，给出拉比频率 $\Omega = \gamma B_1/2$（旋转波近似）。驱动失谐时翻转不完全。泡利矩阵满足 $\sigma_i\sigma_j = \delta_{ij}I + i\,\varepsilon_{ijk}\sigma_k$。
+meanings:
+- 泡利张量：$k \in \{x, y, z\}$ 选择矩阵，$a, b$ 为旋量指标
+- 沿 $z$ 的静磁场 $B_0$，加上可选的沿 $x$ 的 $B_1\cos(\omega t)$
+- 重复的 $k$ ⇒ 求和：$\mathbf B\cdot\boldsymbol\sigma$ 写成 $2\times 2$ 矩阵（对 $t$ 批量计算为 tk,kab->tab）
+- 单步传播子，幺正
+- 布洛赫矢量：对 $a$ 和 $b$ 都求和
+labels:
+  B0: 静磁场 $B_0$（沿 $z$）
+  B1: 驱动振幅 $B_1$（沿 $x$）
+  drive_freq: 驱动频率 $\omega$
+  gamma: 旋磁比 $\gamma$
+  theta0: 初始偏离 $z$ 的倾角
+  t_max: 模拟时长

@@ -1,0 +1,16 @@
+source_hash: 8bd75af0e44c
+title: Décroissance radioactive
+summary: Chaque noyau se désintègre au hasard avec la même probabilité par seconde $\lambda$. Simuler toute une grille de noyaux comme un seul tenseur booléen — un tirage à pile ou face par noyau et par pas de temps — reproduit la loi exponentielle lisse $N(t) = N_0 e^{-\lambda t}$ et la demi-vie $T_{1/2} = \ln 2/\lambda$.
+notes: 'La loi exponentielle porte sur des moyennes. Avec $N_0$ noyaux, le nombre restant après un temps $t$ suit une loi binomiale de moyenne $N_0 e^{-\lambda t}$ et d''écart-type $\sqrt{N_0 e^{-\lambda t}(1 - e^{-\lambda t})}$ : une petite grille fluctue visiblement autour de la courbe tandis qu''une grande la suit de près. Après chaque demi-vie, environ la moitié des noyaux restants a disparu, quel que soit leur nombre. Le pas $\Delta t$ doit seulement être petit devant $T_{1/2}$ ; la probabilité exacte par pas $1 - e^{-\lambda\Delta t}$ rend la moyenne correcte pour tout pas. La graine aléatoire est fixe, donc l''image est reproductible.'
+meanings:
+- constante de désintégration $\ln 2 / T_{1/2}$
+- True tant que le noyau $n$ ne s'est pas désintégré ; la grille sert seulement à dessiner $n$
+- un nombre aléatoire uniforme par noyau et par pas
+- probabilité de désintégration pendant un pas $\Delta t$
+- un noyau désintégré le reste
+- 'somme sur tous les noyaux : le nombre $N(t)$'
+labels:
+  n_side: Côté de la grille (côté² noyaux)
+  half_life: Demi-vie $T_{1/2}$
+  t_max: Durée simulée
+  dt: Pas de temps $\Delta t$

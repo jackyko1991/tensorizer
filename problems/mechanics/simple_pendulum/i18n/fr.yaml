@@ -1,0 +1,16 @@
+source_hash: a761e752552d
+title: Pendule simple au-delà des petits angles
+summary: L'équation complète non linéaire du pendule pour plusieurs amplitudes de lâcher à la fois. Tous les pendules sont dans un seul tenseur par lot, et chacun est comparé au cosinus des petits angles appris à l'école.
+notes: 'Pour de petites oscillations, $\sin\theta \approx \theta$ et tous les pendules ont la même période $2\pi\sqrt{L/g}$. Les grandes oscillations durent plus longtemps : la période exacte est $4\sqrt{L/g}\,K(\sin(\theta_0/2))$ avec l''intégrale elliptique complète $K$, environ 18 % plus longue à 90°. Regardez le pendule de grande amplitude prendre du retard sur son partenaire des petits angles en tirets.'
+meanings:
+- angle du pendule $b$ par rapport à la verticale
+- vitesse angulaire du pendule $b$
+- 'second membre : $-(g/L)\sin\theta$ pour tous les pendules à la fois'
+- 'solution aux petits angles : un produit extérieur, aucun indice sommé'
+- énergie par unité de masse $\tfrac12L^2\omega^2 + gL(1 - \cos\theta)$, conservée
+labels:
+  length: Longueur de la tige $L$
+  g: Pesanteur $g$
+  n_pendulums: Pendules
+  max_amplitude: Amplitude maximale
+  t_max: Durée simulée

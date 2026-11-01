@@ -1,0 +1,16 @@
+source_hash: dc1d9350a90f
+title: Effet tunnel dans un double puits
+summary: 'Une particule dans un potentiel en double puits symétrique. torch.linalg.eigh montre que les deux états les plus bas forment une paire serrée : un état pair et un état impair, séparés par une minuscule énergie tunnel $\Delta E$. Leur somme est une particule située dans le puits de gauche ; à mesure que les deux phases relatives se décalent, elle passe par effet tunnel dans le puits de droite et revient avec une période $2\pi/\Delta E$, bien que son énergie soit inférieure à la barrière.'
+notes: 'Unités $\hbar = m = 1$. Les énergies du doublet sont sous le sommet de la barrière $V_0$, donc classiquement la particule ne pourrait jamais traverser. Avec seulement deux états en jeu, $\psi(t) \propto \varphi_0 + e^{-i\Delta E\,t}\varphi_1$ (à une phase globale près) : elle vaut $(\varphi_0 + \varphi_1)$ à gauche en $t = 0$ et $(\varphi_0 - \varphi_1)$ à droite en $t = \pi/\Delta E$. $P_L(t) = \cos^2(\Delta E\,t/2)$ est valable au petit recouvrement près de chaque état avec le « mauvais » puits. $\Delta E$ diminue à peu près exponentiellement avec la hauteur et la largeur de la barrière (un facteur WKB $e^{-\int\kappa\,dx}$), si bien qu''une barrière légèrement plus haute ralentit énormément l''effet tunnel — la durée simulée est mesurée en périodes tunnel $2\pi/\Delta E$ pour que l''animation montre toujours des oscillations complètes.'
+meanings:
+- 'potentiel quartique : minima en $x = \pm a$, barrière $V_0$ en $x = 0$'
+- cinétique $-\tfrac12\,D2$ plus $V$ sur la diagonale
+- énergies et états ; $\varphi_0$ pair, $\varphi_1$ impair, $\Delta E = E_1 - E_0$
+- '$(1, 1, 0, 0, \dots)/\sqrt2$ : mélange égal du doublet, localisé à gauche'
+- '$n$ répété ⇒ sommé : évolution exacte dans la base propre'
+- fonction échelon sélectionnant la moitié gauche ; $P_L$ somme sur $x$
+labels:
+  V0: Hauteur de la barrière $V_0$
+  a: Séparation des puits $a$ (minima en $\pm a$)
+  periods: Durée simulée
+  n_grid: Points de grille

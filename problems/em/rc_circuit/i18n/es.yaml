@@ -1,0 +1,21 @@
+source_hash: 6cf1e64854dc
+title: Carga de un condensador (circuito RC)
+summary: Un condensador que se carga a través de una resistencia obedece $dV/dt = (V_s - V)/(RC)$. Varios circuitos con distintas resistencias se apilan en un único tensor de tensiones, de modo que un solo paso de Runge–Kutta los hace avanzar a todos. Cambia la fuente a una onda cuadrada para ver cómo los condensadores se cargan y descargan.
+notes: 'Unidades: $R$ en kΩ y $C$ en mF, de modo que $\tau = RC$ resulta en segundos e $I$ en mA. Tras una constante de tiempo el condensador alcanza el 63 % de la tensión de la fuente; tras $5\tau$ está prácticamente lleno. Al cargarse desde una batería, la fuente entrega una energía $CV_s^2$: exactamente la mitad acaba en el condensador y la otra mitad se disipa como calor en $R$, sea cual sea el valor de $R$.'
+meanings:
+- tensión en el condensador $b$ (una entrada por circuito)
+- resistencia del circuito $b$
+- capacidad, la misma en todos los circuitos
+- tensión de la fuente, común a todos los circuitos (broadcasting sobre $b$)
+- 'elemento a elemento: el índice $b$ aparece una vez a cada lado, no se suma nada'
+- corriente por cada resistencia
+- energía almacenada en cada condensador
+labels:
+  V_s: Tensión de la fuente
+  C: Capacidad
+  R_min: Resistencia mínima
+  R_max: Resistencia máxima
+  n_circuits: Circuitos
+  source: Fuente
+  period: Período de la onda cuadrada
+  t_max: Tiempo simulado

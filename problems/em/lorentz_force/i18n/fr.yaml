@@ -1,0 +1,18 @@
+source_hash: a8a725d373c7
+title: Particules chargées dans des champs E et B
+summary: 'La force de Lorentz sur un lot de particules chargées dans des champs électrique et magnétique croisés. Le produit vectoriel s''écrit avec le tenseur de Levi-Civita $\varepsilon_{ijk}$, si bien qu''un seul einsum donne la force magnétique sur chaque particule : chacune décrit une hélice cyclotron tandis que l''essaim entier dérive selon $\mathbf E\times\mathbf B$.'
+notes: Les unités sont sans dimension ($q$, $m$, $E$, $B$ d'ordre un). Avec $\mathbf E = 0$, chaque particule tourne à la pulsation cyclotron $\omega = \lvert q\rvert B/m$ sur un rayon $mv_\perp/(\lvert q\rvert B)$ ; les charges positives et négatives tournent en sens opposés. Ajouter $\mathbf E\perp\mathbf B$ fait dériver chaque centre guide à la vitesse $\mathbf E\times\mathbf B/B^2$, indépendante de la charge et de la masse.
+meanings:
+- position de la particule $b$, composante $i \in \{x, y, z\}$
+- vitesse de la particule $b$
+- charge et masse de chaque particule
+- 'champs uniformes : $\mathbf E$ selon $y$, $\mathbf B$ selon $z$'
+- $+1$ pour les permutations paires de $(x, y, z)$, $-1$ pour les impaires, 0 si un indice se répète
+- '$j$ et $k$ répétés ⇒ sommés : le produit vectoriel $\mathbf v\times\mathbf B$'
+- vitesse de dérive $\mathbf E\times\mathbf B$, la même pour toute charge
+labels:
+  B: Champ magnétique $B_z$
+  E: Champ électrique $E_y$
+  v_par: Vitesse initiale selon $\mathbf B$
+  n_particles: Particules
+  t_max: Durée simulée

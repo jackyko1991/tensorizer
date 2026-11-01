@@ -1,0 +1,14 @@
+source_hash: 045c5b4ab526
+title: Quadri-impulsion et désintégration à deux corps
+summary: Une particule en mouvement se désintègre en deux. Dans son référentiel propre, les produits partent dos à dos avec une impulsion fixe $p^*$ ; un boost de Lorentz $\Lambda^\mu{}_\nu$ (un seul einsum) transporte tous les angles de désintégration à la fois vers le laboratoire, où les impulsions sont rabattues vers l'avant. La métrique de Minkowski $\eta_{\mu\nu}$ reconvertit les quadri-impulsions des produits en la masse du père — l'astuce de la masse invariante utilisée pour découvrir de nouvelles particules.
+notes: 'Les impulsions dans le référentiel propre sont sur une sphère de rayon $p^*$ ; le boost l''étire en ellipse (les courbes tracées) décalée vers l''avant par l''impulsion du père, si bien que les pères rapides projettent les deux produits dans un cône étroit vers l''avant. L''énergie et les angles dans le laboratoire varient avec $\theta^*$, mais $p_\mu p^\mu = m^2$ pour chaque produit et $(p_1+p_2)_\mu(p_1+p_2)^\mu = M^2$ ne changent jamais — un détecteur qui mesure les deux impulsions peut toujours reconstruire $M$. Pour $\pi^0 \to \gamma\gamma$, les photons sont sans masse ($p_\mu p^\mu = 0$) et l''angle d''ouverture minimal vaut $2\arcsin(1/\gamma)$. Les trois désintégrations sont réelles : $K^0_S \to \pi^+\pi^-$, $\pi^0 \to \gamma\gamma$, $\Lambda \to p\,\pi^-$. Seule la cinématique est modélisée : les angles de désintégration sont balayés régulièrement au lieu d''être tirés au hasard, et le spin et la polarisation sont ignorés.'
+meanings:
+- diag(1, −1, −1, −1), unités avec $c = 1$
+- quadri-impulsions des produits pour B angles de désintégration $\theta^*$ dans le référentiel propre
+- $\gamma$, $\gamma\beta_i$ et $\delta_{ij} + (\gamma-1)\beta_i\beta_j/\beta^2$ pour la vitesse du père $\boldsymbol\beta = \mathbf P/E$
+- '$\nu$ répété ⇒ sommé : boost de toutes les désintégrations à la fois'
+- 'produit de Minkowski : le même dans tous les référentiels'
+- masse du père reconstruite pour chaque configuration
+labels:
+  decay: Désintégration
+  p_parent: Impulsion du père $|\mathbf P|$

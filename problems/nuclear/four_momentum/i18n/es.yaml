@@ -1,0 +1,14 @@
+source_hash: 045c5b4ab526
+title: Cuadrimomento y desintegración en dos cuerpos
+summary: 'Una partícula en movimiento se desintegra en dos. En su sistema de reposo los productos salen en sentidos opuestos con un momento fijo $p^*$; un boost de Lorentz $\Lambda^\mu{}_\nu$ (un único einsum) lleva todos los ángulos de desintegración a la vez al laboratorio, donde los momentos quedan arrastrados hacia delante. La métrica de Minkowski $\eta_{\mu\nu}$ convierte los cuadrimomentos de los productos de nuevo en la masa del padre: el truco de la masa invariante usado para descubrir nuevas partículas.'
+notes: 'Los momentos en el sistema de reposo están sobre una esfera de radio $p^*$; el boost la estira en una elipse (las curvas trazadas) desplazada hacia delante por el momento del padre, de modo que los padres rápidos lanzan ambos productos en un cono estrecho hacia delante. La energía y los ángulos en el laboratorio cambian con $\theta^*$, pero $p_\mu p^\mu = m^2$ para cada producto y $(p_1+p_2)_\mu(p_1+p_2)^\mu = M^2$ nunca cambian: un detector que mida los dos momentos siempre puede reconstruir $M$. Para $\pi^0 \to \gamma\gamma$ los fotones no tienen masa ($p_\mu p^\mu = 0$) y el ángulo de apertura mínimo es $2\arcsin(1/\gamma)$. Las tres desintegraciones son reales: $K^0_S \to \pi^+\pi^-$, $\pi^0 \to \gamma\gamma$, $\Lambda \to p\,\pi^-$. Solo se modela la cinemática: los ángulos de desintegración se barren uniformemente en lugar de muestrearse, y se ignoran el espín y la polarización.'
+meanings:
+- diag(1, −1, −1, −1), unidades con $c = 1$
+- cuadrimomentos de los hijos para B ángulos de desintegración $\theta^*$ en el sistema de reposo
+- $\gamma$, $\gamma\beta_i$ y $\delta_{ij} + (\gamma-1)\beta_i\beta_j/\beta^2$ para la velocidad del padre $\boldsymbol\beta = \mathbf P/E$
+- '$\nu$ repetido ⇒ sumado: boost de todas las desintegraciones a la vez'
+- 'producto de Minkowski: el mismo en todos los sistemas'
+- masa del padre reconstruida para cada configuración
+labels:
+  decay: Desintegración
+  p_parent: Momento del padre $|\mathbf P|$

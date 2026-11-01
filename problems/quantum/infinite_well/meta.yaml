@@ -1,0 +1,29 @@
+title: Particle in a box
+category: quantum
+level: beginner
+order: 1
+summary: >
+  The time-independent Schrödinger equation on a grid becomes a matrix eigenvalue problem
+  $H_{ij}\psi_j = E\psi_i$. torch.linalg.eigh gives the stationary states, and a superposition of them
+  evolves by attaching a phase $e^{-iE_n t}$ to each one and summing with einsum.
+animated: true
+vector_form: '\hat H\,\psi = -\tfrac12\,\frac{d^2\psi}{dx^2} = E\,\psi,\qquad \psi(x,t) = \sum_n c_n\,\varphi_n(x)\,e^{-iE_n t}'
+index_form: 'H_{xy}\,\varphi_{yn} = E_n\,\varphi_{xn},\qquad \psi_{x}(t) = \varphi_{xn}\,c_n\,e^{-iE_n t}'
+translation:
+  - {symbol: 'H_{xy}', code: 'hamiltonian(N, L)', shape: '(N, N)', meaning: 'Hamiltonian matrix $-\tfrac12\,D2$ on the $N$ interior grid points (walls: $\psi = 0$)'}
+  - {symbol: 'D2_{xy}', code: 'second_derivative(N, dx)', shape: '(N, N)', meaning: 'finite-difference $d^2/dx^2$: $(\psi_{x-1} - 2\psi_x + \psi_{x+1})/dx^2$'}
+  - {symbol: 'E_n,\ \varphi_{xn}', code: 'torch.linalg.eigh(H)', shape: '(N,), (N, N)', meaning: 'energies and eigenvectors (column $n$ is state $n$)'}
+  - {symbol: 'c_n', code: "einsum('xn,x->n', phi, psi0) * dx", shape: '(N,)', meaning: 'project the initial state onto the eigenbasis (repeated $x$ ⇒ summed)'}
+  - {symbol: '\psi_x(t)', code: "einsum('xn,n->x', phi, c * exp(-1j*E*t))", shape: '(N,)', meaning: 'repeated $n$ ⇒ summed: rebuild $\psi$ from its phased components'}
+notes: >
+  Units $\hbar = m = 1$. The exact energies are $E_n = n^2\pi^2/(2L^2)$; the grid reproduces the lowest ones to a
+  small fraction of a percent. Each eigenstate only picks up a phase, so $\lvert c_n\rvert$ and the norm never change —
+  the sloshing of $\lvert\psi\rvert^2$ is pure interference between states. After the revival time $T = 4L^2/\pi$ every
+  phase $e^{-iE_n t}$ is back to 1 and the initial state reappears exactly. The faint dashed curves are
+  the lowest stationary states $\varphi_n(x)$.
+params:
+  initial: {default: superposition, type: choice, options: [superposition, gaussian], label: Initial state}
+  n_states: {default: 3, min: 1, max: 6, step: 1, type: int, label: States in superposition}
+  L: {default: 1.0, min: 0.5, max: 3.0, step: 0.1, label: Box width}
+  n_grid: {default: 300, min: 50, max: 800, step: 10, type: int, label: Grid points}
+  revivals: {default: 1.0, min: 0.1, max: 3.0, step: 0.1, label: Simulated time, unit: revival times}

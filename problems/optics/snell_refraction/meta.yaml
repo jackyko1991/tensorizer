@@ -1,0 +1,29 @@
+title: Snell's law in layered media
+category: optics
+level: beginner
+order: 1
+summary: >
+  A fan of light rays crosses three layers with different refractive indices. The vector form of
+  Snell's law bends every ray at once with one einsum, and switches to a mirror reflection
+  wherever total internal reflection kicks in.
+animated: true
+vector_form: '\mathbf t = \eta\,\mathbf d + \left(\eta\cos\theta_i - \sqrt{1-\eta^2(1-\cos^2\theta_i)}\right)\mathbf n,\quad \eta = \tfrac{n_1}{n_2},\ \cos\theta_i = -\mathbf n\cdot\mathbf d'
+index_form: 't_{ri} = \eta_r\,d_{ri} + \left(\eta_r c_r - \sqrt{1-\eta_r^2(1-c_r^2)}\right) n_{ri},\quad c_r = -n_{rj}\,d_{rj}'
+translation:
+  - {symbol: 'd_{ri}', code: 'd', shape: '(R, 2)', meaning: 'unit direction of ray $r$, component $i \in \{x, y\}$'}
+  - {symbol: 'n_{ri}', code: 'normal', shape: '(R, 2)', meaning: 'unit surface normal facing the incoming ray'}
+  - {symbol: '\eta_r', code: 'n_layer[layer] / n_layer[next_layer]', shape: '(R,)', meaning: 'index ratio $n_1/n_2$ at the interface each ray hits'}
+  - {symbol: 'c_r = -n_{rj}d_{rj}', code: "-einsum('rj,rj->r', n, d)", shape: '(R,)', meaning: 'repeated $j$ ⇒ summed: $\cos\theta_i$ of each ray'}
+  - {symbol: 't_{ri}', code: 'refract(d, n, eta)', shape: '(R, 2)', meaning: 'refracted direction (still a unit vector)'}
+  - {symbol: 'r_{ri} = d_{ri} - 2(d_{rj}n_{rj})n_{ri}', code: 'reflect(d, n)', shape: '(R, 2)', meaning: 'mirror direction, used where $1 - \eta^2(1 - c^2) < 0$ (TIR)'}
+notes: >
+  Rays travel at speed $c/n$, so the dashed line through the ray tips is a wavefront: it lags behind in dense layers.
+  With the defaults the bottom layer is air ($n = 1$); rays steeper than the critical angle $\arcsin(n_3/n_2)$ at that
+  interface are totally internally reflected and head back up. Set two indices equal to make an interface vanish.
+params:
+  n1: {default: 1.6, min: 1.0, max: 2.5, step: 0.05, label: 'Index of top layer $n_1$'}
+  n2: {default: 1.33, min: 1.0, max: 2.5, step: 0.05, label: 'Index of middle layer $n_2$'}
+  n3: {default: 1.0, min: 1.0, max: 2.5, step: 0.05, label: 'Index of bottom layer $n_3$'}
+  n_rays: {default: 12, min: 2, max: 24, step: 1, type: int, label: Rays in the fan}
+  max_angle: {default: 70.0, min: 10, max: 85, step: 1, label: Widest ray angle, unit: °}
+  t_max: {default: 8.0, min: 2, max: 20, step: 0.5, label: Simulated time, unit: L/c}

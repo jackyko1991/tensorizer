@@ -1,0 +1,16 @@
+source_hash: 87bf1a8993df
+title: Cavité entraînée (Navier–Stokes)
+summary: 'Le cas test classique de la mécanique des fluides numérique : une boîte carrée de fluide dont le couvercle glisse vers la droite. Les équations de Navier–Stokes 2D en formulation fonction de courant–vorticité sont intégrées dans le temps, et l''équation de Poisson pour $\psi$ est résolue en diagonalisant le laplacien avec eigh. Un tourbillon principal se forme et sa vitesse sur l''axe médian est comparée à Ghia et al. (1982).'
+notes: 'Unités : taille de la cavité 1 et vitesse du couvercle 1, donc $\mathrm{Re} = 1/\nu$. La fonction de courant rend l''écoulement à divergence nulle par construction, et la pression disparaît en prenant le rotationnel de Navier–Stokes. À chaque pas : vorticité aux parois par la formule de Thom (non-glissement), un pas d''Euler explicite pour $\omega$, puis la résolution de Poisson. $\nabla^2\psi = T\psi + \psi T^\mathsf T$ devient diagonal dans la base propre de $T$ — la même idée qu''une transformée en sinus rapide. À Re = 100, le centre du tourbillon se situe vers (0.62, 0.74), au-dessus et à droite du centre ; à Re plus faible, il se déplace vers (0.5, 0.76), à Re plus élevé vers le milieu, et de petits tourbillons contrarotatifs apparaissent dans les coins inférieurs. Un Re plus élevé exige une grille plus fine.'
+meanings:
+- vorticité et fonction de courant sur la grille, indexées [x, y], parois comprises
+- $(\partial_y\psi, -\partial_x\psi)$ par différences centrées
+- '$j$ répété ⇒ sommé : advection de la vorticité'
+- stencil à cinq points
+- laplacien 1D avec $\psi = 0$ aux parois, diagonalisé une fois
+- transformation ; puis $\hat\psi_{ab} = \hat f_{ab}/(\Lambda_a + \Lambda_b)$ et retour
+- 'Thom : $-2\psi_\text{next}/h^2$, moins $2U/h$ sous le couvercle'
+labels:
+  re: Nombre de Reynolds $UL/\nu$
+  n: Points de grille par côté
+  t_max: Durée simulée

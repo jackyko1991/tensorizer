@@ -1,0 +1,22 @@
+source_hash: 9f4f33f51aa8
+title: Oscillations de neutrinos
+summary: Les neutrinos sont produits dans une saveur définie ($\nu_e, \nu_\mu, \nu_\tau$) mais se propagent comme trois états de masse aux phases légèrement différentes. La matrice de mélange PMNS et un seul einsum complexe sur l'indice de masse donnent la probabilité de chaque changement de saveur pour toute une grille de distances, montrant un faisceau de $\nu_\mu$ qui se transforme en $\nu_\tau$ et $\nu_e$ en vol.
+notes: 'Comme $U$ est unitaire, $\sum_\beta P(\alpha\to\beta) = 1$ à toute distance : les neutrinos changent de saveur mais aucun n''est perdu. Avec seulement deux saveurs, la formule se réduit à $P = \sin^2 2\theta\,\sin^2(1.267\,\Delta m^2 L/E)$. Ici, le grand $\Delta m^2_{31}$ donne l''oscillation rapide « atmosphérique » (premier creux de $\nu_\mu$ vers $L/E \approx 500$ km/GeV, surtout vers $\nu_\tau$ car $\theta_{23} \approx 45°$) et le petit $\Delta m^2_{21}$ l''oscillation lente « solaire » (vers $15\,000$ km/GeV). Les points en dessous sont des neutrinos échantillons : chacun montre la saveur qu''enregistrerait un détecteur à sa distance, tirée avec les probabilités calculées (graine fixe). Simplifications : oscillations dans le vide uniquement — l''effet MSW de la matière dans la Terre ou le Soleil est omis — et hiérarchie de masse normale. Les paramètres par défaut sont proches des ajustements globaux actuels. Essayez $\delta_{CP}$ = 0 contre 270° pour un faisceau $\nu_\mu \to
+  \nu_e$.'
+meanings:
+- saveur $\alpha$ × état de masse $i$ ; produit de trois rotations via einsum('ab,bc,ci->ai')
+- seules les différences $\Delta m^2_{21}, \Delta m^2_{31}$ comptent ; $m_1^2 = 0$
+- distances espacées logarithmiquement, en km
+- phase de chaque état de masse à chaque distance ($2.534\,m^2 L/E$ en eV², km, GeV)
+- '$i$ répété ⇒ sommé : les trois états de masse interfèrent'
+- les neuf probabilités de transition à chaque distance
+labels:
+  energy: Énergie du neutrino $E$
+  l_max: Distance maximale $L_{\max}$
+  flavour: Saveur à la production
+  theta12: $\theta_{12}$
+  theta13: $\theta_{13}$
+  theta23: $\theta_{23}$
+  delta_cp: $\delta_{CP}$
+  dm21: $\Delta m^2_{21}$
+  dm31: $\Delta m^2_{31}$

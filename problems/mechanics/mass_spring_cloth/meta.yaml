@@ -1,0 +1,28 @@
+title: Mass–spring cloth
+category: mechanics
+level: advanced
+order: 3
+summary: >
+  A square grid of point masses joined by structural, shear and bending springs, pinned at two corners and released under gravity.
+  An incidence matrix $D_{ea}$ turns the mesh into tensors: one einsum gives every spring vector, another adds up the forces on every node.
+animated: true
+vector_form: 'm\,\ddot{\mathbf x}_a = \sum_{e\ni a}\mathbf F_e + m\,\mathbf g - m\gamma\,\dot{\mathbf x}_a,\qquad \mathbf F_e = k\,(\ell_e - \ell^0_e)\,\hat{\mathbf u}_e'
+index_form: 'd_{ei} = D_{ea}x_{ai},\qquad \ell_e = \sqrt{d_{ei}d_{ei}},\qquad \ddot x_{ai} = -\tfrac{k}{m}\,D_{ea}(\ell_e - \ell^0_e)\,\frac{d_{ei}}{\ell_e} + g_i - \gamma\,\dot x_{ai}'
+translation:
+  - {symbol: 'x_{ai}', code: 'y[0]', shape: '(N, 3)', meaning: 'position of node $a$; $N = n^2$ masses'}
+  - {symbol: 'D_{ea}', code: 'incidence(edges, N)', shape: '(E, N)', meaning: 'incidence matrix: $-1$ / $+1$ at the two ends of spring $e$'}
+  - {symbol: 'd_{ei} = D_{ea}x_{ai}', code: "einsum('ea,ai->ei', D, x)", shape: '(E, 3)', meaning: 'repeated $a$ ⇒ summed: vector along every spring'}
+  - {symbol: '\ell_e', code: "sqrt(einsum('ei,ei->e', d, d))", shape: '(E,)', meaning: 'current spring lengths; $\ell^0_e$ are the rest lengths'}
+  - {symbol: 'F_{ai}', code: "-einsum('ea,e,ei->ai', D, tension, u)", shape: '(N, 3)', meaning: 'repeated $e$ ⇒ summed: net spring force on node $a$'}
+  - {symbol: 'F_{ai} (sparse)', code: 'F.index_add_(0, i, f); F.index_add_(0, j, -f)', shape: '(N, 3)', meaning: 'the same sum as a scatter over the edge list'}
+  - {symbol: 'E', code: 'energy(traj, D, rest, cloth)', shape: '(T,)', meaning: 'kinetic + elastic + gravitational energy'}
+notes: >
+  Shear springs along the diagonals stop the squares collapsing into rhombi, and springs that skip one node give the cloth some bending stiffness. The two pinned corners simply get zero
+  acceleration. Air damping $\gamma$ is the only loss, so the total energy can only go down ($dE/dt = -m\gamma\lvert\mathbf v\rvert^2$) and with $\gamma = 0$ it is
+  conserved. The springs are stiff, so the time step is tied to $\sqrt{m/k}$. Self-collisions are ignored.
+  Each node has mass 10 g and the grid spacing is 10 cm.
+params:
+  n_side: {default: 12, min: 4, max: 20, step: 1, type: int, label: Masses per side}
+  k: {default: 200.0, min: 20, max: 1000, step: 10, label: 'Spring constant $k$', unit: N/m}
+  damping: {default: 0.3, min: 0.0, max: 5.0, step: 0.1, label: 'Air damping $\gamma$', unit: 1/s}
+  t_max: {default: 4.0, min: 1, max: 10, step: 0.5, label: Simulated time, unit: s}

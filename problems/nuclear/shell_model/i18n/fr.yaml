@@ -1,0 +1,19 @@
+source_hash: f7213dbb7c33
+title: Modèle en couches nucléaire
+summary: Les nucléons orbitent indépendamment dans un puits de Woods–Saxon. Résoudre l'équation de Schrödinger radiale pour chaque canal $(l, j)$ comme un lot de hamiltoniens aux différences finies et augmenter la force spin–orbite fait apparaître les nombres magiques 2, 8, 20, 28, 50, 82, 126 — les nombres de nucléons des noyaux particulièrement stables — comme les plus grands écarts du schéma de niveaux.
+notes: 'Sans spin–orbite, les niveaux se regroupent comme ceux d''un oscillateur harmonique 3D et les écarts tombent après 2, 8, 20 et 40 nucléons (le fond plat du puits de Woods–Saxon sépare aussi 58, 92 et 138). Le terme spin–orbite abaisse $j = l + \tfrac12$ et élève $j = l - \tfrac12$ d''une quantité croissant avec $l$, si bien que le partenaire de grand $j$ de chaque couche de l''oscillateur (1f7/2, 1g9/2, 1h11/2, 1i13/2) descend dans la couche inférieure — l''explication de 28, 50, 82 et 126 par Mayer et Jensen en 1949. Les paramètres par défaut sont ceux des neutrons du ²⁰⁸Pb : $V_0 = 51 - 33(N-Z)/A \approx 44$ MeV, $r_0 = 1.27$ fm, $a = 0.67$ fm. Simplifications : un seul puits fixe pour tous les niveaux (pas d''auto-cohérence, pas d''appariement), pas de terme coulombien (ce sont donc des niveaux de neutrons), et une boîte de 18 fm, donc seuls les niveaux liés sont affichés.'
+meanings:
+- points de grille intérieurs ; $u = 0$ en $r = 0$ et au bord de la boîte
+- $d^2/dr^2$ aux différences finies
+- chaque canal $(l, j = l \pm \tfrac12)$ jusqu'à $l = 8$
+- $+l/2$ pour $j = l+\tfrac12$, $-(l+1)/2$ pour $j = l-\tfrac12$
+- puits + spin–orbite + centrifuge, via einsum('k,i->ki')
+- un hamiltonien par canal, empilés
+- en lot sur $k$ ; on garde les niveaux liés $E < 0$
+- 'nucléons remplis jusqu''à chaque niveau trié : les nombres magiques se situent aux grands écarts'
+labels:
+  v_so: Intensité spin–orbite finale $V_{so}$
+  v0: Profondeur du puits $V_0$
+  mass_number: Nombre de masse $A$ (fixe $R = r_0 A^{1/3}$)
+  diffuseness: Diffusivité de surface $a$
+  n_grid: Points de grille

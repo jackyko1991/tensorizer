@@ -1,0 +1,32 @@
+title: Lagrange points of the restricted three-body problem
+category: astro
+level: intermediate
+order: 2
+summary: >
+  A star and a planet circle each other; in their rotating frame a test particle feels gravity, the centrifugal force and the
+  Coriolis force, written with $\varepsilon_{ijk}$. Newton's method on $\nabla\Phi_\mathrm{eff} = 0$ (gradient and Hessian by autograd)
+  finds all five Lagrange points at once, and particles nudged away from L4 trace tadpole orbits around it.
+animated: true
+vector_form: '\ddot{\mathbf r} = -\nabla\Phi_\mathrm{grav} - 2\,\boldsymbol\Omega\times\dot{\mathbf r} - \boldsymbol\Omega\times(\boldsymbol\Omega\times\mathbf r),\qquad \nabla\Phi_\mathrm{eff}(\mathbf r_L) = 0'
+index_form: '\ddot x_i = -m_s\,\frac{(x - x_s)_i}{\lvert x - x_s\rvert^3} - 2\,\varepsilon_{ijk}\Omega_j\dot x_k - \varepsilon_{ijk}\Omega_j\,\varepsilon_{klm}\Omega_l x_m,\qquad x_i \leftarrow x_i - (\partial_i\partial_j\Phi_\mathrm{eff})^{-1}\partial_j\Phi_\mathrm{eff}'
+translation:
+  - {symbol: 'x_{bi}', code: 'y[:, 0, :]', shape: '(B, 3)', meaning: 'position of test particle $b$ in the rotating frame'}
+  - {symbol: 'x_{si},\; m_s', code: 'primaries(mu)', shape: '(2, 3), (2,)', meaning: 'star at $(-\mu, 0, 0)$ and planet at $(1-\mu, 0, 0)$'}
+  - {symbol: 'm_s (x - x_s)_i / r^3', code: "einsum('s,bs,bsi->bi', m, 1/r3, d)", shape: '(B, 3)', meaning: 'repeated $s$ ⇒ summed: gravity of both bodies'}
+  - {symbol: '\varepsilon_{ijk}', code: 'levi_civita()', shape: '(3, 3, 3)', meaning: 'Levi-Civita symbol for the cross products'}
+  - {symbol: '-2\varepsilon_{ijk}\Omega_j\dot x_k', code: "-2 * einsum('ijk,j,bk->bi', eps, omega, v)", shape: '(B, 3)', meaning: 'Coriolis acceleration, $\boldsymbol\Omega = \hat{\mathbf z}$'}
+  - {symbol: '\partial_i\Phi_\mathrm{eff}', code: 'vmap(grad(effective_potential))(x)', shape: '(5, 3)', meaning: 'gradient by autograd at all five points'}
+  - {symbol: '\partial_i\partial_j\Phi_\mathrm{eff}', code: 'vmap(jacrev(grad(effective_potential)))(x)', shape: '(5, 3, 3)', meaning: 'Hessian by autograd: Newton''s step is one batched linalg.solve'}
+  - {symbol: 'C', code: 'jacobi_constant(y, mu)', shape: '(T, B)', meaning: '$-2\Phi_\mathrm{eff} - \dot x_i\dot x_i$, conserved'}
+notes: >
+  Units: separation 1, $G(M_1 + M_2) = 1$, so the pair turns once every $2\pi$. The planet has mass fraction $\mu$, and the test particles are
+  too light to disturb either body. L1, L2 and L3 lie on the line through the bodies and are saddle points of $\Phi_\mathrm{eff}$; L4 and L5 form
+  equilateral triangles with the two bodies and are maxima of $\Phi_\mathrm{eff}$, yet the Coriolis force makes them stable when $\mu < 0.0385$.
+  That is why Jupiter's Trojan asteroids gather 60° ahead of and behind the planet. The particles start at rest on the planet's orbit,
+  a few degrees ahead of L4: small nudges give small tadpole loops (with fast epicycles on top), larger ones stretch into long banana-shaped loops along the orbit, and
+  beyond about 20° (for $\mu = 0.01$) the particle wanders off. For $\mu$ above 0.0385 even tiny nudges drift away.
+params:
+  mu: {default: 0.01, min: 0.001, max: 0.05, step: 0.001, label: 'Planet mass fraction $\mu$'}
+  nudge: {default: 15.0, min: 1, max: 30, step: 1, label: Largest nudge ahead of L4, unit: °}
+  t_max: {default: 100.0, min: 20, max: 400, step: 10, label: Simulated time, unit: '$1/\Omega$'}
+  dt: {default: 0.03, min: 0.005, max: 0.05, step: 0.005, label: Time step, unit: '$1/\Omega$'}

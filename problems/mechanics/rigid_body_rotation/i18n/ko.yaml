@@ -1,0 +1,20 @@
+source_hash: d653bb5fd1c6
+title: 강체의 자유 회전 (테니스 라켓 효과)
+summary: 관성 텐서 $I_{ij}$와 레비치비타 텐서 $\varepsilon_{ijk}$로 쓴, 돌림힘을 받지 않는 상자의 오일러 방정식. 가장 긴 축이나 가장 짧은 축에 대한 회전은 안정하지만, 중간 축에 대한 회전은 계속해서 뒤집힙니다(자니베코프 효과).
+notes: 돌림힘이 없으면 에너지 $\tfrac12\boldsymbol\omega\cdot I\boldsymbol\omega$와 $\mathbf L = I\boldsymbol\omega$의 크기가 모두 보존되므로, ($\mathbf L$ 공간에서) $\boldsymbol\omega$는 에너지가 일정한 타원체와 $\lvert\mathbf L\rvert$가 일정한 구의 교선 위에서만 움직여야 합니다. 장축과 단축 근처에서 이 곡선들은 작은 고리이므로 안정합니다. 중간 축 근처에서는 안장점을 지나므로 작은 흔들림이 커져 상자가 뒤집혔다가 다시 돌아옵니다. 세계 좌표계의 각운동량 $RI\boldsymbol\omega$(고정된 화살표로 표시)는 전혀 움직이지 않습니다. 매개변수 $a, b, c$는 $a \ge b \ge c$가 되도록 정렬됩니다.
+meanings:
+- 꽉 찬 상자의 관성 텐서, $(M/12)\operatorname{diag}(b^2+c^2,\ a^2+c^2,\ a^2+b^2)$
+- 물체 좌표계 성분으로 쓴 각속도
+- '레비치비타 텐서: 텐서로 쓴 외적'
+- '$j, k, l$에 대해 합: $\boldsymbol\omega\times(I\boldsymbol\omega)$'
+- $I_{ij}\dot\omega_j = -\varepsilon_{ijk}\omega_j I_{kl}\omega_l$을 풂
+- '방향: 물체 → 세계 회전 행렬'
+- 회전 운동 에너지, 보존량
+labels:
+  spin_axis: 주된 회전축
+  spin: 회전 속도
+  perturbation: 흔들림(회전의 비율)
+  a: 상자 변 $a$
+  b: 상자 변 $b$
+  c: 상자 변 $c$
+  t_max: 시뮬레이션 시간

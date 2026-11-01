@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: prefix-dev/setup-pixi@v0.11.2
+        with:
+          cache: true
+      - run: pixi run lint
+      - run: pixi run test
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: prefix-dev/setup-pixi@v0.11.2
+        with:
+          cache: true
+      # Full render of all 15 problems: checks every default-param run end to end.
+      - run: pixi run build-assets
+      - run: pixi run web-build
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: site
+          path: frontend/dist

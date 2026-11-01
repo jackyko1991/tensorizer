@@ -1,0 +1,15 @@
+source_hash: 7f418c1e4166
+title: Cuatro procesos de un gas ideal
+summary: 'El mismo gas, partiendo del mismo estado, recorre cuatro caminos clásicos: isotermo, isobárico, isócoro y adiabático. Los cuatro caminos son un único tensor (proceso, puntos, 2) de muestras $(V, p)$, el trabajo es el área bajo cada curva obtenida con torch.trapezoid y el primer principio lo convierte en calor.'
+notes: 'Estado inicial: 1 mol a 300 K en 10 litros. Los caminos isotermo, isobárico y adiabático se expanden hasta el mismo volumen final; el camino isócoro mantiene $V$ fijo y calienta el gas hasta que la presión ha crecido en la misma razón. Como $dV = 0$ en la isócora, torch.trapezoid da exactamente trabajo nulo. En la isoterma $\Delta U = 0$, así que $Q = W$; en la adiabática $Q = 0$, así que el gas paga su trabajo con energía interna y se enfría. Las barras de la derecha son totales acumulados, calculados con torch.cumulative_trapezoid.'
+meanings:
+- muestra $k$ a lo largo del proceso $c$ (isotermo, isobárico, isócoro, adiabático)
+- ley de los gases ideales, elemento a elemento sobre todo el tensor
+- '$k$ repetido ⇒ sumado: trabajo realizado por el gas en cada camino'
+- la energía interna depende solo de la temperatura
+- 'primer principio de la termodinámica: calor aportado al gas'
+labels:
+  ratio: Razón de expansión $V_2/V_1$
+  T0: Temperatura inicial
+  n: Cantidad de gas
+  gas: Gas

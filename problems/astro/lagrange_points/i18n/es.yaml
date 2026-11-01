@@ -1,0 +1,18 @@
+source_hash: 28d4b810cb16
+title: Puntos de Lagrange del problema restringido de tres cuerpos
+summary: Una estrella y un planeta giran uno alrededor del otro; en su sistema de referencia rotatorio una partícula de prueba siente la gravedad, la fuerza centrífuga y la fuerza de Coriolis, escritas con $\varepsilon_{ijk}$. El método de Newton sobre $\nabla\Phi_\mathrm{eff} = 0$ (gradiente y hessiana mediante autograd) encuentra los cinco puntos de Lagrange a la vez, y las partículas desplazadas ligeramente desde L4 trazan órbitas de renacuajo y de herradura.
+notes: 'Unidades: separación 1, $G(M_1 + M_2) = 1$, de modo que el par da una vuelta cada $2\pi$. El planeta tiene fracción de masa $\mu$, y las partículas de prueba son demasiado ligeras para perturbar a ninguno de los cuerpos. L1, L2 y L3 están sobre la recta que une los cuerpos y son puntos de silla de $\Phi_\mathrm{eff}$; L4 y L5 forman triángulos equiláteros con los dos cuerpos y son máximos de $\Phi_\mathrm{eff}$, pero la fuerza de Coriolis los hace estables cuando $\mu < 0.0385$. Por eso los asteroides troyanos de Júpiter se agrupan 60° por delante y por detrás del planeta. Desplazamientos mayores convierten los pequeños lazos de renacuajo en grandes y finalmente en órbitas de herradura que también rodean L3. Para $\mu$ por encima de 0.0385 las partículas se alejan.'
+meanings:
+- posición de la partícula de prueba $b$ en el sistema rotatorio
+- estrella en $(-\mu, 0, 0)$ y planeta en $(1-\mu, 0, 0)$
+- '$s$ repetido ⇒ sumado: gravedad de ambos cuerpos'
+- símbolo de Levi-Civita para los productos vectoriales
+- aceleración de Coriolis, $\boldsymbol\Omega = \hat{\mathbf z}$
+- gradiente mediante autograd en los cinco puntos
+- 'hessiana mediante autograd: el paso de Newton es un único linalg.solve por lotes'
+- $-2\Phi_\mathrm{eff} - \dot x_i\dot x_i$, conservada
+labels:
+  mu: Fracción de masa del planeta $\mu$
+  nudge: Mayor desplazamiento desde L4 a lo largo de la órbita
+  t_max: Tiempo simulado
+  dt: Paso de tiempo

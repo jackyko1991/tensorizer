@@ -1,0 +1,17 @@
+source_hash: 8807e34cb0a8
+title: Ondas electromagnéticas (FDTD)
+summary: 'Las dos ecuaciones de Maxwell con rotacional, avanzadas en el tiempo sobre una malla de Yee. El rotacional se escribe como $\varepsilon_{ijk}\,\partial_j F_k$: una tabla de diferencias finitas contraída con el símbolo de Levi-Civita en un único einsum. Una onda emitida por una fuente puntual o lineal incide sobre un bloque dieléctrico, se frena, se desvía y se refleja en parte, mientras un borde amortiguador absorbe lo que sale de la caja.'
+notes: 'Unidades con $c = \varepsilon_0 = \mu_0 = 1$ y tamaño de celda $\Delta x = 1$. $\mathbf E$ y $\mathbf H$ están desplazados media celda (diferencias hacia delante para $\partial\mathbf E$, hacia atrás para $\partial\mathbf H$) y se actualizan alternadamente: el esquema leap-frog de Yee. La fuente es "blanda": se suma a $E_z$, de modo que las ondas reflejadas la atraviesan sin más. El borde absorbente simplemente multiplica los campos por un factor algo menor que 1 que crece suavemente hacia las paredes; los códigos reales usan en su lugar una capa perfectamente adaptada (PML). Dentro del bloque la longitud de onda se reduce en $n = \sqrt{\varepsilon_r}$; en incidencia normal se refleja una fracción $(1 - n)/(1 + n)$ de la amplitud.'
+meanings:
+- 'componentes del campo en la malla; modo TM: solo $E_z$, $H_x$, $H_y$ son no nulos'
+- tabla de diferencias finitas; la fila $j = z$ es cero en 2D
+- símbolo de Levi-Civita
+- '$j, k$ repetidos ⇒ sumados: el rotacional en cada celda'
+- 'permitividad relativa: 1 en el vacío, $\varepsilon_\text{block}$ en el bloque ($n = \sqrt{\varepsilon_r}$)'
+- paso de tiempo $S\,\Delta x/(c\sqrt2)$; $S > 1$ se rechaza porque el esquema divergería
+labels:
+  source: Fuente
+  eps_block: Permitividad del bloque $\varepsilon_r$
+  wavelength: Longitud de onda en el vacío
+  courant: Número de Courant $S$
+  t_max: Tiempo simulado

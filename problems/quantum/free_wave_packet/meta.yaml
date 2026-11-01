@@ -1,0 +1,28 @@
+title: Free wave packet
+category: quantum
+level: beginner
+order: 3
+summary: >
+  A free particle needs no time stepping at all: in momentum space the Schrödinger equation is solved by
+  multiplying each Fourier component by its own phase $e^{-ik^2t/2}$. One FFT, one multiply, one inverse FFT
+  give $\psi$ at any time — for every time at once as a $(T, N)$ tensor. The packet drifts at the group
+  velocity $k_0$ and spreads because its different momenta travel at different speeds.
+animated: true
+vector_form: 'i\,\partial_t\psi = -\tfrac12\,\partial_x^2\psi\quad\Longrightarrow\quad \tilde\psi(k,t) = e^{-ik^2t/2}\,\tilde\psi(k,0)'
+index_form: '\tilde\psi_{k} = F_{kx}\,\psi_x(0),\qquad \tilde\psi_{tk} = K_{tk}\,\tilde\psi_k,\quad K_{tk} = e^{-i k_k^2 t_t/2},\qquad \psi_{tx} = F^{-1}_{xk}\,\tilde\psi_{tk}'
+translation:
+  - {symbol: '\psi_x(0)', code: 'gaussian_packet(x, x0, sigma0, k0, dx)', shape: '(N,) complex', meaning: 'Gaussian of width $\sigma_0$ moving with momentum $k_0$'}
+  - {symbol: '\tilde\psi_k = F_{kx}\psi_x', code: 'torch.fft.fft(psi0)', shape: '(N,) complex', meaning: 'repeated $x$ ⇒ summed: change of basis to plane waves $e^{ikx}$'}
+  - {symbol: 'K_{tk}', code: "exp(-0.5j * einsum('t,k->tk', times, k**2))", shape: '(T, N) complex', meaning: 'free-particle phase of every mode $k$ at every time $t$ (no index summed: an outer product)'}
+  - {symbol: '\psi_{tx}', code: 'torch.fft.ifft(K * psi_k, dim=-1)', shape: '(T, N) complex', meaning: 'back to $x$-space, all $T$ snapshots in one call'}
+  - {symbol: '\langle x\rangle,\ \sigma', code: 'mean_and_width(psi, x, dx)', shape: '(T,), (T,)', meaning: 'centre and spread of $\lvert\psi\rvert^2$ at every time'}
+notes: >
+  Units $\hbar = m = 1$. $\sigma$ is the standard deviation of $\lvert\psi\rvert^2$ (so $\psi \propto \exp(-(x - x_0)^2/(4\sigma_0^2) + ik_0x)$). The exact
+  results are $\langle x\rangle = x_0 + k_0 t$ (group velocity $v_g = dE/dk = k$) and $\sigma(t) = \sigma_0\sqrt{1 + (t/(2\sigma_0^2))^2}$: a narrow
+  packet has a wide spread of momenta and so spreads fast. The dashed lines mark $\langle x\rangle \pm \sigma(t)$ from that formula.
+  The ripples of $\operatorname{Re}\psi$ move at the phase velocity $k/2$, half the speed of the envelope. The grid is periodic,
+  so a packet that runs off one side comes back on the other.
+params:
+  k0: {default: 2.0, min: 0.0, max: 4.0, step: 0.1, label: 'Packet momentum $k_0$'}
+  sigma0: {default: 1.5, min: 0.5, max: 5.0, step: 0.1, label: 'Initial width $\sigma_0$'}
+  t_max: {default: 30.0, min: 5.0, max: 60.0, step: 1, label: Simulated time}

@@ -1,0 +1,17 @@
+source_hash: 5f40ce6b88de
+title: 自旋進動與拉比振盪
+summary: 磁場中的自旋 $\tfrac12$。Hamiltonian 是場向量與包立張量 $\sigma_{kab}$ 的縮並，態以矩陣指數 $U = \exp(-iH\Delta t)$ 演化，布洛赫向量 $s_k = \langle\psi\vert\sigma_k\vert\psi\rangle$ 則再一次 einsum。靜磁場使自旋以拉莫頻率進動；微弱的共振橫向場則使它緩慢翻轉（拉比振盪）。
+notes: 單位 $\hbar = 1$。當 $B_1 = 0$ 時，自旋以拉莫頻率 $\omega = \gamma B_0$ 繞 $z$ 進動，且因 $U$ 為么正，$\lvert\mathbf s\rvert = 1$ 永遠成立。當 $B_1 > 0$ 且驅動頻率 $\omega \approx \gamma B_0$ 時，自旋從北極螺旋到南極再回來：在隨驅動旋轉的座標系中，只有線性驅動中同向旋轉的那一半起作用，給出拉比頻率 $\Omega = \gamma B_1/2$（旋轉波近似）。驅動失諧時，翻轉便不完全。包立矩陣滿足 $\sigma_i\sigma_j = \delta_{ij}I + i\,\varepsilon_{ijk}\sigma_k$。
+meanings:
+- 包立張量：$k \in \{x, y, z\}$ 選擇矩陣，$a, b$ 為旋量指標
+- 沿 $z$ 的靜磁場 $B_0$，加上可選的沿 $x$ 的 $B_1\cos(\omega t)$
+- 重複的 $k$ ⇒ 求和：$\mathbf B\cdot\boldsymbol\sigma$ 寫成 $2\times 2$ 矩陣（以 tk,kab->tab 沿 $t$ 批次計算）
+- 單步傳播子，么正
+- 布洛赫向量：$a$ 與 $b$ 都求和
+labels:
+  B0: 靜磁場 $B_0$（沿 $z$）
+  B1: 驅動振幅 $B_1$（沿 $x$）
+  drive_freq: 驅動頻率 $\omega$
+  gamma: 旋磁比 $\gamma$
+  theta0: 初始偏離 $z$ 的角度
+  t_max: 模擬時間

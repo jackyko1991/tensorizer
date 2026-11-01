@@ -1,0 +1,20 @@
+source_hash: bd0f5adb6f78
+title: 以 autograd 由拉格朗日量導出運動方程式
+summary: 只需輸入拉格朗日量 $L = T - V$，讓 torch.autograd 推導出歐拉–拉格朗日方程式：Hessian $\partial^2L/\partial\dot q_i\partial\dot q_j$ 就是質量矩陣，一次線性求解即得 $\ddot q$。應用於彈簧擺（彈性擺）。
+notes: 彈簧擺的運動方程式沒有一條是手寫的：改變拉格朗日量，動力學便隨之改變。這裡 $H = \operatorname{diag}(m, mr^2)$ 依賴於 $r$，而 $C$ 包含類似科氏力的耦合 $2mr\dot\theta$。在預設的 $k \approx 3mg/\ell_0$ 下，彈簧振動頻率約為擺動頻率的兩倍（2:1 共振），因此能量在伸縮與擺動之間來回轉換。同一段程式適用於任意多個座標；代價只是每步多幾次反向傳播。
+meanings:
+- 廣義座標 $(r, \theta)$：彈簧長度與角度
+- 廣義速度
+- 唯一手寫輸入的物理
+- 一階導數；$p_i = \partial L/\partial\dot q_i$ 為正則動量
+- 質量矩陣與混合二階導數的第 $i$ 列
+- 重複的 $k$ ⇒ 求和
+- 對加速度求解的歐拉–拉格朗日方程式
+- 能量函數，同樣由 autograd 求得；守恆
+labels:
+  m: 質量 $m$
+  k: 彈簧常數 $k$
+  rest_length: 自然長度 $\ell_0$
+  r0: 初始長度 $r_0$
+  theta0: 初始角度 $\theta_0$
+  t_max: 模擬時間

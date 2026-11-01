@@ -1,0 +1,31 @@
+title: Relativistic charged particle
+category: em
+level: advanced
+order: 2
+summary: >
+  The Lorentz force written covariantly, $dU^\mu/d\tau = (q/m)\,F^\mu{}_\nu U^\nu$: the field tensor's second index is lowered with
+  the Minkowski metric and contracted with the four-velocity in one einsum. Integrating in proper time shows fast
+  particles circling more slowly than Newton predicts, and a constant electric field pushing a particle ever closer
+  to — but never past — the speed of light.
+animated: true
+vector_form: '\frac{d(\gamma m\mathbf v)}{dt} = q\,(\mathbf E + \mathbf v\times\mathbf B),\qquad \frac{d(\gamma m)}{dt} = q\,\mathbf E\cdot\mathbf v'
+index_form: '\frac{dU^\mu}{d\tau} = \frac{q}{m}\,F^{\mu}{}_{\nu}\,U^\nu,\qquad F^{\mu}{}_{\nu} = F^{\mu\alpha}\,\eta_{\alpha\nu},\qquad U^\mu U_\mu = 1'
+translation:
+  - {symbol: 'X^\mu,\ U^\mu', code: 'y[:, 0], y[:, 1]', shape: '(P, 4)', meaning: 'four-position $(t, x, y, z)$ and four-velocity $\gamma(1, \mathbf v)$ of particle $p$'}
+  - {symbol: '\eta_{\mu\nu}', code: 'metric()', shape: '(4, 4)', meaning: 'Minkowski metric $\operatorname{diag}(+1, -1, -1, -1)$, $c = 1$'}
+  - {symbol: 'F^{\mu\nu}', code: 'field_tensor(E, B, eps)', shape: '(4, 4)', meaning: '$F^{0i} = -E_i$, $F^{ij} = -\varepsilon_{ijk}B_k$'}
+  - {symbol: 'F^{\mu}{}_{\nu}', code: "einsum('ma,an->mn', F, eta)", shape: '(4, 4)', meaning: 'repeated $\alpha$ ⇒ summed: second index lowered'}
+  - {symbol: '\tfrac{q}{m}F^{\mu}{}_{\nu}U^\nu', code: "einsum('p,mn,pn->pm', qm, F_mixed, U)", shape: '(P, 4)', meaning: 'repeated $\nu$ ⇒ summed: four-force on every particle'}
+  - {symbol: 'U^\mu U_\mu', code: "einsum('...m,mn,...n->...', U, eta, U)", shape: '(T, P)', meaning: 'Minkowski length of $U$, must stay 1'}
+notes: >
+  Units with $c = 1$. The equations are integrated in each particle's proper time $\tau$ with RK4 and then resampled onto
+  the lab time $t = X^0$ for the animation. Cyclotron: the magnetic force does no work, so $\gamma$ stays constant, but the
+  orbit is $\gamma$ times larger and $\gamma$ times slower than the Newtonian circle ($\omega = qB/(\gamma m)$). Accelerate: from rest in a
+  uniform $E$ the motion is hyperbolic, $x = (\sqrt{1 + (at)^2} - 1)/a$ with $a = qE/m$, so $v \to 1$ while Newton's $\tfrac12 at^2$ would
+  overtake light after $t = 2/a$.
+params:
+  config: {default: cyclotron, type: choice, options: [cyclotron, accelerate], label: Scenario}
+  strength: {default: 1.0, min: 0.2, max: 3, step: 0.1, label: 'Field strength ($B$ or $E$)'}
+  v_max: {default: 0.95, min: 0.3, max: 0.99, step: 0.01, label: Fastest initial speed (cyclotron)}
+  n_particles: {default: 4, min: 1, max: 5, step: 1, type: int, label: Particles}
+  t_max: {default: 25.0, min: 5, max: 60, step: 1, label: Lab time}

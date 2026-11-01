@@ -1,0 +1,16 @@
+source_hash: 2765022e4b7f
+title: Pulsaciones y velocidad de grupo
+summary: Suma dos (o más) sinusoides de frecuencias próximas. Todas las ondas están en un único tensor indexado por onda $s$, tiempo $n$ y posición $j$; un solo einsum sobre $s$ las superpone. En un punto fijo se oyen pulsaciones a $|f_1 - f_2|$; en el espacio las crestas de la portadora se mueven a la velocidad de fase mientras la envolvente se mueve a la velocidad de grupo.
+notes: 'Para dos ondas $\cos a + \cos b = 2\cos\tfrac{a-b}{2}\cos\tfrac{a+b}{2}$: una portadora rápida a la frecuencia media dentro de una envolvente lenta. La sonoridad $|{\rm envelope}|$ alcanza su máximo $|f_1 - f_2|$ veces por segundo, la frecuencia de pulsación. Con la relación de dispersión $\omega = c_0 k_0 (k/k_0)^p$ la velocidad de grupo es $p$ veces la velocidad de fase: igual para el sonido en una cuerda ($p = 1$), la mitad para las olas en aguas profundas ($p = \tfrac12$), una vez y media para las ondas capilares ($p = \tfrac32$). El punto rojo viaja sobre una cresta a $v_p$ y el punto verde sobre el máximo de la envolvente a $v_g$. Con más de dos ondas las pulsaciones se convierten en grupos de ondas aislados.'
+meanings:
+- frecuencia angular y número de onda de la onda $s$, ligados por la relación de dispersión $\omega \propto k^p$
+- posiciones e instantes en los que se evalúa la onda
+- fase de cada onda en cada instante y lugar, con broadcasting
+- '$s$ repetido ⇒ sumado: la superposición'
+- 'envolvente: longitud de la suma de fasores'
+labels:
+  f1: Frecuencia $f_1$
+  f2: Frecuencia $f_2$
+  n_waves: Número de ondas (repartidas de f1 a f2)
+  dispersion: Dispersión $p$ = 1, ½, 3/2
+  t_max: Tiempo simulado

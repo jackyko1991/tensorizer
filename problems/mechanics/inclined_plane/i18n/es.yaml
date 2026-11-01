@@ -1,0 +1,21 @@
+source_hash: b7086dad7034
+title: Bloque en un plano inclinado con rozamiento
+summary: La gravedad, la fuerza normal y el rozamiento sobre un bloque, descompuestos según los vectores unitarios tangente y normal de cada rampa mediante proyecciones con einsum. Un lote de ángulos de inclinación muestra el umbral del rozamiento estático $\tan\theta = \mu_s$.
+notes: 'El rozamiento estático es tan grande como haga falta, hasta $\mu_s N$, de modo que un bloque soltado desde el reposo permanece quieto mientras $\tan\theta \le \mu_s$. Una vez que desliza, actúa el rozamiento cinético $\mu_k N$ (con $\mu_k \le \mu_s$) y la aceleración es constante, así que la distancia crece como $\tfrac12 at^2$ hasta que el bloque llega abajo. El bloque se trata como un punto: no vuelca ni rueda.'
+meanings:
+- vector unitario pendiente abajo de la rampa $b$, $(\cos\theta, -\sin\theta)$
+- normal unitaria de la rampa $b$, $(\sin\theta, \cos\theta)$
+- vector gravedad $(0, -g)$
+- 'índice repetido ⇒ sumado: componente de la gravedad hacia la rampa'
+- fuerza normal por unidad de masa, anula la parte de la gravedad hacia la rampa
+- rozamiento estático si puede sujetar el bloque; si no, cinético $\mu_k N$
+- 'aceleración a lo largo de la pendiente: $g(\sin\theta - \mu_k\cos\theta)$ o 0'
+labels:
+  mu_static: Rozamiento estático $\mu_s$
+  mu_kinetic: Rozamiento cinético $\mu_k$ ($\le \mu_s$)
+  n_ramps: Rampas
+  min_angle: Ángulo mínimo
+  max_angle: Ángulo máximo
+  ramp_length: Longitud de la rampa
+  g: Gravedad $g$
+  t_max: Tiempo simulado

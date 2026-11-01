@@ -1,0 +1,18 @@
+source_hash: 2b849cfef0cb
+title: Wärmeleitung in einer Platte
+summary: Das Fouriersche Gesetz macht aus einem Temperaturgradienten einen Wärmestrom, und die Energieerhaltung macht aus der Divergenz dieses Stroms eine Temperaturänderung. Auf einem Gitter sind beide Ableitungen winzige Faltungskerne, sodass ein Zeitschritt nur aus zwei conv2d-Aufrufen über die ganze Platte besteht.
+notes: 'Vorwärts- und anschließende Rückwärtsdifferenzen ergeben zusammen den bekannten Fünf-Punkte-Laplace-Operator, sodass $\partial_i\partial_i T$ nie separat programmiert wird: Er ergibt sich aus der Verkettung von Gradienten- und Divergenzkern. Das explizite Schema ist nur für $\alpha\,dt/dx^2 \le 1/4$ stabil (die „Stabilitätszahl“ unten). Mit Dirichlet-Rändern sind die Kanten ein 20-°C-Bad, und die Wärme fließt ab; mit Neumann-Rändern (isoliert) fließt kein Wärmestrom über den Rand, und die Gesamtwärme bleibt erhalten, während sich die Temperatur ausgleicht. Eine Sinusmode $\sin(\pi x/L)\sin(\pi y/L)$ klingt wie $\exp(-2\pi^2\alpha t/L^2)$ ab.'
+meanings:
+- Temperatur jeder Gitterzelle (Batch- und Kanaldimension für conv2d)
+- Vorwärtsdifferenz-Stencils, ein Ausgangskanal pro Richtung $i \in \{x, y\}$
+- 'Fouriersches Gesetz: Wärmestromdichte, Kanal $i$ ist die Komponente'
+- 'wiederholtes $i$ ⇒ summiert: conv2d addiert seine 2 Eingangskanäle — die Divergenz'
+- Temperaturleitfähigkeit (m²/s)
+- 'rechte Seite; expliziter Euler: $T \leftarrow T + dt\,\partial_t T$'
+labels:
+  alpha: Temperaturleitfähigkeit $\alpha$
+  t_max: Simulierte Zeit
+  n_spots: Heiße Flecken
+  n_grid: Gitterzellen pro Seite
+  r: Stabilitätszahl $\alpha\,dt/dx^2$
+  boundary: Ränder

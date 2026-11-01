@@ -1,0 +1,17 @@
+source_hash: 539b278aa207
+title: Cycle de Carnot d'un gaz parfait
+summary: Deux isothermes et deux adiabatiques d'un gaz parfait, échantillonnées sous forme de tenseur de points $(V, p)$. Le travail est l'aire enclose dans le diagramme $p$–$V$, calculée avec torch.trapezoid, et le rendement $W/Q_h$ tombe exactement sur la limite de Carnot $1 - T_c/T_h$.
+notes: 'La chaleur ne traverse la frontière que sur les isothermes : $Q_h = nRT_h\ln(V_2/V_1)$ reçue, $Q_c = nRT_c\ln(V_3/V_4)$ cédée. Comme les adiabatiques relient les rapports de volumes, $V_3/V_4 = V_2/V_1$, c''est pourquoi le rendement ne dépend que des deux températures. Les branches de compression vont vers les $V$ plus petits, donc torch.trapezoid leur attribue automatiquement un travail négatif. Dans le diagramme $T$–$S$, le cycle est un rectangle dont l''aire vaut aussi $W$. Les volumes partent de $V_1 = 1$ litre.'
+meanings:
+- échantillon $k$ sur la branche $l$ du cycle ($l$ = isotherme chaude, adiabatique, isotherme froide, adiabatique)
+- isotherme, terme à terme sur un tenseur de volumes
+- adiabatique passant par un coin du cycle
+- '$k$ répété ⇒ sommé : travail le long de chaque branche'
+- 'somme sur les branches $l$ : l''aire enclose'
+- entropie le long du chemin, pour le diagramme $T$–$S$
+labels:
+  T_h: Source chaude $T_h$
+  T_c: Source froide $T_c$
+  ratio: Rapport de détente $V_2/V_1$
+  n: Quantité de gaz
+  gas: Gaz

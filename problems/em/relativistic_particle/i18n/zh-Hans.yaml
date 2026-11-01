@@ -1,0 +1,17 @@
+source_hash: b693da8b6e0e
+title: 相对论性带电粒子
+summary: 协变形式的洛伦兹力 $dU^\mu/d\tau = (q/m)\,F^\mu{}_\nu U^\nu$：场张量的第二个指标用闵可夫斯基度规降下，并在一次 einsum 中与四维速度缩并。按固有时积分可以看到：高速粒子的回旋比牛顿力学预言的慢；恒定电场把粒子推得越来越接近光速，但永远不会超过。
+notes: 取 $c = 1$ 的单位。方程用 RK4 对每个粒子的固有时 $\tau$ 积分，再重新采样到实验室时间 $t = X^0$ 上用于动画。回旋：磁场力不做功，所以 $\gamma$ 保持不变，但轨道比牛顿圆大 $\gamma$ 倍、慢 $\gamma$ 倍（$\omega = qB/(\gamma m)$）。加速：在均匀 $E$ 中从静止出发的运动是双曲运动，$x = (\sqrt{1 + (at)^2} - 1)/a$，其中 $a = qE/m$，因此 $v \to 1$；而牛顿的 $\tfrac12 at^2$ 会在 $t = 2/a$ 之后超过光速。
+meanings:
+- 粒子 $p$ 的四维位置 $(t, x, y, z)$ 和四维速度 $\gamma(1, \mathbf v)$
+- 闵可夫斯基度规 $\operatorname{diag}(+1, -1, -1, -1)$，$c = 1$
+- $F^{0i} = -E_i$，$F^{ij} = -\varepsilon_{ijk}B_k$
+- 重复的 $\alpha$ ⇒ 求和：降下第二个指标
+- 重复的 $\nu$ ⇒ 求和：每个粒子所受的四维力
+- $U$ 的闵可夫斯基长度，必须保持为 1
+labels:
+  config: 情形
+  strength: 场强（$B$ 或 $E$）
+  v_max: 最大初速（回旋）
+  n_particles: 粒子数
+  t_max: 实验室时间

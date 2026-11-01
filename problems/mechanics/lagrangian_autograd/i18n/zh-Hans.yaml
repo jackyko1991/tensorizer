@@ -1,0 +1,20 @@
+source_hash: bd0f5adb6f78
+title: 用 autograd 从拉格朗日量导出运动方程
+summary: 只需写出拉格朗日量 $L = T - V$，由 torch.autograd 推导欧拉–拉格朗日方程：黑塞矩阵 $\partial^2L/\partial\dot q_i\partial\dot q_j$ 就是质量矩阵，一次线性求解即得 $\ddot q$。应用于弹簧摆（弹性摆）。
+notes: 弹簧摆的运动方程没有一项是手写的：改变拉格朗日量，动力学随之改变。这里 $H = \operatorname{diag}(m, mr^2)$ 依赖于 $r$，$C$ 包含类科里奥利耦合 $2mr\dot\theta$。默认 $k \approx 3mg/\ell_0$ 时，弹簧振动频率约为摆动频率的两倍（2:1 共振），因此能量在伸缩与摆动之间来回转移。同样的代码适用于任意数目的坐标；代价是每步多几次反向传播。
+meanings:
+- 广义坐标 $(r, \theta)$：弹簧长度和角度
+- 广义速度
+- 唯一手写的物理
+- 一阶导数；$p_i = \partial L/\partial\dot q_i$ 是正则动量
+- 质量矩阵和混合二阶导数的第 $i$ 行
+- 重复的 $k$ ⇒ 求和
+- 对加速度求解的欧拉–拉格朗日方程
+- 能量函数，同样由 autograd 求得；守恒
+labels:
+  m: 质量 $m$
+  k: 劲度系数 $k$
+  rest_length: 原长 $\ell_0$
+  r0: 初始长度 $r_0$
+  theta0: 初始角度 $\theta_0$
+  t_max: 模拟时长

@@ -1,0 +1,21 @@
+source_hash: 6cf1e64854dc
+title: Aufladen eines Kondensators (RC-Glied)
+summary: Ein Kondensator, der über einen Widerstand aufgeladen wird, gehorcht $dV/dt = (V_s - V)/(RC)$. Mehrere Schaltungen mit verschiedenen Widerständen werden zu einem Spannungstensor gestapelt, sodass ein einziger Runge–Kutta-Schritt alle zugleich vorantreibt. Schalte die Quelle auf Rechteckspannung, um die Kondensatoren beim Laden und Entladen zu beobachten.
+notes: 'Einheiten: $R$ in kΩ und $C$ in mF, sodass $\tau = RC$ in Sekunden und $I$ in mA herauskommt. Nach einer Zeitkonstante hat der Kondensator 63 % der Quellenspannung erreicht, nach $5\tau$ ist er praktisch voll. Beim Laden aus einer Batterie liefert die Quelle die Energie $CV_s^2$: Genau die Hälfte landet im Kondensator, die andere Hälfte wird in $R$ in Wärme umgewandelt — unabhängig vom Wert von $R$.'
+meanings:
+- Spannung am Kondensator $b$ (ein Eintrag pro Schaltung)
+- Widerstand der Schaltung $b$
+- Kapazität, in jeder Schaltung gleich
+- Quellenspannung, allen Schaltungen gemeinsam (Broadcast über $b$)
+- 'elementweise: Index $b$ steht auf jeder Seite einmal, nichts wird summiert'
+- Strom durch jeden Widerstand
+- in jedem Kondensator gespeicherte Energie
+labels:
+  V_s: Quellenspannung
+  C: Kapazität
+  R_min: Kleinster Widerstand
+  R_max: Größter Widerstand
+  n_circuits: Schaltungen
+  source: Quelle
+  period: Periode der Rechteckspannung
+  t_max: Simulierte Zeit

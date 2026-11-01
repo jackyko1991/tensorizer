@@ -1,0 +1,16 @@
+source_hash: f581627e3195
+title: 盒中粒子
+summary: 網格上的不含時薛丁格方程式變成矩陣特徵值問題 $H_{ij}\psi_j = E\psi_i$。torch.linalg.eigh 給出定態；它們的疊加則藉由為每個定態加上相位 $e^{-iE_n t}$ 再以 einsum 求和來演化。
+notes: 單位 $\hbar = m = 1$。精確能量為 $E_n = n^2\pi^2/(2L^2)$；網格重現最低幾個能量，誤差遠小於百分之一。每個本徵態只獲得一個相位，因此 $\lvert c_n\rvert$ 與歸一化永不改變——$\lvert\psi\rvert^2$ 的來回晃動純粹是態之間的干涉。經過復現時間 $T = 4L^2/\pi$ 後，每個相位 $e^{-iE_n t}$ 都回到 1，初始態精確地重新出現。淡色虛線是最低的幾個定態 $\varphi_n(x)$。
+meanings:
+- $N$ 個內部格點上的 Hamiltonian 矩陣 $-\tfrac12\,D2$（牆壁：$\psi = 0$）
+- 有限差分 $d^2/dx^2$：$(\psi_{x-1} - 2\psi_x + \psi_{x+1})/dx^2$
+- 能量與特徵向量（第 $n$ 行是態 $n$）
+- 把初始態投影到特徵基底（重複的 $x$ ⇒ 求和）
+- 重複的 $n$ ⇒ 求和：由加上相位的分量重建 $\psi$
+labels:
+  initial: 初始態
+  n_states: 疊加的態數
+  L: 盒寬
+  n_grid: 格點數
+  revivals: 模擬時間

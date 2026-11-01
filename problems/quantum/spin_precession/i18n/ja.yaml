@@ -1,0 +1,17 @@
+source_hash: 5f40ce6b88de
+title: スピン歳差運動とラビ振動
+summary: 磁場中のスピン $\tfrac12$。ハミルトニアンは磁場ベクトルとパウリテンソル $\sigma_{kab}$ の縮約であり、状態は行列指数関数 $U = \exp(-iH\Delta t)$ で時間発展し、ブロッホベクトル $s_k = \langle\psi\vert\sigma_k\vert\psi\rangle$ ももう1回の einsum で求まる。静磁場はスピンをラーモア振動数で歳差運動させ、弱い共鳴横磁場はゆっくりとスピンを反転させる（ラビ振動）。
+notes: 単位 $\hbar = 1$。$B_1 = 0$ ではスピンは $z$ 軸のまわりをラーモア角振動数 $\omega = \gamma B_0$ で歳差運動し、$U$ がユニタリなので $\lvert\mathbf s\rvert = 1$ が永遠に保たれる。$B_1 > 0$ を $\omega \approx \gamma B_0$ で駆動すると、スピンは北極から南極へらせん状に進み、また戻る：駆動とともに回転する座標系では、直線偏光駆動のうち同じ向きに回る半分だけが効き、ラビ振動数 $\Omega = \gamma B_1/2$ を与える（回転波近似）。駆動を離調させると反転は不完全になる。パウリ行列は $\sigma_i\sigma_j = \delta_{ij}I + i\,\varepsilon_{ijk}\sigma_k$ を満たす。
+meanings:
+- パウリテンソル：$k \in \{x, y, z\}$ が行列を選び、$a, b$ はスピノルの添字
+- $z$ 方向の静磁場 $B_0$ と、任意で $x$ 方向の $B_1\cos(\omega t)$
+- 繰り返される $k$ ⇒ 和をとる：$2\times 2$ 行列としての $\mathbf B\cdot\boldsymbol\sigma$（tk,kab->tab として $t$ についてバッチ化）
+- 1ステップの伝播演算子、ユニタリ
+- ブロッホベクトル：$a$ と $b$ の両方について和
+labels:
+  B0: 静磁場 $B_0$（$z$ 方向）
+  B1: 駆動振幅 $B_1$（$x$ 方向）
+  drive_freq: 駆動角振動数 $\omega$
+  gamma: 磁気回転比 $\gamma$
+  theta0: $z$ からの初期傾き
+  t_max: シミュレーション時間

@@ -1,0 +1,32 @@
+title: Decay chain (Bateman equations)
+category: nuclear
+level: beginner
+order: 2
+summary: >
+  A parent decays into a radioactive daughter, which decays into a stable end product. The three rate equations
+  form one linear system $\dot N_i = A_{ij} N_j$, solved exactly by the matrix exponential $e^{At}$ for every time
+  at once and checked against RK4. The default chain is the medical generator $^{99}$Mo → $^{99m}$Tc → $^{99}$Tc.
+animated: true
+vector_form: '\dot{\mathbf N} = \mathsf A\,\mathbf N \;\;\Rightarrow\;\; \mathbf N(t) = e^{\mathsf A t}\,\mathbf N(0),\qquad \mathsf A = \begin{pmatrix}-\lambda_1 & 0 & 0\\ \lambda_1 & -\lambda_2 & 0\\ 0 & \lambda_2 & 0\end{pmatrix}'
+index_form: '\dot N_i = A_{ij}\,N_j,\qquad N_{ti} = \big[e^{A\,t}\big]_{tij}\,N_j(0),\qquad a_i = \lambda_i N_i'
+translation:
+  - {symbol: '\lambda_i', code: 'decay_constants(half_lives)', shape: '(3,)', meaning: '$\ln 2/T_i$, with $\lambda_3 = 0$ for the stable end'}
+  - {symbol: 'A_{ij}', code: 'bateman_matrix(lam)', shape: '(3, 3)', meaning: '$-\lambda_i$ on the diagonal, $+\lambda_i$ just below it'}
+  - {symbol: 'A_{ij} N_j', code: "einsum('ij,j->i', a, n)", shape: '(3,)', meaning: 'repeated $j$ ⇒ summed: the right-hand side used by RK4'}
+  - {symbol: '[e^{A t}]_{tij}', code: 'torch.linalg.matrix_exp(t[:, None, None] * a)', shape: '(T, 3, 3)', meaning: 'one matrix exponential per time, batched over $t$'}
+  - {symbol: 'N_{ti}', code: "einsum('tij,j->ti', U, n0)", shape: '(T, 3)', meaning: 'populations at every time from the initial vector'}
+  - {symbol: 'a_i', code: 'n * lam', shape: '(T, 3)', meaning: 'activity: decays per hour of each member'}
+notes: >
+  Each column of $\mathsf A$ sums to zero, so $\sum_i N_i$ never changes: every decay moves one nucleus down the
+  chain. For two members the exact (Bateman) solution is
+  $N_2 = N_1(0)\,\frac{\lambda_1}{\lambda_2 - \lambda_1}\,(e^{-\lambda_1 t} - e^{-\lambda_2 t})$.
+  When the daughter is shorter-lived ($\lambda_2 > \lambda_1$) the activities lock together: the ratio $a_2/a_1$
+  tends to $\lambda_2/(\lambda_2-\lambda_1)$ (transient equilibrium), and to 1 when the parent lives much longer
+  (secular equilibrium, try a parent half-life of 1000 h). Make the daughter longer-lived and no equilibrium forms.
+  Simplifications: $^{99}$Mo really feeds $^{99m}$Tc in only about 88 % of decays, and $^{99}$Tc (half-life
+  211 000 years) is treated as stable.
+params:
+  half_life_parent: {default: 66.0, min: 1.0, max: 1000.0, step: 1.0, label: 'Parent half-life $T_1$', unit: h}
+  half_life_daughter: {default: 6.0, min: 0.5, max: 200.0, step: 0.5, label: 'Daughter half-life $T_2$', unit: h}
+  t_max: {default: 150.0, min: 10.0, max: 1000.0, step: 10.0, label: Time span, unit: h}
+  rk4_steps: {default: 200, min: 20, max: 2000, step: 10, type: int, label: RK4 steps}

@@ -1,0 +1,15 @@
+source_hash: 5c7383dc415a
+title: Effet tunnel quantique
+summary: 'Un paquet d''ondes gaussien frappe une barrière rectangulaire. L''équation de Schrödinger dépendante du temps est résolue par la méthode split-step de Fourier : le potentiel est un opérateur diagonal dans l''espace des $x$ et l''énergie cinétique un opérateur diagonal dans l''espace des $k$, donc chaque moitié de pas de temps n''est qu''une multiplication tensorielle terme à terme, torch.fft assurant le passage d''une base à l''autre.'
+notes: Unités $\hbar = m = 1$, énergie du paquet $E \approx k_0^2/2$. Un opérateur diagonal $D_{xy} = d_x\,\delta_{xy}$ agissant sur $\psi$ donne $D_{xy}\psi_y = d_x\psi_x$ — pas besoin de matrice, une simple multiplication terme à terme. Le schéma de Strang $P\cdot K\cdot P$ est précis au second ordre en $\Delta t$ et exactement unitaire, donc la norme reste égale à 1 aux erreurs d'arrondi près. La durée simulée est choisie automatiquement ($45/k_0$) pour que le centre du paquet aille de $x = -25$ à environ $x = +20$. Pour $E < V_0$, une particule classique rebondirait toujours ; la bosse transmise à droite, c'est l'effet tunnel. Le coefficient de transmission en onde plane $T(k_0)$ affiché pour comparaison ignore la dispersion d'impulsions du paquet (et utilise la largeur de barrière telle qu'elle tombe sur la grille) ; un paquet plus large (plus grand $\sigma_0$) a une impulsion mieux définie et s'en rapproche davantage.
+meanings:
+- fonction d'onde sur la grille périodique $x$
+- 'opérateur potentiel sur un demi-pas : diagonal en $x$, appliqué comme psi * P'
+- 'opérateur cinétique sur un pas entier : diagonal en $k$, appliqué comme psi_k * K'
+- changement de base $x \to k$ (un produit matriciel rapide, jamais construit explicitement)
+- 'transmission : probabilité trouvée à droite de la barrière'
+labels:
+  k0: Impulsion du paquet $k_0$
+  V0: Hauteur de la barrière $V_0$
+  width: Largeur de la barrière $a$
+  sigma: Largeur du paquet $\sigma_0$

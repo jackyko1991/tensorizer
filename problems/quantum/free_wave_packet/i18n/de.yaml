@@ -1,0 +1,14 @@
+source_hash: 1bc9d739c88e
+title: Freies Wellenpaket
+summary: 'Ein freies Teilchen braucht überhaupt keine Zeitschritte: Im Impulsraum wird die Schrödinger-Gleichung gelöst, indem man jede Fourier-Komponente mit ihrer eigenen Phase $e^{-ik^2t/2}$ multipliziert. Eine FFT, eine Multiplikation und eine inverse FFT liefern $\psi$ zu jeder Zeit — für alle Zeiten auf einmal als $(T, N)$-Tensor. Das Paket driftet mit der Gruppengeschwindigkeit $k_0$ und zerfließt, weil seine verschiedenen Impulse verschieden schnell laufen.'
+notes: 'Einheiten $\hbar = m = 1$. $\sigma$ ist die Standardabweichung von $\lvert\psi\rvert^2$ (also $\psi \propto \exp(-(x - x_0)^2/(4\sigma_0^2) + ik_0x)$). Die exakten Ergebnisse sind $\langle x\rangle = x_0 + k_0 t$ (Gruppengeschwindigkeit $v_g = dE/dk = k$) und $\sigma(t) = \sigma_0\sqrt{1 + (t/(2\sigma_0^2))^2}$: Ein schmales Paket hat eine breite Impulsverteilung und zerfließt daher schnell. Die gestrichelten Linien markieren $\langle x\rangle \pm \sigma(t)$ nach dieser Formel. Die Wellen von $\operatorname{Re}\psi$ laufen mit der Phasengeschwindigkeit $k/2$, halb so schnell wie die Einhüllende. Das Gitter ist periodisch, sodass ein Paket, das auf einer Seite hinausläuft, auf der anderen wiederkommt.'
+meanings:
+- Gauß-Paket der Breite $\sigma_0$, das sich mit Impuls $k_0$ bewegt
+- 'wiederholtes $x$ ⇒ summiert: Basiswechsel zu ebenen Wellen $e^{ikx}$'
+- 'Phase des freien Teilchens für jede Mode $k$ zu jeder Zeit $t$ (kein Index summiert: ein äußeres Produkt)'
+- zurück in den $x$-Raum, alle $T$ Momentaufnahmen in einem Aufruf
+- Schwerpunkt und Breite von $\lvert\psi\rvert^2$ zu jeder Zeit
+labels:
+  k0: Impuls des Pakets $k_0$
+  sigma0: Anfangsbreite $\sigma_0$
+  t_max: Simulierte Zeit

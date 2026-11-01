@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Hard disks with velocity arrows bouncing elastically inside a walled box; one disk reflects off the right wall, transferring momentum">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <g stroke="#9ca3af" stroke-width="1.5"><line x1="40.0" y1="18.0" x2="32.0" y2="10.0"/><line x1="52.0" y1="18.0" x2="44.0" y2="10.0"/><line x1="64.0" y1="18.0" x2="56.0" y2="10.0"/><line x1="76.0" y1="18.0" x2="68.0" y2="10.0"/><line x1="88.0" y1="18.0" x2="80.0" y2="10.0"/><line x1="100.0" y1="18.0" x2="92.0" y2="10.0"/><line x1="112.0" y1="18.0" x2="104.0" y2="10.0"/><line x1="124.0" y1="18.0" x2="116.0" y2="10.0"/><line x1="136.0" y1="18.0" x2="128.0" y2="10.0"/><line x1="148.0" y1="18.0" x2="140.0" y2="10.0"/><line x1="160.0" y1="18.0" x2="152.0" y2="10.0"/><line x1="172.0" y1="18.0" x2="164.0" y2="10.0"/><line x1="184.0" y1="18.0" x2="176.0" y2="10.0"/><line x1="196.0" y1="18.0" x2="188.0" y2="10.0"/></g>
+    <g stroke="#9ca3af" stroke-width="1.5"><line x1="200.0" y1="142.0" x2="208.0" y2="150.0"/><line x1="188.0" y1="142.0" x2="196.0" y2="150.0"/><line x1="176.0" y1="142.0" x2="184.0" y2="150.0"/><line x1="164.0" y1="142.0" x2="172.0" y2="150.0"/><line x1="152.0" y1="142.0" x2="160.0" y2="150.0"/><line x1="140.0" y1="142.0" x2="148.0" y2="150.0"/><line x1="128.0" y1="142.0" x2="136.0" y2="150.0"/><line x1="116.0" y1="142.0" x2="124.0" y2="150.0"/><line x1="104.0" y1="142.0" x2="112.0" y2="150.0"/><line x1="92.0" y1="142.0" x2="100.0" y2="150.0"/><line x1="80.0" y1="142.0" x2="88.0" y2="150.0"/><line x1="68.0" y1="142.0" x2="76.0" y2="150.0"/><line x1="56.0" y1="142.0" x2="64.0" y2="150.0"/><line x1="44.0" y1="142.0" x2="52.0" y2="150.0"/></g>
+    <g stroke="#9ca3af" stroke-width="1.5"><line x1="34.0" y1="136.0" x2="26.0" y2="144.0"/><line x1="34.0" y1="124.0" x2="26.0" y2="132.0"/><line x1="34.0" y1="112.0" x2="26.0" y2="120.0"/><line x1="34.0" y1="100.0" x2="26.0" y2="108.0"/><line x1="34.0" y1="88.0" x2="26.0" y2="96.0"/><line x1="34.0" y1="76.0" x2="26.0" y2="84.0"/><line x1="34.0" y1="64.0" x2="26.0" y2="72.0"/><line x1="34.0" y1="52.0" x2="26.0" y2="60.0"/><line x1="34.0" y1="40.0" x2="26.0" y2="48.0"/><line x1="34.0" y1="28.0" x2="26.0" y2="36.0"/></g>
+    <g stroke="#9ca3af" stroke-width="1.5"><line x1="206.0" y1="24.0" x2="214.0" y2="16.0"/><line x1="206.0" y1="36.0" x2="214.0" y2="28.0"/><line x1="206.0" y1="48.0" x2="214.0" y2="40.0"/><line x1="206.0" y1="60.0" x2="214.0" y2="52.0"/><line x1="206.0" y1="72.0" x2="214.0" y2="64.0"/><line x1="206.0" y1="84.0" x2="214.0" y2="76.0"/><line x1="206.0" y1="96.0" x2="214.0" y2="88.0"/><line x1="206.0" y1="108.0" x2="214.0" y2="100.0"/><line x1="206.0" y1="120.0" x2="214.0" y2="112.0"/><line x1="206.0" y1="132.0" x2="214.0" y2="124.0"/></g>
+    <rect x="34" y="18" width="172" height="124" fill="none" stroke="#374151" stroke-width="2"/>
+    <circle cx="75.9" cy="41.9" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="82.8" y1="43.0" x2="95.6" y2="45.1" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <circle cx="55.8" cy="70.6" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="54.2" y1="77.3" x2="51.1" y2="90.0" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <circle cx="156.3" cy="108.8" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="160.5" y1="114.5" x2="168.2" y2="125.0" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <circle cx="138.3" cy="53.3" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="142.1" y1="47.5" x2="149.3" y2="36.6" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <circle cx="73.3" cy="121.0" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="78.5" y1="125.7" x2="88.2" y2="134.4" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <circle cx="84.6" cy="92.2" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="91.0" y1="89.4" x2="102.9" y2="84.2" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <circle cx="119.5" cy="96.5" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="125.9" y1="99.3" x2="137.8" y2="104.5" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <circle cx="107.7" cy="49.1" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="113.7" y1="52.7" x2="124.8" y2="59.4" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <circle cx="165.8" cy="33.0" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="167.1" y1="26.1" x2="169.4" y2="13.3" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <circle cx="103.6" cy="126.9" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="98.9" y1="132.1" x2="90.1" y2="141.7" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <circle cx="159.4" cy="76.3" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="154.0" y1="80.8" x2="144.1" y2="89.2" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <circle cx="48.6" cy="100.3" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="41.7" y1="101.6" x2="29.0" y2="104.1" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <path d="M169,46 L199,70" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <circle cx="199" cy="70" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="193.0" y1="75.0" x2="173.0" y2="91.0" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <text x="177" y="108" font-style="italic" fill="#b91c1c">v</text>
+  </g>
+</svg>

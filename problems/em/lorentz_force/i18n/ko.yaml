@@ -1,0 +1,18 @@
+source_hash: a8a725d373c7
+title: 전기장과 자기장 속의 하전 입자
+summary: 서로 수직인 전기장과 자기장 속에 있는 여러 하전 입자에 작용하는 로렌츠 힘. 외적을 레비치비타 텐서 $\varepsilon_{ijk}$로 쓰므로 einsum 하나로 모든 입자의 자기력을 얻습니다. 각 입자는 사이클로트론 나선을 그리며 돌고, 무리 전체는 $\mathbf E\times\mathbf B$ 방향으로 표류합니다.
+notes: 단위는 무차원입니다($q$, $m$, $E$, $B$는 1 정도의 크기). $\mathbf E = 0$이면 각 입자는 사이클로트론 진동수 $\omega = \lvert q\rvert B/m$, 반지름 $mv_\perp/(\lvert q\rvert B)$로 원운동하며, 양전하와 음전하는 반대 방향으로 돕니다. $\mathbf E\perp\mathbf B$를 더하면 모든 안내 중심이 전하와 질량에 무관한 속도 $\mathbf E\times\mathbf B/B^2$로 표류합니다.
+meanings:
+- 입자 $b$의 위치, 성분 $i \in \{x, y, z\}$
+- 입자 $b$의 속도
+- 각 입자의 전하와 질량
+- '균일한 장: $\mathbf E$는 $y$ 방향, $\mathbf B$는 $z$ 방향'
+- $(x, y, z)$의 짝순열이면 $+1$, 홀순열이면 $-1$, 지표가 반복되면 0
+- '반복된 $j$와 $k$ ⇒ 합: 외적 $\mathbf v\times\mathbf B$'
+- $\mathbf E\times\mathbf B$ 표류 속도, 모든 전하에 대해 같음
+labels:
+  B: 자기장 $B_z$
+  E: 전기장 $E_y$
+  v_par: $\mathbf B$ 방향 초기 속도
+  n_particles: 입자 수
+  t_max: 시뮬레이션 시간

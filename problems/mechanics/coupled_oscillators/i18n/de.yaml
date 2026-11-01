@@ -1,0 +1,18 @@
+source_hash: ea8025a41e84
+title: Gekoppelte Oszillatoren und Normalmoden
+summary: $N$ gleiche Massen, durch Federn zwischen zwei festen Wänden verbunden. Die Federn werden zu einem Steifigkeitstensor $K_{ij}$, seine Eigenvektoren sind die Normalmoden, und die Bewegung ist eine Überlagerung von Moden, summiert mit einem einzigen einsum.
+notes: Da $K_{ij}$ symmetrisch ist, liefert eigh reelle Frequenzen und orthonormale Moden, also ist jede Bewegung eine Summe unabhängiger Kosinusfunktionen, und es sind keine Zeitschritte nötig. Startet man in einer einzelnen Mode, behält die Kette diese Form für immer; zupft man eine Masse an, schwappt die Energie entlang der Kette hin und her. Die analytischen Frequenzen sind $\omega_n = 2\sqrt{k/m}\,\sin\tfrac{n\pi}{2(N+1)}$.
+meanings:
+- Auslenkung der Masse $i$ aus der Ruhelage
+- 'Steifigkeitstensor: $2k$ auf der Diagonale, $-k$ daneben'
+- 'wiederholtes $j$ ⇒ summiert: resultierende Federkraft auf Masse $i$'
+- Eigenwerte und Eigenvektoren (Spalte $n$) = Normalmoden
+- 'wiederholtes $i$ ⇒ summiert: Projektion des Anfangszustands auf jede Mode'
+- 'wiederholtes $n$ ⇒ summiert: Überlagerung der Moden'
+labels:
+  n_masses: Anzahl der Massen
+  k: Federkonstante
+  m: Masse
+  start: Anfangsauslenkung
+  amplitude: Anfangsamplitude
+  t_max: Simulierte Zeit

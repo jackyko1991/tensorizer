@@ -1,0 +1,18 @@
+source_hash: db1c9922ad65
+title: Gas de van der Waals y construcción de Maxwell
+summary: La ecuación de van der Waals añade al gas ideal la atracción y el tamaño de las moléculas, y de pronto aparece una transición líquido–gas. Toda una familia de isotermas es un único broadcasting $(T, V)$; por debajo de la temperatura crítica el lazo no físico se sustituye por la recta de áreas iguales de Maxwell, cuya presión se halla por bisección para un lote de temperaturas a la vez.
+notes: '$a$ mide la atracción entre moléculas (reduce la presión) y $b$ el volumen que ocupa un mol de moléculas ($V$ no puede bajar de $nb$). Por debajo de $T_c$ la isoterma tiene un tramo en el que comprimir el gas reduciría su presión: mecánicamente inestable. En realidad el gas condensa a presión constante $p^*$, la presión de vapor: el líquido de volumen molar $V_l$ coexiste con el gas de volumen $V_g$. La regla de Maxwell fija $p^*$ exigiendo áreas iguales por encima y por debajo de la recta (equivalentemente, energías de Gibbs iguales en las dos fases). La campana discontinua une todos los $(V_l, p^*)$ y $(V_g, p^*)$; su cima es el punto crítico, donde líquido y gas se vuelven idénticos. Los ejes se escalan con los valores críticos, en los que todos los gases de van der Waals parecen iguales (ley de los estados correspondientes); el eje de volumen es lineal para poder comparar a simple vista las áreas sombreadas. El modelo de van der Waals es solo cualitativo para fluidos reales:
+  por ejemplo, su $V_c = 3nb$ sobrestima los volúmenes críticos reales.'
+meanings:
+- barrido de temperaturas, como columna
+- malla de volúmenes, como fila
+- todas las isotermas a la vez con broadcasting
+- raíces de la cúbica $p(V) = p^*$ para un lote de temperaturas
+- 'área con signo entre la curva y la recta: cero en la solución'
+- 'bisección: torch.where mueve todos los intervalos a la vez'
+labels:
+  gas: Gas
+  n: Cantidad de gas
+  T_high: Temperatura inicial
+  T_low: Temperatura final
+  n_temps: Temperaturas (fotogramas)

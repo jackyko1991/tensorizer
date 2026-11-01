@@ -1,0 +1,46 @@
+[workspace]
+name = "tensorizer"
+version = "0.1.0"
+description = "Study physics equations in tensor form with PyTorch: equation → index notation → code → animated solution."
+channels = ["conda-forge"]
+platforms = ["win-64", "osx-arm64", "linux-64"]
+
+[dependencies]
+python = "3.12.*"
+pytorch = ">=2.4"
+numpy = ">=1.26"
+matplotlib = ">=3.8"
+pillow = ">=10"
+pyyaml = ">=6"
+fastapi = ">=0.110"
+uvicorn = ">=0.29"
+httpx = ">=0.27"
+pytest = ">=8"
+ruff = ">=0.5"
+nodejs = ">=22"
+tqdm = ">=4.66"
+
+[tasks]
+# Render problems whose code changed (all on first run; --force for all) → frontend/public/generated
+build-assets = "python scripts/build_assets.py"
+test = "pytest -q"
+# Regenerate the collapsible problem library in README.md from every meta.yaml
+readme = "python scripts/update_readme.py"
+# Problem-content translations: coverage per language (see scripts/i18n.py for export/import)
+i18n-status = "python scripts/i18n.py status"
+lint = "ruff check . && ruff format --check ."
+format = "ruff format . && ruff check --fix ."
+
+web-install = { cmd = "npm install", cwd = "frontend" }
+web-build = { cmd = "npm run build", cwd = "frontend", depends-on = ["web-install"] }
+
+# Hot-reload development: API + Vite together, open http://localhost:5173.
+# Edits to frontend/src, backend/ and problems/ show up automatically.
+dev = { cmd = "python scripts/dev.py", depends-on = ["web-install"] }
+
+# The same two servers separately: API on :8000 (edited code allowed), Vite on :5173 proxying /api
+api = { cmd = "uvicorn backend.app.main:app --port 8000", env = { ALLOW_CODE_EXEC = "1" } }
+web = { cmd = "npm run dev", cwd = "frontend", depends-on = ["web-install"] }
+
+# One process serving the built site + API at http://localhost:8000
+serve = { cmd = "uvicorn backend.app.main:app --port 8000", env = { ALLOW_CODE_EXEC = "1" }, depends-on = ["build-assets", "web-build"] }

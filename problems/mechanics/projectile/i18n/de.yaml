@@ -1,0 +1,15 @@
+source_hash: bb811720bfea
+title: Wurf mit Luftwiderstand
+summary: Newtons zweites Gesetz für einen Ball mit quadratischem Luftwiderstand. Mehrere Abwurfwinkel werden gleichzeitig gelöst, indem man sie zu einem gebündelten Tensor stapelt, sodass ein einziges einsum jede Bahn behandelt.
+notes: 'Der Batch-Index $b$ ist keine Physik: Er ist der Tensor-Trick, mit dem PyTorch $B$ Würfe in einem Durchgang löst. Setzt man den Luftwiderstand auf null, erhält man die Lehrbuchparabel mit maximaler Wurfweite bei 45°.'
+meanings:
+- Ort des Balls $b$, Komponente $i \in \{x, z\}$
+- Geschwindigkeit des Balls $b$
+- Schwerevektor $(0, -9.81)$
+- 'wiederholtes $j$ ⇒ summiert: Geschwindigkeitsquadrat jedes Balls'
+- rechte Seite der DGL
+labels:
+  v0: Abwurfgeschwindigkeit
+  drag: Luftwiderstand $c/m$
+  n_angles: Abwurfwinkel
+  t_max: Simulierte Zeit

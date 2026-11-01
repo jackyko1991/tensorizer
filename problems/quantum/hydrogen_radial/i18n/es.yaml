@@ -1,0 +1,15 @@
+source_hash: bc7b5c9d23fa
+title: Orbitales del átomo de hidrógeno
+summary: Escribir $\psi = (u(r)/r)\,Y_{lm}(\theta, \phi)$ convierte el problema 3D del hidrógeno en una ecuación radial 1D con un término centrífugo adicional $l(l+1)/2r^2$. Un hamiltoniano en diferencias finitas por cada momento angular $l$ se apila en un tensor $(L, N, N)$ y un único torch.linalg.eigh por lotes devuelve todos los orbitales a la vez. La animación recorre 1s, 2s, 2p, 3s, … mostrando la probabilidad radial y un corte de $\lvert\psi_{nl0}\rvert^2$.
+notes: 'Unidades atómicas ($\hbar = m_e = e = 4\pi\varepsilon_0 = 1$): longitudes en radios de Bohr, energías en hartree. Las energías exactas $E_n = -1/(2n^2)$ dependen solo de $n$, así que 2s y 2p (o 3s, 3p, 3d) resultan degenerados aunque sean autovalores de matrices distintas: la simetría oculta del potencial $1/r$. La función radial de $(n, l)$ tiene $n - l - 1$ nodos. La malla termina en $r_{\max}$, así que los estados cuyo tamaño ($\approx 2n^2$) se acerca a $r_{\max}$ quedan comprimidos y suben de energía; las diferencias finitas también ligan algo menos el 1s cerca de la singularidad $1/r$. El corte muestra orbitales con $m = 0$ en el plano $xz$ ($z$ hacia arriba), $Y_{l0} \propto P_l(\cos\theta)$; el color usa una escala de potencia comprimida $(\lvert\psi\rvert^2)^{0.3}$ para que los lóbulos exteriores débiles sigan siendo visibles.'
+meanings:
+- puntos interiores $r = dr \dots r_{\max} - dr$ ($u = 0$ en ambos extremos)
+- atracción de Coulomb más barrera centrífuga, una fila por $l$
+- una pila de $L$ hamiltonianos, uno por momento angular
+- 'por lotes sobre $l$: energías y funciones radiales; número principal $n = l + 1 + \text{column}$'
+- probabilidad por unidad de radio, $r^2\lvert R\rvert^2 = u^2$
+- $\lvert R(r)\,Y_{l0}(\theta)\rvert^2$ en un corte que contiene el eje $z$
+labels:
+  n_max: Capa más alta $n$
+  r_max: Radio de la malla $r_{\max}$
+  n_grid: Puntos de malla

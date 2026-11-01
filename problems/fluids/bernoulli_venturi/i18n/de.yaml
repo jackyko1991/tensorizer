@@ -1,0 +1,16 @@
+source_hash: 6140ba04c201
+title: Bernoulli und das Venturi-Rohr
+summary: Wasser, das durch ein sich verengendes Rohr fließt, muss schneller werden, um denselben Volumenstrom zu transportieren ($A u = Q$), und nach Bernoulli sinkt sein Druck in der Engstelle. Querschnitt, Geschwindigkeit und Druck sind Tensoren entlang der Rohrachse; eine Schar von Tracerteilchen zeigt die Beschleunigung.
+notes: 'Die Strömung wird eindimensional behandelt: Die Geschwindigkeit ist über jeden Querschnitt gleich, und Reibung wird vernachlässigt — deshalb gilt das Bernoulli-Gesetz hier exakt. Tracer auf einem festen Bruchteil des lokalen Radius folgen der Wand. Die Manometer sind offene Steigrohre, deren Flüssigkeitssäule $h = p/(\rho g)$ mit dem lokalen Überdruck wächst. Aus $p_1 - p_2$ folgt der Volumenstrom, $Q = A_2\sqrt{2\Delta p/(\rho(1 - A_2^2/A_1^2))}$ — so funktioniert ein Venturi-Messgerät. Fällt der Druck in der Engstelle unter den Atmosphärendruck, könnte eine echte Strömung kavitieren; hier wird stattdessen eine Warnung ausgegeben.'
+meanings:
+- Punkte entlang der Rohrachse, Index $k$
+- Querschnitt an jedem Achsenpunkt
+- 'Kontinuität: durch jeden Querschnitt fließt pro Sekunde dasselbe Volumen'
+- 'Bernoulli: schnellere Strömung ⇒ niedrigerer Druck'
+- Orte der Tracer-Schar, mit RK4 bewegt
+- Volumenstrom $A_1 u_1$ in m³/s
+labels:
+  u1: Einlassgeschwindigkeit $u_1$
+  area_ratio: Querschnittsverhältnis $A_1/A_2$
+  p1: Überdruck am Einlass $p_1$
+  t_max: Simulierte Zeit

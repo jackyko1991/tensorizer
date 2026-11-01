@@ -1,0 +1,18 @@
+source_hash: 2b849cfef0cb
+title: Difusión del calor en una placa
+summary: La ley de Fourier convierte un gradiente de temperatura en un flujo de calor, y la conservación de la energía convierte la divergencia de ese flujo en un cambio de temperatura. En una malla ambas derivadas son pequeños núcleos de convolución, así que un paso de tiempo son solo dos llamadas a conv2d sobre toda la placa.
+notes: 'Las diferencias hacia delante y luego hacia atrás se combinan en el conocido laplaciano de 5 puntos, de modo que $\partial_i\partial_i T$ nunca se programa por separado: resulta de componer los núcleos de gradiente y divergencia. El esquema explícito solo es estable para $\alpha\,dt/dx^2 \le 1/4$ (el "número de estabilidad" de abajo). Con condiciones de Dirichlet los bordes son un baño a 20 °C y el calor se escapa; con bordes de Neumann (aislados) ningún flujo atraviesa la frontera y el calor total se conserva mientras la temperatura se uniformiza. Un modo seno $\sin(\pi x/L)\sin(\pi y/L)$ decae como $\exp(-2\pi^2\alpha t/L^2)$.'
+meanings:
+- temperatura de cada celda de la malla (dimensiones de lote y canal para conv2d)
+- plantillas de diferencias hacia delante, un canal de salida por dirección $i \in \{x, y\}$
+- 'ley de Fourier: flujo de calor, el canal $i$ es la componente'
+- '$i$ repetido ⇒ sumado: conv2d suma sus 2 canales de entrada, la divergencia'
+- difusividad térmica (m²/s)
+- 'segundo miembro; Euler explícito: $T \leftarrow T + dt\,\partial_t T$'
+labels:
+  alpha: Difusividad $\alpha$
+  t_max: Tiempo simulado
+  n_spots: Puntos calientes
+  n_grid: Celdas de malla por lado
+  r: Número de estabilidad $\alpha\,dt/dx^2$
+  boundary: Bordes

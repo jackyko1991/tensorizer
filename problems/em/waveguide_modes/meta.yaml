@@ -1,0 +1,28 @@
+title: Rectangular waveguide modes
+category: em
+level: advanced
+order: 3
+summary: >
+  Which field patterns can travel down a hollow metal pipe? Each mode solves the 2D Helmholtz equation
+  $(\partial_i\partial_i + k_c^2)\psi = 0$ on the cross-section — Dirichlet walls for TM, Neumann walls for TE. The discrete Laplacian
+  is assembled with torch.kron and torch.linalg.eigh returns all modes and cutoff frequencies at once.
+animated: true
+vector_form: '(\nabla_\perp^2 + k_c^2)\,\psi = 0,\qquad \psi = E_z\ (\mathrm{TM}:\ \psi|_{\partial} = 0),\quad \psi = H_z\ (\mathrm{TE}:\ \partial_n\psi|_{\partial} = 0)'
+index_form: '\partial_i\partial_i\,\psi + k_c^2\,\psi = 0 \;\;\longrightarrow\;\; -L_{nm}\,\psi_m = k_c^2\,\psi_n,\qquad L = D_x\otimes I_y + I_x\otimes D_y'
+translation:
+  - {symbol: '\psi_{ab}', code: 'pattern', shape: '(Nx, Ny)', meaning: '$E_z$ (TM) or $H_z$ (TE) at grid point $(x_a, y_b)$'}
+  - {symbol: '\psi_m', code: 'pattern.reshape(-1)', shape: '(Nx·Ny,)', meaning: 'same values flattened: $m = a\cdot N_y + b$'}
+  - {symbol: 'D_x,\ D_y', code: 'second_difference(n, h, boundary)', shape: '(Nx, Nx), (Ny, Ny)', meaning: '1D $\partial^2$ with the wall condition built into the corner entries'}
+  - {symbol: 'L_{nm}', code: 'kron(Dx, Iy) + kron(Ix, Dy)', shape: '(Nx·Ny, Nx·Ny)', meaning: 'the 2D Laplacian $\partial_i\partial_i$ ($i$ summed over $x, y$)'}
+  - {symbol: 'k_c^2,\ \psi_m', code: 'torch.linalg.eigh(-L)', shape: '(Nx·Ny,), (Nx·Ny, Nx·Ny)', meaning: 'eigenvalues and orthonormal eigenvectors: cutoffs and mode shapes'}
+  - {symbol: 'k_c^{mn}', code: 'exact_cutoff(m, n, a, b)', shape: 'scalar', meaning: '$\pi\sqrt{(m/a)^2 + (n/b)^2}$, to check the numbers'}
+notes: >
+  Default size is the standard WR-90 X-band guide (2.286 cm × 1.016 cm), whose $\text{TE}_{10}$ mode cuts off at 6.56 GHz.
+  A mode propagates only above its cutoff, with $\beta = \sqrt{(\omega/c)^2 - k_c^2}$. TE and TM modes with the same $(m, n \ge 1)$
+  share a cutoff. The constant TE solution ($k_c = 0$) carries no wave and is dropped. Second-order finite differences
+  put $k_c$ within about a percent of the exact value at the default resolution.
+params:
+  a: {default: 2.286, min: 1.0, max: 4.0, step: 0.1, label: 'Width $a$', unit: cm}
+  b: {default: 1.016, min: 0.5, max: 3.0, step: 0.1, label: 'Height $b$', unit: cm}
+  n_modes: {default: 6, min: 2, max: 8, step: 1, type: int, label: Modes}
+  n_grid: {default: 24, min: 10, max: 32, step: 2, type: int, label: 'Grid points across $b$'}

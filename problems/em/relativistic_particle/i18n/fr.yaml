@@ -1,0 +1,17 @@
+source_hash: b693da8b6e0e
+title: Particule chargée relativiste
+summary: 'La force de Lorentz sous forme covariante, $dU^\mu/d\tau = (q/m)\,F^\mu{}_\nu U^\nu$ : le second indice du tenseur électromagnétique est abaissé avec la métrique de Minkowski et contracté avec la quadrivitesse en un seul einsum. L''intégration en temps propre montre que les particules rapides tournent plus lentement que ne le prédit Newton, et qu''un champ électrique constant pousse une particule toujours plus près de la vitesse de la lumière — sans jamais la dépasser.'
+notes: 'Unités avec $c = 1$. Les équations sont intégrées dans le temps propre $\tau$ de chaque particule avec RK4, puis rééchantillonnées sur le temps du laboratoire $t = X^0$ pour l''animation. Cyclotron : la force magnétique ne travaille pas, donc $\gamma$ reste constant, mais l''orbite est $\gamma$ fois plus grande et $\gamma$ fois plus lente que le cercle newtonien ($\omega = qB/(\gamma m)$). Accélération : partant du repos dans un $E$ uniforme, le mouvement est hyperbolique, $x = (\sqrt{1 + (at)^2} - 1)/a$ avec $a = qE/m$, donc $v \to 1$, alors que le $\tfrac12 at^2$ de Newton dépasserait la lumière après $t = 2/a$.'
+meanings:
+- quadri-position $(t, x, y, z)$ et quadrivitesse $\gamma(1, \mathbf v)$ de la particule $p$
+- métrique de Minkowski $\operatorname{diag}(+1, -1, -1, -1)$, $c = 1$
+- $F^{0i} = -E_i$, $F^{ij} = -\varepsilon_{ijk}B_k$
+- '$\alpha$ répété ⇒ sommé : second indice abaissé'
+- '$\nu$ répété ⇒ sommé : quadriforce sur chaque particule'
+- norme de Minkowski de $U$, doit rester égale à 1
+labels:
+  config: Scénario
+  strength: Intensité du champ ($B$ ou $E$)
+  v_max: Vitesse initiale maximale (cyclotron)
+  n_particles: Particules
+  t_max: Temps du laboratoire

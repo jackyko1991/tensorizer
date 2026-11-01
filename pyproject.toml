@@ -1,0 +1,15 @@
+# Tool settings only — the environment is managed by pixi (see pixi.toml).
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+filterwarnings = ["ignore::DeprecationWarning:fastapi.testclient"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["frontend"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "B"]
+ignore = ["B905"]

@@ -1,0 +1,17 @@
+source_hash: f68c4a9fe179
+title: Vaciado de un depósito (Torricelli)
+summary: El agua sale por un orificio con la velocidad de Torricelli $\sqrt{2gh}$, así que el nivel baja deprisa al principio y despacio al final. Depósitos con orificios de distintos tamaños se integran juntos como un único tensor por lotes y se comparan con la solución exacta $h(t) = (\sqrt{h_0} - \tfrac aA\sqrt{g/2}\,t)^2$.
+notes: 'La ley de Torricelli se deduce de Bernoulli entre la superficie libre (en reposo, ya que $A \gg a$) y el chorro, ambos a presión atmosférica. Los orificios reales estrechan el chorro hasta un 60 % del área del orificio (la vena contracta), por lo que los depósitos reales se vacían más despacio: multiplica $a$ por un coeficiente de descarga $C_d \approx 0.6$. Duplicar el diámetro del orificio divide entre cuatro el tiempo de vaciado; duplicar la altura inicial solo lo multiplica por $\sqrt2$. El chorro que cae se estrecha al acelerarse: de nuevo la continuidad.'
+meanings:
+- nivel del agua en el depósito $b$ a lo largo del tiempo
+- 'área del orificio del depósito $b$: el índice del lote'
+- sección transversal de cada depósito
+- velocidad de salida de Torricelli
+- segundo miembro integrado con RK4
+- 'ningún índice repetido ⇒ producto exterior: cada instante con cada orificio'
+labels:
+  n_tanks: Número de depósitos
+  d_min: Diámetro mínimo del orificio
+  d_max: Diámetro máximo del orificio
+  tank_diameter: Diámetro del depósito $D$
+  h0: Nivel inicial $h_0$

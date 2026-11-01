@@ -1,0 +1,16 @@
+source_hash: 2765022e4b7f
+title: Battements et vitesse de groupe
+summary: On additionne deux sinusoïdes (ou plus) de fréquences voisines. Toutes les ondes sont dans un seul tenseur indexé par l'onde $s$, le temps $n$ et la position $j$ ; un seul einsum sur $s$ les superpose. En un point fixe, on entend des battements à $|f_1 - f_2|$ ; dans l'espace, les crêtes de la porteuse avancent à la vitesse de phase tandis que l'enveloppe avance à la vitesse de groupe.
+notes: 'Pour deux ondes, $\cos a + \cos b = 2\cos\tfrac{a-b}{2}\cos\tfrac{a+b}{2}$ : une porteuse rapide à la fréquence moyenne dans une enveloppe lente. L''intensité sonore $|{\rm envelope}|$ culmine $|f_1 - f_2|$ fois par seconde, la fréquence de battement. Avec la relation de dispersion $\omega = c_0 k_0 (k/k_0)^p$, la vitesse de groupe vaut $p$ fois la vitesse de phase : égale pour le son sur une corde ($p = 1$), moitié pour les vagues en eau profonde ($p = \tfrac12$), une fois et demie pour les rides capillaires ($p = \tfrac32$). Le point rouge suit une crête à $v_p$, le point vert suit le maximum de l''enveloppe à $v_g$. Avec plus de deux ondes, les battements deviennent des groupes d''ondes isolés.'
+meanings:
+- pulsation et nombre d'onde de l'onde $s$, liés par la relation de dispersion $\omega \propto k^p$
+- positions et instants où l'onde est évaluée
+- phase de chaque onde en chaque instant et chaque lieu, par broadcasting
+- '$s$ répété ⇒ sommé : la superposition'
+- 'enveloppe : longueur de la somme des phaseurs'
+labels:
+  f1: Fréquence $f_1$
+  f2: Fréquence $f_2$
+  n_waves: Nombre d'ondes (réparties de f1 à f2)
+  dispersion: Dispersion $p$ = 1, ½, 3/2
+  t_max: Durée simulée

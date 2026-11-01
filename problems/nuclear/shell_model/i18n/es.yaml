@@ -1,0 +1,19 @@
+source_hash: f7213dbb7c33
+title: Modelo de capas nuclear
+summary: Los nucleones orbitan de forma independiente en un pozo de Woods–Saxon. Resolver la ecuación de Schrödinger radial para cada canal $(l, j)$ como un único lote de hamiltonianos en diferencias finitas y aumentar la fuerza espín–órbita hace que los números mágicos 2, 8, 20, 28, 50, 82, 126 (el número de nucleones de los núcleos especialmente estables) aparezcan como los mayores saltos del esquema de niveles.
+notes: 'Sin espín–órbita los niveles se agrupan como los de un oscilador armónico 3D y los saltos aparecen tras 2, 8, 20 y 40 nucleones (el fondo plano del pozo de Woods–Saxon separa además 58, 92 y 138). El término espín–órbita baja $j = l + \tfrac12$ y sube $j = l - \tfrac12$ en una cantidad que crece con $l$, de modo que el compañero de $j$ alto de cada capa del oscilador (1f7/2, 1g9/2, 1h11/2, 1i13/2) cae a la capa inferior: la explicación de Mayer y Jensen (1949) de 28, 50, 82 y 126. Los parámetros por defecto corresponden a neutrones en el ²⁰⁸Pb: $V_0 = 51 - 33(N-Z)/A \approx 44$ MeV, $r_0 = 1.27$ fm, $a = 0.67$ fm. Simplificaciones: un único pozo fijo para todos los niveles (sin autoconsistencia ni apareamiento), sin término de Coulomb (así que son niveles de neutrones) y una caja de 18 fm, por lo que solo se muestran los niveles ligados.'
+meanings:
+- puntos interiores de la malla; $u = 0$ en $r = 0$ y en el borde de la caja
+- $d^2/dr^2$ en diferencias finitas
+- cada canal $(l, j = l \pm \tfrac12)$ hasta $l = 8$
+- $+l/2$ para $j = l+\tfrac12$, $-(l+1)/2$ para $j = l-\tfrac12$
+- pozo + espín–órbita + centrífugo, mediante einsum('k,i->ki')
+- un hamiltoniano por canal, apilados
+- por lotes sobre $k$; se conservan los niveles ligados $E < 0$
+- 'nucleones llenados hasta cada nivel ordenado: los números mágicos están en los grandes saltos'
+labels:
+  v_so: Intensidad espín–órbita final $V_{so}$
+  v0: Profundidad del pozo $V_0$
+  mass_number: Número másico $A$ (fija $R = r_0 A^{1/3}$)
+  diffuseness: Difusividad superficial $a$
+  n_grid: Puntos de malla

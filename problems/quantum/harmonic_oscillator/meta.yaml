@@ -1,0 +1,31 @@
+title: Quantum harmonic oscillator
+category: quantum
+level: beginner
+order: 2
+summary: >
+  The Hamiltonian $H = -\tfrac12\,d^2/dx^2 + \tfrac12\omega^2x^2$ becomes a matrix on a grid, and torch.linalg.eigh returns its
+  evenly spaced energy ladder $E_n = \omega(n + \tfrac12)$. A displaced Gaussian (a coherent state) is written as a
+  sum of eigenstates; giving each one its phase $e^{-iE_n t}$ makes the packet swing back and forth
+  exactly like a classical mass on a spring.
+animated: true
+vector_form: '\hat H\,\psi = -\tfrac12\,\frac{d^2\psi}{dx^2} + \tfrac12\,\omega^2x^2\,\psi = E\,\psi,\qquad \psi(x,t) = \sum_n c_n\,\varphi_n(x)\,e^{-iE_n t}'
+index_form: 'H_{xy} = -\tfrac12\,D2_{xy} + V_x\,\delta_{xy},\qquad H_{xy}\,\varphi_{yn} = E_n\,\varphi_{xn},\qquad \psi_{x}(t) = \varphi_{xn}\,c_n\,e^{-iE_n t}'
+translation:
+  - {symbol: 'V_x', code: 'potential(x, omega)', shape: '(N,)', meaning: 'spring potential $\tfrac12\omega^2x^2$ at every grid point'}
+  - {symbol: 'H_{xy}', code: 'hamiltonian(x, dx, omega)', shape: '(N, N)', meaning: 'kinetic $-\tfrac12\,D2$ plus the potential on the diagonal'}
+  - {symbol: 'E_n,\ \varphi_{xn}', code: 'torch.linalg.eigh(H)', shape: '(N,), (N, N)', meaning: 'energies and eigenvectors (column $n$ is state $n$)'}
+  - {symbol: 'c_n', code: "einsum('xn,x->n', phi, psi0) * dx", shape: '(N,)', meaning: 'repeated $x$ ⇒ summed: overlap of the start state with state $n$'}
+  - {symbol: '\psi_x(t)', code: "einsum('xn,n->x', phi, c * exp(-1j*E*t))", shape: '(N,)', meaning: 'repeated $n$ ⇒ summed: rebuild $\psi$ from its phased components'}
+  - {symbol: '\langle x\rangle', code: "einsum('x,x,x->', psi.conj(), x, psi) * dx", shape: '()', meaning: 'average position, compared with the classical $x_0\cos\omega t$'}
+notes: >
+  Units $\hbar = m = 1$. The grid is a large box with $\psi = 0$ at its walls, far enough out that the walls never
+  matter. The faint curves are the lowest stationary states $\varphi_n(x)$, drawn at the height of their energy
+  $E_n$; the spacing between rungs is exactly $\omega$. The start state is the ground-state Gaussian shifted to $x_0$.
+  Its weights $\lvert c_n\rvert^2$ form a Poisson distribution with mean $\omega x_0^2/2$, and because all the energies differ by
+  whole multiples of $\omega$, the packet returns to $x_0$ after every period $2\pi/\omega$ without spreading.
+  $\langle x\rangle$ follows the classical motion $x_0\cos\omega t$ (Ehrenfest's theorem is exact for a quadratic potential).
+params:
+  omega: {default: 1.0, min: 0.5, max: 3.0, step: 0.1, label: 'Angular frequency $\omega$', unit: rad/time}
+  x0: {default: 2.5, min: 0.0, max: 4.0, step: 0.1, label: 'Initial displacement $x_0$'}
+  periods: {default: 2.0, min: 0.5, max: 5.0, step: 0.5, label: Simulated time, unit: periods}
+  n_grid: {default: 400, min: 100, max: 800, step: 10, type: int, label: Grid points}

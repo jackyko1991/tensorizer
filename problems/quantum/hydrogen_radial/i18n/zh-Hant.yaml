@@ -1,0 +1,15 @@
+source_hash: bc7b5c9d23fa
+title: 氫原子軌域
+summary: 令 $\psi = (u(r)/r)\,Y_{lm}(\theta, \phi)$，把三維氫原子問題化為帶有額外離心項 $l(l+1)/2r^2$ 的一維徑向方程式。每個角動量 $l$ 一個有限差分 Hamiltonian，疊成 $(L, N, N)$ 張量，一次批次 torch.linalg.eigh 就給出所有軌域。動畫依序展示 1s、2s、2p、3s、…，顯示徑向機率與 $\lvert\psi_{nl0}\rvert^2$ 的切面。
+notes: 原子單位（$\hbar = m_e = e = 4\pi\varepsilon_0 = 1$）：長度以波耳半徑計，能量以 hartree 計。精確能量 $E_n = -1/(2n^2)$ 只依賴 $n$，因此 2s 與 2p（或 3s、3p、3d）雖是不同矩陣的特徵值，結果卻是簡併的——這是 $1/r$ 位能的隱藏對稱性。$(n, l)$ 的徑向函數有 $n - l - 1$ 個節點。網格止於 $r_{\max}$，因此大小（$\approx 2n^2$）接近 $r_{\max}$ 的態會被擠壓、能量被推高；有限差分在 $1/r$ 奇異點附近也使 1s 的結合略為不足。切面顯示 $xz$ 平面（$z$ 朝上）上的 $m = 0$ 軌域，$Y_{l0} \propto P_l(\cos\theta)$；顏色使用壓縮的冪律刻度 $(\lvert\psi\rvert^2)^{0.3}$，使微弱的外側瓣仍清晰可見。
+meanings:
+- 內部點 $r = dr \dots r_{\max} - dr$（兩端 $u = 0$）
+- 庫侖吸引力加上離心位障，每個 $l$ 一列
+- $L$ 個 Hamiltonian 的堆疊，每個角動量一個
+- 沿 $l$ 批次計算：能量與徑向函數；主量子數 $n = l + 1 + \text{column}$
+- 每單位半徑的機率，$r^2\lvert R\rvert^2 = u^2$
+- 通過 $z$ 軸的切面上的 $\lvert R(r)\,Y_{l0}(\theta)\rvert^2$
+labels:
+  n_max: 最高殼層 $n$
+  r_max: 網格半徑 $r_{\max}$
+  n_grid: 格點數

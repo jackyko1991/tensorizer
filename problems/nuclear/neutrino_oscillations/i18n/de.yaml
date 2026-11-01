@@ -1,0 +1,21 @@
+source_hash: 9f4f33f51aa8
+title: Neutrino-Oszillationen
+summary: Neutrinos entstehen mit einem bestimmten Flavour ($\nu_e, \nu_\mu, \nu_\tau$), breiten sich aber als drei Massenzustände mit leicht verschiedenen Phasen aus. Die PMNS-Mischungsmatrix und ein einziges komplexes einsum über den Massenindex liefern die Wahrscheinlichkeit jedes Flavourwechsels für ein ganzes Gitter von Baselines und zeigen, wie ein $\nu_\mu$-Strahl unterwegs zu $\nu_\tau$ und $\nu_e$ wird.
+notes: 'Da $U$ unitär ist, gilt $\sum_\beta P(\alpha\to\beta) = 1$ in jeder Entfernung: Neutrinos wechseln den Flavour, aber keines geht verloren. Mit nur zwei Flavours vereinfacht sich die Formel zu $P = \sin^2 2\theta\,\sin^2(1.267\,\Delta m^2 L/E)$. Hier ergibt das große $\Delta m^2_{31}$ die schnelle „atmosphärische“ Oszillation (erstes $\nu_\mu$-Minimum bei $L/E \approx 500$ km/GeV, überwiegend in $\nu_\tau$, weil $\theta_{23} \approx 45°$) und das kleine $\Delta m^2_{21}$ die langsame „solare“ (bei $15\,000$ km/GeV). Die Punkte darunter sind Beispiel-Neutrinos: Jeder zeigt den Flavour, den ein Detektor in seiner Entfernung registrieren würde, gezogen mit den berechneten Wahrscheinlichkeiten (fester Seed). Vereinfachungen: nur Vakuumoszillationen — der MSW-Materieeffekt in Erde oder Sonne fehlt — und normale Massenordnung. Die Standardparameter liegen nahe an aktuellen globalen Fits. Probiere $\delta_{CP}$ = 0 gegen 270° für einen $\nu_\mu \to \nu_e$-Strahl.'
+meanings:
+- Flavour $\alpha$ × Massenzustand $i$; Produkt dreier Drehungen via einsum('ab,bc,ci->ai')
+- nur die Differenzen $\Delta m^2_{21}, \Delta m^2_{31}$ zählen; $m_1^2 = 0$
+- logarithmisch verteilte Entfernungen in km
+- Phase jedes Massenzustands bei jeder Baseline ($2.534\,m^2 L/E$ in eV², km, GeV)
+- 'wiederholtes $i$ ⇒ summiert: die drei Massenzustände interferieren'
+- alle neun Übergangswahrscheinlichkeiten bei jeder Baseline
+labels:
+  energy: Neutrinoenergie $E$
+  l_max: Längste Baseline $L_{\max}$
+  flavour: Flavour bei der Entstehung
+  theta12: $\theta_{12}$
+  theta13: $\theta_{13}$
+  theta23: $\theta_{23}$
+  delta_cp: $\delta_{CP}$
+  dm21: $\Delta m^2_{21}$
+  dm31: $\Delta m^2_{31}$

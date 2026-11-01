@@ -1,0 +1,17 @@
+source_hash: 8807e34cb0a8
+title: 电磁波（FDTD）
+summary: 在 Yee 网格上对麦克斯韦的两个旋度方程做时间推进。旋度写成 $\varepsilon_{ijk}\,\partial_j F_k$：一张有限差分表与列维-奇维塔符号在一次 einsum 中缩并。点源或线源发出的波射到介质块上，减速、弯折并部分反射，而阻尼边界吸收离开盒子的波。
+notes: 取 $c = \varepsilon_0 = \mu_0 = 1$、网格尺寸 $\Delta x = 1$ 的单位。$\mathbf E$ 与 $\mathbf H$ 相错半个网格（$\partial\mathbf E$ 用前向差分，$\partial\mathbf H$ 用后向差分），交替更新——即蛙跳式 Yee 格式。源是“软源”：它叠加到 $E_z$ 上，所以反射波可直接穿过它。吸收边界只是把场乘以一个略小于 1、向墙壁平滑增强的因子；实际程序改用完美匹配层（PML）。在介质块内波长缩短为原来的 1/n，其中 $n = \sqrt{\varepsilon_r}$；正入射时振幅的 $(1 - n)/(1 + n)$ 被反射。
+meanings:
+- 网格上的场分量；TM 模式：只有 $E_z$、$H_x$、$H_y$ 非零
+- 有限差分表；二维时 $j = z$ 行为零
+- 列维-奇维塔符号
+- 重复的 $j, k$ ⇒ 求和：每个网格的旋度
+- 相对介电常数：真空中为 1，块内为 $\varepsilon_\text{block}$（$n = \sqrt{\varepsilon_r}$）
+- 时间步长 $S\,\Delta x/(c\sqrt2)$；$S > 1$ 会被拒绝，因为格式会发散
+labels:
+  source: 波源
+  eps_block: 介质块介电常数 $\varepsilon_r$
+  wavelength: 真空波长
+  courant: 库朗数 $S$
+  t_max: 模拟时长

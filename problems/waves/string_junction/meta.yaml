@@ -1,0 +1,30 @@
+title: Pulse at a string junction
+category: waves
+level: intermediate
+order: 1
+summary: >
+  Two strings with different mass densities are tied together. A pulse coming from the left splits at the knot into a
+  reflected and a transmitted pulse whose amplitudes are set by the impedances $Z = \sqrt{T\mu}$. The second derivative is a
+  1D convolution with the stencil $(1, -2, 1)$.
+animated: true
+vector_form: '\mu(x)\,\frac{\partial^2 u}{\partial t^2} = T\,\frac{\partial^2 u}{\partial x^2},\qquad R = \frac{Z_1 - Z_2}{Z_1 + Z_2},\qquad \mathcal T = \frac{2Z_1}{Z_1 + Z_2}'
+index_form: '\mu_i\,\ddot u_i = T\,D_{ij}\,u_j,\qquad D_{ij}u_j = \frac{u_{i+1} - 2u_i + u_{i-1}}{\Delta x^2},\qquad R^2 + \frac{Z_2}{Z_1}\,\mathcal T^2 = 1'
+translation:
+  - {symbol: 'u_i', code: 'u', shape: '(N,)', meaning: 'displacement at grid point $i$; both far ends are fixed'}
+  - {symbol: '\mu_i', code: 'density(x, mu1, mu2)', shape: '(N,)', meaning: 'mass per length: $\mu_1$ left, $\mu_2$ right, the average on the knot'}
+  - {symbol: 'D_{ij}u_j', code: 'conv1d(u, [1, -2, 1]) / dx**2', shape: '(N,)', meaning: 'repeated $j$ ⇒ summed: the stencil slides along the string'}
+  - {symbol: 'Z_k = \sqrt{T\mu_k}', code: 'impedance(T, mu)', shape: 'scalar', meaning: 'wave impedance of string $k$'}
+  - {symbol: 'R,\ \mathcal T', code: 'reflection_transmission(Z1, Z2)', shape: 'scalar', meaning: 'amplitude ratios from continuity of $u$ and of the force $T\,u_x$ at the knot'}
+  - {symbol: 'E', code: 'energy(u_prev, u, u_next, mu, T, dx, dt)', shape: 'scalar', meaning: '$\sum_i \tfrac12\mu_i\dot u_i^2\Delta x + \tfrac12 T (\partial_x u)^2\Delta x$, conserved'}
+notes: >
+  The knot cannot break, so $u$ is continuous, and it is massless, so the transverse forces $T u_x$ on both sides balance.
+  These two conditions give $R$ and $\mathcal T$. A heavier right string ($Z_2 > Z_1$) reflects the pulse upside down, like a
+  fixed end; a lighter one reflects it upright, like a free end. The transmitted pulse is always upright and moves at
+  $c_2 = \sqrt{T/\mu_2}$, so it is squeezed or stretched by $c_2/c_1$. The energy carried by a pulse is proportional to
+  $Z\,A^2$, which gives the flux balance $R^2 + (Z_2/Z_1)\,\mathcal T^2 = 1$. Units: $T = 1$, $\mu_1 = 1$, string from $-1$ to $1$.
+  Grey dashed lines mark the predicted amplitudes. Watch the faster string: its pulse reaches the far wall and bounces back.
+params:
+  mu_ratio: {default: 4.0, min: 0.1, max: 10.0, step: 0.1, label: 'Density ratio $\mu_2/\mu_1$'}
+  width: {default: 0.04, min: 0.02, max: 0.1, step: 0.01, label: Pulse width, unit: m}
+  t_max: {default: 1.2, min: 0.6, max: 3.0, step: 0.1, label: Simulated time, unit: s}
+  n_points: {default: 1001, min: 401, max: 2001, step: 100, type: int, label: Grid points}

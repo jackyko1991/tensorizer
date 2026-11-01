@@ -1,0 +1,21 @@
+source_hash: d40b53524521
+title: Fluchtgeschwindigkeit
+summary: 'Eine Reihe von Raketen verlässt einen Planeten mit Geschwindigkeiten um die Fluchtgeschwindigkeit $v_\mathrm{esc} = \sqrt{2GM/R}$. Das Vorzeichen der Energie entscheidet über das Schicksal jeder Rakete: gebundene Raketen ($E < 0$) fallen zurück, ungebundene ($E \ge 0$) kehren nie zurück.'
+notes: 'Einheiten: Planetenradius $R = 1$ und $GM = 1$, also $v_\mathrm{esc} = \sqrt 2$ (für die Erde 11,2 km/s). Die Raketen fliegen mit abgeschaltetem Triebwerk, es gibt keine Luft, und der Planet rotiert nicht. Knapp unterhalb von $v_\mathrm{esc}$ wächst die Gipfelhöhe wie $1/(1 - v^2/v_\mathrm{esc}^2)$ an, und der Flug dauert immer länger. Genau bei $v_\mathrm{esc}$ wird die Rakete für immer langsamer, kommt aber nie zum Stillstand. Neige die Startrichtung, um zu sehen, dass die Fluchtgeschwindigkeit nicht von der Richtung abhängt (solange die Bahn den Planeten nicht trifft): Nur die Energie zählt. Dunkle Sterne: Drückt man den Planeten zusammen, bis $v_\mathrm{esc}$ die Lichtgeschwindigkeit $c$ erreicht, erhält man $R = 2GM/c^2$. Michell (1783) und Laplace argumentierten, dass ein solcher Stern unsichtbar wäre. Die Allgemeine Relativitätstheorie liefert genau denselben Radius für den Horizont eines Schwarzen Lochs (den Schwarzschild-Radius, 3 km für die Sonne), auch wenn die Newtonsche
+  Begründung nicht die eigentliche Erklärung ist.'
+meanings:
+- Ort der Rakete $b$ relativ zum Planetenmittelpunkt
+- Geschwindigkeit der Rakete $b$
+- 'wiederholtes $j$ ⇒ summiert: Abstandsquadrat $r_b^2$'
+- Gravitation des Planeten
+- 'Energie pro Masse: negativ ⇒ gebunden'
+- Geschwindigkeit mit $E = 0$ an der Oberfläche
+- '$2GM/c^2$: Radius, bei dem $v_\mathrm{esc} = c$'
+- $R/(1 - v^2/v_\mathrm{esc}^2)$, Gipfelpunkt eines senkrechten Starts
+labels:
+  n_rockets: Raketen
+  f_min: Langsamster Start $v/v_\mathrm{esc}$
+  f_max: Schnellster Start $v/v_\mathrm{esc}$
+  tilt: Neigung gegen die Senkrechte
+  t_max: Simulierte Zeit
+  dt: Zeitschritt

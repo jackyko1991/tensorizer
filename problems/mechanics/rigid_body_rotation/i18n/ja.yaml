@@ -1,0 +1,20 @@
+source_hash: d653bb5fd1c6
+title: 剛体の自由回転（テニスラケット効果）
+summary: トルクの働かない直方体に対するオイラーの運動方程式を、慣性テンソル $I_{ij}$ とレヴィ＝チヴィタテンソル $\varepsilon_{ijk}$ で書く。最長軸や最短軸のまわりの回転は安定だが、中間軸のまわりの回転は何度も反転する（ジャニベコフ効果）。
+notes: トルクがなければエネルギー $\tfrac12\boldsymbol\omega\cdot I\boldsymbol\omega$ と $\mathbf L = I\boldsymbol\omega$ の大きさがともに保存されるので、$\boldsymbol\omega$ は（$\mathbf L$ 空間で）エネルギー一定の楕円体と $\lvert\mathbf L\rvert$ 一定の球面の交線上を動かなければならない。最大軸と最小軸の近くではこれらの曲線は小さなループであり安定である。中間軸の近くでは鞍点を通るので、わずかなぶれが成長して箱がひっくり返り、また戻る。空間固定系の角運動量 $RI\boldsymbol\omega$（固定された矢印で表示）は決して動かない。パラメータ $a, b, c$ は $a \ge b \ge c$ となるように並べ替えられる。
+meanings:
+- 一様な直方体の慣性テンソル $(M/12)\operatorname{diag}(b^2+c^2,\ a^2+c^2,\ a^2+b^2)$
+- 物体固定系成分での角速度
+- レヴィ＝チヴィタテンソル：テンソルとしての外積
+- $j, k, l$ について和：$\boldsymbol\omega\times(I\boldsymbol\omega)$
+- $I_{ij}\dot\omega_j = -\varepsilon_{ijk}\omega_j I_{kl}\omega_l$ を解く
+- 姿勢：物体固定系 → 空間固定系の回転行列
+- 回転の運動エネルギー、保存量
+labels:
+  spin_axis: 主な回転軸
+  spin: 回転速度
+  perturbation: ぶれ（回転に対する割合）
+  a: 辺の長さ $a$
+  b: 辺の長さ $b$
+  c: 辺の長さ $c$
+  t_max: シミュレーション時間

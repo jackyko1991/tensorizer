@@ -1,0 +1,26 @@
+title: Electric field of point charges
+category: em
+level: beginner
+order: 2
+summary: >
+  Coulomb's law and superposition on a grid. Broadcasting builds the separation vector from every charge to every
+  grid point in one go, and a single einsum over the charge index adds up their fields. One charge travels round a
+  circle while the field lines follow it.
+animated: true
+vector_form: '\mathbf E(\mathbf x) = \sum_q k\,Q_q\,\frac{\mathbf x - \mathbf x_q}{\lVert\mathbf x - \mathbf x_q\rVert^3}'
+index_form: 'E_{gi} = k\,Q_q\,\frac{r_{gqi}}{\big(r_{gqj}\,r_{gqj}\big)^{3/2}},\qquad r_{gqi} = x_{gi} - x_{qi}'
+translation:
+  - {symbol: 'x_{gi}', code: 'points', shape: '(G, 2)', meaning: 'grid point $g$, component $i \in \{x, y\}$'}
+  - {symbol: 'x_{qi}', code: 'charge_pos', shape: '(Q, 2)', meaning: 'position of charge $q$'}
+  - {symbol: 'Q_q', code: 'charges', shape: '(Q,)', meaning: 'value of each charge'}
+  - {symbol: 'r_{gqi}', code: 'points[:, None, :] - charge_pos[None, :, :]', shape: '(G, Q, 2)', meaning: 'broadcasting: the vector from every charge to every grid point'}
+  - {symbol: '\sqrt{r_{gqj}r_{gqj}}', code: "sqrt(einsum('gqj,gqj->gq', r, r))", shape: '(G, Q)', meaning: 'repeated $j$ ⇒ summed: distances'}
+  - {symbol: 'E_{gi}', code: "einsum('q,gqi,gq->gi', Q, r, 1/d**3)", shape: '(G, 2)', meaning: 'repeated $q$ ⇒ summed: superposition of all charges'}
+notes: >
+  Units with $k = 1$. The charges are point charges in 3D, so each field falls off as $1/r^2$; we only look at the
+  plane that contains them. The arrows point away from positive charges (red) and towards negative ones (blue); with two
+  equal signs a neutral point appears between them where the field vanishes.
+params:
+  q_fixed: {default: 1.0, min: -3, max: 3, step: 0.5, label: Fixed charge}
+  q_moving: {default: -1.0, min: -3, max: 3, step: 0.5, label: Moving charge}
+  n_grid: {default: 21, min: 9, max: 41, step: 2, type: int, label: Arrows per side}

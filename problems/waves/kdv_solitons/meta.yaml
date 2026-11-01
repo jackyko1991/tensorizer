@@ -1,0 +1,28 @@
+title: KdV soliton collision
+category: waves
+level: advanced
+order: 1
+summary: >
+  Two solitary waves of the Korteweg–de Vries equation. The taller one is faster, catches up, and both come out of the
+  collision with their shapes intact, only shifted. Derivatives are taken in Fourier space ($\partial_x \to ik$), the stiff
+  $u_{xxx}$ term is solved exactly with an integrating factor and the rest with RK4.
+animated: true
+vector_form: 'u_t + 6\,u\,u_x + u_{xxx} = 0,\qquad u = \frac{c}{2}\,\mathrm{sech}^2\!\Bigl(\frac{\sqrt c}{2}\,(x - ct)\Bigr)'
+index_form: '\partial_t \hat u_k = i k^3\,\hat u_k - 3ik\,F_{kj}\,(u_j u_j),\qquad \hat v_k = e^{-ik^3 t}\,\hat u_k,\qquad M = \sum_j u_j\,\Delta x,\quad P = \sum_j u_j u_j\,\Delta x'
+translation:
+  - {symbol: 'u_j', code: 'u', shape: '(J,)', meaning: 'wave height on a periodic grid (float64)'}
+  - {symbol: '\hat u_k', code: 'torch.fft.fft(u)', shape: '(K,)', meaning: 'Fourier coefficients; $\partial_x \to ik$, $\partial_x^3 \to -ik^3$'}
+  - {symbol: 'F_{kj}(u_ju_j)', code: 'fft(ifft(u_hat).real ** 2) * dealias', shape: '(K,)', meaning: 'nonlinear term $(u^2)$ computed in real space, top third of modes removed (2/3 rule)'}
+  - {symbol: 'e^{ik^3\Delta t}', code: 'exp(1j * k**3 * dt)', shape: '(K,)', meaning: 'exact solution of the dispersive part over one step (integrating factor)'}
+  - {symbol: 'M,\ P', code: 'mass(u, dx), momentum(u, dx)', shape: 'scalar', meaning: 'conserved: $\int u\,dx$ and $\int u^2\,dx$'}
+notes: >
+  Convention: $u_t + 6uu_x + u_{xxx} = 0$, whose soliton of speed $c$ has height $c/2$, i.e. it travels at twice its
+  amplitude. Taller is faster and narrower. After the collision the tall soliton is ahead of where it would be without
+  interaction and the short one behind; with $\kappa = \sqrt c/2$ the exact shifts are $\frac{1}{\kappa_1}\ln\frac{\kappa_1+\kappa_2}{\kappa_1-\kappa_2}$ forward and
+  $\frac{1}{\kappa_2}\ln\frac{\kappa_1+\kappa_2}{\kappa_1-\kappa_2}$ backward. Dotted: where the solitons would be if they ignored each other. The box is periodic
+  (length 100), so a long run wraps around. The FFT turns every derivative into a multiplication, and the integrating
+  factor removes the severe time-step limit of $u_{xxx}$, leaving only the milder one of the nonlinear term.
+params:
+  c_tall: {default: 4.0, min: 2.0, max: 9.0, step: 0.5, label: 'Speed of the tall soliton $c_1$'}
+  c_short: {default: 1.0, min: 0.25, max: 2.0, step: 0.25, label: 'Speed of the short soliton $c_2$'}
+  t_max: {default: 12.0, min: 4, max: 20, step: 1, label: Simulated time}

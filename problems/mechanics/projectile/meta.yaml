@@ -1,0 +1,24 @@
+title: Projectile with air drag
+category: mechanics
+level: beginner
+order: 2
+summary: >
+  Newton's second law for a ball with quadratic air drag. Several launch angles are
+  solved at once by stacking them into one batched tensor, so a single einsum handles every trajectory.
+animated: true
+vector_form: 'm\,\ddot{\mathbf r} = m\,\mathbf g - c\,\lVert\dot{\mathbf r}\rVert\,\dot{\mathbf r}'
+index_form: '\ddot x_{bi} = g_i - \tfrac{c}{m}\,\sqrt{v_{bj}v_{bj}}\;v_{bi}'
+translation:
+  - {symbol: 'x_{bi}', code: 'y[:, 0, :]', shape: '(B, 2)', meaning: 'position of ball $b$, component $i \in \{x, z\}$'}
+  - {symbol: 'v_{bi}', code: 'y[:, 1, :]', shape: '(B, 2)', meaning: 'velocity of ball $b$'}
+  - {symbol: 'g_i', code: 'g', shape: '(2,)', meaning: 'gravity vector $(0, -9.81)$'}
+  - {symbol: 'v_{bj}v_{bj}', code: "einsum('bj,bj->b', v, v)", shape: '(B,)', meaning: 'repeated $j$ ⇒ summed: squared speed of each ball'}
+  - {symbol: '\ddot x_{bi}', code: 'acceleration(v, g, k)', shape: '(B, 2)', meaning: 'right-hand side of the ODE'}
+notes: >
+  The batch index $b$ is not physics: it is the tensor trick that lets PyTorch solve $B$ projectiles in one pass.
+  Setting the drag to zero recovers the textbook parabola with maximum range at 45°.
+params:
+  v0: {default: 30.0, min: 5, max: 80, step: 1, label: Launch speed, unit: m/s}
+  drag: {default: 0.02, min: 0.0, max: 0.2, step: 0.005, label: 'Drag $c/m$', unit: 1/m}
+  n_angles: {default: 6, min: 1, max: 12, step: 1, type: int, label: Launch angles}
+  t_max: {default: 6.0, min: 1, max: 20, step: 0.5, label: Simulated time, unit: s}

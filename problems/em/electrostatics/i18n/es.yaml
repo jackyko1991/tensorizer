@@ -1,0 +1,16 @@
+source_hash: 6a76aa67658c
+title: Potencial electrostático (ecuación de Poisson)
+summary: Resuelve la ecuación de Poisson para el potencial de unas cuantas cargas lineales dentro de una caja conectada a tierra. En una malla, el laplaciano $\partial_i\partial_i$ se convierte en una matriz construida a partir de la matriz 1D de segundas diferencias mediante productos de Kronecker, de modo que toda la EDP se reduce a un sistema lineal $L\phi = -\rho/\varepsilon_0$ que torch.linalg.solve resuelve en una sola llamada.
+notes: 'La caja es el cuadrado unidad con $\phi = 0$ en sus paredes (a tierra). El problema es 2D, así que cada carga "puntual" es en realidad una carga lineal infinita $\lambda$ (por unidad de longitud) y la ley de Gauss se escribe $\oint \mathbf E\cdot\mathbf n\,dl = \lambda/\varepsilon_0$. Unidades: $\varepsilon_0 = 1$. $L$ es casi toda ceros: un código real la guardaría como matriz dispersa; aquí, densa de $N^2\times N^2$, sigue siendo lo bastante pequeña para resolverla directamente.'
+meanings:
+- potencial en la fila $a$ ($y$) y columna $b$ ($x$) de la malla
+- 'los mismos valores aplanados: $m = a\cdot N + b$'
+- '$\partial^2$ en 1D: $(\phi_{a-1} - 2\phi_a + \phi_{a+1})/h^2$, tridiagonal'
+- 'laplaciano 2D $\partial_y^2 + \partial_x^2$: en banda, cinco elementos no nulos por fila'
+- densidad de carga en la malla
+- '$m$ repetido ⇒ sumado: el laplaciano discreto de $\phi$'
+- $E_i = -\partial_i\phi$ por diferencias centradas, $i \in \{x, y\}$
+labels:
+  config: Disposición de cargas
+  n_grid: Puntos de malla por lado
+  charge: Carga por línea

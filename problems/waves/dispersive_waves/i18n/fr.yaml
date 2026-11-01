@@ -1,0 +1,14 @@
+source_hash: a7f6ff1f025f
+title: Vagues dispersives
+summary: 'Un paquet d''ondes en eau profonde, où les ondes longues devancent les courtes : $\omega = \sqrt{g k}$. Chaque mode de Fourier ne fait que tourner sa phase, donc le paquet à tout instant s''obtient par une FFT, une multiplication et une FFT inverse, pour tous les instants à la fois. Les crêtes traversent l''enveloppe à deux fois sa vitesse.'
+notes: 'Ondes de gravité linéaires en eau profonde (profondeur très supérieure à la longueur d''onde, sans tension superficielle, faible pente). Comme $\omega \propto \sqrt k$, la vitesse de groupe $d\omega/dk$ vaut exactement la moitié de la vitesse de phase $\omega/k$ : regardez la crête rouge dépasser le maximum vert de l''enveloppe, s''effacer à l''avant et être remplacée par une nouvelle crête née à l''arrière (le point rouge recule de longueurs d''onde entières). Les ondes plus longues vont plus vite, donc le paquet s''étale lentement et son avant porte des ondes plus longues que son arrière (un chirp). La FFT rend la boîte périodique. Comme chaque mode ne fait que tourner sa phase, $\sum|\hat a_k|^2$ (l''énergie de l''onde, par Parseval) est exactement conservée.'
+meanings:
+- 'paquet complexe : enveloppe gaussienne multipliée par $e^{ik_0x}$'
+- amplitudes de Fourier du paquet initial
+- relation de dispersion en eau profonde pour chaque mode
+- chaque mode à chaque instant, par broadcasting (exact, sans pas de temps)
+- '$k$ répété ⇒ sommé : retour dans l''espace réel pour tous les instants'
+labels:
+  wavelength: Longueur d'onde de la porteuse $2\pi/k_0$
+  width: Largeur du paquet $\sigma$
+  t_max: Durée simulée

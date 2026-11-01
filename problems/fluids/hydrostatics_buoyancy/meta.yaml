@@ -1,0 +1,29 @@
+title: Hydrostatic pressure and buoyancy
+category: fluids
+level: beginner
+order: 1
+summary: >
+  Pressure in a water tank grows linearly with depth, $p = p_0 + \rho_w g h$. Blocks of different densities are dropped
+  in at once (one batched tensor): the light ones bob and float with a fraction $\rho_b/\rho_w$ under water, the heavy ones sink to the floor.
+animated: true
+vector_form: '\nabla p = \rho_w\,\mathbf g,\qquad \rho_b V\,\ddot z = \rho_w g\,V_\text{sub} - \rho_b g\,V - \gamma\rho_w V_\text{sub}\,\dot z'
+index_form: 'p = p_0 + \rho_w\,g_i x_i \qquad \ddot z_b = g\Big(\frac{\rho_w\,d_b}{\rho_b\,s} - 1\Big) - \gamma\,\frac{\rho_w\,d_b}{\rho_b\,s}\,\dot z_b,\quad d_b = \min(\max(-z_b, 0), s)'
+translation:
+  - {symbol: 'x_i', code: 'tank_points(...)', shape: '(nz, nx, 2)', meaning: 'grid of points in the water, component $i \in \{x, z\}$'}
+  - {symbol: 'g_i', code: 'gravity(G, dev)', shape: '(2,)', meaning: 'gravity vector $(0, -g)$'}
+  - {symbol: 'g_i x_i', code: "einsum('i,...i->...', g, x)", shape: '(nz, nx)', meaning: 'repeated $i$ ⇒ summed: $g\,h$ at depth $h = -z$'}
+  - {symbol: 'z_b,\ \dot z_b', code: 'y[:, 0], y[:, 1]', shape: '(B,)', meaning: 'height of the bottom face and velocity of block $b$'}
+  - {symbol: '\rho_b', code: 'rho_b', shape: '(B,)', meaning: 'density of block $b$ — the batch index'}
+  - {symbol: 'd_b', code: 'submerged_depth(z, s)', shape: '(B,)', meaning: 'submerged depth, between 0 (in the air) and $s$ (fully wet)'}
+  - {symbol: '\ddot z_b', code: 'acceleration(z, v, rho_b, ...)', shape: '(B,)', meaning: 'buoyancy minus weight minus drag, per unit mass'}
+notes: >
+  Each block is a cube of side $s$; the buoyant force $\rho_w g s^2 d_b$ is the weight of the water it displaces (Archimedes), and it is the
+  net result of the pressure $p_0 + \rho_w g h$ pushing harder on the bottom face than on the top. A floating block settles where buoyancy
+  balances weight, $d_b/s = \rho_b/\rho_w$ — ice ($\rho \approx 917$) floats with 92 % under water. The drag is a simple linear damping proportional to the wet volume; real drag is closer to quadratic, and real waves and added mass are ignored. Blocks that sink rest on the floor.
+params:
+  n_blocks: {default: 6, min: 2, max: 8, step: 1, type: int, label: Number of blocks}
+  rho_min: {default: 200.0, min: 50, max: 1000, step: 10, label: 'Lightest density $\rho_\text{min}$', unit: kg/m³}
+  rho_max: {default: 1400.0, min: 500, max: 3000, step: 50, label: 'Heaviest density $\rho_\text{max}$', unit: kg/m³}
+  size: {default: 0.2, min: 0.1, max: 0.3, step: 0.02, label: 'Block size $s$', unit: m}
+  drag: {default: 4.0, min: 0.5, max: 15, step: 0.5, label: 'Damping $\gamma$', unit: 1/s}
+  t_max: {default: 5.0, min: 1, max: 10, step: 0.5, label: Simulated time, unit: s}

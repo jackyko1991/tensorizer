@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Liquid-drop nucleus: Z protons and N neutrons packed in a drop of radius R proportional to A to the one third">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- drop surface -->
+    <circle cx="96" cy="82" r="50" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- nucleons: protons dark, neutrons light -->
+    <g stroke="#1e40af" stroke-width="1.2">
+      <circle cx="96" cy="82" r="10" fill="#2563eb"/>
+      <circle cx="116" cy="82" r="10" fill="#93c5fd"/>
+      <circle cx="76" cy="82" r="10" fill="#93c5fd"/>
+      <circle cx="106" cy="65" r="10" fill="#2563eb"/>
+      <circle cx="86" cy="65" r="10" fill="#93c5fd"/>
+      <circle cx="106" cy="99" r="10" fill="#93c5fd"/>
+      <circle cx="86" cy="99" r="10" fill="#2563eb"/>
+      <circle cx="126" cy="65" r="10" fill="#93c5fd"/>
+      <circle cx="66" cy="65" r="10" fill="#2563eb"/>
+      <circle cx="126" cy="99" r="10" fill="#2563eb"/>
+      <circle cx="66" cy="99" r="10" fill="#93c5fd"/>
+      <circle cx="96" cy="48" r="10" fill="#93c5fd"/>
+      <circle cx="96" cy="116" r="10" fill="#93c5fd"/>
+      <circle cx="116" cy="48" r="10" fill="#2563eb"/>
+      <circle cx="76" cy="116" r="10" fill="#93c5fd"/>
+    </g>
+    <!-- radius -->
+    <line x1="96" y1="82" x2="146" y2="82" stroke="#374151" stroke-width="2"/>
+    <text x="150" y="66" font-style="italic">R</text>
+    <!-- legend -->
+    <circle cx="176" cy="104" r="7" fill="#2563eb" stroke="#1e40af" stroke-width="1.2"/>
+    <text x="190" y="109" font-style="italic">Z</text>
+    <circle cx="176" cy="128" r="7" fill="#93c5fd" stroke="#1e40af" stroke-width="1.2"/>
+    <text x="190" y="133" font-style="italic">N</text>
+  </g>
+</svg>

@@ -1,0 +1,15 @@
+source_hash: 1470d7e1b6a9
+title: Campo eléctrico de cargas puntuales
+summary: Ley de Coulomb y superposición sobre una malla. El broadcasting construye de una vez el vector de separación de cada carga a cada punto de la malla, y un único einsum sobre el índice de carga suma sus campos. Una carga recorre una circunferencia mientras las líneas de campo la siguen.
+notes: Unidades con $k = 1$. Las cargas son cargas puntuales en 3D, de modo que cada campo decae como $1/r^2$; solo miramos el plano que las contiene. Las flechas se alejan de las cargas positivas (rojas) y apuntan hacia las negativas (azules); con dos cargas del mismo signo aparece entre ellas un punto neutro donde el campo se anula.
+meanings:
+- punto de la malla $g$, componente $i \in \{x, y\}$
+- posición de la carga $q$
+- valor de cada carga
+- 'broadcasting: el vector de cada carga a cada punto de la malla'
+- '$j$ repetido ⇒ sumado: distancias'
+- '$q$ repetido ⇒ sumado: superposición de todas las cargas'
+labels:
+  q_fixed: Carga fija
+  q_moving: Carga móvil
+  n_grid: Flechas por lado

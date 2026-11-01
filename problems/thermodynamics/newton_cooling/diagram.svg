@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Three cups of coffee at different temperatures T1, T2, T3 on a table, losing heat q to a room at temperature T_room">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <line x1="14.0" y1="128.0" x2="226.0" y2="128.0" stroke="#374151" stroke-width="2" />
+    <path d="M71,92 c12,0 12,18 -3,20" fill="none" stroke="#374151" stroke-width="2" />
+    <path d="M28,84 L33,124 Q50,128 67,124 L72,84 Z" fill="#dc2626" stroke="#374151" stroke-width="2" />
+    <ellipse cx="50" cy="84" rx="22" ry="4" fill="#dc2626" stroke="#374151" stroke-width="2"/>
+    <path d="M42.0,76 c-5,-5 5,-9 0,-14 c-5,-5 5,-9 0,-14" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M50.0,76 c-5,-5 5,-9 0,-14 c-5,-5 5,-9 0,-14" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M58.0,76 c-5,-5 5,-9 0,-14 c-5,-5 5,-9 0,-14" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"/>
+    <text x="48" y="150" font-style="italic" text-anchor="middle">T<tspan font-size="10" dy="3" font-style="normal">1</tspan></text>
+    <path d="M141,92 c12,0 12,18 -3,20" fill="none" stroke="#374151" stroke-width="2" />
+    <path d="M98,84 L103,124 Q120,128 137,124 L142,84 Z" fill="#f59e0b" stroke="#374151" stroke-width="2" />
+    <ellipse cx="120" cy="84" rx="22" ry="4" fill="#f59e0b" stroke="#374151" stroke-width="2"/>
+    <path d="M120.0,76 c-5,-5 5,-9 0,-14 c-5,-5 5,-9 0,-14" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"/>
+    <text x="118" y="150" font-style="italic" text-anchor="middle">T<tspan font-size="10" dy="3" font-style="normal">2</tspan></text>
+    <path d="M211,92 c12,0 12,18 -3,20" fill="none" stroke="#374151" stroke-width="2" />
+    <path d="M168,84 L173,124 Q190,128 207,124 L212,84 Z" fill="#93c5fd" stroke="#374151" stroke-width="2" />
+    <ellipse cx="190" cy="84" rx="22" ry="4" fill="#93c5fd" stroke="#374151" stroke-width="2"/>
+    <text x="188" y="150" font-style="italic" text-anchor="middle">T<tspan font-size="10" dy="3" font-style="normal">3</tspan></text>
+    <text x="226" y="28" font-style="italic" fill="#1e40af" text-anchor="end">T<tspan font-size="10" dy="3" font-style="normal">room</tspan></text>
+    <line x1="76.0" y1="96.0" x2="96.0" y2="80.0" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="86" y="74" font-style="italic" fill="#b91c1c">q</text>
+  </g>
+</svg>

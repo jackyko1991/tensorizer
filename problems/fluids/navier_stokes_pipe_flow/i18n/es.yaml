@@ -1,0 +1,19 @@
+source_hash: db9343501d33
+title: Flujo de Navier–Stokes en una tubería
+summary: 'Las ecuaciones completas de Navier–Stokes incompresibles, aplicadas al agua en una tubería circular impulsada de repente por un gradiente de presión. Para un flujo axial el término no lineal se anula exactamente y queda una ecuación de difusión radial: el momento se propaga desde la pared con no deslizamiento y el perfil crece hasta la parábola de Hagen–Poiseuille en unas pocas veces $R^2/\nu$.'
+notes: 'Es una de las raras soluciones exactas de Navier–Stokes: como el flujo es paralelo, $(\mathbf u\cdot\nabla)\mathbf u = 0$ y solo quedan el gradiente de presión y la viscosidad. El flujo estacionario de Hagen–Poiseuille tiene $u_z = G(R^2 - r^2)/4\mu$, caudal $Q = \pi G R^4/8\mu$ (la famosa ley de $R^4$) y esfuerzo cortante en la pared $\tau_w = GR/2$: el balance de fuerzas $G\,\pi R^2 = \tau_w\,2\pi R$ por unidad de longitud. El arranque se aproxima a él como $e^{-\lambda_1^2\nu t/R^2}$ con $\lambda_1 = 2.405$ (primer cero de $J_0$), de modo que hacia $t \approx 0.6\,R^2/\nu$ el perfil está a pocos por ciento de la parábola. Al principio el núcleo se mueve como un tapón y solo el fluido cercano a la pared siente el arrastre: observa las líneas de tinte. La solución es laminar; por encima de un número de Reynolds de unos 2000 el flujo real en tuberías se vuelve turbulento.'
+meanings:
+- solo $u_z \ne 0$ y $\partial_z u_z = 0$, así que el término de advección es exactamente cero
+- 'la continuidad se cumple automáticamente: $u_z$ no cambia a lo largo de la tubería'
+- puntos radiales desde el eje ($i = 0$) hasta la pared ($i = N$)
+- velocidad axial $u_z(r_i)$; el valor en la pared $u_N = 0$ (no deslizamiento)
+- $\tfrac1r\partial_r(r\partial_r\,\cdot)$ como matriz, con el límite $r \to 0$ $2\partial_r^2$ en el eje
+- '$j$ repetido ⇒ sumado: término viscoso $\nu\nabla^2 u_z$'
+- gradiente de presión impulsor en Pa/m
+- caudal volumétrico; valor estacionario $\pi G R^4/8\mu$
+- arrastre por unidad de área en la pared; valor estacionario $GR/2$
+labels:
+  G: Gradiente de presión $G$
+  R: Radio de la tubería $R$
+  nu: Viscosidad cinemática $\nu$
+  t_max: Tiempo simulado en unidades de $R^2/\nu$

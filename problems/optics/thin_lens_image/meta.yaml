@@ -1,0 +1,29 @@
+title: Image formed by a thin lens
+category: optics
+level: beginner
+order: 3
+summary: >
+  The thin-lens equation tells where the image of an object appears and how big it is. Three principal
+  rays are traced for every object position at once, while the object walks from beyond $2f$ to inside
+  the focal length and the real, inverted image turns into a virtual, upright one.
+animated: true
+vector_form: '\frac{1}{s} + \frac{1}{s''} = \frac{1}{f},\qquad m = \frac{h''}{h} = -\frac{s''}{s},\qquad \theta'' = \theta - \frac{y}{f}'
+index_form: 's''_k = \left(\frac{1}{f} - \frac{1}{s_k}\right)^{-1},\quad m_k = -\frac{s''_k}{s_k},\quad \theta''_{kr} = \theta_{kr} - \frac{y_{kr}}{f}'
+translation:
+  - {symbol: 's_k', code: 's', shape: '(K,)', meaning: 'object distance in animation frame $k$'}
+  - {symbol: "s'_k", code: 'image_distance(s, f)', shape: '(K,)', meaning: 'image distance; negative ⇒ virtual image on the object side'}
+  - {symbol: 'm_k', code: 'magnification(s, s_img)', shape: '(K,)', meaning: 'image height / object height; negative ⇒ inverted'}
+  - {symbol: '\theta_{kr}', code: 'slope_in', shape: '(K, 3)', meaning: 'slope of principal ray $r \in \{\text{parallel, centre, focal}\}$ before the lens'}
+  - {symbol: 'y_{kr}', code: 'height_at_lens(h, s, slope_in)', shape: '(K, 3)', meaning: 'where each principal ray crosses the lens'}
+  - {symbol: "\\theta'_{kr}", code: 'lens_kink(y, slope_in, f)', shape: '(K, 3)', meaning: 'slope after the lens: every ray is bent by $-y/f$'}
+notes: >
+  Distances are measured from the lens: the object sits at $x = -s$ and a real image at $x = +s'$. The three
+  principal rays are (1) parallel to the axis, then through the far focal point; (2) straight through the
+  centre; (3) through the near focal point, then parallel. They all follow from the single rule $\theta' = \theta - y/f$.
+  Inside $f$ the rays diverge after the lens; the dashed extensions meet at the virtual image. At $s = f$ the image
+  runs off to infinity.
+params:
+  f: {default: 10.0, min: 4, max: 20, step: 1, label: 'Focal length $f$', unit: cm}
+  h: {default: 3.0, min: 1, max: 6, step: 0.5, label: 'Object height $h$', unit: cm}
+  s_start: {default: 30.0, min: 5, max: 50, step: 1, label: Starting object distance, unit: cm}
+  s_end: {default: 5.0, min: 2, max: 50, step: 1, label: Final object distance, unit: cm}

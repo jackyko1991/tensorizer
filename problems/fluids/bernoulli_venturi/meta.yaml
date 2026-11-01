@@ -1,0 +1,28 @@
+title: Bernoulli and the Venturi tube
+category: fluids
+level: beginner
+order: 2
+summary: >
+  Water flowing through a narrowing pipe must speed up to carry the same flow rate ($A u = Q$), and by Bernoulli's law its pressure drops
+  in the throat. Area, velocity and pressure are tensors over the pipe axis; a batch of tracer particles shows the speed-up.
+animated: true
+vector_form: '\nabla\cdot\mathbf v = 0,\qquad p + \tfrac12\rho\,\lVert\mathbf v\rVert^2 = \text{const along a streamline}'
+index_form: 'A_k\,u_k = Q,\qquad p_k + \tfrac12\rho\,u_k^2 = p_1 + \tfrac12\rho\,u_1^2,\qquad \dot x_n = u(x_n)'
+translation:
+  - {symbol: 'x_k', code: 'axis(400, dev)', shape: '(N,)', meaning: 'points along the pipe axis, index $k$'}
+  - {symbol: 'A_k = \pi r_k^2', code: 'area(radius(x, r1, r2))', shape: '(N,)', meaning: 'cross-section at every axis point'}
+  - {symbol: 'u_k = Q / A_k', code: 'velocity(Q, A)', shape: '(N,)', meaning: 'continuity: the same volume per second passes every section'}
+  - {symbol: 'p_k', code: 'pressure(u, p1, u1, rho)', shape: '(N,)', meaning: 'Bernoulli: faster flow ⇒ lower pressure'}
+  - {symbol: 'x_n', code: 'tracer_x', shape: '(T, n)', meaning: 'positions of the batch of tracers, moved by RK4'}
+  - {symbol: 'Q', code: "flow['Q']", shape: 'scalar', meaning: 'volume flow rate $A_1 u_1$ in m³/s'}
+notes: >
+  The flow is treated as one-dimensional: the velocity is uniform across each section and friction is ignored, which is what makes
+  Bernoulli's law exact here. Tracers at a fixed fraction of the local radius follow the wall. The gauges are open tubes whose liquid
+  column $h = p/(\rho g)$ grows with the local gauge pressure. Measuring $p_1 - p_2$ gives the flow rate,
+  $Q = A_2\sqrt{2\Delta p/(\rho(1 - A_2^2/A_1^2))}$ — this is how a Venturi meter works. If the throat pressure falls below
+  atmospheric, a real flow could cavitate; here a warning is printed instead.
+params:
+  u1: {default: 1.0, min: 0.2, max: 3.0, step: 0.1, label: 'Inlet speed $u_1$', unit: m/s}
+  area_ratio: {default: 3.0, min: 1.2, max: 6.0, step: 0.1, label: 'Area ratio $A_1/A_2$'}
+  p1: {default: 10.0, min: 0, max: 200, step: 1, label: 'Inlet gauge pressure $p_1$', unit: kPa}
+  t_max: {default: 2.0, min: 0.5, max: 6, step: 0.5, label: Simulated time, unit: s}

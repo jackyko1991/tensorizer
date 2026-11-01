@@ -1,0 +1,14 @@
+source_hash: faa64f98c4b2
+title: Colisión de solitones KdV
+summary: Dos ondas solitarias de la ecuación de Korteweg–de Vries. La más alta es más rápida, alcanza a la otra y ambas salen de la colisión con su forma intacta, solo desplazadas. Las derivadas se calculan en el espacio de Fourier ($\partial_x \to ik$), el término rígido $u_{xxx}$ se resuelve exactamente con un factor integrante y el resto con RK4.
+notes: 'Convenio: $u_t + 6uu_x + u_{xxx} = 0$, cuyo solitón de velocidad $c$ tiene altura $c/2$, es decir, viaja al doble de su amplitud. Más alto significa más rápido y más estrecho. Tras la colisión el solitón alto va por delante de donde estaría sin interacción y el bajo por detrás; con $\kappa = \sqrt c/2$ los desplazamientos exactos son $\frac{1}{\kappa_1}\ln\frac{\kappa_1+\kappa_2}{\kappa_1-\kappa_2}$ hacia delante y $\frac{1}{\kappa_2}\ln\frac{\kappa_1+\kappa_2}{\kappa_1-\kappa_2}$ hacia atrás. En punteado: dónde estarían los solitones si se ignoraran mutuamente. La caja es periódica (longitud 100), así que una simulación larga da la vuelta. La FFT convierte cada derivada en una multiplicación, y el factor integrante elimina el severo límite del paso de tiempo impuesto por $u_{xxx}$, dejando solo el más suave del término no lineal.'
+meanings:
+- altura de la onda en una malla periódica (float64)
+- coeficientes de Fourier; $\partial_x \to ik$, $\partial_x^3 \to -ik^3$
+- término no lineal $(u^2)$ calculado en el espacio real, eliminando el tercio superior de modos (regla de 2/3)
+- solución exacta de la parte dispersiva durante un paso (factor integrante)
+- 'conservadas: $\int u\,dx$ y $\int u^2\,dx$'
+labels:
+  c_tall: Velocidad del solitón alto $c_1$
+  c_short: Velocidad del solitón bajo $c_2$
+  t_max: Tiempo simulado

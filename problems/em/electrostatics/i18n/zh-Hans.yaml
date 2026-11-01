@@ -1,0 +1,16 @@
+source_hash: 6a76aa67658c
+title: 静电势（泊松方程）
+summary: 求解泊松方程，得到接地盒内几条线电荷的电势。在网格上，拉普拉斯算子 $\partial_i\partial_i$ 变成由一维二阶差分矩阵经克罗内克积构造的矩阵，于是整个偏微分方程化为一个线性方程组 $L\phi = -\rho/\varepsilon_0$，torch.linalg.solve 一次调用即可求解。
+notes: 盒子是单位正方形，四壁 $\phi = 0$（接地）。问题是二维的，所以每个“点”电荷实际上是无限长线电荷 $\lambda$（单位长度电量），高斯定理写作 $\oint \mathbf E\cdot\mathbf n\,dl = \lambda/\varepsilon_0$。单位：$\varepsilon_0 = 1$。$L$ 大部分元素为零——实际程序会用稀疏矩阵存储；这里 $N^2\times N^2$ 的稠密矩阵仍小到可以直接求解。
+meanings:
+- 网格第 $a$ 行（$y$）、第 $b$ 列（$x$）的电势
+- 展平后的同一组值：$m = a\cdot N + b$
+- 一维 $\partial^2$：$(\phi_{a-1} - 2\phi_a + \phi_{a+1})/h^2$，三对角
+- 二维拉普拉斯算子 $\partial_y^2 + \partial_x^2$：带状矩阵，每行五个非零元
+- 网格上的电荷密度
+- 重复的 $m$ ⇒ 求和：$\phi$ 的离散拉普拉斯
+- 用中心差分求 $E_i = -\partial_i\phi$，$i \in \{x, y\}$
+labels:
+  config: 电荷布置
+  n_grid: 每边格点数
+  charge: 每条线的电荷

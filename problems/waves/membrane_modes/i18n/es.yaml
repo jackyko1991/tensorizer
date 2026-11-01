@@ -1,0 +1,14 @@
+source_hash: a794040c9063
+title: Modos de vibración de un tambor
+summary: Los modos normales de la membrana de un tambor cuadrado o circular. El laplaciano 2D en una malla se construye a partir del 1D con productos de Kronecker, $\Delta = D\otimes I + I\otimes D$, y un único resolvedor simétrico de autovalores (eigh) devuelve a la vez todas las formas y frecuencias de los modos.
+notes: 'Cada panel muestra un modo $\phi_m(x, y)\cos(\omega_m t)$; las líneas blancas interiores son líneas nodales que nunca se mueven. Para un cuadrado de lado $L$ las frecuencias exactas son $\omega_{mn} = \frac{c\pi}{L}\sqrt{m^2 + n^2}$, así que los cocientes respecto a la fundamental son $\sqrt{(m^2+n^2)/2}$ = 1, 1.58, 1.58, 2, 2.24 …: no son números enteros, y por eso un tambor no suena como una cuerda. Parejas como $(1,2)$ y $(2,1)$ comparten frecuencia, y eigh devuelve alguna mezcla de ellas. Para un círculo los cocientes exactos vienen de los ceros de las funciones de Bessel (1, 1.59, 2.14, 2.30 …); el borde escalonado de la malla los desplaza unos pocos por ciento. Unidades: $c = 1$, lado del cuadrado o diámetro del círculo $L = 1$; el tiempo se muestra en períodos fundamentales.'
+meanings:
+- derivada segunda 1D con los bordes fijos ($u = 0$ fuera)
+- 'el índice de pareja $p = (a, b)$ numera los puntos de la malla: el laplaciano 2D'
+- conservar solo los puntos dentro del tambor (máscara circular); el borde está fijo
+- autovalores $\omega^2/c^2$ y formas de modo ortonormales en las columnas
+- '$p$ repetido ⇒ sumado: la matriz identidad'
+labels:
+  shape: Forma del tambor
+  n_grid: Puntos de malla por lado
+  periods: Períodos fundamentales mostrados

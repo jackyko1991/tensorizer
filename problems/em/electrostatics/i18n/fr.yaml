@@ -1,0 +1,16 @@
+source_hash: 6a76aa67658c
+title: Potentiel électrostatique (équation de Poisson)
+summary: On résout l'équation de Poisson pour le potentiel de quelques charges linéiques dans une boîte reliée à la masse. Sur une grille, le laplacien $\partial_i\partial_i$ devient une matrice construite à partir de la matrice 1D des différences secondes par produits de Kronecker, si bien que toute l'EDP se réduit à un seul système linéaire $L\phi = -\rho/\varepsilon_0$, résolu par torch.linalg.solve en un seul appel.
+notes: 'La boîte est le carré unité avec $\phi = 0$ sur les parois (à la masse). Le problème est 2D, donc chaque charge « ponctuelle » est en fait une charge linéique infinie $\lambda$ (par unité de longueur) et le théorème de Gauss s''écrit $\oint \mathbf E\cdot\mathbf n\,dl = \lambda/\varepsilon_0$. Unités : $\varepsilon_0 = 1$. $L$ est essentiellement nulle — un vrai code la stockerait comme matrice creuse ; ici, une matrice dense $N^2\times N^2$ reste assez petite pour une résolution directe.'
+meanings:
+- potentiel à la ligne $a$ ($y$) et la colonne $b$ ($x$) de la grille
+- 'mêmes valeurs aplaties : $m = a\cdot N + b$'
+- '$\partial^2$ 1D : $(\phi_{a-1} - 2\phi_a + \phi_{a+1})/h^2$, tridiagonale'
+- 'laplacien 2D $\partial_y^2 + \partial_x^2$ : matrice bande, cinq termes non nuls par ligne'
+- densité de charge sur la grille
+- '$m$ répété ⇒ sommé : le laplacien discret de $\phi$'
+- $E_i = -\partial_i\phi$ par différences centrées, $i \in \{x, y\}$
+labels:
+  config: Disposition des charges
+  n_grid: Points de grille par côté
+  charge: Charge par ligne

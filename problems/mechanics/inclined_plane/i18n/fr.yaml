@@ -1,0 +1,21 @@
+source_hash: b7086dad7034
+title: Bloc sur un plan incliné avec frottement
+summary: Pesanteur, réaction normale et frottement sur un bloc, projetés sur les vecteurs unitaires tangent et normal de chaque rampe avec einsum. Un lot d'angles d'inclinaison montre le seuil de frottement statique $\tan\theta = \mu_s$.
+notes: 'Le frottement statique prend la valeur nécessaire, jusqu''à $\mu_s N$, donc un bloc lâché sans vitesse reste immobile tant que $\tan\theta \le \mu_s$. Dès qu''il glisse, le frottement dynamique $\mu_k N$ (avec $\mu_k \le \mu_s$) prend le relais et l''accélération est constante : la distance croît comme $\tfrac12 at^2$ jusqu''à ce que le bloc atteigne le bas. Le bloc est traité comme un point : ni basculement, ni roulement.'
+meanings:
+- vecteur unitaire descendant la pente de la rampe $b$, $(\cos\theta, -\sin\theta)$
+- normale unitaire de la rampe $b$, $(\sin\theta, \cos\theta)$
+- vecteur pesanteur $(0, -g)$
+- 'indice répété ⇒ sommé : composante de la pesanteur vers la rampe'
+- réaction normale par unité de masse, compense la composante de la pesanteur vers la rampe
+- frottement statique s'il peut retenir le bloc, sinon dynamique $\mu_k N$
+- 'accélération le long de la pente : $g(\sin\theta - \mu_k\cos\theta)$ ou 0'
+labels:
+  mu_static: Frottement statique $\mu_s$
+  mu_kinetic: Frottement dynamique $\mu_k$ ($\le \mu_s$)
+  n_ramps: Rampes
+  min_angle: Plus petit angle
+  max_angle: Plus grand angle
+  ramp_length: Longueur de la rampe
+  g: Pesanteur $g$
+  t_max: Durée simulée

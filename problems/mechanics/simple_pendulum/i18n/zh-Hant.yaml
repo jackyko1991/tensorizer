@@ -1,0 +1,16 @@
+source_hash: a761e752552d
+title: 超越小角度的單擺
+summary: 同時求解多個釋放振幅下的完整非線性單擺方程式。所有單擺都放在一個批次張量中，並各自與學校教的小角度餘弦解比較。
+notes: 小擺幅時 $\sin\theta \approx \theta$，每個單擺的週期都是 $2\pi\sqrt{L/g}$。擺幅愈大，週期愈長：精確週期為 $4\sqrt{L/g}\,K(\sin(\theta_0/2))$，其中 $K$ 為第一類完全橢圓積分，在 90° 時約長 18%。觀察大振幅單擺如何落後於虛線表示的小角度對照。
+meanings:
+- 單擺 $b$ 偏離鉛直的角度
+- 單擺 $b$ 的角速度
+- 右端項：同時對每個單擺計算 $-(g/L)\sin\theta$
+- 小角度解：外積，沒有指標被求和
+- 單位質量能量 $\tfrac12L^2\omega^2 + gL(1 - \cos\theta)$，守恆
+labels:
+  length: 擺長 $L$
+  g: 重力 $g$
+  n_pendulums: 單擺數
+  max_amplitude: 最大振幅
+  t_max: 模擬時間

@@ -1,0 +1,19 @@
+source_hash: f81a85fc73c6
+title: Criticidad de un reactor
+summary: ¿Es crítica una placa de material fisible? La difusión de neutrones a un grupo convierte la pregunta en un problema de autovalores generalizado $M\phi = \tfrac1k F\phi$ sobre una malla. La iteración de potencias (resolver repetidamente la siguiente generación de neutrones) converge al modo fundamental del flujo y al factor de multiplicación $k_{eff}$, y una resolución de autovalores por lotes sobre muchos espesores de placa encuentra el tamaño crítico.
+notes: '$k$ es el cociente entre los neutrones de una generación y los de la anterior. Cada paso de la iteración de potencias es una generación: los modos espaciales superiores se reducen en el factor $k_2/k_1 = (\Sigma_a + DB^2)/(\Sigma_a + 4DB^2)$ en cada paso, de modo que el estado inicial asimétrico se relaja a la forma simétrica $\sin(\pi x/L)$. Una placa delgada pierde demasiados neutrones por fuga ($k < 1$); por encima del espesor crítico $L_c = \pi\sqrt{D/(\nu\Sigma_f - \Sigma_a)}$ la reacción en cadena crece. Las constantes a un grupo por defecto son ilustrativas de un reactor térmico ($k_\infty \approx 1.06$). Simplificaciones: un solo grupo de energía, una placa desnuda homogénea sin reflector, $L$ medido entre caras extrapoladas y sin neutrones retardados ni realimentación: es un cálculo estático de autovalores, no uno dependiente del tiempo.'
+meanings:
+- puntos interiores; $\phi = 0$ en las caras (extrapoladas) de la placa
+- matriz de segundas diferencias $(1, -2, 1)/h^2$
+- neutrones perdidos por fuga y absorción
+- neutrones nacidos en la fisión
+- '$j$ repetido ⇒ sumado: la fuente de fisión de la siguiente generación'
+- un paso de la iteración de potencias
+- resolución directa, por lotes sobre $S$ espesores de placa
+labels:
+  width: Espesor de la placa $L$
+  diffusion: Coeficiente de difusión $D$
+  sigma_a: Absorción $\Sigma_a$
+  nu_sigma_f: Producción $\nu\Sigma_f$
+  n_iter: Iteraciones de potencias
+  n_grid: Puntos de malla

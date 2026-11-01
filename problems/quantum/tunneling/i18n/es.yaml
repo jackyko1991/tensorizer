@@ -1,0 +1,15 @@
+source_hash: 5c7383dc415a
+title: Efecto túnel cuántico
+summary: 'Un paquete de ondas gaussiano incide sobre una barrera rectangular. La ecuación de Schrödinger dependiente del tiempo se resuelve con el método split-step de Fourier: el potencial es un operador diagonal en el espacio $x$ y la energía cinética es un operador diagonal en el espacio $k$, así que cada mitad de un paso de tiempo es solo una multiplicación de tensores elemento a elemento, con torch.fft alternando entre ambas bases.'
+notes: 'Unidades $\hbar = m = 1$, energía del paquete $E \approx k_0^2/2$. Un operador diagonal $D_{xy} = d_x\,\delta_{xy}$ que actúa sobre $\psi$ es $D_{xy}\psi_y = d_x\psi_x$: no hace falta ninguna matriz, solo una multiplicación elemento a elemento. La descomposición de Strang $P\cdot K\cdot P$ es precisa a segundo orden en $\Delta t$ y exactamente unitaria, así que la norma se mantiene en 1 salvo errores de redondeo. El tiempo simulado se elige automáticamente ($45/k_0$) para que el centro del paquete viaje de $x = -25$ a aproximadamente $x = +20$. Para $E < V_0$ una partícula clásica rebotaría siempre; el bulto transmitido a la derecha es el efecto túnel. El coeficiente de transmisión de onda plana $T(k_0)$ impreso para comparar ignora la dispersión de momentos del paquete (y usa la anchura de la barrera tal como queda en la malla); un paquete más ancho (mayor $\sigma_0$) tiene un momento más definido y se ajusta mejor a él.'
+meanings:
+- función de onda en la malla periódica $x$
+- 'operador de potencial de medio paso: diagonal en $x$, aplicado como psi * P'
+- 'operador cinético de paso completo: diagonal en $k$, aplicado como psi_k * K'
+- cambio de base $x \to k$ (un producto matricial rápido, nunca construido explícitamente)
+- 'transmisión: probabilidad hallada a la derecha de la barrera'
+labels:
+  k0: Momento del paquete $k_0$
+  V0: Altura de la barrera $V_0$
+  width: Anchura de la barrera $a$
+  sigma: Anchura del paquete $\sigma_0$

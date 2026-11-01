@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="p-V diagram with four processes from one starting state: isochoric (constant V), isobaric (constant p), isothermal (constant T) and a steeper adiabatic curve">
+  <defs>
+    <marker id="arrow-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrow-p" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9333ea"/>
+    </marker>
+    <marker id="arrow-g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-o" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <line x1="30.0" y1="142.0" x2="226.0" y2="142.0" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow-k)"/>
+    <line x1="30.0" y1="142.0" x2="30.0" y2="12.0" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow-k)"/>
+    <text x="222" y="157" font-style="italic" text-anchor="end">V</text>
+    <text x="37" y="20" font-style="italic">p</text>
+    <path d="M79.1,85.6 L79.1,29.3" fill="none" stroke="#9333ea" stroke-width="2.5" marker-end="url(#arrow-p)"/>
+    <path d="M79.1,85.6 L196.5,85.6" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrow-g)"/>
+    <path d="M79.1,85.6 L82.1,87.7 L85.0,89.6 L87.9,91.3 L90.9,93.0 L93.8,94.5 L96.7,96.0 L99.7,97.4 L102.6,98.6 L105.5,99.9 L108.5,101.0 L111.4,102.1 L114.3,103.1 L117.3,104.1 L120.2,105.0 L123.2,105.9 L126.1,106.8 L129.0,107.6 L132.0,108.4 L134.9,109.1 L137.8,109.8 L140.8,110.5 L143.7,111.1 L146.6,111.7 L149.6,112.3 L152.5,112.9 L155.4,113.5 L158.4,114.0 L161.3,114.5 L164.2,115.0 L167.2,115.5 L170.1,115.9 L173.0,116.4 L176.0,116.8 L178.9,117.2 L181.8,117.6 L184.8,118.0 L187.7,118.4 L190.7,118.8 L193.6,119.1 L196.5,119.5" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-b)"/>
+    <path d="M79.1,85.6 L82.1,89.0 L85.0,92.0 L87.9,94.8 L90.9,97.4 L93.8,99.7 L96.7,101.8 L99.7,103.8 L102.6,105.6 L105.5,107.3 L108.5,108.9 L111.4,110.3 L114.3,111.7 L117.3,112.9 L120.2,114.1 L123.2,115.2 L126.1,116.3 L129.0,117.2 L132.0,118.1 L134.9,119.0 L137.8,119.8 L140.8,120.6 L143.7,121.3 L146.6,122.0 L149.6,122.7 L152.5,123.3 L155.4,123.9 L158.4,124.4 L161.3,125.0 L164.2,125.5 L167.2,126.0 L170.1,126.4 L173.0,126.9 L176.0,127.3 L178.9,127.7 L181.8,128.1 L184.8,128.4 L187.7,128.8 L190.7,129.1 L193.6,129.5 L196.5,129.8" fill="none" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#arrow-o)"/>
+    <circle cx="79.1" cy="85.6" r="4" fill="#374151"/>
+    <text x="87.1304" y="37.7273" font-style="italic" fill="#7e22ce" font-size="12">V<tspan font-size="10" dy="3" font-style="normal">const</tspan></text>
+    <text x="194.522" y="77.6364" font-style="italic" fill="#15803d" font-size="12" text-anchor="end">p<tspan font-size="10" dy="3" font-style="normal">const</tspan></text>
+    <text x="118.261" y="99.4242" font-style="italic" fill="#1e40af" font-size="12">T<tspan font-size="10" dy="3" font-style="normal">const</tspan></text>
+  </g>
+</svg>

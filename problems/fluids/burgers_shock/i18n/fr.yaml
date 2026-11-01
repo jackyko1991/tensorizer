@@ -1,0 +1,17 @@
+source_hash: 63ee714594c5
+title: Équation de Burgers et formation de chocs
+summary: 'L''équation non linéaire de fluide la plus simple : les parties rapides d''une onde rattrapent les parties lentes, le profil se raidit et, vers $t^* = 1/\max(-u_0'')$, un choc se forme, que la viscosité maintient mince mais lisse. Les dérivées sont des matrices $N\times N$, donc l''EDP s''écrit avec un einsum par terme, vérifié par rapport à la solution exacte de Cole–Hopf.'
+notes: Écrire $u\,u_x$ sous la forme $(\tfrac12u^2)_x$ (forme conservative) fait conserver exactement $\int u\,dx$ au schéma. Sans viscosité, les caractéristiques $x = x_0 + u_0(x_0)\,t$ se croisent à $t^* = 1/\max(-u_0')$ et la solution deviendrait multivaluée ; la viscosité forme à la place un choc de largeur $\sim\nu/\Delta u$. Les différences centrées exigent $|u|\Delta x/\nu \lesssim 2$, c'est pourquoi $\nu$ ne peut pas descendre trop bas sur 512 points. La transformation de Cole–Hopf $u = -2\nu\,\partial_x\ln\varphi$ ramène Burgers à l'équation de la chaleur, ce qui donne la courbe exacte en tirets. Un décalage $U_0$ non nul fait se déplacer le choc.
+meanings:
+- vitesse au point de grille $x_i$ (périodique)
+- différence centrée $(f_{i+1} - f_{i-1})/2\Delta x$ sous forme de matrice
+- différence seconde $(f_{i+1} - 2f_i + f_{i-1})/\Delta x^2$
+- '$j$ répété ⇒ sommé : dérivée du flux $\tfrac12 u^2$'
+- terme visqueux
+- 'conservée : les colonnes de $D$ et $L$ sont de somme nulle'
+- solution exacte, une moyenne pondérée par softmax sur les points de départ
+labels:
+  nu: Viscosité $\nu$
+  amplitude: Amplitude $A$ dans $u_0 = U_0 + A\sin x$
+  offset: Décalage $U_0$
+  t_max: Durée simulée

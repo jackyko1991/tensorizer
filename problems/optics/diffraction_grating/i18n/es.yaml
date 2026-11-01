@@ -1,0 +1,17 @@
+source_hash: e3a181f70abb
+title: Red de difracción como suma de fasores
+summary: El campo lejano de $N$ rendijas es la suma de $N$ fasores complejos, uno por rendija, cada uno retrasado por el camino extra $d\sin\theta$. Con tensores complejos todo el patrón es un único einsum. Al crecer $N$ de 2 a 20 los máximos principales no se mueven pero se vuelven más estrechos, y entre ellos aparecen $N-2$ máximos secundarios débiles.
+notes: 'El panel derecho dibuja los $N$ fasores uno tras otro para un ángulo. En un máximo principal ($d\sin\theta = m\lambda$) todos apuntan en la misma dirección y suman una longitud $N$. Al alejarse del máximo, la cadena se enrolla y se cierra en un polígono cuando $N\phi = 2\pi$: el primer cero, a un ángulo que disminuye como $1/N$. Las intensidades se normalizan a 1 en el pico central; las líneas punteadas marcan $d\sin\theta = m\lambda$. Solo la envolvente de una rendija depende de la anchura de rendija $a$.'
+meanings:
+- número de rendija; la rendija $n$ está a una distancia $nd$ de la rendija 0
+- dirección de observación, muestreada en una malla fina
+- factor de fase de la rendija $n$ visto bajo el ángulo $t$
+- '$n$ repetido ⇒ sumado: sumar las ondas de todas las rendijas'
+- envolvente de difracción de una rendija $\operatorname{sinc}^2(a\sin\theta/\lambda)$
+- intensidad = módulo al cuadrado de la amplitud compleja
+- la misma suma hecha a mano (serie geométrica), $\phi = kd\sin\theta$
+labels:
+  wavelength: Longitud de onda $\lambda$
+  d: Separación entre rendijas $d$
+  a: Anchura de rendija $a$
+  n_max: Número máximo de rendijas $N$

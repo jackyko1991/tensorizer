@@ -1,0 +1,16 @@
+source_hash: 213c96e488f8
+title: Oscilador armónico cuántico
+summary: El hamiltoniano $H = -\tfrac12\,d^2/dx^2 + \tfrac12\omega^2x^2$ se convierte en una matriz sobre una malla, y torch.linalg.eigh devuelve su escalera de energías equiespaciadas $E_n = \omega(n + \tfrac12)$. Una gaussiana desplazada (un estado coherente) se escribe como suma de autoestados; dar a cada uno su fase $e^{-iE_n t}$ hace que el paquete oscile de un lado a otro exactamente como una masa clásica en un muelle.
+notes: Unidades $\hbar = m = 1$. La malla es una caja grande con $\psi = 0$ en sus paredes, lo bastante lejos como para que las paredes nunca importen. Las curvas tenues son los estados estacionarios más bajos $\varphi_n(x)$, dibujados a la altura de su energía $E_n$; la separación entre peldaños es exactamente $\omega$. El estado inicial es la gaussiana del estado fundamental desplazada a $x_0$. Sus pesos $\lvert c_n\rvert^2$ forman una distribución de Poisson de media $\omega x_0^2/2$, y como todas las energías difieren en múltiplos enteros de $\omega$, el paquete vuelve a $x_0$ tras cada período $2\pi/\omega$ sin ensancharse. $\langle x\rangle$ sigue el movimiento clásico $x_0\cos\omega t$ (el teorema de Ehrenfest es exacto para un potencial cuadrático).
+meanings:
+- potencial del muelle $\tfrac12\omega^2x^2$ en cada punto de la malla
+- cinética $-\tfrac12\,D2$ más el potencial en la diagonal
+- energías y autovectores (la columna $n$ es el estado $n$)
+- '$x$ repetido ⇒ sumado: solapamiento del estado inicial con el estado $n$'
+- '$n$ repetido ⇒ sumado: reconstruir $\psi$ a partir de sus componentes con fase'
+- posición media, comparada con la clásica $x_0\cos\omega t$
+labels:
+  omega: Frecuencia angular $\omega$
+  x0: Desplazamiento inicial $x_0$
+  periods: Tiempo simulado
+  n_grid: Puntos de malla

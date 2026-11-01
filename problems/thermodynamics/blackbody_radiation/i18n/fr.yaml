@@ -1,0 +1,15 @@
+source_hash: 7be6ce46bf01
+title: Rayonnement du corps noir
+summary: La loi de Planck donne la densité d'énergie du rayonnement thermique à chaque longueur d'onde. Le broadcasting d'une colonne de températures contre une ligne de longueurs d'onde construit tout le tableau du spectre $(T, \lambda)$ en une ligne ; argmax trouve le pic de Wien et torch.trapezoid intègre le spectre pour retrouver la loi de Stefan–Boltzmann en $T^4$.
+notes: 'La grille de longueurs d''onde est logarithmique de 10 nm à 100 µm, assez large pour que les queues manquantes modifient l''intégrale de moins de $10^{-5}$, et le calcul est en float64 avec expm1 pour la précision. La constante de Wien $b \approx 2.898\times 10^{-3}$ m·K sort de l''argmax à la résolution de la grille près (environ 0.2 %). La couleur de la courbe échantillonne le spectre à trois longueurs d''onde représentant le rouge, le vert et le bleu — un substitut grossier à un vrai calcul colorimétrique, mais qui montre la lueur passer de l''orange au blanc puis au bleu pâle. Le graphique est remis à l''échelle à chaque image : la hauteur du pic croît comme $T^5$. La bande ombrée marque le domaine visible 380–750 nm.'
+meanings:
+- lot de températures, en colonne
+- grille de longueurs d'onde, en ligne
+- le broadcasting de la colonne contre la ligne remplit tout le tableau
+- pic de Wien de tous les spectres à la fois
+- '$b$ répété ⇒ sommé : densité d''énergie totale, $\propto T_a^4$'
+- 'Planck à 610, 550 et 465 nm, normalisé : une couleur visible approximative'
+labels:
+  T_min: Température initiale
+  T_max: Température finale
+  n_temps: Températures (images)

@@ -1,0 +1,17 @@
+source_hash: f68c4a9fe179
+title: Ausfluss aus einem Tank (Torricelli)
+summary: Wasser verlässt ein Loch mit Torricellis Geschwindigkeit $\sqrt{2gh}$, daher sinkt der Pegel anfangs schnell und am Ende langsam. Tanks mit verschiedenen Lochgrößen werden zusammen als ein gebündelter Tensor integriert und mit der exakten Lösung $h(t) = (\sqrt{h_0} - \tfrac aA\sqrt{g/2}\,t)^2$ verglichen.
+notes: 'Das Torricelli-Gesetz folgt aus Bernoulli zwischen der freien Oberfläche (in Ruhe, da $A \gg a$) und dem Strahl, beide bei Atmosphärendruck. Echte Löcher schnüren den Strahl auf etwa 60 % der Lochfläche ein (die Vena contracta), sodass echte Tanks langsamer leerlaufen: Multipliziere $a$ mit einem Ausflusskoeffizienten $C_d \approx 0.6$. Ein doppelter Lochdurchmesser viertelt die Auslaufzeit; eine doppelte Anfangshöhe vervielfacht sie nur um $\sqrt2$. Der fallende Strahl wird beim Beschleunigen dünner — wieder die Kontinuität.'
+meanings:
+- Wasserstand im Tank $b$ über der Zeit
+- Lochfläche des Tanks $b$ — der Batch-Index
+- Querschnitt jedes Tanks
+- Torricelli-Ausflussgeschwindigkeit
+- rechte Seite, mit RK4 integriert
+- 'kein wiederholter Index ⇒ äußeres Produkt: jede Zeit mit jedem Loch'
+labels:
+  n_tanks: Anzahl der Tanks
+  d_min: Kleinster Lochdurchmesser
+  d_max: Größter Lochdurchmesser
+  tank_diameter: Tankdurchmesser $D$
+  h0: Anfangspegel $h_0$

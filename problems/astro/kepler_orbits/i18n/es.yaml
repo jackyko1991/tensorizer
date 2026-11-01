@@ -1,0 +1,17 @@
+source_hash: b1957b563a0a
+title: Leyes de Kepler del movimiento planetario
+summary: 'Planetas con órbitas de distintos tamaños y excentricidades giran alrededor de una estrella bajo la gravedad newtoniana del inverso del cuadrado. Una sola integración RK4 por lotes muestra las tres leyes de Kepler: elipses con la estrella en un foco, áreas iguales en tiempos iguales y $T^2 \propto a^3$.'
+notes: 'Las unidades son UA, años y masas solares, de modo que $GM_\odot = 4\pi^2$ y la tercera ley de Kepler se escribe simplemente $T^2 = a^3$. Cada planeta parte del perihelio con la velocidad de vis-viva $v_p = \sqrt{(GM/a)(1+e)/(1-e)}$. Cada sector sombreado de la órbita más excéntrica tarda el mismo tiempo $T/12$: corto y ancho cerca de la estrella, largo y estrecho lejos, pero siempre con la misma área, porque $dA/dt = L/2$ y $L$ se conserva. El período se mide en la simulación como el tiempo en barrer $2\pi$. La estrella se considera fija (su masa es mucho mayor que la de los planetas) y los planetas no se atraen entre sí.'
+meanings:
+- posición del planeta $b$ respecto a la estrella, $i \in \{x, y\}$
+- velocidad del planeta $b$
+- '$j$ repetido ⇒ sumado: distancia al cuadrado $r_b^2$'
+- atracción del inverso del cuadrado hacia la estrella
+- símbolo de Levi-Civita en 2D, $\varepsilon_{xy} = 1 = -\varepsilon_{yx}$
+- momento angular por unidad de masa; $dA/dt = L_b/2$ es constante
+- $\tfrac12 v^2 - GM/r$; da $a = -GM/2E$
+labels:
+  n_planets: Planetas
+  e_max: Excentricidad máxima $e$
+  t_max: Tiempo simulado
+  dt: Paso de tiempo

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Bare slab reactor of width L: the neutron flux phi(x) peaks in the middle and vanishes at the edges, where neutrons leak out">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- fuel slab -->
+    <rect x="60" y="30" width="120" height="96" fill="#93c5fd" fill-opacity="0.5" stroke="#374151" stroke-width="2"/>
+    <!-- flux shape -->
+    <path d="M60,126 C80,46 100,40 120,40 C140,40 160,46 180,126" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+    <text x="110" y="62" font-style="italic" fill="#1e40af">φ(x)</text>
+    <!-- fission source neutrons -->
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1">
+      <circle cx="96" cy="96" r="3.5"/><circle cx="120" cy="86" r="3.5"/><circle cx="142" cy="102" r="3.5"/>
+    </g>
+    <!-- leakage through both faces -->
+    <line x1="176" y1="96" x2="212" y2="86" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="64" y1="96" x2="28" y2="86" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- width -->
+    <line x1="60" y1="142" x2="180" y2="142" stroke="#374151" stroke-width="1.5"/>
+    <line x1="60" y1="136" x2="60" y2="148" stroke="#374151" stroke-width="1.5"/>
+    <line x1="180" y1="136" x2="180" y2="148" stroke="#374151" stroke-width="1.5"/>
+    <text x="115" y="158" font-style="italic">L</text>
+    <text x="54" y="22" font-size="13" fill="#6b7280">0</text>
+    <text x="176" y="22" font-size="13" fill="#6b7280">L</text>
+  </g>
+</svg>

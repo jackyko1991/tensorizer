@@ -1,0 +1,17 @@
+source_hash: 539b278aa207
+title: Ciclo de Carnot de un gas ideal
+summary: Dos isotermas y dos adiabáticas de un gas ideal, muestreadas como un tensor de puntos $(V, p)$. El trabajo es el área encerrada en el diagrama $p$–$V$, calculada con torch.trapezoid, y el rendimiento $W/Q_h$ coincide exactamente con el límite de Carnot $1 - T_c/T_h$.
+notes: 'El calor solo atraviesa la frontera en las isotermas: entra $Q_h = nRT_h\ln(V_2/V_1)$ y sale $Q_c = nRT_c\ln(V_3/V_4)$. Como las adiabáticas relacionan las razones de volumen, $V_3/V_4 = V_2/V_1$, y por eso el rendimiento depende solo de las dos temperaturas. Los tramos de compresión van hacia $V$ menores, así que torch.trapezoid les asigna automáticamente trabajo negativo. En el diagrama $T$–$S$ el ciclo es un rectángulo y su área también es $W$. Los volúmenes parten de $V_1 = 1$ litro.'
+meanings:
+- muestra $k$ del tramo $l$ del ciclo ($l$ = isoterma caliente, adiabática, isoterma fría, adiabática)
+- isoterma, elemento a elemento sobre un tensor de volúmenes
+- adiabática que pasa por un vértice del ciclo
+- '$k$ repetido ⇒ sumado: trabajo en cada tramo'
+- 'suma sobre los tramos $l$: el área encerrada'
+- entropía a lo largo del camino, para el diagrama $T$–$S$
+labels:
+  T_h: Foco caliente $T_h$
+  T_c: Foco frío $T_c$
+  ratio: Razón de expansión $V_2/V_1$
+  n: Cantidad de gas
+  gas: Gas

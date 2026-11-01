@@ -1,0 +1,16 @@
+source_hash: 8adb8e4369f3
+title: 'Relativité restreinte : diagrammes de Minkowski'
+summary: 'Les événements sont des 2-vecteurs $x^\mu = (t, x)$ et un changement de référentiel inertiel est une seule matrice $\Lambda^\mu{}_\nu$ appliquée à tous avec einsum. Un jumeau voyage jusqu''à une étoile et revient : le diagramme dans le référentiel terrestre et dans un référentiel boosté montre des lignes de simultanéité inclinées, le cône de lumière invariant, et l''horloge du voyageur qui mesure $\int\sqrt{1 - v^2}\,dt$ — moins que le jumeau resté sur place.'
+notes: 'Unités : années et années-lumière, donc $c = 1$ et les rayons lumineux sont les droites en tirets à 45°. Le voyageur file à la vitesse $v$ vers une étoile à la distance $L$, fait demi-tour instantanément, puis revient. La ligne ambre est l''ensemble des événements que le voyageur appelle « maintenant » : inclinée de $v$ à l''aller, elle balaie la ligne d''univers du jumeau sédentaire au demi-tour, et c''est là que passent les années « manquantes » de ce dernier. Le paradoxe n''est pas symétrique, car seul le voyageur change de référentiel inertiel. Réglez le boost du panneau de droite sur $v$ pour vous placer dans le référentiel du voyageur à l''aller, ou sur $-v$ pour le retour. Le cône de lumière garde sa forme dans tous les référentiels.'
+meanings:
+- un événement $(t, x)$, $\mu \in \{0, 1\}$, $c = 1$
+- métrique de Minkowski $\operatorname{diag}(-1, +1)$
+- $\begin{pmatrix}\gamma & -\gamma\beta\\ -\gamma\beta & \gamma\end{pmatrix}$
+- '$\nu$ répété ⇒ sommé : tous les événements d''une ligne d''univers ou d''une grille boostés d''un coup'
+- intervalle au carré, identique dans tous les référentiels
+- somme cumulée de $\sqrt{-\Delta s^2}$ le long de la ligne d'univers
+- égal à $\Lambda\big((\beta_1 + \beta_2)/(1 + \beta_1\beta_2)\big)$
+labels:
+  v: Vitesse du voyageur $v/c$
+  distance: Distance à l'étoile $L$
+  beta_view: Boost du panneau de droite $\beta$

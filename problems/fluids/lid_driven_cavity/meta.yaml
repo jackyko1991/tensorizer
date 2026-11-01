@@ -1,0 +1,29 @@
+title: Lid-driven cavity (Navier–Stokes)
+category: fluids
+level: advanced
+order: 1
+summary: >
+  The classic benchmark of computational fluid dynamics: a square box of fluid whose lid slides to the right. The 2D Navier–Stokes
+  equations in streamfunction–vorticity form are marched in time, with the Poisson equation for $\psi$ solved by diagonalising the
+  Laplacian with eigh. A primary vortex spins up and its centreline velocity is compared with Ghia et al. (1982).
+animated: true
+vector_form: '\partial_t\omega + (\mathbf u\cdot\nabla)\,\omega = \nu\,\nabla^2\omega,\qquad \nabla^2\psi = -\omega,\qquad \mathbf u = (\partial_y\psi,\,-\partial_x\psi)'
+index_form: '\partial_t\omega + u_j\,\partial_j\omega = \nu\,\partial_j\partial_j\omega,\qquad \partial_j\partial_j\psi = -\omega,\qquad u_i = \epsilon_{ij}\,\partial_j\psi \;\Rightarrow\; \partial_i u_i = 0'
+translation:
+  - {symbol: '\omega_{xy},\ \psi_{xy}', code: 'omega, psi', shape: '(N, N)', meaning: 'vorticity and streamfunction on the grid, indexed [x, y], walls included'}
+  - {symbol: 'u_j', code: 'velocity(psi, h)', shape: '(2, N-2, N-2)', meaning: '$(\partial_y\psi, -\partial_x\psi)$ by central differences'}
+  - {symbol: 'u_j\,\partial_j\omega', code: "einsum('jxy,jxy->xy', u, grad_omega)", shape: '(N-2, N-2)', meaning: 'repeated $j$ ⇒ summed: advection of vorticity'}
+  - {symbol: '\partial_j\partial_j\omega', code: 'laplacian(omega, h)', shape: '(N-2, N-2)', meaning: 'five-point stencil'}
+  - {symbol: 'T = V\Lambda V^\mathsf T', code: 'laplacian_eigen(n, h, dev)', shape: '(n, n), (n,)', meaning: '1D Laplacian with $\psi = 0$ walls, diagonalised once'}
+  - {symbol: '\hat f_{ab} = V_{ia}f_{ij}V_{jb}', code: "einsum('ia,ij,jb->ab', V, f, V)", shape: '(n, n)', meaning: 'transform; then $\hat\psi_{ab} = \hat f_{ab}/(\Lambda_a + \Lambda_b)$ and back'}
+  - {symbol: '\omega_\text{wall}', code: 'wall_vorticity(omega, psi, h, lid)', shape: '(N, N)', meaning: 'Thom: $-2\psi_\text{next}/h^2$, minus $2U/h$ under the lid'}
+notes: >
+  Units: cavity size 1 and lid speed 1, so $\mathrm{Re} = 1/\nu$. The streamfunction makes the flow divergence-free by construction, and
+  the pressure disappears by taking the curl of Navier–Stokes. Each step: vorticity on the walls from Thom's formula (no slip), a forward
+  Euler step for $\omega$, then the Poisson solve. $\nabla^2\psi = T\psi + \psi T^\mathsf T$ becomes diagonal in the eigenbasis of $T$ — the same idea as a
+  fast sine transform. At Re = 100 the vortex centre sits near (0.62, 0.74), above and right of the centre; at lower Re it moves to (0.5, 0.76),
+  at higher Re towards the middle, and small counter-rotating eddies appear in the bottom corners. Higher Re needs a finer grid.
+params:
+  re: {default: 100.0, min: 10, max: 400, step: 10, label: 'Reynolds number $UL/\nu$'}
+  n: {default: 65, min: 33, max: 97, step: 16, type: int, label: Grid points per side}
+  t_max: {default: 20.0, min: 2, max: 40, step: 1, label: Simulated time, unit: L/U}

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Hydrogen atom: proton with a 2s electron cloud showing one radial node, and the Coulomb potential V(r) proportional to minus 1 over r with its bound energy levels">
+  <defs>
+    <marker id="arrow-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <radialGradient id="orb" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#2563eb" stop-opacity="0.95"/><stop offset="0.2" stop-color="#2563eb" stop-opacity="0.45"/>
+      <stop offset="0.34" stop-color="#2563eb" stop-opacity="0"/><stop offset="0.6" stop-color="#2563eb" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#2563eb" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <circle cx="60" cy="78" r="52" fill="url(#orb)"/>
+    <circle cx="60" cy="78" r="17.7" fill="none" stroke="#1e40af" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>
+    <circle cx="60" cy="78" r="3.5" fill="#dc2626"/>
+    <text x="60" y="152" fill="#4b5563" font-size="12" text-anchor="middle">2s</text>
+    <line x1="128.0" y1="36.0" x2="228.0" y2="36.0" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow-k)"/>
+    <line x1="128.0" y1="14.0" x2="128.0" y2="150.0" stroke="#374151" stroke-width="1.5" />
+    <text x="226" y="30" font-style="italic" text-anchor="end">r</text>
+    <path d="M137.0,142.7 L137.6,136.0 L138.2,130.1 L138.8,124.9 L139.4,120.2 L140.0,116.0 L140.6,112.2 L141.2,108.7 L141.8,105.6 L142.4,102.7 L143.0,100.0 L143.6,97.5 L144.2,95.3 L144.8,93.1 L145.4,91.2 L146.0,89.3 L146.6,87.6 L147.2,86.0 L147.8,84.5 L148.4,83.1 L149.0,81.7 L149.6,80.4 L150.2,79.2 L150.8,78.1 L151.4,77.0 L152.0,76.0 L152.6,75.0 L153.2,74.1 L153.8,73.2 L154.4,72.4 L155.0,71.6 L155.6,70.8 L156.2,70.0 L156.8,69.3 L157.4,68.7 L158.0,68.0 L158.6,67.4 L159.2,66.8 L159.8,66.2 L160.4,65.6 L161.0,65.1 L161.6,64.6 L162.2,64.1 L162.8,63.6 L163.4,63.1 L164.0,62.7 L164.6,62.2 L165.2,61.8 L165.8,61.4 L166.4,61.0 L167.0,60.6 L167.6,60.2 L168.2,59.9 L168.8,59.5 L169.4,59.2 L170.0,58.9 L170.6,58.5 L171.2,58.2 L171.8,57.9 L172.4,57.6 L173.0,57.3 L173.6,57.1 L174.2,56.8 L174.8,56.5 L175.4,56.3 L176.0,56.0 L176.6,55.8 L177.2,55.5 L177.8,55.3 L178.4,55.0 L179.0,54.8 L179.6,54.6 L180.2,54.4 L180.8,54.2 L181.4,54.0 L182.0,53.8 L182.6,53.6 L183.2,53.4 L183.8,53.2 L184.4,53.0 L185.0,52.8 L185.6,52.7 L186.2,52.5 L186.8,52.3 L187.4,52.2 L188.0,52.0 L188.6,51.8 L189.2,51.7 L189.8,51.5 L190.4,51.4 L191.0,51.2 L191.6,51.1 L192.2,51.0 L192.8,50.8 L193.4,50.7 L194.0,50.5 L194.6,50.4 L195.2,50.3 L195.8,50.2 L196.4,50.0 L197.0,49.9 L197.6,49.8 L198.2,49.7 L198.8,49.6 L199.4,49.4 L200.0,49.3 L200.6,49.2 L201.2,49.1 L201.8,49.0 L202.4,48.9 L203.0,48.8 L203.6,48.7 L204.2,48.6 L204.8,48.5 L205.4,48.4 L206.0,48.3 L206.6,48.2 L207.2,48.1 L207.8,48.0 L208.4,47.9 L209.0,47.9 L209.6,47.8 L210.2,47.7 L210.8,47.6 L211.4,47.5 L212.0,47.4 L212.6,47.3 L213.2,47.3 L213.8,47.2 L214.4,47.1 L215.0,47.0 L215.6,47.0 L216.2,46.9 L216.8,46.8 L217.4,46.7 L218.0,46.7 L218.6,46.6 L219.2,46.5 L219.8,46.5 L220.4,46.4 L221.0,46.3 L221.6,46.3 L222.2,46.2 L222.8,46.1 L223.4,46.1 L224.0,46.0 L224.6,45.9 L225.2,45.9 L225.8,45.8" fill="none" stroke="#1e40af" stroke-width="2.2" />
+    <line x1="128.0" y1="76.0" x2="152.0" y2="76.0" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="128.0" y1="46.0" x2="224.0" y2="46.0" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="160" y="71" font-style="italic" fill="#b45309" font-size="13">E<tspan font-size="10" dy="3" font-style="normal">1</tspan></text>
+    <text x="162" y="126" fill="#1e40af" font-size="13"><tspan font-style="italic">V</tspan>(<tspan font-style="italic">r</tspan>) ∝ −1/<tspan font-style="italic">r</tspan></text>
+  </g>
+</svg>

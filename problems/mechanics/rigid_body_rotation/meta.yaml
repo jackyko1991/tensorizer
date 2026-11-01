@@ -1,0 +1,32 @@
+title: Free rigid-body rotation (tennis-racket effect)
+category: mechanics
+level: intermediate
+order: 3
+summary: >
+  Euler's equations for a torque-free box, written with the inertia tensor $I_{ij}$ and the Levi-Civita tensor $\varepsilon_{ijk}$.
+  Spin about the longest or shortest axis is stable; spin about the intermediate axis flips over and over (Dzhanibekov effect).
+animated: true
+vector_form: '\mathsf I\,\dot{\boldsymbol\omega} + \boldsymbol\omega\times(\mathsf I\,\boldsymbol\omega) = 0,\qquad \dot{\mathsf R} = \mathsf R\,[\boldsymbol\omega]_\times'
+index_form: 'I_{ij}\,\dot\omega_j + \varepsilon_{ijk}\,\omega_j\,I_{kl}\,\omega_l = 0,\qquad \dot R_{ij} = R_{ik}\,\varepsilon_{klj}\,\omega_l'
+translation:
+  - {symbol: 'I_{ij}', code: 'box_inertia(M, a, b, c)', shape: '(3, 3)', meaning: 'inertia tensor of a solid box, $(M/12)\operatorname{diag}(b^2+c^2,\ a^2+c^2,\ a^2+b^2)$'}
+  - {symbol: '\omega_i', code: 'y[3]', shape: '(3,)', meaning: 'angular velocity in body-frame components'}
+  - {symbol: '\varepsilon_{ijk}', code: 'levi_civita()', shape: '(3, 3, 3)', meaning: 'Levi-Civita tensor: the cross product as a tensor'}
+  - {symbol: '\varepsilon_{ijk}\omega_j I_{kl}\omega_l', code: "einsum('ijk,j,kl,l->i', eps, w, I, w)", shape: '(3,)', meaning: '$j, k, l$ summed: $\boldsymbol\omega\times(I\boldsymbol\omega)$'}
+  - {symbol: '\dot\omega_j', code: 'torch.linalg.solve(I, torque)', shape: '(3,)', meaning: 'solve $I_{ij}\dot\omega_j = -\varepsilon_{ijk}\omega_j I_{kl}\omega_l$'}
+  - {symbol: 'R_{ij}', code: 'y[:3]', shape: '(3, 3)', meaning: 'orientation: body → world rotation matrix'}
+  - {symbol: '\tfrac12\omega_i I_{ij}\omega_j', code: "einsum('...i,ij,...j->...', w, I, w)", shape: '()', meaning: 'rotational kinetic energy, conserved'}
+notes: >
+  With no torque both the energy $\tfrac12\boldsymbol\omega\cdot I\boldsymbol\omega$ and the size of $\mathbf L = I\boldsymbol\omega$ are conserved, so $\boldsymbol\omega$ must move on the intersection of an
+  ellipsoid of constant energy and a sphere of constant $\lvert\mathbf L\rvert$ (in $\mathbf L$-space). Near the major and minor axes these curves are
+  small loops — stable; near the intermediate axis they pass through a saddle, so a tiny wobble grows and the box turns
+  over, then turns back. The world-frame angular momentum $RI\boldsymbol\omega$ (drawn as the fixed arrow) never moves.
+  Parameters $a, b, c$ are sorted so that $a \ge b \ge c$.
+params:
+  spin_axis: {default: intermediate, type: choice, options: [intermediate, major, minor], label: Spin mostly about}
+  spin: {default: 5.0, min: 1, max: 10, step: 0.5, label: Spin rate, unit: rad/s}
+  perturbation: {default: 0.01, min: 0.001, max: 0.2, step: 0.001, label: Wobble (fraction of spin)}
+  a: {default: 3.0, min: 0.5, max: 5, step: 0.1, label: 'Box side $a$', unit: m}
+  b: {default: 2.0, min: 0.5, max: 5, step: 0.1, label: 'Box side $b$', unit: m}
+  c: {default: 1.0, min: 0.5, max: 5, step: 0.1, label: 'Box side $c$', unit: m}
+  t_max: {default: 12.0, min: 2, max: 40, step: 1, label: Simulated time, unit: s}

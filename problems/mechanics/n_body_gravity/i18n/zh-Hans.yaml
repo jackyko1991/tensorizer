@@ -1,0 +1,16 @@
+source_hash: 840ee0536fe3
+title: 三维 N 体引力
+summary: $N$ 个物体之间的牛顿引力。所有两两之间的位移 $r_{abi}$ 通过广播一次构造出来，一次 einsum 把所有物体 $b$ 对每个物体 $a$ 的引力相加，速度 Verlet 方法推进整个系统。
+notes: 软化长度 $\varepsilon$ 使两物体极近距离掠过时力保持有限；$\varepsilon = 0$ 时即为精确的牛顿引力。单位选取使 $G = 1$。速度 Verlet 方法是辛的，所以能量误差保持很小且有界，而不会漂移。8 字形轨道是 Moore（1993）和 Chenciner 与 Montgomery（2000）发现的著名三体周期轨道。
+meanings:
+- 物体 $a$ 的位置，分量 $i \in \{x, y, z\}$
+- 物体 $b$ 的质量
+- 从 $a$ 到 $b$ 的位移，通过广播得到所有物体对
+- 重复的 $j$ ⇒ 求和：每对物体的距离平方
+- 重复的 $b$ ⇒ 求和：物体 $a$ 所受的总引力
+- 动能 + 两两势能，守恒
+labels:
+  scenario: 初始条件
+  t_max: 模拟时长
+  dt: 时间步长
+  softening: 软化长度 $\varepsilon$

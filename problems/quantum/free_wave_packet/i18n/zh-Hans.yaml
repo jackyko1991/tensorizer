@@ -1,0 +1,14 @@
+source_hash: 1bc9d739c88e
+title: 自由波包
+summary: 自由粒子完全不需要时间步进：在动量空间中，薛定谔方程的解就是把每个傅里叶分量乘以各自的相位 $e^{-ik^2t/2}$。一次 FFT、一次乘法、一次逆 FFT 即给出任意时刻的 $\psi$——所有时刻一次算出，构成 $(T, N)$ 张量。波包以群速度 $k_0$ 漂移，并因不同动量成分速度不同而扩展。
+notes: 单位 $\hbar = m = 1$。$\sigma$ 是 $\lvert\psi\rvert^2$ 的标准差（因此 $\psi \propto \exp(-(x - x_0)^2/(4\sigma_0^2) + ik_0x)$）。精确结果为 $\langle x\rangle = x_0 + k_0 t$（群速度 $v_g = dE/dk = k$）和 $\sigma(t) = \sigma_0\sqrt{1 + (t/(2\sigma_0^2))^2}$：窄波包的动量分布宽，因此扩展得快。虚线按该公式标出 $\langle x\rangle \pm \sigma(t)$。$\operatorname{Re}\psi$ 的波纹以相速度 $k/2$ 移动，是包络速度的一半。网格是周期性的，所以从一侧跑出的波包会从另一侧回来。
+meanings:
+- 宽度为 $\sigma_0$、动量为 $k_0$ 的高斯波包
+- 重复的 $x$ ⇒ 求和：变换到平面波基 $e^{ikx}$
+- 每个模式 $k$ 在每个时刻 $t$ 的自由粒子相位（不求和：外积）
+- 变换回 $x$ 空间，一次调用得到全部 $T$ 个快照
+- 每个时刻 $\lvert\psi\rvert^2$ 的中心和展宽
+labels:
+  k0: 波包动量 $k_0$
+  sigma0: 初始宽度 $\sigma_0$
+  t_max: 模拟时长

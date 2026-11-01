@@ -1,0 +1,31 @@
+title: Hydrogen atom orbitals
+category: quantum
+level: intermediate
+order: 2
+summary: >
+  Writing $\psi = (u(r)/r)\,Y_{lm}(\theta, \phi)$ turns the 3D hydrogen problem into a 1D radial equation with an extra
+  centrifugal term $l(l+1)/2r^2$. One finite-difference Hamiltonian per angular momentum $l$ is stacked into
+  a $(L, N, N)$ tensor and a single batched torch.linalg.eigh returns every orbital at once. The animation
+  cycles through 1s, 2s, 2p, 3s, … showing the radial probability and a slice through $\lvert\psi_{nl0}\rvert^2$.
+animated: true
+vector_form: '-\tfrac12\,u''''(r) + \Big(\frac{l(l+1)}{2r^2} - \frac1r\Big)\,u(r) = E\,u(r),\qquad \psi_{nlm}(\mathbf r) = \frac{u_{nl}(r)}{r}\,Y_{lm}(\theta,\varphi)'
+index_form: 'H_{lij} = -\tfrac12\,D2_{ij} + V_{li}\,\delta_{ij},\quad V_{li} = \frac{l(l+1)}{2r_i^2} - \frac1{r_i},\qquad H_{lij}\,u_{ljn} = E_{ln}\,u_{lin}'
+translation:
+  - {symbol: 'r_i', code: 'radial_grid(N, r_max)', shape: '(N,)', meaning: 'interior points $r = dr \dots r_{\max} - dr$ ($u = 0$ at both ends)'}
+  - {symbol: 'V_{li}', code: 'effective_potential(r, ls)', shape: '(L, N)', meaning: 'Coulomb attraction plus centrifugal barrier, one row per $l$'}
+  - {symbol: 'H_{lij}', code: 'hamiltonian(D2, V)', shape: '(L, N, N)', meaning: 'a stack of $L$ Hamiltonians, one per angular momentum'}
+  - {symbol: 'E_{ln},\ u_{lin}', code: 'torch.linalg.eigh(H)', shape: '(L, N), (L, N, N)', meaning: 'batched over $l$: energies and radial functions; principal number $n = l + 1 + \text{column}$'}
+  - {symbol: 'P(r) = u^2', code: 'radial_probability(u)', shape: '(N,)', meaning: 'probability per unit radius, $r^2\lvert R\rvert^2 = u^2$'}
+  - {symbol: '|\psi_{nl0}|^2', code: 'orbital_density(R, l, cos_theta)', shape: '(P, P)', meaning: '$\lvert R(r)\,Y_{l0}(\theta)\rvert^2$ on a slice through the $z$-axis'}
+notes: >
+  Atomic units ($\hbar = m_e = e = 4\pi\varepsilon_0 = 1$): lengths in Bohr radii, energies in hartree. The exact energies
+  $E_n = -1/(2n^2)$ depend only on $n$, so 2s and 2p (or 3s, 3p, 3d) come out degenerate even though they are
+  eigenvalues of different matrices — the hidden symmetry of the $1/r$ potential. The radial function of
+  $(n, l)$ has $n - l - 1$ nodes. The grid stops at $r_{\max}$, so states whose size ($\approx 2n^2$) approaches $r_{\max}$ are
+  squeezed and pushed up in energy; finite differences also slightly underbind 1s near the $1/r$ singularity.
+  The slice shows $m = 0$ orbitals in the $xz$-plane ($z$ up), $Y_{l0} \propto P_l(\cos\theta)$; colour uses a compressed power-law scale $(\lvert\psi\rvert^2)^{0.3}$
+  so faint outer lobes stay visible.
+params:
+  n_max: {default: 3, min: 1, max: 4, step: 1, type: int, label: 'Highest shell $n$'}
+  r_max: {default: 60.0, min: 30.0, max: 120.0, step: 5, label: 'Grid radius $r_{\max}$', unit: Bohr}
+  n_grid: {default: 1500, min: 400, max: 2500, step: 100, type: int, label: Grid points}

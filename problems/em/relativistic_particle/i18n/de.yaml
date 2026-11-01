@@ -1,0 +1,17 @@
+source_hash: b693da8b6e0e
+title: Relativistisches geladenes Teilchen
+summary: 'Die Lorentzkraft in kovarianter Form, $dU^\mu/d\tau = (q/m)\,F^\mu{}_\nu U^\nu$: Der zweite Index des Feldstärketensors wird mit der Minkowski-Metrik heruntergezogen und in einem einsum mit der Vierergeschwindigkeit kontrahiert. Die Integration in Eigenzeit zeigt, dass schnelle Teilchen langsamer kreisen, als Newton vorhersagt, und dass ein konstantes elektrisches Feld ein Teilchen immer näher an die Lichtgeschwindigkeit treibt — aber nie darüber hinaus.'
+notes: 'Einheiten mit $c = 1$. Die Gleichungen werden in der Eigenzeit $\tau$ jedes Teilchens mit RK4 integriert und dann für die Animation auf die Laborzeit $t = X^0$ umgerechnet. Zyklotron: Die magnetische Kraft verrichtet keine Arbeit, also bleibt $\gamma$ konstant, aber die Bahn ist $\gamma$-mal größer und $\gamma$-mal langsamer als der Newtonsche Kreis ($\omega = qB/(\gamma m)$). Beschleunigung: Aus der Ruhe in einem homogenen $E$ ist die Bewegung hyperbolisch, $x = (\sqrt{1 + (at)^2} - 1)/a$ mit $a = qE/m$, also $v \to 1$, während Newtons $\tfrac12 at^2$ das Licht nach $t = 2/a$ überholen würde.'
+meanings:
+- Viererort $(t, x, y, z)$ und Vierergeschwindigkeit $\gamma(1, \mathbf v)$ des Teilchens $p$
+- Minkowski-Metrik $\operatorname{diag}(+1, -1, -1, -1)$, $c = 1$
+- $F^{0i} = -E_i$, $F^{ij} = -\varepsilon_{ijk}B_k$
+- 'wiederholtes $\alpha$ ⇒ summiert: zweiter Index heruntergezogen'
+- 'wiederholtes $\nu$ ⇒ summiert: Viererkraft auf jedes Teilchen'
+- Minkowski-Länge von $U$, muss 1 bleiben
+labels:
+  config: Szenario
+  strength: Feldstärke ($B$ oder $E$)
+  v_max: Größte Anfangsgeschwindigkeit (Zyklotron)
+  n_particles: Teilchen
+  t_max: Laborzeit

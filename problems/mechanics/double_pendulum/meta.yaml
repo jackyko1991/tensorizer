@@ -1,0 +1,31 @@
+title: Double pendulum and chaos
+category: mechanics
+level: intermediate
+order: 2
+summary: >
+  The Lagrangian equations of a double pendulum written as $M_{ij}(q)\,\ddot q_j = f_i(q, \dot q)$. Each RK4 stage builds
+  the $2\times 2$ mass-matrix tensor and calls torch.linalg.solve; two almost identical starts drift apart, showing chaos.
+animated: true
+vector_form: '\mathsf M(\mathbf q)\,\ddot{\mathbf q} = \mathbf f(\mathbf q, \dot{\mathbf q}),\qquad \mathbf q = (\theta_1, \theta_2)'
+index_form: 'M_{bij}(q)\,\ddot q_{bj} = f_{bi}(q, \dot q),\qquad E_b = \tfrac12\,\dot q_{bi}M_{bij}\dot q_{bj} + V_b'
+translation:
+  - {symbol: 'q_{bi}', code: 'y[:, 0]', shape: '(B, 2)', meaning: 'angles $(\theta_1, \theta_2)$ of pendulum $b$ from the downward vertical'}
+  - {symbol: '\dot q_{bi}', code: 'y[:, 1]', shape: '(B, 2)', meaning: 'angular velocities'}
+  - {symbol: 'M_{bij}', code: 'mass_matrix(q, m1, m2, L1, L2)', shape: '(B, 2, 2)', meaning: 'configuration-dependent mass matrix, off-diagonal $m_2L_1L_2\cos(\theta_1-\theta_2)$'}
+  - {symbol: 'f_{bi}', code: 'forces(q, q_dot, ...)', shape: '(B, 2)', meaning: 'generalised forces: centrifugal coupling + gravity'}
+  - {symbol: '\ddot q_{bj}', code: 'torch.linalg.solve(M, f)', shape: '(B, 2)', meaning: 'solve $M\ddot q = f$ for the whole batch in one call'}
+  - {symbol: '\dot q_{bi}M_{bij}\dot q_{bj}', code: "einsum('...i,...ij,...j->...', q_dot, M, q_dot)", shape: '(B,)', meaning: '$i$ and $j$ summed: twice the kinetic energy'}
+notes: >
+  The batch holds two pendulums whose $\theta_2$ differs by $\delta$. Their difference grows roughly exponentially until the motions
+  are unrelated, although the energy of each stays constant to high accuracy (float64 + RK4 with a small step).
+  For small swings the system has two normal modes; with equal masses and lengths $\omega^2 = (2 \mp \sqrt2)\,g/L$.
+  Rods are massless and the pivot frictionless.
+params:
+  theta1: {default: 120.0, min: -180, max: 180, step: 5, label: 'Initial $\theta_1$', unit: °}
+  theta2: {default: -10.0, min: -180, max: 180, step: 5, label: 'Initial $\theta_2$', unit: °}
+  delta: {default: 0.01, min: 0.0001, max: 1.0, step: 0.0001, label: 'Perturbation $\delta$ of $\theta_2$', unit: °}
+  m1: {default: 1.0, min: 0.1, max: 5, step: 0.1, label: 'Upper mass $m_1$', unit: kg}
+  m2: {default: 1.0, min: 0.1, max: 5, step: 0.1, label: 'Lower mass $m_2$', unit: kg}
+  L1: {default: 1.0, min: 0.2, max: 2, step: 0.1, label: 'Upper rod $L_1$', unit: m}
+  L2: {default: 1.0, min: 0.2, max: 2, step: 0.1, label: 'Lower rod $L_2$', unit: m}
+  t_max: {default: 20.0, min: 2, max: 40, step: 1, label: Simulated time, unit: s}

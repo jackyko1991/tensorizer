@@ -1,0 +1,16 @@
+source_hash: 8bd75af0e44c
+title: Desintegración radiactiva
+summary: Cada núcleo se desintegra al azar con la misma probabilidad por segundo $\lambda$. Simular toda una malla de núcleos como un único tensor booleano (un lanzamiento de moneda por núcleo y paso de tiempo) reproduce la ley exponencial suave $N(t) = N_0 e^{-\lambda t}$ y el período de semidesintegración $T_{1/2} = \ln 2/\lambda$.
+notes: La ley exponencial es un enunciado sobre promedios. Con $N_0$ núcleos, el número tras un tiempo $t$ sigue una binomial de media $N_0 e^{-\lambda t}$ y desviación típica $\sqrt{N_0 e^{-\lambda t}(1 - e^{-\lambda t})}$, de modo que una malla pequeña fluctúa visiblemente alrededor de la curva mientras que una grande la sigue de cerca. Tras cada período de semidesintegración desaparece aproximadamente la mitad de los núcleos restantes, sean cuantos sean. El paso $\Delta t$ solo tiene que ser pequeño frente a $T_{1/2}$; la probabilidad exacta por paso $1 - e^{-\lambda\Delta t}$ hace que la media sea correcta para cualquier paso. La semilla aleatoria es fija para que la imagen sea reproducible.
+meanings:
+- constante de desintegración $\ln 2 / T_{1/2}$
+- True mientras el núcleo $n$ no se ha desintegrado; la malla es solo una forma de dibujar $n$
+- un número aleatorio uniforme por núcleo y paso
+- probabilidad de desintegrarse en un paso $\Delta t$
+- un núcleo desintegrado sigue desintegrado
+- 'suma sobre todos los núcleos: el número $N(t)$'
+labels:
+  n_side: Lado de la malla (lado² núcleos)
+  half_life: Semivida $T_{1/2}$
+  t_max: Tiempo simulado
+  dt: Paso de tiempo $\Delta t$

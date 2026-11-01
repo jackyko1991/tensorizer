@@ -1,0 +1,19 @@
+source_hash: 7be98e686941
+title: Presión hidrostática y flotación
+summary: 'La presión en un depósito de agua crece linealmente con la profundidad, $p = p_0 + \rho_w g h$. Se sueltan a la vez bloques de distintas densidades (un único tensor por lotes): los ligeros oscilan y flotan con una fracción $\rho_b/\rho_w$ sumergida, y los pesados se hunden hasta el fondo.'
+notes: 'Cada bloque es un cubo de lado $s$; el empuje $\rho_w g s^2 d_b$ es el peso del agua desalojada (Arquímedes), y es el resultado neto de que la presión $p_0 + \rho_w g h$ empuje más sobre la cara inferior que sobre la superior. Un bloque que flota se estabiliza donde el empuje equilibra el peso, $d_b/s = \rho_b/\rho_w$: el hielo ($\rho \approx 917$) flota con el 92 % sumergido. El arrastre es un simple amortiguamiento lineal proporcional al volumen sumergido; el arrastre real es más bien cuadrático, y se ignoran las olas reales y la masa añadida. Los bloques que se hunden reposan en el fondo.'
+meanings:
+- malla de puntos en el agua, componente $i \in \{x, z\}$
+- vector gravedad $(0, -g)$
+- '$i$ repetido ⇒ sumado: $g\,h$ a la profundidad $h = -z$'
+- altura de la cara inferior y velocidad del bloque $b$
+- 'densidad del bloque $b$: el índice del lote'
+- profundidad sumergida, entre 0 (en el aire) y $s$ (totalmente sumergido)
+- empuje menos peso menos arrastre, por unidad de masa
+labels:
+  n_blocks: Número de bloques
+  rho_min: Densidad mínima $\rho_\text{min}$
+  rho_max: Densidad máxima $\rho_\text{max}$
+  size: Tamaño del bloque $s$
+  drag: Amortiguamiento $\gamma$
+  t_max: Tiempo simulado

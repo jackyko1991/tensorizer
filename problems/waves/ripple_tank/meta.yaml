@@ -1,0 +1,31 @@
+title: Ripple tank interference
+category: waves
+level: advanced
+order: 3
+summary: >
+  Two dippers bob in step on a water surface and send out circular ripples. The 2D wave equation is stepped with the
+  Laplacian as a $3\times3$ convolution kernel (conv2d), a damping border swallows the outgoing waves, and the
+  interference pattern settles into still nodal lines where the path difference is a half-odd number of wavelengths.
+animated: true
+vector_form: '\frac{\partial^2 u}{\partial t^2} + \gamma(\mathbf r)\,\frac{\partial u}{\partial t} = c^2\,\nabla^2 u + f(\mathbf r, t),\qquad |r_1 - r_2| = (m + \tfrac12)\,\lambda'
+index_form: '(\nabla^2 u)_{ab} = \frac{1}{h^2}\,K_{\alpha\beta}\,u_{a+\alpha,\,b+\beta},\qquad K = \begin{pmatrix}0&1&0\\1&-4&1\\0&1&0\end{pmatrix},\qquad \frac{c\,\Delta t}{h} \le \frac{1}{\sqrt2}'
+translation:
+  - {symbol: 'u_{ab}', code: 'u', shape: '(n, n)', meaning: 'surface height at grid cell $(a, b)$'}
+  - {symbol: 'K_{\alpha\beta}', code: 'stencil(dev)', shape: '(1, 1, 3, 3)', meaning: 'five-point Laplacian kernel, offsets $\alpha, \beta \in \{-1, 0, 1\}$'}
+  - {symbol: 'K_{\alpha\beta}u_{a+\alpha,b+\beta}', code: 'conv2d(u, K, padding=1)', shape: '(n, n)', meaning: 'repeated $\alpha, \beta$ ⇒ summed: the kernel slides over the grid'}
+  - {symbol: '\gamma_{ab}', code: 'damping(n, border, dev)', shape: '(n, n)', meaning: 'zero inside, rising smoothly in the absorbing border'}
+  - {symbol: 'f_{ab}(t)', code: 'A * sin(omega * t) * blobs', shape: '(n, n)', meaning: 'two small Gaussian sources oscillating in phase'}
+  - {symbol: '\Delta t', code: 'time_step(h, c, courant)', shape: 'scalar', meaning: 'Courant number above $1/\sqrt2$ is refused (the scheme would blow up)'}
+  - {symbol: '\langle u^2\rangle', code: 'intensity', shape: '(n, n)', meaning: 'running average of $u^2$ over about one period: dark lines are nodes'}
+notes: >
+  Units: cell size $h = 1$, wave speed $c = 1$. Leap-frog in time with the damping term centred, so the step is explicit.
+  Along a nodal line the ripple from one source always arrives half a period after the one from the other, so they cancel;
+  the dashed curves are the hyperbolas $|r_1 - r_2| = (m + \tfrac12)\lambda$, which match the dark lines in the right panel
+  far enough from the sources. Bringing the sources further apart than $\lambda$ adds more nodal lines. The border is a crude
+  absorber (a friction layer), not a perfectly matched layer, so a little reflection survives. Right panel shows the
+  running mean of $u^2$; the first few periods are transient while the waves fill the tank.
+params:
+  wavelength: {default: 16.0, min: 8, max: 30, step: 1, label: 'Wavelength $\lambda$', unit: cells}
+  separation: {default: 48.0, min: 8, max: 100, step: 2, label: 'Source separation $d$', unit: cells}
+  courant: {default: 0.5, min: 0.1, max: 0.7, step: 0.05, label: 'Courant number $c\,\Delta t/h$'}
+  t_max: {default: 300.0, min: 100, max: 500, step: 10, label: Simulated time}

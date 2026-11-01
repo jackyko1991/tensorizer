@@ -1,0 +1,17 @@
+source_hash: e0abd4c769f3
+title: Intrication de deux qubits
+summary: 'Deux qubits stockés sous forme de tenseur $(2, 2)$ $\psi_{ab}$. Les portes sont des tenseurs d''ordre 4 appliqués avec un seul einsum : une porte de Hadamard sur le qubit 1 suivie d''une CNOT transforme $\lvert 00\rangle$ en état de Bell. La décomposition en valeurs singulières de $\psi_{ab}$ est la décomposition de Schmidt, qui donne directement l''entropie d''intrication. La paire évolue ensuite sous un hamiltonien d''Ising ; les traces partielles donnent la matrice densité réduite de chaque qubit, dont le vecteur de Bloch rentre dans la sphère dès que les qubits sont intriqués.'
+notes: 'Unités $\hbar = 1$. Le produit tensoriel d''opérateurs à un qubit $A\otimes B$ est le tenseur d''ordre 4 $A_{ac}B_{bd}$ (torch.kron donne les mêmes valeurs sous forme de matrice $4\times 4$ d''indice de ligne $2a + b$). Comme $\psi_{ab}$ est une matrice, sa SVD écrit l''état sous la forme $\sum_k s_k\lvert u_k\rangle\lvert v_k\rangle$ : la décomposition de Schmidt. L''entropie d''intrication $S = -\sum s_k^2\ln s_k^2$ vaut 0 pour un état produit et $\ln 2$ pour un état de Bell, dont les états réduits sont maximalement mélangés ($\rho = I/2$, vecteur de Bloch au centre). La concurrence $C = 2\lvert\det\psi\rvert$ va de 0 (produit) à 1 (intrication maximale). Sous le hamiltonien d''Ising, le couplage $J$ crée et détruit l''intrication tandis que le champ transverse $h$ fait tourner les qubits individuellement ; avec $h = 0$, l''état de Bell est un état propre et rien ne bouge.'
+meanings:
+- amplitude pour le qubit 1 dans $\lvert a\rangle$ et le qubit 2 dans $\lvert b\rangle$
+- 'porte à deux qubits comme tenseur d''ordre 4 : indices de sortie $a\,b$, indices d''entrée $c\,d$'
+- '$c$ et $d$ sommés : application de la porte'
+- coefficients de Schmidt ; une seule valeur non nulle ⇔ état produit
+- trace partielle sur le qubit 2 ($b$ sommé)
+- hamiltonien d'Ising construit par produits tensoriels, remis en forme (4, 4) pour eigh
+- vecteur de Bloch $\operatorname{Tr}(\rho\,\sigma_k)$ d'un qubit ; $\lvert\mathbf r\rvert < 1$ signifie mélangé
+labels:
+  initial: État initial (Bell issu du circuit ou $\lvert 00\rangle$)
+  J: Couplage d'Ising $J$
+  h: Champ transverse $h$
+  t_max: Durée simulée

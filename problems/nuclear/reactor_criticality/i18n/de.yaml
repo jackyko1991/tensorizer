@@ -1,0 +1,19 @@
+source_hash: f81a85fc73c6
+title: Reaktorkritikalität
+summary: Ist eine Platte aus spaltbarem Material kritisch? Eingruppen-Neutronendiffusion macht daraus ein verallgemeinertes Eigenwertproblem $M\phi = \tfrac1k F\phi$ auf einem Gitter. Die Potenzmethode — wiederholtes Lösen für die nächste Neutronengeneration — konvergiert gegen die Grundmode des Flusses und den Multiplikationsfaktor $k_{eff}$, und eine gebündelte Eigenwertlösung über viele Plattendicken findet die kritische Größe.
+notes: '$k$ ist das Verhältnis der Neutronen einer Generation zur vorherigen. Jeder Schritt der Potenzmethode ist eine Generation: Die höheren räumlichen Moden schrumpfen pro Schritt um den Faktor $k_2/k_1 = (\Sigma_a + DB^2)/(\Sigma_a + 4DB^2)$, sodass der schiefe Anfangszustand in die symmetrische $\sin(\pi x/L)$-Form relaxiert. Eine dünne Platte verliert zu viele Neutronen ($k < 1$); oberhalb der kritischen Dicke $L_c = \pi\sqrt{D/(\nu\Sigma_f - \Sigma_a)}$ wächst die Kettenreaktion. Die Standard-Eingruppenkonstanten sind beispielhaft für einen thermischen Reaktor ($k_\infty \approx 1.06$). Vereinfachungen: eine Energiegruppe, eine homogene nackte Platte ohne Reflektor, $L$ zwischen den extrapolierten Grenzflächen gemessen, keine verzögerten Neutronen und keine Rückkopplung — dies ist eine statische Eigenwertrechnung, keine zeitabhängige.'
+meanings:
+- innere Punkte; $\phi = 0$ an den (extrapolierten) Plattenoberflächen
+- Matrix der zweiten Differenzen $(1, -2, 1)/h^2$
+- durch Leckage und Absorption verlorene Neutronen
+- durch Spaltung erzeugte Neutronen
+- 'wiederholtes $j$ ⇒ summiert: die Spaltquelle der nächsten Generation'
+- ein Schritt der Potenzmethode
+- direkte Lösung, gebündelt über $S$ Plattendicken
+labels:
+  width: Plattendicke $L$
+  diffusion: Diffusionskoeffizient $D$
+  sigma_a: Absorption $\Sigma_a$
+  nu_sigma_f: Produktion $\nu\Sigma_f$
+  n_iter: Iterationen der Potenzmethode
+  n_grid: Gitterpunkte

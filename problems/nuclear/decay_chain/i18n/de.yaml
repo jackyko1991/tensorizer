@@ -1,0 +1,16 @@
+source_hash: 006d4ce1966d
+title: Zerfallsreihe (Bateman-Gleichungen)
+summary: Ein Mutterkern zerfällt in einen radioaktiven Tochterkern, der in ein stabiles Endprodukt zerfällt. Die drei Ratengleichungen bilden ein lineares System $\dot N_i = A_{ij} N_j$, das exakt durch die Matrixexponentialfunktion $e^{At}$ für alle Zeiten auf einmal gelöst und mit RK4 überprüft wird. Die Standardreihe ist der medizinische Generator $^{99}$Mo → $^{99m}$Tc → $^{99}$Tc.
+notes: 'Jede Spalte von $\mathsf A$ summiert sich zu null, also ändert sich $\sum_i N_i$ nie: Jeder Zerfall schiebt einen Kern eine Stufe weiter. Für zwei Glieder lautet die exakte (Bateman-)Lösung $N_2 = N_1(0)\,\frac{\lambda_1}{\lambda_2 - \lambda_1}\,(e^{-\lambda_1 t} - e^{-\lambda_2 t})$. Ist die Tochter kurzlebiger ($\lambda_2 > \lambda_1$), koppeln sich die Aktivitäten: Das Verhältnis $a_2/a_1$ strebt gegen $\lambda_2/(\lambda_2-\lambda_1)$ (transientes Gleichgewicht) und gegen 1, wenn die Mutter viel langlebiger ist (säkulares Gleichgewicht, probiere eine Mutter-Halbwertszeit von 1000 h). Macht man die Tochter langlebiger, bildet sich kein Gleichgewicht. Vereinfachungen: $^{99}$Mo speist $^{99m}$Tc in Wirklichkeit nur bei etwa 88 % der Zerfälle, und $^{99}$Tc (Halbwertszeit 211 000 Jahre) wird als stabil behandelt.'
+meanings:
+- $\ln 2/T_i$, mit $\lambda_3 = 0$ für das stabile Ende
+- $-\lambda_i$ auf der Diagonale, $+\lambda_i$ direkt darunter
+- 'wiederholtes $j$ ⇒ summiert: die rechte Seite für RK4'
+- eine Matrixexponentialfunktion pro Zeitpunkt, gebündelt über $t$
+- Besetzungszahlen zu jedem Zeitpunkt aus dem Anfangsvektor
+- 'Aktivität: Zerfälle pro Stunde jedes Glieds'
+labels:
+  half_life_parent: Halbwertszeit der Mutter $T_1$
+  half_life_daughter: Halbwertszeit der Tochter $T_2$
+  t_max: Zeitspanne
+  rk4_steps: RK4-Schritte

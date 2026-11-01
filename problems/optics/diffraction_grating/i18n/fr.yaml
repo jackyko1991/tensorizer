@@ -1,0 +1,17 @@
+source_hash: e3a181f70abb
+title: Réseau de diffraction comme somme de phaseurs
+summary: Le champ lointain de $N$ fentes est la somme de $N$ phaseurs complexes, un par fente, chacun retardé par la différence de marche $d\sin\theta$. Avec des tenseurs complexes, toute la figure tient en un seul einsum. Quand $N$ passe de 2 à 20, les maxima principaux restent en place mais s'affinent, et $N-2$ maxima secondaires faibles apparaissent entre eux.
+notes: 'Le panneau de droite dessine les $N$ phaseurs bout à bout pour un angle donné. À un maximum principal ($d\sin\theta = m\lambda$), ils pointent tous dans la même direction et s''additionnent en une longueur $N$. En s''écartant du maximum, la chaîne s''enroule et se referme en polygone lorsque $N\phi = 2\pi$ : le premier zéro, à un angle qui diminue comme $1/N$. Les intensités sont normalisées à 1 au pic central ; les lignes pointillées marquent $d\sin\theta = m\lambda$. Seule l''enveloppe de diffraction d''une fente dépend de la largeur de fente $a$.'
+meanings:
+- numéro de fente ; la fente $n$ est à une distance $nd$ de la fente 0
+- direction d'observation, échantillonnée sur une grille fine
+- facteur de phase de la fente $n$ vu sous l'angle $t$
+- '$n$ répété ⇒ sommé : addition des ondes de toutes les fentes'
+- enveloppe de diffraction d'une fente $\operatorname{sinc}^2(a\sin\theta/\lambda)$
+- intensité = module au carré de l'amplitude complexe
+- la même somme faite à la main (série géométrique), $\phi = kd\sin\theta$
+labels:
+  wavelength: Longueur d'onde $\lambda$
+  d: Pas des fentes $d$
+  a: Largeur de fente $a$
+  n_max: Nombre maximal de fentes $N$

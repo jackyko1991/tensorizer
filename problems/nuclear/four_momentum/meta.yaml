@@ -1,0 +1,31 @@
+title: Four-momentum and two-body decay
+category: nuclear
+level: intermediate
+order: 3
+summary: >
+  A moving particle decays into two. In its rest frame the products fly back to back with a fixed momentum
+  $p^*$; a Lorentz boost $\Lambda^\mu{}_\nu$ (one einsum) carries every decay angle at once to the lab, where the
+  momenta are swept forward. The Minkowski metric $\eta_{\mu\nu}$ turns the products' four-momenta back into
+  the parent's mass — the invariant-mass trick used to discover new particles.
+animated: true
+vector_form: 'p^\mu = (E, \mathbf p),\quad p\cdot p = E^2 - \mathbf p^2 = m^2,\qquad p^* = \frac{\sqrt{[M^2-(m_1+m_2)^2][M^2-(m_1-m_2)^2]}}{2M},\qquad (p_1+p_2)^2 = M^2'
+index_form: 'p_\mu p^\mu = \eta_{\mu\nu}\,p^\mu p^\nu = m^2,\qquad p''^{\mu}_{b} =\Lambda^\mu{}_\nu\,p^\nu_b,\qquad M^2 = \eta_{\mu\nu}\,(p_1+p_2)^\mu_b\,(p_1+p_2)^\nu_b'
+translation:
+  - {symbol: '\eta_{\mu\nu}', code: 'metric(device)', shape: '(4, 4)', meaning: 'diag(1, −1, −1, −1), units with $c = 1$'}
+  - {symbol: 'p^\mu_b', code: 'rest_frame_daughters(theta, p_star, ...)', shape: '(B, 4)', meaning: 'daughter four-momenta for B decay angles $\theta^*$ in the rest frame'}
+  - {symbol: '\Lambda^\mu{}_\nu', code: 'boost(beta)', shape: '(4, 4)', meaning: '$\gamma$, $\gamma\beta_i$ and $\delta_{ij} + (\gamma-1)\beta_i\beta_j/\beta^2$ for the parent velocity $\boldsymbol\beta = \mathbf P/E$'}
+  - {symbol: '\Lambda^\mu{}_\nu\,p^\nu_b', code: "einsum('mn,...n->...m', lam, p)", shape: '(B, 4)', meaning: 'repeated $\nu$ ⇒ summed: boost every decay at once'}
+  - {symbol: '\eta_{\mu\nu}p^\mu q^\nu', code: "einsum('...m,mn,...n->...', p, eta, q)", shape: '(B,)', meaning: 'Minkowski product: the same in every frame'}
+  - {symbol: 'M_b', code: 'invariant_mass(p1 + p2, eta)', shape: '(B,)', meaning: 'reconstructed parent mass for every configuration'}
+notes: >
+  The rest-frame momenta lie on a sphere of radius $p^*$; the boost stretches it into an ellipse (the traced
+  curves) shifted forward by the parent's momentum, so fast parents throw both products into a narrow forward
+  cone. Energy and lab angles change with $\theta^*$, but $p_\mu p^\mu = m^2$ for each product and
+  $(p_1+p_2)_\mu(p_1+p_2)^\mu = M^2$ never change — a detector that measures the two momenta can always reconstruct
+  $M$. For $\pi^0 \to \gamma\gamma$ the photons are massless ($p_\mu p^\mu = 0$) and the smallest opening angle is
+  $2\arcsin(1/\gamma)$. All three decays are real: $K^0_S \to \pi^+\pi^-$, $\pi^0 \to \gamma\gamma$,
+  $\Lambda \to p\,\pi^-$. Only the kinematics is modelled: decay angles are swept evenly instead of sampled,
+  and spin and polarisation are ignored.
+params:
+  decay: {default: kaon, type: choice, options: [kaon, pion, lambda], label: Decay}
+  p_parent: {default: 1.0, min: 0.05, max: 10.0, step: 0.05, label: 'Parent momentum $|\mathbf P|$', unit: GeV}

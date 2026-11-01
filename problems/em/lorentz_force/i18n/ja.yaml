@@ -1,0 +1,18 @@
+source_hash: a8a725d373c7
+title: 電場・磁場中の荷電粒子
+summary: 直交する電場と磁場の中にある多数の荷電粒子に働くローレンツ力。外積をレヴィ＝チヴィタテンソル $\varepsilon_{ijk}$ で書くので、1回の einsum ですべての粒子に働く磁気力が求まる。各粒子はサイクロトロンらせん運動をし、粒子群全体は $\mathbf E\times\mathbf B$ 方向にドリフトする。
+notes: 単位は無次元（$q$、$m$、$E$、$B$ は1程度）。$\mathbf E = 0$ のとき、各粒子はサイクロトロン角振動数 $\omega = \lvert q\rvert B/m$、半径 $mv_\perp/(\lvert q\rvert B)$ で円運動する。正電荷と負電荷は逆向きに回る。$\mathbf E\perp\mathbf B$ を加えると、すべての案内中心が電荷にも質量にもよらない速度 $\mathbf E\times\mathbf B/B^2$ でドリフトする。
+meanings:
+- 粒子 $b$ の位置、成分 $i \in \{x, y, z\}$
+- 粒子 $b$ の速度
+- 各粒子の電荷と質量
+- 一様な場：$\mathbf E$ は $y$ 方向、$\mathbf B$ は $z$ 方向
+- $(x, y, z)$ の偶置換で $+1$、奇置換で $-1$、添字が重なれば 0
+- 繰り返される $j$ と $k$ ⇒ 和をとる：外積 $\mathbf v\times\mathbf B$
+- $\mathbf E\times\mathbf B$ ドリフト速度、どの電荷でも同じ
+labels:
+  B: 磁場 $B_z$
+  E: 電場 $E_y$
+  v_par: $\mathbf B$ 方向の初速度
+  n_particles: 粒子数
+  t_max: シミュレーション時間

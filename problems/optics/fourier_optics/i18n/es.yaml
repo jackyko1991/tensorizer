@@ -1,0 +1,15 @@
+source_hash: e1ad81688a05
+title: Difracción de Fraunhofer como transformada de Fourier 2D
+summary: En el campo lejano, el patrón de difracción de una abertura es la transformada de Fourier 2D de su función de transmisión. Una sola llamada a torch.fft.fft2 convierte un cuadrado, un orificio circular, una doble rendija y una red en sus patrones de campo lejano, y los anillos de Airy se encogen a medida que crece el orificio.
+notes: 'Las longitudes en el plano de la abertura están en píxeles de tamaño $\Delta x$; el píxel de frecuencia $(k, l)$ de la transformada corresponde a la dirección $\sin\theta = \lambda k/(N\Delta x)$. Por tanto, el primer anillo oscuro del orificio circular, en $\sin\theta = 1.22\,\lambda/D$, está a $1.22\,N/D$ píxeles de frecuencia del centro (círculo discontinuo). Las aberturas grandes dan patrones pequeños: la transformada de una función ancha es estrecha. La forma con einsum es la misma transformada que fft2, solo que $O(N^3)$ en lugar de $O(N^2\log N)$.'
+meanings:
+- 'transmisión de la máscara: 1 = abierta, 0 = opaca; fila $a = y$, columna $b = x$'
+- matriz de la transformada de Fourier discreta
+- '$a$ y $b$ repetidos ⇒ sumados: una transformada 1D a lo largo de $y$ y otra a lo largo de $x$'
+- la misma transformada mediante la transformada rápida de Fourier, con la frecuencia cero llevada al centro
+- intensidad en el campo lejano, mostrada como $\log_{10}(I/I_{\max})$
+- primer anillo oscuro de un orificio circular de diámetro $D$, en píxeles de frecuencia
+labels:
+  size_min: Tamaño inicial de la abertura $D$
+  size_max: Tamaño final de la abertura $D$
+  frames_per_aperture: Fotogramas por forma de abertura

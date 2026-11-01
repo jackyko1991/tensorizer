@@ -1,0 +1,17 @@
+source_hash: 6bb6cb4a204f
+title: Tissu masses–ressorts
+summary: 'Une grille carrée de masses ponctuelles reliées par des ressorts structurels, de cisaillement et de flexion, fixée en deux coins et lâchée sous la pesanteur. Une matrice d''incidence $D_{ea}$ transforme le maillage en tenseurs : un einsum donne tous les vecteurs ressorts, un autre additionne les forces sur chaque nœud.'
+notes: Les ressorts de cisaillement le long des diagonales empêchent les carrés de s'aplatir en losanges, et les ressorts qui sautent un nœud donnent au tissu une certaine rigidité en flexion. Les deux coins fixés ont simplement une accélération nulle. L'amortissement de l'air $\gamma$ est la seule perte, donc l'énergie totale ne peut que diminuer ($dE/dt = -m\gamma\lvert\mathbf v\rvert^2$) et, avec $\gamma = 0$, elle est conservée. Les ressorts sont raides, donc le pas de temps est lié à $\sqrt{m/k}$. Les auto-collisions sont ignorées. Chaque nœud a une masse de 10 g et le pas de la grille est de 10 cm.
+meanings:
+- position du nœud $a$ ; $N = n^2$ masses
+- 'matrice d''incidence : $-1$ / $+1$ aux deux extrémités du ressort $e$'
+- '$a$ répété ⇒ sommé : vecteur le long de chaque ressort'
+- longueurs actuelles des ressorts ; $\ell^0_e$ sont les longueurs à vide
+- '$e$ répété ⇒ sommé : force résultante des ressorts sur le nœud $a$'
+- la même somme sous forme de scatter sur la liste d'arêtes
+- énergie cinétique + élastique + gravitationnelle
+labels:
+  n_side: Masses par côté
+  k: Raideur $k$
+  damping: Amortissement de l'air $\gamma$
+  t_max: Durée simulée

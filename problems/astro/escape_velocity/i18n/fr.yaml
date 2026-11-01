@@ -1,0 +1,21 @@
+source_hash: d40b53524521
+title: Vitesse de libération
+summary: 'Un lot de fusées quitte une planète à des vitesses proches de la vitesse de libération $v_\mathrm{esc} = \sqrt{2GM/R}$. Le signe de l''énergie décide du sort de chaque fusée : les fusées liées ($E < 0$) retombent, les fusées libres ($E \ge 0$) ne reviennent jamais.'
+notes: 'Unités : rayon de la planète $R = 1$ et $GM = 1$, donc $v_\mathrm{esc} = \sqrt 2$ (pour la Terre, 11.2 km/s). Les fusées volent moteur coupé, sans air, et la planète ne tourne pas. Juste en dessous de $v_\mathrm{esc}$, le point culminant monte en flèche comme $1/(1 - v^2/v_\mathrm{esc}^2)$ et le trajet dure de plus en plus longtemps. Exactement à $v_\mathrm{esc}$, la fusée ralentit indéfiniment sans jamais s''arrêter. Inclinez les lancers pour voir que la vitesse de libération ne dépend pas de la direction (tant que la trajectoire ne touche pas la planète) : seule l''énergie compte. Astres obscurs : comprimez la planète jusqu''à ce que $v_\mathrm{esc}$ atteigne la vitesse de la lumière $c$ et vous obtenez $R = 2GM/c^2$. Michell (1783) et Laplace ont soutenu qu''un tel astre serait invisible. La relativité générale donne exactement le même rayon pour l''horizon d''un trou noir (le rayon de Schwarzschild, 3 km pour le Soleil), bien que le raisonnement newtonien qui y mène ne soit pas
+  la véritable explication.'
+meanings:
+- position de la fusée $b$ par rapport au centre de la planète
+- vitesse de la fusée $b$
+- '$j$ répété ⇒ sommé : distance au carré $r_b^2$'
+- gravité de la planète
+- 'énergie par unité de masse : négative ⇒ liée'
+- vitesse donnant $E = 0$ à la surface
+- '$2GM/c^2$ : rayon pour lequel $v_\mathrm{esc} = c$'
+- $R/(1 - v^2/v_\mathrm{esc}^2)$, point culminant d'un lancer vertical
+labels:
+  n_rockets: Fusées
+  f_min: Lancer le plus lent $v/v_\mathrm{esc}$
+  f_max: Lancer le plus rapide $v/v_\mathrm{esc}$
+  tilt: Inclinaison par rapport à la verticale
+  t_max: Durée simulée
+  dt: Pas de temps

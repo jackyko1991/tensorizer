@@ -1,0 +1,16 @@
+source_hash: 9c89c68f4f20
+title: Modes d'un guide d'onde rectangulaire
+summary: Quelles configurations de champ peuvent se propager dans un tuyau métallique creux ? Chaque mode résout l'équation de Helmholtz 2D $(\partial_i\partial_i + k_c^2)\psi = 0$ sur la section — parois de Dirichlet pour TM, de Neumann pour TE. Le laplacien discret est assemblé avec torch.kron et torch.linalg.eigh renvoie d'un coup tous les modes et toutes les fréquences de coupure.
+notes: La taille par défaut est celle du guide standard WR-90 de bande X (2.286 cm × 1.016 cm), dont le mode $\text{TE}_{10}$ a une coupure à 6.56 GHz. Un mode ne se propage qu'au-dessus de sa coupure, avec $\beta = \sqrt{(\omega/c)^2 - k_c^2}$. Les modes TE et TM de même $(m, n \ge 1)$ ont la même coupure. La solution TE constante ($k_c = 0$) ne transporte aucune onde et est écartée. Les différences finies d'ordre deux donnent $k_c$ à environ un pour cent près de la valeur exacte à la résolution par défaut.
+meanings:
+- $E_z$ (TM) ou $H_z$ (TE) au point de grille $(x_a, y_b)$
+- 'mêmes valeurs aplaties : $m = a\cdot N_y + b$'
+- $\partial^2$ 1D avec la condition aux parois intégrée dans les coins de la matrice
+- le laplacien 2D $\partial_i\partial_i$ ($i$ sommé sur $x, y$)
+- 'valeurs propres et vecteurs propres orthonormés : coupures et formes des modes'
+- $\pi\sqrt{(m/a)^2 + (n/b)^2}$, pour vérifier les valeurs
+labels:
+  a: Largeur $a$
+  b: Hauteur $b$
+  n_modes: Modes
+  n_grid: Points de grille sur $b$
