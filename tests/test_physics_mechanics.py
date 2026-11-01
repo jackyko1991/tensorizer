@@ -112,7 +112,7 @@ def test_coupled_oscillator_single_mode_keeps_its_shape():
 
 
 def test_n_body_energy_and_momentum_conserved():
-    for scenario in ("figure-8", "star and planets", "binary and planet"):
+    for scenario in ("3D cluster", "figure-8", "star and planets", "binary and planet"):
         m, x0, v0 = nb_t.initial_state(scenario, CPU)
         _, xs, vs = nb_solve.solve(m, x0, v0, nb_t.G, eps=0.0, t_max=6.0, dt=0.002)
         e0 = nb_eq.energy(xs[0], vs[0], m, nb_t.G, 0.0)

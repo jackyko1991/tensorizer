@@ -20,7 +20,7 @@ notes: >
   Units are chosen so that $G = 1$. Velocity Verlet is symplectic, so the energy error stays small and bounded instead of drifting.
   The figure-8 is the famous periodic three-body orbit found by Moore (1993) and Chenciner & Montgomery (2000).
 params:
-  scenario: {default: figure-8, type: choice, options: [figure-8, star and planets, binary and planet], label: Initial condition}
+  scenario: {default: 3D cluster, type: choice, options: [3D cluster, figure-8, star and planets, binary and planet], label: Initial condition}
   t_max: {default: 12.0, min: 2, max: 40, step: 1, label: Simulated time, unit: time units}
   dt: {default: 0.002, min: 0.0005, max: 0.01, step: 0.0005, label: Time step, unit: time units}
   softening: {default: 0.01, min: 0.0, max: 0.2, step: 0.01, label: 'Softening $\varepsilon$', unit: length units}

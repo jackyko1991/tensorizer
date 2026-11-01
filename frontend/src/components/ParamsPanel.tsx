@@ -47,10 +47,10 @@ export default function ParamsPanel(props: Props) {
   }
 
   return (
-    <aside className="flex w-full shrink-0 flex-col border-t border-gray-200 bg-white lg:w-60 lg:border-t-0 lg:border-l">
+    <aside className="flex w-full shrink-0 flex-col border-t border-gray-200 bg-white xl:w-60 xl:border-t-0 xl:border-l">
       <div className="flex h-8 shrink-0 items-center justify-between border-b border-gray-200 bg-gray-50 px-3 text-xs">
         <span className="font-semibold uppercase tracking-wide text-gray-500">{t("params.title")}</span>
-        <button onClick={onToggle} className="hidden text-gray-500 hover:text-gray-800 lg:inline" title={t("params.fold")}>
+        <button onClick={onToggle} className="hidden text-gray-500 hover:text-gray-800 xl:inline" title={t("params.fold")}>
           »
         </button>
       </div>

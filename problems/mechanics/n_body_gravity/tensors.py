@@ -70,8 +70,25 @@ def two_body_circular(m1: float, m2: float, separation: float, device: torch.dev
     return m, x, v
 
 
+def cluster(n: int = 6, seed: int = 34, device: torch.device | None = None):
+    """n equal stars scattered in 3D (seeded), velocities scaled to virial equilibrium 2K = −U."""
+    gen = torch.Generator().manual_seed(seed)
+    m = torch.full((n,), 1.0 / n, dtype=DTYPE)
+    x = torch.randn(n, 3, generator=gen, dtype=DTYPE)  # (n, 3)
+    v = torch.randn(n, 3, generator=gen, dtype=DTYPE)  # (n, 3)
+    x, v = to_center_of_mass(m, x, v)
+    r = (x[:, None, :] - x[None, :, :]).norm(dim=-1)  # (n, n) pair distances r_ab
+    pairs = torch.triu(torch.ones(n, n, dtype=torch.bool), diagonal=1)
+    potential = -(G * m[:, None] * m[None, :] / r)[pairs].sum()
+    kinetic = 0.5 * torch.einsum("a,ai,ai->", m, v, v)
+    v = v * torch.sqrt(-potential / (2 * kinetic))  # virial ratio K / |U| = 1/2: a bound, breathing cluster
+    return m.to(device), x.to(device), v.to(device)
+
+
 def initial_state(scenario: str, device: torch.device | None = None):
     """(m (N,), x (N, 3), v (N, 3)) for the chosen scenario."""
+    if scenario == "3D cluster":
+        return cluster(device=device)
     if scenario == "figure-8":
         return figure_eight(device)
     if scenario == "star and planets":

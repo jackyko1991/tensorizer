@@ -82,7 +82,7 @@ export default function CodePanel({
   }, [menu]);
 
   return (
-    <section className={`flex flex-col overflow-hidden bg-white lg:flex-row ${className}`}>
+    <section className={`flex flex-col overflow-hidden bg-white xl:flex-row ${className}`}>
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex shrink-0 items-end gap-1 overflow-x-auto border-b border-gray-200 bg-gray-50 px-2 pt-2">
           {files.map((f, i) => (
@@ -116,7 +116,7 @@ export default function CodePanel({
         </div>
 
         <div
-          className="max-h-[60vh] min-h-0 flex-1 overflow-auto lg:max-h-none"
+          className="max-h-[60vh] min-h-0 flex-1 overflow-auto xl:max-h-none"
           onContextMenu={(e) => {
             // Right-click on highlighted code: offer Explain / Fix with AI instead of the browser menu.
             if (!selection.current) return;

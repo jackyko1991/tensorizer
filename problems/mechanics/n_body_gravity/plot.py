@@ -1,4 +1,4 @@
-"""3D animation: each body leaves a fading trail; marker size grows with mass."""
+"""3D animation: each body leaves a fading trail; marker size grows with mass; the camera turns slowly to show depth."""
 
 from pathlib import Path
 
@@ -39,7 +39,8 @@ def animate(times: torch.Tensor, xs: torch.Tensor, m: torch.Tensor, path: Path, 
             line.set_data_3d(path_a[:, 0], path_a[:, 1], path_a[:, 2])
             dot.set_data_3d([pos[step, a, 0]], [pos[step, a, 1]], [pos[step, a, 2]])
         clock.set_text(f"t = {t[step]:.2f}")
+        ax.view_init(elev=25, azim=-60 + 120 * step / max(1, len(t) - 1))  # a third of a turn over the run
 
-    ax.view_init(elev=30, azim=-60)
+    ax.view_init(elev=25, azim=-60)
     fig.tight_layout()
     return save_gif(fig, update, frame_indices(len(t)), path)

@@ -126,7 +126,7 @@ export default function NotebookView({
   const lastCode = cells.map((c) => c.type).lastIndexOf("code");
 
   return (
-    <main className="flex min-w-0 flex-1 flex-col bg-gray-50/60 lg:min-h-0">
+    <main className="flex min-w-0 flex-1 flex-col bg-gray-50/60 xl:min-h-0">
       <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-gray-200 bg-white px-4 py-2">
         <span className="text-lg">📓</span>
         <input
@@ -159,7 +159,7 @@ export default function NotebookView({
         </button>
       </div>
 
-      <div className="space-y-3 p-3 sm:p-5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+      <div className="space-y-3 p-3 sm:p-5 xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
         <p className="text-xs text-gray-500">
           <RichText text={t("notebook.hint")} />
         </p>

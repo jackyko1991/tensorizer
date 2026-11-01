@@ -580,7 +580,7 @@ export default function AgentPanel({
         <section
           ref={panelRef}
           aria-label={t("agent.title")}
-          className="fixed right-4 bottom-28 z-40 flex h-[min(640px,calc(100vh-9rem))] w-[min(440px,calc(100vw-2rem))] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl"
+          className="fixed right-4 bottom-28 z-40 flex h-[min(640px,calc(100dvh-9rem))] w-[min(440px,calc(100vw-2rem))] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl"
         >
           <header className="flex items-center gap-2 border-b border-gray-200 px-3 py-2">
             <AgentMascot thinking={busy !== null} className="h-7 w-7" />

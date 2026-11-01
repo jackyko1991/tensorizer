@@ -57,7 +57,7 @@ export default function DataPanel({ problemId, localId, problemTitle, params, fi
   }
 
   return (
-    <main className="flex min-w-0 flex-1 flex-col bg-gray-50/60 lg:min-h-0" data-testid="ws-data">
+    <main className="flex min-w-0 flex-1 flex-col bg-gray-50/60 xl:min-h-0" data-testid="ws-data">
       <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-gray-200 bg-white px-4 py-2">
         <span className="text-lg">📊</span>
         <h2 className="text-base font-semibold text-gray-900">{t("data.title")}</h2>
@@ -72,7 +72,7 @@ export default function DataPanel({ problemId, localId, problemTitle, params, fi
         <div className="h-1 bg-blue-500" style={{ width: `${Math.min(100, (used / MAX_DATA_TOTAL) * 100)}%` }} />
       </div>
 
-      <div className="space-y-4 p-3 sm:p-5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+      <div className="space-y-4 p-3 sm:p-5 xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
         <button
           type="button"
           onClick={() => input.current?.click()}

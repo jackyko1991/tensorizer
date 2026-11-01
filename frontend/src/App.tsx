@@ -426,7 +426,7 @@ export default function App() {
     );
 
   return (
-    <div className="flex min-h-screen flex-col bg-white lg:h-screen lg:overflow-hidden">
+    <div className="flex min-h-dvh flex-col bg-white xl:h-dvh xl:overflow-hidden">
       <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1.5 bg-blue-700 px-4 py-2 text-white shadow-sm sm:px-6 lg:h-[52px] lg:flex-nowrap lg:py-0">
         <div className="flex min-w-0 items-center gap-3">
           <button
@@ -531,8 +531,8 @@ export default function App() {
       )}
 
       {manifest && problem && page === "problems" && (
-        <div className="flex flex-1 flex-col lg:min-h-0 lg:flex-row">
-          <div className="border-b border-gray-200 p-3 lg:hidden">
+        <div className="flex flex-1 flex-col xl:min-h-0 xl:flex-row">
+          <div className="border-b border-gray-200 p-3 xl:hidden">
             <ProblemSelect manifest={manifest} value={problem.id} />
             <details className="mt-2 rounded-md border border-gray-200" open={!!wsProblem}>
               <summary className="cursor-pointer px-3 py-1.5 text-sm font-medium text-gray-700">
@@ -544,7 +544,7 @@ export default function App() {
 
           {/* 1. Problem library */}
           <aside
-            className={`hidden shrink-0 flex-col border-r border-gray-200 bg-white transition-[width] lg:flex ${
+            className={`hidden shrink-0 flex-col border-r border-gray-200 bg-white transition-[width] xl:flex ${
               libraryOpen ? "w-64" : "w-10"
             }`}
           >
@@ -841,7 +841,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
   const [hasRun, setHasRun] = useState(false);
   // Phones show one part of the workspace at a time; desktop shows all three columns.
   const [mobileTab, setMobileTab] = useState<MobileTab>("problem");
-  const onPhone = (tab: MobileTab, display = "lg:block") => (mobileTab === tab ? "" : `hidden ${display}`);
+  const onPhone = (tab: MobileTab, display = "xl:block") => (mobileTab === tab ? "" : `hidden ${display}`);
 
   // A refreshed manifest may bring a newly rendered default result; show it unless the user ran their own.
   useEffect(() => {
@@ -903,7 +903,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
 
   return (
     <>
-      <div className="sticky top-0 z-10 flex border-b border-gray-200 bg-white lg:hidden" role="tablist">
+      <div className="sticky top-0 z-10 flex border-b border-gray-200 bg-white xl:hidden" role="tablist">
         {MOBILE_TABS.map((tab) => (
           <button
             key={tab}
@@ -920,7 +920,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
       </div>
 
       {/* 2. Problem body: title, tags and setup sketch pinned; equations scroll */}
-      <main className="flex min-w-0 flex-col border-r border-gray-200 lg:min-h-0 lg:flex-1">
+      <main className="flex min-w-0 flex-col border-r border-gray-200 xl:min-h-0 xl:flex-1">
         <div className={`shrink-0 border-b border-gray-200 bg-white px-5 py-4 ${onPhone("problem")}`}>
           {ws ? (
             <div data-ai-region="summary">
@@ -1068,7 +1068,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
         </div>
 
         <div
-          className={`space-y-5 bg-gray-50/60 p-5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto ${onPhone("formulation")}`}
+          className={`space-y-5 bg-gray-50/60 p-5 xl:min-h-0 xl:flex-1 xl:overflow-y-auto ${onPhone("formulation")}`}
           onFocusCapture={(e) => {
             if (!(e.target as HTMLElement).closest("[data-testid='ws-meta']")) setInYaml(false);
           }}
@@ -1112,10 +1112,10 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
       </main>
 
       {/* 3. Code (+ parameters panel), terminal and plot */}
-      <section className="flex min-w-0 flex-col lg:min-h-0 lg:w-[54%] lg:shrink-0">
+      <section className="flex min-w-0 flex-col xl:min-h-0 xl:w-[54%] xl:shrink-0">
         <CodePanel
           problem={problem.id}
-          className={`lg:min-h-0 lg:flex-[1.7] ${onPhone("code", "lg:flex")}`}
+          className={`xl:min-h-0 xl:flex-[1.7] ${onPhone("code", "xl:flex")}`}
           files={problem.files}
           edits={edits}
           editable={editable}
@@ -1143,17 +1143,17 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
           }
         />
         <div
-          className={`flex flex-col border-t border-gray-200 lg:min-h-0 lg:flex-1 lg:flex-row ${onPhone("results", "lg:flex")}`}
+          className={`flex flex-col border-t border-gray-200 xl:min-h-0 xl:flex-1 xl:flex-row ${onPhone("results", "xl:flex")}`}
         >
           <TerminalPanel
-            className="h-40 lg:h-auto lg:w-1/2 lg:shrink-0"
+            className="h-40 xl:h-auto xl:w-1/2 xl:shrink-0"
             problem={problem}
             console={console}
             error={error}
             running={running}
           />
           <PlotPanel
-            className="border-t border-gray-200 lg:min-h-0 lg:flex-1 lg:border-t-0 lg:border-l"
+            className="border-t border-gray-200 xl:min-h-0 xl:flex-1 xl:border-t-0 xl:border-l"
             problem={problem}
             src={src}
             running={running}

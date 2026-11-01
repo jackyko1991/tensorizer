@@ -98,4 +98,4 @@ def animate(sol: dict, energy: dict, area: dict, scale: float, p_sep: float, sys
         clock.set_text(f"t = {t[step]:.1f} s")
 
     fig.tight_layout()
-    return save_gif(fig, update, frame_indices(len(t), 64), path)
+    return save_gif(fig, update, frame_indices(len(t)), path, fps=12)  # ~10 s: slow enough to follow the blob

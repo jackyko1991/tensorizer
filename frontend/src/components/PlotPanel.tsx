@@ -31,7 +31,7 @@ export default function PlotPanel({ problem, src, running, className = "" }: Pro
           </button>
         )}
       </PanelBar>
-      <div className="flex min-h-48 flex-1 items-center justify-center overflow-hidden p-2 lg:min-h-0">
+      <div className="flex min-h-48 flex-1 items-center justify-center overflow-hidden p-2 xl:min-h-0">
         {src ? (
           <img
             src={src}
