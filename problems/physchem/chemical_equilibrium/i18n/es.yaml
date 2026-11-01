@@ -1,0 +1,20 @@
+source_hash: aa144f7ad9f7
+title: Equilibrio químico y Le Chatelier
+summary: ¿Dónde se detiene una reacción? A partir de $\Delta G^\circ = -RT\ln K$, el grado de avance en el equilibrio $\xi$ de una reacción gaseosa ($\mathrm{N_2O_4 \rightleftharpoons 2\,NO_2}$ o la reacción de Haber $\mathrm{N_2 + 3H_2 \rightleftharpoons 2NH_3}$) se obtiene para cientos de temperaturas y presiones a la vez por bisección en $Q(\xi) = K$, lo que muestra los desplazamientos de Le Chatelier con la presión, la temperatura (van 't Hoff) y el producto añadido.
+notes: '$Q$ mide dónde está la mezcla y $K$ adónde quiere ir: si $Q < K$ la reacción avanza hacia delante, si $Q > K$ retrocede. Como $\ln Q$ crece de forma continua con el avance $\xi$ (de $-\infty$ sin productos a $+\infty$ sin reactivos), el equilibrio es la única raíz de $\ln Q(\xi) - \ln K$, y la bisección la encuentra para todas las condiciones a la vez. El principio de Le Chatelier se deduce de la fórmula. Presión: con actividades de gas ideal, $Q = K_x\,(P/P^\circ)^{\Delta\nu}$ donde $\Delta\nu = \sum_i \nu_i$, así que subir $P$ favorece el lado con menos moléculas de gas (el $\mathrm{N_2O_4}$ se disocia menos, se forma más $\mathrm{NH_3}$). Temperatura: $\ln K = -\Delta H^\circ/RT + \Delta S^\circ/R$, así que $K$ crece con $T$ en una reacción endotérmica ($\mathrm{N_2O_4}$: el color marrón del $\mathrm{NO_2}$ se intensifica al calentar) y disminuye en una exotérmica (el amoníaco). Producto añadido: $Q$ salta por encima de $K$ y parte del producto vuelve a convertirse en reactivos,
+  pero no todo. Para el $\mathrm{N_2O_4}$ el resultado puede comprobarse a mano: $K = 4\alpha^2 P/((1-\alpha^2)P^\circ)$ da $\alpha = \sqrt{K/(K + 4P/P^\circ)}$. Los datos termodinámicos son valores aproximados de libro de texto a 298 K ($\Delta H^\circ \approx +57.2$ kJ/mol, $\Delta S^\circ \approx +176$ J/(mol K) para el $\mathrm{N_2O_4}$; $\approx -92.2$ kJ/mol y $\approx -199$ J/(mol K) para el amoníaco), tratados como constantes en $T$, y los gases como ideales; ambas simplificaciones sobrestiman algo el rendimiento de amoníaco a 700 K y 100 bar (medido: aproximadamente un 20 % de $\mathrm{NH_3}$ en lugar de un 30 %). La reacción de Haber está muy favorecida a temperatura ambiente, pero es demasiado lenta: las plantas operan a unos 700–750 K y 150–300 bar con un catalizador de hierro, sacrificando rendimiento a cambio de velocidad. Prueba T = 700 K con la reacción de Haber.'
+meanings:
+- 'números estequiométricos: $-1, 2$ para $\mathrm{N_2O_4 \rightleftharpoons 2NO_2}$; $-1, -3, 2$ para el amoníaco'
+- cada par (temperatura, presión) aplanado en un único índice de lote $b$
+- $-\Delta G^\circ/RT$ con $\Delta H^\circ$, $\Delta S^\circ$ aproximados e independientes de la temperatura
+- moles de cada especie; un producto exterior, nada sumado
+- moles totales; $j$ sumado
+- '$\ln Q$: se suma el índice de especie $i$'
+- 'ninguna cantidad puede volverse negativa: el intervalo de la bisección'
+- 'bisección con todas las condiciones juntas: quedarse con la mitad donde $\ln Q - \ln K$ cambia de signo'
+- pendiente de $\ln K$ frente a $1/T$
+labels:
+  reaction: Reacción ($\mathrm{N_2O_4}$ o amoníaco)
+  T: Temperatura $T$ (curva negra)
+  P: Presión $P$ para la prueba del producto añadido
+  add_product: Producto añadido

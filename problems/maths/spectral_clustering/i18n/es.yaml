@@ -1,0 +1,20 @@
+source_hash: 4a434cf0af06
+title: Agrupamiento espectral y el laplaciano de un grafo
+summary: Convierte una nube de puntos en un grafo (pesos gaussianos en las aristas de los $k$ vecinos más cercanos), construye el laplaciano del grafo $L = D - W$ y su forma normalizada $L_{sym}$ como tensores, y lee los grupos en sus vectores propios más bajos. Dos lunas y anillos concéntricos, donde k-medias simple falla, se separan perfectamente; el mismo laplaciano sobre una cuadrícula da los modos de vibración de un tambor.
+notes: 'Por qué funciona: $f^{\mathsf T} L f = \frac12\sum_{ij} W_{ij}(f_i - f_j)^2$ es una suma de cuadrados, así que $L$ es semidefinida positiva, y solo es cero si $f$ es constante a lo largo de cada arista, es decir, constante en cada componente conexa. El número de valores propios nulos es, por tanto, exactamente el número de componentes (compara los dos recuentos en el terminal), y los vectores indicadores de las componentes generan ese espacio propio. Cuando los grupos solo están unidos por unas pocas aristas débiles, los valores propios son pequeños en lugar de nulos y los vectores propios se parecen a indicadores; minimizar $f^{\mathsf T}Lf$ es una versión relajada de cortar el menor número de aristas, el corte normalizado de Shi y Malik (2000). El segundo vector propio (el vector de Fiedler) da la mejor partición en dos. K-medias simple traza fronteras rectas alrededor de centros, así que corta las lunas y los anillos por la mitad; en la inmersión (fila superior, observa cómo se
+  deslizan los puntos) los grupos son manchas separadas, y k-medias funciona. El gran salto en el espectro tras el $k$-ésimo valor propio es una pista sobre el número de grupos. En un grafo de cuadrícula $g\times g$, $L = L_1\otimes I + I\otimes L_1$ es menos el laplaciano discreto con bordes libres (Neumann), así que sus vectores propios son las ondas estacionarias $\cos\frac{\pi a (i+\frac12)}{g}\cos\frac{\pi b (j+\frac12)}{g}$ con $\lambda = (2 - 2\cos\frac{\pi a}{g}) + (2 - 2\cos\frac{\pi b}{g})$: los mismos modos que el tambor vibrante del tema de ondas (que en cambio tiene bordes fijos). Los modos $(a, b)$ y $(b, a)$ comparten valor propio, y eigh devuelve alguna mezcla de la pareja, por eso algunos parecen diagonales. Los resultados dependen de $\sigma$ y de $k$: muy pocos vecinos parten un grupo en trozos, demasiados añaden puentes entre grupos. Lecturas adicionales: U. von Luxburg, A tutorial on spectral clustering (2007); Ng, Jordan y Weiss (2001).'
+meanings:
+- 'punto $i$, coordenada $a$: dos lunas, dos anillos o tres manchas, con las etiquetas verdaderas para evaluar'
+- '$a$ repetido ⇒ sumado: todas las distancias al cuadrado a la vez'
+- similitud gaussiana que solo se conserva si $j$ es uno de los $k$ vecinos más cercanos de $i$ o al revés; simétrica, diagonal nula
+- '$j$ repetido ⇒ sumado: el grado de cada punto'
+- cada fila suma 0, así que el vector constante tiene valor propio 0
+- $s_i = d_i^{-1/2}$; sin suma, $i$ y $j$ quedan libres
+- valores propios ascendentes; los primeros $k$ vectores propios, con filas normalizadas a longitud 1, son la inmersión espectral
+- iteraciones de Lloyd con inicialización k-means++; en la inmersión los grupos son manchas compactas
+labels:
+  n_points: Puntos por conjunto de datos $N$
+  noise: Ruido
+  k_neighbours: Vecinos más cercanos $k$
+  sigma: Anchura del núcleo $\sigma$
+  grid: Lado del grafo de cuadrícula $g$

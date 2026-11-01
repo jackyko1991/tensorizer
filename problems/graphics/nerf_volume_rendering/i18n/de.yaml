@@ -1,0 +1,27 @@
+source_hash: 09cd4df32aa9
+title: 'NeRF: Volumenrendering eines neuronalen Strahlungsfelds'
+summary: 'Ein kleines MLP $F_\theta(\mathbf x) = (\sigma, \mathbf c)$ gibt jedem Punkt im Raum eine Dichte und eine Farbe. Ein Pixel ist das entlang seines Strahls gesammelte Licht: stratifizierte Stichproben $t_s$, dann die Quadratur $C = \sum_s T_s\,(1 - e^{-\sigma_s\delta_s})\,\mathbf c_s$ mit Transmittanz $T_s = e^{-\sum_{s''<s}\sigma_{s''}\delta_{s''}}$, gebündelt über Strahlen × Stichproben. Nur mit Fotos einer synthetischen Szene trainiert, rendert es eine zurückgehaltene Ansicht und eine Tiefenkarte, und ein zweites Netz ohne Positionskodierung zeigt den spektralen Bias einfacher MLPs.'
+notes: 'Die Trainingsdaten sind $V$ Fotos einer roten Kugel, eines karierten Würfels und eines orangen Balls, erzeugt von einem analytischen Raycaster mit Lambert-Schattierung; das Netz sieht nie die Geometrie, nur Pixelfarben und den Strahl jedes Pixels. Jeder Adam-Schritt zieht einen zufälligen Stapel von Strahlen aus allen Trainingspixeln, rendert sie mit der Quadratur und vergleicht mit den wahren Farben. Da $w_{rs}$, $T_{rs}$ und die Farben glatte Funktionen von $\sigma$ und $\mathbf c$ sind, trägt Autograd den Bildfehler zurück ins Netz: Die Dichten wachsen dort, wo sich die Strahlen vieler Ansichten auf eine Oberfläche einigen. Die Tiefenkarte $\sum_s w_s t_s$ und das Gewichtsprofil entlang des markierten Strahls zeigen es: Die Gewichte fallen zu einem Peak an der wahren Oberfläche zusammen. Positionskodierung ist der entscheidende Trick. Ein einfaches MLP auf $(x, y, z)$ lernt zuerst niedrige Frequenzen und passt scharfe Kanten und feine Textur nur sehr langsam an (spektraler Bias);
+  gibst du ihm stattdessen $\sin(2^k\pi x), \cos(2^k\pi x)$, erhält es hochfrequente Bausteine. In derselben Schrittzahl hat das kodierte Netz (blau) schärfere Silhouetten, etwa den halben Tiefenfehler und einen höheren PSNR auf den Trainingsansichten, während das einfache (rot) verschwommen bleibt. Auf der zurückgehaltenen Ansicht ist der Gewinn kleiner: Bei wenigen, kleinen Ansichten ist das feine Detail nur schwach eingeschränkt, und beide Netze sind noch weit von der Konvergenz entfernt (echte NeRFs trainieren stundenlang). Vereinfachungen gegenüber Mildenhall et al. (ECCV 2020): keine Blickrichtung als Eingabe (die Szene ist lambertsch, ihre Farben hängen also nicht vom Blickwinkel ab), ein Netz statt des groben + feinen Paars mit hierarchischem Sampling, ein winziges MLP (3 × 64 statt 8 × 256), $40\times 40$-Bilder und einige hundert Schritte statt Hunderttausender. Probiere $L = 2$ oder $L = 10$, weniger Stichproben $S$ (Streifen durch die grobe Quadratur), mehr Schritte (das Schachbrett
+  erscheint nur mit Kodierung) oder weniger Ansichten (die Geometrie wird mehrdeutig, und die zurückgehaltene Ansicht verschlechtert sich, während die Trainingsansichten weiterhin passen).'
+meanings:
+- Ursprung und Einheitsrichtung des Strahls durch jedes der $P$ Pixel jeder Kamera
+- 'eine zufällige Tiefe in jedem von $S$ gleichen Intervallen von $[t_n, t_f]$: in jedem Schritt ein neuer Satz, sodass das Netz den ganzen Strahl sieht'
+- 'Stichprobenpunkte: Broadcasting über Strahlen $r$ und Stichproben $s$'
+- $\sin$ und $\cos$ von $2^k\pi x_i$, $k = 0 \dots L-1$; nichts summiert, ein äußeres Produkt
+- eine MLP-Schicht, auf alle Stichproben auf einmal angewandt, über $g$ summiert; ReLU zwischen den Schichten
+- Dichte $\ge 0$ und Farbe in $(0, 1)$
+- Länge jedes Intervalls entlang des Strahls
+- 'Transmittanz: eine exklusive kumulative Summe der optischen Dicke $\tau = \sigma\delta$ über $s'' < s$'
+- Wahrscheinlichkeit, dass das am Pixel ankommende Licht im Intervall $s$ emittiert wurde; $\sum_s w_{rs} \le 1$
+- Pixelfarbe, über $s$ summiert; die übrige Transmittanz zeigt den weißen Hintergrund
+- 'erwartete Tiefe: dieselben Gewichte liefern gratis eine Tiefenkarte'
+labels:
+  n_freq: Kodierungsfrequenzen $L$
+  width: Verborgene Breite $H$
+  n_samples: Stichproben pro Strahl $S$
+  steps: Adam-Schritte (pro Netz)
+  batch: Strahlen pro Schritt
+  lr: Adam-Lernrate
+  n_views: Trainingsansichten $V$
+  resolution: Bildgröße (Pixel)

@@ -1,0 +1,15 @@
+source_hash: 3b3a390c2f31
+title: Series de Fourier y el fenómeno de Gibbs
+summary: Una onda cuadrada, una onda en diente de sierra y una onda triangular construidas a partir de senos. Los coeficientes son un solo einsum (una integral numérica, comprobada frente a $4/(\pi n)$ y compañía) y cada suma parcial es un solo producto matricial $S_N = B\,c$ con las primeras $N$ columnas de la matriz de base. Observa cómo las oscilaciones se amontonan en los saltos mientras el sobreimpulso se mantiene en torno al 9 % del salto.
+notes: 'Los coeficientes exactos son $b_n = 4/(\pi n)$ para $n$ impar (cuadrada), $2(-1)^{n+1}/(\pi n)$ (diente de sierra) y $\pm 8/(\pi^2 n^2)$ para $n$ impar (triangular); las integrales numéricas coinciden con ellos hasta unos $10^{-6}$. Cerca de un salto, las sumas parciales se pasan. Al crecer $N$, la joroba se acerca al salto (su anchura disminuye como $1/N$), pero su altura tiende a $\left(\tfrac{1}{\pi}\mathrm{Si}(\pi) - \tfrac12\right) \approx 0.0895$ veces el salto, no a cero: para la onda cuadrada de $-1$ a $1$ el pico se queda cerca de $1.179$. Este es el fenómeno de Gibbs. Aun así, la serie converge en media cuadrática: por Parseval, $\tfrac1\pi\int f^2\,dx = \sum_n b_n^2$, así que el error $L^2$ al cuadrado es la suma de los $b_n^2$ que faltan. Coeficientes que caen como $1/n$ (un salto) dan un error $\propto 1/N$; la triangular solo tiene un pico, sus coeficientes caen como $1/n^2$ y el error como $1/N^3$. Las funciones más suaves convergen más deprisa. Prueba una malla gruesa
+  ($X$ pequeño) para ver cómo se desvían los coeficientes numéricos.'
+meanings:
+- 'puntos medios de $X$ celdas iguales en $(-\pi, \pi)$ y su anchura $h$: los pesos de integración'
+- onda $w$ (cuadrada, diente de sierra, triangular) muestreada en $x_j$
+- 'matriz de base: la columna $n$ es $\sin(n x)$ en la malla'
+- '$j$ repetido ⇒ sumado: la integral $b_n$ como suma ponderada sobre la malla'
+- '$n$ repetido ⇒ sumado: la suma parcial con $N$ armónicos, un producto matricial'
+- error $L^2$ al cuadrado con $d = F - S$; $j$ repetido ⇒ sumado
+labels:
+  n_max: Mayor número de armónicos $N$
+  n_x: Puntos de la malla $X$

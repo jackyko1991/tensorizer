@@ -1,0 +1,22 @@
+source_hash: de68545f1f70
+title: 最小 STO-3G 基组下 $\mathrm{H_2}$ 的哈特里–福克计算
+summary: Szabo 和 Ostlund 的教科书式自洽场计算，用张量写出。每个氢原子带一个由三个高斯函数组成的 1s 函数（STO-3G）；重叠、动能、核吸引和双电子积分都有解析形式，Fock 矩阵是密度与 $(\mu\nu|\lambda\sigma)$ 张量的缩并，Roothaan 方程 $FC = SC\varepsilon$ 用 eigh 对一整批键长同时求解。在 $R = 1.4$ bohr 处给出 $E = -1.1167$ hartree；扫描找出键长，并说明为什么限制性哈特里–福克无法描述键的断裂。
+notes: 原子单位：长度以 bohr 计（$a_0 = 0.529$ Å），能量以 hartree 计（$E_h = 27.21$ eV）。基组为 STO-3G，Slater 指数取 $\zeta_{\mathrm H} = 1.24$ 和 $\zeta_{\mathrm{He}} = 2.0925$，与 Szabo and Ostlund, Modern Quantum Chemistry (1982; Dover edition 1996) 第 3 章一致；只有两个基函数，每个矩阵都是 $2\times2$，所以你可以把每个数值与书中对照：$S_{12} = 0.6593$、$T_{11} = 0.7600$，$R = 1.4$ bohr 处 $E = -1.1167$ hartree，$\mathrm{HeH^+}$ 在 $R = 1.4632$ bohr 处为 $-2.8607$ hartree。SCF 从 $P = 0$（核哈密顿量）出发；对 $\mathrm{H_2}$，对称性固定了轨道 $\psi_{1,2} \propto \phi_A \pm \phi_B$，因此立即收敛，而 $\mathrm{HeH^+}$ 随着电荷流向氦原子需要十几轮迭代。每个键长都是批次中的一项，所以整条曲线的 SCF 在一个循环中完成。限制性哈特里–福克把两个电子放在同一个空间轨道 $\psi_1$ 中；在大 $R$ 处该态一半是 $\mathrm{H + H}$、一半是离子态 $\mathrm{H^+ + H^-}$，因此曲线远远升到 $2E_{\mathrm H}$ 之上。虚线是同一基组下的完全组态相互作用（$|1^2\rangle$、$|1^12^1\rangle$、$|2^2\rangle$ 的 $3\times3$ 单重态矩阵）：它混入 $|2^2\rangle$，能正确解离，它与平衡处 RHF 的差值（约 $-0.02$ hartree）就是相关能。最小基组离精确的 $\mathrm{H_2}$ 能量（$R = 1.4$ bohr 处 $-1.1745$ hartree）还很远；更大的基组需要 p 和 d 函数以及一般的高斯积分递推。试试 $\mathrm{HeH^+}$：那里 RHF 曲线确实到达了正确的极限 $\mathrm{He + H^+}$，因为两个电子最终都在氦上。
+meanings:
+- 每个函数三个高斯指数 $\alpha_p\zeta^2$，以及已并入原始函数归一化因子 $(2\alpha/\pi)^{3/4}$ 的收缩系数
+- 批次中每个键长 $R_b$ 对应的两个原子核（也是基函数中心）
+- 两个高斯函数相乘得到一个以 $P = (\alpha A + \beta B)/(\alpha + \beta)$ 为中心的高斯函数
+- 重复的 $p, q$ ⇒ 求和：对原始函数的收缩；$T$、$V$ 同理
+- $-\sum_c Z_c\,\tfrac{2\pi}{\alpha+\beta}\,e^{-\dots}F_0\big((\alpha+\beta)|P - C|^2\big)$，其中 Boys 函数 $F_0(t) = \tfrac12\sqrt{\pi/t}\,\mathrm{erf}\sqrt t$
+- bra 和 ket 的对张量相互广播，然后在一次 einsum 中对 $p, q, r, t$ 求和
+- 对称（Löwdin）正交化：$X^{\mathsf T}SX = 1$
+- 库仑矩阵 $J$；重复的 $\lambda, \sigma$ ⇒ 求和
+- 交换矩阵 $K$：同一个张量以交换后的指标读取
+- 每轮 SCF 一次批量 eigh；$C = XC^{\prime}$
+- Mulliken 电子数：恰好为 2
+- 势能曲线，每个键长一项
+labels:
+  molecule: 分子
+  R_min: 最短键长 $R$
+  R_max: 最长键长 $R$
+  n_bond_lengths: 批次中的键长数

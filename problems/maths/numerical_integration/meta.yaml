@@ -1,0 +1,36 @@
+title: Numerical integration and convergence order
+category: maths
+level: beginner
+order: 2
+summary: >
+  The trapezoid rule, Simpson's rule and Gauss–Legendre quadrature are all a weighted sum $\sum_k w_k f(x_k)$,
+  one einsum over many integrands at once. The Gauss nodes and weights come from an eigenvalue problem
+  (Golub–Welsch). On log–log axes the errors fall with slopes 2 and 4, or exponentially, until a kink or a
+  singularity takes the high order away.
+animated: true
+vector_form: '\int_{-1}^{1} f(x)\,dx \approx \sum_{k} w_k\,f(x_k),\qquad |\text{error}| \propto N^{-p}'
+index_form: 'I_f = w_k\,F_{fk},\qquad F_{fk} = f_f(x_k),\qquad J_{kl}\,V_{lm} = x_m\,V_{km},\qquad w_m = 2\,V_{0m}V_{0m}'
+translation:
+  - {symbol: 'x_k,\ w_k', code: 'trapezoid(n, dev), simpson(n, dev)', shape: '(N+1,), (N+1,)', meaning: 'equally spaced nodes; weights $h(\tfrac12, 1, \dots, 1, \tfrac12)$ and $\tfrac h3(1, 4, 2, \dots, 4, 1)$'}
+  - {symbol: 'J_{kl}', code: 'jacobi_matrix(n, dev)', shape: '(N, N)', meaning: 'tridiagonal matrix of the Legendre recurrence, $\beta_k = k/\sqrt{4k^2 - 1}$ beside the diagonal'}
+  - {symbol: 'x_m,\ V_{km}', code: 'torch.linalg.eigh(J)', shape: '(N,), (N, N)', meaning: 'eigenvalues are the Gauss–Legendre nodes, eigenvectors in the columns'}
+  - {symbol: 'w_m = 2 V_{0m}^2', code: '2 * V[0] ** 2', shape: '(N,)', meaning: 'Gauss weights from the first component of each eigenvector; they add up to $\int_{-1}^{1} dx = 2$'}
+  - {symbol: 'F_{fk}', code: 'integrands(x, kink, alpha)', shape: '(3, K)', meaning: 'the smooth, kink and endpoint integrands at every node'}
+  - {symbol: 'I_f = w_k F_{fk}', code: "einsum('k,fk->f', w, F)", shape: '(3,)', meaning: 'repeated $k$ ⇒ summed: all three integrals at once'}
+notes: >
+  For a smooth integrand the trapezoid error falls like $h^2 \propto N^{-2}$ and Simpson's like $N^{-4}$: doubling
+  $N$ divides them by 4 and 16. Gauss–Legendre with $N$ nodes integrates every polynomial of degree up to
+  $2N - 1$ exactly, so for an analytic function its error drops exponentially until it reaches float64 round-off
+  near $10^{-16}$. These orders come from Taylor expansions, so they need derivatives. With a kink $|x - a|$ the
+  second derivative is a spike: every rule that straddles the kink makes an $O(h^2)$ error there, so Simpson and
+  Gauss fall back to order 2 (the curve is jagged because where the kink falls inside its panel changes with $N$).
+  With $(1+x)^{\alpha}$ the derivatives blow up at the endpoint: the trapezoid and
+  Simpson rules drop to order $1 + \alpha$ and Gauss, whose nodes cluster towards the ends, to about $2 + 2\alpha$.
+  The cure is to split the interval at the kink or to change variables so the integrand becomes smooth. Try a whole
+  number $\alpha$ (a polynomial) and watch Gauss become exact, or put the kink on a grid node ($a = 0.3$ is one
+  whenever $N$ is a multiple of 20): the trapezoid rule is then exact for the two straight pieces and drops to
+  round-off.
+params:
+  n_max: {default: 256, min: 16, max: 2048, step: 16, type: int, label: 'Largest $N$'}
+  kink: {default: 0.577, min: -0.9, max: 0.9, step: 0.001, label: 'Kink position $a$'}
+  alpha: {default: 0.5, min: 0.1, max: 3.0, step: 0.1, label: 'Endpoint power $\alpha$'}

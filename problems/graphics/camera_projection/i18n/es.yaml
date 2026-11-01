@@ -1,0 +1,23 @@
+source_hash: 0fd4a04dbd76
+title: La cámara estenopeica
+summary: 'Cómo una escena 3D se convierte en una imagen 2D: las matrices $4\times4$ de modelo, vista y proyección actúan sobre coordenadas homogéneas, y después la división perspectiva y la transformación de ventana dan los píxeles. Todos los vértices de un objeto en alambre se proyectan a la vez con un solo einsum mientras la cámara gira a su alrededor. Compara la perspectiva con la proyección ortográfica y con un efecto dolly zoom, observa cómo las rectas paralelas se juntan en puntos de fuga y escribe la misma cámara como $K[R\,|\,\mathbf t]$.'
+notes: 'La 4.ª coordenada es lo que hace lineal a la cámara: la traslación se convierte en una columna de la matriz, y la perspectiva, que divide por la profundidad, se convierte en una matriz que copia la profundidad en $\tilde x_4$ seguida de una única división al final. Los puntos con $w = 0$ son direcciones; sus imágenes son los puntos de fuga, y todas las direcciones horizontales fugan en el horizonte, que queda por encima del centro de la imagen cuando la cámara mira hacia abajo. La cámara ortográfica tiene $\tilde x_4 = 1$, así que no tiene puntos de fuga y los objetos lejanos no se encogen, como en los dibujos técnicos y en muchos juegos de estrategia. El dolly zoom (el «efecto Vértigo») cambia el campo de visión mientras mueve la cámara de modo que $d\,\tan(\text{fov}/2)$ se mantenga fijo: el objeto conserva su tamaño pero el suelo detrás de él se estira. Las bibliotecas de visión usan $\lambda\,\hat{\mathbf u} = K[R|\mathbf t]\mathbf X$ con $z$ hacia delante; las API gráficas usan
+  $P V M$ con $z$ hacia atrás; ambas solo difieren en la inversión de los ejes $y$ y $z$, y el terminal comprueba que dan los mismos píxeles.'
+meanings:
+- vértice $v$ en coordenadas homogéneas $(x, y, z, 1)$; las aristas son pares de índices $(E, 2)$
+- 'objeto → mundo: escalar, girar alrededor de $y$ y luego trasladar (la 4.ª columna)'
+- 'mundo → cámara: las filas son los ejes de la cámara, traslación $-R\,\mathbf e$'
+- 'cámara → espacio de recorte; su última fila copia $-z$ en $\tilde x_4$ (ortográfica: $\tilde x_4 = 1$)'
+- '$j, k, l$ repetidos ⇒ sumados: cada vértice a través de las tres matrices en una sola llamada'
+- división perspectiva por $\tilde x_4$ y luego la ventana; las filas de la imagen se cuentan hacia abajo
+- distancia focal $f = \tfrac H2 / \tan\tfrac{\text{fov}}2$ y punto principal; el movimiento rígido mundo → cámara
+- 'un punto del infinito $(\hat{\mathbf d}, 0)$ pierde la traslación: todas las rectas en la dirección $\hat{\mathbf d}$ se encuentran allí'
+labels:
+  shape: Objeto
+  yaw: Rotación del objeto (matriz de modelo)
+  fov: Campo de visión
+  distance: Distancia de la cámara
+  height_cam: Altura de la cámara
+  width: Ancho de la imagen
+  height: Alto de la imagen
+  frames: Fotogramas por vuelta

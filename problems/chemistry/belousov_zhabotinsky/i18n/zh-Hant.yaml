@@ -1,0 +1,20 @@
+source_hash: 8b3f5bebfbdf
+title: Belousov–Zhabotinsky 振盪器（Oregonator）
+summary: 一杯攪拌中的溴酸鹽、丙二酸與鈰催化劑溶液會像時鐘一樣在顏色間來回切換。經無因次化的雙變數 Oregonator 是剛性常微分方程式；正值的生成–消耗（Patankar）步進一次積分整批化學計量因子 $f$，Jacobian 的跡定出界定振盪範圍的兩個 Hopf 分岔，而同樣的動力學加上擴散，會把斷裂的波轉成旋轉的螺旋波。
+notes: Belousov–Zhabotinsky 反應（由 Belousov 於 1950 年代發現，Field、Kőrös 與 Noyes 於 1972 年解釋）以溴酸鹽氧化丙二酸。溴離子抑制 $\mathrm{HBrO_2}$ 的自催化生成；溴離子存在時反應緩慢爬行，一旦耗盡，$\mathrm{HBrO_2}$ 便爆發式增長並氧化催化劑（顏色變化），被氧化的催化劑再產生新的溴離子，使爆發停止。Oregonator 把這些濃縮成少數幾步，再經無因次化並消去快速的溴離子後，化為兩條方程式。常數 $\varepsilon \approx 0.04$ 與 $q \approx 8\times10^{-4}$ 是擬合 Field–Kőrös–Noyes 速率常數所得的近似值；配方各異，文獻數值也各不相同。由於 $\varepsilon$ 與 $q$ 很小，$x$ 的方程式是剛性的：$x$ 在 $\varepsilon$ 量級的時間內躍升約一千倍，然後沿其零斜線的一支緩慢爬行。普通的 RK4 需要約 $5\times10^{-4}$ 的步長才能保持穩定；把 $\varepsilon\dot x$ 寫成生成減消耗並隱式處理消耗項，則任何步長下 $x$ 都保持為正，而 $\Delta t = 2\times10^{-3}$ 就能讓週期誤差小於 1 %。穩態（兩條零斜線的交點）位於 N 形 $\dot x = 0$ 曲線的外側分支時穩定，位於中間分支時不穩定，此時有極限環環繞它；$J$ 的跡在兩個 Hopf 點變號，$q$ 很小時約在 $f = 0.5$ 與 $f = 2.4$。試試更大的 $\varepsilon$：振盪窗口縮小並最終關閉。在未攪拌的薄層中，催化劑固定不動而 $\mathrm{HBrO_2}$ 擴散，於是氧化波穿過培養皿；斷裂的波前在其自由端捲曲成著名的旋轉螺旋波，其旋轉週期比整體振盪更短，因此會佔據整個介質。
+meanings:
+- 反應 $b$ 的化學計量因子（每還原一個催化劑所生成的溴離子），從 $0.3$ 到 $3$
+- 每個反應無因次化的 $[\mathrm{HBrO_2}]$（自催化劑）與 $[\mathrm{Ce^{4+}}]$（被氧化的催化劑）
+- 非負的生成與消耗速率，$\varepsilon\dot x = P - Lx$
+- Patankar–Euler：消耗隱式、生成顯式，因此無論多剛性 $x$ 都保持為正
+- $x^2 + (f + q - 1)x - q(1 + f) = 0$ 的正根
+- 穩態處線性化的動力學 $\partial \dot y_\alpha / \partial y_\beta$
+- 重複的 $\alpha$ ⇒ 求和：跡；其變號標示 Hopf 分岔
+- 相圖中 N 形的 $\dot x = 0$ 曲線
+- 零通量邊界的 5 點模板；在二維介質中只有 $x$ 擴散
+labels:
+  f: 相圖與螺旋波的化學計量因子 $f$
+  eps: 時間尺度比 $\varepsilon$（近似值）
+  t_max: 模擬時間
+  spiral: 二維螺旋波
+  grid: 網格大小 $n$

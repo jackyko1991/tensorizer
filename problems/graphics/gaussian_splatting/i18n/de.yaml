@@ -1,0 +1,27 @@
+source_hash: fb9eaaef3d46
+title: 3D Gaussian Splatting
+summary: Eine Szene wird durch einige hundert farbige, halbtransparente 3D-Gaußfunktionen dargestellt. Jede wird mit der Jacobi-Matrix der perspektivischen Abbildung in die Kamera projiziert, $\Sigma' = J W \Sigma W^{\mathsf T} J^{\mathsf T}$, die Splats werden nach Tiefe sortiert und von vorn nach hinten per Alpha-Compositing überlagert, $C = \sum_i c_i\alpha_i\prod_{j<i}(1 - \alpha_j)$, und Adam passt jeden Mittelpunkt, jede Skalierung, Rotation, Farbe und Opazität an Fotos einer synthetischen Szene an. Eine zurückgehaltene Ansicht prüft, dass die Gaußfunktionen die 3D-Formen gelernt haben und nicht nur die Trainingsbilder.
+notes: 'Die Ground Truth besteht aus drei Kugeln und einem Würfel, analytisch per Raycasting mit Lambert-Schattierung in 12 Kameras auf zwei Ringen um die Szene gerendert ($64\times 64$ px); eine 13. Kamera dazwischen, auf anderer Höhe, wird zurückgehalten. Die Gaußfunktionen starten an zufälligen Positionen in einem Würfel, grau und blass, mit zufälligen Orientierungen. Jeder Adam-Schritt rendert eine Trainingsansicht durch die gesamte obige Pipeline und propagiert den L1-Bildfehler in jeden Mittelpunkt, jede Log-Skalierung, jedes Quaternion, jede Farbe und Opazität zurück. Die Tensor-Lektion ist die Kovarianzalgebra: $\Sigma = RSS^{\mathsf T}R^{\mathsf T}$ bleibt eine gültige (symmetrisch positiv definite) Kovarianz, egal was der Optimierer tut, und die Projektion ist nicht linear, daher wird jede Gaußfunktion durch ihre lokale Linearisierung $J$ geschoben; der 2D-Splat $\Sigma'' = JW\Sigma W^{\mathsf T}J^{\mathsf T}$ ist eine Kette von einsums. Das Ellipsen-Panel zeichnet diese $1\sigma$-Ellipsen
+  in der zurückgehaltenen Ansicht. Verdichtung, vereinfacht: Alle 50 Schritte (in den ersten 70 %) werden die Gaußfunktionen, deren Zentren die größten Gradienten erhalten haben, in zwei Kopien bei $\boldsymbol\mu \pm R\,S\,\boldsymbol\epsilon$ mit um 1,6 verkleinerten Achsen geteilt, wobei fast transparente Gaußfunktionen ($o < 0.05$) wiederverwendet werden, sodass $M$ fest bleibt; das Paper klont und teilt stattdessen anhand von View-Space-Gradienten, entfernt Gaußfunktionen, setzt Opazitäten zurück und wächst auf Millionen von Gaußfunktionen. Weitere Vereinfachungen gegenüber Kerbl et al. (SIGGRAPH 2023): konstante Farben statt Kugelflächenfunktionen (die Szene ist lambertsch), ein zufälliger Start statt einer Structure-from-Motion-Punktwolke, ein L1-Verlust ohne den D-SSIM-Term und ein dichter Rasterisierer, der jeden Splat an jedem Pixel auswertet (der echte sortiert Splats auf der GPU in $16\times 16$-Kacheln und überspringt die entfernten), weshalb das Bild klein ist. Der PSNR der
+  zurückgehaltenen Ansicht bleibt etwas unter dem Trainings-PSNR: Nie gesehene Ansichten schränken die Gaußfunktionen weniger ein. Probiere weniger Ansichten (die zurückgehaltene Ansicht verschlechtert sich), den L2-Verlust, abgeschaltete Verdichtung oder mehr Gaußfunktionen und Schritte (schärfere Kanten).'
+meanings:
+- Rotation der Gaußfunktion $m$ aus einem Quaternion, intern normiert, sodass beliebige 4 Zahlen eine gültige Rotation sind
+- 3D-Kovarianz, über $j$ summiert; symmetrisch positiv definit für beliebige Parameter, $s = e^{\log s}$
+- jedes Gauß-Zentrum in jedem Kamerasystem (x nach rechts, y nach unten, z = Tiefe)
+- Lochkameraprojektion der Zentren auf Pixelkoordinaten
+- '$\partial\mu''_a/\partial x_i = \begin{pmatrix} f/z & 0 & -fx/z^2\\ 0 & f/z & -fy/z^2\end{pmatrix}$: die lokale Linearisierung der Projektion'
+- 2D-Kovarianz jedes Splats, über $j, k$ summiert, mit $JW = $ einsum('vmai,vij->vmaj'), plus 0,3 px² Tiefpass
+- 'die quadratische Form $d^{\mathsf T}\Sigma''^{-1}d$, entwickelt in die 6 Monome $\varphi = (u^2, 2uv, v^2, u, v, 1)$ des Pixels: ein einziges Matrixprodukt'
+- wie viel von Pixel $p$ Splat $m$ bedeckt; $o_m = \sigma(\text{logit})$
+- Tiefenreihenfolge pro Kamera; die kleinen Tensoren pro Gaußfunktion werden umsortiert, bevor die großen $(V, M, P)$-Tensoren existieren
+- 'Transmittanz: Licht, das nach den Splats vor $m$ übrig bleibt; nicht wachsend entlang $m$'
+- Compositing von vorn nach hinten, über $m$ summiert; das durchgelassene Licht zeigt den weißen Hintergrund $b$
+- mittlerer absoluter Pixelfehler auf einer zufälligen Trainingsansicht pro Schritt; Adam aktualisiert alle $14M$ Zahlen
+labels:
+  n_gaussians: Gaußfunktionen $M$
+  iterations: Adam-Schritte
+  lr: Adam-Lernrate (Mittelpunkte; andere skaliert)
+  loss: Photometrischer Verlust
+  densify: Verdichtung durch Teilen
+  n_views: Trainingsansichten $V$
+  resolution: Bildgröße (Pixel)

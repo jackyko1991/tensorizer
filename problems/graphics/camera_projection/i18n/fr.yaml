@@ -1,0 +1,23 @@
+source_hash: 0fd4a04dbd76
+title: La caméra à sténopé
+summary: 'Comment une scène 3D devient une image 2D : les matrices $4\times4$ de modèle, de vue et de projection agissent sur des coordonnées homogènes, puis la division perspective et la transformation de fenêtre donnent les pixels. Tous les sommets d''un objet en fil de fer sont projetés à la fois avec un seul einsum pendant que la caméra tourne autour. Comparez la projection perspective à la projection orthographique et à un travelling compensé, voyez des droites parallèles se rejoindre en des points de fuite, et écrivez la même caméra sous la forme $K[R\,|\,\mathbf t]$.'
+notes: 'C''est la 4e coordonnée qui rend la caméra linéaire : la translation devient une colonne de matrice, et la perspective, qui divise par la profondeur, devient une matrice qui copie la profondeur dans $\tilde x_4$ suivie d''une seule division à la fin. Les points avec $w = 0$ sont des directions ; leurs images sont les points de fuite, et toutes les directions horizontales fuient sur l''horizon, qui se trouve au-dessus du centre de l''image quand la caméra regarde vers le bas. La caméra orthographique a $\tilde x_4 = 1$ : elle n''a donc pas de points de fuite et les objets lointains ne rapetissent pas, comme dans les dessins techniques et de nombreux jeux de stratégie. Le travelling compensé (l''« effet Vertigo ») change le champ de vision tout en déplaçant la caméra de sorte que $d\,\tan(\text{fov}/2)$ reste fixe : l''objet garde sa taille mais le sol derrière lui s''étire. Les bibliothèques de vision utilisent $\lambda\,\hat{\mathbf u} = K[R|\mathbf t]\mathbf X$ avec $z$ orienté
+  vers l''avant ; les API graphiques utilisent $P V M$ avec $z$ orienté vers l''arrière ; les deux ne diffèrent que par l''inversion des axes $y$ et $z$, et le terminal vérifie qu''elles donnent les mêmes pixels.'
+meanings:
+- sommet $v$ en coordonnées homogènes $(x, y, z, 1)$ ; les arêtes sont des paires d'indices $(E, 2)$
+- 'objet → monde : mise à l''échelle, rotation autour de $y$, puis translation (la 4e colonne)'
+- 'monde → caméra : les lignes sont les axes de la caméra, translation $-R\,\mathbf e$'
+- 'caméra → espace de découpage ; sa dernière ligne copie $-z$ dans $\tilde x_4$ (orthographique : $\tilde x_4 = 1$)'
+- '$j, k, l$ répétés ⇒ sommés : chaque sommet à travers les trois matrices en un seul appel'
+- division perspective par $\tilde x_4$, puis transformation de fenêtre ; les lignes de l'image sont comptées vers le bas
+- distance focale $f = \tfrac H2 / \tan\tfrac{\text{fov}}2$ et point principal ; le déplacement rigide monde → caméra
+- 'un point à l''infini $(\hat{\mathbf d}, 0)$ perd la translation : toutes les droites de direction $\hat{\mathbf d}$ s''y rejoignent'
+labels:
+  shape: Objet
+  yaw: Rotation de l'objet (matrice de modèle)
+  fov: Champ de vision
+  distance: Distance de la caméra
+  height_cam: Hauteur de la caméra
+  width: Largeur de l'image
+  height: Hauteur de l'image
+  frames: Images par tour

@@ -1,0 +1,26 @@
+source_hash: a99f4b65ce2b
+title: 'Ajuste de haces: estructura a partir del movimiento con Levenberg–Marquardt'
+summary: Varias cámaras fotografían los mismos puntos 3D, con ruido en los píxeles. Partiendo de poses aproximadas (rotaciones eje-ángulo $\boldsymbol\omega_c$, traslaciones $\mathbf t_c$) y puntos aproximados $\mathbf X_p$, el ajuste de haces minimiza el error total de reproyección $\tfrac12\sum_{c,p}\lVert\pi(R_c\mathbf X_p + \mathbf t_c) - \tilde{\mathbf u}_{cp}\rVert^2$ con Levenberg–Marquardt. El jacobiano sale de autograd, las ecuaciones normales $J^{\mathsf T}J\,\Delta = -J^{\mathsf T}\mathbf r$ se resuelven mediante el complemento de Schur, y fijar las 7 libertades de gauge hace que la solución sea única.
+notes: 'Los datos son sintéticos: puntos en una bola de radio 1, cámaras en un arco a 5 unidades (distancia focal 1000 px, una imagen de $640\times 640$), cada punto visto por todas las cámaras, ruido gaussiano en los píxeles $\sigma$. El inicio perturba cada rotación unos pocos grados y cada traslación y cada punto una fracción del tamaño de la escena, así que los primeros errores de reproyección son de decenas de píxeles. Libertad de gauge: mover, rotar o escalar toda la escena junto con todas las cámaras no cambia ninguna imagen, así que $E$ tiene un valle de 7 dimensiones de mínimos iguales y $J^{\mathsf T}J$ tiene 7 valores propios nulos (la consola los imprime, alrededor de $10^{-16}$ del mayor). Fijar la cámara 0 (6 números) y la traslación en $x$ de la cámara 1 (la escala) elimina el espacio nulo: $J^{\mathsf T}J$ pasa a tener rango completo y los pasos quedan bien definidos. Las fijamos en sus valores verdaderos, de modo que el resultado se puede comparar directamente con la verdad.
+  Cada iteración linealiza los residuos, $\mathbf r(\boldsymbol\theta + \Delta) \approx \mathbf r + J\Delta$, y resuelve las ecuaciones normales amortiguadas; el jacobiano se construye con torch.func.jacrev, es decir, autograd vectorizado sobre todos los residuos, lo que evita la derivación a mano, propensa a errores. El complemento de Schur aprovecha la dispersión (el panel de $J^{\mathsf T}J$ en forma de flecha): eliminar primero los puntos deja un sistema del tamaño de las cámaras solamente, y por eso los ajustadores de haces reales manejan millones de puntos. Aquí la resolución densa y la de Schur dan el mismo paso hasta unos $10^{-12}$. En el óptimo, el error RMS de reproyección es igual al suelo de ruido $\sigma\sqrt{1 - n/m}$ (cada incógnita ajustada absorbe un poco del ruido) y el histograma de residuos coincide con la distribución del ruido: no queda nada por explicar. Los errores restantes de puntos y cámaras los fijan el ruido y la geometría, no el optimizador. Referencia: B.
+  Triggs, P. McLauchlan, R. Hartley y A. Fitzgibbon, "Bundle Adjustment — A Modern Synthesis" (Vision Algorithms: Theory and Practice, 1999). Simplificaciones: sin valores atípicos (los sistemas reales usan una pérdida robusta), sin distorsión de lente, todos los puntos visibles en todas las cámaras, almacenamiento denso del jacobiano. Prueba una perturbación inicial mayor (LM necesita entonces más amortiguamiento, o cae en un mínimo equivocado), más ruido o solo 2 cámaras.'
+meanings:
+- 'pose de la cámara: rotación eje-ángulo (dirección = eje, longitud = ángulo) y traslación, de modo que $x_{\rm cam} = R\mathbf X + \mathbf t$'
+- fórmula de Rodrigues $I + \sin\theta\,K + (1-\cos\theta)K^2$; tres números por rotación, sin restricciones que imponer
+- cada punto en el sistema de cada cámara, con suma sobre $j$
+- error de reproyección en píxeles; aplanado a $r_m$, $m = (c, p, a)$
+- 'incógnitas libres: todas las poses y puntos menos los 7 números de gauge (cámara 0 y $t_x$ de la cámara 1)'
+- jacobiano por autograd en modo inverso, una pasada hacia atrás vectorizada por fila
+- matriz de Gauss–Newton $H = J^{\mathsf T}J$ y gradiente $J^{\mathsf T}\mathbf r$, con suma sobre $m$
+- bloques cámaras | puntos; un residuo toca una cámara y un punto, así que $V$ es diagonal por bloques
+- 'complemento de Schur (sistema reducido de cámaras): $P$ inversas diminutas de $3\times 3$, y luego una sola resolución pequeña'
+- 'sustitución hacia atrás: cada punto se actualiza por separado'
+- 'amortiguamiento de Levenberg–Marquardt: se divide entre 3 tras un paso exitoso y se multiplica por 4 tras uno fallido'
+labels:
+  n_cameras: Cámaras $C$
+  n_points: Puntos $P$
+  noise: Ruido en píxeles $\sigma$
+  init_rot: Error inicial de rotación
+  init_noise: Error inicial de traslación y de puntos
+  iterations: Iteraciones de LM
+  solver: Resolución de las ecuaciones normales

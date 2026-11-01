@@ -1,0 +1,20 @@
+source_hash: ba1aea4b5f9d
+title: La función zeta de Riemann y los números primos
+summary: 'Evalúa $\zeta(s)$ en la recta crítica $\operatorname{Re} s = \frac12$ para miles de alturas a la vez, encuentra sus primeros ceros no triviales como cambios de signo de la función real $Z(t)$ y cuenta números primos con una criba tensorial booleana. Después, la fórmula explícita de Riemann reconstruye la escalera $\pi(x)$ a partir de los ceros: cada cero añade una onda, y con más ceros la curva suave se convierte en escalones en los primos.'
+notes: 'La serie $\sum n^{-s}$ solo converge para $\operatorname{Re} s > 1$; Euler–Maclaurin convierte la cola en una integral más correcciones de Bernoulli, lo que prolonga $\zeta$ a todo el plano salvo el polo en $s = 1$. En la recta crítica, $Z(t) = e^{i\theta(t)}\zeta(\frac12 + it)$ es real, así que un cambio de signo de $Z$ demuestra que hay un cero entre medias. Los ceros calculados coinciden con los valores publicados $14.134725\ldots$, $21.022040\ldots$, $25.010858\ldots$ hasta unos $10^{-9}$, y el número hallado por debajo de la altura $T$ coincide con el recuento de Riemann–von Mangoldt $N(T) \approx \theta(T)/\pi + 1$, una comprobación de que no se ha escapado ninguno. La fórmula de Riemann–Siegel, más rápida (suma principal más la primera corrección), se muestra para comparar: su error ya es solo de $10^{-3}$ a $10^{-2}$ en los primeros ceros y disminuye al crecer $t$. El teorema de los números primos dice que $\pi(x) \sim x/\ln x$, pero $\operatorname{li}(x)$ está mucho más
+  cerca, y el $R(x) = \sum_n \frac{\mu(n)}{n}\operatorname{li}(x^{1/n})$ de Riemann más cerca aún (panel central; calculado con la serie de Gram). Riemann (1859) mostró que el error restante lo llevan por completo los ceros: $J(x) = \sum_{p^m \le x} \frac1m$ es igual a $\operatorname{li}(x) - \sum_\rho \operatorname{li}(x^\rho) - \ln 2 + \int_x^\infty \frac{dt}{t(t^2-1)\ln t}$ (demostrado por von Mangoldt en 1895), y la inversión de Möbius da $\pi(x)$. Cada par de ceros $\rho = \frac12 \pm i\gamma$ añade una onda de amplitud aproximada $\sqrt{x}/(\gamma\ln x)$ y frecuencia $\gamma$ en $\ln x$; truncar la suma deja ondulaciones de tipo Gibbs cerca de cada escalón. La hipótesis de Riemann afirma que todo cero no trivial (todo cero con $0 < \operatorname{Re} s < 1$) tiene parte real exactamente $\frac12$. No está demostrada. Se ha verificado por ordenador para más de $10^{12}$ ceros, y equivale a la cota de error $\pi(x) = \operatorname{li}(x) + O(\sqrt{x}\ln x)$ (von Koch, 1901). Este programa
+  solo encuentra ceros en la recta; no puede descartar ceros fuera de ella. Lecturas adicionales: H. M. Edwards, Riemann''s Zeta Function (1974).'
+meanings:
+- muchas alturas $t$ en la recta crítica a la vez
+- '$n$ repetido ⇒ sumado: los primeros $N-1$ términos de la serie de Dirichlet'
+- correcciones de Euler–Maclaurin con números de Bernoulli; $(s)_{2k-1} = s(s+1)\cdots(s+2k-2)$. Válido para todo $s \ne 1$
+- una función real con los mismos ceros que $\zeta(\frac12 + it)$; $\theta(t)$ a partir de su serie asintótica
+- cambios de signo de $Z$ en una malla de paso 0,01 y luego 48 pasos de bisección en todos los intervalos a la vez
+- 'criba de Eratóstenes: un corte con salto por cada primo $p \le \sqrt{x}$; $\pi(x)$ es su suma acumulada'
+- cada cero en cada $x$; los ceros conjugados juntos dan $2\,\mathrm{Re}$
+- 'la aproximación para cada $K$ a la vez: un fotograma por fila'
+- función de Möbius; la suma sobre $n$ se detiene en $x^{1/n} < 2$ porque allí $J(y) = 0$
+labels:
+  n_zeros: Ceros usados $K$
+  x_explicit: Fórmula explícita hasta $x$
+  log10_x: Criba hasta $10^n$

@@ -1,0 +1,15 @@
+source_hash: 3b3a390c2f31
+title: Fourier-Reihen und das Gibbs-Phänomen
+summary: Eine Rechteck-, eine Sägezahn- und eine Dreieckswelle, aufgebaut aus Sinusfunktionen. Die Koeffizienten sind ein einziges einsum (ein numerisches Integral, geprüft gegen $4/(\pi n)$ und Verwandte), und jede Partialsumme ist ein einziges Matrixprodukt $S_N = B\,c$ mit den ersten $N$ Spalten der Basismatrix. Sieh zu, wie sich die Schwingungen an den Sprüngen zusammendrängen, während das Überschwingen bei etwa 9 % der Sprunghöhe bleibt.
+notes: 'Die exakten Koeffizienten sind $b_n = 4/(\pi n)$ für ungerades $n$ (Rechteck), $2(-1)^{n+1}/(\pi n)$ (Sägezahn) und $\pm 8/(\pi^2 n^2)$ für ungerades $n$ (Dreieck); die numerischen Integrale treffen sie auf etwa $10^{-6}$. In der Nähe eines Sprungs schwingen die Partialsummen über. Mit wachsendem $N$ wandert der Buckel zum Sprung (seine Breite schrumpft wie $1/N$), aber seine Höhe strebt gegen $\left(\tfrac{1}{\pi}\mathrm{Si}(\pi) - \tfrac12\right) \approx 0.0895$ mal die Sprunghöhe, nicht gegen null: Für die Rechteckwelle von $-1$ bis $1$ bleibt das Maximum bei etwa $1.179$. Das ist das Gibbs-Phänomen. Die Reihe konvergiert trotzdem im quadratischen Mittel: Nach Parseval gilt $\tfrac1\pi\int f^2\,dx = \sum_n b_n^2$, also ist der quadrierte $L^2$-Fehler die Summe der fehlenden $b_n^2$. Koeffizienten, die wie $1/n$ abfallen (ein Sprung), ergeben einen Fehler $\propto 1/N$; das Dreieck hat nur einen Knick, seine Koeffizienten fallen wie $1/n^2$ und der Fehler wie $1/N^3$. Glattere
+  Funktionen konvergieren schneller. Probier ein grobes Gitter (kleines $X$), um die numerischen Koeffizienten abdriften zu sehen.'
+meanings:
+- 'Mittelpunkte von $X$ gleichen Zellen auf $(-\pi, \pi)$ und ihre Breite $h$: die Integrationsgewichte'
+- Welle $w$ (Rechteck, Sägezahn, Dreieck), abgetastet bei $x_j$
+- 'Basismatrix: Spalte $n$ ist $\sin(n x)$ auf dem Gitter'
+- 'wiederholtes $j$ ⇒ summiert: das Integral $b_n$ als gewichtete Summe über das Gitter'
+- 'wiederholtes $n$ ⇒ summiert: die Partialsumme mit $N$ Harmonischen, ein Matrixprodukt'
+- quadrierter $L^2$-Fehler mit $d = F - S$; wiederholtes $j$ ⇒ summiert
+labels:
+  n_max: Größte Anzahl Harmonischer $N$
+  n_x: Gitterpunkte $X$

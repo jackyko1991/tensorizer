@@ -1,0 +1,23 @@
+source_hash: a93d458517c4
+title: Trazado de caminos Monte Carlo de una caja de Cornell
+summary: 'El renderizado fotorrealista resuelve la ecuación de renderizado por Monte Carlo. Cada rayo de cámara de cada muestra se traza como un solo lote a través de una caja de planos y esferas: rebotes ponderados por coseno, un rayo de sombra hacia la luz de área en cada impacto y ruleta rusa para terminar los caminos. Observa cómo el ruido cae como $1/\sqrt{N}$ y cómo las paredes roja y verde tiñen de color las blancas, algo que solo la iluminación global captura.'
+notes: 'La ecuación de renderizado para una superficie difusa (lambertiana) dice que la luz que sale de un punto es su emisión más la fracción reflejada $\rho$ de toda la luz entrante. La luz entrante es a su vez la luz saliente de otras superficies, así que la integral es recursiva. Un trazador de caminos la sustituye por caminos aleatorios. El muestreo ponderado por coseno ($p = \cos\theta/\pi$) cancela la BRDF y el coseno, así que el rendimiento (throughput) solo gana un factor $\rho$ por rebote. En cada impacto, un rayo de sombra hacia un punto aleatorio de la luz añade la luz directa (estimación del siguiente evento), que es mucho menos ruidosa que esperar a que un rebote alcance por casualidad la pequeña luz. Solo la luz del primer impacto da la imagen de luz directa. Cada rebote adicional añade luz indirecta: un relleno suave en las sombras, un techo más brillante y el sangrado de color rojo y verde. La prueba del horno en el conjunto de tests verifica el estimador. Una caja cerrada
+  cuyas paredes emiten todas $L_e$ y reflejan $\rho$ debe tener radiancia $L_e/(1-\rho)$ en todas partes. Con muestreo por coseno esto sale con varianza cero. El error cae como $1/\sqrt N$ porque cada píxel es una media de $N$ muestras independientes. Reducir el ruido a la mitad cuesta cuatro veces más muestras, y por eso los renderizadores de producción usan eliminadores de ruido.'
+meanings:
+- 'origen y dirección del rayo $r = (s, p)$: $N$ muestras con jitter para cada uno de los $P$ píxeles, un solo lote'
+- el plano $p$ es $n_{pi} x_i = d_p$, recortado a una caja delimitadora; la luz es un plano pequeño
+- distancia de cada rayo a cada plano; $i$, $j$ repetidos ⇒ suma
+- raíces de $\lvert o + t\omega - c\rvert^2 = r^2$ para cada rayo y esfera
+- 'impacto más cercano a lo largo de cada rayo: qué primitiva, dónde y su normal'
+- 'dirección siguiente: un punto uniforme en un disco elevado al hemisferio; $f\cos\theta/p = \rho$'
+- 'rendimiento del camino: cuánta de la luz encontrada en el rebote $k$ llega a la cámara'
+- 'estimación del siguiente evento: un rayo de sombra hacia un punto aleatorio $y$ de la luz de área'
+- 'ruleta rusa: termina al azar los caminos débiles pero repondera los supervivientes, así que la media no cambia'
+- 'el color del píxel: promedio sobre el índice de muestra $s$'
+labels:
+  resolution: Tamaño de imagen
+  spp: Muestras por píxel $N$
+  reference_spp: Muestras por píxel de referencia
+  bounces: Rebotes (antes de la ruleta)
+  termination: Terminación de caminos
+  light_power: Radiancia de la luz $L_e$

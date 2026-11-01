@@ -1,0 +1,19 @@
+source_hash: aa144f7ad9f7
+title: 化學平衡與 Le Chatelier 原理
+summary: 反應會停在哪裡？由 $\Delta G^\circ = -RT\ln K$，氣相反應（$\mathrm{N_2O_4 \rightleftharpoons 2\,NO_2}$ 或 Haber 反應 $\mathrm{N_2 + 3H_2 \rightleftharpoons 2NH_3}$）的平衡進度 $\xi$ 以對 $Q(\xi) = K$ 的二分法，同時對數百組溫度與壓力求得，展示 Le Chatelier 原理隨壓力、溫度（van 't Hoff）與加入產物而產生的移動。
+notes: $Q$ 衡量混合物目前的位置，$K$ 衡量它想去的位置：若 $Q < K$ 反應正向進行，若 $Q > K$ 則逆向進行。由於 $\ln Q$ 隨進度 $\xi$ 單調上升（從無產物時的 $-\infty$ 到無反應物時的 $+\infty$），平衡就是 $\ln Q(\xi) - \ln K$ 的唯一根，二分法可同時對每種條件求出它。Le Chatelier 原理直接從公式得出。壓力：以理想氣體活性表示，$Q = K_x\,(P/P^\circ)^{\Delta\nu}$，其中 $\Delta\nu = \sum_i \nu_i$，因此提高 $P$ 有利於氣體分子較少的一方（$\mathrm{N_2O_4}$ 解離減少，生成更多 $\mathrm{NH_3}$）。溫度：$\ln K = -\Delta H^\circ/RT + \Delta S^\circ/R$，所以對吸熱反應 $K$ 隨 $T$ 增大（$\mathrm{N_2O_4}$，加熱時棕色的 $\mathrm{NO_2}$ 顏色加深），對放熱反應則減小（氨）。加入產物：$Q$ 躍升到 $K$ 之上，部分產物轉回反應物，但不是全部。對 $\mathrm{N_2O_4}$ 可以手算驗證：$K = 4\alpha^2 P/((1-\alpha^2)P^\circ)$ 給出 $\alpha = \sqrt{K/(K + 4P/P^\circ)}$。熱力學數據是 298 K 下的近似課本值（$\mathrm{N_2O_4}$ 的 $\Delta H^\circ \approx +57.2$ kJ/mol、$\Delta S^\circ \approx +176$ J/(mol K)；氨為 $\approx -92.2$ kJ/mol 與 $\approx -199$ J/(mol K)），視為與 $T$ 無關，氣體視為理想氣體；這兩項簡化都會使 700 K、100 bar 下的氨產率有所高估（實測：約 20 % $\mathrm{NH_3}$，而非約 30 %）。Haber 反應在室溫下非常有利，但在那裡太慢：工廠在約 700–750 K、150–300 bar 下以鐵催化劑運轉，以產率換取速度。試試以 Haber 反應設定 T = 700 K。
+meanings:
+- 化學計量數：$\mathrm{N_2O_4 \rightleftharpoons 2NO_2}$ 為 $-1, 2$；氨為 $-1, -3, 2$
+- 每組（溫度、壓力）攤平成一個批次指標 $b$
+- 以近似且與溫度無關的 $\Delta H^\circ$、$\Delta S^\circ$ 計算的 $-\Delta G^\circ/RT$
+- 各物種的莫耳數；外積，不求和
+- 總莫耳數；對 $j$ 求和
+- $\ln Q$：對物種指標 $i$ 求和
+- 任何量都不得為負：二分法的區間
+- 二分法，所有條件一起：保留 $\ln Q - \ln K$ 變號的那一半
+- $\ln K$ 對 $1/T$ 的斜率
+labels:
+  reaction: 反應（$\mathrm{N_2O_4}$ 或氨）
+  T: 溫度 $T$（黑色曲線）
+  P: 加入產物測試所用壓力 $P$
+  add_product: 加入的產物

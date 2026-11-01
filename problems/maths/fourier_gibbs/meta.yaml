@@ -1,0 +1,32 @@
+title: Fourier series and the Gibbs phenomenon
+category: maths
+level: beginner
+order: 1
+summary: >
+  A square wave, a sawtooth and a triangle wave built from sines. The coefficients are one einsum (a numerical
+  integral, checked against $4/(\pi n)$ and friends) and every partial sum is one matrix product $S_N = B\,c$ with
+  the first $N$ columns of the basis matrix. Watch the wiggles crowd into the jumps while the overshoot stays at about
+  9% of the jump.
+animated: true
+vector_form: 'f(x) \approx S_N(x) = \sum_{n=1}^{N} b_n \sin(n x),\qquad b_n = \frac{1}{\pi}\int_{-\pi}^{\pi} f(x)\,\sin(n x)\,dx'
+index_form: 'B_{jn} = \sin(n\,x_j),\qquad c_{wn} = \tfrac{1}{\pi}\,w_j\,F_{wj}\,B_{jn},\qquad S_{wj} = B_{jn}\,c_{wn}\ \ (n \le N),\qquad E_w = \tfrac{1}{\pi}\,w_j\,(F_{wj} - S_{wj})^2'
+translation:
+  - {symbol: 'x_j,\ w_j', code: 'grid(n_x, device)', shape: '(X,), (X,)', meaning: 'midpoints of $X$ equal cells on $(-\pi, \pi)$ and their width $h$: the integration weights'}
+  - {symbol: 'F_{wj}', code: 'waves(x)', shape: '(3, X)', meaning: 'wave $w$ (square, sawtooth, triangle) sampled at $x_j$'}
+  - {symbol: 'B_{jn}', code: 'basis(x, n_max)', shape: '(X, N)', meaning: 'basis matrix: column $n$ is $\sin(n x)$ on the grid'}
+  - {symbol: 'c_{wn}', code: "einsum('j,wj,jn->wn', w, F, B) / pi", shape: '(3, N)', meaning: 'repeated $j$ ⇒ summed: the integral $b_n$ as a weighted sum over the grid'}
+  - {symbol: 'S_{wj}', code: "einsum('jn,wn->wj', B[:, :N], c[:, :N])", shape: '(3, X)', meaning: 'repeated $n$ ⇒ summed: the partial sum with $N$ harmonics, a matrix product'}
+  - {symbol: 'E_w', code: "einsum('j,wj,wj->w', w, d, d) / pi", shape: '(3,)', meaning: 'squared $L^2$ error with $d = F - S$; repeated $j$ ⇒ summed'}
+notes: >
+  The exact coefficients are $b_n = 4/(\pi n)$ for odd $n$ (square), $2(-1)^{n+1}/(\pi n)$ (sawtooth) and
+  $\pm 8/(\pi^2 n^2)$ for odd $n$ (triangle); the numerical integrals match them to about $10^{-6}$.
+  Near a jump the partial sums overshoot. As $N$ grows the bump moves towards the jump (its width shrinks like
+  $1/N$) but its height tends to $\left(\tfrac{1}{\pi}\mathrm{Si}(\pi) - \tfrac12\right) \approx 0.0895$ times the
+  jump, not to zero: for the square wave from $-1$ to $1$ the peak stays near $1.179$. This is the Gibbs
+  phenomenon. The series still converges in the mean: by Parseval, $\tfrac1\pi\int f^2\,dx = \sum_n b_n^2$, so the
+  squared $L^2$ error is the sum of the missing $b_n^2$. Coefficients falling like $1/n$ (a jump) give an error
+  $\propto 1/N$; the triangle has only a kink, its coefficients fall like $1/n^2$ and the error like $1/N^3$.
+  Smoother functions converge faster. Try a coarse grid (small $X$) to see the numerical coefficients drift.
+params:
+  n_max: {default: 100, min: 10, max: 300, step: 10, type: int, label: 'Largest number of harmonics $N$'}
+  n_x: {default: 4096, min: 512, max: 16384, step: 512, type: int, label: 'Grid points $X$'}

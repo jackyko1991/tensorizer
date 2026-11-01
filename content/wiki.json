@@ -329,6 +329,114 @@
   },
   "wikidata": "Q503490"
  },
+ "chemistry/acid_base_titration": {
+  "titles": {
+   "en": "Acid–base titration",
+   "zh": "酸鹼中和滴定",
+   "fr": "Titrage acido-basique",
+   "de": "Säure-Base-Titration",
+   "es": "Valoración ácido-base",
+   "ja": "中和滴定",
+   "ru": "Кислотно-основное титрование",
+   "ko": "산–염기 적정",
+   "hi": "अम्ल-क्षार अनुमापन"
+  },
+  "wikidata": "Q133716"
+ },
+ "chemistry/belousov_zhabotinsky": {
+  "titles": {
+   "en": "Belousov–Zhabotinsky reaction",
+   "zh": "B-Z反应",
+   "fr": "Réaction de Belooussov-Jabotinski",
+   "de": "Belousov-Zhabotinsky-Reaktion",
+   "es": "Reacción de Beloúsov-Zhabotinski",
+   "ja": "ベロウソフ・ジャボチンスキー反応",
+   "ru": "Реакция Белоусова — Жаботинского",
+   "ko": "벨로우소프-자보틴스키 반응"
+  },
+  "wikidata": "Q816151"
+ },
+ "chemistry/chapman_ozone": {
+  "titles": {
+   "en": "Ozone–oxygen cycle",
+   "fr": "Cycle ozone-oxygène",
+   "de": "Ozon-Sauerstoff-Zyklus",
+   "es": "Ciclo ozono-oxígeno"
+  },
+  "wikidata": "Q673756"
+ },
+ "chemistry/equation_balancing": {
+  "titles": {
+   "en": "Chemical equation",
+   "zh": "化学方程式",
+   "fr": "Équation chimique",
+   "de": "Reaktionsgleichung",
+   "es": "Ecuación química",
+   "ja": "化学反応式",
+   "ru": "Химическое уравнение",
+   "ko": "화학반응식",
+   "hi": "रासायनिक समीकरण"
+  },
+  "wikidata": "Q182527"
+ },
+ "chemistry/gibbs_minimisation": {
+  "titles": {
+   "en": "Gibbs free energy",
+   "zh": "吉布斯能",
+   "fr": "Enthalpie libre",
+   "de": "Gibbs-Energie",
+   "es": "Energía de Gibbs",
+   "ja": "ギブズの自由エネルギー",
+   "ru": "Энергия Гиббса",
+   "ko": "깁스 자유 에너지",
+   "hi": "गिब्स मुक्त ऊर्जा"
+  },
+  "wikidata": "Q334631"
+ },
+ "chemistry/huckel_mo_theory": {
+  "titles": {
+   "en": "Hückel method",
+   "zh": "休克爾方法",
+   "fr": "Méthode de Hückel",
+   "de": "Hückel-Näherung",
+   "es": "Método Hückel",
+   "ja": "ヒュッケル法",
+   "ko": "휘켈법"
+  },
+  "wikidata": "Q901357"
+ },
+ "chemistry/limiting_reagent_yield": {
+  "titles": {
+   "en": "Limiting reagent",
+   "zh": "限量反應物",
+   "fr": "Réactif limitant",
+   "es": "Reactivo limitante",
+   "ko": "한계 시약",
+   "hi": "सीमान्त अभिकर्मक"
+  },
+  "wikidata": "Q2704619"
+ },
+ "chemistry/molecular_gnn": {
+  "titles": {
+   "en": "Graph neural network",
+   "zh": "图神经网络",
+   "es": "Redes neuronales gráficas",
+   "ko": "그래프 신경망"
+  },
+  "wikidata": "Q107750691"
+ },
+ "chemistry/polymerisation_mwd": {
+  "titles": {
+   "en": "Step-growth polymerization",
+   "zh": "逐步聚合",
+   "fr": "Polymérisation par étapes",
+   "de": "Stufenwachstumsreaktion",
+   "es": "Polimerización por etapas",
+   "ja": "逐次重合",
+   "ko": "단계 성장 중합"
+  },
+  "wikidata": "Q901428"
+ },
  "em/biot_savart": {
   "titles": {
    "de": "Biot-Savart-Gesetz",
@@ -590,6 +698,223 @@
    "ru": "Формула Торричелли (гидродинамика)"
   },
   "wikidata": "Q728969"
+ },
+ "graphics/bundle_adjustment": {
+  "titles": {
+   "en": "Bundle adjustment",
+   "de": "Bündelblockausgleichung",
+   "ru": "Блочное уравнивание"
+  },
+  "wikidata": "Q1020763"
+ },
+ "graphics/camera_projection": {
+  "titles": {
+   "en": "Camera matrix",
+   "de": "Projektionsmatrix (Computer Vision)",
+   "es": "Cámaras matriciales",
+   "ja": "カメラ行列"
+  },
+  "wikidata": "Q5026015"
+ },
+ "graphics/gaussian_splatting": {
+  "titles": {
+   "en": "Gaussian splatting",
+   "fr": "Gaussian splatting",
+   "de": "Gaussian Splatting",
+   "ja": "ガウシアン・スプラッティング"
+  },
+  "wikidata": "Q123134457"
+ },
+ "graphics/homography_stitching": {
+  "titles": {
+   "en": "Homography (computer vision)"
+  },
+  "wikidata": "Q14830873"
+ },
+ "graphics/image_filtering": {
+  "titles": {
+   "en": "Kernel (image processing)",
+   "fr": "Noyau (traitement d'image)",
+   "de": "Faltungsmatrix",
+   "es": "Núcleo (procesamiento digital de imágenes)",
+   "ru": "Ядро свертки"
+  },
+  "wikidata": "Q1395012"
+ },
+ "graphics/nerf_volume_rendering": {
+  "titles": {
+   "en": "Neural radiance field",
+   "es": "Campo de radiancia neuronal",
+   "ja": "ニューラル・ラディアンス・フィールド",
+   "ko": "신경 방사장"
+  },
+  "wikidata": "Q121362472"
+ },
+ "graphics/path_tracing": {
+  "titles": {
+   "en": "Path tracing",
+   "zh": "路径追踪",
+   "fr": "Path tracing",
+   "de": "Path Tracing",
+   "es": "Path tracing",
+   "ru": "Трассировка пути",
+   "ko": "경로 추적"
+  },
+  "wikidata": "Q72948"
+ },
+ "graphics/qr_code_decode": {
+  "titles": {
+   "en": "QR code",
+   "zh": "QR碼",
+   "fr": "Code QR",
+   "de": "QR-Code",
+   "es": "Código QR",
+   "ja": "QRコード",
+   "ru": "QR-код",
+   "ko": "QR 코드",
+   "hi": "क्यूआर कोड"
+  },
+  "wikidata": "Q12203"
+ },
+ "graphics/ray_tracing_spheres": {
+  "titles": {
+   "en": "Ray tracing (graphics)",
+   "zh": "光線追蹤",
+   "fr": "Ray tracing",
+   "de": "Raytracing",
+   "es": "Trazado de rayos",
+   "ja": "レイトレーシング",
+   "ru": "Трассировка лучей",
+   "ko": "광선 추적"
+  },
+  "wikidata": "Q619942"
+ },
+ "graphics/triangle_rasterisation": {
+  "titles": {
+   "en": "Rasterisation",
+   "zh": "栅格化",
+   "fr": "Rastérisation",
+   "de": "Rasterung",
+   "es": "Rasterización",
+   "ja": "ラスタライズ",
+   "ru": "Растеризация",
+   "ko": "래스터화"
+  },
+  "wikidata": "Q14524612"
+ },
+ "maths/fourier_gibbs": {
+  "titles": {
+   "en": "Gibbs phenomenon",
+   "zh": "吉布斯现象",
+   "fr": "Phénomène de Gibbs",
+   "de": "Gibbssches Phänomen",
+   "es": "Fenómeno de Gibbs",
+   "ja": "ギブズ現象"
+  },
+  "wikidata": "Q5374"
+ },
+ "maths/linear_maps_2d": {
+  "titles": {
+   "en": "Linear map",
+   "zh": "线性映射",
+   "fr": "Application linéaire",
+   "de": "Lineare Abbildung",
+   "es": "Aplicación lineal",
+   "ja": "線型写像",
+   "ru": "Линейное отображение",
+   "ko": "선형 변환"
+  },
+  "wikidata": "Q207643"
+ },
+ "maths/mandelbrot_julia": {
+  "titles": {
+   "en": "Mandelbrot set",
+   "zh": "曼德博集合",
+   "fr": "Ensemble de Mandelbrot",
+   "de": "Mandelbrot-Menge",
+   "es": "Conjunto de Mandelbrot",
+   "ja": "マンデルブロ集合",
+   "ru": "Множество Мандельброта",
+   "ko": "망델브로 집합"
+  },
+  "wikidata": "Q257"
+ },
+ "maths/markov_pagerank": {
+  "titles": {
+   "en": "PageRank",
+   "zh": "PageRank",
+   "fr": "PageRank",
+   "de": "PageRank",
+   "es": "PageRank",
+   "ja": "ページランク",
+   "ru": "PageRank",
+   "ko": "페이지랭크",
+   "hi": "पेजरैंक"
+  },
+  "wikidata": "Q184316"
+ },
+ "maths/newton_fractal": {
+  "titles": {
+   "en": "Newton fractal",
+   "zh": "牛顿分形",
+   "fr": "Fractale de Newton",
+   "de": "Newtonfraktal",
+   "es": "Fractal de Newton",
+   "ru": "Бассейны Ньютона"
+  },
+  "wikidata": "Q1151001"
+ },
+ "maths/numerical_integration": {
+  "titles": {
+   "en": "Numerical integration",
+   "zh": "數值積分",
+   "fr": "Calcul numérique d'une intégrale",
+   "de": "Numerische Integration",
+   "es": "Integración numérica",
+   "ja": "数値積分",
+   "ru": "Численное интегрирование",
+   "ko": "수치적분",
+   "hi": "संख्यात्मक समाकलन"
+  },
+  "wikidata": "Q753445"
+ },
+ "maths/spectral_clustering": {
+  "titles": {
+   "en": "Spectral clustering",
+   "zh": "谱聚类",
+   "fr": "Partitionnement spectral",
+   "de": "Spektrales Clustering",
+   "es": "Agrupamiento espectral",
+   "ru": "Спектральная кластеризация"
+  },
+  "wikidata": "Q2976589"
+ },
+ "maths/svd_compression": {
+  "titles": {
+   "en": "Singular value decomposition",
+   "zh": "奇异值分解",
+   "fr": "Décomposition en valeurs singulières",
+   "de": "Singulärwertzerlegung",
+   "es": "Descomposición en valores singulares",
+   "ja": "特異値分解",
+   "ru": "Сингулярное разложение",
+   "ko": "특잇값 분해"
+  },
+  "wikidata": "Q420904"
+ },
+ "maths/zeta_primes": {
+  "titles": {
+   "en": "Riemann zeta function",
+   "zh": "黎曼ζ函數",
+   "fr": "Fonction zêta de Riemann",
+   "de": "Riemannsche Zeta-Funktion",
+   "es": "Función zeta de Riemann",
+   "ja": "リーマンゼータ関数",
+   "ru": "Дзета-функция Римана",
+   "ko": "리만 제타 함수",
+   "hi": "रीमान जीटा फलन"
+  },
+  "wikidata": "Q187235"
  },
  "mechanics/coupled_oscillators": {
   "titles": {
@@ -1230,6 +1555,117 @@
    "zh": "物理信息神经网络"
   },
   "wikidata": "Q107285102"
+ },
+ "physchem/arrhenius_kinetics": {
+  "titles": {
+   "en": "Arrhenius equation",
+   "zh": "阿伦尼乌斯方程",
+   "fr": "Loi d'Arrhenius",
+   "de": "Arrhenius-Gleichung",
+   "es": "Ecuación de Arrhenius",
+   "ja": "アレニウスの式",
+   "ru": "Уравнение Аррениуса",
+   "ko": "아레니우스 방정식",
+   "hi": "आरेनिअस समीकरण"
+  },
+  "wikidata": "Q507505"
+ },
+ "physchem/beer_lambert_kinetics": {
+  "titles": {
+   "en": "Beer–Lambert law",
+   "zh": "比尔-朗伯定律",
+   "fr": "Loi de Beer-Lambert",
+   "de": "Lambert-Beersches Gesetz",
+   "es": "Ley de Beer-Lambert",
+   "ja": "ランベルト・ベールの法則",
+   "ru": "Закон Бугера — Ламберта — Бера",
+   "ko": "비어-람베르트 법칙"
+  },
+  "wikidata": "Q217351"
+ },
+ "physchem/chemical_equilibrium": {
+  "titles": {
+   "en": "Chemical equilibrium",
+   "zh": "化学平衡",
+   "fr": "Équilibre chimique",
+   "de": "Chemisches Gleichgewicht",
+   "es": "Equilibrio químico",
+   "ja": "化学平衡",
+   "ru": "Химическое равновесие",
+   "ko": "화학 평형",
+   "hi": "रासायनिक साम्य"
+  },
+  "wikidata": "Q189520"
+ },
+ "physchem/hartree_fock_h2": {
+  "titles": {
+   "en": "Hartree–Fock method",
+   "zh": "哈特里-福克方程",
+   "fr": "Méthode de Hartree-Fock",
+   "de": "Hartree-Fock-Methode",
+   "es": "Método de Hartree-Fock",
+   "ja": "ハートリー＝フォック方程式",
+   "ru": "Метод Хартри — Фока",
+   "ko": "하트리-폭 방법"
+  },
+  "wikidata": "Q7879841"
+ },
+ "physchem/hcl_rovibrational": {
+  "titles": {
+   "en": "Rotational–vibrational spectroscopy",
+   "fr": "Spectroscopie rotationnelle-vibrationnelle",
+   "ja": "振動回転スペクトル"
+  },
+  "wikidata": "Q3492913"
+ },
+ "physchem/lj_liquid_rdf": {
+  "titles": {
+   "en": "Radial distribution function",
+   "zh": "径向分布函数",
+   "fr": "Fonction de distribution radiale",
+   "de": "Radiale Verteilungsfunktion",
+   "es": "Función de distribución radial",
+   "ja": "動径分布関数",
+   "ru": "Радиальная функция распределения",
+   "ko": "방사형 분포 함수"
+  },
+  "wikidata": "Q651160"
+ },
+ "physchem/marcus_electron_transfer": {
+  "titles": {
+   "en": "Marcus theory",
+   "zh": "马库斯理论",
+   "fr": "Théorie de Marcus",
+   "de": "Marcus-Theorie",
+   "es": "Teoría de Marcus",
+   "ja": "マーカス理論",
+   "ru": "Теория Маркуса",
+   "ko": "마커스 이론"
+  },
+  "wikidata": "Q905122"
+ },
+ "physchem/nernst_debye_huckel": {
+  "titles": {
+   "en": "Debye–Hückel theory",
+   "fr": "Théorie de Debye-Hückel",
+   "de": "Debye-Hückel-Theorie",
+   "es": "Teoría de Debye-Hückel",
+   "ru": "Теория Дебая — Хюккеля"
+  },
+  "wikidata": "Q3526757"
+ },
+ "physchem/particle_box_dyes": {
+  "titles": {
+   "en": "Particle in a box",
+   "zh": "無限深方形阱",
+   "fr": "Particule dans une boîte",
+   "de": "Teilchen im Kasten",
+   "es": "Partícula en una caja",
+   "ja": "井戸型ポテンシャル",
+   "ru": "Квантовая яма с бесконечными стенками",
+   "ko": "상자 속 입자"
+  },
+  "wikidata": "Q909221"
  },
  "quantum/double_well": {
   "titles": {

@@ -1,0 +1,21 @@
+source_hash: f1078e5d3894
+title: Raytracing von Kugeln
+summary: Ein winziger Raytracer im Whitted-Stil, bei dem der Strahl jedes Pixels eine Zeile eines $(H\cdot W, 3)$-Tensors ist. Alle Strahlen werden mit der Mitternachtsformel gleichzeitig gegen alle Kugeln getestet, was eine Tabelle (Strahlen $\times$ Kugeln) ergibt, deren argmin die sichtbare Oberfläche ist. Lambert- und Blinn-Phong-Schattierung, harte Schatten aus einem zweiten Stapel von Schattenstrahlen, Spiegelreflexionen und ein Schachbrettboden, während das Licht oder die Kamera die Szene umkreist.
+notes: Die Farbe eines Pixels ist $I = (1-m)\,I_\text{local} + m\,I_\text{reflected}$, wobei $m$ der Spiegelanteil der Oberfläche ist; die reflektierte Farbe entsteht durch erneutes Verfolgen des Stapels reflektierter Strahlen, die rekursive Idee von Whitted (1980). Das Schattierungsmodell ist das von Phong (1975) mit Blinns (1977) Halbvektor $\hat{\mathbf h}$. Weil $\hat{\mathbf d}$ die Länge eins hat, ist der führende Koeffizient der quadratischen Gleichung 1, also werden nur $b$ und $q$ gebraucht. Sekundärstrahlen starten in einem winzigen Abstand $\varepsilon$ von der Oberfläche, sonst treffen sie wegen Rundungsfehlern ihre eigene Kugel (Shadow Acne). Probier null Reflexionen, um die Szene ohne Spiegelungen zu sehen, einen hohen Glanzexponenten für kleine, scharfe Glanzlichter oder ein weites Sichtfeld. Echte Renderer fügen weiche Schatten, Brechung und viele Samples pro Pixel hinzu (Path Tracing), aber die gebatchte Tabelle „Strahl gegen alles“ bleibt dieselbe.
+meanings:
+- Ursprung und Einheitsrichtung des Strahls durch Pixel $p$; $d$ ist der Bildschirmpunkt $(x, y, 1)$ in der Kamerabasis, ein einsum über den Basisindex
+- Mittelpunkt und Radius von Kugel $s$
+- 'wiederholtes $i$ ⇒ summiert: jeder Strahl gegen jede Kugel in einem Aufruf'
+- nähere Wurzel der quadratischen Gleichung; $\infty$, wo $b^2 < q$ (der Strahl verfehlt) oder der Treffer dahinter liegt
+- die sichtbare Oberfläche; die Bodenebene $y = 0$ ist eine zusätzliche Spalte mit $t = -o_y/d_y$
+- diffuse und spiegelnde Faktoren, auf der abgewandten Seite auf 0 begrenzt
+- 'Schattenstrahlen zum Licht: 1, wenn vor dem Licht keine Kugel getroffen wird, sonst 0'
+- 'wiederholtes $j$ ⇒ summiert: Spiegelrichtung, der nächste Strahlenstapel'
+labels:
+  orbit: Was kreist
+  bounces: Spiegelreflexionen
+  shininess: Blinn-Phong-Exponent $\alpha$
+  fov: Sichtfeld
+  width: Bildbreite
+  height: Bildhöhe
+  frames: Bilder pro Umlauf

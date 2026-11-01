@@ -1,0 +1,20 @@
+source_hash: 15137dcd8bb9
+title: Cinética de polimerización y distribuciones de masas moleculares
+summary: ¿Por qué los polímeros de crecimiento por etapas (poliésteres, nailons) son tan polidispersos, mientras que la polimerización viva produce cadenas casi uniformes? Un balance de población sobre las longitudes de cadena, un solo tensor $(S, L)$ para ambos mecanismos, reproduce la relación de Carothers $X_n = 1/(1-p)$ y la distribución más probable de Flory $w(x) = x(1-p)^2p^{x-1}$ con dispersidad $Đ \to 2$, contrastadas con un Monte Carlo cinético de 100 000 monómeros, y la distribución de Poisson de las cadenas vivas con $Đ \approx 1 + 1/X_n$.
+notes: 'Crecimiento por etapas: cada molécula lleva extremos reactivos (aquí un A y un B, como un hidroxiácido) y CUALESQUIERA dos cadenas pueden unirse, monómero con monómero, dímero con 50-mero. La hipótesis de reactividad igual de Flory (la velocidad no depende de la longitud de cadena) convierte el balance de población en la ecuación de coagulación de Smoluchowski con núcleo constante, cuya solución exacta es la distribución más probable: ha reaccionado una fracción $p$ de los extremos, así que una cadena de longitud $x$ es una secuencia de $x - 1$ enlaces formados terminada en un extremo sin reaccionar, con probabilidad $(1-p)p^{x-1}$. Sus promedios son los de Carothers, $X_n = 1/(1-p)$ y $X_w = (1+p)/(1-p)$, así que $Đ = 1 + p \to 2$. La lección práctica es dura: una conversión del 98 % da solo $X_n = 50$, y las cadenas largas necesitan $p > 0.99$ y un equilibrio 1:1 perfecto de grupos reactivos. El crecimiento de cadena vivo (aniónico, o métodos radicalarios controlados como ATRP
+  o RAFT, que se le aproximan) es lo contrario: todas las cadenas empiezan juntas y crecen de monómero en monómero sin terminación, así que tras $\nu$ adiciones por cadena las longitudes siguen una distribución de Poisson y $Đ = 1 + \nu/(1+\nu)^2 \approx 1 + 1/X_n$ tiende a 1. La forma tensorial mantiene ambos mecanismos en un tensor $(S, L)$ que avanza con RK4. La convolución del crecimiento por etapas $\sum_y P_y P_{x-y}$ es un einsum con una matriz de Toeplitz construida a partir de $P$ (una FFT haría lo mismo en $O(L\log L)$). Como las dos filas usan relojes con $X_n = 1 + s$, cada fotograma compara ambos mecanismos al mismo $X_n$, sobre un eje $x / X_n$ en el que la forma de Flory es fija y el pico de Poisson se estrecha. El Monte Carlo cinético une pares de cadenas aleatorias; coincide con el balance de población salvo el ruido de muestreo, que crece hacia el final porque solo quedan $N_0(1-p)$ cadenas (2000 con $p = 0.98$). Simplificaciones: sin formación de anillos, sin reacciones
+  secundarias, una estequiometría A–B perfectamente equilibrada, longitudes de cadena truncadas en $L$ (la cola omitida es menor que $10^{-6}$) y, en el caso vivo, iniciación instantánea sin terminación ni transferencia. La polimerización radicalaria convencional, con terminación, queda en medio ($Đ \approx 1.5$–2).'
+meanings:
+- 'cadenas de longitud $x$ ($x = 1 … L$) para el mecanismo $s$: 0 = por etapas (por monómero), 1 = viva (por iniciador)'
+- 'un reloj para ambas filas: $\tau = kN_0t$ para el crecimiento por etapas, $\nu = \int k_p[M]\,dt$ para el crecimiento vivo'
+- matriz de Toeplitz construida a partir de las poblaciones; cero donde $x - y < 1$
+- '$y$ repetido ⇒ sumado: todas las formas de unir un $y$-mero con un $(x-y)$-mero'
+- una cadena reacciona por cualquiera de sus dos extremos con cualquiera de las $N$ cadenas
+- las cadenas vivas solo añaden monómero, una unidad cada vez, y nunca terminan
+- '$x$ sumado: los momentos $k = 0, 1, 2$ dan $X_n = \mu_1/\mu_0$, $X_w = \mu_2/\mu_1$'
+- 'solución exacta del crecimiento por etapas: cadenas por monómero inicial a la conversión $p = \tau/(1+\tau)$'
+- solución exacta del crecimiento vivo, con lgamma para el factorial
+- 'unir dos cadenas aleatorias enlace a enlace: una comprobación estocástica independiente'
+labels:
+  p_max: Conversión final $p$ (crecimiento por etapas)
+  n_monomers: Monómeros en el Monte Carlo $N_0$

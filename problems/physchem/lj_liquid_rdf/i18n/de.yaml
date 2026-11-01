@@ -1,0 +1,23 @@
+source_hash: cb188a4168d9
+title: 'Lennard-Jones-Fluid: Molekulardynamik und radiale Verteilungsfunktion'
+summary: 'Fünfhundert Atome, die über das Lennard-Jones-Potential in einer periodischen Box wechselwirken, integriert mit Velocity-Verlet. Alle Paarvektoren liegen in einem einzigen gebroadcasteten Tensor mit der Minimum-Image-Konvention, und drei Zustandspunkte (Gas, Flüssigkeit nahe dem Tripelpunkt und ein komprimierter Festkörper) laufen als ein Batch. Ein Berendsen-Thermostat stellt die Temperatur ein, danach folgt ein energieerhaltender NVE-Lauf, und Histogramme der Paarabstände liefern $g(r)$: flach für das Gas, gedämpfte Schalen für die Flüssigkeit, scharfe Gitterpeaks für den Festkörper. Das Virial liefert den Druck.'
+notes: 'Reduzierte Einheiten: Längen in $\sigma$, Energien in $\varepsilon$, Masse 1, $T^* = k_BT/\varepsilon$, Zeit $\tau = \sigma\sqrt{m/\varepsilon}$; für Argon gilt $\sigma = 3.4$ Å, $\varepsilon/k_B = 120$ K, der flüssige Zustandspunkt liegt also bei etwa 86 K. Das ist die Simulation, die Rahman 1964 für flüssiges Argon durchführte (Phys. Rev. 136, A405), mit dem Integrator und der $g(r)$-Analyse, die Verlet 1967 einführte (Phys. Rev. 159, 98). Das Potential wird bei $r_c = 2.5\sigma$ abgeschnitten und dort auf null verschoben, damit die Energie stetig ist; der Druck erhält die übliche Tail-Korrektur $\tfrac{16}{3}\pi\rho^2[\tfrac23 r_c^{-9} - r_c^{-3}]$, die $g = 1$ jenseits des Abschneideradius annimmt. Der Berendsen-Thermostat skaliert die Geschwindigkeiten in Richtung der Zieltemperatur; er erzeugt keine exakten kanonischen Fluktuationen und wird daher nur zur Äquilibrierung verwendet, und die Messungen stammen aus einem reinen NVE-Lauf, bei dem der flache Energieverlauf den Integrator
+  prüft. Gas und Flüssigkeit starten heiß, damit das Gitter schmilzt. Der erste Peak von $g(r)$ der Flüssigkeit liegt nahe dem Potentialminimum $2^{1/6}\sigma$, spätere Schalen sind gedämpft, und $g \to 1$ bei etwa $3\sigma$; der Festkörper behält die kfz-Peaks. Für das Gas wird der Druck mit dem idealen Gas und mit der Korrektur des zweiten Virialkoeffizienten $P = \rho T(1 + B_2\rho)$ verglichen, $B_2$ numerisch integriert. Die Läufe sind kurz (einige $\tau$), daher haben die Mittelwerte ein statistisches Rauschen von einigen Prozent. Der volle Paartensor kostet $O(N^2)$ pro Schritt; Produktionscodes verwenden Zellen- oder Nachbarlisten, um Millionen von Atomen zu erreichen.'
+meanings:
+- Gas $(0.05, 1.5)$, Flüssigkeit $(0.84, 0.72)$, Festkörper $(1.10, 0.60)$ in reduzierten Einheiten
+- Start auf einem kfz-Gitter, $N = 4n^3$ Atome, Box $L_s = (N/\rho_s)^{1/3}$
+- alle Paarvektoren auf einmal per Broadcasting, dann auf das nächste Bild zurückgefaltet
+- wiederholtes $a$ ⇒ summiert
+- $-u^{\prime}(r)/r$, null auf der Diagonale und jenseits von $r_c = 2.5\sigma$
+- wiederholtes $j$ ⇒ summiert; $d_{saji} = -d_{saij}$ liefert Newtons drittes Gesetz gratis
+- 'halber Kick, Drift (in die Box zurückgefaltet), neue Kräfte, halber Kick: zeitumkehrbar und energieerhaltend'
+- Berendsen-Thermostat nur während der Äquilibrierung
+- $\rho T + W/3V$ plus die Tail-Korrektur für Paare jenseits von $r_c$
+- Paare pro Schale geteilt durch die Zahl im idealen Gas $\tfrac12 N\rho\,4\pi r^2\Delta r$
+labels:
+  rho_liquid: Dichte der Flüssigkeit $\rho^*$
+  T_liquid: Temperatur der Flüssigkeit $T^*$
+  n_cells: kfz-Zellen pro Seite ($N = 4n^3$)
+  dt: Zeitschritt $\Delta t$
+  equilibration_steps: Äquilibrierungsschritte
+  production_steps: Produktionsschritte

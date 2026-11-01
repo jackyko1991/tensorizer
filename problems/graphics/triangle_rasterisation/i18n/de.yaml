@@ -1,0 +1,20 @@
+source_hash: e60c88b1723d
+title: Dreiecksrasterisierung mit einem Z-Buffer
+summary: 'So zeichnen Spiele 3D: Projiziere ein Dreiecksnetz auf den Bildschirm und berechne die baryzentrischen Gewichte aller (Pixel, Dreieck)-Paare auf einmal. Eine Min-Reduktion über die Dreiecke ist der Z-Buffer. Dieselben Gewichte steuern dann Flat-, Gouraud- und Phong-Shading sowie Texturabfragen. Texturkoordinaten mit $\lambda/z$ (perspektivisch korrekt) statt mit $\lambda$ (affin) zu interpolieren, hält einen karierten Boden gerade.'
+notes: 'Baryzentrische Gewichte sind vorzeichenbehaftete Flächen: $\lambda_k$ ist die Fläche des kleinen Dreiecks gegenüber Ecke $k$ geteilt durch die Gesamtfläche, also summieren sich die drei zu 1 und sind genau im Inneren alle positiv. Hier werden sie für jedes Pixel und jedes Dreieck auf einmal berechnet – die Brute-Force-Version dessen, was eine GPU in Hardware tut. Das Kacheln der Pixel hält den $(P, T, 3)$-Tensor unter einigen Millionen Einträgen; ein echter Rasterisierer besucht nur den Begrenzungsrahmen jedes Dreiecks. Das Vorzeichen der Fläche im Bildschirmraum liefert außerdem gratis das Back-Face-Culling: Etwa die Hälfte eines geschlossenen Netzes zeigt von der Kamera weg. Die Tiefe entlang eines Dreiecks ist auf dem Bildschirm nicht linear, $1/z$ aber schon, daher verwenden sowohl der Z-Buffer-Test als auch jedes interpolierte Attribut die Gewichte $\lambda_k/z_k$. Der Boden besteht nur aus zwei Dreiecken, daher verbiegt affine Interpolation (im Stil der PlayStation 1) seine
+  Schachbrettlinien sichtbar, während die perspektivisch korrekte Version sie gerade hält. Flat-Shading zeigt jede Facette. Gouraud beleuchtet die Ecken und mischt die Helligkeit, was das Glanzlicht verschmiert. Phong mischt die Normalen und beleuchtet jedes Pixel, was das Glanzlicht scharf hält.'
+meanings:
+- Netzvertices plus die 4 Bodenecken; Flächen $(T, 3)$ indizieren in sie hinein
+- 'wiederholtes $j$ ⇒ summiert: das Netz drehen (eine Rotation pro Frame)'
+- Bildschirmposition und Tiefe der Ecke $k$ von Dreieck $t$ (Lochkamera $f\,(x, y)/z$)
+- die Hälfte von $\varepsilon_{ij}(v_1 - v_0)_i (v_2 - v_0)_j$; $A_t \le 0$ ⇒ Rückseite, verworfen
+- baryzentrische Gewichte jedes Pixels in jedem Dreieck; in Pixelkacheln berechnet, um den Speicher zu begrenzen
+- 'wiederholtes $k$ ⇒ summiert: $1/z$ ist das, was auf dem Bildschirm linear variiert'
+- 'der Z-Buffer: nächstes überdeckendes Dreieck pro Pixel (Pixel außerhalb sind $+\infty$)'
+- Texturkoordinaten, Normalen, Positionen, Gouraud-Helligkeit mit den Gewichten $\lambda/z$ interpoliert
+- 'affine Interpolation: richtig für frontal liegende Dreiecke, falsch für geneigte'
+labels:
+  mesh: Netz
+  resolution: Bildgröße
+  frames: Frames pro Umdrehung
+  tilt: Neigung um $x$

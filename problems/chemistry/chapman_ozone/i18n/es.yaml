@@ -1,0 +1,21 @@
+source_hash: 909629a494c2
+title: Mecanismo de Chapman y la capa de ozono
+summary: 'Cuatro reacciones entre O, O₂ y O₃, impulsadas por la luz solar, forman una capa de ozono. Escrito como una red de reacciones $\dot c = S\,r(c)$ con una matriz estequiométrica $3\times4$, el sistema rígido se integra con Euler implícito y pasos de Newton en todas las altitudes a la vez, desde el amanecer hasta siglos después: O y O₃ intercambian sus papeles en segundos, el oxígeno impar tarda de días a siglos en estabilizarse, y el estado estacionario tiene su máximo cerca de 30 km.'
+notes: 'Sydney Chapman (1930) explicó la capa de ozono con cuatro reacciones. La luz ultravioleta por debajo de 242 nm disocia el $\mathrm{O_2}$ (1); cada átomo de O se une rápidamente a un $\mathrm{O_2}$ con un tercer cuerpo $\mathrm M$ que se lleva la energía (2); el ozono absorbe luz ultravioleta y visible y se disocia de nuevo (3), que es como protege la superficie, pero esto no destruye el «oxígeno impar» $\mathrm O_x = \mathrm O + \mathrm{O_3}$; solo lo hace $\mathrm O + \mathrm{O_3} \to 2\,\mathrm{O_2}$ (4). Las reacciones (2) y (3) intercambian O y $\mathrm{O_3}$ en milisegundos o minutos, mientras que (1) y (4) fijan el total en días en la estratosfera alta y en décadas o más en niveles bajos: un sistema rígido con escalas de tiempo separadas por $10^{14}$, de modo que un método explícito necesitaría miles de millones de pasos, mientras que Euler implícito (estable para cualquier $\Delta t$) usa 300 pasos espaciados uniformemente en $\log t$. Cada columna de $S$ conserva los átomos
+  de oxígeno, y Euler implícito conserva exactamente estos invariantes lineales. Equilibrar los dos pares da $[\mathrm{O_3}] \approx [\mathrm{O_2}]\sqrt{j_1 k_2[\mathrm M]/(j_3 k_4)}$: al bajar, el aire (y con él $[\mathrm{O_2}]^{3/2}$) se vuelve exponencialmente más denso mientras se agota la luz que disocia el $\mathrm{O_2}$, y el producto tiene su máximo donde la profundidad óptica oblicua del $\mathrm{O_2}$ vale aproximadamente 3. Las constantes de velocidad $k_2$, $k_4$ son los valores de la evaluación del JPL (aproximados); las tasas de fotólisis usan una sola banda efectiva por molécula con parámetros ilustrativos, en lugar de una integración sobre el espectro solar, y el sol brilla todo el tiempo. Por debajo de unos 18 km la vida media del oxígeno impar supera incluso la simulación más larga, así que esos niveles nunca se estabilizan; en la atmósfera real los vientos llevan ozono hasta allí. La química de Chapman por sí sola da demasiado ozono (aquí un máximo cerca de $8\times10^{12}$
+  cm$^{-3}$ y unas 380 DU por encima de 15 km, frente a unos $5\times10^{12}$ cm$^{-3}$ hacia 20–25 km y 300 DU observados). Los sumideros que faltan son los ciclos catalíticos $\mathrm X + \mathrm{O_3} \to \mathrm{XO} + \mathrm{O_2}$, $\mathrm{XO} + \mathrm O \to \mathrm X + \mathrm{O_2}$, que realizan la reacción (4) muchas veces por cada catalizador: los NOₓ (Crutzen, 1970) y el cloro de los CFC (Molina y Rowland, 1974), la química detrás del agujero de ozono y del Protocolo de Montreal (Premio Nobel 1995).'
+meanings:
+- densidades numéricas de $\mathrm O$, $\mathrm{O_2}$, $\mathrm{O_3}$ a la altitud $a$, en cm$^{-3}$
+- moléculas netas de la especie $s$ producidas por la reacción $r$; la columna 1 es $(2, -1, 0)$ para $\mathrm{O_2} \to 2\,\mathrm O$
+- '$s$ repetido ⇒ sumado: átomos de oxígeno producidos por cada reacción, todos cero'
+- velocidades de acción de masas de las cuatro reacciones
+- '$r$ repetido ⇒ sumado: $dc/dt$'
+- jacobiano de la red, $r$ repetido sumado
+- una actualización de Newton del paso de Euler implícito, un sistema $3\times3$ por altitud
+- $6.0\times10^{-34}(T/300)^{-2.4}$ cm$^6$ s$^{-1}$ y $8.0\times10^{-12}e^{-2060/T}$ cm$^3$ s$^{-1}$ (JPL, aproximado)
+- tasas de fotólisis atenuadas por las columnas de $\mathrm{O_2}$ y $\mathrm{O_3}$ superiores (modelo ilustrativo de una banda)
+- estado estacionario exacto de Chapman a partir de una ecuación cuadrática en $[\mathrm O]$
+labels:
+  sza: Ángulo cenital solar
+  log10_t_end: Duración de la simulación $\log_{10}(t/\mathrm{s})$
+  levels: Niveles de altitud

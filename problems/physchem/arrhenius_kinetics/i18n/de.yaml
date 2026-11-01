@@ -1,0 +1,24 @@
+source_hash: 65c4646e64b8
+title: Geschwindigkeitsgesetze und der Arrhenius-Plot
+summary: Wie schnell läuft eine Reaktion ab, und wie viel schneller, wenn es wärmer ist? Die Geschwindigkeitsgesetze nullter, erster und zweiter Ordnung werden für sechs Temperaturen gleichzeitig in einem $(O, T)$-Tensor integriert, mit $k(T) = A\,e^{-E_a/RT}$. Ein verrauschtes synthetisches Experiment verrät dann seine Ordnung (welche Auftragung von $[A]$, $\ln[A]$ oder $1/[A]$ ist gerade?) und seine Aktivierungsenergie (eine Ausgleichsgerade durch $\ln k$ gegen $1/T$).
+notes: 'Jedes Geschwindigkeitsgesetz hat eine integrierte Form, die in der richtigen Variablen eine Gerade ergibt: $[A] = [A]_0 - kt$ (nullte Ordnung), $\ln[A] = \ln[A]_0 - kt$ (erste) und $1/[A] = 1/[A]_0 + kt$ (zweite). Also trägt ein Chemiker alle drei auf und behält die geradeste ($R^2$ am nächsten an 1); ihre Steigung ist $\mp k$. Ein zweiter Test nutzt Halbwertszeiten: Da $t_{1/2} \propto [A]_0^{1-n}$, ist die Zeit von $[A]_0/2$ bis $[A]_0/4$ das $2^{n-1}$-Fache der ersten Halbwertszeit (kürzer, gleich oder doppelt so lang), was $n = 1 + \log_2(t_{1/2}^{(2)}/t_{1/2}^{(1)})$ ergibt. Wiederholt man den Versuch bei mehreren Temperaturen, erhält man $k(T)$, und der Arrhenius-Plot von $\ln k$ gegen $1/T$ ist eine Gerade mit Steigung $-E_a/R$. Mit $E_a = 75$ kJ/mol beschleunigt eine Erwärmung von 290 K auf 300 K die Reaktion etwa um den Faktor 2,8; die alte Faustregel „doppelt so schnell pro 10 K“ entspricht $E_a \approx 50$ kJ/mol nahe Raumtemperatur. Jeder Versuch wird verfolgt, bis 90
+  % von A reagiert haben, daher dauern kalte Versuche viel länger als heiße (siehe Legende); die linke Grafik verwendet den Anteil der jeweiligen Versuchszeit, damit alle sechs auf eine Achse passen, was nichts daran ändert, welche Auftragung gerade ist. Die Daten sind synthetisch (eine erfundene Reaktion, Gaußsches Rauschen mit festem Seed). Das Bilden von $\ln$ oder $1/x$ vergrößert das Rauschen später, verdünnter Punkte ($\sigma/[A]$ und $\sigma/[A]^2$), daher wird jeder Punkt mit $(dg/d[A])^{-2}$ gewichtet, also mit $1$, $[A]^2$ oder $[A]^4$, und Punkte unter 2 % von $[A]_0$ werden weggelassen. Probier ein größeres Rauschen, um zu sehen, wie der $R^2$-Test weniger eindeutig wird, oder einen engeren Temperaturbereich, um den Fehler von $E_a$ wachsen zu sehen.'
+meanings:
+- sechs Temperaturen zwischen $T_{min}$ und $T_{max}$ (K)
+- Reaktionsordnungen $0, 1, 2$, nebeneinander integriert
+- Arrhenius-Geschwindigkeitskonstante, in $\mathrm{M}^{1-n}\,\mathrm{s^{-1}}$
+- Geschwindigkeit jedes Versuchs; kein Index summiert, $k_t$ wird über die Ordnungen gebroadcastet
+- jeder Versuch wird bis 90 % Umsatz verfolgt, auf seiner eigenen Uhr $t = \tau\,t_{end}$
+- RK4-Trajektorie, in den Tests mit den exakten integrierten Gesetzen verglichen
+- die drei Auftragungen gegen $t$; nur die richtige Ordnung ergibt eine Gerade
+- Designmatrix einer Geradenanpassung
+- Matrix der Normalgleichungen; $s$ (die Messpunkte) summiert; Gewichte $w_s = (dg/d[A])^{-2}$, und $w_s = 0$ verwirft Punkte unter 2 % von $[A]_0$
+- Achsenabschnitt und Steigung, für jede Auftragung und Temperatur gleichzeitig
+- 'Arrhenius-Gerade: Steigung $-E_a/R$, Achsenabschnitt $\ln A$'
+labels:
+  Ea: Aktivierungsenergie $E_a$
+  log10_A: Präexponentieller Faktor $\log_{10} A$
+  order: Ordnung der gemessenen Reaktion
+  T_min: Niedrigste Temperatur $T_{min}$
+  T_max: Höchste Temperatur $T_{max}$
+  noise: Messrauschen $\sigma$

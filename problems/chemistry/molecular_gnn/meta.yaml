@@ -1,0 +1,53 @@
+title: 'A graph neural network for molecules (message passing)'
+category: chemistry
+level: advanced
+order: 2
+summary: >
+  A molecule is a graph, and a message-passing neural network is a few einsums over its adjacency matrix:
+  every atom repeatedly sums its neighbours' states, $s_{mic} = A_{mij}h_{mjc}$, and the molecule's prediction is a
+  sum over atoms. Trained to predict the Hückel π-electron energy of random conjugated hydrocarbons, it gives the
+  same answer however the atoms are numbered, and it still works on molecules larger than any it was trained on,
+  where a plain MLP on the adjacency matrix fails.
+animated: true
+vector_form: 'y = \sum_k o_k\lambda_k(A),\qquad \mathbf h_i^{(l+1)} = \sigma\Big(U\,\mathbf h_i^{(l)} + V\!\!\sum_{j\in\mathcal N(i)}\!\mathbf h_j^{(l)} + \mathbf c\Big),\qquad \hat y = \sum_i e\big(\mathbf h_i^{(L)}\big),\qquad \hat y(\Pi A\Pi^{\mathsf T}, \Pi X) = \hat y(A, X)'
+index_form: 'h^0_{mic} = \sigma(x_{mif}W_{fc} + b_c),\qquad s_{mic} = A_{mij}\,h_{mjc},\qquad h''_{mid} = h_{mid} + \sigma\big(h_{mic}U_{cd} + s_{mic}V_{cd} + c_d\big),\qquad \hat y_m = \mathrm{mask}_{mi}\,e_{mi}'
+translation:
+  - {symbol: 'A_{mij}', code: 'data["A"]', shape: '(M, N, N)', meaning: 'adjacency of the carbon skeleton of molecule $m$, padded with zeros to $N = 16$ atoms'}
+  - {symbol: 'x_{mif}', code: 'features(A, mask)', shape: '(M, N, 3)', meaning: 'atom features: one-hot number of carbon neighbours (1, 2 or 3)'}
+  - {symbol: 'y_m = o_k\lambda_{mk}', code: 'huckel_energy(A, mask)', shape: '(M,)', meaning: 'the target: occupied Hückel eigenvalues of $A$ (eigvalsh), π energy in units of $|\beta|$'}
+  - {symbol: 'h^0_{mic}', code: "einsum('mif,fc->mic', x, W)", shape: '(M, N, C)', meaning: '$f$ summed: embed each atom into $C$ channels'}
+  - {symbol: 's_{mic} = A_{mij}h_{mjc}', code: "einsum('mij,mjc->mic', A, h)", shape: '(M, N, C)', meaning: 'repeated $j$ ⇒ summed over the neighbours of atom $i$: the message'}
+  - {symbol: 'h_{mic}U_{cd} + s_{mic}V_{cd}', code: "einsum('mic,cd->mid', h, U) + einsum('mic,cd->mid', s, V)", shape: '(M, N, C)', meaning: '$c$ summed: the same weights for every atom of every molecule'}
+  - {symbol: 'e_{mi}', code: 'atom_contributions(h, Q1, q1, Q2, q2)', shape: '(M, N)', meaning: 'a learned energy per atom (the colours on the molecule)'}
+  - {symbol: '\hat y_m = \mathrm{mask}_{mi}e_{mi}', code: 'e.sum(-1)', shape: '(M,)', meaning: '$i$ summed over real atoms: size-extensive and independent of the atom order'}
+  - {symbol: '\Pi A \Pi^{\mathsf T}', code: 'A[:, perm][:, :, perm]', shape: '(M, N, N)', meaning: 'relabelling the atoms: the GNN output stays the same to float precision'}
+  - {symbol: '\mathrm{MLP}(\mathrm{vec}\,A_m)', code: 'mlp(data, w)', shape: '(M,)', meaning: 'baseline: a fixed-size network on the 256 flattened adjacency entries'}
+notes: >
+  The data are synthetic on purpose, so that the right answer is known exactly. Each "molecule" is a random
+  hydrogen-suppressed carbon skeleton (a tree with at most three neighbours per carbon, closed into some 5- and
+  6-membered rings): graph-theoretic toys, not a curated set of real compounds. Its label is the Hückel π-electron
+  energy: with $H = \alpha + \beta A$ and one π electron per carbon filling the orbitals of highest eigenvalue
+  $\lambda_k$ of $A$, $E_\pi = N\alpha + \beta\,\sum_k o_k\lambda_k$, and the network learns
+  $y = \sum_k o_k\lambda_k$ from the graph alone. It never sees an eigenvalue. The tensor lesson is that a
+  graph neural network needs only one new operation, the einsum over the adjacency $A_{mij}h_{mjc}$, which
+  sums the states of the neighbours of every atom in every molecule at once. All weights act on one atom at a time,
+  and atoms are combined only through $A$ and the final sum, so the model is permutation invariant by
+  construction and the same weights fit a molecule of any size. The console shows both properties: relabelling the
+  atoms changes the GNN output by about $10^{-6}$ (float32 rounding) and the MLP output by whole units of $|\beta|$;
+  on molecules with 11–16 carbons, larger than any in training, the MLP has never seen anything in the extra rows of its
+  input and fails, while the GNN error barely grows. Compare with the "bond counting" baseline $aN + bN_{bonds} + c$:
+  π energy is nearly additive (about $1.2|\beta|$ per carbon), and the GNN's real job is the corrections from
+  branching, rings and odd electrons, where it roughly halves the error. Four rounds of messages only reach four
+  bonds, so effects that depend on the whole conjugated system (aromaticity, 4n-rings) are learned only
+  approximately. This is the message-passing neural network (MPNN) framework of Gilmer et al. (ICML 2017), who
+  showed that many earlier molecular graph networks fit this pattern and trained them on DFT properties of the QM9
+  molecules. Models in this family (SchNet, DimeNet, equivariant networks such as NequIP or MACE that also use 3D
+  geometry) are now widely used to predict molecular properties and fit interatomic potentials, but they are only as
+  good as their training data and can fail on chemistry unlike it. Try 1 layer (only nearest neighbours), fewer
+  training molecules, or a narrower network.
+params:
+  n_train: {default: 2000, min: 200, max: 5000, step: 100, type: int, label: Training molecules}
+  epochs: {default: 120, min: 10, max: 300, step: 10, type: int, label: Training epochs}
+  width: {default: 32, min: 8, max: 64, step: 8, type: int, label: 'Channels $C$'}
+  layers: {default: 4, min: 1, max: 6, step: 1, type: int, label: 'Message-passing layers $L$'}
+  lr: {default: 0.005, min: 0.0005, max: 0.02, step: 0.0005, label: Adam learning rate}

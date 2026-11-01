@@ -1,0 +1,21 @@
+source_hash: 9576f7bf38f3
+title: Markow-Ketten und PageRank
+summary: Ein zufälliger Surfer klickt auf Links in einem kleinen synthetischen Web und springt ab und zu auf eine zufällige Seite. Die Wahrscheinlichkeit, auf jeder Seite zu sein, entwickelt sich mit einem Matrix-Vektor-Produkt pro Klick, und ihre stationäre Verteilung ist der PageRank, hier gefunden per Potenzmethode, per Eigenzerlegung und mit Tausenden simulierter Surfer gleichzeitig.
+notes: '$S$ ist spaltenstochastisch, bildet also Wahrscheinlichkeitsvektoren auf Wahrscheinlichkeitsvektoren ab, aber ein Web-Graph hat Seiten ohne ausgehende Links und Gruppen von Seiten, die den Surfer festhalten. Sackgassenseiten bekommen eine gleichverteilte Spalte (der Surfer tippt eine zufällige Adresse ein), und der Teleportationsterm macht jeden Eintrag von $G$ positiv. Nach dem Satz von Perron-Frobenius ist die stationäre Verteilung dann eindeutig, positiv und von jedem Startpunkt aus erreichbar. Jeder andere Eigenwert von $G$ ist $d$ mal ein Eigenwert von $S$, also gilt $|\lambda_2| \le d$, und die Potenzmethode konvergiert mindestens so schnell wie $d^k$. Das rechte Feld zeigt den gemeinsam gelösten Batch von Dämpfungsfaktoren. Mit $d = 0.85$ (dem von Brin und Page 1998 vorgeschlagenen Wert) verkleinern 50 Schritte den Fehler um mindestens $0.85^{50} \approx 3\times10^{-4}$, unabhängig von der Größe des Webs. Die Surfer sind eine Monte-Carlo-Schätzung derselben Kette: Ihre Anteile
+  folgen $\mathbf x_k$ bis auf Rauschen der Größenordnung $1/\sqrt W$, und die zeitliche Mittelung liefert Ränge, die mit der Potenzmethode übereinstimmen. Entfernt man die Korrektur für Sackgassen, versickert Wahrscheinlichkeit, wie das Terminal zeigt. Probier $d \to 1$, um zu sehen, wie die Konvergenz langsamer wird und sich die Ränge in geschlossenen Seitengruppen anhäufen.'
+meanings:
+- '1, wenn Seite $j$ auf Seite $i$ verlinkt: Spalten sind die Seiten, die ein Surfer verlässt'
+- 'summiert über $i$: Anzahl ausgehender Links von Seite $j$'
+- einen zufälligen Link anklicken; eine Sackgassenseite ($d_j = 0$) bekommt die gleichverteilte Spalte $1/N$
+- Google-Matrix für einen Batch von Dämpfungsfaktoren $d_b$; $1 - d$ ist die Teleportationswahrscheinlichkeit
+- 'wiederholtes $j$ ⇒ summiert: ein Schritt der Potenzmethode für jedes $d_b$ gleichzeitig'
+- Eigenvektor zum Eigenwert 1, auf Summe 1 normiert; $G$ ist nicht symmetrisch, daher eig statt eigh
+- 'Betrag des zweitgrößten Eigenwerts: Der Fehler schrumpft pro Schritt um diesen Faktor, und $|\lambda_2| \le d$'
+- 'Seite jedes der $W$ Surfer: mit Wahrscheinlichkeit $d$ einem Link folgen, sonst teleportieren'
+labels:
+  damping: Dämpfungsfaktor $d$
+  pages: Seiten $N$
+  dangling: Sackgassenseiten
+  walkers: Zufällige Surfer $W$
+  iterations: Schritte
+  seed: Seed des Graphen

@@ -1,0 +1,19 @@
+source_hash: 88e5f57d0eb4
+title: L'ensemble de Mandelbrot et les ensembles de Julia
+summary: Itérez $z \mapsto z^2 + c$ sur toute une grille de pixels complexes à la fois. Les points dont l'orbite reste bornée forment l'ensemble de Mandelbrot $M$ (on fait varier $c$, en partant de $z_0 = 0$) ou un ensemble de Julia rempli $K_c$ (on fixe $c$, en partant du pixel). Un compte d'échappement lissé et une estimation de distance à partir de la dérivée gardent l'image nette tout au long d'un zoom dans la vallée des hippocampes, tandis que l'ensemble de Julia change de forme quand $c$ parcourt la cardioïde principale.
+notes: 'Pourquoi s''échapper dès que $|z| > 2$ : si $|z| > \max(2, |c|)$ alors $|z^2 + c| \ge |z|^2 - |c| > |z|$, et l''orbite croît sans limite. Ainsi tout $c$ avec $|c| > 2$ s''échappe dès le premier pas, et $M$ est contenu dans le disque $|c| \le 2$. Un seuil plus grand $R = 1000$ est utilisé ici, car il rend précis le compte lissé $\nu = n + 1 - \log_2 \ln|z_n|$ : près de l''infini, $z \mapsto z^2$ double $\ln|z|$ à chaque pas, et $\log_2$ défait exactement cela. La cardioïde principale est l''ensemble des $c$ pour lesquels $z^* = z^{*2} + c$ est un point fixe attractif, $|2z^*| < 1$ ; en posant $2z^* = w$ on obtient $c = w/2 - w^2/4$ avec $|w| \le 1$, et le bourgeon de période 2 est la région où le 2-cycle est attractif, $|4(1+c)| < 1$. Ces deux morceaux couvrent environ 1,37 de l''aire totale $\approx 1.5066$ de $M$, et aucun pixel à l''intérieur ne s''échappe jamais. L''estimation de distance $d = |z_n|\ln|z_n|/|z''_n|$ provient du potentiel $G(c) = \lim 2^{-n}\ln|z_n|$, sous la forme
+  $G/|\nabla G|$ ; près de l''ensemble, la vraie distance est à un facteur 2 environ de cette valeur (une conséquence du théorème du quart de Koebe). Le panneau de Julia garde $c$ sur le bord de la cardioïde, où le point fixe est neutre : $K_c$ y est toujours connexe puisque $c \in M$, mais sa forme change complètement d''un angle à l''autre. Chaque ensemble de Julia ressemble à $M$ près du $c$ correspondant, c''est pourquoi les zooms dans $M$ montrent de petits ensembles de Julia. Les zooms au-delà d''environ $10^{-13}$ demandent plus que les 16 chiffres de complex128.'
+meanings:
+- un nombre complexe par pixel $p$ ; aucun indice n'est sommé, chaque pixel évolue indépendamment
+- un pas de l'application quadratique pour tous les pixels encore en cours d'itération
+- 'dérivation en chaîne : $c'' = 1$ pour $M$ (dérivée par rapport à $c$), $c'' = 0$ et $z''_0 = 1$ pour les ensembles de Julia (dérivée par rapport à $z_0$)'
+- premier pas avec $|z_p| > R$ ; les pixels échappés sont retirés des tenseurs, donc le travail diminue
+- 'compte d''échappement lissé (continu) : pas de marches de couleur entre les bandes'
+- 'estimation de distance : les pixels dont $d_p$ est inférieur à un quart de pixel sont dessinés en sombre, ce qui révèle les filaments fins'
+- test exact pour la cardioïde principale (et $|c+1| \le \frac14$ pour le bourgeon de période 2), avec $q = (x-\frac14)^2 + y^2$
+labels:
+  target: Cible du zoom
+  zoom_decades: Profondeur du zoom (puissances de 10)
+  resolution: Pixels par côté
+  max_iter: Itérations au départ (+150 par décade)
+  frames: Images

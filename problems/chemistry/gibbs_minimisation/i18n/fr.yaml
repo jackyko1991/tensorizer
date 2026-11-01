@@ -1,0 +1,22 @@
+source_hash: 955b219d37d6
+title: Équilibre chimique par minimisation de l'enthalpie libre
+summary: Que sort-il d'une flamme méthane–air ? À $T$ et $P$ fixés, les produits s'établissent là où l'enthalpie libre $G = \sum_j n_j \mu_j$ est minimale, sous la contrainte de conservation de chaque élément, $A_{ij} n_j = b_i$. Une méthode de Newton par lots (la méthode RAND) résout 10 espèces sur toute une gamme de températures à la fois, montre CO₂ et H₂O se dissocier en CO, H₂, OH, H et O quand le gaz chauffe, et trouve la température de flamme adiabatique.
+notes: 'Pourquoi minimiser $G$ ? À $T$ et $P$ constants, le second principe dit qu''un système fermé ne peut que diminuer son enthalpie libre ; l''équilibre est donc le point le plus bas de $G$ qui conserve chaque atome : une minimisation sous contraintes. Avec des multiplicateurs de Lagrange $\pi_i$ (un par élément), la condition s''écrit $\mu_j/RT = \sum_i \pi_i A_{ij}$ : le potentiel chimique de chaque espèce est la somme des « potentiels des éléments » de ses atomes. Cela remplace une liste de constantes d''équilibre (une par réaction) par une seule optimisation sur toutes les espèces, et c''est ainsi que des codes comme NASA CEA, STANJAN et Cantera calculent flammes, gaz d''échappement de fusées et atmosphères. Le solveur utilisé ici est la méthode RAND sous la forme de Gordon–McBride (NASA RP-1311) : la méthode de Newton sur $\ln n_j$, réduite à un petit système $(E{+}1)\times(E{+}1)$ pour $\pi_i$ et $\Delta\ln n_{tot}$, avec un pas limité de sorte que les espèces majoritaires varient
+  d''au plus $e^2$ par pas. Travailler en logarithmes garde positives et exactes les espèces à l''état de traces, de fraction molaire $10^{-30}$. La console affiche les deux tests d''optimalité (bilan des éléments et $\mu_j/RT = \pi_i A_{ij}$, tous deux proches de la précision machine) et un test par autograd : dériver $G/RT$ avec torch redonne $\pi_i A_{ij}$. À observer : en dessous d''environ 1500 K, les produits sont simplement CO₂, H₂O et N₂ (plus O₂ en mélange pauvre) ; au-dessus de 2000 K, ils se dissocient (CO₂ → CO + ½O₂, H₂O → OH + ½H₂, puis en atomes), car le terme entropique $-T\,S$ l''emporte sur l''enthalpie de liaison. La dissociation absorbe de la chaleur, si bien que la flamme à l''équilibre est environ 100 K plus froide qu''une flamme dont les produits resteraient intacts (en bas à droite), et la flamme la plus chaude brûle légèrement en mélange riche par rapport à la stœchiométrie. Augmentez $P$ pour voir Le Chatelier : moins de molécules sont favorisées, la dissociation
+  est donc freinée. Données : $\Delta_f H^\circ$(298 K) et $S^\circ$(298 K) sont des valeurs arrondies des tables NIST-JANAF. Les capacités thermiques sont des constantes illustratives (en gros le $c_p$ moyen de 298 à 2000 K), et non des fonctions tabulées de $T$, donc les compositions sont semi-quantitatives : ce modèle donne $T_{ad} \approx 2260$ K pour un mélange méthane–air stœchiométrique à 1 bar, là où une thermochimie précise donne environ 2225 K. Simplifications : gaz parfaits, pas de phases condensées (ni suie, ni eau liquide), pas de CH₄ ni d''autres hydrocarbures parmi les produits, et équilibre seulement : les flammes réelles figent CO et NO par la cinétique, pas par la thermodynamique.'
+meanings:
+- atomes de l'élément $i$ (C, H, O, N) dans l'espèce $j$ (CO₂, H₂O, CO, H₂, O₂, N₂, OH, H, O, NO)
+- atomes apportés par CH₄ + $(2/\varphi)$(O₂ + 3.76 N₂), une ligne par richesse $\varphi$
+- 'le lot : chaque température est une minimisation indépendante, toutes résolues ensemble'
+- $[H_j(T) - T S_j(T)]/RT$ à partir de $\Delta_f H^\circ$, $S^\circ$ et d'un $c_p$ constant
+- '$j$ répété ⇒ sommé : l''enthalpie libre de chaque mélange'
+- atomes de chaque élément présents ; égal à $b_i$ à la solution
+- '$j$ sommé : la matrice de Newton, un $A\,\mathrm{diag}(n)\,A^{\mathsf T}$ pondéré par ligne'
+- un petit système $(E{+}1)\times(E{+}1)$ par température, tous résolus en un seul appel
+- $-\mu_{bj}/RT + \pi_{bi}A_{ij} + \Delta\ln n_{\mathrm{tot}}$, $i$ sommé ; amorti comme dans NASA CEA
+- 'test par autograd : égal à $\pi_{bi}A_{ij}$ au minimum (condition de Lagrange)'
+- 'enthalpie des produits ; dichotomie sur $T$ jusqu''à égalité avec l''enthalpie des réactifs : $T_{ad}$'
+labels:
+  phi: Richesse $\varphi$ (combustible / combustible stœchiométrique)
+  P_bar: Pression $P$
+  T_max: Température maximale du balayage

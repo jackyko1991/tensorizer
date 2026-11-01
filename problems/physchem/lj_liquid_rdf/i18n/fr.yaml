@@ -1,0 +1,23 @@
+source_hash: cb188a4168d9
+title: 'Fluide de Lennard-Jones : dynamique moléculaire et fonction de distribution radiale'
+summary: 'Cinq cents atomes en interaction via le potentiel de Lennard-Jones dans une boîte périodique, intégrés par Verlet vitesses. Tous les vecteurs de paires résident dans un seul tenseur diffusé avec la convention de l''image minimale, et trois états thermodynamiques (gaz, liquide près du point triple et solide comprimé) tournent en un seul lot. Un thermostat de Berendsen fixe la température, une simulation NVE qui conserve l''énergie suit, et les histogrammes des distances entre paires donnent $g(r)$ : plate pour le gaz, couches amorties pour le liquide, pics nets du réseau pour le solide. Le viriel donne la pression.'
+notes: 'Unités réduites : longueurs en $\sigma$, énergies en $\varepsilon$, masse 1, $T^* = k_BT/\varepsilon$, temps $\tau = \sigma\sqrt{m/\varepsilon}$ ; pour l''argon $\sigma = 3.4$ Å, $\varepsilon/k_B = 120$ K, donc l''état liquide correspond à environ 86 K. C''est la simulation que Rahman a réalisée pour l''argon liquide en 1964 (Phys. Rev. 136, A405), avec l''intégrateur et l''analyse de $g(r)$ introduits par Verlet en 1967 (Phys. Rev. 159, 98). Le potentiel est tronqué à $r_c = 2.5\sigma$ et décalé pour s''y annuler, afin que l''énergie soit continue ; la pression reçoit la correction de queue standard $\tfrac{16}{3}\pi\rho^2[\tfrac23 r_c^{-9} - r_c^{-3}]$, qui suppose $g = 1$ au-delà de la troncature. Le thermostat de Berendsen remet les vitesses à l''échelle vers la température cible ; il ne produit pas les fluctuations canoniques exactes, il ne sert donc qu''à l''équilibration, et les mesures proviennent d''une simple simulation NVE, où la courbe d''énergie plate vérifie l''intégrateur.
+  Le gaz et le liquide partent chauds pour que le réseau fonde. Le premier pic de $g(r)$ du liquide se situe près du minimum du potentiel $2^{1/6}\sigma$, les couches suivantes sont amorties et $g \to 1$ vers $3\sigma$ ; le solide garde les pics cfc. Pour le gaz, la pression est comparée au gaz parfait et à la correction du second coefficient du viriel $P = \rho T(1 + B_2\rho)$, $B_2$ étant intégré numériquement. Les simulations sont courtes (quelques $\tau$), donc les moyennes portent un bruit statistique de quelques pour cent. Le tenseur complet des paires coûte $O(N^2)$ par pas ; les codes de production utilisent des listes de cellules ou de voisins pour atteindre des millions d''atomes.'
+meanings:
+- gaz $(0.05, 1.5)$, liquide $(0.84, 0.72)$, solide $(1.10, 0.60)$ en unités réduites
+- départ sur un réseau cfc, $N = 4n^3$ atomes, boîte $L_s = (N/\rho_s)^{1/3}$
+- tous les vecteurs de paires à la fois par diffusion, puis ramenés à l'image la plus proche
+- $a$ répété ⇒ sommé
+- $-u^{\prime}(r)/r$, nul sur la diagonale et au-delà de $r_c = 2.5\sigma$
+- $j$ répété ⇒ sommé ; $d_{saji} = -d_{saij}$ donne gratuitement la troisième loi de Newton
+- 'demi-impulsion, dérive (ramenée dans la boîte), nouvelles forces, demi-impulsion : réversible en temps et conservant l''énergie'
+- thermostat de Berendsen pendant l'équilibration seulement
+- $\rho T + W/3V$ plus la correction de queue pour les paires au-delà de $r_c$
+- paires par couche divisées par le nombre du gaz parfait $\tfrac12 N\rho\,4\pi r^2\Delta r$
+labels:
+  rho_liquid: Densité du liquide $\rho^*$
+  T_liquid: Température du liquide $T^*$
+  n_cells: Mailles cfc par côté ($N = 4n^3$)
+  dt: Pas de temps $\Delta t$
+  equilibration_steps: Pas d'équilibration
+  production_steps: Pas de production

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Rate measurement: a reaction flask with reactant A turning into products sits in a thermostatted water bath at temperature T; samples are drawn over time to measure the concentration of A">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- thermostat water bath -->
+    <path d="M14,62 V146 H150 V62" fill="none" stroke="#374151" stroke-width="2"/>
+    <rect x="15" y="74" width="134" height="71" fill="#dbeafe"/>
+    <line x1="15" y1="74" x2="149" y2="74" stroke="#93c5fd" stroke-width="1.5"/>
+    <!-- heater coil -->
+    <path d="M24,138 q6,-8 12,0 t12,0 t12,0 t12,0 t12,0 t12,0 t12,0 t12,0 t12,0" fill="none" stroke="#dc2626" stroke-width="1.5"/>
+    <!-- reaction flask (Erlenmeyer) with solution -->
+    <path d="M72,30 V58 L48,126 H120 L96,58 V30" fill="#ffffff" stroke="#374151" stroke-width="2"/>
+    <path d="M62,86 L50.8,118 Q49,124 55,124 H113 Q119,124 117.2,118 L106,86 Z" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="70" cy="108" r="3.5" fill="#2563eb"/><circle cx="84" cy="100" r="3.5" fill="#2563eb"/>
+    <circle cx="98" cy="112" r="3.5" fill="#2563eb"/><circle cx="80" cy="116" r="3" fill="#f59e0b"/>
+    <circle cx="94" cy="96" r="3" fill="#f59e0b"/><circle cx="106" cy="106" r="3" fill="#f59e0b"/>
+    <text x="18" y="54" font-size="12" fill="#1e40af">A → P</text>
+    <!-- thermometer -->
+    <rect x="128" y="24" width="8" height="96" rx="4" fill="#ffffff" stroke="#374151" stroke-width="1.5"/>
+    <rect x="130.5" y="64" width="3" height="52" fill="#dc2626"/>
+    <circle cx="132" cy="120" r="6" fill="#dc2626" stroke="#374151" stroke-width="1.5"/>
+    <text x="140" y="40" font-style="italic">T</text>
+    <!-- sampling: pipette draws aliquots at times t -->
+    <line x1="84" y1="20" x2="84" y2="104" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="92" y1="16" x2="170" y2="16" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- concentration readout -->
+    <path d="M176,30 V100 H230" fill="none" stroke="#374151" stroke-width="1.5"/>
+    <path d="M180,36 Q190,70 205,84 T228,96" fill="none" stroke="#2563eb" stroke-width="2"/>
+    <circle cx="186" cy="54" r="2.5" fill="#1e40af"/><circle cx="196" cy="73" r="2.5" fill="#1e40af"/>
+    <circle cx="208" cy="86" r="2.5" fill="#1e40af"/><circle cx="222" cy="93" r="2.5" fill="#1e40af"/>
+    <text x="180" y="24" font-size="13">[<tspan font-style="italic">A</tspan>]</text>
+    <text x="214" y="116" font-style="italic">t</text>
+    <text x="168" y="140" font-size="12" fill="#374151"><tspan font-style="italic">k</tspan>(<tspan font-style="italic">T</tspan>)</text>
+  </g>
+</svg>

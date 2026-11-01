@@ -1,0 +1,21 @@
+source_hash: 26b3bf83c6f6
+title: Spectres de Beer–Lambert de A → B → C
+summary: Un spectrophotomètre suit la réaction consécutive $A \to B \to C$. Le spectre d'un mélange est un produit matriciel, $D = l\,E\,c$ (longueurs d'onde × espèces), de sorte que les profils de concentration se retrouvent à partir de spectres bruités par moindres carrés avec la pseudo-inverse $E^{+}$. Observez les points isobestiques, où les spectres restent immobiles pendant qu'une étape se déroule.
+notes: 'Chaque espèce absorbe la lumière proportionnellement à sa concentration et à la longueur du trajet optique, $D = \varepsilon\,l\,c$, et les absorbances d''un mélange s''additionnent simplement. Écrit pour toutes les longueurs d''onde et tous les instants à la fois, c''est le produit matriciel $D_{tw} = l\,E_{ws}c_{ts}$ : avec plus de longueurs d''onde que d''espèces, les concentrations découlent d''un système linéaire surdéterminé, résolu par moindres carrés : $\hat c = E^{+}D/l$ avec la pseudo-inverse $E^{+} = (E^{\mathsf T}E)^{-1}E^{\mathsf T}$. Cela ne marche que si les spectres purs sont nettement différents ; le conditionnement de $E$ affiché dans le terminal indique à quel point le bruit est amplifié. La cinétique $A \to B \to C$ est un système linéaire $\dot{\mathbf c} = K\mathbf c$, résolu exactement avec l''exponentielle de matrice : $[A]$ décroît, $[B]$ monte puis redescend (avec un maximum en $t = \ln(k_1/k_2)/(k_1 - k_2)$) et $[C]$ croît, tandis que $[A] + [B] + [C]$
+  reste constant car chaque colonne de $K$ a une somme nulle. Points isobestiques : si seule $A \to B$ a lieu, $D = l(\varepsilon_A[A] + \varepsilon_B[B])$ avec $[A] + [B]$ fixé, donc à une longueur d''onde où $\varepsilon_A = \varepsilon_B$ l''absorbance ne peut pas changer. Un point isobestique net est le signe classique d''une conversion propre entre deux espèces ; ici le croisement passe de $\varepsilon_A = \varepsilon_B$ (au début) à $\varepsilon_B = \varepsilon_C$ (à la fin), et entre les deux il devient flou car trois espèces coexistent. Mettez $k_2 = 0$ pour voir un point isobestique parfait, ou $k_2 \approx k_1$ pour le voir disparaître. Les spectres sont des bandes gaussiennes synthétiques avec des coefficients d''absorption typiques de colorants ($\sim 10^4$ L mol$^{-1}$ cm$^{-1}$), dans une cuve de 1 cm.'
+meanings:
+- 300–700 nm par pas de 2 nm
+- coefficient d'absorption molaire de chaque espèce (bandes gaussiennes synthétiques, L mol$^{-1}$ cm$^{-1}$)
+- matrice des vitesses de $A \to B \to C$ ; chaque colonne a une somme nulle (conservation de la matière)
+- concentrations exactes à chaque instant d'échantillonnage ; $r$ sommé
+- 'Beer–Lambert pour un mélange : les absorbances s''additionnent, espèce $s$ sommée'
+- matrice de recouvrement (de Gram) des spectres purs ; $w$ sommé
+- pseudo-inverse ; égale à torch.linalg.pinv(E) quand les spectres sont indépendants
+- concentrations par moindres carrés à partir de chaque spectre bruité ; $w$ sommé
+- point isobestique de l'étape $A \to B$ (de même pour $B \to C$)
+labels:
+  k1: Constante de vitesse $k_1$ ($A \to B$)
+  k2: Constante de vitesse $k_2$ ($B \to C$)
+  t_end: Durée de l'expérience
+  c0: $[A]_0$ initial
+  noise: Bruit du détecteur $\sigma$ (absorbance)

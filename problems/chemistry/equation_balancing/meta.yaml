@@ -1,0 +1,37 @@
+title: Balancing chemical equations (null space)
+category: chemistry
+level: beginner
+order: 1
+summary: >
+  Balancing an equation means finding coefficients $\nu_s$ that conserve every element and the charge. Written as
+  a matrix, that is $M\nu = 0$: the coefficients are the null space of the element–species matrix. One batched
+  SVD solves seven reactions at once, from methane combustion to permanganate in acid, and spots the one whose
+  balance is not unique.
+animated: false
+vector_form: 'M\,\boldsymbol\nu = \mathbf 0,\qquad M = C\,\mathrm{diag}(\boldsymbol\sigma),\qquad M = U\,\Sigma\,V^{\mathsf T}\;\Rightarrow\;\boldsymbol\nu \propto \mathbf v_{\min}'
+index_form: 'M_{res} = C_{res}\,\sigma_{rs} \qquad M_{res}\,\nu_{rs} = 0 \qquad M_{res} = U_{rek}\,\Sigma_{rk}\,V_{rsk} \qquad \nu_{rs} = \frac{k_r}{\min_t |V_{rtS}|}\,V_{rsS}'
+translation:
+  - {symbol: 'C_{res}', code: 'composition(reactants, products)', shape: '(E, S)', meaning: 'atoms of element $e$ in species $s$ of reaction $r$; row q is the charge (from the tiny formula parser)'}
+  - {symbol: '\sigma_{rs}', code: 'sigma', shape: '(S,)', meaning: '$+1$ for a reactant, $-1$ for a product'}
+  - {symbol: 'M_{res} = C_{res}\sigma_{rs}', code: "einsum('es,s->es', C, sigma)", shape: '(E, S)', meaning: 'no index summed: each column is signed'}
+  - {symbol: 'M_{res}', code: 'batch(M_list)', shape: '(R, E_max+S_max, S_max)', meaning: 'all reactions padded into one tensor; unused columns pinned to $\nu_s = 0$'}
+  - {symbol: 'U_{rek}\Sigma_{rk}V_{rsk}', code: 'torch.linalg.svd(M)', shape: '(R, S), (R, S, S)', meaning: 'batched SVD; singular values in descending order'}
+  - {symbol: '\Sigma_{rS} \approx 0', code: 'null_dimension(sv)', shape: '(R,)', meaning: 'how many singular values vanish: 1 → unique balance, 2 → two independent reactions'}
+  - {symbol: '\nu_{rs}', code: 'to_integers(V[..., -1])', shape: '(R, S)', meaning: 'last singular vector, scaled so the smallest entry is 1, then by the first $k_r$ that gives whole numbers'}
+  - {symbol: 'M_{res}\nu_{rs}', code: "einsum('res,rs->re', M, nu)", shape: '(R, E)', meaning: 'repeated $s$ ⇒ summed: atoms of $e$ created; zero for every element and the charge'}
+notes: >
+  Each element gives one linear equation in the unknown coefficients, so $S$ species and $E$ elements give an
+  $E\times S$ system $M\nu = 0$. Usually $M$ has rank $S-1$ and the solutions form a line: the balanced equation
+  is unique up to a common factor. The SVD finds that line as the right singular vector with singular value 0
+  (the last one); dividing by its smallest entry and trying multipliers $k = 1, 2, \dots$ gives the smallest whole
+  numbers, e.g. $\mathrm{CH_4} + 2\,\mathrm{O_2} \rightarrow \mathrm{CO_2} + 2\,\mathrm{H_2O}$. For ions, charge is just one
+  more row: without it, $\mathrm{MnO_4^-} + \mathrm{Fe^{2+}} + \mathrm{H^+}$ would have a 2D null space, and with it the familiar
+  $1{:}5{:}8 \rightarrow 1{:}5{:}4$ redox equation drops out. The peroxide example $\mathrm{H_2} + \mathrm{O_2} \rightarrow \mathrm{H_2O} + \mathrm{H_2O_2}$
+  has two zero singular values: it hides two independent reactions ($2\mathrm{H_2} + \mathrm{O_2} \rightarrow 2\mathrm{H_2O}$ and
+  $\mathrm{H_2} + \mathrm{O_2} \rightarrow \mathrm{H_2O_2}$), and any positive mix of them balances too. Algebra alone cannot pick one;
+  the real proportions are set by the chemistry (kinetics, conditions). The code shows the basis reactions found
+  by setting one coefficient to zero in the 2D null space. Try a reaction of your own by adding it to
+  `REACTIONS` in tensors.py; the parser reads brackets and charges such as 'Ca3(PO4)2' or 'Fe^3+'.
+params:
+  show: {default: permanganate, type: choice, options: [methane, propane, glucose, photosynthesis, permanganate, phosphate, peroxide], label: Reaction shown as a matrix}
+  max_scale: {default: 60, min: 1, max: 200, step: 1, type: int, label: 'Largest multiplier $k$ tried'}

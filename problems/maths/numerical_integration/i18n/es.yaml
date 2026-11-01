@@ -1,0 +1,16 @@
+source_hash: 9e25d7739db7
+title: Integración numérica y orden de convergencia
+summary: La regla del trapecio, la regla de Simpson y la cuadratura de Gauss–Legendre son todas una suma ponderada $\sum_k w_k f(x_k)$, un solo einsum sobre muchos integrandos a la vez. Los nodos y pesos de Gauss salen de un problema de valores propios (Golub–Welsch). En ejes log–log los errores caen con pendientes 2 y 4, o exponencialmente, hasta que un pico o una singularidad elimina el orden alto.
+notes: 'Para un integrando suave, el error del trapecio cae como $h^2 \propto N^{-2}$ y el de Simpson como $N^{-4}$: duplicar $N$ los divide entre 4 y 16. Gauss–Legendre con $N$ nodos integra exactamente todo polinomio de grado hasta $2N - 1$, así que para una función analítica su error cae exponencialmente hasta alcanzar el redondeo de float64, cerca de $10^{-16}$. Estos órdenes proceden de desarrollos de Taylor, así que necesitan derivadas. Con un pico $|x - a|$ la segunda derivada es una punta: toda regla cuyo subintervalo contenga el pico comete allí un error $O(h^2)$, así que Simpson y Gauss vuelven al orden 2 (la curva es irregular porque la posición del pico dentro de su subintervalo cambia con $N$). Con $(1+x)^{\alpha}$ las derivadas se disparan en el extremo: las reglas del trapecio y de Simpson bajan al orden $1 + \alpha$ y Gauss, cuyos nodos se agrupan hacia los extremos, a aproximadamente $2 + 2\alpha$. El remedio es partir el intervalo en el pico o cambiar de variable para que
+  el integrando sea suave. Prueba un $\alpha$ entero (un polinomio) y verás que Gauss se vuelve exacto, o pon el pico en un nodo de la malla ($a = 0.3$ lo es siempre que $N$ sea múltiplo de 20): la regla del trapecio es entonces exacta en los dos tramos rectos y baja al nivel de redondeo.'
+meanings:
+- nodos equiespaciados; pesos $h(\tfrac12, 1, \dots, 1, \tfrac12)$ y $\tfrac h3(1, 4, 2, \dots, 4, 1)$
+- matriz tridiagonal de la recurrencia de Legendre, $\beta_k = k/\sqrt{4k^2 - 1}$ junto a la diagonal
+- los valores propios son los nodos de Gauss–Legendre, los vectores propios están en las columnas
+- pesos de Gauss a partir de la primera componente de cada vector propio; suman $\int_{-1}^{1} dx = 2$
+- los integrandos suave, con pico y singular en el extremo, en cada nodo
+- '$k$ repetido ⇒ sumado: las tres integrales a la vez'
+labels:
+  n_max: Mayor $N$
+  kink: Posición del pico $a$
+  alpha: Potencia en el extremo $\alpha$

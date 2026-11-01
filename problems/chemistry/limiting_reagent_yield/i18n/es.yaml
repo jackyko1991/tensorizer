@@ -1,0 +1,19 @@
+source_hash: 835586f4adf3
+title: Reactivo limitante y rendimiento porcentual
+summary: 'Mezcla aluminio con yodo (o nitrógeno con hidrógeno) en cualquier proporción: ¿qué reactivo se agota primero, cuánto producto puede formarse y cuánto sobra del otro? Todas las cantidades cambian con un único grado de avance $\xi$, el reactivo limitante es un mínimo sobre $n_s/|\nu_s|$, y todo un lote de experimentos, y un mapa 2D de masas iniciales, se tratan con la misma operación tensorial.'
+notes: 'Lo que reacciona en proporciones fijas son los moles, no los gramos: primero divide cada masa entre su masa molar. Después un solo número, el grado de avance $\xi$, describe cuánto ha progresado la reacción: $2\,\mathrm{Al} + 3\,\mathrm{I_2} \rightarrow 2\,\mathrm{AlI_3}$ consume $2\xi$ mol de aluminio y $3\xi$ mol de yodo y produce $2\xi$ mol de yoduro de aluminio. Cada reactivo permite como mucho $n^0_s/|\nu_s|$ unidades de reacción, y el menor de estos números gana: ese reactivo es el limitante, y su barra es la que llega a cero. Con 1,20 g de Al (44,5 mmol) y 2,40 g de I₂ (9,46 mmol) el yodo es limitante: $\xi^{\max} = 3.15$ mmol, como mucho 2,57 g de AlI₃, y sobran 1,03 g de aluminio. En el mapa, el producto depende de un solo reactivo a cada lado de la línea estequiométrica discontinua; a lo largo de la línea ambos se agotan a la vez y no se desperdicia nada. Los rendimientos reales son menores que los teóricos (pérdidas, reacciones secundarias, un equilibrio que no llega a
+  completarse: una sola pasada por un reactor Haber convierte solo un 15 % aproximadamente), y un rendimiento superior al 100 % significa que el producto está húmedo o impuro. Cambia las masas, el producto pesado o la reacción.'
+meanings:
+- 'números estequiométricos con signo: $-2, -3, +2$ para 2 Al + 3 I₂ → 2 AlI₃'
+- '$e$ repetido ⇒ sumado: masas molares a partir de los átomos de cada especie'
+- moles iniciales de cada experimento $b$ (el último es el tuyo)
+- mayor avance antes de que un reactivo llegue a cero; el argmin es el reactivo limitante
+- cantidades en $K$ avances de 0 a $\xi^{\max}$ (las barras)
+- rendimiento teórico del producto en g
+- rendimiento porcentual
+- la malla de masas iniciales es solo un lote más grande
+labels:
+  reaction: Reacción
+  mass_1: Masa del reactivo 1 (Al o N₂)
+  mass_2: Masa del reactivo 2 (I₂ o H₂)
+  measured: Producto pesado

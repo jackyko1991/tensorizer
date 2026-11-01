@@ -1,0 +1,20 @@
+source_hash: 15137dcd8bb9
+title: Polymerisationskinetik und Molmassenverteilungen
+summary: Warum sind Stufenwachstumspolymere (Polyester, Nylons) so polydispers, während lebende Polymerisation nahezu einheitliche Ketten liefert? Eine Populationsbilanz über die Kettenlängen, ein einziger $(S, L)$-Tensor für beide Mechanismen, reproduziert Carothers' $X_n = 1/(1-p)$ und Florys wahrscheinlichste Verteilung $w(x) = x(1-p)^2p^{x-1}$ mit Dispersität $Đ \to 2$, geprüft gegen ein kinetisches Monte-Carlo mit 100 000 Monomeren, sowie die Poisson-Verteilung lebender Ketten mit $Đ \approx 1 + 1/X_n$.
+notes: 'Stufenwachstum: Jedes Molekül trägt reaktive Enden (hier ein A und ein B, wie eine Hydroxysäure), und BELIEBIGE zwei Ketten können sich verbinden, Monomer mit Monomer, Dimer mit 50-mer. Florys Annahme gleicher Reaktivität (die Geschwindigkeit hängt nicht von der Kettenlänge ab) macht aus der Populationsbilanz die Smoluchowski-Koagulationsgleichung mit konstantem Kern, deren exakte Lösung die wahrscheinlichste Verteilung ist: Ein Anteil $p$ der Enden hat reagiert, also ist eine Kette der Länge $x$ eine Folge von $x - 1$ geknüpften Bindungen, abgeschlossen durch ein unreagiertes Ende, mit Wahrscheinlichkeit $(1-p)p^{x-1}$. Ihre Mittelwerte sind Carothers'' $X_n = 1/(1-p)$ und $X_w = (1+p)/(1-p)$, also $Đ = 1 + p \to 2$. Die praktische Lehre ist hart: 98 % Umsatz ergeben nur $X_n = 50$, und lange Ketten brauchen $p > 0.99$ und ein perfektes 1:1-Verhältnis der reaktiven Gruppen. Lebendes Kettenwachstum (anionisch oder kontrollierte radikalische Verfahren wie ATRP oder RAFT, die es annähern)
+  ist das Gegenteil: Alle Ketten starten gemeinsam und wachsen ohne Abbruch um je ein Monomer, daher sind nach $\nu$ Additionen pro Kette die Längen Poisson-verteilt, und $Đ = 1 + \nu/(1+\nu)^2 \approx 1 + 1/X_n$ fällt gegen 1. Die Tensorform hält beide Mechanismen in einem $(S, L)$-Tensor, der mit RK4 fortgeschrieben wird. Die Stufenwachstums-Faltung $\sum_y P_y P_{x-y}$ ist ein einsum mit einer aus $P$ gesammelten Toeplitz-Matrix (eine FFT leistete dasselbe in $O(L\log L)$). Weil die beiden Zeilen Uhren mit $X_n = 1 + s$ verwenden, vergleicht jedes Bild die beiden Mechanismen beim selben $X_n$, auf einer Achse $x / X_n$, auf der die Flory-Form fest bleibt und der Poisson-Peak schmaler wird. Das kinetische Monte-Carlo verbindet zufällige Kettenpaare; es stimmt bis auf Stichprobenrauschen mit der Populationsbilanz überein, das gegen Ende wächst, weil nur noch $N_0(1-p)$ Ketten übrig sind (2000 bei $p = 0.98$). Vereinfachungen: keine Ringbildung, keine Nebenreaktionen, eine perfekt ausgeglichene
+  A-B-Stöchiometrie, Kettenlängen bei $L$ abgeschnitten (der weggelassene Rest liegt unter $10^{-6}$) sowie im lebenden Fall sofortige Initiierung ohne Abbruch oder Übertragung. Die konventionelle radikalische Polymerisation mit Abbruch liegt dazwischen ($Đ \approx 1.5$–2).'
+meanings:
+- 'Ketten der Länge $x$ ($x = 1 … L$) für Mechanismus $s$: 0 = Stufenwachstum (pro Monomer), 1 = lebend (pro Initiator)'
+- 'eine Uhr für beide Zeilen: $\tau = kN_0t$ für Stufenwachstum, $\nu = \int k_p[M]\,dt$ für lebendes Wachstum'
+- aus den Populationen gesammelte Toeplitz-Matrix; null, wo $x - y < 1$
+- 'wiederholtes $y$ ⇒ summiert: alle Möglichkeiten, ein $y$-mer mit einem $(x-y)$-mer zu verbinden'
+- eine Kette reagiert über eines ihrer beiden Enden mit einer beliebigen der $N$ Ketten
+- lebende Ketten addieren nur Monomer, eine Einheit nach der anderen, und brechen nie ab
+- '$x$ summiert: Momente $k = 0, 1, 2$ ergeben $X_n = \mu_1/\mu_0$, $X_w = \mu_2/\mu_1$'
+- 'exakte Lösung für Stufenwachstum: Ketten pro Ausgangsmonomer beim Umsatz $p = \tau/(1+\tau)$'
+- exakte Lösung für lebendes Wachstum, mit lgamma für die Fakultät
+- 'zwei zufällige Ketten Bindung für Bindung verbinden: eine unabhängige stochastische Kontrolle'
+labels:
+  p_max: Endumsatz $p$ (Stufenwachstum)
+  n_monomers: Monomere im Monte-Carlo $N_0$

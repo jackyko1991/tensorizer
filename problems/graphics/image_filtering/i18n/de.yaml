@@ -1,0 +1,22 @@
+source_hash: 35a326f71a76
+title: Bildfilterung als Faltung
+summary: Weichzeichnen, Schärfen und Kantenfinden in einem prozedural gezeichneten Testbild, indem ein kleiner Kern darübergeschoben wird. Jeder lineare Filter ist eine einzige Kontraktion $O_p = K_k P_{kp}$ über ausgerollte Pixelfenster, genau wie conv2d; der Gauß-Filter zerfällt in zwei 1D-Durchgänge, und der Faltungssatz macht daraus ein Produkt von Fourier-Transformierten. Box- und Gauß-Weichzeichner, Sobel-Kanten, Laplacian of Gaussian, Unscharfmaskierung sowie Median gegen Gauß bei Salz-und-Pfeffer-Rauschen.
+notes: 'Der Frequenzgang des Boxfilters ist ein sinc mit Nebenmaxima, die negativ werden; er lässt also feine Details durch, manche mit umgekehrtem Vorzeichen (die Streifen des Chirps verblassen und kehren zurück); der Frequenzgang des Gauß-Filters ist wieder eine Gauß-Funktion, die glatt auf null abfällt. Separierbarkeit zählt für die Geschwindigkeit: Ein $(2r+1)^2$-Kern braucht $(2r+1)^2$ Multiplikationen pro Pixel, zwei 1D-Durchgänge nur $2(2r+1)$. Sobel (1968) kombiniert eine Ableitung mit Glättung; der Laplacian of Gaussian reagiert dort, wo die zweite Ableitung durch null geht, und Canny (1986) baut auf denselben geglätteten Gradienten auf, mit Ausdünnung und Hysterese. Die Unscharfmaskierung addiert $\alpha(I - G * I)$ zurück, eine Hochpassverstärkung, die auch das Rauschen verstärkt. Der Median ist nicht linear, hat also weder Kern noch Frequenzgang, entfernt aber isolierte Salz-und-Pfeffer-Pixel, die ein Gauß-Filter nur verschmiert (vergleiche den PSNR im Terminal). Jede Schicht
+  eines Convolutional Neural Network ist dieselbe Ausroll-und-Kontraktions-Operation mit gelernten Kernen.'
+meanings:
+- 'Grauwert von Pixel $(i, j)$: ein Verlauf, eine Scheibe, ein Quadrat, ein Dreieck und ein Chirp, plus Rauschen'
+- die Filtergewichte, für jedes Pixel dieselben
+- wiederholte $a, b$ ⇒ summiert über das Fenster (eine Korrelation, die PyTorch Faltung nennt)
+- das Fenster um Pixel $p$ als Spalte, $k = (a, b)$
+- 'wiederholtes $k$ ⇒ summiert: derselbe Filter als ein einziges einsum'
+- die 2D-Gauß-Funktion ist ein äußeres Produkt und lässt sich daher als Zeilen- und Spaltendurchgang ausführen
+- 'Sobel: $[1, 2, 1]$-Glättung quer mal $[-1, 0, 1]$-Differenz längs'
+- 'Faltungssatz: ein punktweises Produkt im Fourier-Raum, gleich conv2d mit periodischem Rand'
+labels:
+  size: Bildgröße
+  sigma: Gauß-Breite $\sigma$
+  box: Boxgröße
+  amount: Schärfung $\alpha$
+  noise: Gaußsches Rauschen $\sigma_n$
+  salt_pepper: Salz-und-Pfeffer-Anteil
+  median: Medianfenster

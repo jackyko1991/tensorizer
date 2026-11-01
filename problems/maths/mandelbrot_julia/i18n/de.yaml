@@ -1,0 +1,19 @@
+source_hash: 88e5f57d0eb4
+title: Die Mandelbrot-Menge und Julia-Mengen
+summary: Iteriere $z \mapsto z^2 + c$ auf einem ganzen Gitter komplexer Pixel gleichzeitig. Punkte, deren Orbit beschränkt bleibt, bilden die Mandelbrot-Menge $M$ (variiere $c$, starte bei $z_0 = 0$) oder eine ausgefüllte Julia-Menge $K_c$ (halte $c$ fest, starte beim Pixel). Ein geglätteter Fluchtzähler und eine Abstandsschätzung aus der Ableitung halten das Bild bis tief in einen Zoom ins Seepferdchental scharf, während die Julia-Menge ihre Form ändert, wenn $c$ um die Hauptkardioide wandert.
+notes: 'Warum Flucht bei $|z| > 2$: Ist $|z| > \max(2, |c|)$, dann gilt $|z^2 + c| \ge |z|^2 - |c| > |z|$, und der Orbit wächst unbeschränkt. Also entkommt jedes $c$ mit $|c| > 2$ schon im ersten Schritt, und $M$ liegt in der Kreisscheibe $|c| \le 2$. Hier wird ein größerer Fluchtradius $R = 1000$ verwendet, weil er den geglätteten Zähler $\nu = n + 1 - \log_2 \ln|z_n|$ genau macht: Nahe unendlich verdoppelt $z \mapsto z^2$ in jedem Schritt $\ln|z|$, und $\log_2$ macht genau das rückgängig. Die Hauptkardioide ist die Menge der $c$, für die $z^* = z^{*2} + c$ ein anziehender Fixpunkt ist, $|2z^*| < 1$; mit $2z^* = w$ ergibt sich $c = w/2 - w^2/4$ mit $|w| \le 1$, und die Periode-2-Knospe ist der Bereich, in dem der 2-Zyklus anziehend ist, $|4(1+c)| < 1$. Diese beiden Teile bedecken etwa 1,37 der Gesamtfläche $\approx 1.5066$ von $M$, und kein Pixel darin entkommt jemals. Die Abstandsschätzung $d = |z_n|\ln|z_n|/|z''_n|$ stammt vom Potential $G(c) = \lim 2^{-n}\ln|z_n|$, als $G/|\nabla G|$;
+  nahe der Menge liegt der wahre Abstand innerhalb etwa eines Faktors 2 davon (eine Folge des Koebeschen Viertelsatzes). Das Julia-Feld hält $c$ auf dem Rand der Kardioide, wo der Fixpunkt neutral ist: Dort ist $K_c$ immer zusammenhängend, weil $c \in M$, aber seine Form ändert sich von einem Winkel zum nächsten völlig. Jede Julia-Menge sieht in der Nähe ihres $c$ aus wie $M$, deshalb zeigen Zooms in $M$ kleine Julia-Mengen. Zooms tiefer als etwa $10^{-13}$ brauchen mehr als die 16 Stellen von complex128.'
+meanings:
+- eine komplexe Zahl pro Pixel $p$; kein Index wird summiert, jedes Pixel läuft für sich
+- ein Schritt der quadratischen Abbildung für alle noch iterierenden Pixel
+- 'Kettenregel: $c'' = 1$ für $M$ (Ableitung nach $c$), $c'' = 0$ und $z''_0 = 1$ für Julia-Mengen (Ableitung nach $z_0$)'
+- erster Schritt mit $|z_p| > R$; entkommene Pixel werden aus den Tensoren entfernt, sodass die Arbeit schrumpft
+- 'geglätteter (stetiger) Fluchtzähler: keine Farbstufen zwischen den Bändern'
+- 'Abstandsschätzung: Pixel mit $d_p$ unter einem Viertelpixel werden dunkel gezeichnet, was die dünnen Filamente sichtbar macht'
+- exakter Test für die Hauptkardioide (und $|c+1| \le \frac14$ für die Periode-2-Knospe), mit $q = (x-\frac14)^2 + y^2$
+labels:
+  target: Zoomziel
+  zoom_decades: Zoomtiefe (Zehnerpotenzen)
+  resolution: Pixel pro Seite
+  max_iter: Iterationen zu Beginn (+150 pro Dekade)
+  frames: Bilder

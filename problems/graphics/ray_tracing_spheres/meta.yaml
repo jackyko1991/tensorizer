@@ -1,0 +1,38 @@
+title: Ray tracing spheres
+category: graphics
+level: beginner
+order: 1
+summary: >
+  A tiny Whitted-style ray tracer where every pixel's ray is one row of an $(H\cdot W, 3)$ tensor. All rays are
+  tested against all spheres at once with the quadratic formula, giving a (rays $\times$ spheres) table whose argmin
+  is the visible surface. Lambert and Blinn–Phong shading, hard shadows from a second batch of shadow rays, mirror
+  bounces and a checkered floor, while the light or the camera circles the scene.
+animated: true
+vector_form: '\mathbf x(t) = \mathbf o + t\,\hat{\mathbf d},\quad \lVert \mathbf x - \mathbf c_s\rVert^2 = r_s^2 \;\Rightarrow\; t = -\mathbf b \pm \sqrt{b^2 - q},\qquad I = k_a\rho + V\big[\rho\,\max(0,\hat{\mathbf n}\cdot\hat{\mathbf l}) + k_s \max(0,\hat{\mathbf n}\cdot\hat{\mathbf h})^{\alpha}\big],\quad \hat{\mathbf r} = \hat{\mathbf d} - 2(\hat{\mathbf d}\cdot\hat{\mathbf n})\,\hat{\mathbf n}'
+index_form: 'b_{ps} = (o_{pi} - c_{si})\,d_{pi},\quad q_{ps} = (o-c)_{psi}(o-c)_{psi} - r_s^2,\quad t_{ps} = -b_{ps} - \sqrt{b_{ps}^2 - q_{ps}},\quad s^*_p = \arg\min_s t_{ps}\qquad r_{pi} = d_{pi} - 2\,d_{pj}n_{pj}\,n_{pi}'
+translation:
+  - {symbol: 'o_{pi},\ d_{pi}', code: 'camera_rays(eye, target, fov, W, H)', shape: '(H·W, 3)', meaning: 'origin and unit direction of the ray through pixel $p$; $d$ is the screen point $(x, y, 1)$ in the camera basis, an einsum over the basis index'}
+  - {symbol: 'c_{si},\ r_s', code: "sc['centres'], sc['radii']", shape: '(S, 3), (S,)', meaning: 'centre and radius of sphere $s$'}
+  - {symbol: 'b_{ps}', code: "einsum('psi,pi->ps', oc, d)", shape: '(P, S)', meaning: 'repeated $i$ ⇒ summed: every ray against every sphere in one call'}
+  - {symbol: 't_{ps}', code: 'sphere_hits(o, d, c, r)', shape: '(P, S)', meaning: 'nearer root of the quadratic; $\infty$ where $b^2 < q$ (the ray misses) or the hit is behind'}
+  - {symbol: 's^*_p = \arg\min_s t_{ps}', code: 't_all.min(dim=1)', shape: '(P,)', meaning: 'the visible surface; the ground plane $y = 0$ is an extra column with $t = -o_y/d_y$'}
+  - {symbol: 'n_{pi}l_{pi},\ n_{pi}h_{pi}', code: 'lambert(n, l), blinn_phong(n, l, v, α)', shape: '(P,)', meaning: 'diffuse and specular factors, clamped at 0 on the far side'}
+  - {symbol: 'V_p', code: 'lit(p, n, light, c, r)', shape: '(P,)', meaning: 'shadow rays towards the light: 1 if no sphere is hit before the light, else 0'}
+  - {symbol: 'r_{pi}', code: 'reflect(d, n)', shape: '(P, 3)', meaning: 'repeated $j$ ⇒ summed: mirror direction, the next batch of rays'}
+notes: >
+  The colour of a pixel is $I = (1-m)\,I_\text{local} + m\,I_\text{reflected}$, where $m$ is the mirror fraction of
+  the surface; the reflected colour comes from tracing the batch of reflected rays again, which is the recursive idea of
+  Whitted (1980). The shading model is Phong's (1975) with Blinn's (1977) half vector $\hat{\mathbf h}$. Because
+  $\hat{\mathbf d}$ has unit length the quadratic's leading coefficient is 1, so only $b$ and $q$ are needed. Secondary rays
+  start a tiny distance $\varepsilon$ off the surface, otherwise rounding makes them hit their own sphere (shadow acne).
+  Try zero bounces to see the scene without reflections, a high shininess for small sharp highlights, or a wide field of view.
+  Real renderers add soft shadows, refraction and many samples per pixel (path tracing), but the batched
+  ray-against-everything table stays the same.
+params:
+  orbit: {default: light, type: choice, options: [light, camera], label: What orbits}
+  bounces: {default: 2, min: 0, max: 4, step: 1, type: int, label: Mirror bounces}
+  shininess: {default: 60.0, min: 2, max: 400, step: 2, label: 'Blinn–Phong exponent $\alpha$'}
+  fov: {default: 45.0, min: 20, max: 90, step: 1, label: 'Field of view', unit: °}
+  width: {default: 200, min: 64, max: 400, step: 8, type: int, label: Image width, unit: px}
+  height: {default: 140, min: 48, max: 300, step: 4, type: int, label: Image height, unit: px}
+  frames: {default: 48, min: 8, max: 120, step: 4, type: int, label: Frames per orbit}

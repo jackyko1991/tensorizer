@@ -1,0 +1,45 @@
+title: 'Lennard-Jones fluid: molecular dynamics and the radial distribution function'
+category: physchem
+level: advanced
+order: 3
+summary: >
+  Five hundred atoms interacting through the Lennard-Jones potential in a periodic box, integrated with velocity
+  Verlet. All pair vectors live in one broadcast tensor with the minimum-image convention, and three state points
+  (gas, liquid near the triple point and a compressed solid) run as one batch. A Berendsen thermostat sets the
+  temperature, an energy-conserving NVE run follows, and histograms of pair distances give $g(r)$: flat for the gas,
+  damped shells for the liquid, sharp lattice peaks for the solid. The virial gives the pressure.
+animated: true
+vector_form: 'm\,\ddot{\mathbf r}_i = \sum_{j\ne i} 24\varepsilon\Big[2\Big(\frac{\sigma}{r_{ij}}\Big)^{12} - \Big(\frac{\sigma}{r_{ij}}\Big)^{6}\Big]\frac{\mathbf r_{ij}}{r_{ij}^2},\qquad P = \rho k_BT + \frac{1}{3V}\Big\langle\sum_{i<j}\mathbf r_{ij}\cdot\mathbf F_{ij}\Big\rangle,\qquad g(r) = \frac{\langle n(r)\rangle}{\rho\,4\pi r^2\,\Delta r}'
+index_form: 'd_{saij} = x_{sia} - x_{sja} - L_s\,\mathrm{round}\!\Big(\frac{x_{sia} - x_{sja}}{L_s}\Big) \qquad r^2_{sij} = d_{saij}d_{saij} \qquad F_{sia} = 24\,\big(2r_{sij}^{-14} - r_{sij}^{-8}\big)\,d_{saij} \qquad W_s = \tfrac12\,r^2_{sij}\,f_{sij}/r_{sij}'
+translation:
+  - {symbol: '\rho_s,\ T_s', code: 'state_points(rho_liquid, T_liquid)', shape: '(S,)', meaning: 'gas $(0.05, 1.5)$, liquid $(0.84, 0.72)$, solid $(1.10, 0.60)$ in reduced units'}
+  - {symbol: 'x_{sia},\ L_s', code: 'fcc_lattice(n_cells, rho)', shape: '(S, N, 3), (S,)', meaning: 'start on an fcc lattice, $N = 4n^3$ atoms, box $L_s = (N/\rho_s)^{1/3}$'}
+  - {symbol: 'd_{saij}', code: 'xt[:, :, :, None] - xt[:, :, None, :]', shape: '(S, 3, N, N)', meaning: 'every pair vector at once by broadcasting, then wrapped to the nearest image'}
+  - {symbol: 'r^2_{sij} = d_{saij}d_{saij}', code: '(d * d).sum(1)', shape: '(S, N, N)', meaning: 'repeated $a$ ⇒ summed'}
+  - {symbol: 'f_{sij}/r_{sij}', code: '24 * inv2 * (2 * inv12 - inv6)', shape: '(S, N, N)', meaning: '$-u^{\prime}(r)/r$, zero on the diagonal and beyond $r_c = 2.5\sigma$'}
+  - {symbol: 'F_{sia}', code: '(f_over_r[:, None] * d).sum(-1)', shape: '(S, N, 3)', meaning: 'repeated $j$ ⇒ summed; $d_{saji} = -d_{saij}$ gives Newton''s third law for free'}
+  - {symbol: '\text{velocity Verlet}', code: 'verlet(x, v, L, dt, n_steps)', shape: '(S, N, 3)', meaning: 'half kick, drift (wrapped into the box), new forces, half kick: time-reversible and energy-conserving'}
+  - {symbol: 'v \to v\sqrt{1 + \tfrac{\Delta t}{\tau_T}(T_0/T - 1)}', code: 'verlet(..., T_target=T)', shape: '(S, N, 3)', meaning: 'Berendsen thermostat during equilibration only'}
+  - {symbol: 'P_s', code: 'virial_pressure(r2, f_over_r, T, rho, L)', shape: '(S,)', meaning: '$\rho T + W/3V$ plus the tail correction for pairs beyond $r_c$'}
+  - {symbol: 'g_s(r_k)', code: 'radial_distribution(pair_histogram(r2, ...))', shape: '(S, K)', meaning: 'pairs per shell divided by the ideal-gas count $\tfrac12 N\rho\,4\pi r^2\Delta r$'}
+notes: >
+  Reduced units: lengths in $\sigma$, energies in $\varepsilon$, mass 1, $T^* = k_BT/\varepsilon$, time
+  $\tau = \sigma\sqrt{m/\varepsilon}$; for argon $\sigma = 3.4$ Å, $\varepsilon/k_B = 120$ K, so the liquid state point is
+  about 86 K. This is the simulation Rahman ran for liquid argon in 1964 (Phys. Rev. 136, A405), with the integrator and
+  the $g(r)$ analysis Verlet introduced in 1967 (Phys. Rev. 159, 98). The potential is cut at $r_c = 2.5\sigma$ and
+  shifted to zero there so the energy is continuous; the pressure gets the standard tail correction
+  $\tfrac{16}{3}\pi\rho^2[\tfrac23 r_c^{-9} - r_c^{-3}]$, which assumes $g = 1$ beyond the cutoff. The Berendsen thermostat
+  rescales velocities towards the target temperature; it does not produce exact canonical fluctuations, so it is only
+  used to equilibrate, and the measurements come from a plain NVE run, where the flat energy trace checks the integrator.
+  The gas and liquid start hot so the lattice melts. The first peak of the liquid $g(r)$ sits near the potential minimum
+  $2^{1/6}\sigma$, later shells are damped and $g \to 1$ by about $3\sigma$; the solid keeps the fcc peaks. For the gas the
+  pressure is compared with the ideal gas and with the second-virial correction $P = \rho T(1 + B_2\rho)$, $B_2$
+  integrated numerically. Runs are short (a few $\tau$), so averages carry statistical noise of a few per cent. The full
+  pair tensor costs $O(N^2)$ per step; production codes use cell or neighbour lists to reach millions of atoms.
+params:
+  rho_liquid: {default: 0.84, min: 0.6, max: 0.95, step: 0.01, label: 'Liquid density $\rho^*$'}
+  T_liquid: {default: 0.72, min: 0.6, max: 1.5, step: 0.02, label: 'Liquid temperature $T^*$'}
+  n_cells: {default: 5, min: 4, max: 6, step: 1, type: int, label: 'fcc cells per side ($N = 4n^3$)'}
+  dt: {default: 0.005, min: 0.001, max: 0.01, step: 0.001, label: 'Time step $\Delta t$', unit: τ}
+  equilibration_steps: {default: 600, min: 200, max: 4000, step: 100, type: int, label: Equilibration steps}
+  production_steps: {default: 700, min: 200, max: 4000, step: 100, type: int, label: Production steps}

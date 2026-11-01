@@ -1,0 +1,22 @@
+source_hash: 955b219d37d6
+title: Equilibrio químico por minimización de la energía de Gibbs
+summary: ¿Qué sale de una llama de metano y aire? A $T$ y $P$ fijas, los productos se establecen donde la energía de Gibbs $G = \sum_j n_j \mu_j$ es mínima, sujeta a la conservación de cada elemento, $A_{ij} n_j = b_i$. Un método de Newton por lotes (el método RAND) resuelve 10 especies en toda una gama de temperaturas a la vez, muestra cómo CO₂ y H₂O se descomponen en CO, H₂, OH, H y O al calentarse el gas y encuentra la temperatura adiabática de llama.
+notes: '¿Por qué minimizar $G$? A $T$ y $P$ constantes, el segundo principio dice que un sistema cerrado solo puede disminuir su energía de Gibbs, así que el equilibrio es el punto más bajo de $G$ que conserva cada átomo: una minimización con restricciones. Con multiplicadores de Lagrange $\pi_i$ (uno por elemento) la condición es $\mu_j/RT = \sum_i \pi_i A_{ij}$: el potencial químico de cada especie es la suma de los «potenciales de elemento» de sus átomos. Esto sustituye una lista de constantes de equilibrio (una por reacción) por una sola optimización sobre todas las especies, y así es como programas como NASA CEA, STANJAN y Cantera calculan llamas, gases de escape de cohetes y atmósferas. El método usado aquí es el método RAND en la forma de Gordon–McBride (NASA RP-1311): el método de Newton en $\ln n_j$, reducido a un pequeño sistema $(E{+}1)\times(E{+}1)$ para $\pi_i$ y $\Delta\ln n_{tot}$, con el paso limitado para que las especies mayoritarias cambien como mucho un factor $e^2$ por
+  paso. Trabajar con logaritmos mantiene positivas y exactas las especies traza con fracción molar $10^{-30}$. La consola imprime las dos comprobaciones de optimalidad (balance de elementos y $\mu_j/RT = \pi_i A_{ij}$, ambas cerca de la precisión de máquina) y una comprobación con autograd: derivar $G/RT$ con torch devuelve $\pi_i A_{ij}$. Qué observar: por debajo de unos 1500 K los productos son simplemente CO₂, H₂O y N₂ (más O₂ en mezcla pobre); por encima de 2000 K se disocian (CO₂ → CO + ½O₂, H₂O → OH + ½H₂, y luego en átomos), porque el término entrópico $-T\,S$ supera a la entalpía de enlace. La disociación absorbe calor, de modo que la llama en equilibrio es unos 100 K más fría que una cuyos productos se mantuvieran intactos (abajo a la derecha), y la llama más caliente arde ligeramente rica respecto a la estequiométrica. Sube $P$ para ver a Le Chatelier: se favorecen menos moléculas, así que la disociación se reprime. Datos: $\Delta_f H^\circ$(298 K) y $S^\circ$(298 K) son valores
+  redondeados de las tablas NIST-JANAF. Las capacidades caloríficas son constantes ilustrativas (aproximadamente el $c_p$ medio entre 298 y 2000 K), no funciones tabuladas de $T$, así que las composiciones son semicuantitativas: este modelo da $T_{ad} \approx 2260$ K para metano–aire estequiométrico a 1 bar, donde una termoquímica precisa da unos 2225 K. Simplificaciones: gases ideales, sin fases condensadas (ni hollín ni agua líquida), sin CH₄ ni otros hidrocarburos entre los productos, y solo equilibrio: las llamas reales congelan el CO y el NO por la cinética, no por la termodinámica.'
+meanings:
+- átomos del elemento $i$ (C, H, O, N) en la especie $j$ (CO₂, H₂O, CO, H₂, O₂, N₂, OH, H, O, NO)
+- átomos aportados por CH₄ + $(2/\varphi)$(O₂ + 3.76 N₂), una fila por dosado relativo $\varphi$
+- 'el lote: cada temperatura es una minimización independiente, resueltas todas juntas'
+- $[H_j(T) - T S_j(T)]/RT$ a partir de $\Delta_f H^\circ$, $S^\circ$ y un $c_p$ constante
+- '$j$ repetido ⇒ sumado: la energía de Gibbs de cada mezcla'
+- átomos presentes de cada elemento; igual a $b_i$ en la solución
+- '$j$ sumado: la matriz de Newton, un $A\,\mathrm{diag}(n)\,A^{\mathsf T}$ ponderado por fila'
+- un pequeño sistema $(E{+}1)\times(E{+}1)$ por temperatura, todos resueltos en una sola llamada
+- $-\mu_{bj}/RT + \pi_{bi}A_{ij} + \Delta\ln n_{\mathrm{tot}}$, $i$ sumado; amortiguado como en NASA CEA
+- 'comprobación con autograd: igual a $\pi_{bi}A_{ij}$ en el mínimo (condición de Lagrange)'
+- 'entalpía de los productos; bisección en $T$ hasta igualar la entalpía de los reactivos: $T_{ad}$'
+labels:
+  phi: Dosado relativo $\varphi$ (combustible / combustible estequiométrico)
+  P_bar: Presión $P$
+  T_max: Temperatura máxima del barrido

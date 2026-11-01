@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="A triangle with corners v0, v1, v2 on a pixel grid; the pixels whose centres fall inside are shaded. A pixel centre q splits the triangle into three smaller triangles whose areas give the barycentric weights; the one opposite v0 is highlighted as lambda 0">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- pixels whose centre lies inside the triangle -->
+    <g fill="#eff6ff" stroke="none">
+      <rect x="30" y="110" width="20" height="20"/>
+      <rect x="50" y="70" width="20" height="20"/>
+      <rect x="50" y="90" width="20" height="20"/>
+      <rect x="50" y="110" width="20" height="20"/>
+      <rect x="70" y="30" width="20" height="20"/>
+      <rect x="70" y="50" width="20" height="20"/>
+      <rect x="70" y="70" width="20" height="20"/>
+      <rect x="70" y="90" width="20" height="20"/>
+      <rect x="70" y="110" width="20" height="20"/>
+      <rect x="90" y="30" width="20" height="20"/>
+      <rect x="90" y="50" width="20" height="20"/>
+      <rect x="90" y="70" width="20" height="20"/>
+      <rect x="90" y="90" width="20" height="20"/>
+      <rect x="90" y="110" width="20" height="20"/>
+      <rect x="110" y="50" width="20" height="20"/>
+      <rect x="110" y="70" width="20" height="20"/>
+      <rect x="110" y="90" width="20" height="20"/>
+      <rect x="110" y="110" width="20" height="20"/>
+      <rect x="130" y="70" width="20" height="20"/>
+      <rect x="130" y="90" width="20" height="20"/>
+      <rect x="130" y="110" width="20" height="20"/>
+      <rect x="150" y="90" width="20" height="20"/>
+      <rect x="150" y="110" width="20" height="20"/>
+    </g>
+    <!-- pixel grid, 20 px cells -->
+    <g stroke="#e5e7eb" stroke-width="1"><line x1="10" y1="10" x2="10" y2="150"/><line x1="30" y1="10" x2="30" y2="150"/><line x1="50" y1="10" x2="50" y2="150"/><line x1="70" y1="10" x2="70" y2="150"/><line x1="90" y1="10" x2="90" y2="150"/><line x1="110" y1="10" x2="110" y2="150"/><line x1="130" y1="10" x2="130" y2="150"/><line x1="150" y1="10" x2="150" y2="150"/><line x1="170" y1="10" x2="170" y2="150"/><line x1="190" y1="10" x2="190" y2="150"/><line x1="10" y1="10" x2="190" y2="10"/><line x1="10" y1="30" x2="190" y2="30"/><line x1="10" y1="50" x2="190" y2="50"/><line x1="10" y1="70" x2="190" y2="70"/><line x1="10" y1="90" x2="190" y2="90"/><line x1="10" y1="110" x2="190" y2="110"/><line x1="10" y1="130" x2="190" y2="130"/><line x1="10" y1="150" x2="190" y2="150"/></g>
+    <!-- triangle -->
+    <polygon points="30,138 178,118 88,22" fill="#93c5fd" fill-opacity="0.45" stroke="#1e40af" stroke-width="2"/>
+    <!-- sub-triangle opposite v0: its area / total area = lambda0 -->
+    <polygon points="100,100 178,118 88,22" fill="#f59e0b" fill-opacity="0.3" stroke="none"/>
+    <g stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3">
+      <line x1="100" y1="100" x2="30" y2="138"/><line x1="100" y1="100" x2="178" y2="118"/><line x1="100" y1="100" x2="88" y2="22"/>
+    </g>
+    <circle cx="100" cy="100" r="4" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+    <g fill="#1e40af">
+      <circle cx="30" cy="138" r="3.5"/><circle cx="178" cy="118" r="3.5"/><circle cx="88" cy="22" r="3.5"/>
+    </g>
+    <text x="14" y="154" font-style="italic">v<tspan font-size="10" dy="3">0</tspan></text>
+    <text x="182" y="134" font-style="italic">v<tspan font-size="10" dy="3">1</tspan></text>
+    <text x="94" y="18" font-style="italic">v<tspan font-size="10" dy="3">2</tspan></text>
+    <text x="102" y="116" font-style="italic" fill="#b45309">q</text>
+    <text x="118" y="80" font-style="italic" fill="#b45309">λ<tspan font-size="10" dy="3">0</tspan></text>
+    <text x="195" y="44" font-size="12" fill="#374151">λ<tspan font-size="9" dy="3">k</tspan><tspan dy="-3"> ≥ 0</tspan></text>
+    <text x="195" y="62" font-size="11" fill="#6b7280">⇒ inside</text>
+  </g>
+</svg>

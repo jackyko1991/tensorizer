@@ -1,0 +1,21 @@
+source_hash: 909629a494c2
+title: Mécanisme de Chapman et couche d'ozone
+summary: 'Quatre réactions entre O, O₂ et O₃, entretenues par la lumière solaire, produisent une couche d''ozone. Écrit comme un réseau réactionnel $\dot c = S\,r(c)$ avec une matrice stœchiométrique $3\times4$, le système raide est intégré par Euler implicite avec des pas de Newton à toutes les altitudes à la fois, du lever du soleil à des siècles plus tard : O et O₃ échangent leurs places en quelques secondes, l''oxygène impair met des jours à des siècles à se stabiliser, et l''état stationnaire culmine vers 30 km.'
+notes: 'Sydney Chapman (1930) a expliqué la couche d''ozone par quatre réactions. Le rayonnement ultraviolet sous 242 nm dissocie $\mathrm{O_2}$ (1) ; chaque atome O se fixe rapidement sur un $\mathrm{O_2}$ avec un troisième corps $\mathrm M$ qui emporte l''énergie (2) ; l''ozone absorbe l''ultraviolet et le visible et se dissocie à nouveau (3), c''est ainsi qu''il protège le sol, mais cela ne détruit pas l''« oxygène impair » $\mathrm O_x = \mathrm O + \mathrm{O_3}$ ; seule $\mathrm O + \mathrm{O_3} \to 2\,\mathrm{O_2}$ (4) le fait. Les réactions (2) et (3) font circuler O et $\mathrm{O_3}$ en quelques millisecondes à minutes, tandis que (1) et (4) fixent le total en quelques jours dans la haute stratosphère et en des décennies ou plus plus bas : un système raide dont les échelles de temps diffèrent de $10^{14}$, si bien qu''un schéma explicite demanderait des milliards de pas, alors qu''Euler implicite (stable pour tout $\Delta t$) prend 300 pas régulièrement espacés en $\log t$. Chaque
+  colonne de $S$ conserve les atomes d''oxygène, et Euler implicite conserve exactement de tels invariants linéaires. L''équilibre des deux paires donne $[\mathrm{O_3}] \approx [\mathrm{O_2}]\sqrt{j_1 k_2[\mathrm M]/(j_3 k_4)}$ : en descendant, l''air (et avec lui $[\mathrm{O_2}]^{3/2}$) devient exponentiellement plus dense tandis que la lumière qui dissocie $\mathrm{O_2}$ s''épuise, et le produit culmine là où l''épaisseur optique oblique de $\mathrm{O_2}$ vaut environ 3. Les constantes de vitesse $k_2$, $k_4$ sont les valeurs de l''évaluation du JPL (approximatives) ; les taux de photolyse utilisent une seule bande effective par molécule avec des paramètres illustratifs, en remplacement d''une intégration sur le spectre solaire, et le soleil brille en permanence. Sous environ 18 km, la durée de vie de l''oxygène impair dépasse même la plus longue simulation, si bien que ces niveaux ne se stabilisent jamais ; dans l''atmosphère réelle, les vents y transportent l''ozone. La chimie de Chapman
+  seule donne trop d''ozone (ici un pic vers $8\times10^{12}$ cm$^{-3}$ et environ 380 DU au-dessus de 15 km, contre environ $5\times10^{12}$ cm$^{-3}$ vers 20–25 km et 300 DU observés). Les puits manquants sont les cycles catalytiques $\mathrm X + \mathrm{O_3} \to \mathrm{XO} + \mathrm{O_2}$, $\mathrm{XO} + \mathrm O \to \mathrm X + \mathrm{O_2}$, qui effectuent la réaction (4) de nombreuses fois par catalyseur : les NOₓ (Crutzen, 1970) et le chlore des CFC (Molina et Rowland, 1974), la chimie à l''origine du trou d''ozone et du protocole de Montréal (prix Nobel 1995).'
+meanings:
+- densités en nombre de $\mathrm O$, $\mathrm{O_2}$, $\mathrm{O_3}$ à l'altitude $a$, en cm$^{-3}$
+- nombre net de molécules de l'espèce $s$ produites par la réaction $r$ ; la colonne 1 vaut $(2, -1, 0)$ pour $\mathrm{O_2} \to 2\,\mathrm O$
+- '$s$ répété ⇒ sommé : atomes d''oxygène produits par chaque réaction, tous nuls'
+- vitesses d'action de masse des quatre réactions
+- '$r$ répété ⇒ sommé : $dc/dt$'
+- jacobienne du réseau, $r$ répété sommé
+- une mise à jour de Newton du pas d'Euler implicite, un système $3\times3$ par altitude
+- $6.0\times10^{-34}(T/300)^{-2.4}$ cm$^6$ s$^{-1}$ et $8.0\times10^{-12}e^{-2060/T}$ cm$^3$ s$^{-1}$ (JPL, approximatif)
+- taux de photolyse atténués par les colonnes de $\mathrm{O_2}$ et $\mathrm{O_3}$ au-dessus (modèle illustratif à une bande)
+- état stationnaire exact de Chapman à partir d'une équation du second degré en $[\mathrm O]$
+labels:
+  sza: Angle zénithal solaire
+  log10_t_end: Durée de simulation $\log_{10}(t/\mathrm{s})$
+  levels: Niveaux d'altitude

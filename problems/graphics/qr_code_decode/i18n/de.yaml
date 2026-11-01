@@ -1,0 +1,24 @@
+source_hash: 56bd5dd35d76
+title: Einen QR-Code aus einem Foto lesen
+summary: 'Baue einen QR-Code der Version 1–3 von Grund auf (Positions-, Timing- und Ausrichtungsmuster, BCH-Formatbits, per Strafpunkten gewählte Maske, Reed–Solomon über GF(256)), fotografiere ihn mit einer zufälligen Homographie, Unschärfe, Rauschen, ungleichmäßigem Licht und einem Daumen darüber, und lies ihn als Tensor-Pipeline zurück: adaptive Schwelle, Matched Filter für die 1:1:3:1:1-Positionsmuster, DLT-Homographie und grid_sample, BCH- und Reed–Solomon-Dekodierung mit $\mathrm{GF}(2^8)$-Arithmetik als Tabellen-Gathers.'
+notes: 'Echte Leser wie ZXing folgen demselben Ablauf: mit einer lokalen Schwelle binarisieren, Zeilen nach dem 1:1:3:1:1-Lauflängenmuster eines Positionsmusters absuchen und es entlang von Spalten und Diagonalen bestätigen, drei Positionsmuster wählen, die einen rechten Winkel bilden, Modulgröße und Version aus ihrem Abstand schätzen, ein Ausrichtungsmuster dort suchen, wo eine affine Schätzung es vermutet, eine perspektivische Transformation anpassen, das Raster abtasten und dann die Format- und Reed–Solomon-Schichten dekodieren. Hier wird die Homographie zusätzlich verfeinert, indem die Korrelation der bekannten Module (Positionsmuster, Timing, Ausrichtung, Ruhezone) mit dem Bild über grid_sample maximiert wird, und die Version ist diejenige, deren Vorlage am besten passt. Die vier Fehlerkorrekturstufen L, M, Q, H stellen etwa 7, 15, 25 und 30 % der Codewörter wieder her: Mit $T$ ECC-Bytes korrigiert ein Block $\lfloor T/2 \rfloor$ unbekannte Bytefehler (doppelt so viele, wenn ihre Positionen
+  bekannt wären, als Auslöschungen). Ein Fleck, der einen Anteil $f$ des Symbols bedeckt, trifft mehr als $f$ der Codewörter, weil jedes Byte ein $2\times4$-Block von Modulen ist, daher fallen die Erfolgskurven unter diese Prozentsätze. Masken berühren nur Datenmodule und $M \oplus M = 0$, also ist das Entmaskieren dasselbe XOR; der Encoder probiert alle 8 Masken als einen Stapel und behält die mit der niedrigsten Strafe (Läufe, $2\times2$-Blöcke, positionsmusterähnliche Strukturen, Dunkelanteil). Verifikation: Der Reed–Solomon-Encoder reproduziert die ECC-Bytes des Rechenbeispiels in ISO/IEC 18004 (''01234567'' als Version 1-M), und die Formatwörter stimmen mit der Tabelle der Norm überein; der Rest wird durch Hin-und-zurück-Tests und Null-Syndrome geprüft. Vereinfachungen: nur Byte-Modus, Versionen 1–3 (ein Ausrichtungsmuster, keine Versionsinformationsblöcke), keine gespiegelten Symbole, keine Auslöschungsdekodierung. Version 1 hat kein Ausrichtungsmuster, daher schadet ihr starke Perspektive
+  am meisten. Referenzen: ISO/IEC 18004 (QR code symbology); I. S. Reed und G. Solomon, Polynomial codes over certain finite fields, J. SIAM 8 (1960) 300–304.'
+meanings:
+- GF(256)-Produkt als zwei Tabellen-Gathers; $\alpha = 2$ erzeugt alle 255 von null verschiedenen Bytes modulo $x^8+x^4+x^3+x^2+1$ (0x11D); $\oplus$ ist XOR
+- 'XOR über den summierten Index $i$: jede der 8 Bitebenen modulo 2 addieren'
+- 'systematisches Reed–Solomon: Zeile $i$ von $G$ ist $x^{T+k-1-i} \bmod g(x)$, also sind die ECC-Bytes linear in den Daten'
+- Blockpolynom ausgewertet bei $\alpha^j$; genau für Codewörter alles null
+- Fehlerlokator per Berlekamp–Massey (mit torch.where gebündelt), Wurzeln per Chien-Suche über alle Positionen, Beträge $e = X\,\Omega(X^{-1})/\Lambda'(X^{-1})$ (Forney)
+- BCH(15,5) mit Generator 0x537, XOR 0x5412; das nächste der 32 Codewörter korrigiert bis zu 3 Bitfehler
+- 'dunkel, wo das Pixel unter seinem $31\times31$-Boxmittel (conv2d) minus $c$ liegt: folgt ungleichmäßiger Beleuchtung'
+- Matched Filter $K^s$ für das 1:1:3:1:1-Profil entlang Zeilen und Spalten in 11 Skalen $s$; die Spitzen sind die Zentren der Positionsmuster (auch entlang der Diagonalen geprüft)
+- 'DLT/SVD aus 3 Positionsmuster-Zentren + dem Ausrichtungsmuster (Version 1: Parallelogrammecke), dann per Gradientenaufstieg auf die Übereinstimmung mit allen bekannten Modulen verfeinert'
+- Modul $(i, j)$ an $3\times3$ Punkten darin gelesen; dann entmaskieren (XOR, eine Involution) und in Zickzack-Reihenfolge lesen
+labels:
+  message: Nachricht
+  version: Kleinste Version (erhöht, wenn die Nachricht nicht passt)
+  ecc: Fehlerkorrekturstufe
+  perspective: Perspektivstärke (Eckverschiebung / Seite)
+  occlusion: Verdeckter Anteil des Symbols
+  noise: Pixelrauschen $\sigma$

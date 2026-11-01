@@ -1,0 +1,19 @@
+source_hash: e3d9a69287ac
+title: Curvas de valoración ácido–base
+summary: Se añade hidróxido de sodio gota a gota a un ácido fuerte, a un ácido débil y al ácido fosfórico. En lugar de un atajo de libro de texto distinto para cada región, se resuelve un único balance de cargas para $[\mathrm{H^+}]$ por bisección, para cada ácido y cada volumen a la vez en un tensor $(A, N)$. Las curvas dan los puntos de equivalencia (picos de $d\mathrm{pH}/dV$), la región tampón y las fracciones de las especies $\alpha_j(\mathrm{pH})$.
+notes: 'El balance de cargas se cumple en toda la curva, así que sustituye las recetas separadas para el inicio, la región tampón, el punto de equivalencia y el exceso de base. Cada término es una función monótona del pH, lo que hace segura la bisección: siempre reduce el intervalo a la mitad y no puede perder la raíz. Un ácido fuerte (modelado con pKa $\approx -6$) da un salto brusco con pH 7 en la equivalencia, donde solo quedan $\mathrm{Na^+}$, $\mathrm{Cl^-}$ y agua. Un ácido débil empieza más arriba, sube suavemente por la región tampón y tiene su punto de equivalencia por encima de 7, porque su base conjugada $\mathrm{A^-}$ es a su vez una base débil. En la semiequivalencia $[\mathrm{HA}] = [\mathrm{A^-}]$, así que la ecuación de Henderson–Hasselbalch, $\mathrm{pH} = \mathrm{p}K_a + \log_{10}([\mathrm{A^-}]/[\mathrm{HA}])$, da $\mathrm{pH} = \mathrm{p}K_a$: así es como se miden los pKa mediante una valoración. El ácido fosfórico (pKa ≈ 2,15, 7,20 y 12,35, valores aproximados a 25 °C)
+  muestra dos saltos; el tercer protón es tan poco ácido que el NaOH 0,1 M no puede arrancarlo de forma visible, y su salto se pierde en el exceso de base. El panel de especies muestra por qué: cada $\alpha_j$ tiene su máximo entre dos pKa, y dos vecinas son iguales exactamente en $\mathrm{pH} = \mathrm{p}K$. Simplificaciones: concentraciones en lugar de actividades, 25 °C, sin CO₂ del aire.'
+meanings:
+- ácido $a$, protón $i$; los protones que faltan se rellenan con $+\infty$ ($K = 0$)
+- 'constantes acumuladas: $-$ suma acumulada de los pKa, $\beta_{a0} = 1$'
+- ácido y sodio tras mezclar $V_0$ de ácido con $V_n$ de base
+- fracciones de las especies; la suma sobre $k$ en el denominador es la normalización softmax
+- '$j$ repetido ⇒ sumado: protones liberados por molécula de ácido $\bar n$'
+- bisección en $\mathrm{pH} = -\log_{10}h$, todos los ácidos y volúmenes en un solo tensor
+- pendiente; sus picos (hallados con un max-pool) son los puntos de equivalencia
+labels:
+  c_acid: Concentración del ácido $c_a$
+  V0: Volumen de ácido $V_0$
+  c_base: Concentración de NaOH $c_b$
+  V_max: Volumen máximo de NaOH
+  pKa_weak: pKa del ácido débil (acético ≈ 4,76)

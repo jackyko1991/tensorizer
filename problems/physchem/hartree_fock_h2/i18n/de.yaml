@@ -1,0 +1,23 @@
+source_hash: de68545f1f70
+title: Hartree-Fock für $\mathrm{H_2}$ in einer minimalen STO-3G-Basis
+summary: Die Lehrbuch-SCF-Rechnung von Szabo und Ostlund, mit Tensoren geschrieben. Jeder Wasserstoff trägt eine 1s-Funktion aus drei Gauß-Funktionen (STO-3G); Überlapp-, kinetische, Kernanziehungs- und Zweielektronenintegrale haben geschlossene Formen, die Fock-Matrix ist eine Kontraktion der Dichte mit dem Tensor $(\mu\nu|\lambda\sigma)$, und die Roothaan-Gleichungen $FC = SC\varepsilon$ werden mit eigh für einen ganzen Batch von Bindungslängen gleichzeitig gelöst. Bei $R = 1.4$ bohr ergibt sich $E = -1.1167$ hartree; der Scan findet die Bindungslänge und zeigt, warum restricted Hartree-Fock die Bindung nicht brechen kann.
+notes: 'Atomare Einheiten: Längen in bohr ($a_0 = 0.529$ Å) und Energien in hartree ($E_h = 27.21$ eV). Die Basis ist STO-3G mit den Slater-Exponenten $\zeta_{\mathrm H} = 1.24$ und $\zeta_{\mathrm{He}} = 2.0925$ wie bei Szabo und Ostlund, Modern Quantum Chemistry (1982; Dover-Ausgabe 1996), Kapitel 3; mit zwei Basisfunktionen ist jede Matrix $2\times2$, du kannst also jede Zahl mit dem Buch vergleichen: $S_{12} = 0.6593$, $T_{11} = 0.7600$, $E = -1.1167$ hartree bei $R = 1.4$ bohr und $-2.8607$ hartree für $\mathrm{HeH^+}$ bei $R = 1.4632$ bohr. Das SCF startet bei $P = 0$ (dem Kern-Hamilton-Operator); für $\mathrm{H_2}$ legt die Symmetrie die Orbitale $\psi_{1,2} \propto \phi_A \pm \phi_B$ fest, und es konvergiert sofort, während $\mathrm{HeH^+}$ ein Dutzend Durchläufe braucht, weil Ladung zum Helium fließt. Jede Bindungslänge ist ein Batch-Eintrag, sodass das SCF für die ganze Kurve in einer Schleife läuft. Restricted Hartree-Fock setzt beide Elektronen in dasselbe Ortsorbital $\psi_1$;
+  bei großem $R$ ist dieser Zustand halb $\mathrm{H + H}$ und halb ionisch $\mathrm{H^+ + H^-}$, sodass die Kurve weit über $2E_{\mathrm H}$ ansteigt. Die gestrichelte Kurve ist die volle Konfigurationswechselwirkung in derselben Basis (die $3\times3$-Singulett-Matrix aus $|1^2\rangle$, $|1^12^1\rangle$, $|2^2\rangle$): Sie mischt $|2^2\rangle$ bei, dissoziiert korrekt, und ihr Abstand zu RHF im Gleichgewicht (etwa $-0.02$ hartree) ist die Korrelationsenergie. Eine minimale Basis ist weit von der exakten $\mathrm{H_2}$-Energie entfernt, $-1.1745$ hartree bei $R = 1.4$ bohr; größere Basen brauchen p- und d-Funktionen und die allgemeinen Rekursionen für Gauß-Integrale. Probier $\mathrm{HeH^+}$: Dort erreicht die RHF-Kurve den richtigen Grenzwert, $\mathrm{He + H^+}$, weil beide Elektronen am Helium landen.'
+meanings:
+- drei Gauß-Exponenten pro Funktion, $\alpha_p\zeta^2$, und Kontraktionskoeffizienten mit eingerechneter Normierung der Primitiven $(2\alpha/\pi)^{3/4}$
+- die beiden Kerne (und Basiszentren) für jede Bindungslänge $R_b$ im Batch
+- zwei Gauß-Funktionen multiplizieren sich zu einer Gauß-Funktion um $P = (\alpha A + \beta B)/(\alpha + \beta)$
+- 'wiederholte $p, q$ ⇒ summiert: Kontraktion über Primitive; ebenso für $T$, $V$'
+- $-\sum_c Z_c\,\tfrac{2\pi}{\alpha+\beta}\,e^{-\dots}F_0\big((\alpha+\beta)|P - C|^2\big)$ mit der Boys-Funktion $F_0(t) = \tfrac12\sqrt{\pi/t}\,\mathrm{erf}\sqrt t$
+- Bra- und Ket-Paartensoren gegeneinander gebroadcastet, dann $p, q, r, t$ in einem einsum summiert
+- 'symmetrische (Löwdin-)Orthogonalisierung: $X^{\mathsf T}SX = 1$'
+- Coulomb-Matrix $J$; wiederholte $\lambda, \sigma$ ⇒ summiert
+- 'Austauschmatrix $K$: derselbe Tensor mit vertauschten Indizes gelesen'
+- ein gebatchtes eigh pro SCF-Durchlauf; $C = XC^{\prime}$
+- 'Mulliken-Elektronenzahl: genau 2'
+- die Potentialkurve, ein Eintrag pro Bindungslänge
+labels:
+  molecule: Molekül
+  R_min: Kürzeste Bindungslänge $R$
+  R_max: Längste Bindungslänge $R$
+  n_bond_lengths: Bindungslängen im Batch

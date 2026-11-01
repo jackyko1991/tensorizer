@@ -1,0 +1,42 @@
+title: 'Beer–Lambert spectra of A → B → C'
+category: physchem
+level: beginner
+order: 3
+summary: >
+  A spectrophotometer follows the consecutive reaction $A \to B \to C$. The spectrum of a mixture is a matrix product,
+  $D = l\,E\,c$ (wavelengths × species), so the concentration profiles come back from noisy spectra by least squares
+  with the pseudo-inverse $E^{+}$. Watch the isosbestic points, where the spectra stay put while one step runs.
+animated: true
+vector_form: 'D(\lambda, t) = l\sum_s \varepsilon_s(\lambda)\,c_s(t),\qquad \frac{d\mathbf c}{dt} = K\,\mathbf c,\qquad \hat{\mathbf c} = \frac{1}{l}\,(E^{\mathsf T}E)^{-1}E^{\mathsf T}\,\mathbf D'
+index_form: 'D_{tw} = l\,E_{ws}\,c_{ts} \qquad c_{ts} = \big[e^{K t_t}\big]_{sr}\,c_r(0) \qquad G_{rs} = E_{wr}E_{ws},\;\; \hat c_{ts} = \tfrac{1}{l}\,(G^{-1})_{sr}\,E_{wr}\,D_{tw}'
+translation:
+  - {symbol: '\lambda_w', code: 'wavelengths(dev)', shape: '(W,)', meaning: '300–700 nm in 2 nm steps'}
+  - {symbol: 'E_{ws} = \varepsilon_s(\lambda_w)', code: 'absorptivities(lam)', shape: '(W, S)', meaning: 'molar absorptivity of each species (synthetic Gaussian bands, L mol$^{-1}$ cm$^{-1}$)'}
+  - {symbol: 'K_{sr}', code: 'rate_matrix(k1, k2)', shape: '(S, S)', meaning: 'rate matrix of $A \to B \to C$; each column sums to 0 (mass balance)'}
+  - {symbol: '[e^{K t_t}]_{sr}\,c_r(0)', code: "einsum('tsr,r->ts', matrix_exp(K * t), c0)", shape: '(T, S)', meaning: 'exact concentrations at every sampling time; $r$ summed'}
+  - {symbol: 'l\,E_{ws}\,c_{ts}', code: "l * einsum('ws,ts->tw', E, c)", shape: '(T, W)', meaning: 'Beer–Lambert for a mixture: absorbances add, species $s$ summed'}
+  - {symbol: 'G_{rs} = E_{wr}E_{ws}', code: "einsum('wr,ws->rs', E, E)", shape: '(S, S)', meaning: 'overlap (Gram) matrix of the pure spectra; $w$ summed'}
+  - {symbol: 'E^{+}_{sw} = (G^{-1})_{sr}E_{wr}', code: "einsum('sr,wr->sw', inv(G), E)", shape: '(S, W)', meaning: 'pseudo-inverse; equals torch.linalg.pinv(E) when the spectra are independent'}
+  - {symbol: '\hat c_{ts}', code: "einsum('sw,tw->ts', E_pinv, D) / l", shape: '(T, S)', meaning: 'least-squares concentrations from each noisy spectrum; $w$ summed'}
+  - {symbol: '\varepsilon_A(\lambda) = \varepsilon_B(\lambda)', code: 'crossings(lam, E[:, 0], E[:, 1])', shape: 'list', meaning: 'isosbestic point of the step $A \to B$ (likewise $B \to C$)'}
+notes: >
+  Each species absorbs light in proportion to its concentration and the path length, $D = \varepsilon\,l\,c$, and the
+  absorbances of a mixture simply add. Written for all wavelengths and times at once this is the matrix product
+  $D_{tw} = l\,E_{ws}c_{ts}$, so with more wavelengths than species the concentrations follow from an overdetermined
+  linear system, solved by least squares: $\hat c = E^{+}D/l$ with the pseudo-inverse $E^{+} = (E^{\mathsf T}E)^{-1}E^{\mathsf T}$.
+  This only works when the pure spectra are clearly different; the condition number of $E$ printed in the terminal
+  says how much the noise is amplified. The kinetics $A \to B \to C$ is a linear system $\dot{\mathbf c} = K\mathbf c$,
+  solved exactly with the matrix exponential: $[A]$ decays, $[B]$ rises and falls (it peaks at
+  $t = \ln(k_1/k_2)/(k_1 - k_2)$) and $[C]$ grows, while $[A] + [B] + [C]$ stays constant because every column of $K$
+  sums to zero. Isosbestic points: if only $A \to B$ is happening, $D = l(\varepsilon_A[A] + \varepsilon_B[B])$ with
+  $[A] + [B]$ fixed, so at a wavelength where $\varepsilon_A = \varepsilon_B$ the absorbance cannot change. A sharp isosbestic
+  point is the classic sign of a clean two-species conversion; here the crossing moves from $\varepsilon_A = \varepsilon_B$
+  (early) to $\varepsilon_B = \varepsilon_C$ (late), and in between it blurs because three species coexist. Set $k_2 = 0$
+  to see a perfect isosbestic point, or $k_2 \approx k_1$ to see it vanish. The spectra are synthetic Gaussian bands
+  with typical dye-like absorptivities ($\sim 10^4$ L mol$^{-1}$ cm$^{-1}$), in a 1 cm cuvette.
+params:
+  k1: {default: 0.02, min: 0.002, max: 0.2, step: 0.001, label: 'Rate constant $k_1$ ($A \to B$)', unit: 1/s}
+  k2: {default: 0.003, min: 0, max: 0.2, step: 0.001, label: 'Rate constant $k_2$ ($B \to C$)', unit: 1/s}
+  t_end: {default: 1200.0, min: 60, max: 5000, step: 10, label: Run time, unit: s}
+  c0: {default: 50.0, min: 5, max: 200, step: 5, label: 'Starting $[A]_0$', unit: µM}
+  noise: {default: 0.003, min: 0, max: 0.03, step: 0.001, label: 'Detector noise $\sigma$ (absorbance)'}

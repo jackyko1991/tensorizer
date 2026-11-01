@@ -1,0 +1,20 @@
+source_hash: 32bf873c8175
+title: Équation de Nernst et écrantage de Debye–Hückel
+summary: 'La tension d''une pile Daniell, Zn | Zn²⁺ ‖ Cu²⁺ | Cu, suit l''équation de Nernst, calculée ici sur une seule grille $(T, Q)$ de températures et de rapports de concentrations. Les ions réels sont moins actifs que leur concentration ne le laisse penser : chacun porte un nuage de charge opposée d''épaisseur $\kappa^{-1}$. L''équation de Poisson–Boltzmann linéarisée autour d''un ion est résolue sur une grille radiale sous forme de système linéaire par lots, concorde avec le potentiel de Yukawa analytique et reproduit les coefficients d''activité de Debye–Hückel qui décalent la f.é.m.'
+notes: 'Dans la pile Daniell, le zinc est oxydé et les ions cuivre sont réduits, $\mathrm{Zn + Cu^{2+} \to Zn^{2+} + Cu}$, avec $n = 2$ électrons et $E^\circ \approx 1.10$ V (maintenue fixe ici, car sa propre variation avec la température est faible). Chaque variation d''un facteur dix de $Q$ déplace la f.é.m. de $\ln 10\,RT/nF$, soit 29,6 mV à 25 °C, et la pente croît proportionnellement à $T$. L''équation de Nernst utilise les activités $a = \gamma m$, pas les molalités. Debye et Hückel ont calculé $\gamma$ en laissant les autres ions s''organiser dans le potentiel $\varphi$ d''un ion central avec des poids de Boltzmann, puis en linéarisant : $\nabla^2\varphi = \kappa^2\varphi$. Sa solution est le potentiel coulombien écranté (de Yukawa), qui décroît sur la longueur de Debye $\kappa^{-1} \approx 0.304\,\mathrm{nm}/\sqrt{I}$ dans l''eau à 25 °C. Le solveur numérique écrit l''équation radiale pour $u = r\varphi$ comme un système tridiagonal, avec le théorème de Gauss à la surface de l''ion
+  et $\varphi = 0$ à douze longueurs de Debye, et concorde avec la forme analytique à environ $10^{-4}$ près. L''énergie de l''ion dans le potentiel de son propre nuage vaut $kT\ln\gamma$, ce qui donne exactement la loi étendue ; pour $I \to 0$, elle devient la loi limite $\log_{10}\gamma = -Az^2\sqrt I$ avec $A \approx 0.51$. Chaque demi-pile est une solution de sulfate 2:2 distincte ($I = 4m$), donc changer $m(\mathrm{Zn^{2+}})$ change $\gamma_{Zn}$ tandis que $\gamma_{Cu}$ reste fixe, et la f.é.m. s''écarte de la valeur de Nernst idéale de plusieurs millivolts. Les coefficients d''activité d''un ion seul ne peuvent pas être mesurés isolément (seule la moyenne $\gamma_\pm$ le peut), et au-dessus de $I \approx 0.01$ l''appariement d''ions et les interactions spécifiques dans les sulfates 2:2 rendent même la loi étendue qualitative. La taille d''ion $a \approx 0.5$ nm est une valeur typique d''ion hydraté.'
+meanings:
+- un lot de températures de pile et de quotients de réaction
+- 'aucun indice sommé : chaque pente rencontre chaque quotient'
+- force ionique $I = mz^2$ de la demi-pile ZnSO₄ balayée et inverse de la longueur de Debye
+- loi étendue ; $a \to 0$ donne la loi limite $-Az^2\sqrt I$
+- grille de la surface de l'ion $a$ jusqu'à $a + 12\,\kappa_c^{-1}$, une par concentration
+- $u^{\prime\prime} - \kappa^2u = 0$ avec $u = r\varphi$ ; la ligne 0 est le théorème de Gauss en $r = a$
+- $j$ répété ⇒ sommé ; une résolution dense par concentration, par lots
+- 'énergie de l''ion dans son propre nuage : redonne la loi de Debye–Hückel étendue'
+labels:
+  T_C: Température pour les activités et l'écrantage
+  m_Cu: Molalité de la demi-pile Cu²⁺
+  E0: F.é.m. standard $E^\circ$
+  a_ion: Taille de l'ion $a$
+  n_points: Points de la grille radiale $M$

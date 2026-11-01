@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Methane combustion drawn with ball molecules: one CH4 and two O2 react to one CO2 and two H2O; the same atoms appear on both sides, which is the condition M nu = 0">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#111827">
+    <!-- bonds -->
+    <g stroke="#374151" stroke-width="2">
+      <line x1="28" y1="56" x2="28" y2="84"/><line x1="14" y1="70" x2="42" y2="70"/>
+      <line x1="66" y1="60" x2="80" y2="60"/><line x1="66" y1="82" x2="80" y2="82"/>
+      <line x1="132" y1="71" x2="160" y2="71"/>
+      <line x1="190" y1="53" x2="198" y2="61"/><line x1="206" y1="53" x2="198" y2="61"/>
+      <line x1="190" y1="80" x2="198" y2="88"/><line x1="206" y1="80" x2="198" y2="88"/>
+    </g>
+    <!-- CH4: carbon grey, hydrogens light -->
+    <circle cx="28" cy="70" r="8" fill="#374151"/>
+    <g fill="#93c5fd" stroke="#1e40af" stroke-width="1.2">
+      <circle cx="28" cy="55" r="4.5"/><circle cx="28" cy="85" r="4.5"/><circle cx="13" cy="70" r="4.5"/><circle cx="43" cy="70" r="4.5"/>
+    </g>
+    <text x="54" y="75" font-size="16" fill="#374151">+</text>
+    <!-- 2 O2 -->
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1.5">
+      <circle cx="66" cy="60" r="6.5"/><circle cx="80" cy="60" r="6.5"/>
+      <circle cx="66" cy="82" r="6.5"/><circle cx="80" cy="82" r="6.5"/>
+    </g>
+    <!-- reaction arrow -->
+    <line x1="94" y1="71" x2="122" y2="71" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- CO2 -->
+    <circle cx="146" cy="71" r="8" fill="#374151"/>
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1.5">
+      <circle cx="131" cy="71" r="6.5"/><circle cx="161" cy="71" r="6.5"/>
+    </g>
+    <text x="171" y="76" font-size="16" fill="#374151">+</text>
+    <!-- 2 H2O -->
+    <g fill="#93c5fd" stroke="#1e40af" stroke-width="1.2">
+      <circle cx="189" cy="52" r="4.5"/><circle cx="207" cy="52" r="4.5"/>
+      <circle cx="189" cy="79" r="4.5"/><circle cx="207" cy="79" r="4.5"/>
+    </g>
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1.5">
+      <circle cx="198" cy="61" r="6.5"/><circle cx="198" cy="88" r="6.5"/>
+    </g>
+    <!-- formulas -->
+    <text x="28" y="114" text-anchor="middle">CH<tspan font-size="10" dy="3">4</tspan></text>
+    <text x="73" y="114" text-anchor="middle">2 O<tspan font-size="10" dy="3">2</tspan></text>
+    <text x="146" y="114" text-anchor="middle">CO<tspan font-size="10" dy="3">2</tspan></text>
+    <text x="198" y="114" text-anchor="middle">2 H<tspan font-size="10" dy="3">2</tspan><tspan dy="-3">O</tspan></text>
+    <!-- conservation as a matrix product -->
+    <line x1="20" y1="126" x2="220" y2="126" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="120" y="148" text-anchor="middle" font-size="14" fill="#b45309"><tspan font-style="italic">M</tspan> <tspan font-style="italic">ν</tspan> = 0</text>
+  </g>
+</svg>

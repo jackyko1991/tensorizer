@@ -1,0 +1,43 @@
+title: 'Chemical equilibrium and Le Chatelier'
+category: physchem
+level: beginner
+order: 2
+summary: >
+  Where does a reaction stop? From $\Delta G^\circ = -RT\ln K$ the equilibrium extent $\xi$ of a gas reaction
+  ($\mathrm{N_2O_4 \rightleftharpoons 2\,NO_2}$ or the Haber reaction $\mathrm{N_2 + 3H_2 \rightleftharpoons 2NH_3}$) is found
+  for hundreds of temperatures and pressures at once by bisection on $Q(\xi) = K$, showing the Le Chatelier shifts
+  with pressure, temperature (van 't Hoff) and added product.
+animated: true
+vector_form: '\Delta G^\circ = \Delta H^\circ - T\Delta S^\circ = -RT\ln K,\qquad Q = \prod_i a_i^{\nu_i} = K,\qquad a_i = \frac{n_i}{n}\,\frac{P}{P^\circ},\qquad \frac{d\ln K}{d(1/T)} = -\frac{\Delta H^\circ}{R}'
+index_form: 'n_{bi} = n^0_{bi} + \nu_i\,\xi_b \qquad \ln Q_b = \nu_i \ln\!\Big(\frac{n_{bi}}{n_{bj}\mathbb{1}_j}\,\frac{P_b}{P^\circ}\Big) \qquad \ln Q_b(\xi_b) = \ln K_b = -\frac{\Delta H^\circ - T_b\Delta S^\circ}{R\,T_b}'
+translation:
+  - {symbol: '\nu_i', code: "r['nu']", shape: '(S,)', meaning: 'stoichiometric numbers: $-1, 2$ for $\mathrm{N_2O_4 \rightleftharpoons 2NO_2}$; $-1, -3, 2$ for ammonia'}
+  - {symbol: 'T_b,\ P_b', code: 'condition_grid(T_list, P_grid)', shape: '(B,)', meaning: 'every (temperature, pressure) pair flattened into one batch index $b$'}
+  - {symbol: '\ln K_b', code: 'log_K(T_b, dH, dS)', shape: '(B,)', meaning: '$-\Delta G^\circ/RT$ with approximate, temperature-independent $\Delta H^\circ$, $\Delta S^\circ$'}
+  - {symbol: 'n_{bi} = n^0_{bi} + \nu_i\xi_b', code: "n0 + einsum('i,b->bi', nu, xi)", shape: '(B, S)', meaning: 'moles of each species; an outer product, nothing summed'}
+  - {symbol: 'n_{bj}\mathbb{1}_j', code: 'n.sum(-1, keepdim=True)', shape: '(B, 1)', meaning: 'total moles; $j$ summed'}
+  - {symbol: '\nu_i \ln a_{bi}', code: "einsum('i,bi->b', nu, ln_a)", shape: '(B,)', meaning: '$\ln Q$: the species index $i$ is summed'}
+  - {symbol: '\xi_{\min,b},\ \xi_{\max,b}', code: 'extent_bounds(n0, nu)', shape: '(B,)', meaning: 'no amount may become negative: the bracket for bisection'}
+  - {symbol: '\xi_b', code: 'equilibrium_extent(n0, nu, P, lnK)', shape: '(B,)', meaning: 'bisection, all conditions together: keep the half where $\ln Q - \ln K$ changes sign'}
+  - {symbol: '-\Delta H^\circ / R', code: 'van_t_hoff_slope(dH)', shape: '()', meaning: 'slope of $\ln K$ against $1/T$'}
+notes: >
+  $Q$ measures where the mixture is, $K$ where it wants to be: if $Q < K$ the reaction runs forward, if $Q > K$ it runs
+  back. Because $\ln Q$ rises steadily with the extent $\xi$ (from $-\infty$ with no products to $+\infty$ with no
+  reactants), the equilibrium is the single root of $\ln Q(\xi) - \ln K$, and bisection finds it for every condition at
+  once. Le Chatelier's principle falls out of the formula. Pressure: with ideal-gas activities $Q = K_x\,(P/P^\circ)^{\Delta\nu}$
+  where $\Delta\nu = \sum_i \nu_i$, so raising $P$ favours the side with fewer gas molecules ($\mathrm{N_2O_4}$ dissociates
+  less, more $\mathrm{NH_3}$ forms). Temperature: $\ln K = -\Delta H^\circ/RT + \Delta S^\circ/R$, so $K$ grows with $T$ for an
+  endothermic reaction ($\mathrm{N_2O_4}$, the brown $\mathrm{NO_2}$ colour deepens on warming) and falls for an exothermic one
+  (ammonia). Added product: $Q$ jumps above $K$ and some product turns back into reactants, but not all of it. For
+  $\mathrm{N_2O_4}$ the result can be checked by hand: $K = 4\alpha^2 P/((1-\alpha^2)P^\circ)$ gives $\alpha = \sqrt{K/(K + 4P/P^\circ)}$.
+  The thermodynamic data are approximate textbook values at 298 K ($\Delta H^\circ \approx +57.2$ kJ/mol,
+  $\Delta S^\circ \approx +176$ J/(mol K) for $\mathrm{N_2O_4}$; $\approx -92.2$ kJ/mol and $\approx -199$ J/(mol K) for ammonia),
+  treated as constant in $T$, and the gases as ideal; both simplifications overestimate the ammonia yield at 700 K and
+  100 bar somewhat (measured: roughly 20 % $\mathrm{NH_3}$ rather than about 30 %).
+  The Haber reaction is strongly favoured at room temperature but far too slow there: plants run at about 700–750 K
+  and 150–300 bar with an iron catalyst, trading yield for speed. Try T = 700 K with the Haber reaction.
+params:
+  reaction: {default: n2o4, type: choice, options: [n2o4, haber], label: 'Reaction ($\mathrm{N_2O_4}$ or ammonia)'}
+  T: {default: 320.0, min: 250, max: 900, step: 5, label: 'Temperature $T$ (black curve)', unit: K}
+  P: {default: 1.0, min: 0.1, max: 100, step: 0.1, label: 'Pressure $P$ for the added-product test', unit: bar}
+  add_product: {default: 0.5, min: 0, max: 2, step: 0.1, label: 'Product added', unit: mol}

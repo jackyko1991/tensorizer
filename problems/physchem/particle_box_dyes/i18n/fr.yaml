@@ -1,0 +1,21 @@
+source_hash: 07db7a3fd274
+title: Particule dans une boîte et couleur des colorants
+summary: Pourquoi les molécules conjuguées plus longues absorbent-elles une lumière plus rouge ? Les électrons $\pi$ d'un colorant cyanine se déplacent librement le long de la chaîne, comme des particules dans une boîte à une dimension de longueur $L$. Remplir les niveaux $E_n \propto n^2/L^2$ deux par deux donne un écart HOMO→LUMO $\Delta E = h^2(N+1)/8m_eL^2$ et un $\lambda_{max}$ prédit pour toute une série homologue à la fois ; un hamiltonien aux différences finies par lots, diagonalisé avec torch.linalg.eigh, reproduit les niveaux analytiques.
+notes: 'Le modèle de l''électron libre de Kuhn (1948) traite les électrons $\pi$ d''une chaîne conjuguée comme des particules indépendantes dans une boîte. Dans un colorant cyanine $\mathrm{R_2N{-}(CH{=}CH)_k{-}CH{=}N^+R_2}$, la charge positive est partagée par les deux azotes, si bien que toutes les liaisons de la chaîne sont presque égales (environ $l = 0.139$ nm) et la boîte à fond plat est une bonne image. Avec $2k + 2$ liaisons, $N = 2k + 4$ électrons et une boîte qui dépasse d''une liaison au-delà de chaque azote, $L = (2k + 4)l$ et $\lambda_{max} = 8m_ec\,L^2/h(N + 1)$ croît presque linéairement avec $k$ : le modèle prédit environ 125 nm par motif CH=CH ajouté, et les carrés rouges (valeurs mesurées arrondies pour les cyanines les plus simples) montent d''environ 100 nm. C''est l''expérience classique de premier cycle universitaire : enregistrer les spectres visibles de quelques colorants cyanine de longueur de chaîne croissante, puis utiliser $\lambda_{max}$ pour ajuster la longueur
+  de la boîte ou son prolongement aux extrémités. Le solveur numérique donne les mêmes niveaux à mieux que $10^{-3}$ près (son erreur décroît comme $(n\,\Delta x)^2$), et il peut faire ce que la formule ne peut pas : activer un potentiel. Les polyènes ont des liaisons doubles et simples alternées ; dans la boîte simple, leur $\lambda_{max}$ prédit part loin dans l''infrarouge, alors que celui des polyènes réels plafonne (le β-carotène, avec 11 C=C, absorbe vers 450 nm). Choisissez la série des polyènes et montez $V_{alt}$ à 1–2 eV : le potentiel périodique ouvre un écart qui reste fini pour les longues chaînes, le germe unidimensionnel d''une bande interdite. Les pastilles de couleur montrent la lumière blanche moins une bande d''absorption gaussienne à chaque $\lambda_{max}$ ; un colorant qui absorbe le jaune paraît bleu, et un colorant qui n''absorbe que l''UV paraît incolore.'
+meanings:
+- électrons π et liaisons conjuguées de la molécule $b$ de la série
+- 'longueur de la boîte : toutes les liaisons plus une longueur de liaison au-delà de chaque atome terminal'
+- niveaux analytiques ; aucun indice sommé, un produit extérieur de $n^2$ et $1/L^2$
+- de la HOMO $n = N/2$ à la LUMO $n = N/2 + 1$, et la longueur d'onde absorbée
+- points intérieurs de la grille de chaque boîte ; $\psi = 0$ sur les parois
+- un hamiltonien aux différences finies par molécule, empilés
+- $j$ répété ⇒ sommé ; eigh diagonalise tout le lot en un seul appel
+- '$w$ répété ⇒ sommé sur les longueurs d''onde visibles : la couleur qui reste après absorption'
+labels:
+  series: Série homologue
+  n_max: Plus longue chaîne (motifs CH=CH ajoutés)
+  bond: Longueur de liaison $l$
+  end: Prolongement de la boîte au-delà de chaque atome terminal (liaisons)
+  V_alt: Potentiel d'alternance des liaisons $V_{alt}$
+  n_points: Points de grille $M$

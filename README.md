@@ -48,7 +48,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 ## Problem library
 
 <!-- library:start -->
-134 problems in 13 topics by difficulty level. Click a topic to expand it.
+171 problems in 17 topics by difficulty level. Click a topic to expand it.
 
 <details>
 <summary><b>Mechanics</b> (13 problems)</summary>
@@ -409,6 +409,82 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
+<summary><b>Physical Chemistry</b> (9 problems)</summary>
+
+<details>
+<summary>🟢 Beginner (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Rate laws and the Arrhenius plot](problems/physchem/arrhenius_kinetics) | $\frac{d[\mathrm A]_{ot}}{dt} = -k_t\,[\mathrm A]_{ot}^{\,n_o}$ |
+| [Chemical equilibrium and Le Chatelier](problems/physchem/chemical_equilibrium) | $n_{bi} = n^0_{bi} + \nu_i\,\xi_b$ |
+| [Beer–Lambert spectra of A → B → C](problems/physchem/beer_lambert_kinetics) | $D_{tw} = l\,E_{ws}\,c_{ts}$ |
+
+</details>
+
+<details>
+<summary>🟠 Intermediate (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Particle in a box and the colour of dyes](problems/physchem/particle_box_dyes) | $E_{bn} = \frac{h^2}{8m_e}\,\frac{n_n n_n}{L_b L_b}$ |
+| [HCl rovibrational spectrum](problems/physchem/hcl_rovibrational) | $F_{viJ} = B_{vi}\,J(J+1) - D_i\,J^2(J+1)^2$ |
+| [Nernst equation and Debye–Hückel screening](problems/physchem/nernst_debye_huckel) | $E_{tq} = E^\circ - s_t\,\log_{10}Q_q$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Hartree–Fock for $\mathrm{H_2}$ in a minimal STO-3G basis](problems/physchem/hartree_fock_h2) | $S_{\mu\nu} = c_{\mu p}\,c_{\nu q}\,S_{\mu\nu pq}$ |
+| [Marcus theory of electron transfer and the inverted region](problems/physchem/marcus_electron_transfer) | $k_{ltg} = \frac{2\pi}{\hbar}\,\vert H_{AB}\vert ^2\,(4\pi\lambda_l k_BT_t)^{-1/2}\exp\!\Big[-\frac{(\Delta G^\circ_g + \lambda_l)^2}{4\lambda_l k_BT_t}\Big]$ |
+| [Lennard-Jones fluid: molecular dynamics and the radial distribution function](problems/physchem/lj_liquid_rdf) | $d_{saij} = x_{sia} - x_{sja} - L_s\,\mathrm{round}\!\Big(\frac{x_{sia} - x_{sja}}{L_s}\Big)$ |
+
+</details>
+
+</details>
+
+<details>
+<summary><b>Chemistry</b> (9 problems)</summary>
+
+<details>
+<summary>🟢 Beginner (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Balancing chemical equations (null space)](problems/chemistry/equation_balancing) | $M_{res} = C_{res}\,\sigma_{rs}$ |
+| [Acid–base titration curves](problems/chemistry/acid_base_titration) | $f_{an} = h_{an} + \mathrm{Na}_n - \frac{K_w}{h_{an}} - C_{A,n}\,j\,\alpha_{anj} = 0$ |
+| [Limiting reagent and percent yield](problems/chemistry/limiting_reagent_yield) | $n^0_{bs} = \frac{m^0_{bs}}{M_s}$ |
+
+</details>
+
+<details>
+<summary>🟠 Intermediate (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Hückel molecular orbitals of π systems](problems/chemistry/huckel_mo_theory) | $H_{bij} = \alpha\,\delta_{ij} + \beta A_{bij}$ |
+| [Belousov–Zhabotinsky oscillator (Oregonator)](problems/chemistry/belousov_zhabotinsky) | $x_b \leftarrow \frac{x_b + \Delta t\,P_b/\varepsilon}{1 + \Delta t\,L_b/\varepsilon}$ |
+| [Chapman mechanism and the ozone layer](problems/chemistry/chapman_ozone) | $\dot c_{as} = S_{sr}\,r_{ar}(c_a)$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Chemical equilibrium by Gibbs energy minimisation](problems/chemistry/gibbs_minimisation) | $\frac{G_b}{RT_b} = n_{bj}\big(g_{bj} + \ln n_{bj} - \ln n_{\mathrm{tot},b} + \ln P\big)$ |
+| [A graph neural network for molecules (message passing)](problems/chemistry/molecular_gnn) | $h^0_{mic} = \sigma(x_{mif}W_{fc} + b_c)$ |
+| [Polymerisation kinetics and molecular-weight distributions](problems/chemistry/polymerisation_mwd) | $\dot P_{0x} = T_{xy}P_{0y} - 2P_{0x}P_{0y}\mathbb 1_y$ |
+
+</details>
+
+</details>
+
+<details>
 <summary><b>Medical Physics</b> (10 problems)</summary>
 
 <details>
@@ -518,6 +594,83 @@ The interface and all problem text are available in 10 languages: English, 繁�
 | [Single-cell RNA-seq: PCA and k-means clustering](problems/bioinformatics/single_cell_pca) | $n_c = K_{cg}\,\mathbb 1_g$ |
 | [A tiny CNN finds a DNA binding motif](problems/bioinformatics/dna_binding_cnn) | $X_{npkb} = x_{n,p+k,b}$ |
 | [A tiny protein language model learns contacts](problems/bioinformatics/protein_language_model) | $A_{nhij} = \mathrm{softmax}_j\Big(\frac{X_{nic}W^Q_{hck}\;X_{njc'}W^K_{hc'k}}{\sqrt{d_k}}\Big)$ |
+
+</details>
+
+</details>
+
+<details>
+<summary><b>Mathematics</b> (9 problems)</summary>
+
+<details>
+<summary>🟢 Beginner (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Fourier series and the Gibbs phenomenon](problems/maths/fourier_gibbs) | $B_{jn} = \sin(n\,x_j)$ |
+| [Numerical integration and convergence order](problems/maths/numerical_integration) | $I_f = w_k\,F_{fk}$ |
+| [Linear maps of the plane](problems/maths/linear_maps_2d) | $Y_{tki} = M_{tij}\,P_{kj}$ |
+
+</details>
+
+<details>
+<summary>🟠 Intermediate (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Newton fractal](problems/maths/newton_fractal) | $p_p = c_k\,V_{pk}$ |
+| [Image compression with the SVD](problems/maths/svd_compression) | $A_{cij} = U_{cir}\,\sigma_{cr}\,V_{cjr}$ |
+| [Markov chains and PageRank](problems/maths/markov_pagerank) | $d_j = \sum_i L_{ij}$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [The Mandelbrot set and Julia sets](problems/maths/mandelbrot_julia) | $z_{p}\leftarrow z_{p}\,z_{p} + c_{p}$ |
+| [Spectral clustering and the graph Laplacian](problems/maths/spectral_clustering) | $W_{ij} = e^{-(x_{ia}-x_{ja})(x_{ia}-x_{ja})/2\sigma^2}\,[ij \in \text{kNN}]$ |
+| [The Riemann zeta function and the primes](problems/maths/zeta_primes) | $\zeta_t = E_{tn}1_n + \frac{N^{1-s_t}}{s_t - 1} + \frac{N^{-s_t}}{2} + \sum_{k} \frac{B_{2k}}{(2k)!}\,(s_t)_{2k-1}\,N^{-s_t-2k+1}$ |
+
+</details>
+
+</details>
+
+<details>
+<summary><b>Gaming & Computer Vision</b> (10 problems)</summary>
+
+<details>
+<summary>🟢 Beginner (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Ray tracing spheres](problems/graphics/ray_tracing_spheres) | $b_{ps} = (o_{pi} - c_{si})\,d_{pi}$ |
+| [The pinhole camera](problems/graphics/camera_projection) | $\tilde x_{vi} = P_{ij}V_{jk}M_{kl}X_{vl}$ |
+| [Image filtering as convolution](problems/graphics/image_filtering) | $O_{ij} = K_{ab}\,I_{i+a-r,\;j+b-r}$ |
+
+</details>
+
+<details>
+<summary>🟠 Intermediate (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Triangle rasterisation with a z-buffer](problems/graphics/triangle_rasterisation) | $\lambda_{ptk} = \frac{\varepsilon_{ij}\,(v_{t,k+1} - q_p)_i\,(v_{t,k+2} - q_p)_j}{2A_t}$ |
+| [Monte Carlo path tracing of a Cornell box](problems/graphics/path_tracing) | $t_{rp} = \frac{d_p - n_{pi}\,o_{ri}}{n_{pj}\,\omega_{rj}}$ |
+| [Homography estimation and panorama stitching](problems/graphics/homography_stitching) | $x'_{ni} \propto H_{ij}\,x_{nj}$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (4)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [3D Gaussian splatting](problems/graphics/gaussian_splatting) | $\Sigma_{mik} = R_{mij}\,s_{mj}^2\,R_{mkj}$ |
+| [NeRF: volume rendering a neural radiance field](problems/graphics/nerf_volume_rendering) | $x_{rsi} = o_{ri} + t_{rs}\,d_{ri}$ |
+| [Bundle adjustment: structure from motion by Levenberg–Marquardt](problems/graphics/bundle_adjustment) | $x_{cpi} = R_{cij}X_{pj} + t_{ci}$ |
+| [Reading a QR code from a photo](problems/graphics/qr_code_decode) | $R_{bxy} = \min\!\Big(\max_s \sum_t K^{s}_t D^{\pm}_{b,x,y+t},\ \max_s \sum_t K^{s}_t D^{\pm}_{b,x+t,y}\Big)$ |
 
 </details>
 

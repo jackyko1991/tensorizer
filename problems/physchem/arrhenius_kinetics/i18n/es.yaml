@@ -1,0 +1,24 @@
+source_hash: 65c4646e64b8
+title: Leyes de velocidad y el diagrama de Arrhenius
+summary: ¿Qué tan rápido va una reacción, y cuánto más rápido cuando hace más calor? Las leyes de velocidad de orden cero, uno y dos se integran para seis temperaturas a la vez en un solo tensor $(O, T)$, con $k(T) = A\,e^{-E_a/RT}$. Después, un experimento sintético con ruido revela su orden (¿qué gráfica de $[A]$, $\ln[A]$ o $1/[A]$ es recta?) y su energía de activación (una recta de mínimos cuadrados de $\ln k$ frente a $1/T$).
+notes: 'Cada ley de velocidad tiene una forma integrada que se convierte en una recta en la variable adecuada: $[A] = [A]_0 - kt$ (orden cero), $\ln[A] = \ln[A]_0 - kt$ (orden uno) y $1/[A] = 1/[A]_0 + kt$ (orden dos). Así que un químico representa las tres y se queda con la más recta ($R^2$ más cercano a 1); su pendiente es $\mp k$. Una segunda prueba usa los tiempos de vida media: como $t_{1/2} \propto [A]_0^{1-n}$, el tiempo de $[A]_0/2$ a $[A]_0/4$ es $2^{n-1}$ veces la primera vida media (más corto, igual o el doble), lo que da $n = 1 + \log_2(t_{1/2}^{(2)}/t_{1/2}^{(1)})$. Repetir el experimento a varias temperaturas da $k(T)$, y el diagrama de Arrhenius de $\ln k$ frente a $1/T$ es una recta de pendiente $-E_a/R$. Con $E_a = 75$ kJ/mol, calentar de 290 K a 300 K acelera la reacción unas 2,8 veces; la vieja regla práctica «el doble de rápido cada 10 K» corresponde a $E_a \approx 50$ kJ/mol cerca de la temperatura ambiente. Cada experimento se sigue hasta que ha reaccionado el 90 %
+  de A, así que los experimentos en frío duran mucho más que los calientes (véase la leyenda); la gráfica de la izquierda usa la fracción del tiempo de cada experimento para que los seis quepan en un mismo eje, lo que no cambia qué gráfica es recta. Los datos son sintéticos (una reacción inventada, ruido gaussiano con una semilla fija). Tomar $\ln$ o $1/x$ amplifica el ruido de los puntos tardíos y diluidos ($\sigma/[A]$ y $\sigma/[A]^2$), así que cada punto se pondera por $(dg/d[A])^{-2}$, es decir, por $1$, $[A]^2$ o $[A]^4$, y los puntos por debajo del 2 % de $[A]_0$ se descartan. Prueba un ruido mayor para ver cómo la prueba del $R^2$ se vuelve menos concluyente, o un intervalo de temperaturas más estrecho para ver crecer el error en $E_a$.'
+meanings:
+- seis temperaturas entre $T_{min}$ y $T_{max}$ (K)
+- órdenes de reacción $0, 1, 2$, integrados en paralelo
+- constante de velocidad de Arrhenius, en $\mathrm{M}^{1-n}\,\mathrm{s^{-1}}$
+- velocidad de cada experimento; ningún índice sumado, $k_t$ se difunde sobre los órdenes
+- cada experimento se sigue hasta el 90 % de conversión, con su propio reloj $t = \tau\,t_{end}$
+- trayectoria RK4, comparada con las leyes integradas exactas en las pruebas
+- las tres gráficas frente a $t$; solo el orden correcto da una recta
+- matriz de diseño de un ajuste lineal
+- matriz de las ecuaciones normales; $s$ (las muestras) sumado; pesos $w_s = (dg/d[A])^{-2}$, y $w_s = 0$ descarta los puntos por debajo del 2 % de $[A]_0$
+- ordenada en el origen y pendiente, para cada gráfica y temperatura a la vez
+- 'recta de Arrhenius: pendiente $-E_a/R$, ordenada en el origen $\ln A$'
+labels:
+  Ea: Energía de activación $E_a$
+  log10_A: Factor preexponencial $\log_{10} A$
+  order: Orden de la reacción medida
+  T_min: Temperatura mínima $T_{min}$
+  T_max: Temperatura máxima $T_{max}$
+  noise: Ruido de medida $\sigma$

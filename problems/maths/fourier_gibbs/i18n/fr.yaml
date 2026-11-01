@@ -1,0 +1,15 @@
+source_hash: 3b3a390c2f31
+title: Séries de Fourier et phénomène de Gibbs
+summary: Un signal carré, un signal en dents de scie et un signal triangulaire construits à partir de sinus. Les coefficients s'obtiennent par un seul einsum (une intégrale numérique, vérifiée par rapport à $4/(\pi n)$ et consorts) et chaque somme partielle est un seul produit matriciel $S_N = B\,c$ avec les $N$ premières colonnes de la matrice de base. Observez les oscillations se concentrer près des sauts tandis que le dépassement reste à environ 9 % du saut.
+notes: 'Les coefficients exacts sont $b_n = 4/(\pi n)$ pour $n$ impair (carré), $2(-1)^{n+1}/(\pi n)$ (dents de scie) et $\pm 8/(\pi^2 n^2)$ pour $n$ impair (triangle) ; les intégrales numériques les reproduisent à environ $10^{-6}$ près. Près d''un saut, les sommes partielles dépassent. Quand $N$ augmente, la bosse se rapproche du saut (sa largeur diminue comme $1/N$) mais sa hauteur tend vers $\left(\tfrac{1}{\pi}\mathrm{Si}(\pi) - \tfrac12\right) \approx 0.0895$ fois le saut, et non vers zéro : pour le signal carré de $-1$ à $1$, le pic reste vers $1.179$. C''est le phénomène de Gibbs. La série converge tout de même en moyenne quadratique : d''après Parseval, $\tfrac1\pi\int f^2\,dx = \sum_n b_n^2$, donc l''erreur $L^2$ au carré est la somme des $b_n^2$ manquants. Des coefficients qui décroissent comme $1/n$ (un saut) donnent une erreur $\propto 1/N$ ; le triangle n''a qu''un point anguleux, ses coefficients décroissent comme $1/n^2$ et l''erreur comme $1/N^3$. Les fonctions plus régulières
+  convergent plus vite. Essayez une grille grossière ($X$ petit) pour voir les coefficients numériques dériver.'
+meanings:
+- 'milieux de $X$ cellules égales sur $(-\pi, \pi)$ et leur largeur $h$ : les poids d''intégration'
+- signal $w$ (carré, dents de scie, triangle) échantillonné en $x_j$
+- 'matrice de base : la colonne $n$ est $\sin(n x)$ sur la grille'
+- '$j$ répété ⇒ sommé : l''intégrale $b_n$ comme somme pondérée sur la grille'
+- '$n$ répété ⇒ sommé : la somme partielle avec $N$ harmoniques, un produit matriciel'
+- erreur $L^2$ au carré avec $d = F - S$ ; $j$ répété ⇒ sommé
+labels:
+  n_max: Plus grand nombre d'harmoniques $N$
+  n_x: Points de grille $X$

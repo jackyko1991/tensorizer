@@ -1,0 +1,46 @@
+title: 'Marcus theory of electron transfer and the inverted region'
+category: physchem
+level: advanced
+order: 2
+summary: >
+  An electron jumps from a donor to an acceptor only when the surrounding solvent happens to fluctuate into a
+  configuration where both states have the same energy: the crossing of two parabolas. That gives the Marcus rate
+  $k \propto \exp[-(\Delta G^\circ + \lambda)^2/4\lambda k_BT]$, evaluated here on one broadcast grid of reorganisation
+  energies, temperatures and driving forces. It is fastest when $-\Delta G^\circ = \lambda$ and, against intuition,
+  slows down again for even more downhill reactions. A Langevin simulation of the solvent coordinate with Landau–Zener
+  hops at the crossing reproduces the curve.
+animated: true
+vector_form: 'k = \frac{2\pi}{\hbar}\,|H_{AB}|^2\,\frac{1}{\sqrt{4\pi\lambda k_BT}}\,\exp\!\Big[-\frac{(\Delta G^\circ + \lambda)^2}{4\lambda k_BT}\Big],\qquad G_R(x) = \lambda x^2,\quad G_P(x) = \lambda(x-1)^2 + \Delta G^\circ'
+index_form: 'k_{ltg} = \frac{2\pi}{\hbar}\,|H_{AB}|^2\,(4\pi\lambda_l k_BT_t)^{-1/2}\exp\!\Big[-\frac{(\Delta G^\circ_g + \lambda_l)^2}{4\lambda_l k_BT_t}\Big] \qquad \ddot x_{dn} = -\omega^2(x_{dn} - s_{dn}) - \gamma\dot x_{dn} + \sqrt{2\gamma\,\omega^2 k_BT/2\lambda}\;\xi_{dn} \qquad P^{\mathrm{LZ}}_{dn} = 1 - \exp\!\Big[-\frac{2\pi|H_{AB}|^2}{\hbar\,|\dot x_{dn}|\,2\lambda}\Big]'
+translation:
+  - {symbol: '\Delta G^\circ_g,\ \lambda_l,\ T_t', code: 'driving_forces(...), reorganisation_energies(lam), temperatures(T)', shape: '(G,), (L,), (T,)', meaning: 'the three axes of the rate grid'}
+  - {symbol: 'k_{ltg}', code: 'marcus_rate(dG[None, None, :], lam[:, None, None], kT[None, :, None], H)', shape: '(L, T, G)', meaning: 'broadcasting builds every combination at once; no index is summed'}
+  - {symbol: 'x^* = \frac{\lambda + \Delta G^\circ}{2\lambda}', code: 'crossing_point(lam, dG)', shape: '(D,)', meaning: 'where the parabolas cross; $x^* < 0$ means the inverted region'}
+  - {symbol: '\Delta G^\ddagger = \frac{(\Delta G^\circ + \lambda)^2}{4\lambda}', code: 'activation_energy(lam, dG)', shape: '(D,)', meaning: 'height of the crossing above the reactant minimum'}
+  - {symbol: 'x_{dn},\ \dot x_{dn}', code: 'thermal_ensemble(D, N, lam, kT, omega)', shape: '(D, N)', meaning: 'trajectory $n$ at simulated driving force $d$, started in the reactant well with Boltzmann statistics'}
+  - {symbol: 's_{dn}', code: 'state', shape: '(D, N)', meaning: '0 on the reactant surface, 1 on the product surface; it sets the minimum the solvent is pulled to'}
+  - {symbol: '\text{BAOAB}', code: 'hopping_dynamics(x, v, dG, ...)', shape: '(D, N)', meaning: 'half kick, half drift, friction + noise, half drift, half kick for all trajectories together'}
+  - {symbol: 'P^{\mathrm{LZ}}_{dn}', code: 'landau_zener(abs(x - x_old) / dt, lam, H)', shape: '(D, N)', meaning: 'switch surface with this probability whenever a step passes $x^*$'}
+  - {symbol: 'k^{\text{sim}}_d', code: 'hops / t_react', shape: '(D,)', meaning: 'forward hops per unit time spent on the reactant surface; error bar $\sqrt{\text{hops}}/t$'}
+notes: >
+  Units: eV, K and ps. The solvent coordinate $x$ is the collective polarisation that the transferred charge sees,
+  scaled so the reactant well sits at 0 and the product well at 1; $\lambda$ is the energy it costs to polarise the
+  solvent as for the product while the charge is still on the donor. Marcus derived the quadratic barrier in 1956
+  (J. Chem. Phys. 24, 966) and predicted the inverted region, which was confirmed experimentally only in the 1980s.
+  In the inverted region ($-\Delta G^\circ > \lambda$) the product parabola crosses the reactant one on its far side,
+  so a larger driving force pushes the crossing higher. The rate formula is the golden rule (non-adiabatic, small
+  $H_{AB}$) with a classical solvent; real inverted-region rates fall more slowly because high-frequency molecular
+  vibrations open quantum channels (the Marcus–Levich–Jortner extension). The simulation is a deliberately simple picture:
+  one classical solvent coordinate with frequency $\omega$ and friction $\gamma$, moving on one diabatic parabola at a time
+  and switching at the crossing with the Landau–Zener probability $1 - e^{-2\pi H_{AB}^2/\hbar|\dot x|\,|\Delta F|}$, which
+  assumes a straight, fast passage. Summed over a thermal flux of passages that gives back the golden-rule rate when
+  $P_{\mathrm{LZ}} \ll 1$, which is why the points land on the curve; for large $H_{AB}$ the hops saturate (adiabatic
+  transfer) and friction starts to matter. Trajectories that hop continue on the product surface and may hop back.
+  Try lowering $T$ (the curve narrows), raising $H_{AB}$ (the simulation drifts below the formula) or changing $\lambda$.
+params:
+  lam: {default: 0.5, min: 0.2, max: 1.2, step: 0.05, label: 'Reorganisation energy $\lambda$', unit: eV}
+  T: {default: 300.0, min: 150, max: 450, step: 10, label: 'Temperature $T$', unit: K}
+  H_ab: {default: 0.005, min: 0.001, max: 0.03, step: 0.001, label: 'Electronic coupling $H_{AB}$', unit: eV}
+  omega: {default: 20.0, min: 5, max: 60, step: 1, label: 'Solvent frequency $\omega$', unit: rad/ps}
+  friction: {default: 10.0, min: 1, max: 50, step: 1, label: 'Solvent friction $\gamma$', unit: 1/ps}
+  steps: {default: 4000, min: 1000, max: 20000, step: 500, type: int, label: Time steps}

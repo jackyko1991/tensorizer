@@ -1,0 +1,56 @@
+title: 'Bundle adjustment: structure from motion by Levenberg–Marquardt'
+category: graphics
+level: advanced
+order: 3
+summary: >
+  Several cameras photograph the same 3D points, with pixel noise. Starting from rough poses (axis-angle rotations
+  $\boldsymbol\omega_c$, translations $\mathbf t_c$) and rough points $\mathbf X_p$, bundle adjustment minimises the
+  total reprojection error $\tfrac12\sum_{c,p}\lVert\pi(R_c\mathbf X_p + \mathbf t_c) - \tilde{\mathbf u}_{cp}\rVert^2$
+  by Levenberg–Marquardt. The Jacobian comes from autograd, the normal equations
+  $J^{\mathsf T}J\,\Delta = -J^{\mathsf T}\mathbf r$ are solved through the Schur complement, and fixing the 7 gauge
+  freedoms makes the solution unique.
+animated: true
+vector_form: 'E(\boldsymbol\theta) = \tfrac12\sum_{c,p}\big\lVert \pi\big(R(\boldsymbol\omega_c)\,\mathbf X_p + \mathbf t_c\big) - \tilde{\mathbf u}_{cp}\big\rVert^2,\qquad \big(J^{\mathsf T}J + \lambda\,\mathrm{diag}\,J^{\mathsf T}J\big)\,\Delta = -J^{\mathsf T}\mathbf r,\qquad \boldsymbol\theta \leftarrow \boldsymbol\theta + \Delta'
+index_form: 'x_{cpi} = R_{cij}X_{pj} + t_{ci},\qquad r_{cpa} = f\,\frac{x_{cpa}}{x_{cp3}} + c_a - \tilde u_{cpa},\qquad J_{mn} = \frac{\partial r_m}{\partial\theta_n},\qquad J_{mn}J_{mn''}\,\Delta_{n''} = -J_{mn}\,r_m'
+translation:
+  - {symbol: '\omega_{ci},\ t_{ci}', code: 'true_cameras(n_cams)', shape: '(C, 3), (C, 3)', meaning: 'camera pose: axis-angle rotation (direction = axis, length = angle) and translation, so $x_{\rm cam} = R\mathbf X + \mathbf t$'}
+  - {symbol: 'R_{cij}', code: 'rodrigues(omega)', shape: '(C, 3, 3)', meaning: 'Rodrigues formula $I + \sin\theta\,K + (1-\cos\theta)K^2$; three numbers per rotation, no constraints to enforce'}
+  - {symbol: 'x_{cpi} = R_{cij}X_{pj} + t_{ci}', code: "einsum('cij,pj->cpi', R, X) + t[:, None]", shape: '(C, P, 3)', meaning: 'every point in every camera frame, $j$ summed'}
+  - {symbol: 'r_{cpa}', code: 'project(x_cam, f, c) - observed', shape: '(C, P, 2)', meaning: 'reprojection error in pixels; flattened to $r_m$, $m = (c, p, a)$'}
+  - {symbol: '\theta_n', code: 'full_start[free]', shape: '(n,)', meaning: 'free unknowns: all poses and points minus the 7 gauge numbers (camera 0 and $t_x$ of camera 1)'}
+  - {symbol: 'J_{mn}', code: 'torch.func.jacrev(fn)(theta)', shape: '(2CP, n)', meaning: 'Jacobian by reverse-mode autograd, one vectorised backward pass per row'}
+  - {symbol: 'J_{mn}J_{mn''},\ J_{mn}r_m', code: "einsum('mn,mk->nk', J, J), einsum('mn,m->n', J, r)", shape: '(n, n), (n,)', meaning: 'Gauss–Newton matrix $H = J^{\mathsf T}J$ and gradient $J^{\mathsf T}\mathbf r$, $m$ summed'}
+  - {symbol: 'H = \begin{pmatrix} U & W \\ W^{\mathsf T} & V\end{pmatrix}', code: 'H[:n_cam, :n_cam], H[:n_cam, n_cam:], …', shape: '(n_c, n_c), (n_c, 3P)', meaning: 'cameras | points blocks; a residual touches one camera and one point, so $V$ is block diagonal'}
+  - {symbol: 'S = U - W V^{-1} W^{\mathsf T}', code: "U - einsum('apj,pjk,bpk->ab', W, V_inv, W)", shape: '(n_c, n_c)', meaning: 'Schur complement (reduced camera system): $P$ tiny $3\times 3$ inverses, then one small solve'}
+  - {symbol: '\Delta_p = V_p^{-1}(-g_p - W_p^{\mathsf T}\Delta_c)', code: "einsum('pjk,pk->pj', V_inv, ...)", shape: '(P, 3)', meaning: 'back-substitution: each point is updated on its own'}
+  - {symbol: '\lambda', code: 'lam', shape: '()', meaning: 'Levenberg–Marquardt damping: divided by 3 after a successful step, multiplied by 4 after a failed one'}
+notes: >
+  The data are synthetic: points in a ball of radius 1, cameras on an arc 5 units away (focal length 1000 px, a
+  $640\times 640$ image), every point seen by every camera, Gaussian pixel noise $\sigma$. The start perturbs every
+  rotation by a few degrees and every translation and point by a fraction of the scene size, so the first
+  reprojection errors are tens of pixels. Gauge freedom: moving, rotating or scaling the whole scene together with
+  all the cameras changes no image, so $E$ has a 7-dimensional valley of equal minima and $J^{\mathsf T}J$ has 7 zero
+  eigenvalues (the console prints them, about $10^{-16}$ of the largest). Fixing camera 0 (6 numbers) and the
+  $x$-translation of camera 1 (the scale) removes the null space: $J^{\mathsf T}J$ becomes full rank and the steps
+  are well defined. We fix them at their true values, so the result can be compared with the truth directly.
+  Each iteration linearises the residuals, $\mathbf r(\boldsymbol\theta + \Delta) \approx \mathbf r + J\Delta$, and
+  solves the damped normal equations; the Jacobian is built by torch.func.jacrev, i.e. autograd vectorised over
+  all residuals, which removes the error-prone hand derivation. The Schur complement exploits the sparsity
+  (the arrow-shaped $J^{\mathsf T}J$ panel): eliminating the points first leaves a system the size of the cameras only,
+  which is why real bundle adjusters handle millions of points. Here the dense and Schur solves give the same step
+  to about $10^{-12}$. At the optimum the RMS reprojection error equals the noise floor
+  $\sigma\sqrt{1 - n/m}$ (each fitted unknown absorbs a little of the noise) and the residual histogram matches the
+  noise distribution: there is nothing left to explain. The remaining point and camera errors are set by the noise
+  and the geometry, not by the optimiser. Reference: B. Triggs, P. McLauchlan, R. Hartley and A. Fitzgibbon,
+  "Bundle Adjustment — A Modern Synthesis" (Vision Algorithms: Theory and Practice, 1999). Simplifications: no
+  outliers (real systems use a robust loss), no lens distortion, all points visible in all cameras, dense
+  Jacobian storage. Try a larger start perturbation (LM then needs more damping, or falls into a wrong minimum),
+  more noise, or only 2 cameras.
+params:
+  n_cameras: {default: 6, min: 2, max: 10, step: 1, type: int, label: 'Cameras $C$'}
+  n_points: {default: 80, min: 10, max: 200, step: 10, type: int, label: 'Points $P$'}
+  noise: {default: 0.5, min: 0.1, max: 3.0, step: 0.1, label: 'Pixel noise $\sigma$', unit: px}
+  init_rot: {default: 6.0, min: 0.0, max: 15.0, step: 0.5, label: 'Start rotation error', unit: deg}
+  init_noise: {default: 0.3, min: 0.0, max: 0.5, step: 0.05, label: 'Start translation and point error'}
+  iterations: {default: 10, min: 2, max: 40, step: 1, type: int, label: LM iterations}
+  solver: {default: schur, type: choice, options: [schur, dense], label: Normal-equation solver}

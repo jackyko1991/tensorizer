@@ -1,0 +1,46 @@
+title: Hückel molecular orbitals of π systems
+category: chemistry
+level: intermediate
+order: 1
+summary: >
+  The π electrons of a flat hydrocarbon live in a Hamiltonian that is just the adjacency matrix of its carbon
+  skeleton, $H = \alpha\mathbb 1 + \beta A$. One batched eigh diagonalises seven molecules at once, from ethylene to
+  naphthalene; filling the orbitals gives HOMO–LUMO gaps, delocalisation energies (benzene: $2\beta$, cyclobutadiene:
+  $0$) and Coulson bond orders as an einsum over occupied orbitals, and ring sizes $N = 3, 4, \dots$ show Hückel's
+  $4n + 2$ rule.
+animated: false
+vector_form: 'H = \alpha\,\mathbb 1 + \beta A,\qquad H\,\mathbf c_k = E_k\,\mathbf c_k,\qquad E_\pi = \sum_k n_k E_k,\qquad P = C\,\mathrm{diag}(n)\,C^{\mathsf T},\qquad E_k^{\text{ring}} = \alpha + 2\beta\cos\frac{2\pi k}{N}'
+index_form: 'H_{bij} = \alpha\,\delta_{ij} + \beta A_{bij} \qquad H_{bij}C_{bjk} = C_{bik}E_{bk} \qquad E_{\pi,b} = n_{bk}E_{bk} \qquad P_{bij} = n_{bk}\,C_{bik}\,C_{bjk} \qquad q_{bi} = 1 - P_{bii}'
+translation:
+  - {symbol: 'A_{bij}', code: 'tensors.batch(device)', shape: '(B, N, N)', meaning: '$1$ for bonded carbons $i, j$ of molecule $b$ (atoms one bond length apart), padded to the largest $N = 10$'}
+  - {symbol: 'H_{bij}', code: 'hamiltonian(A, alpha, beta) + pad', shape: '(B, N, N)', meaning: 'Hückel matrix; padding atoms get a huge diagonal so their fake orbitals are never filled'}
+  - {symbol: 'E_{bk},\ C_{bik}', code: 'torch.linalg.eigh(H)', shape: '(B, N), (B, N, N)', meaning: 'MO energies (ascending: bonding first, since $\beta < 0$) and coefficients, MO $k$ in column $k$'}
+  - {symbol: 'n_{bk}', code: 'occupations(E, n_electrons)', shape: '(B, N)', meaning: 'Aufbau filling with 2 electrons per MO; a partly filled degenerate set shares its electrons'}
+  - {symbol: 'n_{bk}E_{bk}', code: "einsum('bk,bk->b', n, E)", shape: '(B,)', meaning: 'repeated $k$ ⇒ summed: total π energy $E_\pi$'}
+  - {symbol: 'E_\pi - E_{\text{loc}}', code: 'E_pi - localized_energy(...)', shape: '(B,)', meaning: 'delocalisation energy against isolated double bonds at $2(\alpha + \beta)$ each'}
+  - {symbol: 'n_{bk}C_{bik}C_{bjk}', code: "einsum('bk,bik,bjk->bij', n, C, C)", shape: '(B, N, N)', meaning: 'repeated $k$ ⇒ summed over occupied MOs: Coulson bond order on a bond, π population on the diagonal'}
+  - {symbol: 'q_{bi}', code: 'charges(P)', shape: '(B, N)', meaning: 'π charge $1 - P_{bii}$; zero on every atom of these alternant hydrocarbons'}
+  - {symbol: 'E_k^{\text{ring}}', code: 'cyclic_levels(N, alpha, beta)', shape: '(N,)', meaning: 'closed-form ring levels, checked against eigh of the cyclic adjacency matrix'}
+notes: >
+  Hückel (1931) kept only what matters for the π electrons of a planar conjugated molecule: one $2p_z$ orbital per
+  carbon, the same energy $\alpha$ on every atom, a hopping energy $\beta$ between bonded neighbours, nothing else and no
+  overlap. The Hamiltonian is then $\alpha\mathbb 1 + \beta A$ with $A$ the graph of the molecule, so its eigenvalues
+  are $\alpha + \beta\lambda$ with $\lambda$ those of $A$; since $\beta < 0$ the most bonding orbital is the one with the
+  largest $\lambda$. Benzene gives $\alpha + 2\beta$, $\alpha + \beta$ (twice), $\alpha - \beta$ (twice),
+  $\alpha - 2\beta$; its six electrons have $E_\pi = 6\alpha + 8\beta$, which is $2\beta$ below three isolated double
+  bonds. Taking $|\beta| \approx 75$ kJ/mol, a rough thermochemical value fitted to benzene's hydrogenation enthalpy
+  (spectroscopy suggests a larger $|\beta|$, so treat it as approximate), this is the famous $\approx 150$ kJ/mol of
+  aromatic stabilisation. Cyclobutadiene has two electrons left over in a degenerate pair at $\alpha$: no
+  delocalisation energy, a zero gap, a diradical, and it is even less stable than open-chain butadiene: antiaromatic.
+  For a ring of $N$ atoms the levels are $\alpha + 2\beta\cos(2\pi k/N)$, one lowest level and then degenerate pairs
+  (Frost's circle), so a closed shell needs $2 + 4n$ electrons: Hückel's rule. Odd rings are shown as their aromatic ions,
+  like the cyclopentadienyl anion and the tropylium cation. The bond orders $P_{ij} = \sum_k n_k C_{ik}C_{jk}$ for
+  butadiene, $0.894$ for the end bonds and $0.447$ for the middle one, match its short-long-short bond lengths; in
+  benzene all six are $2/3$. For alternant hydrocarbons (no odd rings) the pairing theorem makes the spectrum symmetric
+  about $\alpha$ and every π charge zero. Choose another molecule to see its frontier orbitals: the HOMO and LUMO set
+  where electrophiles and nucleophiles attack and, through the gap, the colour (longer polyenes absorb at longer
+  wavelengths).
+params:
+  molecule: {default: butadiene, type: choice, options: [ethylene, allyl, butadiene, hexatriene, cyclobutadiene, benzene, naphthalene], label: Molecule for the orbital pictures}
+  ring_max: {default: 10, min: 6, max: 14, step: 1, type: int, label: 'Largest ring size $N$'}
+  beta: {default: 75.0, min: 40, max: 150, step: 5, label: '$|\beta|$ for converting to kJ/mol (approximate)', unit: kJ/mol}

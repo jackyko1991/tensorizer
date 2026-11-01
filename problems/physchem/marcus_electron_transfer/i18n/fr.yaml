@@ -1,0 +1,22 @@
+source_hash: d134f88d426a
+title: Théorie de Marcus du transfert d'électron et région inversée
+summary: 'Un électron ne saute d''un donneur vers un accepteur que lorsque le solvant environnant fluctue par hasard vers une configuration où les deux états ont la même énergie : l''intersection de deux paraboles. Cela donne la vitesse de Marcus $k \propto \exp[-(\Delta G^\circ + \lambda)^2/4\lambda k_BT]$, évaluée ici sur une seule grille diffusée d''énergies de réorganisation, de températures et de forces motrices. Elle est maximale quand $-\Delta G^\circ = \lambda$ et, contre toute intuition, ralentit à nouveau pour des réactions encore plus exergoniques. Une simulation de Langevin de la coordonnée de solvant avec des sauts de Landau–Zener à l''intersection reproduit la courbe.'
+notes: 'Unités : eV, K et ps. La coordonnée de solvant $x$ est la polarisation collective que voit la charge transférée, normalisée pour que le puits des réactifs soit en 0 et celui des produits en 1 ; $\lambda$ est l''énergie qu''il faut pour polariser le solvant comme pour le produit alors que la charge est encore sur le donneur. Marcus a établi la barrière quadratique en 1956 (J. Chem. Phys. 24, 966) et prédit la région inversée, qui n''a été confirmée expérimentalement que dans les années 1980. Dans la région inversée ($-\Delta G^\circ > \lambda$), la parabole des produits coupe celle des réactifs sur son flanc opposé, si bien qu''une force motrice plus grande fait monter l''intersection. La formule de vitesse est la règle d''or (non adiabatique, $H_{AB}$ petit) avec un solvant classique ; les vitesses réelles dans la région inversée diminuent plus lentement, car les vibrations moléculaires de haute fréquence ouvrent des canaux quantiques (l''extension de Marcus–Levich–Jortner). La simulation
+  est une image volontairement simple : une seule coordonnée de solvant classique de fréquence $\omega$ et de friction $\gamma$, se déplaçant sur une parabole diabatique à la fois et basculant à l''intersection avec la probabilité de Landau–Zener $1 - e^{-2\pi H_{AB}^2/\hbar|\dot x|\,|\Delta F|}$, qui suppose un passage rectiligne et rapide. Sommée sur un flux thermique de passages, elle redonne la vitesse de la règle d''or quand $P_{\mathrm{LZ}} \ll 1$, c''est pourquoi les points tombent sur la courbe ; pour un grand $H_{AB}$, les sauts saturent (transfert adiabatique) et la friction commence à compter. Les trajectoires qui sautent continuent sur la surface des produits et peuvent revenir. Essayez d''abaisser $T$ (la courbe se rétrécit), d''augmenter $H_{AB}$ (la simulation passe sous la formule) ou de changer $\lambda$.'
+meanings:
+- les trois axes de la grille des vitesses
+- la diffusion construit toutes les combinaisons à la fois ; aucun indice n'est sommé
+- où les paraboles se coupent ; $x^* < 0$ signifie la région inversée
+- hauteur de l'intersection au-dessus du minimum des réactifs
+- trajectoire $n$ à la force motrice simulée $d$, démarrée dans le puits des réactifs selon la statistique de Boltzmann
+- 0 sur la surface des réactifs, 1 sur celle des produits ; fixe le minimum vers lequel le solvant est attiré
+- demi-impulsion, demi-dérive, friction + bruit, demi-dérive, demi-impulsion pour toutes les trajectoires ensemble
+- changer de surface avec cette probabilité chaque fois qu'un pas franchit $x^*$
+- sauts directs par unité de temps passé sur la surface des réactifs ; barre d'erreur $\sqrt{\text{hops}}/t$
+labels:
+  lam: Énergie de réorganisation $\lambda$
+  T: Température $T$
+  H_ab: Couplage électronique $H_{AB}$
+  omega: Fréquence du solvant $\omega$
+  friction: Friction du solvant $\gamma$
+  steps: Pas de temps

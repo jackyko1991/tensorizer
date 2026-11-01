@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Stratosphere: sunlight h nu splits O2 into two O atoms, O joins O2 to make O3, light splits O3 back into O and O2, and O plus O3 gives two O2; the ozone layer is a band between about 20 and 40 km">
+  <defs>
+    <marker id="red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <rect x="22" y="64" width="218" height="54" fill="#dbeafe"/>
+    <line x1="22" y1="64" x2="240" y2="64" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="22" y1="118" x2="240" y2="118" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="0" y1="150" x2="240" y2="150" stroke="#374151" stroke-width="2"/>
+    <line x1="12" y1="146" x2="12" y2="14" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="18" y="24" font-style="italic">z</text>
+    <circle cx="50" cy="22" r="11" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+    <line x1="60" y1="32" x2="82" y2="74" stroke="#dc2626" stroke-width="2" marker-end="url(#red)"/>
+    <line x1="63" y1="27" x2="170" y2="72" stroke="#dc2626" stroke-width="2" marker-end="url(#red)"/>
+    <text x="96" y="40" font-style="italic" fill="#b91c1c">hν</text>
+    <text x="76" y="96" font-size="13">O<tspan font-size="10" dy="3">2</tspan></text>
+    <text x="126" y="112" font-size="13">O</text>
+    <text x="170" y="96" font-size="13">O<tspan font-size="10" dy="3">3</tspan></text>
+    <g fill="none" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)">
+      <path d="M94,98 Q108,108 121,108"/>
+      <path d="M138,106 Q154,104 166,95"/>
+      <path d="M172,80 Q128,66 96,84"/>
+    </g>
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1">
+      <circle cx="78" cy="136" r="5"/><circle cx="87" cy="136" r="5"/>
+      <circle cx="166" cy="138" r="5"/><circle cx="175" cy="132" r="5"/><circle cx="184" cy="138" r="5"/>
+    </g>
+    <circle cx="130" cy="136" r="5" fill="#93c5fd" stroke="#1e40af" stroke-width="1"/>
+  </g>
+</svg>

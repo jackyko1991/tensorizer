@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Pinhole camera: the camera centre C, the image plane at focal length f along the optical axis, and the viewing frustum; a corner X of a cube projects along a straight line through C onto the image point x">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- optical axis -->
+    <line x1="28" y1="86" x2="236" y2="86" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- frustum edges from the camera centre through the image corners -->
+    <g stroke="#9ca3af" stroke-width="1">
+      <line x1="28" y1="86" x2="154" y2="44"/><line x1="28" y1="86" x2="178" y2="26"/>
+      <line x1="28" y1="86" x2="178" y2="128"/><line x1="28" y1="86" x2="154" y2="146"/>
+    </g>
+    <polygon points="154,44 178,26 178,128 154,146" fill="none" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <!-- image plane -->
+    <polygon points="70,72 78,66 78,100 70,106" fill="#93c5fd" fill-opacity="0.5" stroke="#374151" stroke-width="2"/>
+    <!-- cube in front of the camera -->
+    <g fill="#93c5fd" stroke="#1e40af" stroke-width="1.5" stroke-linejoin="round">
+      <polygon points="118,70 146,70 156,63 128,63"/>
+      <polygon points="146,70 156,63 156,91 146,98"/>
+      <rect x="118" y="70" width="28" height="28" fill="#2563eb"/>
+    </g>
+    <!-- projection ray from the corner X through C -->
+    <line x1="146" y1="70" x2="28" y2="86" stroke="#f59e0b" stroke-width="1.5"/>
+    <circle cx="146" cy="70" r="3" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+    <circle cx="74" cy="79.8" r="3" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+    <text x="150" y="58" font-style="italic" fill="#b45309">X</text>
+    <text x="80" y="62" font-style="italic" fill="#b45309">x</text>
+    <!-- camera centre and focal length -->
+    <circle cx="28" cy="86" r="3.5" fill="#374151"/>
+    <text x="14" y="78" font-style="italic">C</text>
+    <line x1="28" y1="118" x2="74" y2="118" stroke="#374151" stroke-width="1.5"/>
+    <line x1="28" y1="113" x2="28" y2="123" stroke="#374151" stroke-width="1.5"/>
+    <line x1="74" y1="113" x2="74" y2="123" stroke="#374151" stroke-width="1.5"/>
+    <text x="46" y="138" font-style="italic">f</text>
+  </g>
+</svg>

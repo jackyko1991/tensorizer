@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="The complex plane with the escape circle |z| = 2, the main cardioid and the period-2 bulb of the Mandelbrot set, and the orbit 0, c, z2, z3, z4 of a point c outside the set that leaves the circle">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- axes: origin (140, 84), 36 px per unit -->
+    <line x1="56" y1="84" x2="232" y2="84" stroke="#374151" stroke-width="1.5"/>
+    <line x1="140" y1="156" x2="140" y2="6" stroke="#374151" stroke-width="1.5"/>
+    <text x="216" y="99" font-size="12" font-style="italic" fill="#374151">Re</text>
+    <text x="145" y="15" font-size="12" font-style="italic" fill="#374151">Im</text>
+    <!-- escape circle |z| = 2 -->
+    <circle cx="140" cy="84" r="72" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="4" y="150" font-size="13" fill="#6b7280">|<tspan font-style="italic">z</tspan>| = 2</text>
+    <line x1="44" y1="140" x2="84" y2="124" stroke="#9ca3af" stroke-width="1"/>
+    <!-- main cardioid c = w/2 - w²/4 (|w| ≤ 1) and period-2 bulb |c + 1| ≤ 1/4 -->
+    <path d="M149.0,84.0 L149.2,84.0 L149.6,83.8 L150.3,83.5 L151.1,82.8 L152.0,81.7 L152.7,80.3 L153.3,78.4 L153.5,76.2 L153.3,73.7 L152.5,71.1 L151.0,68.5 L149.0,66.0 L146.3,63.8 L143.1,62.1 L139.5,61.0 L135.5,60.6 L131.4,61.0 L127.3,62.3 L123.4,64.3 L119.9,67.2 L117.0,70.7 L114.8,74.8 L113.5,79.3 L113.0,84.0 L113.5,88.7 L114.8,93.2 L117.0,97.3 L119.9,100.8 L123.4,103.7 L127.3,105.7 L131.4,107.0 L135.5,107.4 L139.5,107.0 L143.1,105.9 L146.3,104.2 L149.0,102.0 L151.0,99.5 L152.5,96.9 L153.3,94.3 L153.5,91.8 L153.3,89.6 L152.7,87.7 L152.0,86.3 L151.1,85.2 L150.3,84.5 L149.6,84.2 L149.2,84.0 Z" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="104" cy="84" r="9" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <!-- orbit of c = 0.55 + 0.4i: 0 → c → z2 → z3 → z4 (outside, escapes) -->
+    <g stroke="#dc2626" stroke-width="1.6" fill="none">
+      <path d="M140,84 L158.3,70.7" marker-end="url(#arrow)"/>
+      <path d="M159.8,69.6 L164.6,55.6" marker-end="url(#arrow)"/>
+      <path d="M164.9,53.8 L152.6,29.4" marker-end="url(#arrow)"/>
+      <path d="M151.7,27.7 L77.6,32.9" marker-end="url(#arrow)"/>
+      <path d="M75.6,33.1 L30,14" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+    </g>
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1">
+      <circle cx="140" cy="84" r="2.5"/>
+      <circle cx="159.8" cy="69.6" r="3.5"/>
+      <circle cx="164.9" cy="53.8" r="3"/>
+      <circle cx="151.7" cy="27.7" r="3"/>
+      <circle cx="75.6" cy="33.1" r="3"/>
+    </g>
+    <text x="166" y="76" font-style="italic" fill="#b45309">c</text>
+    <text x="6" y="54" font-size="13" fill="#b91c1c">escapes</text>
+    <text x="164" y="140" font-size="13"><tspan font-style="italic">z</tspan> → <tspan font-style="italic">z</tspan>² + <tspan font-style="italic">c</tspan></text>
+  </g>
+</svg>

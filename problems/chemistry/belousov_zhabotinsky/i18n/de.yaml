@@ -1,0 +1,22 @@
+source_hash: 8b3f5bebfbdf
+title: Belousov-Zhabotinsky-Oszillator (Oregonator)
+summary: Ein gerührtes Becherglas mit Bromat, Malonsäure und einem Cer-Katalysator wechselt wie ein Uhrwerk die Farbe. Der skalierte Oregonator mit zwei Variablen ist eine steife DGL; ein positiver Produktions-Verlust-Schritt (Patankar) integriert einen ganzen Stapel stöchiometrischer Faktoren $f$ auf einmal, die Spur der Jacobi-Matrix lokalisiert die beiden Hopf-Bifurkationen, die die Oszillationen begrenzen, und dieselbe Kinetik mit Diffusion verwandelt eine gebrochene Welle in eine rotierende Spirale.
+notes: 'Die Belousov-Zhabotinsky-Reaktion (in den 1950er-Jahren von Belousov entdeckt, 1972 von Field, Kőrös und Noyes erklärt) oxidiert Malonsäure mit Bromat. Bromidionen hemmen die autokatalytische Bildung von $\mathrm{HBrO_2}$; solange Bromid vorhanden ist, kriecht die Reaktion, sobald es verbraucht ist, explodiert $\mathrm{HBrO_2}$ und oxidiert den Katalysator (der Farbumschlag), und der oxidierte Katalysator erzeugt dann neues Bromid, das den Ausbruch beendet. Der Oregonator fasst das in wenigen Schritten zusammen und nach Skalierung und Elimination des schnellen Bromids in zwei Gleichungen. Die Konstanten $\varepsilon \approx 0.04$ und $q \approx 8\times10^{-4}$ sind Näherungswerte aus Anpassungen der Field-Kőrös-Noyes-Geschwindigkeitskonstanten; die Rezepte unterscheiden sich, und die veröffentlichten Werte ebenso. Weil $\varepsilon$ und $q$ klein sind, ist die $x$-Gleichung steif: $x$ springt in einer Zeit der Größenordnung $\varepsilon$ um etwa einen Faktor tausend und kriecht dann
+  einen Ast seiner Nullkline entlang. Ein gewöhnliches RK4 braucht Schritte von etwa $5\times10^{-4}$, um stabil zu bleiben; schreibt man $\varepsilon\dot x$ als Produktion minus Verlust und behandelt den Verlust implizit, bleibt $x$ bei jeder Schrittweite positiv, und $\Delta t = 2\times10^{-3}$ trifft die Periode auf besser als 1 %. Der stationäre Zustand (der Schnittpunkt der beiden Nullklinen) ist stabil, wenn er auf einem äußeren Ast der N-förmigen Kurve $\dot x = 0$ liegt, und instabil auf dem mittleren Ast, wo ihn ein Grenzzyklus umgibt; die Spur von $J$ wechselt an den beiden Hopf-Punkten das Vorzeichen, für kleines $q$ nahe $f = 0.5$ und $f = 2.4$. Probier ein größeres $\varepsilon$: Das Fenster schrumpft und schließt sich schließlich. In einer ungerührten dünnen Schicht bleibt der Katalysator an Ort und Stelle, während $\mathrm{HBrO_2}$ diffundiert, sodass eine Oxidationswelle durch die Schale läuft; eine gebrochene Wellenfront rollt sich an ihrem freien Ende zur berühmten rotierenden
+  Spirale ein, deren Umlaufzeit kürzer ist als die Oszillation im Volumen, sodass sie das ganze Medium übernimmt.'
+meanings:
+- stöchiometrischer Faktor (erzeugtes Bromid pro reduziertem Katalysator) der Reaktion $b$, von $0.3$ bis $3$
+- skalierte $[\mathrm{HBrO_2}]$ (Autokatalysator) und $[\mathrm{Ce^{4+}}]$ (oxidierter Katalysator) jeder Reaktion
+- nichtnegative Gewinn- und Verlustrate mit $\varepsilon\dot x = P - Lx$
+- 'Patankar-Euler: Verluste implizit, Gewinne explizit, sodass $x$ bei beliebiger Steifheit positiv bleibt'
+- positive Wurzel von $x^2 + (f + q - 1)x - q(1 + f) = 0$
+- linearisierte Kinetik $\partial \dot y_\alpha / \partial y_\beta$ im stationären Zustand
+- 'wiederholtes $\alpha$ ⇒ summiert: die Spur; ihr Vorzeichenwechsel markiert eine Hopf-Bifurkation'
+- die N-förmige Kurve $\dot x = 0$ des Phasenporträts
+- 5-Punkte-Stencil mit flussfreien Rändern; nur $x$ diffundiert im 2D-Medium
+labels:
+  f: Stöchiometrischer Faktor $f$ für Phasenporträt und Spirale
+  eps: Zeitskalenverhältnis $\varepsilon$ (Näherungswert)
+  t_max: Simulierte Zeit
+  spiral: 2D-Spiralwelle
+  grid: Gittergröße $n$

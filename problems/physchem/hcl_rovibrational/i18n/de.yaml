@@ -1,0 +1,19 @@
+source_hash: dda111a1c11f
+title: Rotationsschwingungsspektrum von HCl
+summary: 'Die Infrarotbande von HCl ist ein Kamm aus Linien: Das Molekül schwingt (ein anharmonischer Oszillator) und rotiert (ein Rotor, der sich beim Drehen dehnt), und jede Linie ist ein Übergang $v = 0 \to 1$ mit $\Delta J = \pm 1$. Die P- und R-Zweige beider Chlorisotope ergeben sich als ein gebatchtes $(I, J)$-Gitter, mit Boltzmann-Intensitäten für eine Temperaturrampe; eine Ausgleichsrechnung mit Kombinationsdifferenzen gewinnt dann $B_e$, $\alpha_e$ und $\nu_0$ aus den Linien zurück.'
+notes: 'Die Konstanten sind ungefähre Literaturwerte für H³⁵Cl: $\omega_e \approx 2991$, $\omega_ex_e \approx 52.8$, $B_e \approx 10.59$, $\alpha_e \approx 0.31$ und $D_e \approx 5\times10^{-4}$ cm⁻¹. Der Bandenursprung $\nu_0 = \omega_e - 2\omega_ex_e \approx 2885$ cm⁻¹ trägt keine Linie, weil ein $\Sigma$-Zustand wie der von HCl keinen $\Delta J = 0$-Zweig (Q) hat: Die Lücke zwischen R(0) und P(1) beträgt etwa $4B$. Weil $B_1 < B_0$ (die schwingende Bindung ist im Mittel länger), drängen sich die R-Linien zu hohen $J$ hin zusammen, während die P-Linien auseinanderrücken. Jede Linie ist ein Dublett, H³⁷Cl liegt etwa 2 cm⁻¹ tiefer mit einem Drittel der Intensität (natürliche Häufigkeit 76 : 24); die Verschiebung wächst mit $|\nu - \nu_0|$, weil jede Konstante mit einer Potenz der reduzierten Masse skaliert. Wenn sich das Gas erwärmt, verschiebt der Boltzmann-Faktor $(2J+1)e^{-hcF(J)/kT}$ sein Maximum zu höheren $J$, und die beiden Zweige breiten sich aus (jedes Bild ist auf seine stärkste
+  Linie skaliert). Kombinationsdifferenzen sind der Trick der Spektroskopiker, um die beiden Zustände zu trennen: R(J−1) und P(J+1) enden auf demselben oberen Niveau, ihre Differenz hängt also nur von $v = 0$ ab; R(J) und P(J) starten vom selben unteren Niveau, ihre hängt also nur von $v = 1$ ab. Eine Geradenanpassung von $\Delta_2F/(4J+2)$ gegen $J^2 + J + 1$ liefert $B_v$ (den Achsenabschnitt) und $D$ (die Steigung), dann $\alpha_e = B_0 - B_1$ und $B_e = B_0 + \alpha_e/2$. Füge Messrauschen hinzu, um zu sehen, wie gut die Konstanten standhalten. Die äquivalente Morse-Topftiefe ist $\omega_e^2/4\omega_ex_e$. Vereinfachungen: keine Herman-Wallis-Intensitätskorrekturen, eine einzige Lorentz-Breite für alle Linien und keine Gewichtung der Absorption mit $\tilde\nu$.'
+meanings:
+- ungefähre H³⁵Cl-Konstanten, auf H³⁷Cl skaliert mit $\rho = \sqrt{\mu_{35}/\mu_{37}}$
+- Rotationsterme des Niveaus $v$; kein Index summiert, äußere Produkte
+- jede Linie beider Isotopologe in einem Gitter; $J$ ist das untere Niveau
+- Boltzmann-Besetzung des Niveaus $J$ bei jeder Temperatur der Rampe
+- Häufigkeit × Besetzung × Hönl-London-Faktor; P(0) erhält genau null
+- 'wiederholtes $\ell$ ⇒ summiert über alle Linien: das verbreiterte Spektrum'
+- $\Delta_2F/(4J+2) = B_v - 2D(J^2+J+1)$ für den unteren ($s=0$) und oberen ($s=1$) Zustand
+- 'wiederholtes $n$ ⇒ summiert: $B_v$ und $D$ nach kleinsten Quadraten für jedes Isotopolog und jeden Zustand'
+labels:
+  T: Endtemperatur $T$
+  J_max: Höchstes unteres Niveau $J_{max}$
+  fwhm: Linienbreite (FWHM)
+  noise: Rauschen auf den gemessenen Linien

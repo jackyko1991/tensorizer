@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="A weighted graph with two clusters of nodes joined by a single weak edge; a dashed cut separates the clusters and the edge weight W_ij is labelled">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- edges inside the left cluster -->
+    <g stroke="#374151" stroke-width="2">
+      <line x1="40" y1="50" x2="78" y2="38"/><line x1="40" y1="50" x2="34" y2="94"/><line x1="78" y1="38" x2="84" y2="80"/>
+      <line x1="34" y1="94" x2="84" y2="80"/><line x1="40" y1="50" x2="84" y2="80"/><line x1="34" y1="94" x2="66" y2="122"/>
+      <line x1="84" y1="80" x2="66" y2="122"/>
+    </g>
+    <!-- edges inside the right cluster -->
+    <g stroke="#374151" stroke-width="2">
+      <line x1="156" y1="72" x2="196" y2="46"/><line x1="156" y1="72" x2="170" y2="116"/><line x1="196" y1="46" x2="210" y2="92"/>
+      <line x1="170" y1="116" x2="210" y2="92"/><line x1="156" y1="72" x2="210" y2="92"/><line x1="196" y1="46" x2="160" y2="30"/>
+      <line x1="160" y1="30" x2="156" y2="72"/>
+    </g>
+    <!-- the single weak edge between the clusters -->
+    <line x1="84" y1="80" x2="156" y2="72" stroke="#9ca3af" stroke-width="1.2"/>
+    <text x="100" y="66" font-size="13" font-style="italic" fill="#374151">W<tspan font-size="10" dy="3">ij</tspan></text>
+    <!-- nodes -->
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1.5">
+      <circle cx="40" cy="50" r="7"/><circle cx="78" cy="38" r="7"/><circle cx="34" cy="94" r="7"/>
+      <circle cx="84" cy="80" r="7"/><circle cx="66" cy="122" r="7"/>
+    </g>
+    <g fill="#93c5fd" stroke="#1e40af" stroke-width="1.5">
+      <circle cx="156" cy="72" r="7"/><circle cx="196" cy="46" r="7"/><circle cx="170" cy="116" r="7"/>
+      <circle cx="210" cy="92" r="7"/><circle cx="160" cy="30" r="7"/>
+    </g>
+    <!-- the cut -->
+    <line x1="122" y1="12" x2="116" y2="146" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="6 4"/>
+    <text x="126" y="146" font-size="13" fill="#b45309">cut</text>
+    <text x="8" y="152" font-size="13"><tspan font-style="italic">f</tspan><tspan font-size="10" dy="3">2</tspan><tspan dy="-3"> &lt; 0</tspan></text>
+    <text x="186" y="152" font-size="13"><tspan font-style="italic">f</tspan><tspan font-size="10" dy="3">2</tspan><tspan dy="-3"> &gt; 0</tspan></text>
+  </g>
+</svg>

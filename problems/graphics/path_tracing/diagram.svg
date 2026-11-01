@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="A Cornell box drawn in perspective: red left wall, green right wall, white floor, ceiling and back wall, a square light on the ceiling and a sphere. A light path enters from the camera, bounces off the floor and the red wall and reaches the light; a dashed shadow ray goes from the first hit straight to the light">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- walls: front opening 40..200 x 8..148, back wall 90..150 x 50..106 -->
+    <polygon points="40,8 90,50 90,106 40,148" fill="#fecaca" stroke="#374151" stroke-width="2"/>
+    <polygon points="200,8 150,50 150,106 200,148" fill="#bbf7d0" stroke="#374151" stroke-width="2"/>
+    <polygon points="40,148 90,106 150,106 200,148" fill="#f9fafb" stroke="#374151" stroke-width="2"/>
+    <polygon points="40,8 90,50 150,50 200,8" fill="#f9fafb" stroke="#374151" stroke-width="2"/>
+    <rect x="90" y="50" width="60" height="56" fill="#ffffff" stroke="#374151" stroke-width="2"/>
+    <!-- area light on the ceiling -->
+    <polygon points="98,22 142,22 134,34 106,34" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+    <text x="146" y="32" font-style="italic" fill="#b45309">L<tspan font-size="10" dy="3">e</tspan></text>
+    <!-- sphere -->
+    <circle cx="160" cy="120" r="16" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <!-- light path: camera -> floor -> red wall -> light -->
+    <circle cx="120" cy="156" r="3" fill="#374151"/>
+    <path d="M120,156 L104,128" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M104,128 L66,82" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M66,82 L114,33" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <circle cx="104" cy="128" r="3" fill="#dc2626"/>
+    <circle cx="66" cy="82" r="3" fill="#dc2626"/>
+    <!-- shadow ray from the first hit to the light -->
+    <line x1="104" y1="128" x2="124" y2="34" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="84" y="140" font-style="italic">x</text>
+    <text x="68" y="104" font-style="italic" fill="#b91c1c">ω</text>
+  </g>
+</svg>

@@ -1,0 +1,22 @@
+source_hash: 35a326f71a76
+title: Le filtrage d'images comme convolution
+summary: Floutez, accentuez et détectez les contours d'une image de test générée procéduralement en y faisant glisser un petit noyau. Chaque filtre linéaire est une seule contraction $O_p = K_k P_{kp}$ sur des fenêtres de pixels dépliées, comme conv2d ; le filtre gaussien se sépare en deux passes 1D, et le théorème de convolution le transforme en produit de transformées de Fourier. Flou moyenneur et gaussien, contours de Sobel, laplacien de gaussienne, masque flou (unsharp masking), et filtre médian contre filtre gaussien sur du bruit poivre et sel.
+notes: 'La réponse en fréquence du filtre moyenneur est un sinus cardinal dont les ondulations deviennent négatives : il laisse donc passer des détails fins, certains avec le signe inversé (les rayures du chirp s''estompent puis reviennent) ; la réponse du filtre gaussien est une autre gaussienne qui tend doucement vers zéro. La séparabilité compte pour la vitesse : un noyau $(2r+1)^2$ demande $(2r+1)^2$ multiplications par pixel, deux passes 1D seulement $2(2r+1)$. Sobel (1968) combine une dérivée et un lissage ; le laplacien de gaussienne réagit là où la dérivée seconde s''annule, et Canny (1986) s''appuie sur les mêmes gradients lissés en y ajoutant amincissement et hystérésis. Le masque flou rajoute $\alpha(I - G * I)$, un renforcement passe-haut qui amplifie aussi le bruit. Le médian n''est pas linéaire : il n''a donc ni noyau ni réponse en fréquence, mais il supprime les pixels isolés du bruit poivre et sel qu''un filtre gaussien ne fait qu''étaler (comparez le PSNR dans le terminal).
+  Chaque couche d''un réseau de neurones convolutif est la même opération de dépliage et de contraction, avec des noyaux appris.'
+meanings:
+- 'niveau de gris du pixel $(i, j)$ : un dégradé, un disque, un carré, un triangle et un chirp, plus du bruit'
+- les poids du filtre, les mêmes pour chaque pixel
+- $a, b$ répétés ⇒ sommés sur la fenêtre (une corrélation, que PyTorch appelle convolution)
+- la fenêtre autour du pixel $p$ sous forme de colonne, $k = (a, b)$
+- '$k$ répété ⇒ sommé : le même filtre sous forme d''un seul einsum'
+- 'la gaussienne 2D est un produit extérieur : elle peut donc s''appliquer en une passe sur les lignes et une sur les colonnes'
+- 'Sobel : lissage $[1, 2, 1]$ dans une direction fois différence $[-1, 0, 1]$ dans l''autre'
+- 'théorème de convolution : un produit point par point dans l''espace de Fourier, égal à conv2d avec un remplissage périodique'
+labels:
+  size: Taille de l'image
+  sigma: Largeur de la gaussienne $\sigma$
+  box: Taille du filtre moyenneur
+  amount: Accentuation $\alpha$
+  noise: Bruit gaussien $\sigma_n$
+  salt_pepper: Proportion de poivre et sel
+  median: Fenêtre du médian

@@ -1,0 +1,26 @@
+source_hash: a99f4b65ce2b
+title: 'Bündelausgleichung: Structure from Motion mit Levenberg–Marquardt'
+summary: Mehrere Kameras fotografieren dieselben 3D-Punkte, mit Pixelrauschen. Ausgehend von groben Posen (Achse-Winkel-Rotationen $\boldsymbol\omega_c$, Translationen $\mathbf t_c$) und groben Punkten $\mathbf X_p$ minimiert die Bündelausgleichung den gesamten Rückprojektionsfehler $\tfrac12\sum_{c,p}\lVert\pi(R_c\mathbf X_p + \mathbf t_c) - \tilde{\mathbf u}_{cp}\rVert^2$ mit Levenberg–Marquardt. Die Jacobi-Matrix kommt aus Autograd, die Normalgleichungen $J^{\mathsf T}J\,\Delta = -J^{\mathsf T}\mathbf r$ werden über das Schur-Komplement gelöst, und das Fixieren der 7 Eichfreiheiten macht die Lösung eindeutig.
+notes: 'Die Daten sind synthetisch: Punkte in einer Kugel vom Radius 1, Kameras auf einem Bogen im Abstand von 5 Einheiten (Brennweite 1000 px, ein $640\times 640$-Bild), jeder Punkt von jeder Kamera gesehen, gaußsches Pixelrauschen $\sigma$. Der Start stört jede Rotation um einige Grad und jede Translation und jeden Punkt um einen Bruchteil der Szenengröße, sodass die ersten Rückprojektionsfehler Dutzende Pixel betragen. Eichfreiheit: Verschiebst, drehst oder skalierst du die ganze Szene zusammen mit allen Kameras, ändert sich kein Bild; $E$ hat also ein 7-dimensionales Tal gleicher Minima, und $J^{\mathsf T}J$ hat 7 Eigenwerte null (die Konsole gibt sie aus, etwa $10^{-16}$ des größten). Das Fixieren von Kamera 0 (6 Zahlen) und der $x$-Translation von Kamera 1 (der Maßstab) entfernt den Nullraum: $J^{\mathsf T}J$ bekommt vollen Rang, und die Schritte sind wohldefiniert. Wir fixieren sie auf ihren wahren Werten, sodass sich das Ergebnis direkt mit der Wahrheit vergleichen lässt. Jede Iteration
+  linearisiert die Residuen, $\mathbf r(\boldsymbol\theta + \Delta) \approx \mathbf r + J\Delta$, und löst die gedämpften Normalgleichungen; die Jacobi-Matrix wird mit torch.func.jacrev gebildet, also mit über alle Residuen vektorisiertem Autograd, was die fehleranfällige Herleitung von Hand erspart. Das Schur-Komplement nutzt die Dünnbesetztheit aus (das pfeilförmige $J^{\mathsf T}J$-Panel): Eliminierst du zuerst die Punkte, bleibt ein System nur von der Größe der Kameras übrig – deshalb bewältigen echte Bündelausgleicher Millionen von Punkten. Hier liefern die dichte und die Schur-Lösung denselben Schritt bis auf etwa $10^{-12}$. Im Optimum ist der RMS-Rückprojektionsfehler gleich dem Rauschboden $\sigma\sqrt{1 - n/m}$ (jede angepasste Unbekannte absorbiert ein wenig Rauschen), und das Residuenhistogramm entspricht der Rauschverteilung: Es bleibt nichts mehr zu erklären. Die verbleibenden Punkt- und Kamerafehler werden vom Rauschen und der Geometrie bestimmt, nicht vom Optimierer. Referenz:
+  B. Triggs, P. McLauchlan, R. Hartley und A. Fitzgibbon, "Bundle Adjustment — A Modern Synthesis" (Vision Algorithms: Theory and Practice, 1999). Vereinfachungen: keine Ausreißer (echte Systeme verwenden eine robuste Verlustfunktion), keine Linsenverzeichnung, alle Punkte in allen Kameras sichtbar, dichte Speicherung der Jacobi-Matrix. Probiere eine größere Startstörung (LM braucht dann mehr Dämpfung oder fällt in ein falsches Minimum), mehr Rauschen oder nur 2 Kameras.'
+meanings:
+- 'Kamerapose: Achse-Winkel-Rotation (Richtung = Achse, Länge = Winkel) und Translation, also $x_{\rm cam} = R\mathbf X + \mathbf t$'
+- Rodrigues-Formel $I + \sin\theta\,K + (1-\cos\theta)K^2$; drei Zahlen pro Rotation, keine Nebenbedingungen zu erzwingen
+- jeder Punkt in jedem Kamerasystem, über $j$ summiert
+- Rückprojektionsfehler in Pixeln; abgeflacht zu $r_m$, $m = (c, p, a)$
+- 'freie Unbekannte: alle Posen und Punkte abzüglich der 7 Eichzahlen (Kamera 0 und $t_x$ von Kamera 1)'
+- Jacobi-Matrix per Reverse-Mode-Autograd, ein vektorisierter Rückwärtsdurchlauf pro Zeile
+- Gauß–Newton-Matrix $H = J^{\mathsf T}J$ und Gradient $J^{\mathsf T}\mathbf r$, über $m$ summiert
+- Blöcke Kameras | Punkte; ein Residuum berührt eine Kamera und einen Punkt, also ist $V$ blockdiagonal
+- 'Schur-Komplement (reduziertes Kamerasystem): $P$ winzige $3\times 3$-Inverse, dann eine kleine Lösung'
+- 'Rücksubstitution: jeder Punkt wird für sich aktualisiert'
+- 'Levenberg–Marquardt-Dämpfung: nach einem erfolgreichen Schritt durch 3 geteilt, nach einem fehlgeschlagenen mit 4 multipliziert'
+labels:
+  n_cameras: Kameras $C$
+  n_points: Punkte $P$
+  noise: Pixelrauschen $\sigma$
+  init_rot: Start-Rotationsfehler
+  init_noise: Start-Translations- und Punktfehler
+  iterations: LM-Iterationen
+  solver: Löser der Normalgleichungen

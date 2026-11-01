@@ -1,0 +1,16 @@
+source_hash: 7d50d95577a3
+title: Compresión de imágenes con la SVD
+summary: La descomposición en valores singulares escribe una imagen como una suma de capas de rango 1 $\sigma_r\,\mathbf u_r\mathbf v_r^T$, la más fuerte primero. Quedarse solo con $k$ capas da la mejor aproximación de rango $k$, su error es exactamente la energía de los valores singulares descartados, y una imagen en color son tres matrices descompuestas en una sola llamada por lotes.
+notes: Guardar $k$ capas de una imagen $H\times W$ requiere $k(H + W + 1)$ números en lugar de $HW$, así que la razón de compresión es $HW / k(H + W + 1)$. El teorema de Eckart–Young dice que ninguna matriz de rango $k$ está más cerca de $A$ en norma de Frobenius, y el error es la suma de los cuadrados de los valores singulares omitidos. El terminal lo comprueba con imágenes realmente reconstruidas para varios $k$. Las partes suaves de la escena (el degradado del cielo) quedan recogidas por las primeras capas, mientras que los bordes nítidos, las diagonales y el texto necesitan muchas. Por eso los valores singulares caen rápido al principio y luego decaen despacio, y por eso JPEG usa en su lugar transformadas de coseno locales. La primera capa es aproximadamente el perfil de brillo medio; las capas posteriores alternan de signo (rojo y azul) para añadir detalle. La imagen se dibuja proceduralmente, así que no se descarga nada. Prueba una imagen más grande o un rango máximo mayor.
+meanings:
+- canal $c$, fila $i$, columna $j$ de una escena dibujada con matplotlib, valores en $[0, 1]$
+- '$c$ repetido ⇒ sumado: brillo con los pesos $(0.299, 0.587, 0.114)$'
+- una SVD por canal, por lotes sobre el índice inicial $c$; $R = \min(H, W)$
+- '$r \le k$ repetido ⇒ sumado: las primeras $k$ capas de rango 1'
+- 'ningún índice repetido: una capa producto exterior de la imagen en gris'
+- error de Eckart–Young para cada $k$ a la vez, sin reconstruir ninguna imagen
+- relación señal-ruido de pico en dB, con el error cuadrático medio de los $\sigma$ descartados
+labels:
+  size: Tamaño de la imagen (píxeles)
+  k_max: Mayor rango $k$ mostrado
+  frames: Fotogramas de la animación

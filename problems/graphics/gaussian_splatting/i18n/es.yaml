@@ -1,0 +1,27 @@
+source_hash: fb9eaaef3d46
+title: Gaussian splatting 3D
+summary: Una escena se representa con unos cientos de gaussianas 3D coloreadas y semitransparentes. Cada una se proyecta en la cámara con el jacobiano de la aplicación perspectiva, $\Sigma' = J W \Sigma W^{\mathsf T} J^{\mathsf T}$, las manchas (splats) se ordenan por profundidad y se componen con alfa de delante hacia atrás, $C = \sum_i c_i\alpha_i\prod_{j<i}(1 - \alpha_j)$, y Adam ajusta cada media, escala, rotación, color y opacidad a fotos de una escena sintética. Una vista reservada comprueba que las gaussianas aprendieron las formas 3D, no solo las imágenes de entrenamiento.
+notes: 'La verdad de referencia son tres esferas y un cubo, trazados analíticamente con sombreado lambertiano en 12 cámaras dispuestas en dos anillos alrededor de la escena ($64\times 64$ px); una 13.ª cámara entre ellos, a otra altura, se reserva. Las gaussianas empiezan en posiciones aleatorias dentro de un cubo, grises y tenues, con orientaciones aleatorias. Cada paso de Adam renderiza una vista de entrenamiento a través de toda la cadena anterior y retropropaga el error fotográfico L1 a cada media, log-escala, cuaternión, color y opacidad. La lección tensorial es el álgebra de covarianzas: $\Sigma = RSS^{\mathsf T}R^{\mathsf T}$ sigue siendo una covarianza válida (simétrica definida positiva) haga lo que haga el optimizador, y la proyección no es lineal, así que cada gaussiana pasa por su linealización local $J$; la mancha 2D $\Sigma'' = JW\Sigma W^{\mathsf T}J^{\mathsf T}$ es una cadena de einsums. El panel de elipses dibuja estas elipses de $1\sigma$ en la vista reservada. Densificación,
+  simplificada: cada 50 pasos (durante el primer 70 %) las gaussianas cuyos centros recibieron los mayores gradientes se dividen en dos copias en $\boldsymbol\mu \pm R\,S\,\boldsymbol\epsilon$ con los ejes reducidos por 1,6, reutilizando gaussianas casi transparentes ($o < 0.05$), de modo que $M$ se mantiene fijo; el artículo, en cambio, clona y divide usando gradientes en el espacio de la vista, poda, reinicia las opacidades y crece hasta millones de gaussianas. Otras simplificaciones frente a Kerbl et al. (SIGGRAPH 2023): colores constantes en lugar de armónicos esféricos (la escena es lambertiana), un inicio aleatorio en lugar de una nube de puntos de structure-from-motion, una pérdida L1 sin el término D-SSIM, y un rasterizador denso que evalúa cada mancha en cada píxel (el real ordena las manchas en teselas de $16\times 16$ en la GPU y omite las lejanas), por eso la imagen es pequeña. El PSNR de la vista reservada queda algo por debajo del de entrenamiento: las vistas nunca vistas restringen
+  menos a las gaussianas. Prueba con menos vistas (la vista reservada empeora), la pérdida L2, sin densificación, o con más gaussianas y pasos (bordes más nítidos).'
+meanings:
+- rotación de la gaussiana $m$ a partir de un cuaternión, normalizado dentro, así que 4 números cualesquiera son una rotación válida
+- covarianza 3D, con suma sobre $j$; simétrica definida positiva para cualquier parámetro, $s = e^{\log s}$
+- el centro de cada gaussiana en el sistema de cada cámara (x a la derecha, y hacia abajo, z = profundidad)
+- proyección estenopeica de los centros a coordenadas de píxel
+- '$\partial\mu''_a/\partial x_i = \begin{pmatrix} f/z & 0 & -fx/z^2\\ 0 & f/z & -fy/z^2\end{pmatrix}$: la linealización local de la proyección'
+- covarianza 2D de cada mancha, con suma sobre $j, k$, con $JW = $ einsum('vmai,vij->vmaj'), más un paso bajo de 0.3 px²
+- 'la forma cuadrática $d^{\mathsf T}\Sigma''^{-1}d$ desarrollada en los 6 monomios $\varphi = (u^2, 2uv, v^2, u, v, 1)$ del píxel: un solo producto de matrices'
+- cuánto del píxel $p$ cubre la mancha $m$; $o_m = \sigma(\text{logit})$
+- orden de profundidad por cámara; los tensores pequeños por gaussiana se reordenan antes de que existan los grandes de $(V, M, P)$
+- 'transmitancia: la luz que queda tras las manchas delante de $m$; no creciente a lo largo de $m$'
+- composición de delante hacia atrás, con suma sobre $m$; la luz que atraviesa muestra el fondo blanco $b$
+- error absoluto medio por píxel en una vista de entrenamiento aleatoria por paso; Adam actualiza los $14M$ números
+labels:
+  n_gaussians: Gaussianas $M$
+  iterations: Pasos de Adam
+  lr: Tasa de aprendizaje de Adam (medias; el resto escalado)
+  loss: Pérdida fotométrica
+  densify: Densificación por división
+  n_views: Vistas de entrenamiento $V$
+  resolution: Tamaño de imagen (píxeles)

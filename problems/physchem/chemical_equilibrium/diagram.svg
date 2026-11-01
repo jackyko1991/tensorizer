@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Gas equilibrium: a cylinder closed by a piston holds a mixture of N2O4 and NO2 molecules at temperature T; pushing the piston raises the pressure P and shifts the equilibrium N2O4 to 2 NO2">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- pressure on the piston -->
+    <line x1="80" y1="8" x2="80" y2="34" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="88" y="26" font-style="italic" fill="#b91c1c">P</text>
+    <!-- piston and rod -->
+    <rect x="22" y="38" width="116" height="10" fill="#9ca3af" stroke="#374151" stroke-width="1.5"/>
+    <!-- cylinder -->
+    <path d="M18,30 V140 H142 V30" fill="none" stroke="#374151" stroke-width="2"/>
+    <rect x="20" y="49" width="120" height="90" fill="#eff6ff"/>
+    <!-- N2O4: two joined blue spheres; NO2: single smaller amber-brown molecules -->
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1">
+      <circle cx="40" cy="70" r="5"/><circle cx="49" cy="70" r="5"/>
+      <circle cx="96" cy="118" r="5"/><circle cx="105" cy="118" r="5"/>
+      <circle cx="64" cy="104" r="5"/><circle cx="64" cy="113" r="5"/>
+      <circle cx="116" cy="74" r="5"/><circle cx="125" cy="74" r="5"/>
+    </g>
+    <g fill="#f59e0b" stroke="#b45309" stroke-width="1">
+      <circle cx="82" cy="66" r="4.5"/><circle cx="36" cy="124" r="4.5"/>
+      <circle cx="88" cy="92" r="4.5"/><circle cx="126" cy="104" r="4.5"/>
+      <circle cx="44" cy="96" r="4.5"/><circle cx="110" cy="130" r="4.5"/>
+    </g>
+    <!-- reaction -->
+    <text x="152" y="66" font-size="13">N₂O₄</text>
+    <line x1="164" y1="76" x2="164" y2="98" stroke="#374151" stroke-width="1.5"/>
+    <line x1="160" y1="80" x2="164" y2="76" stroke="#374151" stroke-width="1.5"/>
+    <line x1="170" y1="76" x2="170" y2="98" stroke="#374151" stroke-width="1.5"/>
+    <line x1="174" y1="94" x2="170" y2="98" stroke="#374151" stroke-width="1.5"/>
+    <text x="152" y="116" font-size="13">2 NO₂</text>
+    <text x="180" y="92" font-size="13" fill="#374151"><tspan font-style="italic">K</tspan>(<tspan font-style="italic">T</tspan>)</text>
+    <!-- thermostat -->
+    <path d="M14,146 H146" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 3"/>
+    <text x="150" y="150" font-style="italic" fill="#b91c1c">T</text>
+  </g>
+</svg>

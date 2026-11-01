@@ -1,0 +1,23 @@
+source_hash: 176bf5bc914e
+title: Ein Graph-Neuronales-Netz für Moleküle (Message Passing)
+summary: 'Ein Molekül ist ein Graph, und ein Message-Passing-Netz besteht aus ein paar einsums über seiner Adjazenzmatrix: Jedes Atom summiert wiederholt die Zustände seiner Nachbarn, $s_{mic} = A_{mij}h_{mjc}$, und die Vorhersage für das Molekül ist eine Summe über die Atome. Trainiert auf die Hückel-π-Elektronenenergie zufälliger konjugierter Kohlenwasserstoffe, liefert es dieselbe Antwort, egal wie die Atome nummeriert sind, und funktioniert noch bei Molekülen, die größer sind als alle im Training, wo ein einfaches MLP auf der Adjazenzmatrix versagt.'
+notes: 'Die Daten sind absichtlich synthetisch, damit die richtige Antwort exakt bekannt ist. Jedes „Molekül“ ist ein zufälliges Kohlenstoffgerüst ohne Wasserstoffe (ein Baum mit höchstens drei Nachbarn pro Kohlenstoff, zu einigen 5- und 6-Ringen geschlossen): graphentheoretisches Spielzeug, kein kuratierter Satz realer Verbindungen. Sein Label ist die Hückel-π-Elektronenenergie: Mit $H = \alpha + \beta A$ und einem π-Elektron pro Kohlenstoff, das die Orbitale mit den größten Eigenwerten $\lambda_k$ von $A$ besetzt, gilt $E_\pi = N\alpha + \beta\,\sum_k o_k\lambda_k$, und das Netz lernt $y = \sum_k o_k\lambda_k$ allein aus dem Graphen. Es sieht nie einen Eigenwert. Die Tensor-Lektion: Ein Graph-Neuronales-Netz braucht nur eine einzige neue Operation, das einsum über die Adjazenz $A_{mij}h_{mjc}$, das die Zustände der Nachbarn jedes Atoms in jedem Molekül auf einmal summiert. Alle Gewichte wirken auf jeweils ein Atom, und Atome werden nur über $A$ und die Endsumme kombiniert, daher ist das
+  Modell per Konstruktion permutationsinvariant, und dieselben Gewichte passen zu Molekülen jeder Größe. Die Konsole zeigt beide Eigenschaften: Umnummerieren der Atome ändert die GNN-Ausgabe um etwa $10^{-6}$ (float32-Rundung) und die MLP-Ausgabe um ganze Einheiten von $|\beta|$; bei Molekülen mit 11–16 Kohlenstoffen, größer als alle im Training, hat das MLP in den zusätzlichen Zeilen seiner Eingabe nie etwas gesehen und versagt, während der Fehler des GNN kaum wächst. Vergleiche mit der Basislinie „Bindungen zählen“ $aN + bN_{bonds} + c$: Die π-Energie ist nahezu additiv (etwa $1.2|\beta|$ pro Kohlenstoff), und die eigentliche Aufgabe des GNN sind die Korrekturen durch Verzweigungen, Ringe und ungepaarte Elektronen, wo es den Fehler ungefähr halbiert. Vier Nachrichtenrunden reichen nur vier Bindungen weit, daher werden Effekte, die vom ganzen konjugierten System abhängen (Aromatizität, 4n-Ringe), nur näherungsweise gelernt. Das ist das Message-Passing-Neural-Network-Framework (MPNN) von
+  Gilmer et al. (ICML 2017), die zeigten, dass viele frühere molekulare Graphnetze in dieses Schema passen, und sie auf DFT-Eigenschaften der QM9-Moleküle trainierten. Modelle dieser Familie (SchNet, DimeNet, äquivariante Netze wie NequIP oder MACE, die auch die 3D-Geometrie nutzen) werden heute vielfach zur Vorhersage molekularer Eigenschaften und zum Anpassen interatomarer Potentiale eingesetzt, sind aber nur so gut wie ihre Trainingsdaten und können bei andersartiger Chemie versagen. Probier 1 Schicht (nur nächste Nachbarn), weniger Trainingsmoleküle oder ein schmaleres Netz.'
+meanings:
+- Adjazenz des Kohlenstoffgerüsts von Molekül $m$, mit Nullen auf $N = 16$ Atome aufgefüllt
+- 'Atommerkmale: One-hot-Anzahl der Kohlenstoffnachbarn (1, 2 oder 3)'
+- 'das Ziel: besetzte Hückel-Eigenwerte von $A$ (eigvalsh), π-Energie in Einheiten von $|\beta|$'
+- '$f$ summiert: jedes Atom in $C$ Kanäle einbetten'
+- 'wiederholtes $j$ ⇒ summiert über die Nachbarn von Atom $i$: die Nachricht'
+- '$c$ summiert: dieselben Gewichte für jedes Atom jedes Moleküls'
+- eine gelernte Energie pro Atom (die Farben auf dem Molekül)
+- '$i$ summiert über echte Atome: größenextensiv und unabhängig von der Atomreihenfolge'
+- 'Umnummerieren der Atome: Die GNN-Ausgabe bleibt bis auf Gleitkommagenauigkeit gleich'
+- 'Basislinie: ein Netz fester Größe auf den 256 abgeflachten Adjazenzeinträgen'
+labels:
+  n_train: Trainingsmoleküle
+  epochs: Trainingsepochen
+  width: Kanäle $C$
+  layers: Message-Passing-Schichten $L$
+  lr: Adam-Lernrate

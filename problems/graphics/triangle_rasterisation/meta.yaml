@@ -1,0 +1,38 @@
+title: Triangle rasterisation with a z-buffer
+category: graphics
+level: intermediate
+order: 1
+summary: >
+  The way games draw 3D: project a triangle mesh onto the screen and compute the barycentric weights of every
+  (pixel, triangle) pair at once. A min-reduction over triangles is the z-buffer. The same weights then drive flat,
+  Gouraud and Phong shading, and texture lookup. Interpolating texture coordinates with $\lambda/z$
+  (perspective-correct) instead of $\lambda$ (affine) is what keeps a checkered floor straight.
+animated: true
+vector_form: '\mathbf q = \sum_k \lambda_k \mathbf v_k,\ \ \sum_k \lambda_k = 1 \qquad \frac{1}{z} = \sum_k \frac{\lambda_k}{z_k} \qquad a = \frac{\sum_k \lambda_k a_k / z_k}{\sum_k \lambda_k / z_k} \qquad I = k_a + k_d\,\mathbf n\cdot\mathbf l + k_s\,(\mathbf n\cdot\mathbf h)^s'
+index_form: '\lambda_{ptk} = \frac{\varepsilon_{ij}\,(v_{t,k+1} - q_p)_i\,(v_{t,k+2} - q_p)_j}{2A_t} \qquad \frac{1}{z_{pt}} = \frac{\lambda_{ptk}}{z_{tk}} \qquad t^*_p = \arg\min_t z_{pt} \qquad a_{pc} = \frac{\lambda_{pk}\,a_{pkc} / z_{pk}}{\lambda_{pk} / z_{pk}}'
+translation:
+  - {symbol: 'x_{ni}', code: "scene['verts']", shape: '(N, 3)', meaning: 'mesh vertices plus the 4 floor corners; faces $(T, 3)$ index into them'}
+  - {symbol: 'R_{ij}\,x_{nj}', code: "einsum('ij,nj->ni', R, verts)", shape: '(N, 3)', meaning: 'repeated $j$ ⇒ summed: spin the mesh (one rotation per frame)'}
+  - {symbol: 'v_{tki},\ z_{tk}', code: 'project(verts, cam)[faces]', shape: '(T, 3, 2), (T, 3)', meaning: 'screen position and depth of corner $k$ of triangle $t$ (pinhole camera $f\,(x, y)/z$)'}
+  - {symbol: 'A_t', code: 'signed_area(screen)', shape: '(T,)', meaning: 'half of $\varepsilon_{ij}(v_1 - v_0)_i (v_2 - v_0)_j$; $A_t \le 0$ ⇒ back face, culled'}
+  - {symbol: '\lambda_{ptk}', code: "barycentric(q, tri)", shape: '(P, T, 3)', meaning: 'barycentric weights of every pixel in every triangle; computed in tiles of pixels to bound memory'}
+  - {symbol: '\lambda_{ptk}/z_{tk}', code: "einsum('ptk,tk->pt', lam, 1/z)", shape: '(P, T)', meaning: 'repeated $k$ ⇒ summed: $1/z$ is what varies linearly on the screen'}
+  - {symbol: 't^*_p', code: 'depth.min(dim=1)', shape: '(P,)', meaning: 'the z-buffer: nearest covering triangle per pixel (pixels outside are $+\infty$)'}
+  - {symbol: 'a_{pc}', code: 'perspective_interp(lam, z, a)', shape: '(P, C)', meaning: 'texture coordinates, normals, positions, Gouraud brightness interpolated with weights $\lambda/z$'}
+  - {symbol: '\lambda_{pk}\,a_{pkc}', code: "einsum('pk,pkc->pc', lam, uv)", shape: '(P, 2)', meaning: 'affine interpolation: right for flat-on triangles, wrong for tilted ones'}
+notes: >
+  Barycentric weights are signed areas: $\lambda_k$ is the area of the small triangle opposite corner $k$ divided by
+  the whole, so the three add up to 1 and all are positive exactly inside. Here they are computed for every pixel
+  and every triangle at once, the brute-force version of what a GPU does in hardware. Tiling the pixels keeps the
+  $(P, T, 3)$ tensor under a few million entries; a real rasteriser only visits each triangle's bounding box. The
+  sign of the screen-space area also gives back-face culling for free: about half of a closed mesh faces away.
+  Depth along a triangle is not linear on the screen, but $1/z$ is, so both the z-buffer test and every
+  interpolated attribute use weights $\lambda_k/z_k$. The floor is only two triangles, so affine
+  interpolation (PlayStation-1 style) visibly bends its checker lines, while the perspective-correct version keeps
+  them straight. Flat shading shows every facet. Gouraud lights the corners and blends the brightness, which smears
+  out the specular highlight. Phong blends the normals and lights every pixel, which keeps the highlight sharp.
+params:
+  mesh: {default: torus, type: choice, options: [torus, icosphere, terrain], label: Mesh}
+  resolution: {default: 128, min: 48, max: 256, step: 16, type: int, label: Image size, unit: px}
+  frames: {default: 48, min: 8, max: 120, step: 4, type: int, label: Frames per turn}
+  tilt: {default: 0.5, min: 0.0, max: 1.5, step: 0.05, label: 'Tilt about $x$', unit: rad}

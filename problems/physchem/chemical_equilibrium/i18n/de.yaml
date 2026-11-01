@@ -1,0 +1,20 @@
+source_hash: aa144f7ad9f7
+title: Chemisches Gleichgewicht und Le Chatelier
+summary: Wo hört eine Reaktion auf? Aus $\Delta G^\circ = -RT\ln K$ wird die Gleichgewichtslaufzahl $\xi$ einer Gasreaktion ($\mathrm{N_2O_4 \rightleftharpoons 2\,NO_2}$ oder die Haber-Reaktion $\mathrm{N_2 + 3H_2 \rightleftharpoons 2NH_3}$) für Hunderte von Temperaturen und Drücken gleichzeitig per Bisektion in $Q(\xi) = K$ bestimmt; das zeigt die Le-Chatelier-Verschiebungen mit Druck, Temperatur (van 't Hoff) und zugesetztem Produkt.
+notes: '$Q$ misst, wo das Gemisch steht, $K$, wohin es will: Ist $Q < K$, läuft die Reaktion vorwärts, ist $Q > K$, läuft sie zurück. Weil $\ln Q$ mit der Laufzahl $\xi$ stetig steigt (von $-\infty$ ohne Produkte bis $+\infty$ ohne Edukte), ist das Gleichgewicht die einzige Nullstelle von $\ln Q(\xi) - \ln K$, und die Bisektion findet sie für alle Bedingungen gleichzeitig. Das Prinzip von Le Chatelier folgt aus der Formel. Druck: Mit Aktivitäten idealer Gase gilt $Q = K_x\,(P/P^\circ)^{\Delta\nu}$ mit $\Delta\nu = \sum_i \nu_i$, also begünstigt eine Erhöhung von $P$ die Seite mit weniger Gasmolekülen ($\mathrm{N_2O_4}$ dissoziiert weniger, es bildet sich mehr $\mathrm{NH_3}$). Temperatur: $\ln K = -\Delta H^\circ/RT + \Delta S^\circ/R$, also wächst $K$ mit $T$ für eine endotherme Reaktion ($\mathrm{N_2O_4}$: Die braune Farbe von $\mathrm{NO_2}$ wird beim Erwärmen dunkler) und fällt für eine exotherme (Ammoniak). Zugesetztes Produkt: $Q$ springt über $K$, und ein Teil des Produkts wird wieder
+  zu Edukten, aber nicht alles. Für $\mathrm{N_2O_4}$ lässt sich das Ergebnis von Hand prüfen: $K = 4\alpha^2 P/((1-\alpha^2)P^\circ)$ ergibt $\alpha = \sqrt{K/(K + 4P/P^\circ)}$. Die thermodynamischen Daten sind ungefähre Lehrbuchwerte bei 298 K ($\Delta H^\circ \approx +57.2$ kJ/mol, $\Delta S^\circ \approx +176$ J/(mol K) für $\mathrm{N_2O_4}$; $\approx -92.2$ kJ/mol und $\approx -199$ J/(mol K) für Ammoniak), als konstant in $T$ behandelt, und die Gase als ideal; beide Vereinfachungen überschätzen die Ammoniakausbeute bei 700 K und 100 bar etwas (gemessen: rund 20 % $\mathrm{NH_3}$ statt etwa 30 %). Die Haber-Reaktion ist bei Raumtemperatur stark begünstigt, läuft dort aber viel zu langsam: Anlagen arbeiten bei etwa 700–750 K und 150–300 bar mit einem Eisenkatalysator und tauschen Ausbeute gegen Geschwindigkeit. Probier T = 700 K mit der Haber-Reaktion.'
+meanings:
+- 'stöchiometrische Zahlen: $-1, 2$ für $\mathrm{N_2O_4 \rightleftharpoons 2NO_2}$; $-1, -3, 2$ für Ammoniak'
+- jedes Paar (Temperatur, Druck) zu einem einzigen Batch-Index $b$ abgeflacht
+- $-\Delta G^\circ/RT$ mit ungefähren, temperaturunabhängigen $\Delta H^\circ$, $\Delta S^\circ$
+- Stoffmengen jeder Spezies; ein äußeres Produkt, nichts summiert
+- Gesamtstoffmenge; $j$ summiert
+- '$\ln Q$: Der Speziesindex $i$ wird summiert'
+- 'keine Stoffmenge darf negativ werden: das Intervall für die Bisektion'
+- 'Bisektion für alle Bedingungen zusammen: die Hälfte behalten, in der $\ln Q - \ln K$ das Vorzeichen wechselt'
+- Steigung von $\ln K$ gegen $1/T$
+labels:
+  reaction: Reaktion ($\mathrm{N_2O_4}$ oder Ammoniak)
+  T: Temperatur $T$ (schwarze Kurve)
+  P: Druck $P$ für den Test mit zugesetztem Produkt
+  add_product: Zugesetztes Produkt

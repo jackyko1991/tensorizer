@@ -1,0 +1,19 @@
+source_hash: 88e5f57d0eb4
+title: El conjunto de Mandelbrot y los conjuntos de Julia
+summary: Itera $z \mapsto z^2 + c$ sobre toda una malla de píxeles complejos a la vez. Los puntos cuya órbita permanece acotada forman el conjunto de Mandelbrot $M$ (varía $c$, empieza en $z_0 = 0$) o un conjunto de Julia relleno $K_c$ (fija $c$, empieza en el píxel). Un recuento de escape suavizado y una estimación de distancia a partir de la derivada mantienen la imagen nítida durante todo un zoom hacia el valle de los caballitos de mar, mientras el conjunto de Julia cambia de forma a medida que $c$ recorre la cardioide principal.
+notes: 'Por qué escapar cuando $|z| > 2$: si $|z| > \max(2, |c|)$ entonces $|z^2 + c| \ge |z|^2 - |c| > |z|$, y la órbita crece sin límite. Así que todo $c$ con $|c| > 2$ escapa en el primer paso, y $M$ está dentro del disco $|c| \le 2$. Aquí se usa un umbral mayor $R = 1000$ porque hace preciso el recuento suavizado $\nu = n + 1 - \log_2 \ln|z_n|$: cerca del infinito, $z \mapsto z^2$ duplica $\ln|z|$ en cada paso, y $\log_2$ deshace exactamente eso. La cardioide principal es el conjunto de los $c$ para los que $z^* = z^{*2} + c$ es un punto fijo atractor, $|2z^*| < 1$; escribiendo $2z^* = w$ se obtiene $c = w/2 - w^2/4$ con $|w| \le 1$, y el bulbo de periodo 2 es donde el 2-ciclo es atractor, $|4(1+c)| < 1$. Estas dos piezas cubren aproximadamente 1,37 del área total $\approx 1.5066$ de $M$, y ningún píxel dentro de ellas escapa nunca. La estimación de distancia $d = |z_n|\ln|z_n|/|z''_n|$ procede del potencial $G(c) = \lim 2^{-n}\ln|z_n|$, como $G/|\nabla G|$; cerca del conjunto, la distancia
+  verdadera está dentro de un factor 2 aproximadamente de ella (una consecuencia del teorema del cuarto de Koebe). El panel de Julia mantiene $c$ en el borde de la cardioide, donde el punto fijo es neutro: allí $K_c$ siempre es conexo porque $c \in M$, pero su forma cambia por completo de un ángulo al siguiente. Cada conjunto de Julia se parece a $M$ cerca de su $c$, por eso los zooms en $M$ muestran pequeños conjuntos de Julia. Los zooms más profundos que unos $10^{-13}$ necesitan más que los 16 dígitos de complex128.'
+meanings:
+- un número complejo por píxel $p$; no se suma ningún índice, cada píxel evoluciona por su cuenta
+- un paso de la aplicación cuadrática para todos los píxeles que siguen iterando
+- 'regla de la cadena: $c'' = 1$ para $M$ (derivada respecto a $c$), $c'' = 0$ y $z''_0 = 1$ para los conjuntos de Julia (derivada respecto a $z_0$)'
+- primer paso con $|z_p| > R$; los píxeles que escapan se eliminan de los tensores, así que el trabajo disminuye
+- 'recuento de escape suavizado (continuo): sin saltos de color entre bandas'
+- 'estimación de distancia: los píxeles con $d_p$ menor que un cuarto de píxel se dibujan oscuros, lo que revela los filamentos finos'
+- prueba exacta para la cardioide principal (y $|c+1| \le \frac14$ para el bulbo de periodo 2), con $q = (x-\frac14)^2 + y^2$
+labels:
+  target: Objetivo del zoom
+  zoom_decades: Profundidad del zoom (potencias de 10)
+  resolution: Píxeles por lado
+  max_iter: Iteraciones al inicio (+150 por década)
+  frames: Fotogramas

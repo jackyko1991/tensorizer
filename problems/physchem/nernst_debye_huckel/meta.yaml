@@ -1,0 +1,45 @@
+title: 'Nernst equation and Debye–Hückel screening'
+category: physchem
+level: intermediate
+order: 3
+summary: >
+  The voltage of a Daniell cell, Zn | Zn²⁺ ‖ Cu²⁺ | Cu, follows the Nernst equation, computed here as one
+  $(T, Q)$ grid of temperatures and concentration ratios. Real ions are less active than their concentration
+  suggests: each one wears a cloud of opposite charge of thickness $\kappa^{-1}$. The linearised Poisson–Boltzmann
+  equation around an ion is solved on a radial grid as a batched linear system, matches the analytic Yukawa potential,
+  and reproduces the Debye–Hückel activity coefficients that shift the EMF.
+animated: true
+vector_form: 'E = E^\circ - \frac{RT}{nF}\ln\frac{a_{\mathrm{Zn^{2+}}}}{a_{\mathrm{Cu^{2+}}}},\qquad a = \gamma\,m,\qquad \log_{10}\gamma = -\frac{A z^2\sqrt I}{1 + B a\sqrt I},\qquad \frac{1}{r^2}\frac{d}{dr}\Big(r^2\frac{d\varphi}{dr}\Big) = \kappa^2\varphi,\qquad \kappa^2 = \frac{2N_Ae^2 I}{\varepsilon_0\varepsilon_r kT}'
+index_form: 'E_{tq} = E^\circ - s_t\,\log_{10}Q_q,\quad s_t = \frac{\ln 10\,R\,T_t}{nF} \qquad \log_{10}\gamma_c = -\frac{A z^2\sqrt{I_c}}{1 + B a\sqrt{I_c}} \qquad A_{cij}\,u_{cj} = b_{ci},\quad \varphi_{ci} = u_{ci}/r_{ci} \qquad \varphi^{Y}_{ci} = \frac{e^{\kappa_c a}}{1+\kappa_c a}\,\frac{e^{-\kappa_c r_{ci}}}{r_{ci}}'
+translation:
+  - {symbol: 'T_t,\ \log_{10}Q_q', code: 'temperatures(), log_ratios()', shape: '(T,), (Q,)', meaning: 'a batch of cell temperatures and reaction quotients'}
+  - {symbol: 'E_{tq}', code: "E0 - einsum('t,q->tq', nernst_slope(T, n), log_Q)", shape: '(T, Q)', meaning: 'no index summed: every slope meets every quotient'}
+  - {symbol: 'I_c,\ \kappa_c', code: 'ionic_strength(m), kappa(I, T)', shape: '(C,)', meaning: 'ionic strength $I = mz^2$ of the swept ZnSO₄ half-cell and the inverse Debye length'}
+  - {symbol: '\log_{10}\gamma_c', code: 'log10_gamma_extended(z, I, A, B, a)', shape: '(C,)', meaning: 'extended law; $a \to 0$ gives the limiting law $-Az^2\sqrt I$'}
+  - {symbol: 'r_{ci}', code: 'radial_grids(kappa, a, M)', shape: '(C, M)', meaning: 'grid from the ion surface $a$ out to $a + 12\,\kappa_c^{-1}$, one per concentration'}
+  - {symbol: 'A_{cij},\ b_{ci}', code: 'pb_system(h, kappa, a, M)', shape: '(C, M, M), (C, M)', meaning: '$u^{\prime\prime} - \kappa^2u = 0$ with $u = r\varphi$; row 0 is Gauss''s law at $r = a$'}
+  - {symbol: 'A_{cij}u_{cj} = b_{ci}', code: 'torch.linalg.solve(A, b)', shape: '(C, M)', meaning: 'repeated $j$ ⇒ summed; one dense solve per concentration, batched'}
+  - {symbol: '\ln\gamma_c', code: '0.5 * z**2 * l_B * (phi[:, 0] - 1/a)', shape: '(C,)', meaning: 'energy of the ion in its own cloud: recovers the extended Debye–Hückel law'}
+notes: >
+  In the Daniell cell zinc is oxidised and copper ions are reduced, $\mathrm{Zn + Cu^{2+} \to Zn^{2+} + Cu}$, with
+  $n = 2$ electrons and $E^\circ \approx 1.10$ V (held fixed here, since its own temperature change is small). Every
+  tenfold change of $Q$ moves the EMF by $\ln 10\,RT/nF$, which is 29.6 mV at 25 °C, and the slope grows in
+  proportion to $T$. The Nernst equation uses activities $a = \gamma m$, not molalities. Debye and Hückel computed
+  $\gamma$ by letting the other ions arrange themselves in the potential $\varphi$ of a central ion with Boltzmann
+  weights, and linearising: $\nabla^2\varphi = \kappa^2\varphi$. Its solution is the screened Coulomb (Yukawa)
+  potential, which falls off over the Debye length $\kappa^{-1} \approx 0.304\,\mathrm{nm}/\sqrt{I}$ in water at 25 °C.
+  The numerical solver writes the radial equation for $u = r\varphi$ as a tridiagonal system, with Gauss's law at the
+  ion surface and $\varphi = 0$ twelve Debye lengths out, and agrees with the analytic form to about $10^{-4}$. The
+  ion's energy in the potential of its own cloud is $kT\ln\gamma$, which gives exactly the extended law; for
+  $I \to 0$ it becomes the limiting law $\log_{10}\gamma = -Az^2\sqrt I$ with $A \approx 0.51$. Each half-cell is a
+  separate 2:2 sulfate solution ($I = 4m$), so changing $m(\mathrm{Zn^{2+}})$ changes $\gamma_{Zn}$ while
+  $\gamma_{Cu}$ stays put, and the EMF moves away from the ideal Nernst value by several millivolts. Single-ion
+  activity coefficients cannot be measured on their own (only the mean $\gamma_\pm$ can), and above $I \approx 0.01$
+  ion pairing and specific interactions in 2:2 sulfates make even the extended law qualitative. The ion size
+  $a \approx 0.5$ nm is a typical hydrated-ion value.
+params:
+  T_C: {default: 25.0, min: 0, max: 90, step: 1, label: 'Temperature for activities and screening', unit: °C}
+  m_Cu: {default: 0.01, min: 0.0001, max: 0.1, step: 0.0001, label: 'Cu²⁺ half-cell molality', unit: mol/kg}
+  E0: {default: 1.10, min: 0.5, max: 2.0, step: 0.01, label: 'Standard EMF $E^\circ$', unit: V}
+  a_ion: {default: 0.5, min: 0.1, max: 1.0, step: 0.05, label: 'Ion size $a$', unit: nm}
+  n_points: {default: 400, min: 100, max: 1000, step: 50, type: int, label: 'Radial grid points $M$'}

@@ -1,0 +1,17 @@
+source_hash: 7d50d95577a3
+title: Compression d'images par SVD
+summary: La décomposition en valeurs singulières écrit une image comme une somme de couches de rang 1 $\sigma_r\,\mathbf u_r\mathbf v_r^T$, la plus forte en premier. Ne garder que $k$ couches donne la meilleure approximation de rang $k$, son erreur est exactement l'énergie des valeurs singulières abandonnées, et une image en couleur est formée de trois matrices décomposées en un seul appel par lots.
+notes: Stocker $k$ couches d'une image $H\times W$ demande $k(H + W + 1)$ nombres au lieu de $HW$, donc le taux de compression vaut $HW / k(H + W + 1)$. Le théorème d'Eckart–Young dit qu'aucune matrice de rang $k$ n'est plus proche de $A$ en norme de Frobenius, et l'erreur est la somme des carrés des valeurs singulières omises. Le terminal le vérifie sur des images réellement reconstruites pour plusieurs $k$. Les parties lisses de la scène (le dégradé du ciel) sont captées par les premières couches, tandis que les bords nets, les diagonales et le texte en demandent beaucoup. C'est pourquoi les valeurs singulières chutent vite au début puis décroissent lentement, et pourquoi JPEG utilise plutôt des transformées en cosinus locales. La première couche est en gros le profil de luminosité moyen ; les couches suivantes alternent de signe (rouge et bleu) pour ajouter des détails. L'image est générée procéduralement, rien n'est donc téléchargé. Essayez une image plus grande ou un rang maximal plus
+  élevé.
+meanings:
+- canal $c$, ligne $i$, colonne $j$ d'une scène dessinée avec matplotlib, valeurs dans $[0, 1]$
+- '$c$ répété ⇒ sommé : luminosité avec les poids $(0.299, 0.587, 0.114)$'
+- une SVD par canal, par lots sur l'indice de tête $c$ ; $R = \min(H, W)$
+- '$r \le k$ répété ⇒ sommé : les $k$ premières couches de rang 1'
+- 'aucun indice répété : une couche produit extérieur de l''image en niveaux de gris'
+- erreur d'Eckart–Young pour chaque $k$ à la fois, sans reconstruire aucune image
+- rapport signal sur bruit de crête en dB, avec l'erreur quadratique moyenne issue des $\sigma$ abandonnés
+labels:
+  size: Taille de l'image (pixels)
+  k_max: Plus grand rang $k$ affiché
+  frames: Images de l'animation

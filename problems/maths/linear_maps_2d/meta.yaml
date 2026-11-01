@@ -1,0 +1,38 @@
+title: Linear maps of the plane
+category: maths
+level: beginner
+order: 3
+summary: >
+  A $2\times 2$ matrix moves every point of the plane, and one einsum moves a whole grid, the unit circle and the
+  unit square for every animation frame at once. Watch the plane morph from the identity to $A$: eigenvectors
+  stay on their own lines, $|\det A|$ scales areas, a negative determinant flips the plane over, and the circle
+  becomes an ellipse whose semi-axes are the singular values.
+animated: true
+vector_form: '\mathbf y = A\,\mathbf x,\qquad M(t) = (1 - t)\,I + t\,A,\qquad A\,\mathbf v = \lambda\,\mathbf v,\qquad A = U\,\Sigma\,V^{\mathsf T}'
+index_form: 'Y_{tki} = M_{tij}\,P_{kj},\qquad M_{tij} = (1 - t)\,\delta_{ij} + t\,A_{ij},\qquad \det M = \varepsilon_{ij}\,M_{i1}\,M_{j2}'
+translation:
+  - {symbol: 'A_{ij}', code: 'matrices(choice, custom, dev)', shape: '(S, 2, 2)', meaning: 'the matrices to show: stretch, shear, rotation, reflection and a flip, or your own'}
+  - {symbol: 'P_{kj}', code: 'grid_lines(...), unit_circle(...), unit_square(...)', shape: '(…, 2)', meaning: 'points of the plane: grid lines, the unit circle, the unit square'}
+  - {symbol: 'M_{tij}', code: 'interpolate(A, t)', shape: '(T, 2, 2)', meaning: 'straight path from the identity $\delta_{ij}$ to $A$, one matrix per frame'}
+  - {symbol: 'Y_{tki} = M_{tij} P_{kj}', code: "einsum('tij,...j->t...i', M, P)", shape: '(T, …, 2)', meaning: 'repeated $j$ ⇒ summed: every point moved by every frame''s matrix at once'}
+  - {symbol: '\varepsilon_{ij}', code: 'levi_civita(dev)', shape: '(2, 2)', meaning: '$\varepsilon_{12} = 1$, $\varepsilon_{21} = -1$: the 2-D Levi-Civita symbol'}
+  - {symbol: '\det M', code: "einsum('ij,...i,...j->...', eps, M[..., 0], M[..., 1])", shape: '(T,)', meaning: 'repeated $i, j$ ⇒ summed: signed area of the image of the unit square'}
+  - {symbol: 'U,\ \sigma', code: 'torch.linalg.svd(M)', shape: '(T, 2, 2), (T, 2)', meaning: 'the circle''s image is an ellipse with semi-axes $\sigma_1 \mathbf u_1$ and $\sigma_2 \mathbf u_2$'}
+  - {symbol: '\lambda,\ \mathbf v', code: 'torch.linalg.eig(A)', shape: '(2,), (2, 2)', meaning: 'eigenvalues and eigenvectors; complex for a rotation, so no line stays put'}
+notes: >
+  The columns of $A$ are where the basis vectors $\mathbf e_1$ (red arrow) and $\mathbf e_2$ (green arrow) land,
+  and every other point follows by linearity, so straight grid lines stay straight and parallel. Along the path
+  $M(t) = (1-t)I + tA$ an eigenvector $\mathbf v$ of $A$ is also an eigenvector of $M(t)$ with eigenvalue
+  $1 - t + t\lambda$, so the orange dots slide along their dashed lines while everything else turns. The unit square
+  (yellow) becomes a parallelogram of area $|\det A|$; it turns red when $\det < 0$, when $\mathbf e_1 \to \mathbf e_2$
+  goes clockwise and the plane is a mirror image. A reflection must pass through $\det = 0$ on the way, where the
+  plane is squashed onto a line. Rotations and reflections keep lengths, so $\sigma_1 = \sigma_2 = 1$; a shear keeps
+  area ($\det = 1$) but not shape. In general the circle goes to an ellipse with semi-axes $\sigma_1 \ge \sigma_2$,
+  the singular values, and $|\det A| = \sigma_1\sigma_2$. Products multiply: $\det(AB) = \det A\,\det B$.
+params:
+  matrix: {default: tour, type: choice, options: [tour, stretch, shear, rotation, reflection, flip, custom], label: Matrix}
+  a11: {default: 1.5, min: -3, max: 3, step: 0.1, label: 'Custom $A_{11}$'}
+  a12: {default: 0.5, min: -3, max: 3, step: 0.1, label: 'Custom $A_{12}$'}
+  a21: {default: 0.0, min: -3, max: 3, step: 0.1, label: 'Custom $A_{21}$'}
+  a22: {default: -1.0, min: -3, max: 3, step: 0.1, label: 'Custom $A_{22}$'}
+  grid_lines: {default: 17, min: 5, max: 33, step: 4, type: int, label: Grid lines per direction}

@@ -1,0 +1,46 @@
+title: 'Rate laws and the Arrhenius plot'
+category: physchem
+level: beginner
+order: 1
+summary: >
+  How fast does a reaction go, and how much faster when it is warmer? The zeroth-, first- and second-order rate laws
+  are integrated for six temperatures at once in one $(O, T)$ tensor, with $k(T) = A\,e^{-E_a/RT}$. A noisy synthetic
+  experiment then reveals its order (which plot of $[A]$, $\ln[A]$ or $1/[A]$ is straight?) and its activation energy
+  (a least-squares line through $\ln k$ against $1/T$).
+animated: true
+vector_form: '-\frac{d[\mathrm A]}{dt} = k(T)\,[\mathrm A]^{n},\qquad k(T) = A\,e^{-E_a/RT},\qquad \ln k = \ln A - \frac{E_a}{R}\,\frac{1}{T}'
+index_form: '\frac{d[\mathrm A]_{ot}}{dt} = -k_t\,[\mathrm A]_{ot}^{\,n_o} \qquad k_t = A\,e^{-E_a/(R T_t)} \qquad G_{ij} = X_{ti}X_{tj},\;\; b_i = X_{ti}\,y_t,\;\; G_{ij}\beta_j = b_i'
+translation:
+  - {symbol: 'T_t', code: 'T', shape: '(T,)', meaning: 'six temperatures between $T_{min}$ and $T_{max}$ (K)'}
+  - {symbol: 'n_o', code: 'n', shape: '(O,)', meaning: 'reaction orders $0, 1, 2$, integrated side by side'}
+  - {symbol: 'k_t', code: 'rate_constant(T, A, Ea)', shape: '(T,)', meaning: 'Arrhenius rate constant, in $\mathrm{M}^{1-n}\,\mathrm{s^{-1}}$'}
+  - {symbol: 'k_t [\mathrm A]_{ot}^{n_o}', code: "einsum('t,ot->ot', k, conc ** n[:, None])", shape: '(O, T)', meaning: 'rate of every run; no index summed, $k_t$ is broadcast over the orders'}
+  - {symbol: 't_{\mathrm{end},ot}', code: 'run_lengths(k, n)', shape: '(O, T)', meaning: 'each run is followed to 90 % conversion, on its own clock $t = \tau\,t_{end}$'}
+  - {symbol: '[\mathrm A]_{ot}(\tau)', code: 'integrate(rhs, conc0, 1/N, N)', shape: '(N+1, O, T)', meaning: 'RK4 trajectory, compared with the exact integrated laws in the tests'}
+  - {symbol: 'g = [\mathrm A],\ \ln[\mathrm A],\ 1/[\mathrm A]', code: 'linearize(data)', shape: '(3, T, S)', meaning: 'the three plots against $t$; only the right order gives a straight line'}
+  - {symbol: 'X_{si} = (1, t_s)', code: 'torch.stack([ones, x], -1)', shape: '(…, S, 2)', meaning: 'design matrix of a straight-line fit'}
+  - {symbol: 'G_{ij} = w_s X_{si} X_{sj}', code: "einsum('...s,...si,...sj->...ij', w, X, X)", shape: '(…, 2, 2)', meaning: 'normal-equation matrix; $s$ (the samples) summed; weights $w_s = (dg/d[A])^{-2}$, and $w_s = 0$ drops points below 2 % of $[A]_0$'}
+  - {symbol: '\beta_j', code: 'torch.linalg.solve(G, b)', shape: '(…, 2)', meaning: 'intercept and slope, for every plot and temperature at once'}
+  - {symbol: 'y_t = \ln k_t,\ x_t = 1/T_t', code: 'arrhenius_fit(T, k_fit)', shape: '(2,)', meaning: 'Arrhenius line: slope $-E_a/R$, intercept $\ln A$'}
+notes: >
+  Each rate law has an integrated form that turns into a straight line in the right variable: $[A] = [A]_0 - kt$
+  (zeroth order), $\ln[A] = \ln[A]_0 - kt$ (first) and $1/[A] = 1/[A]_0 + kt$ (second). So a chemist plots all three
+  and keeps the straightest one ($R^2$ closest to 1); its slope is $\mp k$. A second test uses half-lives: since
+  $t_{1/2} \propto [A]_0^{1-n}$, the time from $[A]_0/2$ to $[A]_0/4$ is $2^{n-1}$ times the first half-life (shorter,
+  equal or twice as long), which gives $n = 1 + \log_2(t_{1/2}^{(2)}/t_{1/2}^{(1)})$. Repeating the run at several
+  temperatures gives $k(T)$, and the Arrhenius plot of $\ln k$ against $1/T$ is a straight line of slope $-E_a/R$.
+  With $E_a = 75$ kJ/mol, warming from 290 K to 300 K roughly speeds the reaction up 2.8 times; the old rule of thumb
+  "twice as fast per 10 K" corresponds to $E_a \approx 50$ kJ/mol near room temperature. Each run is followed until
+  90 % of A has reacted, so cold runs last much longer than hot ones (see the legend); the left plot uses the
+  fraction of each run's time so that all six fit on one axis, which does not change which plot is straight.
+  The data are synthetic (a made-up reaction, Gaussian noise with a fixed seed). Taking $\ln$ or $1/x$ magnifies the
+  noise of late, dilute points ($\sigma/[A]$ and $\sigma/[A]^2$), so each point is weighted by $(dg/d[A])^{-2}$, i.e. by
+  $1$, $[A]^2$ or $[A]^4$, and points below 2 % of $[A]_0$ are left out. Try a larger noise to see the $R^2$ test become
+  less decisive, or a narrower temperature range to see the error on $E_a$ grow.
+params:
+  Ea: {default: 75.0, min: 50, max: 100, step: 1, label: 'Activation energy $E_a$', unit: kJ/mol}
+  log10_A: {default: 11.0, min: 8, max: 14, step: 0.5, label: 'Pre-exponential factor $\log_{10} A$'}
+  order: {default: '1', type: choice, options: ['0', '1', '2'], label: 'Order of the measured reaction'}
+  T_min: {default: 290.0, min: 250, max: 400, step: 5, label: 'Lowest temperature $T_{min}$', unit: K}
+  T_max: {default: 340.0, min: 260, max: 450, step: 5, label: 'Highest temperature $T_{max}$', unit: K}
+  noise: {default: 0.01, min: 0, max: 0.05, step: 0.005, label: 'Measurement noise $\sigma$', unit: M}

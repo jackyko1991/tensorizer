@@ -1,0 +1,24 @@
+source_hash: 56bd5dd35d76
+title: Lire un QR code à partir d'une photo
+summary: 'Construisez de zéro un QR code de version 1 à 3 (motifs de repérage, de synchronisation et d''alignement, bits de format BCH, masque choisi par pénalité, Reed–Solomon sur GF(256)), photographiez-le avec une homographie aléatoire, du flou, du bruit, un éclairage inégal et un pouce posé dessus, puis relisez-le par un pipeline tensoriel : seuillage adaptatif, filtres adaptés pour les motifs de repérage 1:1:3:1:1, homographie DLT et grid_sample, décodage BCH et Reed–Solomon avec l''arithmétique de $\mathrm{GF}(2^8)$ sous forme de lectures dans des tables.'
+notes: 'Les vrais lecteurs comme ZXing suivent le même plan : binariser avec un seuil local, balayer les lignes à la recherche du motif de plages 1:1:3:1:1 d''un motif de repérage et le confirmer selon les colonnes et les diagonales, choisir trois motifs de repérage formant un angle droit, estimer la taille de module et la version à partir de leur espacement, chercher un motif d''alignement près de l''endroit indiqué par une estimation affine, ajuster une transformation perspective, échantillonner la grille, puis décoder les couches de format et de Reed–Solomon. Ici, l''homographie est en plus affinée en maximisant la corrélation des modules connus (motifs de repérage, synchronisation, alignement, zone de silence) avec l''image via grid_sample, et la version retenue est celle dont le gabarit s''ajuste le mieux. Les quatre niveaux de correction d''erreurs L, M, Q, H restaurent environ 7, 15, 25 et 30 % des mots de code : avec $T$ octets ECC, un bloc corrige $\lfloor T/2 \rfloor$ erreurs d''octet
+  inconnues (deux fois plus si leurs positions étaient connues, comme effacements). Une tache couvrant une part $f$ du symbole touche plus que $f$ des mots de code, car chaque octet est un bloc de $2\times4$ modules, si bien que les courbes de réussite passent sous ces pourcentages. Les masques ne touchent que les modules de données et $M \oplus M = 0$, donc démasquer est le même XOR ; l''encodeur essaie les 8 masques en un seul lot et garde la pénalité la plus basse (plages, blocs $2\times2$, imitations de motifs de repérage, équilibre des modules sombres). Vérification : l''encodeur Reed–Solomon reproduit les octets ECC de l''exemple détaillé de l''ISO/IEC 18004 (''01234567'' en version 1-M) et les mots de format correspondent à la table de la norme ; le reste est vérifié par des allers-retours et des syndromes nuls. Simplifications : mode octet uniquement, versions 1 à 3 (un seul motif d''alignement, pas de blocs d''information de version), pas de symboles en miroir, pas de décodage d''effacements.
+  La version 1 n''a pas de motif d''alignement, c''est donc elle qui souffre le plus d''une forte perspective. Références : ISO/IEC 18004 (symbologie QR code) ; I. S. Reed et G. Solomon, Polynomial codes over certain finite fields, J. SIAM 8 (1960) 300–304.'
+meanings:
+- produit dans GF(256) par deux lectures de tables ; $\alpha = 2$ engendre les 255 octets non nuls modulo $x^8+x^4+x^3+x^2+1$ (0x11D) ; $\oplus$ est le XOR
+- 'XOR sur l''indice sommé $i$ : additionner chacun des 8 plans de bits modulo 2'
+- 'Reed–Solomon systématique : la ligne $i$ de $G$ est $x^{T+k-1-i} \bmod g(x)$, donc les octets ECC sont linéaires en les données'
+- polynôme du bloc évalué en $\alpha^j$ ; tous nuls exactement pour les mots de code
+- localisateur d'erreurs par Berlekamp–Massey (en lots avec torch.where), racines par la recherche de Chien sur toutes les positions, amplitudes $e = X\,\Omega(X^{-1})/\Lambda'(X^{-1})$ (Forney)
+- BCH(15,5) de générateur 0x537, XOR 0x5412 ; le plus proche des 32 mots de code corrige jusqu'à 3 erreurs de bits
+- 'sombre là où le pixel est sous la moyenne de sa boîte $31\times31$ (conv2d) moins $c$ : suit l''éclairage inégal'
+- filtre adapté $K^s$ pour le profil 1:1:3:1:1 selon les lignes et les colonnes à 11 échelles $s$ ; les pics sont les centres des motifs de repérage (vérifiés aussi selon les diagonales)
+- 'DLT/SVD à partir des 3 centres de motifs de repérage + le motif d''alignement (version 1 : coin du parallélogramme), puis affinée par montée de gradient sur l''ajustement à tous les modules connus'
+- module $(i, j)$ lu en $3\times3$ points à l'intérieur ; puis démasquer (XOR, une involution) et lire dans l'ordre en zigzag
+labels:
+  message: Message
+  version: Version minimale (augmentée si le message ne tient pas)
+  ecc: Niveau de correction d'erreurs
+  perspective: Intensité de la perspective (décalage des coins / côté)
+  occlusion: Part masquée du symbole
+  noise: Bruit de pixel $\sigma$

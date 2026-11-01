@@ -1,0 +1,27 @@
+source_hash: 09cd4df32aa9
+title: 'NeRF : rendu volumique d''un champ de radiance neuronal'
+summary: 'Un petit MLP $F_\theta(\mathbf x) = (\sigma, \mathbf c)$ donne à chaque point de l''espace une densité et une couleur. Un pixel est la lumière recueillie le long de son rayon : des échantillons stratifiés $t_s$, puis la quadrature $C = \sum_s T_s\,(1 - e^{-\sigma_s\delta_s})\,\mathbf c_s$ avec la transmittance $T_s = e^{-\sum_{s''<s}\sigma_{s''}\delta_{s''}}$, en lots sur rayons × échantillons. Entraîné uniquement sur des photos d''une scène synthétique, il rend une vue mise de côté et une carte de profondeur, et un second réseau sans encodage positionnel montre le biais spectral des MLP simples.'
+notes: 'Les données d''entraînement sont $V$ photos d''une sphère rouge, d''un cube en damier et d''une balle orange, produites par un lanceur de rayons analytique avec un ombrage lambertien ; le réseau ne voit jamais la géométrie, seulement les couleurs des pixels et le rayon de chaque pixel. Chaque pas d''Adam tire un lot aléatoire de rayons parmi tous les pixels d''entraînement, les rend avec la quadrature et compare aux vraies couleurs. Comme $w_{rs}$, $T_{rs}$ et les couleurs sont des fonctions lisses de $\sigma$ et $\mathbf c$, la différentiation automatique ramène l''erreur photo dans le réseau : les densités croissent là où les rayons de nombreuses vues s''accordent sur une surface. La carte de profondeur $\sum_s w_s t_s$ et le profil des poids le long du rayon marqué le montrent : les poids se concentrent en un pic sur la vraie surface. L''encodage positionnel est l''astuce clé. Un MLP simple sur $(x, y, z)$ apprend d''abord les basses fréquences et ajuste très lentement les bords
+  nets et les textures fines (biais spectral) ; lui fournir plutôt $\sin(2^k\pi x), \cos(2^k\pi x)$ lui donne des briques de haute fréquence. Pour le même nombre de pas, le réseau encodé (bleu) a des silhouettes plus nettes, environ la moitié de l''erreur de profondeur et un PSNR plus élevé sur les vues d''entraînement, tandis que le réseau simple (rouge) reste flou. Sur la vue mise de côté, le gain est plus faible : avec peu de vues, et petites, les détails fins ne sont que faiblement contraints, et les deux réseaux sont encore loin d''avoir convergé (les vrais NeRF s''entraînent pendant des heures). Simplifications par rapport à Mildenhall et al. (ECCV 2020) : pas de direction de vue en entrée (la scène est lambertienne, donc ses couleurs ne dépendent pas de l''angle de vue), un seul réseau au lieu de la paire grossier + fin avec échantillonnage hiérarchique, un MLP minuscule (3 × 64 au lieu de 8 × 256), des images $40\times 40$, et quelques centaines de pas au lieu de centaines de milliers.
+  Essayez $L = 2$ ou $L = 10$, moins d''échantillons $S$ (des bandes dues à la quadrature grossière), plus de pas (le damier n''apparaît qu''avec l''encodage), ou moins de vues (la géométrie devient ambiguë et la vue mise de côté se dégrade alors que les vues d''entraînement restent bien ajustées).'
+meanings:
+- origine et direction unitaire du rayon passant par chacun des $P$ pixels de chaque caméra
+- 'une profondeur aléatoire dans chacun des $S$ intervalles égaux de $[t_n, t_f]$ : un nouveau jeu à chaque pas, pour que le réseau voie tout le rayon'
+- 'points d''échantillonnage : diffusion (broadcasting) sur les rayons $r$ et les échantillons $s$'
+- $\sin$ et $\cos$ de $2^k\pi x_i$, $k = 0 \dots L-1$ ; aucune somme, un produit extérieur
+- une couche du MLP appliquée à tous les échantillons à la fois, somme sur $g$ ; ReLU entre les couches
+- densité $\ge 0$ et couleur dans $(0, 1)$
+- longueur de chaque intervalle le long du rayon
+- 'transmittance : une somme cumulée exclusive de l''épaisseur optique $\tau = \sigma\delta$ sur $s'' < s$'
+- probabilité que la lumière atteignant le pixel ait été émise dans l'intervalle $s$ ; $\sum_s w_{rs} \le 1$
+- couleur du pixel, somme sur $s$ ; la transmittance restante montre le fond blanc
+- 'profondeur attendue : les mêmes poids donnent gratuitement une carte de profondeur'
+labels:
+  n_freq: Fréquences d'encodage $L$
+  width: Largeur cachée $H$
+  n_samples: Échantillons par rayon $S$
+  steps: Pas d'Adam (par réseau)
+  batch: Rayons par pas
+  lr: Taux d'apprentissage d'Adam
+  n_views: Vues d'entraînement $V$
+  resolution: Taille de l'image (pixels)

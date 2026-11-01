@@ -1,0 +1,48 @@
+title: Chapman mechanism and the ozone layer
+category: chemistry
+level: intermediate
+order: 3
+summary: >
+  Four reactions between O, O₂ and O₃, driven by sunlight, make an ozone layer. Written as a reaction network
+  $\dot c = S\,r(c)$ with a $3\times4$ stoichiometry matrix, the stiff system is integrated by backward Euler with
+  Newton steps at every altitude at once, from sunrise to centuries later: O and O₃ trade places within seconds,
+  odd oxygen takes days to centuries to settle, and the steady state peaks near 30 km.
+animated: true
+vector_form: '\frac{d\mathbf c}{dt} = S\,\mathbf r(\mathbf c),\qquad \mathbf r = \big(j_1[\mathrm{O_2}],\ k_2[\mathrm M][\mathrm O][\mathrm{O_2}],\ j_3[\mathrm{O_3}],\ k_4[\mathrm O][\mathrm{O_3}]\big),\qquad \mathbf a^{\mathsf T}S = 0,\qquad [\mathrm{O_3}] \approx [\mathrm{O_2}]\sqrt{\frac{j_1 k_2 [\mathrm M]}{j_3 k_4}}'
+index_form: '\dot c_{as} = S_{sr}\,r_{ar}(c_a) \qquad a_s S_{sr} = 0 \qquad c^{+}_{as} - c_{as} - \Delta t\,S_{sr}\,r_{ar}(c^{+}_a) = 0 \qquad J_{asc} = S_{sr}\,\frac{\partial r_{ar}}{\partial c_{ac}} \qquad \big(\delta_{sc} - \Delta t\,J_{asc}\big)\,\delta c_{ac} = -G_{as}'
+translation:
+  - {symbol: 'c_{as}', code: 'c', shape: '(A, 3)', meaning: 'number densities of $\mathrm O$, $\mathrm{O_2}$, $\mathrm{O_3}$ at altitude $a$, in cm$^{-3}$'}
+  - {symbol: 'S_{sr}', code: 'S', shape: '(3, 4)', meaning: 'net molecules of species $s$ made by reaction $r$; column 1 is $(2, -1, 0)$ for $\mathrm{O_2} \to 2\,\mathrm O$'}
+  - {symbol: 'a_s S_{sr}', code: 'ATOMS @ S', shape: '(4,)', meaning: 'repeated $s$ ⇒ summed: oxygen atoms made by each reaction, all zero'}
+  - {symbol: 'r_{ar}', code: 'rates(c, j1, j3, k2, k4, M)', shape: '(A, 4)', meaning: 'mass-action rates of the four reactions'}
+  - {symbol: 'S_{sr}r_{ar}', code: "einsum('sr,ar->as', S, r)", shape: '(A, 3)', meaning: 'repeated $r$ ⇒ summed: $dc/dt$'}
+  - {symbol: 'J_{asc}', code: "einsum('sr,arc->asc', S, dr_dc)", shape: '(A, 3, 3)', meaning: 'Jacobian of the network, repeated $r$ summed'}
+  - {symbol: '\delta c_{ac}', code: 'torch.linalg.solve(eye - dt * J, -G)', shape: '(A, 3)', meaning: 'one Newton update of the backward-Euler step, a $3\times3$ solve per altitude'}
+  - {symbol: 'k_2(T),\ k_4(T)', code: 'k2_rate(T), k4_rate(T)', shape: '(A,)', meaning: '$6.0\times10^{-34}(T/300)^{-2.4}$ cm$^6$ s$^{-1}$ and $8.0\times10^{-12}e^{-2060/T}$ cm$^3$ s$^{-1}$ (JPL, approximate)'}
+  - {symbol: 'j_1(z),\ j_3(z)', code: 'photolysis_O2(z, mu), photolysis_O3(O3, z, mu)', shape: '(A,)', meaning: 'photolysis rates attenuated by the $\mathrm{O_2}$ and $\mathrm{O_3}$ columns overhead (illustrative one-band model)'}
+  - {symbol: '[\mathrm{O_3}]_{\text{ss}}', code: 'steady_state(j1, j3, k2, k4, M, O2)', shape: '(A,)', meaning: 'exact Chapman steady state from a quadratic in $[\mathrm O]$'}
+notes: >
+  Sydney Chapman (1930) explained the ozone layer with four reactions. Ultraviolet light below 242 nm splits
+  $\mathrm{O_2}$ (1); each O atom quickly sticks to an $\mathrm{O_2}$ with a third body $\mathrm M$ to carry the energy away (2);
+  ozone absorbs ultraviolet and visible light and falls apart again (3), which is how it shields the ground, but this
+  does not destroy "odd oxygen" $\mathrm O_x = \mathrm O + \mathrm{O_3}$; only $\mathrm O + \mathrm{O_3} \to 2\,\mathrm{O_2}$
+  (4) does. Reactions (2) and (3) cycle O and $\mathrm{O_3}$ in milliseconds to minutes, while (1) and (4) set the total
+  over days in the upper stratosphere and decades or more low down: a stiff system with time scales $10^{14}$ apart, so
+  an explicit step would need billions of steps, while backward Euler (stable for any $\Delta t$) takes 300 steps
+  spaced evenly in $\log t$. Every column of $S$ conserves oxygen atoms, and backward Euler keeps such linear
+  invariants exactly. Balancing the two pairs gives $[\mathrm{O_3}] \approx [\mathrm{O_2}]\sqrt{j_1 k_2[\mathrm M]/(j_3 k_4)}$:
+  going down, the air (and with it $[\mathrm{O_2}]^{3/2}$) gets denser exponentially while the $\mathrm{O_2}$-splitting light is
+  used up, and the product peaks where the slant $\mathrm{O_2}$ optical depth is about 3. The rate constants $k_2$, $k_4$
+  are the JPL evaluation values (approximate); the photolysis rates use a single effective band per molecule with
+  illustrative parameters, a stand-in for an integration over the solar spectrum, and the sun shines all the time.
+  Below about 18 km the odd-oxygen lifetime exceeds even the longest run, so those levels never settle; in the real
+  atmosphere winds carry ozone there. Chapman chemistry alone gives too much ozone (here a peak near
+  $8\times10^{12}$ cm$^{-3}$ and about 380 DU above 15 km, against roughly $5\times10^{12}$ cm$^{-3}$ near 20–25 km
+  and 300 DU observed). The missing sinks are catalytic cycles $\mathrm X + \mathrm{O_3} \to \mathrm{XO} + \mathrm{O_2}$,
+  $\mathrm{XO} + \mathrm O \to \mathrm X + \mathrm{O_2}$, which do reaction (4) many times over per catalyst: NOₓ (Crutzen,
+  1970), and chlorine from CFCs (Molina and Rowland, 1974), the chemistry behind the ozone hole and the Montreal
+  Protocol (Nobel Prize 1995).
+params:
+  sza: {default: 30.0, min: 0, max: 75, step: 5, label: 'Solar zenith angle', unit: °}
+  log10_t_end: {default: 10, min: 6, max: 12, step: 1, type: int, label: 'Run length $\log_{10}(t/\mathrm{s})$'}
+  levels: {default: 46, min: 19, max: 91, step: 9, type: int, label: Altitude levels}

@@ -1,0 +1,17 @@
+source_hash: 94551bc4044d
+title: Ausgleichen chemischer Gleichungen (Nullraum)
+summary: 'Eine Gleichung auszugleichen heißt, Koeffizienten $\nu_s$ zu finden, die jedes Element und die Ladung erhalten. Als Matrix geschrieben ist das $M\nu = 0$: Die Koeffizienten bilden den Nullraum der Element-Spezies-Matrix. Eine einzige gebatchte SVD löst sieben Reaktionen auf einmal, von der Methanverbrennung bis zu Permanganat in saurer Lösung, und erkennt diejenige, deren Ausgleich nicht eindeutig ist.'
+notes: 'Jedes Element liefert eine lineare Gleichung in den unbekannten Koeffizienten, also ergeben $S$ Spezies und $E$ Elemente ein $E\times S$-System $M\nu = 0$. Meist hat $M$ den Rang $S-1$, und die Lösungen bilden eine Gerade: Die ausgeglichene Gleichung ist bis auf einen gemeinsamen Faktor eindeutig. Die SVD findet diese Gerade als rechten Singulärvektor zum Singulärwert 0 (dem letzten); Division durch seinen kleinsten Eintrag und Ausprobieren von Faktoren $k = 1, 2, \dots$ liefert die kleinsten ganzen Zahlen, z. B. $\mathrm{CH_4} + 2\,\mathrm{O_2} \rightarrow \mathrm{CO_2} + 2\,\mathrm{H_2O}$. Bei Ionen ist die Ladung einfach eine weitere Zeile: Ohne sie hätte $\mathrm{MnO_4^-} + \mathrm{Fe^{2+}} + \mathrm{H^+}$ einen zweidimensionalen Nullraum, mit ihr ergibt sich die bekannte Redoxgleichung $1{:}5{:}8 \rightarrow 1{:}5{:}4$. Das Peroxid-Beispiel $\mathrm{H_2} + \mathrm{O_2} \rightarrow \mathrm{H_2O} + \mathrm{H_2O_2}$ hat zwei verschwindende Singulärwerte: Es verbirgt zwei unabhängige
+  Reaktionen ($2\mathrm{H_2} + \mathrm{O_2} \rightarrow 2\mathrm{H_2O}$ und $\mathrm{H_2} + \mathrm{O_2} \rightarrow \mathrm{H_2O_2}$), und jede positive Mischung davon ist ebenfalls ausgeglichen. Die Algebra allein kann keine auswählen; die tatsächlichen Anteile bestimmt die Chemie (Kinetik, Bedingungen). Der Code zeigt die Basisreaktionen, die man erhält, wenn man im zweidimensionalen Nullraum einen Koeffizienten null setzt. Probier eine eigene Reaktion aus, indem du sie zu `REACTIONS` in tensors.py hinzufügst; der Parser liest Klammern und Ladungen wie ''Ca3(PO4)2'' oder ''Fe^3+''.'
+meanings:
+- Atome des Elements $e$ in Spezies $s$ der Reaktion $r$; Zeile q ist die Ladung (aus dem kleinen Formelparser)
+- $+1$ für ein Edukt, $-1$ für ein Produkt
+- 'kein Index summiert: jede Spalte erhält ein Vorzeichen'
+- alle Reaktionen in einen Tensor aufgefüllt; unbenutzte Spalten auf $\nu_s = 0$ festgelegt
+- gebatchte SVD; Singulärwerte in absteigender Reihenfolge
+- 'wie viele Singulärwerte verschwinden: 1 → eindeutiger Ausgleich, 2 → zwei unabhängige Reaktionen'
+- letzter Singulärvektor, so skaliert, dass der kleinste Eintrag 1 ist, dann mit dem ersten $k_r$, das ganze Zahlen ergibt
+- 'wiederholtes $s$ ⇒ summiert: erzeugte Atome von $e$; null für jedes Element und die Ladung'
+labels:
+  show: Als Matrix gezeigte Reaktion
+  max_scale: Größter ausprobierter Faktor $k$

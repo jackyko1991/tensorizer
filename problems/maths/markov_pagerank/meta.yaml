@@ -1,0 +1,39 @@
+title: Markov chains and PageRank
+category: maths
+level: intermediate
+order: 3
+summary: >
+  A random surfer clicks links on a small synthetic web and now and then jumps to a random page. The probability of
+  being on each page evolves by one matrix–vector product per click, and its stationary distribution is PageRank,
+  found here by power iteration, by an eigen-decomposition and by thousands of simulated surfers at once.
+animated: true
+vector_form: 'G = d\,S + \frac{1-d}{N}\,\mathbf 1\mathbf 1^T,\qquad \mathbf x_{k+1} = G\,\mathbf x_k,\qquad G\boldsymbol\pi = \boldsymbol\pi,\quad \mathbf 1^T\boldsymbol\pi = 1'
+index_form: 'd_j = \sum_i L_{ij},\quad S_{ij} = L_{ij}/d_j,\qquad G_{bij} = d_b\,S_{ij} + \frac{1 - d_b}{N},\qquad x_{bi} \leftarrow G_{bij}\,x_{bj}'
+translation:
+  - {symbol: 'L_{ij}', code: 'web_graph(n, n_dangling, seed, device)', shape: '(N, N)', meaning: '1 if page $j$ links to page $i$: columns are the pages a surfer leaves'}
+  - {symbol: 'd_j = \sum_i L_{ij}', code: "einsum('ij->j', L)", shape: '(N,)', meaning: 'summed over $i$: number of outgoing links of page $j$'}
+  - {symbol: 'S_{ij} = L_{ij}/d_j', code: 'transition(L)', shape: '(N, N)', meaning: 'click a random link; a dangling page ($d_j = 0$) gets the uniform column $1/N$'}
+  - {symbol: 'G_{bij}', code: 'd[:, None, None] * S + (1 - d[:, None, None]) / N', shape: '(B, N, N)', meaning: 'Google matrix for a batch of damping factors $d_b$; $1 - d$ is the teleport probability'}
+  - {symbol: 'G_{bij}\,x_{bj}', code: "einsum('bij,bj->bi', G, x)", shape: '(B, N)', meaning: 'repeated $j$ ⇒ summed: one power-iteration step for every $d_b$ at once'}
+  - {symbol: 'G\boldsymbol\pi = \boldsymbol\pi', code: 'torch.linalg.eig(G)', shape: '(N,), (N, N)', meaning: 'eigenvector of eigenvalue 1, scaled to sum to 1; $G$ is not symmetric, so eig rather than eigh'}
+  - {symbol: '|\lambda_2|', code: 'vals.abs().sort(descending=True)[1]', shape: '()', meaning: 'second-largest eigenvalue modulus: the error shrinks by this factor per step, and $|\lambda_2| \le d$'}
+  - {symbol: 'w_t', code: 'walk_step(pos, S, d, gen)', shape: '(W,)', meaning: 'page of each of $W$ surfers: follow a link with probability $d$, else teleport'}
+notes: >
+  $S$ is column-stochastic, so it maps probability vectors to probability vectors, but a web graph has pages with no
+  links out and groups of pages that trap the surfer. Dangling pages are given a uniform column (the surfer types a
+  random address), and the teleport term makes every entry of $G$ positive. By the Perron–Frobenius theorem the
+  stationary distribution is then unique, positive and reached from any start. Every other eigenvalue of $G$ is
+  $d$ times an eigenvalue of $S$, so $|\lambda_2| \le d$ and power iteration converges at least as fast as $d^k$.
+  The right panel shows the batch of damping factors solved together. With $d = 0.85$ (the value suggested by Brin
+  and Page, 1998) 50 steps shrink the error by at least $0.85^{50} \approx 3\times10^{-4}$, whatever the size of
+  the web. The surfers are a Monte Carlo estimate of the same chain: their fractions follow $\mathbf x_k$ up to
+  noise of order $1/\sqrt W$, and averaging over time gives ranks that agree with power iteration. Removing the
+  dangling fix lets probability leak away, as the terminal shows. Try $d \to 1$ to see convergence slow down and
+  the ranks pile up in closed groups of pages.
+params:
+  damping: {default: 0.85, min: 0.3, max: 0.99, step: 0.01, label: 'Damping factor $d$'}
+  pages: {default: 30, min: 8, max: 80, step: 1, type: int, label: 'Pages $N$'}
+  dangling: {default: 3, min: 0, max: 10, step: 1, type: int, label: Dangling pages}
+  walkers: {default: 20000, min: 1000, max: 200000, step: 1000, type: int, label: 'Random surfers $W$'}
+  iterations: {default: 60, min: 10, max: 200, step: 5, type: int, label: Steps}
+  seed: {default: 3, min: 0, max: 100, step: 1, type: int, label: Graph seed}

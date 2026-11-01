@@ -1,0 +1,47 @@
+title: 'Polymerisation kinetics and molecular-weight distributions'
+category: chemistry
+level: advanced
+order: 3
+summary: >
+  Why are step-growth polymers (polyesters, nylons) so polydisperse, while living polymerisation makes nearly
+  uniform chains? A population balance over chain lengths, one $(S, L)$ tensor for both mechanisms, reproduces
+  Carothers' $X_n = 1/(1-p)$ and Flory's most probable distribution $w(x) = x(1-p)^2p^{x-1}$ with dispersity
+  $Đ \to 2$, checked against a kinetic Monte Carlo of 100 000 monomers, and the Poisson distribution of living
+  chains with $Đ \approx 1 + 1/X_n$.
+animated: true
+vector_form: '\frac{dP_x}{d\tau} = \sum_{y=1}^{x-1}P_yP_{x-y} - 2P_xN,\qquad \frac{dP^*_x}{d\nu} = P^*_{x-1} - P^*_x,\qquad X_n = \frac{1}{1-p},\quad w(x) = x(1-p)^2p^{x-1},\quad Đ = \frac{X_w}{X_n}'
+index_form: '\dot P_{0x} = T_{xy}P_{0y} - 2P_{0x}P_{0y}\mathbb 1_y,\quad T_{xy} = P_{0,x-y},\qquad \dot P_{1x} = P_{1,x-1} - P_{1x},\qquad \mu_{sk} = P_{sx}\,x^k,\qquad Đ_s = \frac{\mu_{s2}\,\mu_{s0}}{\mu_{s1}^2}'
+translation:
+  - {symbol: 'P_{sx}', code: 'traj[k]', shape: '(2, L)', meaning: 'chains of length $x$ ($x = 1 … L$) for mechanism $s$: 0 = step growth (per monomer), 1 = living (per initiator)'}
+  - {symbol: 's = X_n - 1', code: 's', shape: '(T,)', meaning: 'one clock for both rows: $\tau = kN_0t$ for step growth, $\nu = \int k_p[M]\,dt$ for living growth'}
+  - {symbol: 'T_{xy} = P_{0,x-y}', code: 'P[idx] * mask', shape: '(L, L)', meaning: 'Toeplitz matrix gathered from the populations; zero where $x - y < 1$'}
+  - {symbol: 'T_{xy}P_{0y}', code: "einsum('xy,y->x', T, P)", shape: '(L,)', meaning: 'repeated $y$ ⇒ summed: every way to join a $y$-mer to an $(x-y)$-mer'}
+  - {symbol: '2P_{0x}N', code: '2.0 * P * P.sum()', shape: '(L,)', meaning: 'a chain reacts through either of its two ends with any of the $N$ chains'}
+  - {symbol: 'P_{1,x-1} - P_{1x}', code: 'living_rhs(P[1])', shape: '(L,)', meaning: 'living chains only add monomer, one unit at a time, and never terminate'}
+  - {symbol: '\mu_{sk} = P_{sx}x^k', code: "einsum('...x,kx->...k', P, powers)", shape: '(..., 3)', meaning: '$x$ summed: moments $k = 0, 1, 2$ give $X_n = \mu_1/\mu_0$, $X_w = \mu_2/\mu_1$'}
+  - {symbol: '(1-p)^2p^{x-1}', code: 'flory_number(x, p) * (1 - p)', shape: '(K, L)', meaning: 'exact solution for step growth: chains per initial monomer at conversion $p = \tau/(1+\tau)$'}
+  - {symbol: 'e^{-\nu}\nu^{x-1}/(x-1)!', code: 'poisson(x, nu)', shape: '(K, L)', meaning: 'exact solution for living growth, with lgamma for the factorial'}
+  - {symbol: 'P^{\mathrm{MC}}_x', code: 'kinetic_monte_carlo(n0, events, L, seed)', shape: '(K, L)', meaning: 'join two random chains one bond at a time: an independent stochastic check'}
+notes: >
+  Step growth: every molecule carries reactive ends (here one A and one B, like a hydroxy acid) and ANY two chains
+  can join, monomer with monomer, dimer with 50-mer. Flory's equal-reactivity assumption (the rate does not depend
+  on chain length) turns the population balance into the Smoluchowski coagulation equation with a constant kernel,
+  whose exact solution is the most probable distribution: a fraction $p$ of the ends has reacted, so a chain of
+  length $x$ is a run of $x - 1$ reacted bonds ended by an unreacted one, with probability $(1-p)p^{x-1}$.
+  Its averages are Carothers' $X_n = 1/(1-p)$ and $X_w = (1+p)/(1-p)$, so $Đ = 1 + p \to 2$. The practical lesson
+  is harsh: 98 % conversion gives only $X_n = 50$, and long chains need $p > 0.99$ and a perfect 1:1 balance of
+  reactive groups. Living chain growth (anionic, or controlled radical methods such as ATRP or RAFT, which
+  approximate it) is the opposite: all chains start together and grow one monomer at a time without termination,
+  so after $\nu$ additions per chain the lengths are Poisson distributed and $Đ = 1 + \nu/(1+\nu)^2 \approx 1 + 1/X_n$
+  falls towards 1. The tensor form keeps both mechanisms in one $(S, L)$ tensor advanced by RK4. The step-growth
+  convolution $\sum_y P_y P_{x-y}$ is an einsum with a Toeplitz matrix gathered from $P$ (an FFT would do the same in
+  $O(L\log L)$). Because the two rows use clocks with $X_n = 1 + s$, each frame compares the two mechanisms at the same
+  $X_n$, on an axis $x / X_n$ where the Flory shape is fixed and the Poisson peak narrows. The kinetic Monte Carlo
+  joins random pairs of chains; it agrees with the population balance up to sampling noise, which grows near the end
+  because only $N_0(1-p)$ chains are left (2000 at $p = 0.98$). Simplifications: no ring formation, no side
+  reactions, a perfectly balanced A–B stoichiometry, chain lengths cut off at $L$ (the omitted tail is
+  below $10^{-6}$), and instantaneous initiation with no termination or transfer for the living case. Conventional free-radical
+  polymerisation, with termination, sits in between ($Đ \approx 1.5$–2).
+params:
+  p_max: {default: 0.98, min: 0.5, max: 0.99, step: 0.005, label: 'Final conversion $p$ (step growth)'}
+  n_monomers: {default: 100000, min: 1000, max: 200000, step: 1000, type: int, label: 'Monomers in the Monte Carlo $N_0$'}

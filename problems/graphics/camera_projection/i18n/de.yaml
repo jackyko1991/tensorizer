@@ -1,0 +1,23 @@
+source_hash: 0fd4a04dbd76
+title: Die Lochkamera
+summary: 'Wie aus einer 3D-Szene ein 2D-Bild wird: Modell-, View- und Projektionsmatrizen ($4\times4$) wirken auf homogene Koordinaten, danach liefern die perspektivische Division und die Viewport-Transformation Pixel. Alle Eckpunkte eines Drahtgittermodells werden mit einem einzigen einsum gleichzeitig projiziert, während die Kamera um das Objekt kreist. Vergleiche Perspektive mit orthografischer Projektion und mit einem Dolly-Zoom, sieh, wie sich parallele Linien in Fluchtpunkten treffen, und schreibe dieselbe Kamera als $K[R\,|\,\mathbf t]$.'
+notes: 'Die 4. Koordinate macht die Kamera linear: Die Translation wird zu einer Matrixspalte, und die Perspektive, die durch die Tiefe teilt, wird zu einer Matrix, die die Tiefe in $\tilde x_4$ kopiert, gefolgt von einer einzigen Division am Ende. Punkte mit $w = 0$ sind Richtungen; ihre Bilder sind die Fluchtpunkte, und alle horizontalen Richtungen fluchten auf den Horizont, der über der Bildmitte liegt, wenn die Kamera nach unten blickt. Die orthografische Kamera hat $\tilde x_4 = 1$, also keine Fluchtpunkte, und ferne Objekte schrumpfen nicht, wie in technischen Zeichnungen und vielen Strategiespielen. Der Dolly-Zoom (der „Vertigo-Effekt“) ändert das Sichtfeld und bewegt gleichzeitig die Kamera so, dass $d\,\tan(\text{fov}/2)$ konstant bleibt: Das Objekt behält seine Größe, aber der Boden dahinter dehnt sich. Bildverarbeitungsbibliotheken verwenden $\lambda\,\hat{\mathbf u} = K[R|\mathbf t]\mathbf X$ mit $z$ nach vorn; Grafik-APIs verwenden $P V M$ mit $z$ nach hinten; beide unterscheiden
+  sich nur durch das Umklappen der $y$- und $z$-Achse, und das Terminal prüft, dass sie dieselben Pixel liefern.'
+meanings:
+- Eckpunkt $v$ in homogenen Koordinaten $(x, y, z, 1)$; Kanten sind Indexpaare $(E, 2)$
+- 'Objekt → Welt: skalieren, um $y$ drehen, dann verschieben (die 4. Spalte)'
+- 'Welt → Kamera: Die Zeilen sind die Kameraachsen, Translation $-R\,\mathbf e$'
+- 'Kamera → Clip-Raum; die letzte Zeile kopiert $-z$ in $\tilde x_4$ (orthografisch: $\tilde x_4 = 1$)'
+- 'wiederholte $j, k, l$ ⇒ summiert: jeder Eckpunkt durch alle drei Matrizen in einem Aufruf'
+- perspektivische Division durch $\tilde x_4$, dann der Viewport; Bildzeilen zählen nach unten
+- Brennweite $f = \tfrac H2 / \tan\tfrac{\text{fov}}2$ und Hauptpunkt; die starre Bewegung Welt → Kamera
+- 'ein Punkt im Unendlichen $(\hat{\mathbf d}, 0)$ verliert die Translation: Alle Linien entlang $\hat{\mathbf d}$ treffen sich dort'
+labels:
+  shape: Objekt
+  yaw: Objektdrehung (Modellmatrix)
+  fov: Sichtfeld
+  distance: Kameraabstand
+  height_cam: Kamerahöhe
+  width: Bildbreite
+  height: Bildhöhe
+  frames: Bilder pro Umlauf

@@ -1,0 +1,23 @@
+source_hash: de68545f1f70
+title: Hartree–Fock pour $\mathrm{H_2}$ dans une base minimale STO-3G
+summary: Le calcul de champ autocohérent de référence de Szabo et Ostlund, écrit avec des tenseurs. Chaque hydrogène porte une fonction 1s faite de trois gaussiennes (STO-3G) ; les intégrales de recouvrement, d'énergie cinétique, d'attraction nucléaire et biélectroniques ont des formes analytiques, la matrice de Fock est une contraction de la densité avec le tenseur $(\mu\nu|\lambda\sigma)$, et les équations de Roothaan $FC = SC\varepsilon$ sont résolues avec eigh pour tout un lot de longueurs de liaison à la fois. À $R = 1.4$ bohr, on obtient $E = -1.1167$ hartree ; le balayage trouve la longueur de liaison et montre pourquoi Hartree–Fock restreint ne peut pas rompre la liaison.
+notes: 'Unités atomiques : longueurs en bohr ($a_0 = 0.529$ Å) et énergies en hartree ($E_h = 27.21$ eV). La base est STO-3G avec les exposants de Slater $\zeta_{\mathrm H} = 1.24$ et $\zeta_{\mathrm{He}} = 2.0925$ comme dans Szabo et Ostlund, Modern Quantum Chemistry (1982 ; édition Dover 1996), chapitre 3 ; avec deux fonctions de base, chaque matrice est $2\times2$, et vous pouvez donc vérifier chaque nombre dans le livre : $S_{12} = 0.6593$, $T_{11} = 0.7600$, $E = -1.1167$ hartree à $R = 1.4$ bohr, et $-2.8607$ hartree pour $\mathrm{HeH^+}$ à $R = 1.4632$ bohr. Le SCF part de $P = 0$ (l''hamiltonien de cœur) ; pour $\mathrm{H_2}$, la symétrie fixe les orbitales $\psi_{1,2} \propto \phi_A \pm \phi_B$ et il converge immédiatement, tandis que $\mathrm{HeH^+}$ demande une douzaine de passes pendant que la charge migre vers l''hélium. Chaque longueur de liaison est une entrée du lot, si bien que le SCF tourne pour toute la courbe en une seule boucle. Hartree–Fock restreint place les deux
+  électrons dans la même orbitale spatiale $\psi_1$ ; à grand $R$, cet état est pour moitié $\mathrm{H + H}$ et pour moitié l''état ionique $\mathrm{H^+ + H^-}$, si bien que la courbe monte bien au-dessus de $2E_{\mathrm H}$. La courbe en pointillés est l''interaction de configurations complète dans la même base (la matrice singulet $3\times3$ de $|1^2\rangle$, $|1^12^1\rangle$, $|2^2\rangle$) : elle mélange $|2^2\rangle$, dissocie correctement, et son écart à RHF à l''équilibre (environ $-0.02$ hartree) est l''énergie de corrélation. Une base minimale est loin de l''énergie exacte de $\mathrm{H_2}$, $-1.1745$ hartree à $R = 1.4$ bohr ; des bases plus grandes demandent des fonctions p et d et les relations de récurrence générales des intégrales gaussiennes. Essayez $\mathrm{HeH^+}$ : la courbe RHF y atteint bien la bonne limite, $\mathrm{He + H^+}$, car les deux électrons finissent sur l''hélium.'
+meanings:
+- trois exposants gaussiens par fonction, $\alpha_p\zeta^2$, et coefficients de contraction incluant la normalisation des primitives $(2\alpha/\pi)^{3/4}$
+- les deux noyaux (et centres de base) pour chaque longueur de liaison $R_b$ du lot
+- le produit de deux gaussiennes est une gaussienne centrée en $P = (\alpha A + \beta B)/(\alpha + \beta)$
+- '$p, q$ répétés ⇒ sommés : contraction sur les primitives ; de même pour $T$, $V$'
+- $-\sum_c Z_c\,\tfrac{2\pi}{\alpha+\beta}\,e^{-\dots}F_0\big((\alpha+\beta)|P - C|^2\big)$ avec la fonction de Boys $F_0(t) = \tfrac12\sqrt{\pi/t}\,\mathrm{erf}\sqrt t$
+- tenseurs de paires bra et ket diffusés l'un contre l'autre, puis $p, q, r, t$ sommés en un seul einsum
+- 'orthogonalisation symétrique (de Löwdin) : $X^{\mathsf T}SX = 1$'
+- matrice de Coulomb $J$ ; $\lambda, \sigma$ répétés ⇒ sommés
+- 'matrice d''échange $K$ : le même tenseur lu avec les indices permutés'
+- un eigh par lots par passe SCF ; $C = XC^{\prime}$
+- 'nombre d''électrons de Mulliken : exactement 2'
+- la courbe de potentiel, une entrée par longueur de liaison
+labels:
+  molecule: Molécule
+  R_min: Plus courte longueur de liaison $R$
+  R_max: Plus longue longueur de liaison $R$
+  n_bond_lengths: Longueurs de liaison du lot

@@ -1,0 +1,21 @@
+source_hash: 909629a494c2
+title: Chapman-Mechanismus und die Ozonschicht
+summary: 'Vier Reaktionen zwischen O, O₂ und O₃, angetrieben vom Sonnenlicht, erzeugen eine Ozonschicht. Als Reaktionsnetzwerk $\dot c = S\,r(c)$ mit einer $3\times4$-Stöchiometriematrix geschrieben, wird das steife System mit dem impliziten Euler-Verfahren und Newton-Schritten in allen Höhen gleichzeitig integriert, vom Sonnenaufgang bis Jahrhunderte später: O und O₃ tauschen innerhalb von Sekunden die Plätze, der ungerade Sauerstoff braucht Tage bis Jahrhunderte, um sich einzustellen, und der stationäre Zustand hat sein Maximum bei etwa 30 km.'
+notes: 'Sydney Chapman (1930) erklärte die Ozonschicht mit vier Reaktionen. Ultraviolettes Licht unter 242 nm spaltet $\mathrm{O_2}$ (1); jedes O-Atom lagert sich schnell an ein $\mathrm{O_2}$ an, wobei ein Stoßpartner $\mathrm M$ die Energie abführt (2); Ozon absorbiert ultraviolettes und sichtbares Licht und zerfällt wieder (3), so schirmt es den Boden ab, zerstört dabei aber nicht den „ungeraden Sauerstoff“ $\mathrm O_x = \mathrm O + \mathrm{O_3}$; das tut nur $\mathrm O + \mathrm{O_3} \to 2\,\mathrm{O_2}$ (4). Die Reaktionen (2) und (3) tauschen O und $\mathrm{O_3}$ in Millisekunden bis Minuten aus, während (1) und (4) die Summe in der oberen Stratosphäre über Tage und weiter unten über Jahrzehnte oder länger festlegen: ein steifes System mit Zeitskalen, die $10^{14}$ auseinanderliegen, sodass ein explizites Verfahren Milliarden Schritte bräuchte, während das implizite Euler-Verfahren (stabil für jedes $\Delta t$) mit 300 in $\log t$ gleichmäßig verteilten Schritten auskommt. Jede Spalte
+  von $S$ erhält die Sauerstoffatome, und das implizite Euler-Verfahren bewahrt solche linearen Invarianten exakt. Das Gleichgewicht der beiden Paare ergibt $[\mathrm{O_3}] \approx [\mathrm{O_2}]\sqrt{j_1 k_2[\mathrm M]/(j_3 k_4)}$: Nach unten hin wird die Luft (und mit ihr $[\mathrm{O_2}]^{3/2}$) exponentiell dichter, während das $\mathrm{O_2}$-spaltende Licht aufgebraucht wird, und das Produkt hat sein Maximum dort, wo die schräge optische Tiefe von $\mathrm{O_2}$ etwa 3 beträgt. Die Geschwindigkeitskonstanten $k_2$, $k_4$ sind die Werte der JPL-Evaluierung (Näherungswerte); die Photolyseraten verwenden eine einzige effektive Bande pro Molekül mit illustrativen Parametern als Ersatz für eine Integration über das Sonnenspektrum, und die Sonne scheint ununterbrochen. Unterhalb von etwa 18 km übersteigt die Lebensdauer des ungeraden Sauerstoffs selbst den längsten Lauf, sodass sich diese Schichten nie einstellen; in der realen Atmosphäre tragen Winde Ozon dorthin. Die Chapman-Chemie allein
+  liefert zu viel Ozon (hier ein Maximum bei etwa $8\times10^{12}$ cm$^{-3}$ und etwa 380 DU oberhalb von 15 km, gegenüber beobachteten rund $5\times10^{12}$ cm$^{-3}$ bei 20–25 km und 300 DU). Die fehlenden Senken sind katalytische Zyklen $\mathrm X + \mathrm{O_3} \to \mathrm{XO} + \mathrm{O_2}$, $\mathrm{XO} + \mathrm O \to \mathrm X + \mathrm{O_2}$, die Reaktion (4) pro Katalysatorteilchen viele Male ausführen: NOₓ (Crutzen, 1970) und Chlor aus FCKW (Molina und Rowland, 1974), die Chemie hinter dem Ozonloch und dem Montreal-Protokoll (Nobelpreis 1995).'
+meanings:
+- Teilchendichten von $\mathrm O$, $\mathrm{O_2}$, $\mathrm{O_3}$ in der Höhe $a$, in cm$^{-3}$
+- netto von Reaktion $r$ erzeugte Moleküle der Spezies $s$; Spalte 1 ist $(2, -1, 0)$ für $\mathrm{O_2} \to 2\,\mathrm O$
+- 'wiederholtes $s$ ⇒ summiert: von jeder Reaktion erzeugte Sauerstoffatome, alle null'
+- Massenwirkungsraten der vier Reaktionen
+- 'wiederholtes $r$ ⇒ summiert: $dc/dt$'
+- Jacobi-Matrix des Netzwerks, wiederholtes $r$ summiert
+- ein Newton-Update des impliziten Euler-Schritts, ein $3\times3$-System pro Höhe
+- $6.0\times10^{-34}(T/300)^{-2.4}$ cm$^6$ s$^{-1}$ und $8.0\times10^{-12}e^{-2060/T}$ cm$^3$ s$^{-1}$ (JPL, Näherungswerte)
+- Photolyseraten, abgeschwächt durch die darüberliegenden $\mathrm{O_2}$- und $\mathrm{O_3}$-Säulen (illustratives Ein-Banden-Modell)
+- exakter stationärer Chapman-Zustand aus einer quadratischen Gleichung in $[\mathrm O]$
+labels:
+  sza: Sonnenzenitwinkel
+  log10_t_end: Laufzeit $\log_{10}(t/\mathrm{s})$
+  levels: Höhenstufen

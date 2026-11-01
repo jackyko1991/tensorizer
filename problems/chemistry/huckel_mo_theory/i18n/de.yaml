@@ -1,0 +1,20 @@
+source_hash: 0b2a4ba1c286
+title: Hückel-Molekülorbitale von π-Systemen
+summary: 'Die π-Elektronen eines ebenen Kohlenwasserstoffs gehorchen einem Hamilton-Operator, der einfach die Adjazenzmatrix seines Kohlenstoffgerüsts ist, $H = \alpha\mathbb 1 + \beta A$. Ein einziges gebatchtes eigh diagonalisiert sieben Moleküle auf einmal, von Ethen bis Naphthalin; das Besetzen der Orbitale liefert HOMO-LUMO-Lücken, Delokalisierungsenergien (Benzol: $2\beta$, Cyclobutadien: $0$) und Coulson-Bindungsordnungen als einsum über besetzte Orbitale, und Ringgrößen $N = 3, 4, \dots$ zeigen die $4n + 2$-Regel von Hückel.'
+notes: 'Hückel (1931) behielt nur, was für die π-Elektronen eines ebenen konjugierten Moleküls zählt: ein $2p_z$-Orbital pro Kohlenstoff, dieselbe Energie $\alpha$ an jedem Atom, eine Hüpfenergie $\beta$ zwischen gebundenen Nachbarn, sonst nichts und keine Überlappung. Der Hamilton-Operator ist dann $\alpha\mathbb 1 + \beta A$ mit $A$ dem Graphen des Moleküls, seine Eigenwerte sind also $\alpha + \beta\lambda$ mit $\lambda$ denen von $A$; da $\beta < 0$, ist das am stärksten bindende Orbital das mit dem größten $\lambda$. Benzol ergibt $\alpha + 2\beta$, $\alpha + \beta$ (zweifach), $\alpha - \beta$ (zweifach), $\alpha - 2\beta$; seine sechs Elektronen haben $E_\pi = 6\alpha + 8\beta$, also $2\beta$ unter drei isolierten Doppelbindungen. Mit $|\beta| \approx 75$ kJ/mol, einem groben thermochemischen Wert, angepasst an die Hydrierungsenthalpie von Benzol (die Spektroskopie legt ein größeres $|\beta|$ nahe, also nur als Näherung zu verstehen), sind das die berühmten $\approx 150$ kJ/mol aromatischer
+  Stabilisierung. Cyclobutadien hat zwei überzählige Elektronen in einem entarteten Paar bei $\alpha$: keine Delokalisierungsenergie, keine Lücke, ein Diradikal, und es ist sogar weniger stabil als offenkettiges Butadien: antiaromatisch. Für einen Ring aus $N$ Atomen liegen die Niveaus bei $\alpha + 2\beta\cos(2\pi k/N)$, ein tiefstes Niveau und dann entartete Paare (Frost-Kreis), also braucht eine abgeschlossene Schale $2 + 4n$ Elektronen: die Hückel-Regel. Ungerade Ringe werden als ihre aromatischen Ionen gezeigt, wie das Cyclopentadienyl-Anion und das Tropylium-Kation. Die Bindungsordnungen $P_{ij} = \sum_k n_k C_{ik}C_{jk}$ von Butadien, $0.894$ für die Endbindungen und $0.447$ für die mittlere, passen zu seinen kurz-lang-kurzen Bindungslängen; in Benzol sind alle sechs $2/3$. Für alternierende Kohlenwasserstoffe (ohne ungerade Ringe) macht das Paarungstheorem das Spektrum symmetrisch um $\alpha$ und jede π-Ladung null. Wähle ein anderes Molekül, um seine Grenzorbitale zu sehen: HOMO
+  und LUMO bestimmen, wo Elektrophile und Nucleophile angreifen, und über die Lücke die Farbe (längere Polyene absorbieren bei längeren Wellenlängen).'
+meanings:
+- $1$ für gebundene Kohlenstoffe $i, j$ von Molekül $b$ (Atome im Abstand einer Bindungslänge), aufgefüllt auf das größte $N = 10$
+- Hückel-Matrix; Füllatome erhalten eine riesige Diagonale, damit ihre Scheinorbitale nie besetzt werden
+- 'MO-Energien (aufsteigend: bindende zuerst, da $\beta < 0$) und Koeffizienten, MO $k$ in Spalte $k$'
+- Aufbau-Besetzung mit 2 Elektronen pro MO; ein teilweise besetzter entarteter Satz teilt seine Elektronen
+- 'wiederholtes $k$ ⇒ summiert: gesamte π-Energie $E_\pi$'
+- Delokalisierungsenergie gegenüber isolierten Doppelbindungen mit je $2(\alpha + \beta)$
+- 'wiederholtes $k$ ⇒ summiert über besetzte MOs: Coulson-Bindungsordnung auf einer Bindung, π-Besetzung auf der Diagonale'
+- π-Ladung $1 - P_{bii}$; null an jedem Atom dieser alternierenden Kohlenwasserstoffe
+- geschlossene Formel der Ringniveaus, geprüft mit eigh der zyklischen Adjazenzmatrix
+labels:
+  molecule: Molekül für die Orbitalbilder
+  ring_max: Größte Ringgröße $N$
+  beta: $|\beta|$ zur Umrechnung in kJ/mol (Näherungswert)

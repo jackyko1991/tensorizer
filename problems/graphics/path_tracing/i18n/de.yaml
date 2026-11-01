@@ -1,0 +1,23 @@
+source_hash: a93d458517c4
+title: Monte-Carlo-Pfadverfolgung einer Cornell-Box
+summary: 'Fotorealistisches Rendering löst die Rendergleichung mit Monte Carlo. Jeder Kamerastrahl jeder Stichprobe wird als ein Stapel durch eine Box aus Ebenen und Kugeln verfolgt: kosinusgewichtete Reflexionen, ein Schattenstrahl zur Flächenlichtquelle an jedem Treffer und Russisches Roulette zum Beenden von Pfaden. Sieh zu, wie das Rauschen wie $1/\sqrt{N}$ abnimmt und die rote und die grüne Wand Farbe auf die weißen abgeben – etwas, das nur globale Beleuchtung erfasst.'
+notes: 'Die Rendergleichung für eine diffuse (lambertsche) Oberfläche besagt, dass das von einem Punkt ausgehende Licht seine Emission plus der reflektierte Anteil $\rho$ des gesamten einfallenden Lichts ist. Das einfallende Licht ist wiederum das ausgehende Licht anderer Oberflächen, also ist das Integral rekursiv. Ein Pfadverfolger ersetzt es durch zufällige Pfade. Kosinusgewichtetes Sampling ($p = \cos\theta/\pi$) kürzt die BRDF und den Kosinus heraus, sodass der Durchsatz pro Reflexion nur einen Faktor $\rho$ aufnimmt. An jedem Treffer fügt ein Schattenstrahl zu einem zufälligen Punkt auf der Lichtquelle das direkte Licht hinzu (Next-Event Estimation), was weit weniger verrauscht ist, als darauf zu warten, dass eine Reflexion die kleine Lichtquelle zufällig trifft. Nur das Licht vom ersten Treffer ergibt das Bild mit rein direkter Beleuchtung. Jede weitere Reflexion fügt indirektes Licht hinzu: sanfte Aufhellung in den Schatten, eine hellere Decke und rotes und grünes Farbbluten. Der
+  Ofentest in der Testsuite prüft den Schätzer. Eine geschlossene Box, deren Wände alle $L_e$ emittieren und $\rho$ reflektieren, muss überall die Strahldichte $L_e/(1-\rho)$ haben. Mit Kosinus-Sampling ergibt sich das mit Varianz null. Der Fehler fällt wie $1/\sqrt N$, weil jedes Pixel ein Mittelwert aus $N$ unabhängigen Stichproben ist. Das Rauschen zu halbieren kostet viermal so viele Stichproben, weshalb Produktionsrenderer Entrauscher einsetzen.'
+meanings:
+- 'Ursprung und Richtung des Strahls $r = (s, p)$: $N$ gejitterte Stichproben für jedes der $P$ Pixel, ein Stapel'
+- Ebene $p$ ist $n_{pi} x_i = d_p$, auf einen Begrenzungsquader zugeschnitten; die Lichtquelle ist eine kleine Ebene
+- Abstand jedes Strahls zu jeder Ebene; wiederholte $i$, $j$ ⇒ summiert
+- Wurzeln von $\lvert o + t\omega - c\rvert^2 = r^2$ für jeden Strahl und jede Kugel
+- 'nächster Treffer entlang jedes Strahls: welches Primitiv, wo und seine Normale'
+- 'nächste Richtung: gleichverteilter Punkt in einer Kreisscheibe, auf die Hemisphäre gehoben; $f\cos\theta/p = \rho$'
+- 'Pfaddurchsatz: wie viel des bei Reflexion $k$ gefundenen Lichts die Kamera erreicht'
+- 'Next-Event Estimation: ein Schattenstrahl zu einem zufälligen Punkt $y$ auf der Flächenlichtquelle'
+- 'Russisches Roulette: schwache Pfade zufällig beenden, die überlebenden aber neu gewichten, sodass der Mittelwert unverändert bleibt'
+- 'die Pixelfarbe: Mittelwert über den Stichprobenindex $s$'
+labels:
+  resolution: Bildgröße
+  spp: Stichproben pro Pixel $N$
+  reference_spp: Referenz-Stichproben pro Pixel
+  bounces: Reflexionen (vor dem Roulette)
+  termination: Pfadabbruch
+  light_power: Strahldichte der Lichtquelle $L_e$

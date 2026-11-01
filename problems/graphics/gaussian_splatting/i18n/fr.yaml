@@ -1,0 +1,27 @@
+source_hash: fb9eaaef3d46
+title: Gaussian splatting 3D
+summary: Une scène est représentée par quelques centaines de gaussiennes 3D colorées et semi-transparentes. Chacune est projetée dans la caméra avec la jacobienne de l'application perspective, $\Sigma' = J W \Sigma W^{\mathsf T} J^{\mathsf T}$, les taches (splats) sont triées par profondeur et composées en alpha de l'avant vers l'arrière, $C = \sum_i c_i\alpha_i\prod_{j<i}(1 - \alpha_j)$, et Adam ajuste chaque moyenne, échelle, rotation, couleur et opacité à des photos d'une scène synthétique. Une vue mise de côté vérifie que les gaussiennes ont appris les formes 3D, et pas seulement les images d'entraînement.
+notes: 'La vérité terrain est composée de trois sphères et d''un cube, rendus analytiquement par lancer de rayons avec un ombrage lambertien dans 12 caméras placées sur deux anneaux autour de la scène ($64\times 64$ px) ; une 13e caméra entre les deux, à une autre hauteur, est mise de côté. Les gaussiennes partent de positions aléatoires dans un cube, grises et pâles, avec des orientations aléatoires. Chaque pas d''Adam rend une vue d''entraînement à travers tout le pipeline ci-dessus et rétropropage l''erreur photo L1 vers chaque moyenne, log-échelle, quaternion, couleur et opacité. La leçon tensorielle est l''algèbre des covariances : $\Sigma = RSS^{\mathsf T}R^{\mathsf T}$ reste une covariance valide (symétrique définie positive) quoi que fasse l''optimiseur, et la projection n''est pas linéaire, si bien que chaque gaussienne passe par sa linéarisation locale $J$ ; la tache 2D $\Sigma'' = JW\Sigma W^{\mathsf T}J^{\mathsf T}$ est une chaîne d''einsums. Le panneau des ellipses dessine ces
+  ellipses à $1\sigma$ dans la vue mise de côté. Densification, simplifiée : tous les 50 pas (pendant les premiers 70 %), les gaussiennes dont les centres ont reçu les plus grands gradients sont scindées en deux copies en $\boldsymbol\mu \pm R\,S\,\boldsymbol\epsilon$ avec des axes réduits d''un facteur 1,6, en réutilisant des gaussiennes presque transparentes ($o < 0.05$), donc $M$ reste fixe ; l''article, lui, clone et scinde à l''aide des gradients dans l''espace de vue, élague, réinitialise les opacités et monte jusqu''à des millions de gaussiennes. Autres simplifications par rapport à Kerbl et al. (SIGGRAPH 2023) : couleurs constantes au lieu d''harmoniques sphériques (la scène est lambertienne), départ aléatoire au lieu d''un nuage de points issu de la structure à partir du mouvement, perte L1 sans le terme D-SSIM, et un rastériseur dense qui évalue chaque tache en chaque pixel (le vrai trie les taches en tuiles $16\times 16$ sur le GPU et ignore les lointaines), d''où la petite taille
+  de l''image. Le PSNR de la vue mise de côté reste un peu en dessous du PSNR d''entraînement : les vues jamais vues contraignent moins les gaussiennes. Essayez moins de vues (la vue mise de côté se dégrade), la perte L2, la densification désactivée, ou plus de gaussiennes et de pas (bords plus nets).'
+meanings:
+- rotation de la gaussienne $m$ à partir d'un quaternion, normalisé à l'intérieur, donc 4 nombres quelconques donnent une rotation valide
+- covariance 3D, somme sur $j$ ; symétrique définie positive pour tous paramètres, $s = e^{\log s}$
+- chaque centre de gaussienne dans le repère de chaque caméra (x vers la droite, y vers le bas, z = profondeur)
+- projection sténopé des centres en coordonnées pixel
+- '$\partial\mu''_a/\partial x_i = \begin{pmatrix} f/z & 0 & -fx/z^2\\ 0 & f/z & -fy/z^2\end{pmatrix}$ : la linéarisation locale de la projection'
+- covariance 2D de chaque tache, somme sur $j, k$, avec $JW = $ einsum('vmai,vij->vmaj'), plus un passe-bas de 0,3 px²
+- 'la forme quadratique $d^{\mathsf T}\Sigma''^{-1}d$ développée sur les 6 monômes $\varphi = (u^2, 2uv, v^2, u, v, 1)$ du pixel : un seul produit matriciel'
+- la part du pixel $p$ couverte par la tache $m$ ; $o_m = \sigma(\text{logit})$
+- ordre de profondeur par caméra ; les petits tenseurs par gaussienne sont réordonnés avant que les gros tenseurs $(V, M, P)$ n'existent
+- 'transmittance : lumière restante après les taches situées devant $m$ ; non croissante le long de $m$'
+- composition de l'avant vers l'arrière, somme sur $m$ ; la lumière qui passe montre le fond blanc $b$
+- erreur absolue moyenne par pixel sur une vue d'entraînement aléatoire par pas ; Adam met à jour les $14M$ nombres
+labels:
+  n_gaussians: Gaussiennes $M$
+  iterations: Pas d'Adam
+  lr: Taux d'apprentissage d'Adam (moyennes ; les autres mis à l'échelle)
+  loss: Perte photométrique
+  densify: Densification par scission
+  n_views: Vues d'entraînement $V$
+  resolution: Taille de l'image (pixels)

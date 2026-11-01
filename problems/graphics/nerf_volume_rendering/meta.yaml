@@ -1,0 +1,53 @@
+title: 'NeRF: volume rendering a neural radiance field'
+category: graphics
+level: advanced
+order: 2
+summary: >
+  A small MLP $F_\theta(\mathbf x) = (\sigma, \mathbf c)$ gives every point in space a density and a colour. A pixel
+  is the light collected along its ray: stratified samples $t_s$, then the quadrature
+  $C = \sum_s T_s\,(1 - e^{-\sigma_s\delta_s})\,\mathbf c_s$ with transmittance $T_s = e^{-\sum_{s'<s}\sigma_{s'}\delta_{s'}}$,
+  batched over rays × samples. Trained only on photos of a synthetic scene, it renders a held-out view and a depth
+  map, and a second network without positional encoding shows the spectral bias of plain MLPs.
+animated: true
+vector_form: 'C(\mathbf r) = \int_{t_n}^{t_f} T(t)\,\sigma(\mathbf r(t))\,\mathbf c(\mathbf r(t))\,dt,\quad T(t) = e^{-\int_{t_n}^{t}\sigma(\mathbf r(u))\,du},\quad \mathbf r(t) = \mathbf o + t\,\mathbf d,\qquad \min_\theta \sum_{\mathbf r}\lVert C_\theta(\mathbf r) - C^\ast(\mathbf r)\rVert^2'
+index_form: 'x_{rsi} = o_{ri} + t_{rs}\,d_{ri},\qquad (\sigma_{rs}, c_{rsc}) = F_\theta\big(\gamma(x_{rs\cdot})\big),\qquad w_{rs} = e^{-\sum_{s''<s}\sigma_{rs''}\delta_{rs''}}\big(1 - e^{-\sigma_{rs}\delta_{rs}}\big),\qquad C_{rc} = w_{rs}\,c_{rsc} + \big(1 - \textstyle\sum_s w_{rs}\big)\,b_c'
+translation:
+  - {symbol: 'o_{ri},\ d_{ri}', code: 'cameras(azimuths, elevations, res)', shape: '(V, P, 3)', meaning: 'origin and unit direction of the ray through each of the $P$ pixels of each camera'}
+  - {symbol: 't_{rs}', code: 'stratified_samples(R, S, near, far, gen)', shape: '(R, S)', meaning: 'one random depth in each of $S$ equal bins of $[t_n, t_f]$: a new set every step, so the network sees the whole ray'}
+  - {symbol: 'x_{rsi}', code: 'o[:, None] + t[..., None] * d[:, None]', shape: '(R, S, 3)', meaning: 'sample points: broadcasting over rays $r$ and samples $s$'}
+  - {symbol: '\gamma(x)_{rsik}', code: "einsum('...i,k->...ik', x, freq)", shape: '(R, S, 3+6L)', meaning: '$\sin$ and $\cos$ of $2^k\pi x_i$, $k = 0 \dots L-1$; nothing summed, an outer product'}
+  - {symbol: 'A_{og}\,h_{rsg} + b_o', code: "einsum('og,...g->...o', A, h) + b", shape: '(R, S, H)', meaning: 'one MLP layer applied to every sample at once, $g$ summed; ReLU between layers'}
+  - {symbol: '\sigma_{rs},\ c_{rsc}', code: 'softplus(out[..., 0] - 1), sigmoid(out[..., 1:])', shape: '(R, S), (R, S, 3)', meaning: 'density $\ge 0$ and colour in $(0, 1)$'}
+  - {symbol: '\delta_{rs}', code: 'cat([t[:, 1:] - t[:, :-1], far - t[:, -1:]], 1)', shape: '(R, S)', meaning: 'length of each interval along the ray'}
+  - {symbol: 'T_{rs}', code: 'exp(-cumsum(tau, 1) + tau)', shape: '(R, S)', meaning: 'transmittance: an exclusive cumulative sum of the optical thickness $\tau = \sigma\delta$ over $s'' < s$'}
+  - {symbol: 'w_{rs}', code: 'T * (1 - exp(-tau))', shape: '(R, S)', meaning: 'probability that the light reaching the pixel was emitted in interval $s$; $\sum_s w_{rs} \le 1$'}
+  - {symbol: 'C_{rc} = w_{rs}c_{rsc} + \dots', code: "einsum('rs,rsc->rc', w, colour) + (1 - acc) * bg", shape: '(R, 3)', meaning: 'pixel colour, $s$ summed; the left-over transmittance shows the white background'}
+  - {symbol: 'D_r = w_{rs}\,t_{rs}', code: "einsum('rs,rs->r', w, t)", shape: '(R,)', meaning: 'expected depth: the same weights give a depth map for free'}
+notes: >
+  The training data are $V$ photos of a red sphere, a checkered cube and an orange ball, made by an analytic ray
+  caster with Lambertian shading; the network never sees the geometry, only pixel colours and the ray of each pixel.
+  Each Adam step draws a random batch of rays from all training pixels, renders them with the quadrature and
+  compares with the true colours. Because $w_{rs}$, $T_{rs}$ and the colours are smooth functions of $\sigma$ and
+  $\mathbf c$, autograd carries the photo error back into the network: densities grow where the rays of many views
+  agree on a surface. The depth map $\sum_s w_s t_s$ and the weight profile along the marked ray show it: the
+  weights collapse to a peak at the true surface. Positional encoding is the key trick. A plain MLP on $(x, y, z)$
+  learns low frequencies first and fits sharp edges and fine texture very slowly (spectral bias); feeding it
+  $\sin(2^k\pi x), \cos(2^k\pi x)$ instead gives it high-frequency building blocks. In the same number of steps the
+  encoded network (blue) has crisper silhouettes, about half the depth error and a higher PSNR on the training
+  views, while the plain one (red) stays blurred. On the held-out view the gain is smaller: with few, small views
+  the fine detail is only weakly constrained, and both networks are still far from converged (real NeRFs train for
+  hours). Simplifications versus Mildenhall et al. (ECCV 2020): no view direction input (the scene is Lambertian,
+  so its colours do not depend on the viewing angle), one network instead of the coarse + fine pair with
+  hierarchical sampling, a tiny MLP (3 × 64 instead of 8 × 256), $40\times 40$ images, and a few hundred steps
+  instead of hundreds of thousands. Try $L = 2$ or $L = 10$, fewer samples $S$ (banding from the coarse quadrature),
+  more steps (the checkerboard appears with encoding only), or fewer views (the geometry becomes ambiguous and the
+  held-out view degrades while the training views still fit).
+params:
+  n_freq: {default: 6, min: 1, max: 10, step: 1, type: int, label: 'Encoding frequencies $L$'}
+  width: {default: 64, min: 16, max: 128, step: 16, type: int, label: 'Hidden width $H$'}
+  n_samples: {default: 32, min: 16, max: 96, step: 8, type: int, label: 'Samples per ray $S$'}
+  steps: {default: 600, min: 200, max: 4000, step: 100, type: int, label: Adam steps (per network)}
+  batch: {default: 512, min: 128, max: 4096, step: 128, type: int, label: Rays per step}
+  lr: {default: 0.005, min: 0.0005, max: 0.02, step: 0.0005, label: Adam learning rate}
+  n_views: {default: 24, min: 4, max: 32, step: 2, type: int, label: 'Training views $V$'}
+  resolution: {default: 40, min: 16, max: 64, step: 8, type: int, label: Image size (pixels)}

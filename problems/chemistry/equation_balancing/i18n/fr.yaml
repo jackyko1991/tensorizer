@@ -1,0 +1,17 @@
+source_hash: 94551bc4044d
+title: Équilibrer les équations chimiques (noyau)
+summary: 'Équilibrer une équation, c''est trouver des coefficients $\nu_s$ qui conservent chaque élément et la charge. Sous forme matricielle, cela s''écrit $M\nu = 0$ : les coefficients forment le noyau de la matrice éléments–espèces. Une seule SVD par lots résout sept réactions à la fois, de la combustion du méthane au permanganate en milieu acide, et repère celle dont l''équilibrage n''est pas unique.'
+notes: 'Chaque élément donne une équation linéaire en les coefficients inconnus, donc $S$ espèces et $E$ éléments donnent un système $E\times S$ $M\nu = 0$. En général $M$ est de rang $S-1$ et les solutions forment une droite : l''équation équilibrée est unique à un facteur commun près. La SVD trouve cette droite comme le vecteur singulier à droite de valeur singulière 0 (le dernier) ; diviser par sa plus petite composante et essayer des multiplicateurs $k = 1, 2, \dots$ donne les plus petits entiers, par exemple $\mathrm{CH_4} + 2\,\mathrm{O_2} \rightarrow \mathrm{CO_2} + 2\,\mathrm{H_2O}$. Pour les ions, la charge n''est qu''une ligne de plus : sans elle, $\mathrm{MnO_4^-} + \mathrm{Fe^{2+}} + \mathrm{H^+}$ aurait un noyau de dimension 2, et avec elle on retrouve l''équation d''oxydoréduction bien connue $1{:}5{:}8 \rightarrow 1{:}5{:}4$. L''exemple du peroxyde $\mathrm{H_2} + \mathrm{O_2} \rightarrow \mathrm{H_2O} + \mathrm{H_2O_2}$ a deux valeurs singulières nulles : il cache deux réactions
+  indépendantes ($2\mathrm{H_2} + \mathrm{O_2} \rightarrow 2\mathrm{H_2O}$ et $\mathrm{H_2} + \mathrm{O_2} \rightarrow \mathrm{H_2O_2}$), et toute combinaison positive des deux est aussi équilibrée. L''algèbre seule ne peut pas en choisir une ; les proportions réelles sont fixées par la chimie (cinétique, conditions). Le code montre les réactions de base obtenues en annulant un coefficient dans le noyau de dimension 2. Essayez votre propre réaction en l''ajoutant à `REACTIONS` dans tensors.py ; l''analyseur lit les parenthèses et les charges comme ''Ca3(PO4)2'' ou ''Fe^3+''.'
+meanings:
+- atomes de l'élément $e$ dans l'espèce $s$ de la réaction $r$ ; la ligne q est la charge (via le petit analyseur de formules)
+- $+1$ pour un réactif, $-1$ pour un produit
+- 'aucun indice sommé : chaque colonne est signée'
+- toutes les réactions complétées dans un seul tenseur ; les colonnes inutilisées sont fixées à $\nu_s = 0$
+- SVD par lots ; valeurs singulières par ordre décroissant
+- 'nombre de valeurs singulières nulles : 1 → équilibrage unique, 2 → deux réactions indépendantes'
+- dernier vecteur singulier, normalisé pour que la plus petite composante vaille 1, puis multiplié par le premier $k_r$ qui donne des entiers
+- '$s$ répété ⇒ sommé : atomes de $e$ créés ; nul pour chaque élément et pour la charge'
+labels:
+  show: Réaction affichée sous forme de matrice
+  max_scale: Plus grand multiplicateur $k$ essayé

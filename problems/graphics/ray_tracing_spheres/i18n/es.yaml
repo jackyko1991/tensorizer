@@ -1,0 +1,21 @@
+source_hash: f1078e5d3894
+title: Trazado de rayos de esferas
+summary: Un pequeño trazador de rayos al estilo de Whitted en el que el rayo de cada píxel es una fila de un tensor $(H\cdot W, 3)$. Todos los rayos se prueban contra todas las esferas a la vez con la fórmula cuadrática, lo que da una tabla (rayos $\times$ esferas) cuyo argmin es la superficie visible. Sombreado de Lambert y de Blinn–Phong, sombras duras a partir de un segundo lote de rayos de sombra, reflejos especulares y un suelo de tablero de ajedrez, mientras la luz o la cámara gira alrededor de la escena.
+notes: El color de un píxel es $I = (1-m)\,I_\text{local} + m\,I_\text{reflected}$, donde $m$ es la fracción especular de la superficie; el color reflejado se obtiene trazando de nuevo el lote de rayos reflejados, que es la idea recursiva de Whitted (1980). El modelo de sombreado es el de Phong (1975) con el vector medio $\hat{\mathbf h}$ de Blinn (1977). Como $\hat{\mathbf d}$ tiene longitud unidad, el coeficiente principal de la cuadrática es 1, así que solo se necesitan $b$ y $q$. Los rayos secundarios parten a una distancia diminuta $\varepsilon$ de la superficie; si no, el redondeo hace que choquen con su propia esfera (acné de sombra). Prueba cero rebotes para ver la escena sin reflejos, un brillo alto para destellos pequeños y nítidos, o un campo de visión amplio. Los renderizadores reales añaden sombras suaves, refracción y muchas muestras por píxel (path tracing), pero la tabla por lotes «rayo contra todo» sigue siendo la misma.
+meanings:
+- origen y dirección unitaria del rayo que pasa por el píxel $p$; $d$ es el punto de pantalla $(x, y, 1)$ en la base de la cámara, un einsum sobre el índice de la base
+- centro y radio de la esfera $s$
+- '$i$ repetido ⇒ sumado: cada rayo contra cada esfera en una sola llamada'
+- raíz más cercana de la cuadrática; $\infty$ donde $b^2 < q$ (el rayo no acierta) o el impacto queda detrás
+- la superficie visible; el plano del suelo $y = 0$ es una columna extra con $t = -o_y/d_y$
+- factores difuso y especular, limitados a 0 en la cara oculta
+- 'rayos de sombra hacia la luz: 1 si no se golpea ninguna esfera antes de la luz, si no 0'
+- '$j$ repetido ⇒ sumado: dirección especular, el siguiente lote de rayos'
+labels:
+  orbit: Qué gira
+  bounces: Rebotes especulares
+  shininess: Exponente de Blinn–Phong $\alpha$
+  fov: Campo de visión
+  width: Ancho de la imagen
+  height: Alto de la imagen
+  frames: Fotogramas por vuelta

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Benzene ring of six carbon atoms, each carrying a 2p orbital perpendicular to the ring plane; alpha is the energy of an electron in one orbital and beta the hopping between bonded neighbours">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- lower lobes, behind the ring -->
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1"><ellipse cx="176.0" cy="104.0" rx="5.5" ry="11"/><ellipse cx="147.0" cy="124.1" rx="5.5" ry="11"/><ellipse cx="89.0" cy="124.1" rx="5.5" ry="11"/><ellipse cx="60.0" cy="104.0" rx="5.5" ry="11"/><ellipse cx="89.0" cy="83.9" rx="5.5" ry="11"/><ellipse cx="147.0" cy="83.9" rx="5.5" ry="11"/></g>
+    <!-- carbon skeleton -->
+    <g stroke="#374151" stroke-width="2"><line x1="176.0" y1="92.0" x2="147.0" y2="112.1"/><line x1="147.0" y1="112.1" x2="89.0" y2="112.1"/><line x1="89.0" y1="112.1" x2="60.0" y2="92.0"/><line x1="60.0" y1="92.0" x2="89.0" y2="71.9"/><line x1="89.0" y1="71.9" x2="147.0" y2="71.9"/><line x1="147.0" y1="71.9" x2="176.0" y2="92.0"/></g>
+    <g fill="#374151"><circle cx="176.0" cy="92.0" r="3.5"/><circle cx="147.0" cy="112.1" r="3.5"/><circle cx="89.0" cy="112.1" r="3.5"/><circle cx="60.0" cy="92.0" r="3.5"/><circle cx="89.0" cy="71.9" r="3.5"/><circle cx="147.0" cy="71.9" r="3.5"/></g>
+    <!-- upper lobes, in front -->
+    <g fill="#93c5fd" stroke="#1e40af" stroke-width="1" fill-opacity="0.9"><ellipse cx="176.0" cy="80.0" rx="5.5" ry="11"/><ellipse cx="147.0" cy="100.1" rx="5.5" ry="11"/><ellipse cx="89.0" cy="100.1" rx="5.5" ry="11"/><ellipse cx="60.0" cy="80.0" rx="5.5" ry="11"/><ellipse cx="89.0" cy="59.9" rx="5.5" ry="11"/><ellipse cx="147.0" cy="59.9" rx="5.5" ry="11"/></g>
+    <!-- hopping beta between two neighbours, energy alpha on one site -->
+    <path d="M92.0,43.9 Q118.0,27.9 146.0,43.9" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <text x="120.0" y="31.9" font-style="italic" fill="#b45309">β</text>
+    <text x="186.0" y="97.0" font-style="italic">α</text>
+    <text x="14" y="30" font-style="italic">2p<tspan font-size="10" dy="3">z</tspan></text>
+    <line x1="36" y1="34" x2="58.0" y2="72.0" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="190" y="150" font-size="13">C<tspan font-size="10" dy="3">6</tspan><tspan dy="-3">H</tspan><tspan font-size="10" dy="3">6</tspan></text>
+  </g>
+</svg>

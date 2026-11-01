@@ -1,0 +1,21 @@
+source_hash: 7fc4a728d6a3
+title: Estimación de homografías y unión de panoramas
+summary: Dos fotos de un póster plano están relacionadas por una homografía de $3\times3$. Cada correspondencia de características da dos ecuaciones lineales. La transformación lineal directa (DLT) normalizada las resuelve con una SVD, y RANSAC ajusta miles de hipótesis de 4 correspondencias como una sola SVD por lotes para descartar las correspondencias erróneas. Después, la segunda vista se deforma y se funde con la primera con bordes suavizados para formar un panorama.
+notes: 'Una cámara que mira un plano lleva los puntos del plano a píxeles mediante $H = K\,[\mathbf r_1\ \mathbf r_2\ \mathbf t]$, así que dos vistas del mismo plano están relacionadas por $H_2 H_1^{-1}$: ocho números, porque la escala es libre. Cada correspondencia fija dos de ellos, de modo que cuatro correspondencias en posición general determinan $H$. Con más correspondencias, la DLT las combina en el sentido de mínimos cuadrados. Sin la normalización de Hartley, las entradas de $A$ van de 1 a $10^4$ (píxeles al cuadrado) y la SVD pierde precisión. Los mínimos cuadrados se arruinan con correspondencias erróneas: unos pocos valores atípicos desalinean visiblemente el panorama ingenuo. RANSAC (Fischler y Bolles, 1981) ajusta en cambio $H$ a muchas muestras mínimas aleatorias y se queda con la que más correspondencias respaldan. Con una fracción de atípicos $\varepsilon$, una muestra de 4 correspondencias está limpia con probabilidad $(1-\varepsilon)^4$, así que en teoría bastan unas pocas
+  docenas de muestras. Aquí se resuelven miles a la vez porque las SVD por lotes son baratas. El error restante en los inliers coincide con el ruido de píxel. El método sigue a Hartley y Zisserman, Multiple View Geometry in Computer Vision. Los sistemas reales obtienen las correspondencias de detectores de características como SIFT u ORB.'
+meanings:
+- posiciones de píxel emparejadas en la vista 1 y la vista 2 (puntos conocidos del póster + ruido, algunas sustituidas por correspondencias erróneas aleatorias)
+- $j$ repetido ⇒ suma; luego se divide por la tercera componente (la escala proyectiva)
+- trasladar al centroide y escalar a distancia media $\sqrt 2$ (normalización de Hartley)
+- dos filas por correspondencia a partir de $\mathbf x' \times H\mathbf x = 0$, lineales en las nueve entradas $h_a$
+- vector singular derecho del menor valor singular; luego $H = T'^{-1}\hat H\,T$
+- 'hipótesis de RANSAC: $B$ muestras aleatorias de 4 correspondencias, todas resueltas con una sola SVD por lotes de forma $(B, 8, 9)$'
+- error de reproyección de cada correspondencia bajo cada hipótesis
+- la hipótesis con el mayor conjunto de consenso; se reajusta con DLT sobre sus inliers
+- 'deformación inversa: cada píxel del panorama busca dónde cae en la vista 2; fundido con pesos de suavizado de bordes'
+labels:
+  matches: Correspondencias de características
+  outliers: Fracción de correspondencias erróneas
+  noise: Ruido en píxeles $\sigma$
+  hypotheses: Hipótesis de RANSAC $B$
+  threshold: Umbral de inliers $\tau$

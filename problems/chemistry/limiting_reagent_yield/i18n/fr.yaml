@@ -1,0 +1,19 @@
+source_hash: 835586f4adf3
+title: Réactif limitant et rendement
+summary: 'Mélangez de l''aluminium avec du diiode (ou du diazote avec du dihydrogène) en proportions quelconques : quel réactif s''épuise en premier, quelle quantité de produit peut se former, et combien reste-t-il de l''autre ? Toutes les quantités évoluent avec un seul avancement $\xi$, le réactif limitant est un minimum sur $n_s/|\nu_s|$, et tout un lot d''expériences, ainsi qu''une carte 2D des masses initiales, est traité par la même opération tensorielle.'
+notes: 'Ce sont les moles, pas les grammes, qui réagissent en proportions fixes : il faut d''abord diviser chaque masse par sa masse molaire. Ensuite un seul nombre, l''avancement $\xi$, décrit où en est la réaction : $2\,\mathrm{Al} + 3\,\mathrm{I_2} \rightarrow 2\,\mathrm{AlI_3}$ consomme $2\xi$ mol d''aluminium et $3\xi$ mol de diiode et produit $2\xi$ mol d''iodure d''aluminium. Chaque réactif permet au plus $n^0_s/|\nu_s|$ unités de réaction, et le plus petit de ces nombres l''emporte : ce réactif est le réactif limitant, et sa barre est celle qui atteint zéro. Avec 1,20 g d''Al (44,5 mmol) et 2,40 g d''I₂ (9,46 mmol), le diiode est limitant : $\xi^{\max} = 3.15$ mmol, au plus 2,57 g d''AlI₃, et il reste 1,03 g d''aluminium. Sur la carte, le produit ne dépend que d''un seul réactif de chaque côté de la droite stœchiométrique en pointillés ; le long de cette droite, les deux s''épuisent ensemble et rien n''est gaspillé. Les rendements réels sont inférieurs aux rendements théoriques (pertes,
+  réactions secondaires, équilibre qui n''est pas total : un seul passage dans un réacteur Haber ne convertit qu''environ 15 %), et un rendement supérieur à 100 % signifie que le produit est humide ou impur. Modifiez les masses, le produit pesé ou la réaction.'
+meanings:
+- 'nombres stœchiométriques signés : $-2, -3, +2$ pour 2 Al + 3 I₂ → 2 AlI₃'
+- '$e$ répété ⇒ sommé : masses molaires à partir des atomes de chaque espèce'
+- moles initiales pour chaque expérience $b$ (la dernière est la vôtre)
+- plus grand avancement avant qu'un réactif atteigne zéro ; l'argmin est le réactif limitant
+- quantités pour $K$ avancements de 0 à $\xi^{\max}$ (les barres)
+- rendement théorique du produit en g
+- rendement en pourcentage
+- la grille de masses initiales n'est qu'un lot plus grand
+labels:
+  reaction: Réaction
+  mass_1: Masse du réactif 1 (Al ou N₂)
+  mass_2: Masse du réactif 2 (I₂ ou H₂)
+  measured: Produit pesé

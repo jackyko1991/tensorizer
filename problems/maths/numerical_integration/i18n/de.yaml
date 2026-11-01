@@ -1,0 +1,16 @@
+source_hash: 9e25d7739db7
+title: Numerische Integration und Konvergenzordnung
+summary: Die Trapezregel, die Simpsonregel und die Gauß-Legendre-Quadratur sind alle eine gewichtete Summe $\sum_k w_k f(x_k)$, ein einziges einsum über viele Integranden gleichzeitig. Die Gauß-Knoten und -Gewichte stammen aus einem Eigenwertproblem (Golub-Welsch). In doppelt logarithmischer Darstellung fallen die Fehler mit den Steigungen 2 und 4 oder exponentiell, bis ein Knick oder eine Singularität die hohe Ordnung zunichtemacht.
+notes: 'Für einen glatten Integranden fällt der Fehler der Trapezregel wie $h^2 \propto N^{-2}$ und der von Simpson wie $N^{-4}$: Verdoppeln von $N$ teilt sie durch 4 bzw. 16. Gauß-Legendre mit $N$ Knoten integriert jedes Polynom bis zum Grad $2N - 1$ exakt, daher fällt der Fehler für eine analytische Funktion exponentiell, bis er die float64-Rundung bei etwa $10^{-16}$ erreicht. Diese Ordnungen stammen aus Taylor-Entwicklungen und brauchen daher Ableitungen. Bei einem Knick $|x - a|$ ist die zweite Ableitung eine Spitze: Jede Regel, deren Teilintervall den Knick überdeckt, macht dort einen $O(h^2)$-Fehler, sodass Simpson und Gauß auf Ordnung 2 zurückfallen (die Kurve ist zackig, weil sich die Lage des Knicks in seinem Teilintervall mit $N$ ändert). Bei $(1+x)^{\alpha}$ explodieren die Ableitungen am Randpunkt: Trapez- und Simpsonregel fallen auf Ordnung $1 + \alpha$ und Gauß, dessen Knoten sich zu den Rändern hin häufen, auf etwa $2 + 2\alpha$. Abhilfe schafft es, das Intervall am Knick
+  zu teilen oder die Variablen so zu substituieren, dass der Integrand glatt wird. Probier ein ganzzahliges $\alpha$ (ein Polynom) und sieh, wie Gauß exakt wird, oder leg den Knick auf einen Gitterknoten ($a = 0.3$ ist einer, sobald $N$ ein Vielfaches von 20 ist): Die Trapezregel ist dann auf den beiden geraden Stücken exakt und fällt auf Rundungsniveau.'
+meanings:
+- äquidistante Knoten; Gewichte $h(\tfrac12, 1, \dots, 1, \tfrac12)$ und $\tfrac h3(1, 4, 2, \dots, 4, 1)$
+- Tridiagonalmatrix der Legendre-Rekursion, $\beta_k = k/\sqrt{4k^2 - 1}$ neben der Diagonale
+- die Eigenwerte sind die Gauß-Legendre-Knoten, Eigenvektoren in den Spalten
+- Gauß-Gewichte aus der ersten Komponente jedes Eigenvektors; sie summieren sich zu $\int_{-1}^{1} dx = 2$
+- der glatte, der geknickte und der Randpunkt-Integrand an jedem Knoten
+- 'wiederholtes $k$ ⇒ summiert: alle drei Integrale gleichzeitig'
+labels:
+  n_max: Größtes $N$
+  kink: Lage des Knicks $a$
+  alpha: Randpunkt-Exponent $\alpha$

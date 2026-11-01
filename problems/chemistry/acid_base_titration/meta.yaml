@@ -1,0 +1,38 @@
+title: Acid–base titration curves
+category: chemistry
+level: beginner
+order: 2
+summary: >
+  Sodium hydroxide is added drop by drop to a strong acid, a weak acid and phosphoric acid. Instead of a different
+  textbook shortcut for each region, one charge balance is solved for $[\mathrm{H^+}]$ by bisection, for every acid and
+  every volume at once in an $(A, N)$ tensor. The curves give the equivalence points (peaks of $d\mathrm{pH}/dV$),
+  the buffer region and the species fractions $\alpha_j(\mathrm{pH})$.
+animated: false
+vector_form: '[\mathrm{H^+}] + [\mathrm{Na^+}] = [\mathrm{OH^-}] + C_A\,\bar n,\qquad \bar n = \sum_j j\,\alpha_j,\qquad \alpha_j = \frac{\beta_j\,[\mathrm{H^+}]^{-j}}{\sum_k \beta_k\,[\mathrm{H^+}]^{-k}},\qquad \beta_j = K_1\cdots K_j'
+index_form: 'f_{an} = h_{an} + \mathrm{Na}_n - \frac{K_w}{h_{an}} - C_{A,n}\,j\,\alpha_{anj} = 0 \qquad \alpha_{anj} = \frac{\beta_{aj}\,h_{an}^{-j}}{\beta_{ak}\,h_{an}^{-k}} \qquad \log_{10}\beta_{aj} = -\sum_{i\le j}\mathrm{p}K_{ai}'
+translation:
+  - {symbol: '\mathrm{p}K_{ai}', code: 'pka_table(pkas)', shape: '(A, 3)', meaning: 'acid $a$, proton $i$; missing protons padded with $+\infty$ ($K = 0$)'}
+  - {symbol: '\log_{10}\beta_{aj}', code: 'log_beta(pka)', shape: '(A, 4)', meaning: 'cumulative constants: $-$ running sum of the pKa values, $\beta_{a0} = 1$'}
+  - {symbol: 'C_{A,n},\ \mathrm{Na}_n', code: 'totals(V, c_a, V0, c_b)', shape: '(N,)', meaning: 'acid and sodium after mixing $V_0$ of acid with $V_n$ of base'}
+  - {symbol: '\alpha_{anj}', code: 'softmax(ln10 * (log_beta + j * pH))', shape: '(A, N, 4)', meaning: 'species fractions; the sum over $k$ in the denominator is the softmax normalisation'}
+  - {symbol: 'j\,\alpha_{anj}', code: "einsum('...j,j->...', alpha, j)", shape: '(A, N)', meaning: 'repeated $j$ ⇒ summed: protons released per acid molecule $\bar n$'}
+  - {symbol: 'f_{an} = 0', code: 'solve_ph(log_beta, C_A, Na, Kw)', shape: '(A, N)', meaning: 'bisection on $\mathrm{pH} = -\log_{10}h$, all acids and volumes in one tensor'}
+  - {symbol: '\partial_V \mathrm{pH}_{an}', code: 'torch.gradient(pH, spacing=(V,))', shape: '(A, N)', meaning: 'slope; its peaks (found with a max-pool) are the equivalence points'}
+notes: >
+  The charge balance holds everywhere along the curve, so it replaces the separate recipes for the start, the
+  buffer region, the equivalence point and the excess of base. Every term is a monotonic function of the pH,
+  which makes bisection safe: it always halves the bracket and cannot miss the root. A strong acid (modelled as
+  pKa $\approx -6$) gives a sharp jump with pH 7 at equivalence, where only $\mathrm{Na^+}$, $\mathrm{Cl^-}$ and water are left. A
+  weak acid starts higher, rises gently through the buffer region and has its equivalence point above 7, because
+  its conjugate base $\mathrm{A^-}$ is itself a weak base. Halfway to equivalence $[\mathrm{HA}] = [\mathrm{A^-}]$, so
+  Henderson–Hasselbalch, $\mathrm{pH} = \mathrm{p}K_a + \log_{10}([\mathrm{A^-}]/[\mathrm{HA}])$, gives $\mathrm{pH} = \mathrm{p}K_a$: a titration is how pKa
+  values are measured. Phosphoric acid (pKa ≈ 2.15, 7.20 and 12.35, approximate values at 25 °C) shows two jumps;
+  the third proton is so weakly acidic that 0.1 M NaOH cannot pull it off visibly, and its jump is lost in the
+  excess of base. The species panel shows why: each $\alpha_j$ peaks between two pKa values, and two neighbours are
+  equal exactly at $\mathrm{pH} = \mathrm{p}K$. Simplifications: concentrations instead of activities, 25 °C, no CO₂ from the air.
+params:
+  c_acid: {default: 0.1, min: 0.001, max: 1.0, step: 0.001, label: 'Acid concentration $c_a$', unit: M}
+  V0: {default: 25.0, min: 5, max: 100, step: 1, label: 'Acid volume $V_0$', unit: mL}
+  c_base: {default: 0.1, min: 0.001, max: 1.0, step: 0.001, label: 'NaOH concentration $c_b$', unit: M}
+  V_max: {default: 80.0, min: 10, max: 200, step: 1, label: 'Largest volume of NaOH', unit: mL}
+  pKa_weak: {default: 4.76, min: 2, max: 11, step: 0.01, label: 'pKa of the weak acid (acetic ≈ 4.76)'}

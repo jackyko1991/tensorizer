@@ -1,0 +1,27 @@
+source_hash: 09cd4df32aa9
+title: 'NeRF: renderizado volumétrico de un campo de radiancia neuronal'
+summary: 'Un pequeño MLP $F_\theta(\mathbf x) = (\sigma, \mathbf c)$ asigna a cada punto del espacio una densidad y un color. Un píxel es la luz recogida a lo largo de su rayo: muestras estratificadas $t_s$ y luego la cuadratura $C = \sum_s T_s\,(1 - e^{-\sigma_s\delta_s})\,\mathbf c_s$ con transmitancia $T_s = e^{-\sum_{s''<s}\sigma_{s''}\delta_{s''}}$, por lotes sobre rayos × muestras. Entrenado solo con fotos de una escena sintética, renderiza una vista reservada y un mapa de profundidad, y una segunda red sin codificación posicional muestra el sesgo espectral de los MLP simples.'
+notes: 'Los datos de entrenamiento son $V$ fotos de una esfera roja, un cubo a cuadros y una bola naranja, generadas por un trazador de rayos analítico con sombreado lambertiano; la red nunca ve la geometría, solo los colores de los píxeles y el rayo de cada píxel. Cada paso de Adam toma un lote aleatorio de rayos de todos los píxeles de entrenamiento, los renderiza con la cuadratura y los compara con los colores verdaderos. Como $w_{rs}$, $T_{rs}$ y los colores son funciones suaves de $\sigma$ y $\mathbf c$, autograd lleva el error fotográfico de vuelta a la red: las densidades crecen donde los rayos de muchas vistas coinciden en una superficie. El mapa de profundidad $\sum_s w_s t_s$ y el perfil de pesos a lo largo del rayo marcado lo muestran: los pesos colapsan en un pico en la superficie verdadera. La codificación posicional es el truco clave. Un MLP simple sobre $(x, y, z)$ aprende primero las frecuencias bajas y ajusta muy lentamente los bordes nítidos y la textura fina (sesgo espectral);
+  darle en cambio $\sin(2^k\pi x), \cos(2^k\pi x)$ le proporciona piezas de alta frecuencia. En el mismo número de pasos, la red codificada (azul) tiene siluetas más nítidas, aproximadamente la mitad del error de profundidad y un PSNR más alto en las vistas de entrenamiento, mientras que la simple (roja) sigue borrosa. En la vista reservada la ganancia es menor: con pocas vistas y pequeñas, el detalle fino queda poco restringido, y ambas redes siguen lejos de converger (las NeRF reales entrenan durante horas). Simplificaciones frente a Mildenhall et al. (ECCV 2020): sin dirección de vista como entrada (la escena es lambertiana, así que sus colores no dependen del ángulo de visión), una sola red en lugar del par grueso + fino con muestreo jerárquico, un MLP diminuto (3 × 64 en lugar de 8 × 256), imágenes de $40\times 40$ y unos cientos de pasos en lugar de cientos de miles. Prueba $L = 2$ o $L = 10$, menos muestras $S$ (bandas por la cuadratura gruesa), más pasos (el tablero de ajedrez aparece
+  solo con codificación) o menos vistas (la geometría se vuelve ambigua y la vista reservada empeora mientras las de entrenamiento siguen ajustándose).'
+meanings:
+- origen y dirección unitaria del rayo que pasa por cada uno de los $P$ píxeles de cada cámara
+- 'una profundidad aleatoria en cada uno de los $S$ intervalos iguales de $[t_n, t_f]$: un conjunto nuevo en cada paso, así que la red ve todo el rayo'
+- 'puntos de muestra: difusión (broadcasting) sobre rayos $r$ y muestras $s$'
+- $\sin$ y $\cos$ de $2^k\pi x_i$, $k = 0 \dots L-1$; sin suma, un producto exterior
+- una capa del MLP aplicada a todas las muestras a la vez, con suma sobre $g$; ReLU entre capas
+- densidad $\ge 0$ y color en $(0, 1)$
+- longitud de cada intervalo a lo largo del rayo
+- 'transmitancia: una suma acumulada exclusiva del espesor óptico $\tau = \sigma\delta$ sobre $s'' < s$'
+- probabilidad de que la luz que llega al píxel se emitiera en el intervalo $s$; $\sum_s w_{rs} \le 1$
+- color del píxel, con suma sobre $s$; la transmitancia sobrante muestra el fondo blanco
+- 'profundidad esperada: los mismos pesos dan gratis un mapa de profundidad'
+labels:
+  n_freq: Frecuencias de codificación $L$
+  width: Anchura oculta $H$
+  n_samples: Muestras por rayo $S$
+  steps: Pasos de Adam (por red)
+  batch: Rayos por paso
+  lr: Tasa de aprendizaje de Adam
+  n_views: Vistas de entrenamiento $V$
+  resolution: Tamaño de imagen (píxeles)

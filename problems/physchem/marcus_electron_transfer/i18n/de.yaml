@@ -1,0 +1,22 @@
+source_hash: d134f88d426a
+title: Marcus-Theorie des Elektronentransfers und der invertierte Bereich
+summary: 'Ein Elektron springt nur dann von einem Donor zu einem Akzeptor, wenn das umgebende Lösungsmittel zufällig in eine Konfiguration fluktuiert, in der beide Zustände dieselbe Energie haben: den Schnittpunkt zweier Parabeln. Das ergibt die Marcus-Rate $k \propto \exp[-(\Delta G^\circ + \lambda)^2/4\lambda k_BT]$, hier auf einem einzigen gebroadcasteten Gitter aus Reorganisationsenergien, Temperaturen und Triebkräften ausgewertet. Sie ist am größten, wenn $-\Delta G^\circ = \lambda$, und wird entgegen der Intuition bei noch stärker exergonischen Reaktionen wieder langsamer. Eine Langevin-Simulation der Lösungsmittelkoordinate mit Landau-Zener-Sprüngen am Schnittpunkt reproduziert die Kurve.'
+notes: 'Einheiten: eV, K und ps. Die Lösungsmittelkoordinate $x$ ist die kollektive Polarisation, die die übertragene Ladung spürt, so skaliert, dass der Eduktpotentialtopf bei 0 und der Produkttopf bei 1 liegt; $\lambda$ ist die Energie, die es kostet, das Lösungsmittel wie für das Produkt zu polarisieren, während die Ladung noch am Donor sitzt. Marcus leitete die quadratische Barriere 1956 her (J. Chem. Phys. 24, 966) und sagte den invertierten Bereich voraus, der erst in den 1980er-Jahren experimentell bestätigt wurde. Im invertierten Bereich ($-\Delta G^\circ > \lambda$) schneidet die Produktparabel die Eduktparabel auf deren abgewandter Seite, sodass eine größere Triebkraft den Schnittpunkt nach oben schiebt. Die Ratenformel ist Fermis Goldene Regel (nichtadiabatisch, kleines $H_{AB}$) mit einem klassischen Lösungsmittel; reale Raten im invertierten Bereich fallen langsamer ab, weil hochfrequente Molekülschwingungen Quantenkanäle öffnen (die Marcus-Levich-Jortner-Erweiterung). Die Simulation
+  ist ein bewusst einfaches Bild: eine einzige klassische Lösungsmittelkoordinate mit Frequenz $\omega$ und Reibung $\gamma$, die sich jeweils auf einer diabatischen Parabel bewegt und am Schnittpunkt mit der Landau-Zener-Wahrscheinlichkeit $1 - e^{-2\pi H_{AB}^2/\hbar|\dot x|\,|\Delta F|}$ wechselt, die einen geraden, schnellen Durchgang annimmt. Summiert über einen thermischen Fluss von Durchgängen ergibt das die Rate der Goldenen Regel, wenn $P_{\mathrm{LZ}} \ll 1$, weshalb die Punkte auf der Kurve landen; für großes $H_{AB}$ sättigen die Sprünge (adiabatischer Transfer), und die Reibung beginnt eine Rolle zu spielen. Trajektorien, die springen, laufen auf der Produktfläche weiter und können zurückspringen. Probier, $T$ zu senken (die Kurve wird schmaler), $H_{AB}$ zu erhöhen (die Simulation fällt unter die Formel) oder $\lambda$ zu ändern.'
+meanings:
+- die drei Achsen des Ratengitters
+- Broadcasting bildet alle Kombinationen auf einmal; kein Index wird summiert
+- wo sich die Parabeln schneiden; $x^* < 0$ bedeutet invertierter Bereich
+- Höhe des Schnittpunkts über dem Eduktminimum
+- Trajektorie $n$ bei simulierter Triebkraft $d$, im Edukttopf mit Boltzmann-Statistik gestartet
+- 0 auf der Eduktfläche, 1 auf der Produktfläche; legt das Minimum fest, zu dem das Lösungsmittel gezogen wird
+- halber Kick, halbe Drift, Reibung + Rauschen, halbe Drift, halber Kick für alle Trajektorien zusammen
+- mit dieser Wahrscheinlichkeit die Fläche wechseln, wann immer ein Schritt $x^*$ überquert
+- Vorwärtssprünge pro Zeiteinheit auf der Eduktfläche; Fehlerbalken $\sqrt{\text{hops}}/t$
+labels:
+  lam: Reorganisationsenergie $\lambda$
+  T: Temperatur $T$
+  H_ab: Elektronische Kopplung $H_{AB}$
+  omega: Lösungsmittelfrequenz $\omega$
+  friction: Lösungsmittelreibung $\gamma$
+  steps: Zeitschritte

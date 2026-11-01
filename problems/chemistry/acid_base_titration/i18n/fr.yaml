@@ -1,0 +1,19 @@
+source_hash: e3d9a69287ac
+title: Courbes de titrage acide–base
+summary: On ajoute de la soude goutte à goutte à un acide fort, à un acide faible et à l'acide phosphorique. Au lieu d'un raccourci de manuel différent pour chaque région, une seule équation d'électroneutralité est résolue pour $[\mathrm{H^+}]$ par dichotomie, pour chaque acide et chaque volume à la fois, dans un tenseur $(A, N)$. Les courbes donnent les points d'équivalence (pics de $d\mathrm{pH}/dV$), la zone tampon et les fractions des espèces $\alpha_j(\mathrm{pH})$.
+notes: 'L''électroneutralité est valable tout le long de la courbe : elle remplace donc les recettes séparées pour le début, la zone tampon, le point d''équivalence et l''excès de base. Chaque terme est une fonction monotone du pH, ce qui rend la dichotomie sûre : elle divise toujours l''intervalle par deux et ne peut pas manquer la racine. Un acide fort (modélisé avec pKa $\approx -6$) donne un saut abrupt avec un pH de 7 à l''équivalence, où il ne reste que $\mathrm{Na^+}$, $\mathrm{Cl^-}$ et l''eau. Un acide faible part plus haut, monte doucement dans la zone tampon et a son point d''équivalence au-dessus de 7, car sa base conjuguée $\mathrm{A^-}$ est elle-même une base faible. À la demi-équivalence $[\mathrm{HA}] = [\mathrm{A^-}]$, donc la relation de Henderson–Hasselbalch, $\mathrm{pH} = \mathrm{p}K_a + \log_{10}([\mathrm{A^-}]/[\mathrm{HA}])$, donne $\mathrm{pH} = \mathrm{p}K_a$ : c''est par titrage que l''on mesure les pKa. L''acide phosphorique (pKa ≈ 2,15, 7,20 et 12,35, valeurs
+  approximatives à 25 °C) présente deux sauts ; le troisième proton est si peu acide que la soude à 0,1 M ne peut pas l''arracher de façon visible, et son saut se perd dans l''excès de base. Le panneau des espèces montre pourquoi : chaque $\alpha_j$ culmine entre deux pKa, et deux voisines sont égales exactement à $\mathrm{pH} = \mathrm{p}K$. Simplifications : concentrations au lieu d''activités, 25 °C, pas de CO₂ de l''air.'
+meanings:
+- acide $a$, proton $i$ ; les protons manquants sont complétés par $+\infty$ ($K = 0$)
+- 'constantes cumulées : $-$ somme cumulée des pKa, $\beta_{a0} = 1$'
+- acide et sodium après mélange de $V_0$ d'acide avec $V_n$ de base
+- fractions des espèces ; la somme sur $k$ au dénominateur est la normalisation softmax
+- '$j$ répété ⇒ sommé : protons libérés par molécule d''acide $\bar n$'
+- dichotomie sur $\mathrm{pH} = -\log_{10}h$, tous les acides et volumes dans un seul tenseur
+- pente ; ses pics (trouvés par un max-pool) sont les points d'équivalence
+labels:
+  c_acid: Concentration de l'acide $c_a$
+  V0: Volume d'acide $V_0$
+  c_base: Concentration de NaOH $c_b$
+  V_max: Volume maximal de NaOH
+  pKa_weak: pKa de l'acide faible (acétique ≈ 4,76)

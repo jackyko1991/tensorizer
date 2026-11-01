@@ -1,0 +1,20 @@
+source_hash: 4a434cf0af06
+title: Spektrales Clustering und der Graph-Laplace-Operator
+summary: Mach aus einer Punktwolke einen Graphen (Gauß-Gewichte auf den Kanten der $k$ nächsten Nachbarn), bilde den Graph-Laplace-Operator $L = D - W$ und seine normierte Form $L_{sym}$ als Tensoren und lies die Cluster an seinen niedrigsten Eigenvektoren ab. Zwei Monde und konzentrische Ringe, bei denen einfaches k-Means versagt, werden perfekt getrennt; derselbe Laplace-Operator auf einem Gitter liefert die Schwingungsmoden einer Trommel.
+notes: 'Warum es funktioniert: $f^{\mathsf T} L f = \frac12\sum_{ij} W_{ij}(f_i - f_j)^2$ ist eine Summe von Quadraten, also ist $L$ positiv semidefinit, und der Ausdruck ist nur null, wenn $f$ entlang jeder Kante konstant ist, also auf jeder Zusammenhangskomponente konstant. Die Anzahl der Nulleigenwerte ist daher genau die Anzahl der Komponenten (vergleiche die beiden Zählungen im Terminal), und die Indikatorvektoren der Komponenten spannen diesen Eigenraum auf. Sind Cluster nur durch wenige schwache Kanten verbunden, sind die Eigenwerte klein statt null und die Eigenvektoren nahe an Indikatoren; das Minimieren von $f^{\mathsf T}Lf$ ist eine relaxierte Version davon, möglichst wenige Kanten zu schneiden, der normierte Schnitt von Shi und Malik (2000). Der zweite Eigenvektor (der Fiedler-Vektor) liefert die beste Zweiteilung. Einfaches k-Means zieht gerade Grenzen um Zentren und schneidet daher die Monde und Ringe mittendurch; in der Einbettung (obere Reihe, sieh den Punkten beim Gleiten
+  zu) sind die Cluster getrennte Klumpen, und k-Means funktioniert. Die große Lücke im Spektrum nach dem $k$-ten Eigenwert ist ein Hinweis auf die Anzahl der Cluster. Auf einem $g\times g$-Gittergraphen ist $L = L_1\otimes I + I\otimes L_1$ der negative diskrete Laplace-Operator mit freien (Neumann-)Rändern, also sind seine Eigenvektoren die stehenden Wellen $\cos\frac{\pi a (i+\frac12)}{g}\cos\frac{\pi b (j+\frac12)}{g}$ mit $\lambda = (2 - 2\cos\frac{\pi a}{g}) + (2 - 2\cos\frac{\pi b}{g})$: dieselben Moden wie die schwingende Trommel im Thema Wellen (die stattdessen eingespannte Ränder hat). Die Moden $(a, b)$ und $(b, a)$ haben denselben Eigenwert, und eigh liefert irgendeine Mischung des Paares, weshalb manche diagonal aussehen. Die Ergebnisse hängen von $\sigma$ und $k$ ab: Zu wenige Nachbarn zerlegen einen Cluster in Stücke, zu viele fügen Brücken zwischen Clustern hinzu. Weiterführende Literatur: U. von Luxburg, A tutorial on spectral clustering (2007); Ng, Jordan und Weiss (2001).'
+meanings:
+- 'Punkt $i$, Koordinate $a$: zwei Monde, zwei Ringe oder drei Klumpen, mit wahren Labels zur Bewertung'
+- 'wiederholtes $a$ ⇒ summiert: alle quadrierten Abstände auf einmal'
+- Gauß-Ähnlichkeit, nur behalten, wenn $j$ einer der $k$ nächsten Nachbarn von $i$ ist oder umgekehrt; symmetrisch, Diagonale null
+- 'wiederholtes $j$ ⇒ summiert: der Grad jedes Punkts'
+- jede Zeile summiert sich zu 0, also hat der konstante Vektor den Eigenwert 0
+- $s_i = d_i^{-1/2}$; keine Summe, $i$ und $j$ bleiben frei
+- Eigenwerte aufsteigend; die ersten $k$ Eigenvektoren, Zeilen auf Länge eins normiert, bilden die spektrale Einbettung
+- Lloyd-Iterationen mit k-means++-Start; in der Einbettung sind die Cluster kompakte Klumpen
+labels:
+  n_points: Punkte pro Datensatz $N$
+  noise: Rauschen
+  k_neighbours: Nächste Nachbarn $k$
+  sigma: Kernbreite $\sigma$
+  grid: Seitenlänge des Gittergraphen $g$

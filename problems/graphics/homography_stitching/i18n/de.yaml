@@ -1,0 +1,21 @@
+source_hash: 7fc4a728d6a3
+title: Homographie-Schätzung und Panorama-Stitching
+summary: Zwei Fotos eines flachen Posters sind durch eine $3\times3$-Homographie verknüpft. Jede Merkmalskorrespondenz liefert zwei lineare Gleichungen. Die normalisierte direkte lineare Transformation (DLT) löst sie mit einer SVD, und RANSAC passt Tausende Hypothesen aus je 4 Korrespondenzen als eine gebündelte SVD an, um die falschen Korrespondenzen auszusortieren. Die zweite Ansicht wird dann verzerrt und mit weicher Überblendung mit der ersten zu einem Panorama verschmolzen.
+notes: 'Eine Kamera, die auf eine Ebene blickt, bildet Ebenenpunkte durch $H = K\,[\mathbf r_1\ \mathbf r_2\ \mathbf t]$ auf Pixel ab, also sind zwei Ansichten derselben Ebene durch $H_2 H_1^{-1}$ verknüpft: acht Zahlen, weil der Maßstab frei ist. Jede Korrespondenz legt zwei davon fest, also bestimmen vier Korrespondenzen in allgemeiner Lage $H$. Mehr Korrespondenzen werden von der DLT im Sinne der kleinsten Quadrate kombiniert. Ohne Hartleys Normalisierung reichen die Einträge von $A$ von 1 bis $10^4$ (Pixel zum Quadrat), und die SVD verliert an Genauigkeit. Kleinste Quadrate werden durch falsche Korrespondenzen ruiniert: Wenige Ausreißer ziehen das naive Panorama sichtbar aus der Ausrichtung. RANSAC (Fischler & Bolles, 1981) passt $H$ stattdessen an viele zufällige minimale Stichproben an und behält diejenige, der die meisten Korrespondenzen zustimmen. Bei einem Ausreißeranteil $\varepsilon$ ist eine Stichprobe aus 4 Korrespondenzen mit Wahrscheinlichkeit $(1-\varepsilon)^4$ sauber, also
+  reichen theoretisch einige Dutzend Stichproben. Hier werden Tausende auf einmal gelöst, weil gebündelte SVDs billig sind. Der verbleibende Fehler auf den Inliern entspricht dem Pixelrauschen. Die Methode folgt Hartley & Zisserman, Multiple View Geometry in Computer Vision. Echte Pipelines erhalten die Korrespondenzen von Merkmalsdetektoren wie SIFT oder ORB.'
+meanings:
+- korrespondierende Pixelpositionen in Ansicht 1 und Ansicht 2 (bekannte Posterpunkte + Rauschen, einige durch zufällige falsche Korrespondenzen ersetzt)
+- wiederholtes $j$ ⇒ summiert, dann durch die dritte Komponente (den projektiven Maßstab) teilen
+- zum Schwerpunkt verschieben und auf mittleren Abstand $\sqrt 2$ skalieren (Hartley-Normalisierung)
+- zwei Zeilen pro Korrespondenz aus $\mathbf x' \times H\mathbf x = 0$, linear in den neun Einträgen $h_a$
+- rechter Singulärvektor zum kleinsten Singulärwert; dann $H = T'^{-1}\hat H\,T$
+- 'RANSAC-Hypothesen: $B$ zufällige Stichproben aus 4 Korrespondenzen, alle durch eine gebündelte SVD der Form $(B, 8, 9)$ gelöst'
+- Rückprojektionsfehler jeder Korrespondenz unter jeder Hypothese
+- die Hypothese mit der größten Konsensmenge; per DLT auf ihren Inliern neu angepasst
+- 'inverse Abbildung: jedes Panoramapixel schlägt nach, wo es in Ansicht 2 landet; mit weichen Überblendgewichten gemischt'
+labels:
+  matches: Merkmalskorrespondenzen
+  outliers: Anteil falscher Korrespondenzen
+  noise: Pixelrauschen $\sigma$
+  hypotheses: RANSAC-Hypothesen $B$
+  threshold: Inlier-Schwelle $\tau$

@@ -1,0 +1,21 @@
+source_hash: 9576f7bf38f3
+title: Cadenas de Markov y PageRank
+summary: Un internauta aleatorio hace clic en enlaces de una pequeña web sintética y de vez en cuando salta a una página al azar. La probabilidad de estar en cada página evoluciona con un producto matriz–vector por clic, y su distribución estacionaria es el PageRank, obtenido aquí por el método de la potencia, por una descomposición en valores propios y con miles de internautas simulados a la vez.
+notes: '$S$ es estocástica por columnas, así que transforma vectores de probabilidad en vectores de probabilidad, pero un grafo web tiene páginas sin enlaces salientes y grupos de páginas que atrapan al internauta. A las páginas sin salida se les da una columna uniforme (el internauta escribe una dirección al azar), y el término de teletransporte hace positiva cada entrada de $G$. Por el teorema de Perron–Frobenius, la distribución estacionaria es entonces única, positiva y se alcanza desde cualquier punto de partida. Todos los demás valores propios de $G$ son $d$ veces un valor propio de $S$, así que $|\lambda_2| \le d$ y el método de la potencia converge al menos tan rápido como $d^k$. El panel derecho muestra el lote de factores de amortiguamiento resueltos juntos. Con $d = 0.85$ (el valor propuesto por Brin y Page, 1998), 50 pasos reducen el error al menos en un factor $0.85^{50} \approx 3\times10^{-4}$, sea cual sea el tamaño de la web. Los internautas son una estimación de Monte Carlo
+  de la misma cadena: sus fracciones siguen a $\mathbf x_k$ salvo un ruido del orden de $1/\sqrt W$, y promediar en el tiempo da rangos que coinciden con el método de la potencia. Quitar la corrección de las páginas sin salida deja que la probabilidad se escape, como muestra el terminal. Prueba $d \to 1$ para ver cómo la convergencia se ralentiza y los rangos se acumulan en grupos cerrados de páginas.'
+meanings:
+- '1 si la página $j$ enlaza a la página $i$: las columnas son las páginas que abandona el internauta'
+- 'sumado sobre $i$: número de enlaces salientes de la página $j$'
+- hacer clic en un enlace al azar; una página sin salida ($d_j = 0$) recibe la columna uniforme $1/N$
+- matriz de Google para un lote de factores de amortiguamiento $d_b$; $1 - d$ es la probabilidad de teletransporte
+- '$j$ repetido ⇒ sumado: un paso del método de la potencia para cada $d_b$ a la vez'
+- vector propio de valor propio 1, escalado para que sume 1; $G$ no es simétrica, por eso eig en lugar de eigh
+- 'módulo del segundo mayor valor propio: el error se reduce en este factor por paso, y $|\lambda_2| \le d$'
+- 'página de cada uno de los $W$ internautas: seguir un enlace con probabilidad $d$, si no teletransportarse'
+labels:
+  damping: Factor de amortiguamiento $d$
+  pages: Páginas $N$
+  dangling: Páginas sin salida
+  walkers: Internautas aleatorios $W$
+  iterations: Pasos
+  seed: Semilla del grafo

@@ -1,0 +1,24 @@
+source_hash: 56bd5dd35d76
+title: Leer un código QR a partir de una foto
+summary: 'Construye desde cero un código QR de versión 1–3 (patrones de localización, de sincronización y de alineación, bits de formato BCH, máscara elegida por penalización, Reed–Solomon sobre GF(256)), fotografíalo con una homografía aleatoria, desenfoque, ruido, iluminación desigual y un pulgar encima, y vuelve a leerlo como una cadena de tensores: umbral adaptativo, filtros adaptados para los localizadores 1:1:3:1:1, homografía DLT y grid_sample, y decodificación BCH y Reed–Solomon con aritmética de $\mathrm{GF}(2^8)$ como consultas a tablas.'
+notes: 'Los lectores reales como ZXing siguen el mismo esquema: binarizan con un umbral local, recorren las filas buscando el patrón de rachas 1:1:3:1:1 de un localizador y lo confirman en columnas y diagonales, eligen tres localizadores que formen un ángulo recto, estiman el tamaño de módulo y la versión a partir de su separación, buscan un patrón de alineación cerca de donde lo sitúa una estimación afín, ajustan una transformación perspectiva, muestrean la cuadrícula y luego decodifican las capas de formato y de Reed–Solomon. Aquí, además, la homografía se pule maximizando la correlación de los módulos conocidos (localizadores, sincronización, alineación, zona de silencio) con la imagen mediante grid_sample, y la versión es aquella cuya plantilla encaja mejor. Los cuatro niveles de corrección de errores L, M, Q, H restauran aproximadamente el 7, 15, 25 y 30 % de las palabras de código: con $T$ bytes de ECC, un bloque corrige $\lfloor T/2 \rfloor$ errores de byte desconocidos (el doble
+  si sus posiciones fueran conocidas, como borrados). Una mancha que cubre una fracción $f$ del símbolo afecta a más de $f$ de las palabras de código, porque cada byte es un bloque de $2\times4$ módulos, así que las curvas de éxito caen por debajo de esos porcentajes. Las máscaras solo tocan módulos de datos y $M \oplus M = 0$, así que desenmascarar es el mismo XOR; el codificador prueba las 8 máscaras como un solo lote y se queda con la de menor penalización (rachas, bloques de $2\times2$, imitaciones de localizadores, equilibrio de oscuros). Verificación: el codificador Reed–Solomon reproduce los bytes de ECC del ejemplo resuelto de ISO/IEC 18004 (''01234567'' como versión 1-M) y las palabras de formato coinciden con la tabla del estándar; el resto se comprueba con viajes de ida y vuelta y síndromes nulos. Simplificaciones: solo modo byte, versiones 1–3 (un patrón de alineación, sin bloques de información de versión), sin símbolos reflejados, sin decodificación de borrados. La versión
+  1 no tiene patrón de alineación, así que una perspectiva fuerte la perjudica más. Referencias: ISO/IEC 18004 (simbología del código QR); I. S. Reed y G. Solomon, Polynomial codes over certain finite fields, J. SIAM 8 (1960) 300–304.'
+meanings:
+- producto en GF(256) como dos consultas a tablas; $\alpha = 2$ genera los 255 bytes no nulos módulo $x^8+x^4+x^3+x^2+1$ (0x11D); $\oplus$ es XOR
+- 'XOR sobre el índice sumado $i$: suma módulo 2 de cada uno de los 8 planos de bits'
+- 'Reed–Solomon sistemático: la fila $i$ de $G$ es $x^{T+k-1-i} \bmod g(x)$, así que los bytes de ECC son lineales en los datos'
+- polinomio del bloque evaluado en $\alpha^j$; todo cero exactamente para las palabras de código
+- localizador de errores por Berlekamp–Massey (por lotes con torch.where), raíces por búsqueda de Chien sobre todas las posiciones, magnitudes $e = X\,\Omega(X^{-1})/\Lambda'(X^{-1})$ (Forney)
+- BCH(15,5) con generador 0x537, XOR 0x5412; la más cercana de las 32 palabras de código corrige hasta 3 errores de bit
+- 'oscuro donde el píxel está por debajo de su media en una caja de $31\times31$ (conv2d) menos $c$: sigue la iluminación desigual'
+- filtro adaptado $K^s$ para el perfil 1:1:3:1:1 a lo largo de filas y columnas en 11 escalas $s$; los picos son los centros de los localizadores (también comprobados en las diagonales)
+- 'DLT/SVD a partir de 3 centros de localizadores + el patrón de alineación (versión 1: esquina del paralelogramo), refinada luego por ascenso de gradiente sobre el ajuste a todos los módulos conocidos'
+- el módulo $(i, j)$ se lee en $3\times3$ puntos dentro de él; luego se desenmascara (XOR, una involución) y se lee en orden de zigzag
+labels:
+  message: Mensaje
+  version: Versión mínima (se aumenta si el mensaje no cabe)
+  ecc: Nivel de corrección de errores
+  perspective: Intensidad de la perspectiva (desplazamiento de esquina / lado)
+  occlusion: Fracción ocluida del símbolo
+  noise: Ruido en píxeles $\sigma$

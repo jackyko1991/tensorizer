@@ -1,0 +1,22 @@
+source_hash: 955b219d37d6
+title: Chemisches Gleichgewicht durch Minimierung der Gibbs-Energie
+summary: Was kommt aus einer Methan-Luft-Flamme heraus? Bei festem $T$ und $P$ stellen sich die Produkte dort ein, wo die Gibbs-Energie $G = \sum_j n_j \mu_j$ minimal ist, unter Erhaltung jedes Elements, $A_{ij} n_j = b_i$. Ein gebatchtes Newton-Verfahren (die RAND-Methode) löst 10 Spezies für einen ganzen Temperaturbereich auf einmal, zeigt, wie CO₂ und H₂O mit steigender Temperatur in CO, H₂, OH, H und O zerfallen, und findet die adiabatische Flammentemperatur.
+notes: 'Warum $G$ minimieren? Bei konstantem $T$ und $P$ besagt der zweite Hauptsatz, dass ein geschlossenes System seine Gibbs-Energie nur senken kann; das Gleichgewicht ist also der tiefste Punkt von $G$, der jedes Atom erhält: eine Minimierung unter Nebenbedingungen. Mit Lagrange-Multiplikatoren $\pi_i$ (einer pro Element) lautet die Bedingung $\mu_j/RT = \sum_i \pi_i A_{ij}$: Das chemische Potential jeder Spezies ist die Summe der „Elementpotentiale“ ihrer Atome. Das ersetzt eine Liste von Gleichgewichtskonstanten (eine pro Reaktion) durch eine einzige Optimierung über alle Spezies, und so berechnen Programme wie NASA CEA, STANJAN und Cantera Flammen, Raketenabgase und Atmosphären. Der Löser hier ist die RAND-Methode in der Form von Gordon und McBride (NASA RP-1311): das Newton-Verfahren in $\ln n_j$, reduziert auf ein kleines $(E{+}1)\times(E{+}1)$-System für $\pi_i$ und $\Delta\ln n_{tot}$, mit einer Schrittbegrenzung, sodass sich Hauptspezies pro Schritt höchstens um $e^2$ ändern.
+  Das Arbeiten mit Logarithmen hält Spurenspezies mit Molenbruch $10^{-30}$ positiv und exakt. Die Konsole gibt die beiden Optimalitätstests aus (Elementbilanz und $\mu_j/RT = \pi_i A_{ij}$, beide nahe der Maschinengenauigkeit) sowie einen Autograd-Test: Ableiten von $G/RT$ mit torch liefert wieder $\pi_i A_{ij}$. Worauf du achten solltest: Unterhalb von etwa 1500 K sind die Produkte einfach CO₂, H₂O und N₂ (bei magerem Gemisch plus O₂); oberhalb von 2000 K dissoziieren sie (CO₂ → CO + ½O₂, H₂O → OH + ½H₂, dann in Atome), weil der Entropieterm $-T\,S$ die Bindungsenthalpie überwiegt. Dissoziation nimmt Wärme auf, daher ist die Gleichgewichtsflamme etwa 100 K kühler als eine, deren Produkte intakt blieben (unten rechts), und die heißeste Flamme brennt leicht fett gegenüber der Stöchiometrie. Erhöhe $P$, um Le Chatelier zu sehen: Weniger Moleküle werden begünstigt, also wird die Dissoziation unterdrückt. Daten: $\Delta_f H^\circ$(298 K) und $S^\circ$(298 K) sind gerundete Werte aus den NIST-JANAF-Tabellen.
+  Die Wärmekapazitäten sind illustrative Konstanten (etwa das mittlere $c_p$ zwischen 298 und 2000 K), keine tabellierten Funktionen von $T$, daher sind die Zusammensetzungen halbquantitativ: Dieses Modell ergibt $T_{ad} \approx 2260$ K für stöchiometrisches Methan-Luft-Gemisch bei 1 bar, wo genaue Thermochemie etwa 2225 K liefert. Vereinfachungen: ideale Gase, keine kondensierten Phasen (kein Ruß, kein flüssiges Wasser), kein CH₄ oder andere Kohlenwasserstoffe unter den Produkten und nur Gleichgewicht: Reale Flammen frieren CO und NO durch die Kinetik ein, nicht durch die Thermodynamik.'
+meanings:
+- Atome des Elements $i$ (C, H, O, N) in Spezies $j$ (CO₂, H₂O, CO, H₂, O₂, N₂, OH, H, O, NO)
+- zugeführte Atome aus CH₄ + $(2/\varphi)$(O₂ + 3.76 N₂), eine Zeile pro Äquivalenzverhältnis $\varphi$
+- 'der Batch: Jede Temperatur ist eine unabhängige Minimierung, alle zusammen gelöst'
+- $[H_j(T) - T S_j(T)]/RT$ aus $\Delta_f H^\circ$, $S^\circ$ und einem konstanten $c_p$
+- 'wiederholtes $j$ ⇒ summiert: die Gibbs-Energie jedes Gemischs'
+- vorhandene Atome jedes Elements; gleich $b_i$ in der Lösung
+- '$j$ summiert: die Newton-Matrix, ein gewichtetes $A\,\mathrm{diag}(n)\,A^{\mathsf T}$ pro Zeile'
+- ein kleines $(E{+}1)\times(E{+}1)$-System pro Temperatur, alle in einem Aufruf gelöst
+- $-\mu_{bj}/RT + \pi_{bi}A_{ij} + \Delta\ln n_{\mathrm{tot}}$, $i$ summiert; gedämpft wie in NASA CEA
+- 'Autograd-Test: gleich $\pi_{bi}A_{ij}$ im Minimum (Lagrange-Bedingung)'
+- 'Produktenthalpie; Bisektion in $T$, bis sie der Eduktenthalpie gleicht: $T_{ad}$'
+labels:
+  phi: Äquivalenzverhältnis $\varphi$ (Brennstoff / stöchiometrischer Brennstoff)
+  P_bar: Druck $P$
+  T_max: Höchste Temperatur des Durchlaufs

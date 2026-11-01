@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="A molecule as a graph: carbon atoms are nodes joined by bonds; the neighbours j of atom i send messages h_j along the bonds, which atom i sums to update its state h_i">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- six-membered ring with a two-carbon branch -->
+    <g stroke="#374151" stroke-width="2">
+      <line x1="80" y1="40" x2="114" y2="60"/><line x1="114" y1="60" x2="114" y2="100"/><line x1="114" y1="100" x2="80" y2="120"/>
+      <line x1="80" y1="120" x2="46" y2="100"/><line x1="46" y1="100" x2="46" y2="60"/><line x1="46" y1="60" x2="80" y2="40"/>
+      <line x1="114" y1="60" x2="154" y2="40"/><line x1="154" y1="40" x2="194" y2="60"/>
+    </g>
+    <!-- messages from the three neighbours of atom i (at 114,60) -->
+    <g stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow)">
+      <line x1="84" y1="54" x2="100" y2="63"/>
+      <line x1="126" y1="94" x2="126" y2="74"/>
+      <line x1="150" y1="56" x2="131" y2="65"/>
+    </g>
+    <g stroke="#1e40af" stroke-width="1.5">
+      <circle cx="80" cy="40" r="8" fill="#2563eb"/><circle cx="114" cy="100" r="8" fill="#2563eb"/><circle cx="154" cy="40" r="8" fill="#2563eb"/>
+      <circle cx="80" cy="120" r="8" fill="#93c5fd"/><circle cx="46" cy="100" r="8" fill="#93c5fd"/><circle cx="46" cy="60" r="8" fill="#93c5fd"/>
+      <circle cx="194" cy="60" r="8" fill="#93c5fd"/>
+    </g>
+    <circle cx="114" cy="60" r="10" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+    <text x="96" y="86" font-style="italic" fill="#b45309">h<tspan font-size="10" dy="3">i</tspan></text>
+    <text x="146" y="26" font-style="italic" fill="#1e40af">h<tspan font-size="10" dy="3">j</tspan></text>
+    <text x="64" y="28" font-style="italic" fill="#1e40af">h<tspan font-size="10" dy="3">j</tspan></text>
+    <text x="146" y="122" font-size="14" fill="#374151">Σ<tspan font-size="10" dy="3" font-style="italic">j</tspan><tspan dy="-3" font-style="italic"> A</tspan><tspan font-size="10" dy="3" font-style="italic">ij</tspan><tspan dy="-3" font-style="italic"> h</tspan><tspan font-size="10" dy="3" font-style="italic">j</tspan></text>
+  </g>
+</svg>

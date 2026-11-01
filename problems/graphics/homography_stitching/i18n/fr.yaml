@@ -1,0 +1,21 @@
+source_hash: 7fc4a728d6a3
+title: Estimation d'homographie et assemblage de panorama
+summary: Deux photos d'une affiche plane sont reliées par une homographie $3\times3$. Chaque correspondance de caractéristiques donne deux équations linéaires. La transformation linéaire directe (DLT) normalisée les résout par une SVD, et RANSAC ajuste des milliers d'hypothèses à 4 correspondances en une seule SVD par lots pour éliminer les mauvaises correspondances. La seconde vue est ensuite déformée et fondue progressivement avec la première en un panorama.
+notes: 'Une caméra qui regarde un plan envoie les points du plan sur les pixels par $H = K\,[\mathbf r_1\ \mathbf r_2\ \mathbf t]$, donc deux vues du même plan sont reliées par $H_2 H_1^{-1}$ : huit nombres, car l''échelle est libre. Chaque correspondance en fixe deux, donc quatre correspondances en position générale déterminent $H$. Davantage de correspondances sont combinées au sens des moindres carrés par la DLT. Sans la normalisation de Hartley, les coefficients de $A$ vont de 1 à $10^4$ (pixels au carré) et la SVD perd en précision. Les moindres carrés sont ruinés par les mauvaises correspondances : quelques valeurs aberrantes décalent visiblement le panorama naïf. RANSAC (Fischler & Bolles, 1981) ajuste plutôt $H$ à de nombreux échantillons minimaux aléatoires et garde celui avec lequel le plus de correspondances sont d''accord. Avec une proportion de valeurs aberrantes $\varepsilon$, un échantillon de 4 correspondances est propre avec la probabilité $(1-\varepsilon)^4$, donc quelques
+  dizaines d''échantillons suffisent en théorie. Ici, des milliers sont résolus d''un coup, car les SVD par lots sont peu coûteuses. L''erreur restante sur les inliers correspond au bruit de pixel. La méthode suit Hartley & Zisserman, Multiple View Geometry in Computer Vision. Les vrais pipelines obtiennent les correspondances à partir de détecteurs de caractéristiques comme SIFT ou ORB.'
+meanings:
+- positions des pixels appariés dans la vue 1 et la vue 2 (points connus de l'affiche + bruit, certains remplacés par de mauvaises correspondances aléatoires)
+- $j$ répété ⇒ somme, puis division par la troisième composante (l'échelle projective)
+- translation vers le barycentre et mise à l'échelle à une distance moyenne de $\sqrt 2$ (normalisation de Hartley)
+- deux lignes par correspondance à partir de $\mathbf x' \times H\mathbf x = 0$, linéaires en les neuf coefficients $h_a$
+- vecteur singulier à droite de la plus petite valeur singulière ; puis $H = T'^{-1}\hat H\,T$
+- 'hypothèses RANSAC : $B$ échantillons aléatoires de 4 correspondances, tous résolus par une seule SVD par lots de forme $(B, 8, 9)$'
+- erreur de reprojection de chaque correspondance sous chaque hypothèse
+- l'hypothèse avec le plus grand ensemble de consensus ; réajustée par DLT sur ses inliers
+- 'déformation inverse : chaque pixel du panorama cherche où il tombe dans la vue 2 ; fondu avec des poids progressifs'
+labels:
+  matches: Correspondances de caractéristiques
+  outliers: Proportion de mauvaises correspondances
+  noise: Bruit de pixel $\sigma$
+  hypotheses: Hypothèses RANSAC $B$
+  threshold: Seuil des inliers $\tau$

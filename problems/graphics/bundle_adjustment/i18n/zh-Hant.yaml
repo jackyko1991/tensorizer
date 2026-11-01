@@ -1,0 +1,25 @@
+source_hash: a99f4b65ce2b
+title: 光束法平差：以 Levenberg–Marquardt 求解運動恢復結構
+summary: 數台相機拍攝相同的 3D 點，並帶有像素雜訊。從粗略的姿態（軸角旋轉 $\boldsymbol\omega_c$、平移 $\mathbf t_c$）與粗略的點 $\mathbf X_p$ 出發，光束法平差以 Levenberg–Marquardt 最小化總重投影誤差 $\tfrac12\sum_{c,p}\lVert\pi(R_c\mathbf X_p + \mathbf t_c) - \tilde{\mathbf u}_{cp}\rVert^2$。Jacobian 由自動微分求得，正規方程 $J^{\mathsf T}J\,\Delta = -J^{\mathsf T}\mathbf r$ 透過 Schur 補數求解，而固定 7 個規範自由度使解唯一。
+notes: '資料為合成資料：點位於半徑 1 的球內，相機分布在 5 個單位外的圓弧上（焦距 1000 px、$640\times 640$ 影像），每個點都被每台相機看到，並加上高斯像素雜訊 $\sigma$。初始值將每個旋轉擾動數度，並將每個平移與點擾動場景大小的一部分，因此最初的重投影誤差為數十像素。規範自由度：將整個場景連同所有相機一起平移、旋轉或縮放，不會改變任何影像，因此 $E$ 有一個 7 維的等值極小谷，$J^{\mathsf T}J$ 有 7 個零特徵值（主控台會印出它們，約為最大值的 $10^{-16}$）。固定相機 0（6 個數）與相機 1 的 $x$ 方向平移（尺度）即可消除零空間：$J^{\mathsf T}J$ 變為滿秩，步長也有明確定義。我們將它們固定在真值，因此結果可直接與真值比較。每次迭代將殘差線性化，$\mathbf r(\boldsymbol\theta + \Delta) \approx \mathbf r + J\Delta$，並求解加阻尼的正規方程；Jacobian 由 torch.func.jacrev 建構，即對所有殘差向量化的自動微分，省去容易出錯的手動推導。Schur 補數利用了稀疏性（箭頭形的 $J^{\mathsf T}J$ 面板）：先消去點，剩下的系統只有相機的大小，這正是實際的光束法平差程式能處理數百萬個點的原因。此處稠密求解與 Schur 求解得到的步長相差約 $10^{-12}$。在最佳解處，RMS 重投影誤差等於雜訊下限 $\sigma\sqrt{1 - n/m}$（每個擬合的未知數都吸收了一點雜訊），殘差直方圖也與雜訊分布吻合：已沒有剩下需要解釋的東西。剩餘的點與相機誤差由雜訊與幾何決定，而非由最佳化器決定。參考文獻：B. Triggs, P. McLauchlan, R. Hartley and A. Fitzgibbon, "Bundle Adjustment — A Modern Synthesis"（Vision Algorithms: Theory and Practice, 1999）。簡化：沒有離群值（實際系統使用穩健損失函數）、沒有鏡頭畸變、所有點在所有相機中都可見、以稠密方式儲存 Jacobian。試試更大的初始擾動（LM 便需要更多阻尼，或落入錯誤的極小值）、更多雜訊，或只用 2
+  台相機。'
+meanings:
+- 相機姿態：軸角旋轉（方向 = 軸、長度 = 角度）與平移，因此 $x_{\rm cam} = R\mathbf X + \mathbf t$
+- Rodrigues 公式 $I + \sin\theta\,K + (1-\cos\theta)K^2$；每個旋轉三個數，無需強制任何約束
+- 每個點在每台相機座標系中的位置，對 $j$ 求和
+- 以像素計的重投影誤差；攤平為 $r_m$，$m = (c, p, a)$
+- 自由未知數：所有姿態與點，扣除 7 個規範數（相機 0 與相機 1 的 $t_x$）
+- 以反向模式自動微分求 Jacobian，每列一次向量化的反向傳播
+- Gauss–Newton 矩陣 $H = J^{\mathsf T}J$ 與梯度 $J^{\mathsf T}\mathbf r$，對 $m$ 求和
+- 相機 | 點 的分塊；每個殘差只涉及一台相機與一個點，因此 $V$ 為分塊對角
+- Schur 補數（約化相機系統）：$P$ 個微小的 $3\times 3$ 反矩陣，再做一次小型求解
+- 回代：每個點各自更新
+- Levenberg–Marquardt 阻尼：成功一步後除以 3，失敗一步後乘以 4
+labels:
+  n_cameras: 相機數 $C$
+  n_points: 點數 $P$
+  noise: 像素雜訊 $\sigma$
+  init_rot: 初始旋轉誤差
+  init_noise: 初始平移與點誤差
+  iterations: LM 迭代次數
+  solver: 正規方程求解器

@@ -1,0 +1,37 @@
+title: Newton fractal
+category: maths
+level: intermediate
+order: 1
+summary: >
+  Newton's method $z \leftarrow z - p(z)/p'(z)$ run on every pixel of the complex plane at once, as one complex
+  tensor. Colouring each pixel by the root it reaches draws the basins of attraction, whose boundaries are fractal,
+  while close to a root the error squares at every step.
+animated: true
+vector_form: 'z_{n+1} = z_n - \frac{p(z_n)}{p''(z_n)},\qquad p(z) = \sum_{k=0}^{K-1} c_k z^k,\qquad z_n \to r_{j^*}'
+index_form: 'p_p = c_k\,V_{pk},\quad V_{pk} = z_p^{\,k},\qquad c''_k = (k+1)\,c_{k+1},\qquad z_p \leftarrow z_p - \frac{c_k V_{pk}}{c''_k V_{pk}},\qquad j^*_p = \arg\min_j |z_p - r_j|'
+translation:
+  - {symbol: 'z_p', code: 'grid(center, half_width, n, device)', shape: '(H, W) complex', meaning: 'one starting point per pixel $p = (h, w)$: $z = x_w + i\,y_h$'}
+  - {symbol: 'c_k', code: 'coefficients(name, device)', shape: '(K,)', meaning: 'polynomial coefficients from the constant term up, e.g. $z^3 - 1 \to (-1, 0, 0, 1)$'}
+  - {symbol: 'V_{pk} = z_p^{\,k}', code: 'powers(z, degree)', shape: '(H, W, K)', meaning: 'powers $1, z, z^2, \dots$ of every pixel, built by a running product'}
+  - {symbol: 'c_k V_{pk}', code: "einsum('...k,k->...', V, c)", shape: '(H, W)', meaning: 'repeated $k$ ⇒ summed: $p(z)$ on every pixel'}
+  - {symbol: 'c''_k = (k+1)\,c_{k+1}', code: 'arange(1, K) * c[1:]', shape: '(K-1,)', meaning: 'coefficients of $p''(z)$: differentiating shifts the powers down'}
+  - {symbol: 'r_j', code: 'linalg.eigvals(companion)', shape: '(J,)', meaning: 'the roots, as eigenvalues of the companion matrix'}
+  - {symbol: '|z_p - r_j|', code: '(z[..., None] - roots).abs()', shape: '(H, W, J)', meaning: 'distance of every pixel to every root; the minimum over $j$ gives the basin label'}
+  - {symbol: 'e_{k+1}/e_k^2', code: 'error_trace(z0, c)', shape: '(n+1,)', meaning: 'one starting point in double precision: the ratio tends to $|p''''(r)/2p''(r)|$'}
+notes: >
+  Expanding $p$ around a simple root $r$ gives $e_{k+1} \approx \frac{p''(r)}{2p'(r)}\,e_k^2$: the number of correct
+  digits doubles each step, which the right panel shows as a parabola on a log scale (for $z^3 - 1$ the constant is
+  exactly 1). Far from the roots Newton's method is chaotic. Near a critical point, where $p'(z) = 0$, a tiny step in
+  $z$ sends the next iterate anywhere in the plane, so copies of the whole picture appear at every scale. The basins
+  of a polynomial with three or more roots share one boundary, the Julia set of the Newton map: every boundary point
+  of one basin is a boundary point of all of them (the Wada property). The terminal counts how many boundary pixels
+  have every colour in their $3\times3$ neighbourhood, at full view and after zooming in. The share stays about the
+  same at every scale. Try $z^3 - 2z + 2$, where starting points near 0 fall into the attracting cycle $0 \to 1 \to 0$ and never
+  reach a root (grey regions). The whole grid is a single complex tensor, so one einsum updates every pixel.
+params:
+  polynomial: {default: z3_minus_1, type: choice, options: [z3_minus_1, z4_minus_1, z3_minus_2z_plus_2], label: 'Polynomial $p(z)$'}
+  pixels: {default: 320, min: 100, max: 800, step: 50, type: int, label: Pixels per side}
+  extent: {default: 1.5, min: 0.5, max: 4.0, step: 0.25, label: 'Half-width of the view'}
+  iterations: {default: 40, min: 10, max: 100, step: 5, type: int, label: Newton steps}
+  zoom: {default: 20.0, min: 2, max: 200, step: 1, label: Zoom factor}
+  tol: {default: 0.0001, min: 0.000001, max: 0.01, step: 0.000001, label: 'Convergence tolerance $|z - r|$'}

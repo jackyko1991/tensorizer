@@ -257,6 +257,89 @@
    "url": "https://doi.org/10.1021/ma00130a008"
   }
  ],
+ "chemistry/acid_base_titration": [
+  {
+   "label": "Henderson, 1908, American Journal of Physiology-Legacy Content",
+   "title": "CONCERNING THE RELATIONSHIP BETWEEN THE STRENGTH OF ACIDS AND THEIR CAPACITY TO PRESERVE NEUTRALITY",
+   "url": "https://doi.org/10.1152/ajplegacy.1908.21.2.173"
+  }
+ ],
+ "chemistry/belousov_zhabotinsky": [
+  {
+   "label": "Field et al., 1972, J. Am. Chem. Soc.",
+   "title": "Oscillations in chemical systems. II. Thorough analysis of temporal oscillation in the bromate-cerium-malonic acid system",
+   "url": "https://doi.org/10.1021/ja00780a001"
+  },
+  {
+   "label": "Field & Noyes, 1974, The Journal of Chemical Physics",
+   "title": "Oscillations in chemical systems. IV. Limit cycle behavior in a model of a real chemical reaction",
+   "url": "https://doi.org/10.1063/1.1681288"
+  }
+ ],
+ "chemistry/chapman_ozone": [
+  {
+   "label": "Chapman, 1930, The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science",
+   "title": "XXXV.On ozone and atomic oxygen in the upper atmosphere",
+   "url": "https://doi.org/10.1080/14786443009461588"
+  },
+  {
+   "label": "Chapman, 1930, Memoirs of the Royal Meteorological Society 3, 103",
+   "title": "A theory of upper-atmospheric ozone",
+   "url": null
+  }
+ ],
+ "chemistry/equation_balancing": [
+  {
+   "label": "Blakley, 1982, J. Chem. Educ.",
+   "title": "Chemical equation balancing: A general method which is quick, simple, and has unexpected applications",
+   "url": "https://doi.org/10.1021/ed059p728"
+  }
+ ],
+ "chemistry/gibbs_minimisation": [
+  {
+   "label": "White et al., 1958, The Journal of Chemical Physics",
+   "title": "Chemical Equilibrium in Complex Mixtures",
+   "url": "https://doi.org/10.1063/1.1744264"
+  },
+  {
+   "label": "Gordon & McBride, 1994, NASA Reference Publication 1311",
+   "title": "Computer Program for Calculation of Complex Chemical Equilibrium Compositions and Applications. I. Analysis",
+   "url": null
+  }
+ ],
+ "chemistry/huckel_mo_theory": [
+  {
+   "label": "Hückel, 1931, Z. Physik",
+   "title": "Quantentheoretische Beitr�ge zum Benzolproblem",
+   "url": "https://doi.org/10.1007/BF01339530"
+  }
+ ],
+ "chemistry/limiting_reagent_yield": [
+  {
+   "label": "Croce, 2002, J. Chem. Educ.",
+   "title": "The Application of the Concept of Extent of Reaction",
+   "url": "https://doi.org/10.1021/ed079p506"
+  }
+ ],
+ "chemistry/molecular_gnn": [
+  {
+   "label": "Gilmer et al., 2017 (arXiv)",
+   "title": "Neural Message Passing for Quantum Chemistry",
+   "url": "https://arxiv.org/abs/1704.01212"
+  }
+ ],
+ "chemistry/polymerisation_mwd": [
+  {
+   "label": "Flory, 1936, J. Am. Chem. Soc.",
+   "title": "Molecular Size Distribution in Linear Condensation Polymers 1",
+   "url": "https://doi.org/10.1021/ja01301a016"
+  },
+  {
+   "label": "Carothers, 1936, Trans. Faraday Soc.",
+   "title": "Polymers and polyfunctionality",
+   "url": "https://doi.org/10.1039/TF9363200039"
+  }
+ ],
  "em/biot_savart": [
   {
    "label": "Griffiths, 2017, Cambridge University Press",
@@ -414,6 +497,194 @@
   {
    "label": "Torricelli, 1644, Florence",
    "title": "Opera geometrica",
+   "url": null
+  }
+ ],
+ "graphics/bundle_adjustment": [
+  {
+   "label": "Triggs et al., 2000, Lecture Notes in Computer Science",
+   "title": "Bundle Adjustment — A Modern Synthesis",
+   "url": "https://doi.org/10.1007/3-540-44480-7_21"
+  }
+ ],
+ "graphics/camera_projection": [
+  {
+   "label": "Zhang, 2000, IEEE Trans. Pattern Anal. Machine Intell.",
+   "title": "A flexible new technique for camera calibration",
+   "url": "https://doi.org/10.1109/34.888718"
+  },
+  {
+   "label": "Hartley & Zisserman, 2004, Cambridge University Press",
+   "title": "Multiple View Geometry in Computer Vision (2nd ed.)",
+   "url": null
+  }
+ ],
+ "graphics/gaussian_splatting": [
+  {
+   "label": "Kerbl et al., 2023, ACM Trans. Graph.",
+   "title": "3D Gaussian Splatting for Real-Time Radiance Field Rendering",
+   "url": "https://doi.org/10.1145/3592433"
+  }
+ ],
+ "graphics/homography_stitching": [
+  {
+   "label": "Fischler et al., 1981, Commun. ACM",
+   "title": "Random sample consensus",
+   "url": "https://doi.org/10.1145/358669.358692"
+  },
+  {
+   "label": "Brown et al., 2007, Int J Comput Vision",
+   "title": "Automatic Panoramic Image Stitching using Invariant Features",
+   "url": "https://doi.org/10.1007/s11263-006-0002-3"
+  }
+ ],
+ "graphics/image_filtering": [
+  {
+   "label": "Canny, 1986, IEEE Trans. Pattern Anal. Mach. Intell.",
+   "title": "A Computational Approach to Edge Detection",
+   "url": "https://doi.org/10.1109/TPAMI.1986.4767851"
+  },
+  {
+   "label": "Marr & Hildreth, 1980, Proc. R. Soc. B",
+   "title": "Theory of edge detection",
+   "url": "https://doi.org/10.1098/rspb.1980.0020"
+  }
+ ],
+ "graphics/nerf_volume_rendering": [
+  {
+   "label": "Mildenhall et al., 2020 (arXiv)",
+   "title": "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis",
+   "url": "https://arxiv.org/abs/2003.08934"
+  },
+  {
+   "label": "Tancik et al., 2020 (arXiv)",
+   "title": "Fourier Features Let Networks Learn High Frequency Functions in Low Dimensional Domains",
+   "url": "https://arxiv.org/abs/2006.10739"
+  }
+ ],
+ "graphics/path_tracing": [
+  {
+   "label": "Kajiya, 1986, SIGGRAPH Comput. Graph.",
+   "title": "The rendering equation",
+   "url": "https://doi.org/10.1145/15886.15902"
+  }
+ ],
+ "graphics/qr_code_decode": [
+  {
+   "label": "Reed et al., 1960, Journal of the Society for Industrial and Applied Mathematics",
+   "title": "Polynomial Codes Over Certain Finite Fields",
+   "url": "https://doi.org/10.1137/0108018"
+  },
+  {
+   "label": "ISO/IEC 18004:2015",
+   "title": "Information technology — Automatic identification and data capture techniques — QR Code bar code symbology specification",
+   "url": null
+  }
+ ],
+ "graphics/ray_tracing_spheres": [
+  {
+   "label": "Whitted, 1980, Commun. ACM",
+   "title": "An improved illumination model for shaded display",
+   "url": "https://doi.org/10.1145/358876.358882"
+  },
+  {
+   "label": "Phong, 1975, Commun. ACM",
+   "title": "Illumination for computer generated pictures",
+   "url": "https://doi.org/10.1145/360825.360839"
+  },
+  {
+   "label": "Blinn, 1977, Proceedings of the 4th annual conference on Computer graphics and interactive techniques",
+   "title": "Models of light reflection for computer synthesized pictures",
+   "url": "https://doi.org/10.1145/563858.563893"
+  }
+ ],
+ "graphics/triangle_rasterisation": [
+  {
+   "label": "Pineda, 1988, SIGGRAPH Comput. Graph.",
+   "title": "A parallel algorithm for polygon rasterization",
+   "url": "https://doi.org/10.1145/378456.378457"
+  }
+ ],
+ "maths/fourier_gibbs": [
+  {
+   "label": "Gibbs, 1899, Nature",
+   "title": "Fourier's Series",
+   "url": "https://doi.org/10.1038/059606a0"
+  },
+  {
+   "label": "Hewitt & Hewitt, 1979, Arch. Hist. Exact Sci.",
+   "title": "The Gibbs-Wilbraham phenomenon: An episode in fourier analysis",
+   "url": "https://doi.org/10.1007/BF00330404"
+  }
+ ],
+ "maths/linear_maps_2d": [
+  {
+   "label": "Cayley, 1858, Philosophical Transactions of the Royal Society of London",
+   "title": "II. A memoir on the theory of matrices",
+   "url": "https://doi.org/10.1098/rstl.1858.0002"
+  }
+ ],
+ "maths/mandelbrot_julia": [
+  {
+   "label": "Mandelbrot, 1980, Annals of the New York Academy of Sciences",
+   "title": "FRACTAL ASPECTS OF THE ITERATION OF z →Λz(1‐ z) FOR COMPLEX Λ AND z",
+   "url": "https://doi.org/10.1111/j.1749-6632.1980.tb29690.x"
+  }
+ ],
+ "maths/markov_pagerank": [
+  {
+   "label": "Brin & Page, 1998, Computer Networks and ISDN Systems",
+   "title": "The anatomy of a large-scale hypertextual Web search engine",
+   "url": "https://doi.org/10.1016/S0169-7552(98)00110-X"
+  }
+ ],
+ "maths/newton_fractal": [
+  {
+   "label": "Cayley, 1879, American Journal of Mathematics",
+   "title": "Desiderata and Suggestions: No. 3.The Newton-Fourier Imaginary Problem",
+   "url": "https://doi.org/10.2307/2369201"
+  },
+  {
+   "label": "Hubbard et al., 2001, Invent. math.",
+   "title": "How to find all roots of complex polynomials by Newton’s method",
+   "url": "https://doi.org/10.1007/s002220100149"
+  }
+ ],
+ "maths/numerical_integration": [
+  {
+   "label": "Golub & Welsch, 1969, Math. Comp.",
+   "title": "Calculation of Gauss quadrature rules",
+   "url": "https://doi.org/10.1090/S0025-5718-69-99647-1"
+  }
+ ],
+ "maths/spectral_clustering": [
+  {
+   "label": "Shi & Malik, 2000, IEEE Trans. Pattern Anal. Mach. Intell.",
+   "title": "Normalized cuts and image segmentation",
+   "url": "https://doi.org/10.1109/34.868688"
+  },
+  {
+   "label": "von Luxburg, 2007 (arXiv)",
+   "title": "A Tutorial on Spectral Clustering",
+   "url": "https://arxiv.org/abs/0711.0189"
+  }
+ ],
+ "maths/svd_compression": [
+  {
+   "label": "Eckart & Young, 1936, Psychometrika",
+   "title": "The Approximation of One Matrix by Another of Lower Rank",
+   "url": "https://doi.org/10.1007/BF02288367"
+  }
+ ],
+ "maths/zeta_primes": [
+  {
+   "label": "Odlyzko & Schönhage, 1988, Trans. Amer. Math. Soc.",
+   "title": "Fast algorithms for multiple evaluations of the Riemann zeta function",
+   "url": "https://doi.org/10.1090/s0002-9947-1988-0961614-2"
+  },
+  {
+   "label": "Riemann, 1859, Monatsberichte der Berliner Akademie",
+   "title": "Ueber die Anzahl der Primzahlen unter einer gegebenen Grösse",
    "url": null
   }
  ],
@@ -846,6 +1117,99 @@
    "label": "Raissi et al., 2019, Journal of Computational Physics",
    "title": "Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations",
    "url": "https://doi.org/10.1016/j.jcp.2018.10.045"
+  }
+ ],
+ "physchem/arrhenius_kinetics": [
+  {
+   "label": "Arrhenius, 1889, Zeitschrift für Physikalische Chemie",
+   "title": "Über die Reaktionsgeschwindigkeit bei der Inversion von Rohrzucker durch Säuren",
+   "url": "https://doi.org/10.1515/zpch-1889-0416"
+  }
+ ],
+ "physchem/beer_lambert_kinetics": [
+  {
+   "label": "Beer, 1852, Annalen der Physik",
+   "title": "Bestimmung der Absorption des rothen Lichts in farbigen Flüssigkeiten",
+   "url": "https://doi.org/10.1002/andp.18521620505"
+  }
+ ],
+ "physchem/chemical_equilibrium": [
+  {
+   "label": "Gibbs, 1878, American Journal of Science",
+   "title": "On the equilibrium of heterogeneous substances",
+   "url": "https://doi.org/10.2475/ajs.s3-16.96.441"
+  },
+  {
+   "label": "Lund, 1965, J. Chem. Educ.",
+   "title": "Guldberg and Waage and the law of mass action",
+   "url": "https://doi.org/10.1021/ed042p548"
+  }
+ ],
+ "physchem/hartree_fock_h2": [
+  {
+   "label": "Fock, 1930, Z. Physik",
+   "title": "N�herungsmethode zur L�sung des quantenmechanischen Mehrk�rperproblems",
+   "url": "https://doi.org/10.1007/BF01340294"
+  },
+  {
+   "label": "Roothaan, 1951, Rev. Mod. Phys.",
+   "title": "New Developments in Molecular Orbital Theory",
+   "url": "https://doi.org/10.1103/RevModPhys.23.69"
+  },
+  {
+   "label": "Szabo & Ostlund, 1996, Dover",
+   "title": "Modern Quantum Chemistry: Introduction to Advanced Electronic Structure Theory",
+   "url": null
+  }
+ ],
+ "physchem/hcl_rovibrational": [
+  {
+   "label": "Imes, 1919, ApJ",
+   "title": "Measurements on the Near Infra-Red Absorption of Some Diatomic Gases",
+   "url": "https://doi.org/10.1086/142504"
+  },
+  {
+   "label": "Herzberg, 1950, Van Nostrand",
+   "title": "Molecular Spectra and Molecular Structure I: Spectra of Diatomic Molecules",
+   "url": null
+  }
+ ],
+ "physchem/lj_liquid_rdf": [
+  {
+   "label": "Rahman, 1964, Phys. Rev.",
+   "title": "Correlations in the Motion of Atoms in Liquid Argon",
+   "url": "https://doi.org/10.1103/PhysRev.136.A405"
+  },
+  {
+   "label": "Verlet, 1967, Phys. Rev.",
+   "title": "Computer \"Experiments\" on Classical Fluids. I. Thermodynamical Properties of Lennard-Jones Molecules",
+   "url": "https://doi.org/10.1103/PhysRev.159.98"
+  }
+ ],
+ "physchem/marcus_electron_transfer": [
+  {
+   "label": "Marcus, 1956, The Journal of Chemical Physics",
+   "title": "On the Theory of Oxidation-Reduction Reactions Involving Electron Transfer. I",
+   "url": "https://doi.org/10.1063/1.1742723"
+  }
+ ],
+ "physchem/nernst_debye_huckel": [
+  {
+   "label": "Nernst, 1889, Zeitschrift für Physikalische Chemie",
+   "title": "Die elektromotorische Wirksamkeit der Jonen",
+   "url": "https://doi.org/10.1515/zpch-1889-0412"
+  },
+  {
+   "label": "Debye & Hückel, 1923, Physikalische Zeitschrift 24, 185",
+   "title": "Zur Theorie der Elektrolyte. I. Gefrierpunktserniedrigung und verwandte Erscheinungen",
+   "url": null
+  }
+ ],
+ "physchem/particle_box_dyes": [
+  {
+   "label": "Kuhn, 1948, The Journal of Chemical Physics",
+   "title": "Free Electron Model for Absorption Spectra of Organic Dyes",
+   "url": "https://doi.org/10.1063/1.1747011"
   }
  ],
  "quantum/double_well": [

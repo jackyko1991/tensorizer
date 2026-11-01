@@ -1,0 +1,22 @@
+source_hash: de68545f1f70
+title: 最小 STO-3G 基組下 $\mathrm{H_2}$ 的哈特里–福克計算
+summary: Szabo 與 Ostlund 課本中的自洽場計算，以張量寫成。每個氫原子帶一個由三個高斯函數組成的 1s 函數（STO-3G）；重疊、動能、核吸引與雙電子積分都有封閉形式，Fock 矩陣是密度矩陣與 $(\mu\nu|\lambda\sigma)$ 張量的縮併，而 Roothaan 方程式 $FC = SC\varepsilon$ 以 eigh 對一整批鍵長同時求解。在 $R = 1.4$ bohr 時得到 $E = -1.1167$ hartree；掃描找出鍵長，並說明為何限制性哈特里–福克無法使鍵斷裂。
+notes: 原子單位：長度以 bohr（$a_0 = 0.529$ Å）、能量以 hartree（$E_h = 27.21$ eV）為單位。基組為 STO-3G，Slater 指數 $\zeta_{\mathrm H} = 1.24$ 與 $\zeta_{\mathrm{He}} = 2.0925$，與 Szabo and Ostlund, Modern Quantum Chemistry（1982；Dover 版 1996）第 3 章相同；只有兩個基函數，每個矩陣都是 $2\times2$，因此你可以逐一對照書中的數值：$S_{12} = 0.6593$、$T_{11} = 0.7600$，$R = 1.4$ bohr 時 $E = -1.1167$ hartree，$\mathrm{HeH^+}$ 在 $R = 1.4632$ bohr 時為 $-2.8607$ hartree。SCF 從 $P = 0$（核心 Hamiltonian）出發；對 $\mathrm{H_2}$，對稱性固定了軌域 $\psi_{1,2} \propto \phi_A \pm \phi_B$，因此立即收斂，而 $\mathrm{HeH^+}$ 隨著電荷流向氦需要十多次迭代。每個鍵長都是批次中的一項，因此 SCF 在一個迴圈中就跑完整條曲線。限制性哈特里–福克把兩個電子放在同一個空間軌域 $\psi_1$；在大 $R$ 時，該狀態一半是 $\mathrm{H + H}$、一半是離子性的 $\mathrm{H^+ + H^-}$，所以曲線升到遠高於 $2E_{\mathrm H}$ 之處。虛線是同一基組下的完全組態交互作用（$|1^2\rangle$、$|1^12^1\rangle$、$|2^2\rangle$ 的 $3\times3$ 單重態矩陣）：它混入了 $|2^2\rangle$，正確地解離，而它與 RHF 在平衡處的差距（約 $-0.02$ hartree）就是相關能。最小基組離精確的 $\mathrm{H_2}$ 能量（$R = 1.4$ bohr 時為 $-1.1745$ hartree）還很遠；更大的基組需要 p 與 d 函數以及一般的高斯積分遞迴公式。試試 $\mathrm{HeH^+}$：此時 RHF 曲線確實到達正確的極限 $\mathrm{He + H^+}$，因為兩個電子最終都在氦上。
+meanings:
+- 每個函數三個高斯指數 $\alpha_p\zeta^2$，以及併入原始函數歸一化 $(2\alpha/\pi)^{3/4}$ 的縮併係數
+- 批次中每個鍵長 $R_b$ 的兩個原子核（及基函數中心）
+- 兩個高斯函數相乘得到一個位於 $P = (\alpha A + \beta B)/(\alpha + \beta)$ 的高斯函數
+- 重複的 $p, q$ ⇒ 求和：對原始函數的縮併；$T$、$V$ 亦同
+- $-\sum_c Z_c\,\tfrac{2\pi}{\alpha+\beta}\,e^{-\dots}F_0\big((\alpha+\beta)|P - C|^2\big)$，Boys 函數 $F_0(t) = \tfrac12\sqrt{\pi/t}\,\mathrm{erf}\sqrt t$
+- bra 與 ket 對張量彼此廣播，再以一次 einsum 對 $p, q, r, t$ 求和
+- 對稱（Löwdin）正交化：$X^{\mathsf T}SX = 1$
+- 庫侖矩陣 $J$；重複的 $\lambda, \sigma$ ⇒ 求和
+- 交換矩陣 $K$：同一張量以交換後的指標讀取
+- 每次 SCF 迭代做一次批次 eigh；$C = XC^{\prime}$
+- Mulliken 電子數：恰為 2
+- 位能曲線，每個鍵長一項
+labels:
+  molecule: 分子
+  R_min: 最短鍵長 $R$
+  R_max: 最長鍵長 $R$
+  n_bond_lengths: 批次中的鍵長數

@@ -1,0 +1,20 @@
+source_hash: 0b2a4ba1c286
+title: Orbitales moléculaires de Hückel des systèmes π
+summary: 'Les électrons π d''un hydrocarbure plan obéissent à un hamiltonien qui n''est autre que la matrice d''adjacence de son squelette carboné, $H = \alpha\mathbb 1 + \beta A$. Un seul eigh par lots diagonalise sept molécules à la fois, de l''éthylène au naphtalène ; le remplissage des orbitales donne les écarts HOMO–LUMO, les énergies de délocalisation (benzène : $2\beta$, cyclobutadiène : $0$) et les indices de liaison de Coulson sous forme d''un einsum sur les orbitales occupées, et les tailles de cycle $N = 3, 4, \dots$ illustrent la règle $4n + 2$ de Hückel.'
+notes: 'Hückel (1931) n''a gardé que l''essentiel pour les électrons π d''une molécule conjuguée plane : une orbitale $2p_z$ par carbone, la même énergie $\alpha$ sur chaque atome, une énergie de saut $\beta$ entre voisins liés, rien d''autre et aucun recouvrement. L''hamiltonien vaut alors $\alpha\mathbb 1 + \beta A$ avec $A$ le graphe de la molécule, donc ses valeurs propres sont $\alpha + \beta\lambda$ avec $\lambda$ celles de $A$ ; comme $\beta < 0$, l''orbitale la plus liante est celle de plus grand $\lambda$. Le benzène donne $\alpha + 2\beta$, $\alpha + \beta$ (deux fois), $\alpha - \beta$ (deux fois), $\alpha - 2\beta$ ; ses six électrons ont $E_\pi = 6\alpha + 8\beta$, soit $2\beta$ en dessous de trois doubles liaisons isolées. Avec $|\beta| \approx 75$ kJ/mol, une valeur thermochimique grossière ajustée sur l''enthalpie d''hydrogénation du benzène (la spectroscopie suggère un $|\beta|$ plus grand, à prendre donc comme une approximation), on obtient les fameux $\approx 150$ kJ/mol
+  de stabilisation aromatique. Le cyclobutadiène a deux électrons en trop dans une paire dégénérée à $\alpha$ : pas d''énergie de délocalisation, un écart nul, un diradical, et il est même moins stable que le butadiène à chaîne ouverte : antiaromatique. Pour un cycle de $N$ atomes, les niveaux sont $\alpha + 2\beta\cos(2\pi k/N)$, un niveau le plus bas puis des paires dégénérées (cercle de Frost), donc une couche fermée demande $2 + 4n$ électrons : la règle de Hückel. Les cycles impairs sont montrés sous forme de leurs ions aromatiques, comme l''anion cyclopentadiényle et le cation tropylium. Les indices de liaison $P_{ij} = \sum_k n_k C_{ik}C_{jk}$ du butadiène, $0.894$ pour les liaisons terminales et $0.447$ pour celle du milieu, correspondent à ses longueurs de liaison courte–longue–courte ; dans le benzène, les six valent $2/3$. Pour les hydrocarbures alternants (sans cycle impair), le théorème d''appariement rend le spectre symétrique autour de $\alpha$ et toutes les charges π nulles.
+  Choisissez une autre molécule pour voir ses orbitales frontières : la HOMO et la LUMO déterminent où attaquent électrophiles et nucléophiles et, par l''écart, la couleur (les polyènes plus longs absorbent à de plus grandes longueurs d''onde).'
+meanings:
+- $1$ pour des carbones liés $i, j$ de la molécule $b$ (atomes distants d'une longueur de liaison), complété jusqu'au plus grand $N = 10$
+- matrice de Hückel ; les atomes de remplissage reçoivent une diagonale énorme pour que leurs orbitales fictives ne soient jamais remplies
+- 'énergies des OM (croissantes : liantes d''abord, puisque $\beta < 0$) et coefficients, OM $k$ dans la colonne $k$'
+- remplissage selon l'Aufbau avec 2 électrons par OM ; un ensemble dégénéré partiellement rempli partage ses électrons
+- '$k$ répété ⇒ sommé : énergie π totale $E_\pi$'
+- énergie de délocalisation par rapport à des doubles liaisons isolées à $2(\alpha + \beta)$ chacune
+- '$k$ répété ⇒ sommé sur les OM occupées : indice de liaison de Coulson sur une liaison, population π sur la diagonale'
+- charge π $1 - P_{bii}$ ; nulle sur chaque atome de ces hydrocarbures alternants
+- niveaux du cycle sous forme analytique, vérifiés par eigh de la matrice d'adjacence cyclique
+labels:
+  molecule: Molécule pour les images des orbitales
+  ring_max: Plus grande taille de cycle $N$
+  beta: $|\beta|$ pour la conversion en kJ/mol (approximatif)

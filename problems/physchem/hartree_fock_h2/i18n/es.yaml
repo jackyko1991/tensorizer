@@ -1,0 +1,23 @@
+source_hash: de68545f1f70
+title: Hartree–Fock para $\mathrm{H_2}$ en una base mínima STO-3G
+summary: El cálculo de campo autoconsistente de libro de texto de Szabo y Ostlund, escrito con tensores. Cada hidrógeno lleva una función 1s formada por tres gaussianas (STO-3G); las integrales de solapamiento, cinéticas, de atracción nuclear y bielectrónicas tienen formas cerradas, la matriz de Fock es una contracción de la densidad con el tensor $(\mu\nu|\lambda\sigma)$, y las ecuaciones de Roothaan $FC = SC\varepsilon$ se resuelven con eigh para todo un lote de longitudes de enlace a la vez. A $R = 1.4$ bohr da $E = -1.1167$ hartree; el barrido encuentra la longitud de enlace y muestra por qué Hartree–Fock restringido no puede romper el enlace.
+notes: 'Unidades atómicas: longitudes en bohr ($a_0 = 0.529$ Å) y energías en hartree ($E_h = 27.21$ eV). La base es STO-3G con los exponentes de Slater $\zeta_{\mathrm H} = 1.24$ y $\zeta_{\mathrm{He}} = 2.0925$ como en Szabo y Ostlund, Modern Quantum Chemistry (1982; edición de Dover 1996), capítulo 3; con dos funciones de base cada matriz es $2\times2$, así que puedes comprobar cada número con el libro: $S_{12} = 0.6593$, $T_{11} = 0.7600$, $E = -1.1167$ hartree a $R = 1.4$ bohr, y $-2.8607$ hartree para $\mathrm{HeH^+}$ a $R = 1.4632$ bohr. El SCF parte de $P = 0$ (el hamiltoniano del core); para $\mathrm{H_2}$ la simetría fija los orbitales $\psi_{1,2} \propto \phi_A \pm \phi_B$ y converge de inmediato, mientras que $\mathrm{HeH^+}$ necesita una docena de pasadas a medida que la carga fluye hacia el helio. Cada longitud de enlace es una entrada del lote, así que el SCF calcula toda la curva en un solo bucle. Hartree–Fock restringido coloca ambos electrones en el mismo orbital espacial
+  $\psi_1$; a $R$ grande ese estado es mitad $\mathrm{H + H}$ y mitad el iónico $\mathrm{H^+ + H^-}$, así que la curva sube muy por encima de $2E_{\mathrm H}$. La curva discontinua es la interacción de configuraciones completa en la misma base (la matriz singlete $3\times3$ de $|1^2\rangle$, $|1^12^1\rangle$, $|2^2\rangle$): mezcla $|2^2\rangle$, disocia correctamente y su diferencia con RHF en el equilibrio (unos $-0.02$ hartree) es la energía de correlación. Una base mínima está lejos de la energía exacta del $\mathrm{H_2}$, $-1.1745$ hartree a $R = 1.4$ bohr; bases mayores necesitan funciones p y d y las recurrencias generales de integrales gaussianas. Prueba $\mathrm{HeH^+}$: allí la curva RHF sí alcanza el límite correcto, $\mathrm{He + H^+}$, porque ambos electrones acaban en el helio.'
+meanings:
+- tres exponentes gaussianos por función, $\alpha_p\zeta^2$, y coeficientes de contracción con la normalización de las primitivas $(2\alpha/\pi)^{3/4}$ incluida
+- los dos núcleos (y centros de la base) para cada longitud de enlace $R_b$ del lote
+- el producto de dos gaussianas es una gaussiana centrada en $P = (\alpha A + \beta B)/(\alpha + \beta)$
+- '$p, q$ repetidos ⇒ sumados: contracción sobre las primitivas; lo mismo para $T$, $V$'
+- $-\sum_c Z_c\,\tfrac{2\pi}{\alpha+\beta}\,e^{-\dots}F_0\big((\alpha+\beta)|P - C|^2\big)$ con la función de Boys $F_0(t) = \tfrac12\sqrt{\pi/t}\,\mathrm{erf}\sqrt t$
+- tensores de pares bra y ket difundidos uno contra otro y luego $p, q, r, t$ sumados en un solo einsum
+- 'ortogonalización simétrica (de Löwdin): $X^{\mathsf T}SX = 1$'
+- matriz de Coulomb $J$; $\lambda, \sigma$ repetidos ⇒ sumados
+- 'matriz de intercambio $K$: el mismo tensor leído con los índices intercambiados'
+- un eigh por lotes en cada pasada SCF; $C = XC^{\prime}$
+- 'número de electrones de Mulliken: exactamente 2'
+- la curva de potencial, una entrada por longitud de enlace
+labels:
+  molecule: Molécula
+  R_min: Longitud de enlace mínima $R$
+  R_max: Longitud de enlace máxima $R$
+  n_bond_lengths: Longitudes de enlace del lote

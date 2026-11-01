@@ -1,0 +1,25 @@
+source_hash: a99f4b65ce2b
+title: 光束法平差：用 Levenberg–Marquardt 做运动恢复结构
+summary: 多台相机拍摄同一组三维点，像素带有噪声。从粗略的位姿（轴角旋转 $\boldsymbol\omega_c$、平移 $\mathbf t_c$）和粗略的点 $\mathbf X_p$ 出发，光束法平差用 Levenberg–Marquardt 方法最小化总重投影误差 $\tfrac12\sum_{c,p}\lVert\pi(R_c\mathbf X_p + \mathbf t_c) - \tilde{\mathbf u}_{cp}\rVert^2$。雅可比矩阵由自动微分得到，正规方程 $J^{\mathsf T}J\,\Delta = -J^{\mathsf T}\mathbf r$ 通过舒尔补求解，固定 7 个规范自由度后解是唯一的。
+notes: '数据是合成的：点位于半径为 1 的球内，相机分布在 5 个单位外的一段圆弧上（焦距 1000 px，图像 $640\times 640$），每台相机都能看到每个点，像素噪声为高斯噪声 $\sigma$。初始值把每个旋转扰动几度，把每个平移和点扰动场景尺寸的一小部分，因此最初的重投影误差有几十个像素。规范自由度：把整个场景连同所有相机一起平移、旋转或缩放，任何图像都不会改变，所以 $E$ 有一个由等值极小点构成的 7 维谷，$J^{\mathsf T}J$ 有 7 个零特征值（控制台会打印出来，约为最大特征值的 $10^{-16}$）。固定相机 0（6 个数）和相机 1 的 $x$ 方向平移（尺度）就消除了零空间：$J^{\mathsf T}J$ 变为满秩，步长也就有了明确定义。我们把它们固定在真值上，因此结果可以直接与真值比较。每次迭代都把残差线性化，$\mathbf r(\boldsymbol\theta + \Delta) \approx \mathbf r + J\Delta$，并求解带阻尼的正规方程；雅可比矩阵由 torch.func.jacrev 构造，即对所有残差向量化的自动微分，省去了容易出错的手工推导。舒尔补利用了稀疏性（箭头形的 $J^{\mathsf T}J$ 面板）：先消去点，剩下的方程组只有相机那么大，这正是实际的光束法平差程序能处理上百万个点的原因。这里稠密求解与舒尔补求解给出的步长相差约 $10^{-12}$。在最优点，均方根重投影误差等于噪声下限 $\sigma\sqrt{1 - n/m}$（每个被拟合的未知量都会吸收一点噪声），残差直方图与噪声分布吻合：已经没有什么可解释的了。剩余的点和相机误差由噪声和几何决定，而不是由优化器决定。参考文献：B. Triggs, P. McLauchlan, R. Hartley and A. Fitzgibbon, "Bundle Adjustment — A Modern Synthesis"（Vision Algorithms: Theory and Practice, 1999）。简化：没有外点（实际系统使用鲁棒损失），没有镜头畸变，所有点在所有相机中都可见，雅可比矩阵以稠密方式存储。试试更大的初始扰动（此时 LM 需要更大的阻尼，或者落入错误的极小点）、更大的噪声，或者只用 2
+  台相机。'
+meanings:
+- 相机位姿：轴角旋转（方向 = 旋转轴，长度 = 旋转角）和平移，因此 $x_{\rm cam} = R\mathbf X + \mathbf t$
+- 罗德里格斯公式 $I + \sin\theta\,K + (1-\cos\theta)K^2$；每个旋转三个数，无需施加约束
+- 每个点在每台相机坐标系中的位置，对 $j$ 求和
+- 以像素计的重投影误差；展平为 $r_m$，$m = (c, p, a)$
+- 自由未知量：所有位姿和点，减去 7 个规范自由度（相机 0 以及相机 1 的 $t_x$）
+- 用反向模式自动微分求雅可比矩阵，每行一次向量化的反向传播
+- 高斯–牛顿矩阵 $H = J^{\mathsf T}J$ 与梯度 $J^{\mathsf T}\mathbf r$，对 $m$ 求和
+- 相机 | 点 分块；一个残差只涉及一台相机和一个点，所以 $V$ 是分块对角的
+- 舒尔补（约化相机系统）：$P$ 个很小的 $3\times 3$ 逆矩阵，然后一次小规模求解
+- 回代：每个点单独更新
+- Levenberg–Marquardt 阻尼：成功一步后除以 3，失败一步后乘以 4
+labels:
+  n_cameras: 相机数 $C$
+  n_points: 点数 $P$
+  noise: 像素噪声 $\sigma$
+  init_rot: 初始旋转误差
+  init_noise: 初始平移与点误差
+  iterations: LM 迭代次数
+  solver: 正规方程求解器

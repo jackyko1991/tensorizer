@@ -1,0 +1,21 @@
+source_hash: 07db7a3fd274
+title: Teilchen im Kasten und die Farbe von Farbstoffen
+summary: Warum absorbieren längere konjugierte Moleküle röteres Licht? Die $\pi$-Elektronen eines Cyaninfarbstoffs bewegen sich frei entlang der Kette, wie Teilchen in einem eindimensionalen Kasten der Länge $L$. Das paarweise Besetzen der Niveaus $E_n \propto n^2/L^2$ ergibt eine HOMO→LUMO-Lücke $\Delta E = h^2(N+1)/8m_eL^2$ und ein vorhergesagtes $\lambda_{max}$ für eine ganze homologe Reihe gleichzeitig; ein gebatchter Finite-Differenzen-Hamilton-Operator, mit torch.linalg.eigh diagonalisiert, reproduziert die analytischen Niveaus.
+notes: 'Kuhns Elektronengasmodell (1948) behandelt die $\pi$-Elektronen einer konjugierten Kette als unabhängige Teilchen in einem Kasten. In einem Cyaninfarbstoff $\mathrm{R_2N{-}(CH{=}CH)_k{-}CH{=}N^+R_2}$ teilen sich die beiden Stickstoffe die positive Ladung, sodass alle Kettenbindungen nahezu gleich lang sind (etwa $l = 0.139$ nm) und der Kasten mit flachem Boden ein gutes Bild ist. Mit $2k + 2$ Bindungen, $N = 2k + 4$ Elektronen und einem Kasten, der eine Bindung über jeden Stickstoff hinausragt, gilt $L = (2k + 4)l$, und $\lambda_{max} = 8m_ec\,L^2/h(N + 1)$ wächst fast linear mit $k$: Das Modell sagt etwa 125 nm pro zusätzlicher CH=CH-Einheit voraus, und die roten Quadrate (gerundete Messwerte für die einfachsten Cyanine) steigen um etwa 100 nm. Das ist der klassische Praktikumsversuch im Grundstudium: die sichtbaren Spektren einiger Cyaninfarbstoffe zunehmender Kettenlänge aufnehmen und dann mit $\lambda_{max}$ die Kastenlänge oder die Verlängerung an den Enden anpassen. Der numerische
+  Löser liefert dieselben Niveaus auf besser als $10^{-3}$ (sein Fehler fällt wie $(n\,\Delta x)^2$), und er kann, was die Formel nicht kann: ein Potential einschalten. Polyene haben alternierende Doppel- und Einfachbindungen; im einfachen Kasten läuft ihr vorhergesagtes $\lambda_{max}$ weit ins Infrarote, während es bei realen Polyenen abflacht (β-Carotin mit 11 C=C absorbiert bei etwa 450 nm). Wähle die Polyenreihe und erhöhe $V_{alt}$ auf 1–2 eV: Das periodische Potential öffnet eine Lücke, die für lange Ketten endlich bleibt, der eindimensionale Keim einer Bandlücke. Die Farbfelder zeigen weißes Licht abzüglich einer Gaußschen Absorptionsbande bei jedem $\lambda_{max}$; ein Farbstoff, der Gelb absorbiert, sieht blau aus, und einer, der nur UV absorbiert, sieht farblos aus.'
+meanings:
+- π-Elektronen und konjugierte Bindungen von Molekül $b$ der Reihe
+- 'Kastenlänge: alle Bindungen plus eine Bindungslänge über jedes Endatom hinaus'
+- analytische Niveaus; kein Index summiert, ein äußeres Produkt aus $n^2$ und $1/L^2$
+- HOMO $n = N/2$ zu LUMO $n = N/2 + 1$ und die absorbierte Wellenlänge
+- innere Gitterpunkte jedes Kastens; $\psi = 0$ an den Wänden
+- ein Finite-Differenzen-Hamilton-Operator pro Molekül, gestapelt
+- wiederholtes $j$ ⇒ summiert; eigh diagonalisiert den ganzen Batch in einem Aufruf
+- 'wiederholtes $w$ ⇒ summiert über sichtbare Wellenlängen: die nach der Absorption verbleibende Farbe'
+labels:
+  series: Homologe Reihe
+  n_max: Längste Kette (zusätzliche CH=CH-Einheiten)
+  bond: Bindungslänge $l$
+  end: Kastenverlängerung über jedes Endatom (Bindungen)
+  V_alt: Bindungsalternanzpotential $V_{alt}$
+  n_points: Gitterpunkte $M$

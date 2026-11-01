@@ -1,0 +1,21 @@
+source_hash: 1e3affbcf0e4
+title: Lineare Abbildungen der Ebene
+summary: 'Eine $2\times 2$-Matrix bewegt jeden Punkt der Ebene, und ein einziges einsum bewegt ein ganzes Gitter, den Einheitskreis und das Einheitsquadrat für alle Animationsbilder gleichzeitig. Sieh zu, wie sich die Ebene von der Identität zu $A$ verformt: Eigenvektoren bleiben auf ihrer eigenen Geraden, $|\det A|$ skaliert Flächen, eine negative Determinante klappt die Ebene um, und der Kreis wird zu einer Ellipse, deren Halbachsen die Singulärwerte sind.'
+notes: 'Die Spalten von $A$ sind die Bilder der Basisvektoren $\mathbf e_1$ (roter Pfeil) und $\mathbf e_2$ (grüner Pfeil), und jeder andere Punkt folgt aus der Linearität, daher bleiben gerade Gitterlinien gerade und parallel. Entlang des Weges $M(t) = (1-t)I + tA$ ist ein Eigenvektor $\mathbf v$ von $A$ auch Eigenvektor von $M(t)$ mit Eigenwert $1 - t + t\lambda$, also gleiten die orangen Punkte auf ihren gestrichelten Geraden, während sich alles andere dreht. Das Einheitsquadrat (gelb) wird zu einem Parallelogramm der Fläche $|\det A|$; es wird rot, wenn $\det < 0$, wenn $\mathbf e_1 \to \mathbf e_2$ im Uhrzeigersinn läuft und die Ebene ein Spiegelbild ist. Eine Spiegelung muss unterwegs durch $\det = 0$, wo die Ebene auf eine Gerade zusammengedrückt wird. Drehungen und Spiegelungen erhalten Längen, also $\sigma_1 = \sigma_2 = 1$; eine Scherung erhält die Fläche ($\det = 1$), aber nicht die Form. Im Allgemeinen geht der Kreis in eine Ellipse mit Halbachsen $\sigma_1 \ge \sigma_2$ über,
+  den Singulärwerten, und $|\det A| = \sigma_1\sigma_2$. Produkte multiplizieren sich: $\det(AB) = \det A\,\det B$.'
+meanings:
+- 'die zu zeigenden Matrizen: Streckung, Scherung, Drehung, Spiegelung und Umklappung oder deine eigene'
+- 'Punkte der Ebene: Gitterlinien, der Einheitskreis, das Einheitsquadrat'
+- gerader Weg von der Identität $\delta_{ij}$ zu $A$, eine Matrix pro Bild
+- 'wiederholtes $j$ ⇒ summiert: jeder Punkt mit der Matrix jedes Bildes gleichzeitig bewegt'
+- '$\varepsilon_{12} = 1$, $\varepsilon_{21} = -1$: das 2D-Levi-Civita-Symbol'
+- 'wiederholte $i, j$ ⇒ summiert: orientierte Fläche des Bildes des Einheitsquadrats'
+- das Bild des Kreises ist eine Ellipse mit Halbachsen $\sigma_1 \mathbf u_1$ und $\sigma_2 \mathbf u_2$
+- Eigenwerte und Eigenvektoren; komplex bei einer Drehung, daher bleibt keine Gerade fest
+labels:
+  matrix: Matrix
+  a11: Eigenes $A_{11}$
+  a12: Eigenes $A_{12}$
+  a21: Eigenes $A_{21}$
+  a22: Eigenes $A_{22}$
+  grid_lines: Gitterlinien pro Richtung

@@ -1,0 +1,48 @@
+title: 'Hartree–Fock for $\mathrm{H_2}$ in a minimal STO-3G basis'
+category: physchem
+level: advanced
+order: 1
+summary: >
+  The textbook self-consistent field calculation of Szabo and Ostlund, written with tensors. Each hydrogen carries one
+  1s function made of three Gaussians (STO-3G); overlap, kinetic, nuclear-attraction and two-electron integrals have
+  closed forms, the Fock matrix is a contraction of the density with the $(\mu\nu|\lambda\sigma)$ tensor, and the
+  Roothaan equations $FC = SC\varepsilon$ are solved with eigh for a whole batch of bond lengths at once. At
+  $R = 1.4$ bohr it gives $E = -1.1167$ hartree; the scan finds the bond length and shows why restricted Hartree–Fock
+  cannot break the bond.
+animated: true
+vector_form: 'F(P)\,C = S\,C\,\varepsilon,\qquad F = H^{\text{core}} + J(P) - \tfrac12 K(P),\qquad P = 2\,C_{\text{occ}}C_{\text{occ}}^{\mathsf T},\qquad E = \tfrac12\operatorname{tr}\big[P\,(H^{\text{core}} + F)\big] + \frac{Z_AZ_B}{R}'
+index_form: 'S_{\mu\nu} = c_{\mu p}\,c_{\nu q}\,S_{\mu\nu pq},\qquad F_{\mu\nu} = H_{\mu\nu} + P_{\lambda\sigma}\big[(\mu\nu|\lambda\sigma) - \tfrac12(\mu\lambda|\nu\sigma)\big],\qquad X^{\mathsf T}_{\mu\kappa}F_{\kappa\rho}X_{\rho\nu}\,C^{\prime}_{\nu a} = \varepsilon_a\,C^{\prime}_{\mu a},\qquad P_{\lambda\sigma} = 2\,C_{\lambda a}C_{\sigma a}'
+translation:
+  - {symbol: '\alpha_{\mu p},\ c_{\mu p}', code: 'sto3g(zeta)', shape: '(M, K)', meaning: 'three Gaussian exponents per function, $\alpha_p\zeta^2$, and contraction coefficients with the primitive normalisation $(2\alpha/\pi)^{3/4}$ folded in'}
+  - {symbol: 'A_{b\mu a}', code: 'geometry(R)', shape: '(B, 2, 3)', meaning: 'the two nuclei (and basis centres) for every bond length $R_b$ in the batch'}
+  - {symbol: 'S_{\mu\nu pq}', code: '(pi/zeta)**1.5 * exp(-mu*AB2)', shape: '(B, M, M, K, K)', meaning: 'two Gaussians multiply into one Gaussian on $P = (\alpha A + \beta B)/(\alpha + \beta)$'}
+  - {symbol: 'S_{\mu\nu} = c_{\mu p}c_{\nu q}S_{\mu\nu pq}', code: "einsum('mp,nq,bmnpq->bmn', c, c, prim)", shape: '(B, M, M)', meaning: 'repeated $p, q$ ⇒ summed: contraction over primitives; the same for $T$, $V$'}
+  - {symbol: 'V_{\mu\nu}', code: 'nuclear_attraction(pairs, c, nuclei, Z)', shape: '(B, M, M)', meaning: '$-\sum_c Z_c\,\tfrac{2\pi}{\alpha+\beta}\,e^{-\dots}F_0\big((\alpha+\beta)|P - C|^2\big)$ with the Boys function $F_0(t) = \tfrac12\sqrt{\pi/t}\,\mathrm{erf}\sqrt t$'}
+  - {symbol: '(\mu\nu|\lambda\sigma)', code: 'electron_repulsion(pairs, c)', shape: '(B, M, M, M, M)', meaning: 'bra and ket pair tensors broadcast against each other, then $p, q, r, t$ summed in one einsum'}
+  - {symbol: 'X = S^{-1/2}', code: 'U @ diag(s**-0.5) @ U.T', shape: '(B, M, M)', meaning: 'symmetric (Löwdin) orthogonalisation: $X^{\mathsf T}SX = 1$'}
+  - {symbol: 'P_{\lambda\sigma}(\mu\nu|\lambda\sigma)', code: "einsum('bls,bmnls->bmn', P, eri)", shape: '(B, M, M)', meaning: 'Coulomb matrix $J$; repeated $\lambda, \sigma$ ⇒ summed'}
+  - {symbol: 'P_{\lambda\sigma}(\mu\lambda|\nu\sigma)', code: "einsum('bls,bmlns->bmn', P, eri)", shape: '(B, M, M)', meaning: 'exchange matrix $K$: the same tensor read with the indices swapped'}
+  - {symbol: '\varepsilon_a,\ C^{\prime}_{\nu a}', code: 'torch.linalg.eigh(X.mT @ F @ X)', shape: '(B, M), (B, M, M)', meaning: 'one batched eigh per SCF pass; $C = XC^{\prime}$'}
+  - {symbol: 'N = P_{\mu\nu}S_{\nu\mu}', code: "einsum('bmn,bnm->b', P, S)", shape: '(B,)', meaning: 'Mulliken electron count: exactly 2'}
+  - {symbol: 'E_b', code: '0.5*einsum("bmn,bmn->b", P, H + F) + Z_A*Z_B/R', shape: '(B,)', meaning: 'the potential curve, one entry per bond length'}
+notes: >
+  Atomic units: lengths in bohr ($a_0 = 0.529$ Å) and energies in hartree ($E_h = 27.21$ eV). The basis is
+  STO-3G with Slater exponents $\zeta_{\mathrm H} = 1.24$ and $\zeta_{\mathrm{He}} = 2.0925$ as in Szabo and Ostlund,
+  Modern Quantum Chemistry (1982; Dover edition 1996), chapter 3; with two basis functions every matrix is $2\times2$,
+  so you can check each number against the book: $S_{12} = 0.6593$, $T_{11} = 0.7600$, $E = -1.1167$ hartree at
+  $R = 1.4$ bohr, and $-2.8607$ hartree for $\mathrm{HeH^+}$ at $R = 1.4632$ bohr. The SCF starts from $P = 0$ (the
+  core Hamiltonian); for $\mathrm{H_2}$ symmetry fixes the orbitals $\psi_{1,2} \propto \phi_A \pm \phi_B$ and it
+  converges at once, while $\mathrm{HeH^+}$ needs a dozen passes as charge flows onto helium. Every bond length is a
+  batch entry, so the SCF runs for the whole curve in one loop. Restricted Hartree–Fock puts both electrons in the same
+  spatial orbital $\psi_1$; at large $R$ that state is half $\mathrm{H + H}$ and half the ionic $\mathrm{H^+ + H^-}$, so
+  the curve rises far above $2E_{\mathrm H}$. The dashed curve is the full configuration interaction in the same basis
+  (the $3\times3$ singlet matrix of $|1^2\rangle$, $|1^12^1\rangle$, $|2^2\rangle$): it mixes in $|2^2\rangle$, dissociates
+  correctly, and its gap to RHF at equilibrium (about $-0.02$ hartree) is the correlation energy. A minimal basis is far
+  from the exact $\mathrm{H_2}$ energy, $-1.1745$ hartree at $R = 1.4$ bohr; larger bases need p and d functions and the
+  general Gaussian integral recursions. Try $\mathrm{HeH^+}$: there the RHF curve does reach the right limit,
+  $\mathrm{He + H^+}$, because both electrons end up on helium.
+params:
+  molecule: {default: H2, type: choice, options: [H2, HeH+], label: Molecule}
+  R_min: {default: 0.6, min: 0.4, max: 1.2, step: 0.05, label: 'Shortest bond length $R$', unit: bohr}
+  R_max: {default: 6.0, min: 3.0, max: 10.0, step: 0.5, label: 'Longest bond length $R$', unit: bohr}
+  n_bond_lengths: {default: 100, min: 20, max: 400, step: 10, type: int, label: Bond lengths in the batch}

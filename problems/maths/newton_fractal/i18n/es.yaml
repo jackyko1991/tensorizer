@@ -1,0 +1,21 @@
+source_hash: aac1f92f727e
+title: Fractal de Newton
+summary: El método de Newton $z \leftarrow z - p(z)/p'(z)$ aplicado a cada píxel del plano complejo a la vez, como un único tensor complejo. Colorear cada píxel según la raíz que alcanza dibuja las cuencas de atracción, cuyas fronteras son fractales, mientras que cerca de una raíz el error se eleva al cuadrado en cada paso.
+notes: 'Desarrollar $p$ alrededor de una raíz simple $r$ da $e_{k+1} \approx \frac{p''''(r)}{2p''(r)}\,e_k^2$: el número de cifras correctas se duplica en cada paso, lo que el panel derecho muestra como una parábola en escala logarítmica (para $z^3 - 1$ la constante es exactamente 1). Lejos de las raíces, el método de Newton es caótico. Cerca de un punto crítico, donde $p''(z) = 0$, un paso minúsculo en $z$ envía el siguiente iterado a cualquier parte del plano, así que aparecen copias de toda la imagen a todas las escalas. Las cuencas de un polinomio con tres o más raíces comparten una misma frontera, el conjunto de Julia de la aplicación de Newton: cada punto frontera de una cuenca es punto frontera de todas (la propiedad de Wada). El terminal cuenta cuántos píxeles frontera tienen todos los colores en su vecindario $3\times3$, con la vista completa y tras hacer zoom. La proporción se mantiene más o menos igual a todas las escalas. Prueba $z^3 - 2z + 2$, donde los puntos de partida cerca
+  de 0 caen en el ciclo atractor $0 \to 1 \to 0$ y nunca llegan a una raíz (regiones grises). Toda la malla es un único tensor complejo, así que un solo einsum actualiza cada píxel.'
+meanings:
+- 'un punto de partida por píxel $p = (h, w)$: $z = x_w + i\,y_h$'
+- coeficientes del polinomio desde el término constante hacia arriba, p. ej. $z^3 - 1 \to (-1, 0, 0, 1)$
+- potencias $1, z, z^2, \dots$ de cada píxel, construidas con un producto acumulado
+- '$k$ repetido ⇒ sumado: $p(z)$ en cada píxel'
+- 'coeficientes de $p''(z)$: derivar desplaza las potencias hacia abajo'
+- las raíces, como valores propios de la matriz compañera
+- distancia de cada píxel a cada raíz; el mínimo sobre $j$ da la etiqueta de la cuenca
+- 'un punto de partida en doble precisión: el cociente tiende a $|p''''(r)/2p''(r)|$'
+labels:
+  polynomial: Polinomio $p(z)$
+  pixels: Píxeles por lado
+  extent: Semianchura de la vista
+  iterations: Pasos de Newton
+  zoom: Factor de zoom
+  tol: Tolerancia de convergencia $|z - r|$

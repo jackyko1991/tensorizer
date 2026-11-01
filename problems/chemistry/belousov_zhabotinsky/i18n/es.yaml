@@ -1,0 +1,22 @@
+source_hash: 8b3f5bebfbdf
+title: Oscilador de Belousov–Zhabotinsky (Oregonator)
+summary: Un vaso agitado con bromato, ácido malónico y un catalizador de cerio cambia de color como un reloj. El Oregonator escalado de dos variables es una EDO rígida; un paso producción–pérdida positivo (Patankar) integra todo un lote de factores estequiométricos $f$ a la vez, la traza del jacobiano localiza las dos bifurcaciones de Hopf que delimitan las oscilaciones, y la misma cinética con difusión convierte una onda rota en una espiral giratoria.
+notes: 'La reacción de Belousov–Zhabotinsky (descubierta por Belousov en la década de 1950 y explicada por Field, Kőrös y Noyes en 1972) oxida ácido malónico con bromato. Los iones bromuro inhiben la producción autocatalítica de $\mathrm{HBrO_2}$; mientras hay bromuro la reacción avanza muy despacio, cuando se agota $\mathrm{HBrO_2}$ se dispara y oxida el catalizador (el cambio de color), y luego el catalizador oxidado produce bromuro nuevo, que apaga la ráfaga. El Oregonator condensa esto en unos pocos pasos y, tras escalar y eliminar el bromuro rápido, en dos ecuaciones. Las constantes $\varepsilon \approx 0.04$ y $q \approx 8\times10^{-4}$ son valores aproximados obtenidos de ajustes de las constantes de velocidad de Field–Kőrös–Noyes; las recetas varían, y los valores publicados también. Como $\varepsilon$ y $q$ son pequeños, la ecuación de $x$ es rígida: $x$ salta en un factor de unas mil veces en un tiempo del orden de $\varepsilon$ y luego avanza lentamente a lo largo de una rama
+  de su isoclina. Un RK4 corriente necesita pasos de unos $5\times10^{-4}$ para ser estable; escribir $\varepsilon\dot x$ como producción menos pérdida y tratar la pérdida de forma implícita mantiene $x$ positivo con cualquier paso, y $\Delta t = 2\times10^{-3}$ da el periodo con un error menor del 1 %. El estado estacionario (el cruce de las dos isoclinas) es estable cuando está en una rama exterior de la curva en forma de N $\dot x = 0$ e inestable en la rama central, donde lo rodea un ciclo límite; la traza de $J$ cambia de signo en los dos puntos de Hopf, cerca de $f = 0.5$ y $f = 2.4$ para $q$ pequeño. Prueba un $\varepsilon$ mayor: la ventana se estrecha y finalmente se cierra. En una capa fina sin agitar, el catalizador permanece fijo mientras $\mathrm{HBrO_2}$ difunde, de modo que una onda de oxidación recorre la placa; un frente de onda roto se enrolla por su extremo libre en la famosa espiral giratoria, cuyo periodo de rotación es más corto que la oscilación en volumen, así que
+  acaba dominando todo el medio.'
+meanings:
+- factor estequiométrico (bromuro producido por catalizador reducido) de la reacción $b$, de $0.3$ a $3$
+- $[\mathrm{HBrO_2}]$ (autocatalizador) y $[\mathrm{Ce^{4+}}]$ (catalizador oxidado) escalados de cada reacción
+- velocidades de ganancia y pérdida no negativas con $\varepsilon\dot x = P - Lx$
+- 'Patankar–Euler: pérdidas implícitas, ganancias explícitas, así que $x$ sigue positivo por rígido que sea'
+- raíz positiva de $x^2 + (f + q - 1)x - q(1 + f) = 0$
+- cinética linealizada $\partial \dot y_\alpha / \partial y_\beta$ en el estado estacionario
+- '$\alpha$ repetido ⇒ sumado: la traza; su cambio de signo marca una bifurcación de Hopf'
+- la curva en forma de N $\dot x = 0$ del retrato de fases
+- plantilla de 5 puntos con bordes de flujo nulo; solo $x$ difunde en el medio 2D
+labels:
+  f: Factor estequiométrico $f$ para el retrato de fases y la espiral
+  eps: Cociente de escalas de tiempo $\varepsilon$ (aproximado)
+  t_max: Tiempo simulado
+  spiral: Onda espiral 2D
+  grid: Tamaño de la malla $n$

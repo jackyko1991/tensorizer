@@ -1,0 +1,20 @@
+source_hash: aa144f7ad9f7
+title: Équilibre chimique et principe de Le Chatelier
+summary: Où une réaction s'arrête-t-elle ? À partir de $\Delta G^\circ = -RT\ln K$, l'avancement à l'équilibre $\xi$ d'une réaction en phase gazeuse ($\mathrm{N_2O_4 \rightleftharpoons 2\,NO_2}$ ou la réaction de Haber $\mathrm{N_2 + 3H_2 \rightleftharpoons 2NH_3}$) est trouvé pour des centaines de températures et de pressions à la fois par dichotomie sur $Q(\xi) = K$, ce qui montre les déplacements de Le Chatelier avec la pression, la température (van 't Hoff) et l'ajout de produit.
+notes: '$Q$ mesure où en est le mélange, $K$ où il veut aller : si $Q < K$ la réaction avance dans le sens direct, si $Q > K$ elle revient en arrière. Comme $\ln Q$ croît régulièrement avec l''avancement $\xi$ (de $-\infty$ sans produits à $+\infty$ sans réactifs), l''équilibre est l''unique racine de $\ln Q(\xi) - \ln K$, et la dichotomie la trouve pour toutes les conditions à la fois. Le principe de Le Chatelier découle de la formule. Pression : avec des activités de gaz parfaits, $Q = K_x\,(P/P^\circ)^{\Delta\nu}$ où $\Delta\nu = \sum_i \nu_i$, donc augmenter $P$ favorise le côté qui compte le moins de molécules de gaz ($\mathrm{N_2O_4}$ se dissocie moins, il se forme plus de $\mathrm{NH_3}$). Température : $\ln K = -\Delta H^\circ/RT + \Delta S^\circ/R$, donc $K$ augmente avec $T$ pour une réaction endothermique ($\mathrm{N_2O_4}$ : la couleur brune de $\mathrm{NO_2}$ fonce quand on chauffe) et diminue pour une réaction exothermique (l''ammoniac). Ajout de produit : $Q$ passe brusquement
+  au-dessus de $K$ et une partie du produit redevient réactif, mais pas la totalité. Pour $\mathrm{N_2O_4}$, le résultat se vérifie à la main : $K = 4\alpha^2 P/((1-\alpha^2)P^\circ)$ donne $\alpha = \sqrt{K/(K + 4P/P^\circ)}$. Les données thermodynamiques sont des valeurs de manuel approximatives à 298 K ($\Delta H^\circ \approx +57.2$ kJ/mol, $\Delta S^\circ \approx +176$ J/(mol K) pour $\mathrm{N_2O_4}$ ; $\approx -92.2$ kJ/mol et $\approx -199$ J/(mol K) pour l''ammoniac), supposées indépendantes de $T$, et les gaz sont supposés parfaits ; ces deux simplifications surestiment quelque peu le rendement en ammoniac à 700 K et 100 bar (mesuré : environ 20 % de $\mathrm{NH_3}$ plutôt qu''environ 30 %). La réaction de Haber est très favorisée à température ambiante, mais beaucoup trop lente : les usines fonctionnent vers 700–750 K et 150–300 bar avec un catalyseur au fer, sacrifiant du rendement au profit de la vitesse. Essayez T = 700 K avec la réaction de Haber.'
+meanings:
+- 'nombres stœchiométriques : $-1, 2$ pour $\mathrm{N_2O_4 \rightleftharpoons 2NO_2}$ ; $-1, -3, 2$ pour l''ammoniac'
+- chaque couple (température, pression) aplati en un seul indice de lot $b$
+- $-\Delta G^\circ/RT$ avec des $\Delta H^\circ$, $\Delta S^\circ$ approximatifs et indépendants de la température
+- quantités de chaque espèce ; un produit extérieur, rien n'est sommé
+- quantité totale ; $j$ sommé
+- '$\ln Q$ : l''indice d''espèce $i$ est sommé'
+- 'aucune quantité ne peut devenir négative : l''intervalle de la dichotomie'
+- 'dichotomie, toutes conditions ensemble : garder la moitié où $\ln Q - \ln K$ change de signe'
+- pente de $\ln K$ en fonction de $1/T$
+labels:
+  reaction: Réaction ($\mathrm{N_2O_4}$ ou ammoniac)
+  T: Température $T$ (courbe noire)
+  P: Pression $P$ pour le test d'ajout de produit
+  add_product: Produit ajouté

@@ -1,0 +1,21 @@
+source_hash: 07db7a3fd274
+title: Partícula en una caja y el color de los colorantes
+summary: ¿Por qué las moléculas conjugadas más largas absorben luz más roja? Los electrones $\pi$ de un colorante de cianina se mueven libremente a lo largo de la cadena, como partículas en una caja unidimensional de longitud $L$. Llenar los niveles $E_n \propto n^2/L^2$ de dos en dos da una diferencia HOMO→LUMO $\Delta E = h^2(N+1)/8m_eL^2$ y un $\lambda_{max}$ predicho para toda una serie homóloga a la vez; un hamiltoniano de diferencias finitas por lotes, diagonalizado con torch.linalg.eigh, reproduce los niveles analíticos.
+notes: 'El modelo del electrón libre de Kuhn (1948) trata los electrones $\pi$ de una cadena conjugada como partículas independientes en una caja. En un colorante de cianina $\mathrm{R_2N{-}(CH{=}CH)_k{-}CH{=}N^+R_2}$ la carga positiva se reparte entre los dos nitrógenos, así que todos los enlaces de la cadena son casi iguales (unos $l = 0.139$ nm) y la caja de fondo plano es una buena imagen. Con $2k + 2$ enlaces, $N = 2k + 4$ electrones y la caja sobresaliendo un enlace más allá de cada nitrógeno, $L = (2k + 4)l$ y $\lambda_{max} = 8m_ec\,L^2/h(N + 1)$ crece casi linealmente con $k$: el modelo predice unos 125 nm por cada unidad CH=CH añadida, y los cuadrados rojos (valores medidos redondeados para las cianinas más sencillas) suben unos 100 nm. Es la práctica clásica de laboratorio de grado: registrar los espectros visibles de unos cuantos colorantes de cianina de longitud de cadena creciente y luego usar $\lambda_{max}$ para ajustar la longitud de la caja o su prolongación en los extremos.
+  El método numérico da los mismos niveles con un error menor que $10^{-3}$ (su error cae como $(n\,\Delta x)^2$), y puede hacer lo que la fórmula no puede: activar un potencial. Los polienos tienen enlaces dobles y simples alternados; en la caja simple su $\lambda_{max}$ predicho se va muy lejos en el infrarrojo, mientras que el de los polienos reales se estanca (el β-caroteno, con 11 C=C, absorbe cerca de 450 nm). Elige la serie de polienos y sube $V_{alt}$ a 1–2 eV: el potencial periódico abre una brecha que sigue siendo finita para cadenas largas, el germen unidimensional de una banda prohibida. Las muestras de color muestran la luz blanca menos una banda de absorción gaussiana en cada $\lambda_{max}$; un colorante que absorbe el amarillo se ve azul, y uno que solo absorbe UV se ve incoloro.'
+meanings:
+- electrones π y enlaces conjugados de la molécula $b$ de la serie
+- 'longitud de la caja: todos los enlaces más una longitud de enlace más allá de cada átomo terminal'
+- niveles analíticos; ningún índice sumado, un producto exterior de $n^2$ y $1/L^2$
+- del HOMO $n = N/2$ al LUMO $n = N/2 + 1$, y la longitud de onda absorbida
+- puntos interiores de la malla de cada caja; $\psi = 0$ en las paredes
+- un hamiltoniano de diferencias finitas por molécula, apilados
+- $j$ repetido ⇒ sumado; eigh diagonaliza todo el lote en una sola llamada
+- '$w$ repetido ⇒ sumado sobre las longitudes de onda visibles: el color que queda tras la absorción'
+labels:
+  series: Serie homóloga
+  n_max: Cadena más larga (unidades CH=CH añadidas)
+  bond: Longitud de enlace $l$
+  end: Prolongación de la caja más allá de cada átomo terminal (enlaces)
+  V_alt: Potencial de alternancia de enlaces $V_{alt}$
+  n_points: Puntos de la malla $M$

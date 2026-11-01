@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Lennard-Jones fluid: atoms of size sigma in a periodic box of side L; around one atom a thin spherical shell of radius r and width dr counts neighbours for the radial distribution function g(r)">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- periodic images hinted -->
+    <rect x="28" y="4" width="136" height="136" fill="none" stroke="#374151" stroke-width="2"/>
+    <line x1="164" y1="4" x2="188" y2="4" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="164" y1="140" x2="188" y2="140" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="4" y1="4" x2="28" y2="4" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="4" y1="140" x2="28" y2="140" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- g(r) shell -->
+    <circle cx="104" cy="67" r="30" fill="none" stroke="#f59e0b" stroke-width="7" stroke-opacity="0.35"/>
+    <circle cx="104" cy="67" r="30" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <g fill="#93c5fd" stroke="#1e40af" stroke-width="1.2">
+      <circle cx="49" cy="18" r="8"/>
+      <circle cx="51" cy="46" r="8"/>
+      <circle cx="53" cy="68" r="8"/>
+      <circle cx="47" cy="102" r="8"/>
+      <circle cx="50" cy="123" r="8"/>
+      <circle cx="84" cy="18" r="8"/>
+      <circle cx="82" cy="45" r="8"/>
+      <circle cx="80" cy="69" r="8"/>
+      <circle cx="80" cy="103" r="8"/>
+      <circle cx="79" cy="128" r="8"/>
+      <circle cx="108" cy="14" r="8"/>
+      <circle cx="109" cy="46" r="8"/>
+      <circle cx="110" cy="99" r="8"/>
+      <circle cx="108" cy="130" r="8"/>
+      <circle cx="135" cy="22" r="8"/>
+      <circle cx="132" cy="48" r="8"/>
+      <circle cx="132" cy="76" r="8"/>
+      <circle cx="137" cy="95" r="8"/>
+      <circle cx="129" cy="123" r="8"/>
+      <circle cx="165" cy="17" r="8"/>
+      <circle cx="161" cy="43" r="8"/>
+      <circle cx="160" cy="71" r="8"/>
+      <circle cx="159" cy="100" r="8"/>
+      <circle cx="161" cy="130" r="8"/>
+    </g>
+    <circle cx="104" cy="67" r="8" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="104" y1="67" x2="134" y2="67" stroke="#374151" stroke-width="1.5"/>
+    <text x="116" y="63" font-style="italic" font-size="13">r</text>
+    <text x="90" y="156" font-style="italic">L</text>
+    <text x="176" y="60" font-size="12" fill="#b45309">shell</text>
+    <text x="176" y="76" font-style="italic" fill="#b45309">g(r)</text>
+    <text x="176" y="110" font-size="12" fill="#6b7280">periodic</text>
+  </g>
+</svg>

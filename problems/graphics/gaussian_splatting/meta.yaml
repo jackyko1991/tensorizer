@@ -1,0 +1,53 @@
+title: '3D Gaussian splatting'
+category: graphics
+level: advanced
+order: 1
+summary: >
+  A scene is represented by a few hundred coloured, semi-transparent 3D Gaussians. Each one is projected into the
+  camera with the Jacobian of the perspective map, $\Sigma' = J W \Sigma W^{\mathsf T} J^{\mathsf T}$, the splats are
+  depth-sorted and alpha-composited front to back, $C = \sum_i c_i\alpha_i\prod_{j<i}(1 - \alpha_j)$, and Adam fits
+  every mean, scale, rotation, colour and opacity to photos of a synthetic scene. A held-out view checks that the
+  Gaussians learned the 3D shapes, not just the training pictures.
+animated: true
+vector_form: '\Sigma = R\,S\,S^{\mathsf T}R^{\mathsf T},\qquad \Sigma'' = J\,W\,\Sigma\,W^{\mathsf T}J^{\mathsf T},\qquad \alpha_i(\mathbf u) = o_i\,e^{-\frac12(\mathbf u - \boldsymbol\mu''_i)^{\mathsf T}\Sigma''^{-1}_i(\mathbf u - \boldsymbol\mu''_i)},\qquad C(\mathbf u) = \sum_i \mathbf c_i\,\alpha_i\prod_{j<i}(1 - \alpha_j),\qquad \min\ \lVert C - C^\ast\rVert_1'
+index_form: '\Sigma_{mik} = R_{mij}\,s_{mj}^2\,R_{mkj},\qquad \Sigma''_{vmab} = J_{vmai}W_{vij}\,\Sigma_{mjk}\,W_{vlk}J_{vmbl},\qquad \alpha_{vmp} = o_m\,e^{-\frac12 Q_{vmk}\varphi_{pk}},\qquad C_{vpc} = c_{mc}\,\alpha_{vmp}\textstyle\prod_{n<m}(1 - \alpha_{vnp})'
+translation:
+  - {symbol: 'R_{mij}', code: 'quat_to_rotmat(quat)', shape: '(M, 3, 3)', meaning: 'rotation of Gaussian $m$ from a quaternion, normalised inside, so any 4 numbers are a valid rotation'}
+  - {symbol: '\Sigma_{mik} = R_{mij}s_{mj}^2R_{mkj}', code: "einsum('mij,mj,mkj->mik', R, s2, R)", shape: '(M, 3, 3)', meaning: '3D covariance, $j$ summed; symmetric positive definite for any parameters, $s = e^{\log s}$'}
+  - {symbol: 'x_{vmi} = W_{vij}\mu_{mj} + t_{vi}', code: "einsum('vij,mj->vmi', W, mean) + t", shape: '(V, M, 3)', meaning: 'every Gaussian centre in every camera frame (x right, y down, z = depth)'}
+  - {symbol: '\mu''_{vma} = f\,x_{vma}/x_{vm3} + c', code: 'project(x_cam, f, c)', shape: '(V, M, 2)', meaning: 'pinhole projection of the centres to pixel coordinates'}
+  - {symbol: 'J_{vmai}', code: 'projection_jacobian(x_cam, f)', shape: '(V, M, 2, 3)', meaning: '$\partial\mu''_a/\partial x_i = \begin{pmatrix} f/z & 0 & -fx/z^2\\ 0 & f/z & -fy/z^2\end{pmatrix}$: the local linearisation of the projection'}
+  - {symbol: '\Sigma''_{vmab}', code: "einsum('vmaj,mjk,vmbk->vmab', JW, cov3, JW)", shape: '(V, M, 2, 2)', meaning: '2D covariance of each splat, $j, k$ summed, with $JW = $ einsum(''vmai,vij->vmaj''), plus 0.3 px² low-pass'}
+  - {symbol: 'Q_{vmk}\varphi_{pk}', code: "einsum('vmk,pk->vmp', Q, phi)", shape: '(V, M, P)', meaning: 'the quadratic form $d^{\mathsf T}\Sigma''^{-1}d$ expanded in the 6 monomials $\varphi = (u^2, 2uv, v^2, u, v, 1)$ of the pixel: one matrix product'}
+  - {symbol: '\alpha_{vmp}', code: '(opacity * exp(-0.5 * q)).clamp(max=0.99)', shape: '(V, M, P)', meaning: 'how much of pixel $p$ splat $m$ covers; $o_m = \sigma(\text{logit})$'}
+  - {symbol: '\text{sort}_m\ x_{vm3}', code: 'x_cam[..., 2].argsort(dim=1)', shape: '(V, M)', meaning: 'depth order per camera; the small per-Gaussian tensors are reordered before the big $(V, M, P)$ ones exist'}
+  - {symbol: 'T_{vmp} = \prod_{n<m}(1 - \alpha_{vnp})', code: 'cumprod(1 - alpha, dim=1), shifted by one', shape: '(V, M, P)', meaning: 'transmittance: light left after the splats in front of $m$; non-increasing along $m$'}
+  - {symbol: 'C_{vpc} = w_{vmp}c_{mc} + T_{\rm end}b_c', code: "einsum('vmp,vmc->vpc', alpha * T, colour) + …", shape: '(V, P, 3)', meaning: 'front-to-back compositing, $m$ summed; the light that gets through shows the white background $b$'}
+  - {symbol: '\lVert C - C^\ast\rVert_1', code: 'photometric_loss(pred, gt, "l1")', shape: '()', meaning: 'mean absolute pixel error on one random training view per step; Adam updates all $14M$ numbers'}
+notes: >
+  The ground truth is three spheres and a cube, ray cast analytically with Lambertian shading into 12 cameras on two
+  rings around the scene ($64\times 64$ px); a 13th camera between them, at another height, is held out. The
+  Gaussians start at random positions in a cube, grey and faint, with random orientations. Every Adam step renders
+  one training view through the whole pipeline above and back-propagates the L1 photo error into every mean,
+  log-scale, quaternion, colour and opacity. The tensor lesson is the covariance algebra: $\Sigma = RSS^{\mathsf T}R^{\mathsf T}$
+  stays a valid (symmetric positive definite) covariance whatever the optimiser does, and the projection is
+  not linear, so each Gaussian is pushed through its local linearisation $J$; the 2D splat
+  $\Sigma' = JW\Sigma W^{\mathsf T}J^{\mathsf T}$ is a chain of einsums. The ellipse panel draws these $1\sigma$ ellipses in the
+  held-out view. Densification, simplified: every 50 steps (for the first 70%) the Gaussians whose centres
+  received the largest gradients are split into two copies at $\boldsymbol\mu \pm R\,S\,\boldsymbol\epsilon$ with axes
+  shrunk by 1.6, reusing nearly transparent Gaussians ($o < 0.05$), so $M$ stays fixed; the paper instead clones
+  and splits using view-space gradients, prunes, resets opacities and grows to millions of Gaussians. Other
+  simplifications versus Kerbl et al. (SIGGRAPH 2023): constant colours instead of spherical harmonics (the
+  scene is Lambertian), a random start instead of a structure-from-motion point cloud, an L1 loss without the
+  D-SSIM term, and a dense rasteriser that evaluates every splat at every pixel (the real one sorts splats into
+  $16\times 16$ tiles on the GPU and skips the far ones), which is why the image is small. The held-out PSNR stays a
+  little below the training PSNR: views never seen constrain the Gaussians less. Try fewer views (the held-out
+  view degrades), the L2 loss, densification off, or more Gaussians and steps (sharper edges).
+params:
+  n_gaussians: {default: 300, min: 50, max: 600, step: 50, type: int, label: 'Gaussians $M$'}
+  iterations: {default: 300, min: 50, max: 2000, step: 50, type: int, label: Adam steps}
+  lr: {default: 0.02, min: 0.002, max: 0.05, step: 0.002, label: Adam learning rate (means; others scaled)}
+  loss: {default: l1, type: choice, options: [l1, l2], label: Photometric loss}
+  densify: {default: 'on', type: choice, options: ['on', 'off'], label: Split densification}
+  n_views: {default: 12, min: 4, max: 24, step: 2, type: int, label: 'Training views $V$'}
+  resolution: {default: 64, min: 32, max: 96, step: 16, type: int, label: Image size (pixels)}

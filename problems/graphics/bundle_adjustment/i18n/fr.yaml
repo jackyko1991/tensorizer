@@ -1,0 +1,26 @@
+source_hash: a99f4b65ce2b
+title: 'Ajustement de faisceaux : structure à partir du mouvement par Levenberg–Marquardt'
+summary: Plusieurs caméras photographient les mêmes points 3D, avec du bruit de pixel. En partant de poses approximatives (rotations axe-angle $\boldsymbol\omega_c$, translations $\mathbf t_c$) et de points approximatifs $\mathbf X_p$, l'ajustement de faisceaux minimise l'erreur de reprojection totale $\tfrac12\sum_{c,p}\lVert\pi(R_c\mathbf X_p + \mathbf t_c) - \tilde{\mathbf u}_{cp}\rVert^2$ par Levenberg–Marquardt. La jacobienne vient de la différentiation automatique, les équations normales $J^{\mathsf T}J\,\Delta = -J^{\mathsf T}\mathbf r$ sont résolues par le complément de Schur, et fixer les 7 libertés de jauge rend la solution unique.
+notes: 'Les données sont synthétiques : des points dans une boule de rayon 1, des caméras sur un arc à 5 unités (focale 1000 px, une image $640\times 640$), chaque point vu par chaque caméra, un bruit de pixel gaussien $\sigma$. Le départ perturbe chaque rotation de quelques degrés et chaque translation et chaque point d''une fraction de la taille de la scène, de sorte que les premières erreurs de reprojection sont de quelques dizaines de pixels. Liberté de jauge : déplacer, tourner ou mettre à l''échelle toute la scène avec toutes les caméras ne change aucune image, donc $E$ possède une vallée de minima égaux de dimension 7 et $J^{\mathsf T}J$ a 7 valeurs propres nulles (la console les affiche, environ $10^{-16}$ de la plus grande). Fixer la caméra 0 (6 nombres) et la translation en $x$ de la caméra 1 (l''échelle) supprime le noyau : $J^{\mathsf T}J$ devient de rang plein et les pas sont bien définis. Nous les fixons à leurs vraies valeurs, ce qui permet de comparer directement le résultat
+  à la vérité. Chaque itération linéarise les résidus, $\mathbf r(\boldsymbol\theta + \Delta) \approx \mathbf r + J\Delta$, et résout les équations normales amorties ; la jacobienne est construite par torch.func.jacrev, c''est-à-dire la différentiation automatique vectorisée sur tous les résidus, ce qui évite une dérivation manuelle sujette aux erreurs. Le complément de Schur exploite la parcimonie (le panneau $J^{\mathsf T}J$ en forme de flèche) : éliminer d''abord les points laisse un système de la taille des seules caméras, et c''est pourquoi les vrais logiciels d''ajustement de faisceaux traitent des millions de points. Ici, les résolutions dense et de Schur donnent le même pas à environ $10^{-12}$ près. À l''optimum, l''erreur de reprojection RMS est égale au plancher de bruit $\sigma\sqrt{1 - n/m}$ (chaque inconnue ajustée absorbe un peu du bruit) et l''histogramme des résidus correspond à la distribution du bruit : il ne reste rien à expliquer. Les erreurs restantes sur les points
+  et les caméras sont fixées par le bruit et la géométrie, pas par l''optimiseur. Référence : B. Triggs, P. McLauchlan, R. Hartley et A. Fitzgibbon, « Bundle Adjustment — A Modern Synthesis » (Vision Algorithms: Theory and Practice, 1999). Simplifications : pas de valeurs aberrantes (les vrais systèmes utilisent une perte robuste), pas de distorsion de l''objectif, tous les points visibles dans toutes les caméras, stockage dense de la jacobienne. Essayez une perturbation de départ plus grande (LM demande alors plus d''amortissement, ou tombe dans un mauvais minimum), plus de bruit, ou seulement 2 caméras.'
+meanings:
+- 'pose de la caméra : rotation axe-angle (direction = axe, longueur = angle) et translation, donc $x_{\rm cam} = R\mathbf X + \mathbf t$'
+- formule de Rodrigues $I + \sin\theta\,K + (1-\cos\theta)K^2$ ; trois nombres par rotation, aucune contrainte à imposer
+- chaque point dans le repère de chaque caméra, somme sur $j$
+- erreur de reprojection en pixels ; aplatie en $r_m$, $m = (c, p, a)$
+- 'inconnues libres : toutes les poses et tous les points moins les 7 nombres de jauge (caméra 0 et $t_x$ de la caméra 1)'
+- jacobienne par différentiation automatique en mode inverse, une passe arrière vectorisée par ligne
+- matrice de Gauss–Newton $H = J^{\mathsf T}J$ et gradient $J^{\mathsf T}\mathbf r$, somme sur $m$
+- blocs caméras | points ; un résidu ne touche qu'une caméra et un point, donc $V$ est diagonale par blocs
+- 'complément de Schur (système réduit des caméras) : $P$ minuscules inverses $3\times 3$, puis une petite résolution'
+- 'substitution arrière : chaque point est mis à jour séparément'
+- 'amortissement de Levenberg–Marquardt : divisé par 3 après un pas réussi, multiplié par 4 après un échec'
+labels:
+  n_cameras: Caméras $C$
+  n_points: Points $P$
+  noise: Bruit de pixel $\sigma$
+  init_rot: Erreur de rotation initiale
+  init_noise: Erreur initiale de translation et de points
+  iterations: Itérations LM
+  solver: Solveur des équations normales

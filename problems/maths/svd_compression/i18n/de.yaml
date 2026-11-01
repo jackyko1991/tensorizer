@@ -1,0 +1,16 @@
+source_hash: 7d50d95577a3
+title: Bildkompression mit der SVD
+summary: Die Singulärwertzerlegung schreibt ein Bild als Summe von Rang-1-Schichten $\sigma_r\,\mathbf u_r\mathbf v_r^T$, die stärkste zuerst. Behält man nur $k$ Schichten, erhält man die beste Rang-$k$-Approximation, ihr Fehler ist genau die Energie der weggelassenen Singulärwerte, und ein Farbbild besteht aus drei Matrizen, die in einem einzigen gebatchten Aufruf zerlegt werden.
+notes: Das Speichern von $k$ Schichten eines $H\times W$-Bildes braucht $k(H + W + 1)$ Zahlen statt $HW$, das Kompressionsverhältnis ist also $HW / k(H + W + 1)$. Der Satz von Eckart-Young besagt, dass keine Rang-$k$-Matrix in der Frobenius-Norm näher an $A$ liegt, und der Fehler ist die Summe der Quadrate der weggelassenen Singulärwerte. Das Terminal prüft das an tatsächlich rekonstruierten Bildern für mehrere $k$. Glatte Teile der Szene (der Himmelsverlauf) werden von den ersten Schichten erfasst, während scharfe Kanten, Diagonalen und Text viele brauchen. Deshalb fallen die Singulärwerte anfangs schnell und klingen dann langsam ab, und deshalb verwendet JPEG stattdessen lokale Kosinustransformationen. Die erste Schicht ist ungefähr das mittlere Helligkeitsprofil; spätere Schichten wechseln das Vorzeichen (rot und blau), um Details hinzuzufügen. Das Bild wird prozedural gezeichnet, es wird also nichts heruntergeladen. Probier ein größeres Bild oder einen höheren maximalen Rang.
+meanings:
+- Kanal $c$, Zeile $i$, Spalte $j$ einer mit matplotlib gezeichneten Szene, Werte in $[0, 1]$
+- 'wiederholtes $c$ ⇒ summiert: Helligkeit mit den Gewichten $(0.299, 0.587, 0.114)$'
+- eine SVD pro Kanal, gebatcht über den führenden Index $c$; $R = \min(H, W)$
+- 'wiederholtes $r \le k$ ⇒ summiert: die ersten $k$ Rang-1-Schichten'
+- 'kein wiederholter Index: eine Schicht als äußeres Produkt des Graubilds'
+- Eckart-Young-Fehler für jedes $k$ gleichzeitig, ohne ein Bild zu rekonstruieren
+- Spitzen-Signal-Rausch-Verhältnis in dB, mit dem mittleren quadratischen Fehler aus den weggelassenen $\sigma$
+labels:
+  size: Bildgröße (Pixel)
+  k_max: Größter gezeigter Rang $k$
+  frames: Animationsbilder

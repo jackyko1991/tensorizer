@@ -1,0 +1,39 @@
+title: Image filtering as convolution
+category: graphics
+level: beginner
+order: 3
+summary: >
+  Blur, sharpen and find edges in a procedurally drawn test image by sliding a small kernel over it. Each linear filter
+  is one contraction $O_p = K_k P_{kp}$ over unfolded pixel windows, the same as conv2d; the Gaussian splits into two 1D
+  passes, and the convolution theorem turns it into a product of Fourier transforms. Box and Gaussian blur, Sobel edges,
+  Laplacian of Gaussian, unsharp masking, and median against Gaussian on salt-and-pepper noise.
+animated: false
+vector_form: 'O(\mathbf x) = \sum_{\mathbf a} K(\mathbf a)\, I(\mathbf x + \mathbf a),\qquad \hat O(\mathbf k) = \hat H(\mathbf k)\,\hat I(\mathbf k),\qquad G(x, y) = g(x)\,g(y),\quad \lvert\nabla I\rvert = \sqrt{G_x^2 + G_y^2}'
+index_form: 'O_{ij} = K_{ab}\,I_{i+a-r,\;j+b-r},\qquad O_p = K_k\,P_{kp},\qquad G_{ab} = g_a\,g_b \;\Rightarrow\; O_{ij} = g_b\,\big(g_a\,I_{i+a-r,\;j+b-r}\big),\qquad \hat O_{uv} = \hat H_{uv}\,\hat I_{uv}'
+translation:
+  - {symbol: 'I_{ij}', code: 'test_image(size, device)', shape: '(H, W)', meaning: 'grey level of pixel $(i, j)$: a gradient, a disk, a square, a triangle and a chirp, plus noise'}
+  - {symbol: 'K_{ab}', code: 'box(k), gaussian_2d(σ), sobel(), laplacian_of_gaussian(σ)', shape: '(2r+1, 2r+1)', meaning: 'the filter weights, the same for every pixel'}
+  - {symbol: 'O_{ij} = K_{ab}I_{i+a-r, j+b-r}', code: 'F.conv2d(pad(I), K)', shape: '(H, W)', meaning: 'repeated $a, b$ ⇒ summed over the window (a correlation, which PyTorch calls convolution)'}
+  - {symbol: 'P_{kp}', code: 'F.unfold(pad(I), (kh, kw))', shape: '(kh·kw, H·W)', meaning: 'the window around pixel $p$ as a column, $k = (a, b)$'}
+  - {symbol: 'O_p = K_k P_{kp}', code: "einsum('k,kp->p', K.flatten(), P)", shape: '(H·W,)', meaning: 'repeated $k$ ⇒ summed: the same filter as one einsum'}
+  - {symbol: 'G_{ab} = g_a g_b', code: "einsum('i,j->ij', g, g)", shape: '(2r+1, 2r+1)', meaning: 'the 2D Gaussian is an outer product, so it can run as a row pass and a column pass'}
+  - {symbol: 'G_x,\ G_y', code: 'gradient(I, Kx, Ky)', shape: '(H, W)', meaning: 'Sobel: $[1, 2, 1]$ smoothing across times $[-1, 0, 1]$ difference along'}
+  - {symbol: '\hat O_{uv} = \hat H_{uv}\hat I_{uv}', code: 'ifft2(fft2(embed(K)) * fft2(I))', shape: '(H, W)', meaning: 'convolution theorem: a pointwise product in Fourier space, equal to conv2d with wrap-around padding'}
+notes: >
+  The box filter's frequency response is a sinc with ripples that go negative, so it lets fine detail
+  through, some of it with flipped sign (the chirp's stripes fade and come back); the Gaussian's response is another Gaussian that falls
+  smoothly to zero. Separability matters for speed: a $(2r+1)^2$ kernel needs $(2r+1)^2$ multiplications per pixel,
+  two 1D passes only $2(2r+1)$. Sobel (1968) combines a derivative with smoothing; the Laplacian of Gaussian responds
+  where the second derivative crosses zero, and Canny (1986) builds on the same smoothed gradients with thinning
+  and hysteresis. Unsharp masking adds back $\alpha(I - G * I)$, a high-pass boost that also amplifies noise. The median is
+  not linear, so it has no kernel and no frequency response, but it removes isolated salt-and-pepper pixels that a
+  Gaussian only smears out (compare the PSNR in the terminal). Every convolutional neural network layer is the same
+  unfold-and-contract operation with learned kernels.
+params:
+  size: {default: 192, min: 64, max: 512, step: 32, type: int, label: Image size, unit: px}
+  sigma: {default: 1.5, min: 0.5, max: 5, step: 0.25, label: 'Gaussian width $\sigma$', unit: px}
+  box: {default: 5, min: 3, max: 15, step: 2, type: int, label: Box size, unit: px}
+  amount: {default: 1.5, min: 0, max: 4, step: 0.25, label: 'Sharpening $\alpha$'}
+  noise: {default: 0.03, min: 0, max: 0.3, step: 0.01, label: 'Gaussian noise $\sigma_n$'}
+  salt_pepper: {default: 0.1, min: 0, max: 0.5, step: 0.02, label: Salt-and-pepper fraction}
+  median: {default: 3, min: 3, max: 9, step: 2, type: int, label: Median window, unit: px}

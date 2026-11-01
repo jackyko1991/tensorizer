@@ -1,0 +1,19 @@
+source_hash: 32bf873c8175
+title: Nernst 方程式與 Debye–Hückel 屏蔽
+summary: Daniell 電池 Zn | Zn²⁺ ‖ Cu²⁺ | Cu 的電壓遵循 Nernst 方程式，這裡以溫度與濃度比構成的一個 $(T, Q)$ 網格計算。真實離子的活性低於其濃度所暗示的值：每個離子都披著一層厚度為 $\kappa^{-1}$ 的反電荷雲。離子周圍的線性化 Poisson–Boltzmann 方程式在徑向網格上以批次線性系統求解，與解析的 Yukawa 位勢吻合，並重現了使電動勢偏移的 Debye–Hückel 活性係數。
+notes: 在 Daniell 電池中，鋅被氧化而銅離子被還原，$\mathrm{Zn + Cu^{2+} \to Zn^{2+} + Cu}$，$n = 2$ 個電子，$E^\circ \approx 1.10$ V（此處固定不變，因為它本身隨溫度的變化很小）。$Q$ 每變化十倍，電動勢就移動 $\ln 10\,RT/nF$，在 25 °C 時為 29.6 mV，斜率與 $T$ 成正比增大。Nernst 方程式使用的是活性 $a = \gamma m$，而非重量莫耳濃度。Debye 與 Hückel 讓其他離子以 Boltzmann 權重排列在中心離子的位勢 $\varphi$ 中並加以線性化，從而算出 $\gamma$：$\nabla^2\varphi = \kappa^2\varphi$。其解是屏蔽庫侖（Yukawa）位勢，在 Debye 長度內衰減，25 °C 的水中 $\kappa^{-1} \approx 0.304\,\mathrm{nm}/\sqrt{I}$。數值求解器把 $u = r\varphi$ 的徑向方程式寫成三對角系統，在離子表面施加高斯定律，在十二個 Debye 長度之外設 $\varphi = 0$，與解析形式吻合至約 $10^{-4}$。離子在自身離子雲位勢中的能量為 $kT\ln\gamma$，這恰好給出擴展定律；當 $I \to 0$ 時它化為極限定律 $\log_{10}\gamma = -Az^2\sqrt I$，$A \approx 0.51$。每個半電池是獨立的 2:2 硫酸鹽溶液（$I = 4m$），因此改變 $m(\mathrm{Zn^{2+}})$ 會改變 $\gamma_{Zn}$ 而 $\gamma_{Cu}$ 不變，電動勢因而偏離理想 Nernst 值數毫伏。單一離子活性係數無法單獨量測（只能量測平均值 $\gamma_\pm$），而在 $I \approx 0.01$ 以上，2:2 硫酸鹽中的離子配對與特定交互作用使得連擴展定律也只是定性的。離子大小 $a \approx 0.5$ nm 是典型的水合離子值。
+meanings:
+- 一批電池溫度與反應商
+- 不對任何指標求和：每個斜率搭配每個反應商
+- 掃描的 ZnSO₄ 半電池的離子強度 $I = mz^2$ 與 Debye 長度的倒數
+- 擴展定律；$a \to 0$ 時給出極限定律 $-Az^2\sqrt I$
+- 從離子表面 $a$ 延伸到 $a + 12\,\kappa_c^{-1}$ 的網格，每個濃度一個
+- $u^{\prime\prime} - \kappa^2u = 0$，$u = r\varphi$；第 0 列是 $r = a$ 處的高斯定律
+- 重複的 $j$ ⇒ 求和；每個濃度一次稠密求解，批次進行
+- 離子在自身離子雲中的能量：重現擴展 Debye–Hückel 定律
+labels:
+  T_C: 計算活性與屏蔽的溫度
+  m_Cu: Cu²⁺ 半電池的重量莫耳濃度
+  E0: 標準電動勢 $E^\circ$
+  a_ion: 離子大小 $a$
+  n_points: 徑向網格點數 $M$

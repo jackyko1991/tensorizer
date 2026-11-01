@@ -1,0 +1,23 @@
+source_hash: a93d458517c4
+title: Tracé de chemins Monte-Carlo d'une boîte de Cornell
+summary: 'Le rendu photoréaliste résout l''équation du rendu par Monte-Carlo. Chaque rayon de caméra de chaque échantillon est tracé en un seul lot à travers une boîte faite de plans et de sphères : rebonds pondérés par le cosinus, un rayon d''ombre vers la source surfacique à chaque intersection, et roulette russe pour terminer les chemins. Observez le bruit décroître en $1/\sqrt{N}$ et les murs rouge et vert déteindre sur les murs blancs, ce que seul l''éclairage global capture.'
+notes: 'L''équation du rendu pour une surface diffuse (lambertienne) dit que la lumière qui quitte un point est son émission plus la fraction réfléchie $\rho$ de toute la lumière incidente. La lumière incidente est à son tour la lumière sortante d''autres surfaces, donc l''intégrale est récursive. Un traceur de chemins la remplace par des chemins aléatoires. L''échantillonnage pondéré par le cosinus ($p = \cos\theta/\pi$) annule la BRDF et le cosinus, si bien que le débit ne prend qu''un facteur $\rho$ par rebond. À chaque intersection, un rayon d''ombre vers un point aléatoire de la source ajoute la lumière directe (estimation de l''événement suivant), ce qui est beaucoup moins bruité que d''attendre qu''un rebond touche par hasard la petite source. Seule la lumière de la première intersection donne l''image en éclairage direct. Chaque rebond supplémentaire ajoute de la lumière indirecte : un éclairage d''appoint doux dans les ombres, un plafond plus lumineux et un débordement de couleur
+  rouge et vert. Le test du four dans la suite de tests vérifie l''estimateur. Une boîte fermée dont tous les murs émettent $L_e$ et réfléchissent $\rho$ doit avoir partout la radiance $L_e/(1-\rho)$. Avec l''échantillonnage en cosinus, on l''obtient avec une variance nulle. L''erreur décroît en $1/\sqrt N$ car chaque pixel est une moyenne de $N$ échantillons indépendants. Diviser le bruit par deux coûte quatre fois plus d''échantillons, c''est pourquoi les moteurs de rendu de production utilisent des débruiteurs.'
+meanings:
+- 'origine et direction du rayon $r = (s, p)$ : $N$ échantillons décalés aléatoirement pour chacun des $P$ pixels, un seul lot'
+- le plan $p$ est $n_{pi} x_i = d_p$, découpé par une boîte englobante ; la source est un petit plan
+- distance de chaque rayon à chaque plan ; $i$, $j$ répétés ⇒ somme
+- racines de $\lvert o + t\omega - c\rvert^2 = r^2$ pour chaque rayon et chaque sphère
+- 'intersection la plus proche le long de chaque rayon : quelle primitive, où, et sa normale'
+- 'direction suivante : point uniforme dans un disque relevé sur l''hémisphère ; $f\cos\theta/p = \rho$'
+- 'débit du chemin : quelle part de la lumière trouvée au rebond $k$ atteint la caméra'
+- 'estimation de l''événement suivant : un rayon d''ombre vers un point aléatoire $y$ de la source surfacique'
+- 'roulette russe : terminer au hasard les chemins faibles mais repondérer les survivants, de sorte que la moyenne reste inchangée'
+- 'la couleur du pixel : moyenne sur l''indice d''échantillon $s$'
+labels:
+  resolution: Taille de l'image
+  spp: Échantillons par pixel $N$
+  reference_spp: Échantillons par pixel de référence
+  bounces: Rebonds (avant la roulette)
+  termination: Terminaison des chemins
+  light_power: Radiance de la source $L_e$

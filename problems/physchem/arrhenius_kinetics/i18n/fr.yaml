@@ -1,0 +1,24 @@
+source_hash: 65c4646e64b8
+title: Lois de vitesse et diagramme d'Arrhenius
+summary: À quelle vitesse une réaction se déroule-t-elle, et combien plus vite quand il fait plus chaud ? Les lois de vitesse d'ordre zéro, un et deux sont intégrées pour six températures à la fois dans un seul tenseur $(O, T)$, avec $k(T) = A\,e^{-E_a/RT}$. Une expérience synthétique bruitée révèle ensuite son ordre (quel tracé de $[A]$, $\ln[A]$ ou $1/[A]$ est une droite ?) et son énergie d'activation (une droite des moindres carrés de $\ln k$ en fonction de $1/T$).
+notes: 'Chaque loi de vitesse a une forme intégrée qui devient une droite dans la bonne variable : $[A] = [A]_0 - kt$ (ordre zéro), $\ln[A] = \ln[A]_0 - kt$ (ordre un) et $1/[A] = 1/[A]_0 + kt$ (ordre deux). Un chimiste trace donc les trois et garde le plus rectiligne ($R^2$ le plus proche de 1) ; sa pente vaut $\mp k$. Un second test utilise les temps de demi-réaction : comme $t_{1/2} \propto [A]_0^{1-n}$, le temps pour passer de $[A]_0/2$ à $[A]_0/4$ vaut $2^{n-1}$ fois le premier temps de demi-réaction (plus court, égal ou deux fois plus long), ce qui donne $n = 1 + \log_2(t_{1/2}^{(2)}/t_{1/2}^{(1)})$. Répéter l''expérience à plusieurs températures donne $k(T)$, et le diagramme d''Arrhenius de $\ln k$ en fonction de $1/T$ est une droite de pente $-E_a/R$. Avec $E_a = 75$ kJ/mol, passer de 290 K à 300 K accélère la réaction d''un facteur 2,8 environ ; la vieille règle empirique « deux fois plus vite tous les 10 K » correspond à $E_a \approx 50$ kJ/mol près de la température ambiante.
+  Chaque expérience est suivie jusqu''à ce que 90 % de A ait réagi, donc les expériences à froid durent bien plus longtemps que celles à chaud (voir la légende) ; le graphique de gauche utilise la fraction du temps de chaque expérience pour que les six tiennent sur un même axe, ce qui ne change pas le tracé qui est rectiligne. Les données sont synthétiques (une réaction inventée, un bruit gaussien avec une graine fixe). Prendre $\ln$ ou $1/x$ amplifie le bruit des points tardifs et dilués ($\sigma/[A]$ et $\sigma/[A]^2$), donc chaque point est pondéré par $(dg/d[A])^{-2}$, c''est-à-dire par $1$, $[A]^2$ ou $[A]^4$, et les points sous 2 % de $[A]_0$ sont écartés. Essayez un bruit plus grand pour voir le test du $R^2$ devenir moins tranché, ou une gamme de températures plus étroite pour voir l''erreur sur $E_a$ augmenter.'
+meanings:
+- six températures entre $T_{min}$ et $T_{max}$ (K)
+- ordres de réaction $0, 1, 2$, intégrés côte à côte
+- constante de vitesse d'Arrhenius, en $\mathrm{M}^{1-n}\,\mathrm{s^{-1}}$
+- vitesse de chaque expérience ; aucun indice sommé, $k_t$ est diffusé sur les ordres
+- chaque expérience est suivie jusqu'à 90 % de conversion, sur sa propre horloge $t = \tau\,t_{end}$
+- trajectoire RK4, comparée aux lois intégrées exactes dans les tests
+- les trois tracés en fonction de $t$ ; seul le bon ordre donne une droite
+- matrice de conception d'un ajustement linéaire
+- matrice des équations normales ; $s$ (les échantillons) sommé ; poids $w_s = (dg/d[A])^{-2}$, et $w_s = 0$ écarte les points sous 2 % de $[A]_0$
+- ordonnée à l'origine et pente, pour chaque tracé et chaque température à la fois
+- 'droite d''Arrhenius : pente $-E_a/R$, ordonnée à l''origine $\ln A$'
+labels:
+  Ea: Énergie d'activation $E_a$
+  log10_A: Facteur pré-exponentiel $\log_{10} A$
+  order: Ordre de la réaction mesurée
+  T_min: Température minimale $T_{min}$
+  T_max: Température maximale $T_{max}$
+  noise: Bruit de mesure $\sigma$

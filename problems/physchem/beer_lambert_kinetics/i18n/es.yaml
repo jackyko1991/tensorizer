@@ -1,0 +1,21 @@
+source_hash: 26b3bf83c6f6
+title: Espectros de Beer–Lambert de A → B → C
+summary: Un espectrofotómetro sigue la reacción consecutiva $A \to B \to C$. El espectro de una mezcla es un producto matricial, $D = l\,E\,c$ (longitudes de onda × especies), así que los perfiles de concentración se recuperan de espectros con ruido por mínimos cuadrados con la pseudoinversa $E^{+}$. Observa los puntos isosbésticos, donde los espectros no se mueven mientras transcurre una etapa.
+notes: 'Cada especie absorbe luz en proporción a su concentración y a la longitud del camino óptico, $D = \varepsilon\,l\,c$, y las absorbancias de una mezcla simplemente se suman. Escrito para todas las longitudes de onda y todos los tiempos a la vez, esto es el producto matricial $D_{tw} = l\,E_{ws}c_{ts}$, así que con más longitudes de onda que especies las concentraciones se obtienen de un sistema lineal sobredeterminado, resuelto por mínimos cuadrados: $\hat c = E^{+}D/l$ con la pseudoinversa $E^{+} = (E^{\mathsf T}E)^{-1}E^{\mathsf T}$. Esto solo funciona si los espectros puros son claramente distintos; el número de condición de $E$ que se imprime en el terminal indica cuánto se amplifica el ruido. La cinética $A \to B \to C$ es un sistema lineal $\dot{\mathbf c} = K\mathbf c$, resuelto exactamente con la exponencial de matriz: $[A]$ decae, $[B]$ sube y baja (con su máximo en $t = \ln(k_1/k_2)/(k_1 - k_2)$) y $[C]$ crece, mientras $[A] + [B] + [C]$ se mantiene constante porque cada
+  columna de $K$ suma cero. Puntos isosbésticos: si solo ocurre $A \to B$, $D = l(\varepsilon_A[A] + \varepsilon_B[B])$ con $[A] + [B]$ fijo, así que a una longitud de onda donde $\varepsilon_A = \varepsilon_B$ la absorbancia no puede cambiar. Un punto isosbéstico nítido es el signo clásico de una conversión limpia entre dos especies; aquí el cruce pasa de $\varepsilon_A = \varepsilon_B$ (al principio) a $\varepsilon_B = \varepsilon_C$ (al final), y en medio se difumina porque coexisten tres especies. Pon $k_2 = 0$ para ver un punto isosbéstico perfecto, o $k_2 \approx k_1$ para verlo desaparecer. Los espectros son bandas gaussianas sintéticas con absortividades típicas de colorantes ($\sim 10^4$ L mol$^{-1}$ cm$^{-1}$), en una cubeta de 1 cm.'
+meanings:
+- 300–700 nm en pasos de 2 nm
+- absortividad molar de cada especie (bandas gaussianas sintéticas, L mol$^{-1}$ cm$^{-1}$)
+- matriz de velocidades de $A \to B \to C$; cada columna suma 0 (balance de materia)
+- concentraciones exactas en cada instante de muestreo; $r$ sumado
+- 'Beer–Lambert para una mezcla: las absorbancias se suman, especie $s$ sumada'
+- matriz de solapamiento (de Gram) de los espectros puros; $w$ sumado
+- pseudoinversa; igual a torch.linalg.pinv(E) cuando los espectros son independientes
+- concentraciones por mínimos cuadrados a partir de cada espectro con ruido; $w$ sumado
+- punto isosbéstico de la etapa $A \to B$ (igual para $B \to C$)
+labels:
+  k1: Constante de velocidad $k_1$ ($A \to B$)
+  k2: Constante de velocidad $k_2$ ($B \to C$)
+  t_end: Duración del experimento
+  c0: $[A]_0$ inicial
+  noise: Ruido del detector $\sigma$ (absorbancia)

@@ -1,0 +1,50 @@
+title: 'Chemical equilibrium by Gibbs energy minimisation'
+category: chemistry
+level: advanced
+order: 1
+summary: >
+  What comes out of a methane–air flame? At fixed $T$ and $P$ the products settle where the Gibbs energy
+  $G = \sum_j n_j \mu_j$ is lowest, subject to conservation of every element, $A_{ij} n_j = b_i$. A batched Newton
+  method (the RAND method) solves 10 species at a whole range of temperatures at once, shows CO₂ and H₂O falling
+  apart into CO, H₂, OH, H and O as the gas gets hotter, and finds the adiabatic flame temperature.
+animated: true
+vector_form: '\min_{\mathbf n > 0}\; G(\mathbf n) = \sum_j n_j\Big[\mu^\circ_j(T) + RT\ln\frac{n_j P}{n_{\mathrm{tot}}P^\circ}\Big]\quad\text{s.t.}\quad A\,\mathbf n = \mathbf b,\qquad \frac{\boldsymbol\mu}{RT} = A^{\mathsf T}\boldsymbol\pi,\qquad H_{\mathrm{prod}}(T_{ad}) = H_{\mathrm{react}}'
+index_form: '\frac{G_b}{RT_b} = n_{bj}\big(g_{bj} + \ln n_{bj} - \ln n_{\mathrm{tot},b} + \ln P\big),\qquad A_{ij}\,n_{bj} = b_i,\qquad \big[A_{ij}n_{bj}A_{lj}\big]\,\pi_{bl} + \big[A_{ij}n_{bj}\big]\,\Delta\ln n_{\mathrm{tot},b} = r_{bi},\qquad \Delta\ln n_{bj} = -\frac{\mu_{bj}}{RT} + \pi_{bi}A_{ij} + \Delta\ln n_{\mathrm{tot},b}'
+translation:
+  - {symbol: 'A_{ij}', code: 'element_matrix(dev)', shape: '(E, S) = (4, 10)', meaning: 'atoms of element $i$ (C, H, O, N) in species $j$ (CO₂, H₂O, CO, H₂, O₂, N₂, OH, H, O, NO)'}
+  - {symbol: 'b_i', code: 'feed(phi)', shape: '(F, E)', meaning: 'atoms fed in by CH₄ + $(2/\varphi)$(O₂ + 3.76 N₂), one row per equivalence ratio $\varphi$'}
+  - {symbol: 'T_b', code: 'temperatures(T_min, T_max, n)', shape: '(B,)', meaning: 'the batch: every temperature is an independent minimisation, solved together'}
+  - {symbol: 'g_{bj} = \mu^\circ_j(T_b)/RT_b', code: 'standard_potential(T, th)', shape: '(B, S)', meaning: '$[H_j(T) - T S_j(T)]/RT$ from $\Delta_f H^\circ$, $S^\circ$ and a constant $c_p$'}
+  - {symbol: 'G_b/RT_b = n_{bj}\mu_{bj}/RT_b', code: "einsum('bj,bj->b', n, mu)", shape: '(B,)', meaning: 'repeated $j$ ⇒ summed: the Gibbs energy of each mixture'}
+  - {symbol: 'A_{ij}n_{bj}', code: "einsum('ij,bj->bi', A, n)", shape: '(B, E)', meaning: 'atoms of each element present; equals $b_i$ at the solution'}
+  - {symbol: 'A_{ij}\,n_{bj}\,A_{lj}', code: "einsum('ij,bj,lj->bil', A, n, A)", shape: '(B, E, E)', meaning: '$j$ summed: the Newton matrix, a weighted $A\,\mathrm{diag}(n)\,A^{\mathsf T}$ per row'}
+  - {symbol: '\pi_{bi},\ \Delta\ln n_{\mathrm{tot},b}', code: 'torch.linalg.solve(J, rhs)', shape: '(B, E+1)', meaning: 'one small $(E{+}1)\times(E{+}1)$ system per temperature, all solved in one call'}
+  - {symbol: '\Delta\ln n_{bj}', code: 'species_update(A, mu, pi, dln_ntot)', shape: '(B, S)', meaning: '$-\mu_{bj}/RT + \pi_{bi}A_{ij} + \Delta\ln n_{\mathrm{tot}}$, $i$ summed; damped like NASA CEA'}
+  - {symbol: '\partial (G/RT)/\partial n_{bj}', code: 'torch.autograd.grad(gibbs(n, g, P).sum(), n)', shape: '(B, S)', meaning: 'autograd check: equals $\pi_{bi}A_{ij}$ at the minimum (Lagrange condition)'}
+  - {symbol: 'H_b = n_{bj}\,h_j(T_b)', code: 'enthalpy(n, T, th)', shape: '(F,)', meaning: 'product enthalpy; bisection on $T$ until it equals the reactant enthalpy: $T_{ad}$'}
+notes: >
+  Why minimise $G$? At constant $T$ and $P$ the second law says a closed system can only lower its Gibbs energy,
+  so equilibrium is the lowest point of $G$ that keeps every atom: a constrained minimisation. With Lagrange
+  multipliers $\pi_i$ (one per element) the condition is $\mu_j/RT = \sum_i \pi_i A_{ij}$: each species' chemical
+  potential is the sum of the "element potentials" of its atoms. This replaces a list of equilibrium constants
+  (one per reaction) by one optimisation over all species, which is how codes such as NASA CEA, STANJAN and Cantera
+  compute flames, rocket exhausts and atmospheres. The solver here is the RAND method in the Gordon–McBride form
+  (NASA RP-1311): Newton's method on $\ln n_j$, eliminated down to a small $(E{+}1)\times(E{+}1)$ system for
+  $\pi_i$ and $\Delta\ln n_{tot}$, with the step limited so major species change by at most $e^2$ per step.
+  Working in logarithms keeps trace species of mole fraction $10^{-30}$ positive and exact. The console prints the
+  two optimality checks (element balance and $\mu_j/RT = \pi_i A_{ij}$, both near machine precision) and an autograd
+  check: differentiating $G/RT$ with torch gives back $\pi_i A_{ij}$. What to look for: below about 1500 K the
+  products are just CO₂, H₂O and N₂ (plus O₂ when lean); above 2000 K they dissociate (CO₂ → CO + ½O₂,
+  H₂O → OH + ½H₂, then into atoms), because the entropy term $-T\,S$ wins over the bond enthalpy. Dissociation
+  absorbs heat, so the equilibrium flame is about 100 K cooler than one whose products stayed intact (lower right),
+  and the hottest flame burns slightly rich of stoichiometric. Raise $P$ to see Le Chatelier: fewer molecules are
+  favoured, so dissociation is suppressed. Data: $\Delta_f H^\circ$(298 K) and $S^\circ$(298 K) are rounded values
+  from the NIST-JANAF tables. The heat capacities are illustrative constants (roughly the mean $c_p$ from 298 to
+  2000 K), not tabulated functions of $T$, so the compositions are semi-quantitative: this model gives
+  $T_{ad} \approx 2260$ K for stoichiometric methane–air at 1 bar, where accurate thermochemistry gives about
+  2225 K. Simplifications: ideal gases, no condensed phases (no soot, no liquid water), no CH₄ or other
+  hydrocarbons among the products, and equilibrium only: real flames freeze CO and NO by kinetics, not thermodynamics.
+params:
+  phi: {default: 1.0, min: 0.6, max: 1.5, step: 0.05, label: 'Equivalence ratio $\varphi$ (fuel / stoichiometric fuel)'}
+  P_bar: {default: 1.0, min: 0.1, max: 100, step: 0.1, label: 'Pressure $P$', unit: bar}
+  T_max: {default: 3500.0, min: 2500, max: 4000, step: 100, label: 'Highest temperature of the sweep', unit: K}

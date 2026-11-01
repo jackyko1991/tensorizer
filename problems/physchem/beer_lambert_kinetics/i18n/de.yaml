@@ -1,0 +1,21 @@
+source_hash: 26b3bf83c6f6
+title: Lambert-Beer-Spektren von A → B → C
+summary: Ein Spektralphotometer verfolgt die Folgereaktion $A \to B \to C$. Das Spektrum eines Gemischs ist ein Matrixprodukt, $D = l\,E\,c$ (Wellenlängen × Spezies), sodass sich die Konzentrationsverläufe aus verrauschten Spektren per kleinster Quadrate mit der Pseudoinversen $E^{+}$ zurückgewinnen lassen. Achte auf die isosbestischen Punkte, an denen die Spektren stillstehen, während ein Schritt abläuft.
+notes: 'Jede Spezies absorbiert Licht proportional zu ihrer Konzentration und der Schichtdicke, $D = \varepsilon\,l\,c$, und die Extinktionen eines Gemischs addieren sich einfach. Für alle Wellenlängen und Zeiten gleichzeitig geschrieben ist das das Matrixprodukt $D_{tw} = l\,E_{ws}c_{ts}$; mit mehr Wellenlängen als Spezies folgen die Konzentrationen also aus einem überbestimmten linearen System, gelöst mit kleinsten Quadraten: $\hat c = E^{+}D/l$ mit der Pseudoinversen $E^{+} = (E^{\mathsf T}E)^{-1}E^{\mathsf T}$. Das funktioniert nur, wenn sich die Reinspektren deutlich unterscheiden; die im Terminal ausgegebene Konditionszahl von $E$ sagt, wie stark das Rauschen verstärkt wird. Die Kinetik $A \to B \to C$ ist ein lineares System $\dot{\mathbf c} = K\mathbf c$, exakt gelöst mit der Matrixexponentialfunktion: $[A]$ fällt, $[B]$ steigt und fällt wieder (mit Maximum bei $t = \ln(k_1/k_2)/(k_1 - k_2)$), und $[C]$ wächst, während $[A] + [B] + [C]$ konstant bleibt, weil jede Spalte von $K$ die
+  Summe null hat. Isosbestische Punkte: Läuft nur $A \to B$ ab, gilt $D = l(\varepsilon_A[A] + \varepsilon_B[B])$ mit festem $[A] + [B]$, also kann sich die Extinktion bei einer Wellenlänge mit $\varepsilon_A = \varepsilon_B$ nicht ändern. Ein scharfer isosbestischer Punkt ist das klassische Zeichen einer sauberen Umwandlung zwischen zwei Spezies; hier wandert der Schnittpunkt von $\varepsilon_A = \varepsilon_B$ (früh) zu $\varepsilon_B = \varepsilon_C$ (spät) und verschwimmt dazwischen, weil drei Spezies nebeneinander vorliegen. Setze $k_2 = 0$, um einen perfekten isosbestischen Punkt zu sehen, oder $k_2 \approx k_1$, um ihn verschwinden zu sehen. Die Spektren sind synthetische Gauß-Banden mit farbstofftypischen Extinktionskoeffizienten ($\sim 10^4$ L mol$^{-1}$ cm$^{-1}$) in einer 1-cm-Küvette.'
+meanings:
+- 300–700 nm in Schritten von 2 nm
+- molarer Extinktionskoeffizient jeder Spezies (synthetische Gauß-Banden, L mol$^{-1}$ cm$^{-1}$)
+- Geschwindigkeitsmatrix von $A \to B \to C$; jede Spalte summiert sich zu 0 (Massenbilanz)
+- exakte Konzentrationen zu jedem Messzeitpunkt; $r$ summiert
+- 'Lambert-Beer für ein Gemisch: Extinktionen addieren sich, Spezies $s$ summiert'
+- Überlapp-(Gram-)Matrix der Reinspektren; $w$ summiert
+- Pseudoinverse; gleich torch.linalg.pinv(E), wenn die Spektren unabhängig sind
+- Konzentrationen nach kleinsten Quadraten aus jedem verrauschten Spektrum; $w$ summiert
+- isosbestischer Punkt des Schritts $A \to B$ (ebenso $B \to C$)
+labels:
+  k1: Geschwindigkeitskonstante $k_1$ ($A \to B$)
+  k2: Geschwindigkeitskonstante $k_2$ ($B \to C$)
+  t_end: Laufzeit
+  c0: Anfangswert $[A]_0$
+  noise: Detektorrauschen $\sigma$ (Extinktion)

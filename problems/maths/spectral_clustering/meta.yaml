@@ -1,0 +1,43 @@
+title: Spectral clustering and the graph Laplacian
+category: maths
+level: advanced
+order: 2
+summary: >
+  Turn a cloud of points into a graph (Gaussian weights on $k$-nearest-neighbour edges), build the graph Laplacian
+  $L = D - W$ and its normalised form $L_{sym}$ as tensors, and read the clusters off its lowest eigenvectors. Two
+  moons and concentric rings, where plain k-means fails, are separated perfectly; the same Laplacian on a grid gives
+  the vibration modes of a drum.
+animated: true
+vector_form: 'L = D - W,\qquad L_{sym} = I - D^{-1/2} W D^{-1/2},\qquad \mathbf f^{\mathsf T} L\,\mathbf f = \tfrac12 \sum_{ij} W_{ij}(f_i - f_j)^2 \ge 0,\qquad L_{sym}\,\mathbf u_m = \lambda_m \mathbf u_m'
+index_form: 'W_{ij} = e^{-(x_{ia}-x_{ja})(x_{ia}-x_{ja})/2\sigma^2}\,[ij \in \text{kNN}],\qquad d_i = W_{ij}1_j,\qquad L_{ij} = d_i\delta_{ij} - W_{ij},\qquad f_iL_{ij}f_j = \tfrac12 W_{ij}(f_i-f_j)^2'
+translation:
+  - {symbol: 'x_{ia}', code: 'points(name, n, noise, seed, dev)', shape: '(N, 2)', meaning: 'point $i$, coordinate $a$: two moons, two rings or three blobs, with true labels for scoring'}
+  - {symbol: '(x_{ia}-x_{ja})(x_{ia}-x_{ja})', code: "sq[:, None] + sq[None, :] - 2 * einsum('ia,ja->ij', x, x)", shape: '(N, N)', meaning: 'repeated $a$ ⇒ summed: all squared distances at once'}
+  - {symbol: 'W_{ij}', code: 'gaussian_knn_weights(d2, sigma, k)', shape: '(N, N)', meaning: 'Gaussian similarity kept only if $j$ is one of the $k$ nearest neighbours of $i$ or the other way round; symmetric, zero diagonal'}
+  - {symbol: 'd_i = W_{ij}1_j', code: "einsum('ij->i', w)", shape: '(N,)', meaning: 'repeated $j$ ⇒ summed: the degree of each point'}
+  - {symbol: 'L_{ij}', code: 'torch.diag(degrees(w)) - w', shape: '(N, N)', meaning: 'every row sums to 0, so the constant vector has eigenvalue 0'}
+  - {symbol: '(L_{sym})_{ij}', code: "eye - einsum('i,ij,j->ij', s, w, s)", shape: '(N, N)', meaning: '$s_i = d_i^{-1/2}$; no sum, $i$ and $j$ stay free'}
+  - {symbol: '\lambda_m,\ u_{im}', code: 'torch.linalg.eigh(L_sym)', shape: '(N,), (N, N)', meaning: 'eigenvalues ascending; the first $k$ eigenvectors, rows scaled to unit length, are the spectral embedding'}
+  - {symbol: 'u_{i1..k} \to \text{k-means}', code: 'kmeans(u, k, seed)', shape: '(N,)', meaning: 'Lloyd iterations with k-means++ starts; in the embedding the clusters are tight blobs'}
+notes: >
+  Why it works: $f^{\mathsf T} L f = \frac12\sum_{ij} W_{ij}(f_i - f_j)^2$ is a sum of squares, so $L$ is positive
+  semi-definite, and it is zero only if $f$ is constant across every edge, that is constant on each connected
+  component. The number of zero eigenvalues is therefore exactly the number of components (compare the two counts in the
+  terminal), and the indicator vectors of the components span that eigenspace. When clusters are joined by only a few
+  weak edges, the eigenvalues are small instead of zero and the eigenvectors are close to indicators; minimising
+  $f^{\mathsf T}Lf$ is a relaxed version of cutting the fewest edges, the normalised cut of Shi and Malik (2000). The
+  second eigenvector (the Fiedler vector) gives the best two-way split. Plain k-means draws straight boundaries
+  around centres, so it cuts the moons and rings in half; in the embedding (top row, watch the points slide) the
+  clusters are separated blobs, and k-means works. The large gap in the spectrum after the $k$-th eigenvalue is a
+  hint for the number of clusters. On a $g\times g$ grid graph $L = L_1\otimes I + I\otimes L_1$ is minus the discrete
+  Laplacian with free (Neumann) edges, so its eigenvectors are the standing waves
+  $\cos\frac{\pi a (i+\frac12)}{g}\cos\frac{\pi b (j+\frac12)}{g}$ with $\lambda = (2 - 2\cos\frac{\pi a}{g}) + (2 - 2\cos\frac{\pi b}{g})$:
+  the same modes as the vibrating drum in the waves topic (which has clamped edges instead). Modes $(a, b)$ and $(b, a)$ share an eigenvalue, and eigh returns some mixture of the pair, which is why some look diagonal. Results depend on $\sigma$ and $k$: too few
+  neighbours split a cluster into pieces, too many add bridges between clusters. Further reading: U. von Luxburg,
+  A tutorial on spectral clustering (2007); Ng, Jordan and Weiss (2001).
+params:
+  n_points: {default: 300, min: 100, max: 1000, step: 50, type: int, label: 'Points per data set $N$'}
+  noise: {default: 0.08, min: 0.0, max: 0.15, step: 0.01, label: Noise}
+  k_neighbours: {default: 10, min: 3, max: 30, step: 1, type: int, label: 'Nearest neighbours $k$'}
+  sigma: {default: 0.2, min: 0.05, max: 1.0, step: 0.05, label: 'Kernel width $\sigma$'}
+  grid: {default: 24, min: 10, max: 40, step: 2, type: int, label: 'Grid graph side $g$'}

@@ -1,0 +1,21 @@
+source_hash: 4a434cf0af06
+title: Partitionnement spectral et laplacien de graphe
+summary: Transformez un nuage de points en graphe (poids gaussiens sur les arêtes des $k$ plus proches voisins), construisez le laplacien du graphe $L = D - W$ et sa forme normalisée $L_{sym}$ sous forme de tenseurs, et lisez les groupes sur ses vecteurs propres les plus bas. Deux lunes et des anneaux concentriques, où les k-moyennes simples échouent, sont parfaitement séparés ; le même laplacien sur une grille donne les modes de vibration d'un tambour.
+notes: 'Pourquoi cela marche : $f^{\mathsf T} L f = \frac12\sum_{ij} W_{ij}(f_i - f_j)^2$ est une somme de carrés, donc $L$ est semi-définie positive, et cette quantité n''est nulle que si $f$ est constant le long de chaque arête, c''est-à-dire constant sur chaque composante connexe. Le nombre de valeurs propres nulles est donc exactement le nombre de composantes (comparez les deux décomptes dans le terminal), et les vecteurs indicateurs des composantes engendrent cet espace propre. Quand des groupes ne sont reliés que par quelques arêtes faibles, les valeurs propres sont petites au lieu d''être nulles et les vecteurs propres sont proches des indicateurs ; minimiser $f^{\mathsf T}Lf$ est une version relâchée de la coupe du plus petit nombre d''arêtes, la coupe normalisée de Shi et Malik (2000). Le deuxième vecteur propre (le vecteur de Fiedler) donne la meilleure partition en deux. Les k-moyennes simples tracent des frontières droites autour de centres, elles coupent donc les lunes et les
+  anneaux en deux ; dans le plongement (ligne du haut, regardez les points glisser), les groupes sont des amas séparés, et les k-moyennes fonctionnent. Le grand écart dans le spectre après la $k$-ième valeur propre est un indice du nombre de groupes. Sur un graphe en grille $g\times g$, $L = L_1\otimes I + I\otimes L_1$ est l''opposé du laplacien discret avec bords libres (Neumann), donc ses vecteurs propres sont les ondes stationnaires $\cos\frac{\pi a (i+\frac12)}{g}\cos\frac{\pi b (j+\frac12)}{g}$ avec $\lambda = (2 - 2\cos\frac{\pi a}{g}) + (2 - 2\cos\frac{\pi b}{g})$ : les mêmes modes que le tambour vibrant du thème des ondes (qui a, lui, des bords fixés). Les modes $(a, b)$ et $(b, a)$ partagent une valeur propre, et eigh renvoie un certain mélange des deux, c''est pourquoi certains paraissent diagonaux. Les résultats dépendent de $\sigma$ et de $k$ : trop peu de voisins coupent un groupe en morceaux, trop de voisins ajoutent des ponts entre les groupes. Pour aller plus loin : U. von
+  Luxburg, A tutorial on spectral clustering (2007) ; Ng, Jordan et Weiss (2001).'
+meanings:
+- 'point $i$, coordonnée $a$ : deux lunes, deux anneaux ou trois amas, avec les vraies étiquettes pour l''évaluation'
+- '$a$ répété ⇒ sommé : toutes les distances au carré à la fois'
+- similarité gaussienne conservée seulement si $j$ est l'un des $k$ plus proches voisins de $i$ ou inversement ; symétrique, diagonale nulle
+- '$j$ répété ⇒ sommé : le degré de chaque point'
+- chaque ligne a une somme nulle, donc le vecteur constant a la valeur propre 0
+- $s_i = d_i^{-1/2}$ ; pas de somme, $i$ et $j$ restent libres
+- valeurs propres croissantes ; les $k$ premiers vecteurs propres, avec des lignes normalisées à 1, forment le plongement spectral
+- itérations de Lloyd avec initialisation k-means++ ; dans le plongement, les groupes sont des amas compacts
+labels:
+  n_points: Points par jeu de données $N$
+  noise: Bruit
+  k_neighbours: Plus proches voisins $k$
+  sigma: Largeur du noyau $\sigma$
+  grid: Côté du graphe en grille $g$

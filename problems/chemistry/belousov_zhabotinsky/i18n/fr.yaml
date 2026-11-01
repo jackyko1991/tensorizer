@@ -1,0 +1,22 @@
+source_hash: 8b3f5bebfbdf
+title: Oscillateur de Belousov–Zhabotinsky (Oregonator)
+summary: Un bécher agité de bromate, d'acide malonique et d'un catalyseur au cérium change de couleur comme une horloge. L'Oregonator réduit à deux variables est une EDO raide ; un pas production–perte positif (Patankar) intègre tout un lot de facteurs stœchiométriques $f$ à la fois, la trace de la jacobienne localise les deux bifurcations de Hopf qui bornent les oscillations, et la même cinétique avec diffusion transforme une onde brisée en spirale tournante.
+notes: 'La réaction de Belousov–Zhabotinsky (découverte par Belousov dans les années 1950, expliquée par Field, Kőrös et Noyes en 1972) oxyde l''acide malonique par le bromate. Les ions bromure inhibent la production autocatalytique de $\mathrm{HBrO_2}$ ; tant que le bromure est présent la réaction se traîne, une fois qu''il est épuisé $\mathrm{HBrO_2}$ explose et oxyde le catalyseur (le changement de couleur), puis le catalyseur oxydé produit du nouveau bromure, ce qui éteint la bouffée. L''Oregonator condense cela en quelques étapes puis, après adimensionnement et élimination du bromure rapide, en deux équations. Les constantes $\varepsilon \approx 0.04$ et $q \approx 8\times10^{-4}$ sont des valeurs approximatives issues d''ajustements des constantes de vitesse de Field–Kőrös–Noyes ; les recettes diffèrent, et les valeurs publiées aussi. Comme $\varepsilon$ et $q$ sont petits, l''équation en $x$ est raide : $x$ saute d''un facteur d''environ mille en un temps de l''ordre de $\varepsilon$,
+  puis rampe le long d''une branche de son isocline. Un RK4 ordinaire a besoin de pas d''environ $5\times10^{-4}$ pour rester stable ; écrire $\varepsilon\dot x$ comme production moins perte et traiter la perte implicitement garde $x$ positif pour n''importe quel pas, et $\Delta t = 2\times10^{-3}$ donne la période à mieux que 1 % près. L''état stationnaire (l''intersection des deux isoclines) est stable lorsqu''il se trouve sur une branche extérieure de la courbe en N $\dot x = 0$ et instable sur la branche du milieu, où un cycle limite l''entoure ; la trace de $J$ change de signe aux deux points de Hopf, vers $f = 0.5$ et $f = 2.4$ pour $q$ petit. Essayez un $\varepsilon$ plus grand : la fenêtre se rétrécit puis se ferme. Dans une couche mince non agitée, le catalyseur reste en place tandis que $\mathrm{HBrO_2}$ diffuse, si bien qu''une onde d''oxydation parcourt la boîte ; un front d''onde brisé s''enroule à son extrémité libre en la célèbre spirale tournante, dont la période de rotation
+  est plus courte que l''oscillation en volume, si bien qu''elle envahit tout le milieu.'
+meanings:
+- facteur stœchiométrique (bromure produit par catalyseur réduit) de la réaction $b$, de $0.3$ à $3$
+- $[\mathrm{HBrO_2}]$ (autocatalyseur) et $[\mathrm{Ce^{4+}}]$ (catalyseur oxydé) adimensionnés de chaque réaction
+- vitesses de gain et de perte non négatives avec $\varepsilon\dot x = P - Lx$
+- 'Patankar–Euler : pertes implicites, gains explicites, donc $x$ reste positif quelle que soit la raideur'
+- racine positive de $x^2 + (f + q - 1)x - q(1 + f) = 0$
+- cinétique linéarisée $\partial \dot y_\alpha / \partial y_\beta$ à l'état stationnaire
+- '$\alpha$ répété ⇒ sommé : la trace ; son changement de signe marque une bifurcation de Hopf'
+- la courbe en N $\dot x = 0$ du portrait de phase
+- stencil à 5 points avec bords à flux nul ; seul $x$ diffuse dans le milieu 2D
+labels:
+  f: Facteur stœchiométrique $f$ pour le portrait de phase et la spirale
+  eps: Rapport des échelles de temps $\varepsilon$ (approximatif)
+  t_max: Temps simulé
+  spiral: Onde spirale 2D
+  grid: Taille de la grille $n$

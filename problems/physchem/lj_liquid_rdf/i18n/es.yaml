@@ -1,0 +1,23 @@
+source_hash: cb188a4168d9
+title: 'Fluido de Lennard-Jones: dinámica molecular y función de distribución radial'
+summary: 'Quinientos átomos que interactúan mediante el potencial de Lennard-Jones en una caja periódica, integrados con Verlet de velocidades. Todos los vectores de pares viven en un solo tensor difundido con el convenio de la imagen mínima, y tres estados (gas, líquido cerca del punto triple y un sólido comprimido) se ejecutan como un solo lote. Un termostato de Berendsen fija la temperatura, sigue una simulación NVE que conserva la energía, y los histogramas de distancias entre pares dan $g(r)$: plana para el gas, capas amortiguadas para el líquido, picos nítidos de red para el sólido. El virial da la presión.'
+notes: 'Unidades reducidas: longitudes en $\sigma$, energías en $\varepsilon$, masa 1, $T^* = k_BT/\varepsilon$, tiempo $\tau = \sigma\sqrt{m/\varepsilon}$; para el argón $\sigma = 3.4$ Å, $\varepsilon/k_B = 120$ K, así que el estado líquido corresponde a unos 86 K. Esta es la simulación que Rahman realizó para el argón líquido en 1964 (Phys. Rev. 136, A405), con el integrador y el análisis de $g(r)$ que Verlet introdujo en 1967 (Phys. Rev. 159, 98). El potencial se corta en $r_c = 2.5\sigma$ y se desplaza para que valga cero allí, de modo que la energía sea continua; la presión recibe la corrección de cola estándar $\tfrac{16}{3}\pi\rho^2[\tfrac23 r_c^{-9} - r_c^{-3}]$, que supone $g = 1$ más allá del corte. El termostato de Berendsen reescala las velocidades hacia la temperatura objetivo; no produce fluctuaciones canónicas exactas, así que solo se usa para equilibrar, y las medidas proceden de una simulación NVE simple, donde la curva de energía plana comprueba el integrador. El gas y
+  el líquido empiezan calientes para que la red se funda. El primer pico de $g(r)$ del líquido está cerca del mínimo del potencial $2^{1/6}\sigma$, las capas siguientes están amortiguadas y $g \to 1$ hacia $3\sigma$; el sólido conserva los picos fcc. Para el gas, la presión se compara con el gas ideal y con la corrección del segundo coeficiente del virial $P = \rho T(1 + B_2\rho)$, con $B_2$ integrado numéricamente. Las simulaciones son cortas (unos pocos $\tau$), así que los promedios llevan un ruido estadístico de un pequeño porcentaje. El tensor completo de pares cuesta $O(N^2)$ por paso; los códigos de producción usan listas de celdas o de vecinos para llegar a millones de átomos.'
+meanings:
+- gas $(0.05, 1.5)$, líquido $(0.84, 0.72)$, sólido $(1.10, 0.60)$ en unidades reducidas
+- inicio en una red fcc, $N = 4n^3$ átomos, caja $L_s = (N/\rho_s)^{1/3}$
+- todos los vectores de pares a la vez por difusión, y luego llevados a la imagen más cercana
+- $a$ repetido ⇒ sumado
+- $-u^{\prime}(r)/r$, cero en la diagonal y más allá de $r_c = 2.5\sigma$
+- $j$ repetido ⇒ sumado; $d_{saji} = -d_{saij}$ da gratis la tercera ley de Newton
+- 'medio impulso, deriva (devuelta a la caja), nuevas fuerzas, medio impulso: reversible en el tiempo y conservando la energía'
+- termostato de Berendsen solo durante el equilibrado
+- $\rho T + W/3V$ más la corrección de cola para los pares más allá de $r_c$
+- pares por capa divididos por el número del gas ideal $\tfrac12 N\rho\,4\pi r^2\Delta r$
+labels:
+  rho_liquid: Densidad del líquido $\rho^*$
+  T_liquid: Temperatura del líquido $T^*$
+  n_cells: Celdas fcc por lado ($N = 4n^3$)
+  dt: Paso de tiempo $\Delta t$
+  equilibration_steps: Pasos de equilibrado
+  production_steps: Pasos de producción

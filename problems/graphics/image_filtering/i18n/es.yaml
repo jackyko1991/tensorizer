@@ -1,0 +1,22 @@
+source_hash: 35a326f71a76
+title: El filtrado de imágenes como convolución
+summary: Desenfoca, realza y detecta bordes en una imagen de prueba dibujada proceduralmente deslizando sobre ella un pequeño núcleo. Cada filtro lineal es una sola contracción $O_p = K_k P_{kp}$ sobre ventanas de píxeles desplegadas, igual que conv2d; el filtro gaussiano se separa en dos pasadas 1D, y el teorema de convolución lo convierte en un producto de transformadas de Fourier. Desenfoque de caja y gaussiano, bordes de Sobel, laplaciana de la gaussiana, máscara de enfoque (unsharp masking), y mediana frente a gaussiana con ruido de sal y pimienta.
+notes: 'La respuesta en frecuencia del filtro de caja es una sinc con ondulaciones que se vuelven negativas, así que deja pasar detalles finos, algunos con el signo invertido (las franjas del chirp se desvanecen y vuelven); la respuesta del gaussiano es otra gaussiana que cae suavemente a cero. La separabilidad importa para la velocidad: un núcleo $(2r+1)^2$ necesita $(2r+1)^2$ multiplicaciones por píxel, dos pasadas 1D solo $2(2r+1)$. Sobel (1968) combina una derivada con un suavizado; la laplaciana de la gaussiana responde donde la segunda derivada cruza por cero, y Canny (1986) se basa en los mismos gradientes suavizados con adelgazamiento e histéresis. La máscara de enfoque vuelve a sumar $\alpha(I - G * I)$, un refuerzo paso alto que también amplifica el ruido. La mediana no es lineal, así que no tiene núcleo ni respuesta en frecuencia, pero elimina los píxeles aislados de sal y pimienta que un gaussiano solo emborrona (compara el PSNR en el terminal). Cada capa de una red neuronal
+  convolucional es la misma operación de desplegar y contraer, con núcleos aprendidos.'
+meanings:
+- 'nivel de gris del píxel $(i, j)$: un degradado, un disco, un cuadrado, un triángulo y un chirp, más ruido'
+- los pesos del filtro, los mismos para cada píxel
+- $a, b$ repetidos ⇒ sumados sobre la ventana (una correlación, que PyTorch llama convolución)
+- la ventana alrededor del píxel $p$ como columna, $k = (a, b)$
+- '$k$ repetido ⇒ sumado: el mismo filtro como un solo einsum'
+- la gaussiana 2D es un producto exterior, así que puede aplicarse como una pasada por filas y otra por columnas
+- 'Sobel: suavizado $[1, 2, 1]$ en una dirección por diferencia $[-1, 0, 1]$ en la otra'
+- 'teorema de convolución: un producto punto a punto en el espacio de Fourier, igual a conv2d con relleno periódico'
+labels:
+  size: Tamaño de la imagen
+  sigma: Anchura de la gaussiana $\sigma$
+  box: Tamaño de la caja
+  amount: Realce $\alpha$
+  noise: Ruido gaussiano $\sigma_n$
+  salt_pepper: Fracción de sal y pimienta
+  median: Ventana de la mediana

@@ -1,0 +1,19 @@
+source_hash: ba1aea4b5f9d
+title: 黎曼 ζ 函数与素数
+summary: 在临界线 $\operatorname{Re} s = \frac12$ 上同时对数千个高度计算 $\zeta(s)$，以实函数 $Z(t)$ 的变号找出其前几个非平凡零点，并用布尔张量筛法计数素数。然后黎曼显式公式由零点重建阶梯函数 $\pi(x)$：每个零点贡献一个波，零点越多，平滑曲线就越锐化为素数处的台阶。
+notes: 级数 $\sum n^{-s}$ 只在 $\operatorname{Re} s > 1$ 时收敛；Euler–Maclaurin 公式把尾部变为一个积分加上伯努利修正项，从而把 $\zeta$ 延拓到除 $s = 1$ 处极点以外的整个平面。在临界线上 $Z(t) = e^{i\theta(t)}\zeta(\frac12 + it)$ 是实数，因此 $Z$ 的变号证明其间存在零点。计算出的零点与公开值 $14.134725\ldots$、$21.022040\ldots$、$25.010858\ldots$ 吻合到约 $10^{-9}$，高度 $T$ 以下找到的零点数与 Riemann–von Mangoldt 计数 $N(T) \approx \theta(T)/\pi + 1$ 一致，这验证了没有遗漏。作为对比，还展示了更快的 Riemann–Siegel 公式（主和加第一个修正项）：在前几个零点处其误差已只有 $10^{-3}$ 到 $10^{-2}$，并随 $t$ 增大而减小。素数定理指出 $\pi(x) \sim x/\ln x$，但 $\operatorname{li}(x)$ 要接近得多，而黎曼的 $R(x) = \sum_n \frac{\mu(n)}{n}\operatorname{li}(x^{1/n})$ 更接近（中间面板；用 Gram 级数计算）。Riemann（1859）证明剩余误差完全由零点承载：$J(x) = \sum_{p^m \le x} \frac1m$ 等于 $\operatorname{li}(x) - \sum_\rho \operatorname{li}(x^\rho) - \ln 2 + \int_x^\infty \frac{dt}{t(t^2-1)\ln t}$（由 von Mangoldt 于 1895 年证明），再经 Möbius 反演得到 $\pi(x)$。每对零点 $\rho = \frac12 \pm i\gamma$ 贡献一个幅度约为 $\sqrt{x}/(\gamma\ln x)$、在 $\ln x$ 中频率为 $\gamma$ 的波；截断求和会在每个台阶附近留下类似吉布斯现象的波纹。黎曼猜想断言每个非平凡零点（每个满足 $0 < \operatorname{Re} s < 1$ 的零点）的实部恰好为
+  $\frac12$。它尚未被证明。计算机已对超过 $10^{12}$ 个零点验证了它，并且它等价于误差界 $\pi(x) = \operatorname{li}(x) + O(\sqrt{x}\ln x)$（von Koch，1901）。本程序只能找到线上的零点；它无法排除线外的零点。延伸阅读：H. M. Edwards, Riemann's Zeta Function (1974)。
+meanings:
+- 临界线上同时处理的许多高度 $t$
+- 重复的 $n$ ⇒ 求和：狄利克雷级数的前 $N-1$ 项
+- 带伯努利数的 Euler–Maclaurin 修正；$(s)_{2k-1} = s(s+1)\cdots(s+2k-2)$。对每个 $s \ne 1$ 都成立
+- 与 $\zeta(\frac12 + it)$ 零点相同的实函数；$\theta(t)$ 由其渐近级数得到
+- 在步长 0.01 的网格上找 $Z$ 的变号，然后对所有区间同时做 48 步二分
+- 埃拉托斯特尼筛法：每个素数 $p \le \sqrt{x}$ 一次跨步切片；$\pi(x)$ 是其累积和
+- 每个零点在每个 $x$ 处的贡献；共轭零点合起来给出 $2\,\mathrm{Re}$
+- 一次算出每个 $K$ 的近似：每行一帧
+- Möbius 函数；对 $n$ 的求和在 $x^{1/n} < 2$ 时停止，因为那里 $J(y) = 0$
+labels:
+  n_zeros: 使用的零点数 $K$
+  x_explicit: 显式公式上限 $x$
+  log10_x: 筛法上限 $10^n$

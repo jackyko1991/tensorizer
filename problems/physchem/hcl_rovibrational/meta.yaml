@@ -1,0 +1,41 @@
+title: HCl rovibrational spectrum
+category: physchem
+level: intermediate
+order: 2
+summary: >
+  The infrared band of HCl is a comb of lines: the molecule vibrates (an anharmonic oscillator) and rotates (a
+  rotor that stretches as it spins), and every line is a jump $v = 0 \to 1$ with $\Delta J = \pm 1$. The P and R
+  branches of both chlorine isotopes come out as one batched $(I, J)$ grid, with Boltzmann intensities for a
+  temperature ramp; a combination-differences least-squares fit then recovers $B_e$, $\alpha_e$ and $\nu_0$ from the lines.
+animated: true
+vector_form: 'G(v) = \omega_e(v+\tfrac12) - \omega_e x_e(v+\tfrac12)^2,\qquad F_v(J) = B_vJ(J+1) - D_eJ^2(J+1)^2,\qquad B_v = B_e - \alpha_e(v+\tfrac12),\qquad \tilde\nu = G(1) - G(0) + F_1(J^\prime) - F_0(J^{\prime\prime})'
+index_form: 'F_{viJ} = B_{vi}\,J(J+1) - D_i\,J^2(J+1)^2 \qquad \tilde\nu^{R,P}_{iJ} = \nu_{0i} + F_{1i,J\pm1} - F_{0iJ} \qquad I_{tiJ} = a_i\,(2J+1)\,e^{-hcF_{0iJ}/kT_t}/Q_{ti} \qquad S_{tg} = I_{t\ell}\,g_{\ell g} \qquad \beta_{isk} = X^{+}_{kn}\,y_{isn}'
+translation:
+  - {symbol: '\omega_{e,i},\ B_{e,i},\ \ldots', code: 'constants(mu)', shape: '(I,)', meaning: 'approximate H³⁵Cl constants, scaled to H³⁷Cl with $\rho = \sqrt{\mu_{35}/\mu_{37}}$'}
+  - {symbol: 'F_{viJ}', code: "einsum('i,j->ij', B, J*(J+1)) - einsum('i,j->ij', D, (J*(J+1))**2)", shape: '(I, J)', meaning: 'rotational terms of level $v$; no index summed, outer products'}
+  - {symbol: '\tilde\nu^{R}_{iJ},\ \tilde\nu^{P}_{iJ}', code: 'branches(J, c)', shape: '(I, J), (I, J)', meaning: 'every line of both isotopologues in one grid; $J$ is the lower level'}
+  - {symbol: 'p_{tiJ}', code: 'populations(J, B0, D, T)', shape: '(T, I, J)', meaning: 'Boltzmann population of level $J$ at each temperature of the ramp'}
+  - {symbol: 'I^{R,P}_{tiJ}', code: "einsum('i,tij->tij', a, p) * (J+1 or J) / (2J+1)", shape: '(T, I, J)', meaning: 'abundance × population × Hönl–London factor; P(0) gets exactly zero'}
+  - {symbol: 'S_{tg} = I_{t\ell}\,g_{\ell g}', code: "einsum('tl,lg->tg', I, g)", shape: '(T, G)', meaning: 'repeated $\ell$ ⇒ summed over all lines: the broadened spectrum'}
+  - {symbol: 'y_{isn}', code: 'combination_differences(R, P) / (4J+2)', shape: '(I, 2, n)', meaning: '$\Delta_2F/(4J+2) = B_v - 2D(J^2+J+1)$ for the lower ($s=0$) and upper ($s=1$) state'}
+  - {symbol: '\beta_{isk} = X^{+}_{kn}y_{isn}', code: "einsum('kn,isn->isk', pinv(X), y)", shape: '(I, 2, 2)', meaning: 'repeated $n$ ⇒ summed: least-squares $B_v$ and $D$ for every isotopologue and state'}
+notes: >
+  The constants are approximate literature values for H³⁵Cl: $\omega_e \approx 2991$, $\omega_ex_e \approx 52.8$,
+  $B_e \approx 10.59$, $\alpha_e \approx 0.31$ and $D_e \approx 5\times10^{-4}$ cm⁻¹. The band origin
+  $\nu_0 = \omega_e - 2\omega_ex_e \approx 2885$ cm⁻¹ carries no line, because a $\Sigma$ state like HCl's has no
+  $\Delta J = 0$ (Q) branch: the gap between R(0) and P(1) is about $4B$. Because $B_1 < B_0$ (the vibrating bond is
+  longer on average), the R lines crowd together towards high $J$ while the P lines spread apart. Each line is a
+  doublet, H³⁷Cl sitting about 2 cm⁻¹ lower with a third of the intensity (natural abundance 76 : 24); the shift grows
+  with $|\nu - \nu_0|$ because every constant scales with a power of the reduced mass. As the gas warms, the
+  Boltzmann factor $(2J+1)e^{-hcF(J)/kT}$ moves its maximum to higher $J$ and the two branches spread out (each frame is scaled to its strongest line).
+  Combination differences are the spectroscopist's trick for separating the two states: R(J−1) and P(J+1) end on
+  the same upper level, so their difference depends only on $v = 0$; R(J) and P(J) start from the same lower level,
+  so theirs depends only on $v = 1$. A straight-line fit of $\Delta_2F/(4J+2)$ against $J^2 + J + 1$ gives $B_v$ (the
+  intercept) and $D$ (the slope), then $\alpha_e = B_0 - B_1$ and $B_e = B_0 + \alpha_e/2$. Add measurement noise to
+  see how well the constants survive. The equivalent Morse well depth is $\omega_e^2/4\omega_ex_e$. Simplifications:
+  no Herman–Wallis intensity corrections, one Lorentzian width for every line, and absorption not weighted by $\tilde\nu$.
+params:
+  T: {default: 300.0, min: 60, max: 1500, step: 10, label: 'Final temperature $T$', unit: K}
+  J_max: {default: 15, min: 6, max: 25, step: 1, type: int, label: 'Highest lower level $J_{max}$'}
+  fwhm: {default: 0.6, min: 0.1, max: 5.0, step: 0.1, label: 'Line width (FWHM)', unit: cm⁻¹}
+  noise: {default: 0.02, min: 0.0, max: 0.5, step: 0.01, label: 'Noise on the measured lines', unit: cm⁻¹}

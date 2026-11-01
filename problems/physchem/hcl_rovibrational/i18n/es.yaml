@@ -1,0 +1,19 @@
+source_hash: dda111a1c11f
+title: Espectro de rotación-vibración del HCl
+summary: 'La banda infrarroja del HCl es un peine de líneas: la molécula vibra (un oscilador anarmónico) y gira (un rotor que se estira al girar), y cada línea es un salto $v = 0 \to 1$ con $\Delta J = \pm 1$. Las ramas P y R de los dos isótopos del cloro salen de una sola malla $(I, J)$ por lotes, con intensidades de Boltzmann para una rampa de temperatura; después, un ajuste por mínimos cuadrados de diferencias de combinación recupera $B_e$, $\alpha_e$ y $\nu_0$ a partir de las líneas.'
+notes: 'Las constantes son valores aproximados de la bibliografía para H³⁵Cl: $\omega_e \approx 2991$, $\omega_ex_e \approx 52.8$, $B_e \approx 10.59$, $\alpha_e \approx 0.31$ y $D_e \approx 5\times10^{-4}$ cm⁻¹. El origen de la banda $\nu_0 = \omega_e - 2\omega_ex_e \approx 2885$ cm⁻¹ no tiene línea, porque un estado $\Sigma$ como el del HCl no tiene rama $\Delta J = 0$ (Q): el hueco entre R(0) y P(1) es de unos $4B$. Como $B_1 < B_0$ (el enlace que vibra es en promedio más largo), las líneas R se apiñan hacia $J$ altos mientras las líneas P se separan. Cada línea es un doblete, con H³⁷Cl unos 2 cm⁻¹ más abajo y un tercio de la intensidad (abundancia natural 76 : 24); el desplazamiento crece con $|\nu - \nu_0|$ porque cada constante escala con una potencia de la masa reducida. Al calentarse el gas, el factor de Boltzmann $(2J+1)e^{-hcF(J)/kT}$ desplaza su máximo hacia $J$ más altos y las dos ramas se extienden (cada fotograma se escala a su línea más intensa). Las diferencias de combinación
+  son el truco del espectroscopista para separar los dos estados: R(J−1) y P(J+1) terminan en el mismo nivel superior, así que su diferencia solo depende de $v = 0$; R(J) y P(J) parten del mismo nivel inferior, así que la suya solo depende de $v = 1$. Un ajuste lineal de $\Delta_2F/(4J+2)$ frente a $J^2 + J + 1$ da $B_v$ (la ordenada en el origen) y $D$ (la pendiente), y luego $\alpha_e = B_0 - B_1$ y $B_e = B_0 + \alpha_e/2$. Añade ruido de medida para ver cuánto resisten las constantes. La profundidad del pozo de Morse equivalente es $\omega_e^2/4\omega_ex_e$. Simplificaciones: sin correcciones de intensidad de Herman–Wallis, una misma anchura lorentziana para todas las líneas y absorción no ponderada por $\tilde\nu$.'
+meanings:
+- constantes aproximadas del H³⁵Cl, escaladas al H³⁷Cl con $\rho = \sqrt{\mu_{35}/\mu_{37}}$
+- términos rotacionales del nivel $v$; ningún índice sumado, productos exteriores
+- todas las líneas de ambos isotopólogos en una sola malla; $J$ es el nivel inferior
+- población de Boltzmann del nivel $J$ a cada temperatura de la rampa
+- abundancia × población × factor de Hönl–London; P(0) vale exactamente cero
+- '$\ell$ repetido ⇒ sumado sobre todas las líneas: el espectro ensanchado'
+- $\Delta_2F/(4J+2) = B_v - 2D(J^2+J+1)$ para el estado inferior ($s=0$) y el superior ($s=1$)
+- '$n$ repetido ⇒ sumado: $B_v$ y $D$ por mínimos cuadrados para cada isotopólogo y estado'
+labels:
+  T: Temperatura final $T$
+  J_max: Nivel inferior más alto $J_{max}$
+  fwhm: Anchura de línea (FWHM)
+  noise: Ruido en las líneas medidas

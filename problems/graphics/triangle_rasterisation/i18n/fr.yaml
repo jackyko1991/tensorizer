@@ -1,0 +1,20 @@
+source_hash: e60c88b1723d
+title: Rastérisation de triangles avec un z-buffer
+summary: 'La façon dont les jeux dessinent la 3D : projeter un maillage de triangles sur l''écran et calculer d''un coup les poids barycentriques de chaque paire (pixel, triangle). Une réduction par minimum sur les triangles est le z-buffer. Les mêmes poids pilotent ensuite l''ombrage plat, de Gouraud et de Phong, ainsi que la lecture de texture. Interpoler les coordonnées de texture avec $\lambda/z$ (correction de perspective) au lieu de $\lambda$ (affine), c''est ce qui garde droit un sol en damier.'
+notes: 'Les poids barycentriques sont des aires signées : $\lambda_k$ est l''aire du petit triangle opposé au sommet $k$ divisée par l''aire totale, donc les trois ont pour somme 1 et sont tous positifs exactement à l''intérieur. Ici, ils sont calculés pour chaque pixel et chaque triangle à la fois, la version force brute de ce que fait un GPU en matériel. Découper les pixels en tuiles maintient le tenseur $(P, T, 3)$ sous quelques millions d''éléments ; un vrai rastériseur ne parcourt que la boîte englobante de chaque triangle. Le signe de l''aire dans l''espace écran donne aussi gratuitement l''élimination des faces arrière : environ la moitié d''un maillage fermé est tournée dans l''autre sens. La profondeur le long d''un triangle n''est pas linéaire à l''écran, mais $1/z$ l''est, donc le test du z-buffer comme chaque attribut interpolé utilisent les poids $\lambda_k/z_k$. Le sol ne compte que deux triangles, si bien que l''interpolation affine (à la PlayStation 1) courbe visiblement
+  ses lignes de damier, alors que la version avec correction de perspective les garde droites. L''ombrage plat montre chaque facette. Gouraud éclaire les sommets et mélange la luminosité, ce qui étale le reflet spéculaire. Phong mélange les normales et éclaire chaque pixel, ce qui garde le reflet net.'
+meanings:
+- sommets du maillage plus les 4 coins du sol ; les faces $(T, 3)$ les indexent
+- '$j$ répété ⇒ somme : faire tourner le maillage (une rotation par image)'
+- position à l'écran et profondeur du sommet $k$ du triangle $t$ (caméra sténopé $f\,(x, y)/z$)
+- moitié de $\varepsilon_{ij}(v_1 - v_0)_i (v_2 - v_0)_j$ ; $A_t \le 0$ ⇒ face arrière, éliminée
+- poids barycentriques de chaque pixel dans chaque triangle ; calculés par tuiles de pixels pour borner la mémoire
+- '$k$ répété ⇒ somme : c''est $1/z$ qui varie linéairement à l''écran'
+- 'le z-buffer : triangle couvrant le plus proche pour chaque pixel (les pixels à l''extérieur valent $+\infty$)'
+- coordonnées de texture, normales, positions, luminosité de Gouraud interpolées avec les poids $\lambda/z$
+- 'interpolation affine : juste pour les triangles vus de face, fausse pour les triangles inclinés'
+labels:
+  mesh: Maillage
+  resolution: Taille de l'image
+  frames: Images par tour
+  tilt: Inclinaison autour de $x$

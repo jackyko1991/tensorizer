@@ -1,0 +1,19 @@
+source_hash: dda111a1c11f
+title: Spectre de rotation-vibration de HCl
+summary: 'La bande infrarouge de HCl est un peigne de raies : la molécule vibre (un oscillateur anharmonique) et tourne (un rotateur qui s''allonge en tournant), et chaque raie est une transition $v = 0 \to 1$ avec $\Delta J = \pm 1$. Les branches P et R des deux isotopes du chlore sont obtenues sur une seule grille $(I, J)$ par lots, avec des intensités de Boltzmann pour une rampe de température ; un ajustement par moindres carrés des différences de combinaison retrouve ensuite $B_e$, $\alpha_e$ et $\nu_0$ à partir des raies.'
+notes: 'Les constantes sont des valeurs approximatives de la littérature pour H³⁵Cl : $\omega_e \approx 2991$, $\omega_ex_e \approx 52.8$, $B_e \approx 10.59$, $\alpha_e \approx 0.31$ et $D_e \approx 5\times10^{-4}$ cm⁻¹. L''origine de bande $\nu_0 = \omega_e - 2\omega_ex_e \approx 2885$ cm⁻¹ ne porte aucune raie, car un état $\Sigma$ comme celui de HCl n''a pas de branche $\Delta J = 0$ (Q) : l''écart entre R(0) et P(1) vaut environ $4B$. Comme $B_1 < B_0$ (la liaison qui vibre est en moyenne plus longue), les raies R se resserrent vers les grands $J$ tandis que les raies P s''écartent. Chaque raie est un doublet, H³⁷Cl se trouvant environ 2 cm⁻¹ plus bas avec un tiers de l''intensité (abondance naturelle 76 : 24) ; le décalage augmente avec $|\nu - \nu_0|$ car chaque constante varie comme une puissance de la masse réduite. Quand le gaz se réchauffe, le facteur de Boltzmann $(2J+1)e^{-hcF(J)/kT}$ déplace son maximum vers des $J$ plus élevés et les deux branches s''étalent (chaque image
+  est normalisée sur sa raie la plus intense). Les différences de combinaison sont l''astuce du spectroscopiste pour séparer les deux états : R(J−1) et P(J+1) aboutissent au même niveau supérieur, donc leur différence ne dépend que de $v = 0$ ; R(J) et P(J) partent du même niveau inférieur, donc la leur ne dépend que de $v = 1$. Un ajustement linéaire de $\Delta_2F/(4J+2)$ en fonction de $J^2 + J + 1$ donne $B_v$ (l''ordonnée à l''origine) et $D$ (la pente), puis $\alpha_e = B_0 - B_1$ et $B_e = B_0 + \alpha_e/2$. Ajoutez du bruit de mesure pour voir à quel point les constantes résistent. La profondeur du puits de Morse équivalent est $\omega_e^2/4\omega_ex_e$. Simplifications : pas de corrections d''intensité de Herman–Wallis, une même largeur lorentzienne pour toutes les raies, et une absorption non pondérée par $\tilde\nu$.'
+meanings:
+- constantes approximatives de H³⁵Cl, transposées à H³⁷Cl avec $\rho = \sqrt{\mu_{35}/\mu_{37}}$
+- termes rotationnels du niveau $v$ ; aucun indice sommé, produits extérieurs
+- toutes les raies des deux isotopologues dans une seule grille ; $J$ est le niveau inférieur
+- population de Boltzmann du niveau $J$ à chaque température de la rampe
+- abondance × population × facteur de Hönl–London ; P(0) vaut exactement zéro
+- '$\ell$ répété ⇒ sommé sur toutes les raies : le spectre élargi'
+- $\Delta_2F/(4J+2) = B_v - 2D(J^2+J+1)$ pour l'état inférieur ($s=0$) et supérieur ($s=1$)
+- '$n$ répété ⇒ sommé : $B_v$ et $D$ par moindres carrés pour chaque isotopologue et chaque état'
+labels:
+  T: Température finale $T$
+  J_max: Plus haut niveau inférieur $J_{max}$
+  fwhm: Largeur de raie (FWHM)
+  noise: Bruit sur les raies mesurées

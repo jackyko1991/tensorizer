@@ -1,0 +1,20 @@
+source_hash: 0b2a4ba1c286
+title: Orbitales moleculares de Hückel de sistemas π
+summary: 'Los electrones π de un hidrocarburo plano obedecen a un hamiltoniano que no es más que la matriz de adyacencia de su esqueleto de carbono, $H = \alpha\mathbb 1 + \beta A$. Un solo eigh por lotes diagonaliza siete moléculas a la vez, del etileno al naftaleno; llenar los orbitales da las diferencias HOMO–LUMO, las energías de deslocalización (benceno: $2\beta$, ciclobutadieno: $0$) y los órdenes de enlace de Coulson como un einsum sobre los orbitales ocupados, y los tamaños de anillo $N = 3, 4, \dots$ muestran la regla $4n + 2$ de Hückel.'
+notes: 'Hückel (1931) se quedó solo con lo que importa para los electrones π de una molécula conjugada plana: un orbital $2p_z$ por carbono, la misma energía $\alpha$ en cada átomo, una energía de salto $\beta$ entre vecinos enlazados, nada más y sin solapamiento. El hamiltoniano es entonces $\alpha\mathbb 1 + \beta A$ con $A$ el grafo de la molécula, así que sus valores propios son $\alpha + \beta\lambda$ con $\lambda$ los de $A$; como $\beta < 0$, el orbital más enlazante es el de mayor $\lambda$. El benceno da $\alpha + 2\beta$, $\alpha + \beta$ (dos veces), $\alpha - \beta$ (dos veces), $\alpha - 2\beta$; sus seis electrones tienen $E_\pi = 6\alpha + 8\beta$, que está $2\beta$ por debajo de tres dobles enlaces aislados. Tomando $|\beta| \approx 75$ kJ/mol, un valor termoquímico aproximado ajustado a la entalpía de hidrogenación del benceno (la espectroscopía sugiere un $|\beta|$ mayor, así que tómalo como aproximado), se obtienen los famosos $\approx 150$ kJ/mol de estabilización aromática.
+  El ciclobutadieno tiene dos electrones sobrantes en un par degenerado en $\alpha$: sin energía de deslocalización, diferencia nula, un dirradical, e incluso menos estable que el butadieno de cadena abierta: antiaromático. Para un anillo de $N$ átomos los niveles son $\alpha + 2\beta\cos(2\pi k/N)$, un nivel más bajo y luego pares degenerados (círculo de Frost), así que una capa cerrada necesita $2 + 4n$ electrones: la regla de Hückel. Los anillos impares se muestran como sus iones aromáticos, como el anión ciclopentadienilo y el catión tropilio. Los órdenes de enlace $P_{ij} = \sum_k n_k C_{ik}C_{jk}$ del butadieno, $0.894$ para los enlaces extremos y $0.447$ para el central, coinciden con sus longitudes de enlace corta–larga–corta; en el benceno los seis valen $2/3$. En los hidrocarburos alternantes (sin anillos impares) el teorema de emparejamiento hace el espectro simétrico respecto a $\alpha$ y todas las cargas π nulas. Elige otra molécula para ver sus orbitales frontera: el HOMO y
+  el LUMO determinan dónde atacan electrófilos y nucleófilos y, a través de la diferencia, el color (los polienos más largos absorben a longitudes de onda mayores).'
+meanings:
+- $1$ para carbonos enlazados $i, j$ de la molécula $b$ (átomos a una longitud de enlace), rellenado hasta el mayor $N = 10$
+- matriz de Hückel; los átomos de relleno reciben una diagonal enorme para que sus orbitales ficticios nunca se llenen
+- 'energías de los OM (ascendentes: primero los enlazantes, ya que $\beta < 0$) y coeficientes, OM $k$ en la columna $k$'
+- llenado según el Aufbau con 2 electrones por OM; un conjunto degenerado parcialmente lleno reparte sus electrones
+- '$k$ repetido ⇒ sumado: energía π total $E_\pi$'
+- energía de deslocalización frente a dobles enlaces aislados de $2(\alpha + \beta)$ cada uno
+- '$k$ repetido ⇒ sumado sobre los OM ocupados: orden de enlace de Coulson en un enlace, población π en la diagonal'
+- carga π $1 - P_{bii}$; nula en cada átomo de estos hidrocarburos alternantes
+- niveles del anillo en forma cerrada, comprobados con eigh de la matriz de adyacencia cíclica
+labels:
+  molecule: Molécula para las imágenes de los orbitales
+  ring_max: Mayor tamaño de anillo $N$
+  beta: $|\beta|$ para convertir a kJ/mol (aproximado)

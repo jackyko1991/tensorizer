@@ -1,0 +1,40 @@
+title: Homography estimation and panorama stitching
+category: graphics
+level: intermediate
+order: 3
+summary: >
+  Two photos of a flat poster are related by a $3\times3$ homography. Each feature match gives two linear
+  equations. The normalised direct linear transform (DLT) solves them with an SVD, and RANSAC fits thousands of
+  4-match hypotheses as one batched SVD to throw out the wrong matches. The second view is then warped and
+  feather-blended with the first into a panorama.
+animated: false
+vector_form: '\lambda\,\mathbf x'' = H\,\mathbf x \;\Leftrightarrow\; \mathbf x'' \times H\mathbf x = \mathbf 0 \qquad \hat{\mathbf h} = \arg\min_{\lVert\mathbf h\rVert = 1} \lVert A\,\mathbf h\rVert \qquad H^\star = \arg\max_{H_b} \#\{n : \lVert \mathbf x''_n - H_b \mathbf x_n\rVert < \tau\}'
+index_form: 'x''_{ni} \propto H_{ij}\,x_{nj} \qquad A_{b,(nr),a}\,h_{ba} = 0,\ \ A = U\,\Sigma\,V^\top \Rightarrow h_{ba} = V_{b,a9} \qquad e_{bn} = \Big\lVert x''_{n} - \frac{H_{bij}\,x_{nj}}{H_{b3j}\,x_{nj}} \Big\rVert \qquad b^\star = \arg\max_b \sum_n [e_{bn} < \tau]'
+translation:
+  - {symbol: 'x_{ni},\ x''_{ni}', code: 'tensors.matches(Hs, ...)', shape: '(N, 2)', meaning: 'matched pixel positions in view 1 and view 2 (known poster points + noise, some replaced by random wrong matches)'}
+  - {symbol: 'H_{ij}\,x_{nj}', code: "einsum('bij,nj->bni', H, to_homogeneous(x))", shape: '(B, N, 3)', meaning: 'repeated $j$ ⇒ summed, then divide by the third component (the projective scale)'}
+  - {symbol: 'T,\ T''', code: 'normalisation(x)', shape: '(B, 3, 3)', meaning: 'shift to the centroid and scale to mean distance $\sqrt 2$ (Hartley normalisation)'}
+  - {symbol: 'A_{b,(nr),a}', code: 'dlt_matrix(n1, n2)', shape: '(B, 2N, 9)', meaning: 'two rows per match from $\mathbf x'' \times H\mathbf x = 0$, linear in the nine entries $h_a$'}
+  - {symbol: 'h_{ba} = V_{b,a9}', code: 'torch.linalg.svd(A)[2][:, -1]', shape: '(B, 9)', meaning: 'right singular vector of the smallest singular value; then $H = T''^{-1}\hat H\,T$'}
+  - {symbol: 'b',  code: 'rand(B, N).argsort(1)[:, :4]', shape: '(B, 4)', meaning: 'RANSAC hypotheses: $B$ random 4-match samples, all solved by one batched SVD of shape $(B, 8, 9)$'}
+  - {symbol: 'e_{bn}', code: 'transfer_error(H_all, x1, x2)', shape: '(B, N)', meaning: 'reprojection error of every match under every hypothesis'}
+  - {symbol: 'b^\star', code: '(err < tau).sum(1).argmax()', shape: '()', meaning: 'the hypothesis with the largest consensus set; refit by DLT on its inliers'}
+  - {symbol: 'I(H\,\mathbf p)', code: 'grid_sample(img2, H12 p)', shape: '(h, w, 3)', meaning: 'inverse warp: each panorama pixel looks up where it lands in view 2; blended with feathering weights'}
+notes: >
+  A camera looking at a plane maps plane points to pixels by $H = K\,[\mathbf r_1\ \mathbf r_2\ \mathbf t]$, so
+  two views of the same plane are related by $H_2 H_1^{-1}$: eight numbers, because the scale is free. Each match
+  fixes two of them, so four matches in general position determine $H$. More matches are combined in the least
+  squares sense by the DLT. Without Hartley's normalisation the entries of $A$ range from 1 to $10^4$ (pixel
+  squared) and the SVD loses accuracy. Least squares is ruined by wrong matches: a few outliers drag the naive
+  panorama visibly out of alignment. RANSAC (Fischler & Bolles, 1981) instead fits $H$ to many random minimal
+  samples and keeps the one most matches agree with. With an outlier fraction $\varepsilon$, a 4-match sample is
+  clean with probability $(1-\varepsilon)^4$, so a few dozen samples are enough in theory. Here thousands are
+  solved at once because batched SVDs are cheap. The remaining error on the inliers matches the pixel noise. The
+  method follows Hartley & Zisserman, Multiple View Geometry in Computer Vision. Real pipelines get the matches
+  from feature detectors such as SIFT or ORB.
+params:
+  matches: {default: 120, min: 10, max: 400, step: 10, type: int, label: Feature matches}
+  outliers: {default: 0.35, min: 0.0, max: 0.8, step: 0.05, label: Fraction of wrong matches}
+  noise: {default: 0.7, min: 0.0, max: 3.0, step: 0.1, label: 'Pixel noise $\sigma$', unit: px}
+  hypotheses: {default: 4000, min: 100, max: 20000, step: 100, type: int, label: 'RANSAC hypotheses $B$'}
+  threshold: {default: 3.0, min: 0.5, max: 10.0, step: 0.5, label: 'Inlier threshold $\tau$', unit: px}

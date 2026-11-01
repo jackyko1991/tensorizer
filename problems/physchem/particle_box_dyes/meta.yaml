@@ -1,0 +1,43 @@
+title: Particle in a box and the colour of dyes
+category: physchem
+level: intermediate
+order: 1
+summary: >
+  Why do longer conjugated molecules absorb redder light? The $\pi$ electrons of a cyanine dye move freely along the
+  chain, like particles in a one-dimensional box of length $L$. Filling the levels $E_n \propto n^2/L^2$ two by two gives
+  a HOMO→LUMO gap $\Delta E = h^2(N+1)/8m_eL^2$ and a predicted $\lambda_{max}$ for a whole homologous series at once;
+  a batched finite-difference Hamiltonian, diagonalised with torch.linalg.eigh, reproduces the analytic levels.
+animated: true
+vector_form: 'E_n = \frac{h^2 n^2}{8 m_e L^2},\qquad L = (n_{\mathrm{bonds}} + 2)\,l,\qquad \Delta E = E_{N/2+1} - E_{N/2} = \frac{h^2 (N+1)}{8 m_e L^2} = \frac{hc}{\lambda_{max}},\qquad -\frac{\hbar^2}{2m_e}\,\psi'' + V\psi = E\,\psi'
+index_form: 'E_{bn} = \frac{h^2}{8m_e}\,\frac{n_n n_n}{L_b L_b} \qquad \lambda_b = \frac{8 m_e c\,L_b^2}{h\,(N_b+1)} \qquad H_{bij} = \frac{\hbar^2}{2m_e\,\Delta x_b^2}\,(2\delta_{ij} - \delta_{i,j+1} - \delta_{i+1,j}) + V_{bi}\,\delta_{ij} \qquad H_{bij}\,\psi_{bjn} = E_{bn}\,\psi_{bin}'
+translation:
+  - {symbol: 'N_b,\ n^{\mathrm{bonds}}_b', code: 'molecules(series, n_max)', shape: '(B,), (B,)', meaning: 'π electrons and conjugated bonds of molecule $b$ in the series'}
+  - {symbol: 'L_b', code: 'box_length(n_bonds, bond, end)', shape: '(B,)', meaning: 'box length: all bonds plus one bond length past each end atom'}
+  - {symbol: 'E_{bn}', code: "H2_8M * einsum('n,b->bn', n**2, 1/L**2)", shape: '(B, n)', meaning: 'analytic levels; no index summed, an outer product of $n^2$ and $1/L^2$'}
+  - {symbol: '\Delta E_b,\ \lambda_b', code: 'homo_lumo_gap(N, L), HC / dE', shape: '(B,)', meaning: 'HOMO $n = N/2$ to LUMO $n = N/2 + 1$, and the absorbed wavelength'}
+  - {symbol: 'x_{bi},\ \Delta x_b', code: 'grids(L, n_points)', shape: '(B, M), (B,)', meaning: 'interior grid points of each box; $\psi = 0$ on the walls'}
+  - {symbol: 'H_{bij}', code: "HBAR2_2M * einsum('b,ij->bij', 1/dx**2, D) + diag_embed(V)", shape: '(B, M, M)', meaning: 'one finite-difference Hamiltonian per molecule, stacked'}
+  - {symbol: 'H_{bij}\psi_{bjn} = E_{bn}\psi_{bin}', code: 'torch.linalg.eigh(H)', shape: '(B, M), (B, M, M)', meaning: 'repeated $j$ ⇒ summed; eigh diagonalises the whole batch in one call'}
+  - {symbol: 'c_{bk}', code: "einsum('bw,wk->bk', 1 - A, rgb)", shape: '(B, 3)', meaning: 'repeated $w$ ⇒ summed over visible wavelengths: the colour left after absorption'}
+notes: >
+  Kuhn's free-electron model (1948) treats the $\pi$ electrons of a conjugated chain as independent particles in a
+  box. In a cyanine dye $\mathrm{R_2N{-}(CH{=}CH)_k{-}CH{=}N^+R_2}$ the positive charge is shared by the two nitrogens,
+  so all the chain bonds are nearly equal (about $l = 0.139$ nm) and the flat-bottomed box is a good picture. With
+  $2k + 2$ bonds, $N = 2k + 4$ electrons and the box sticking out one bond past each nitrogen, $L = (2k + 4)l$ and
+  $\lambda_{max} = 8m_ec\,L^2/h(N + 1)$ grows almost linearly with $k$: the model predicts about 125 nm per added
+  CH=CH unit, and the red squares (rounded measured values for the simplest cyanines) climb by about 100 nm. This is the classic undergraduate experiment: record
+  the visible spectra of a few cyanine dyes of increasing chain length, then use $\lambda_{max}$ to fit the box length
+  or the end extension. The numerical solver gives the same levels to better than $10^{-3}$ (its error falls as
+  $(n\,\Delta x)^2$), and it can do what the formula cannot: switch on a potential. Polyenes have alternating double
+  and single bonds; in the plain box their predicted $\lambda_{max}$ runs far into the infrared, whereas real
+  polyenes level off (β-carotene, with 11 C=C, absorbs near 450 nm). Choose the polyene series and raise
+  $V_{alt}$ to 1–2 eV: the periodic potential opens a gap that stays finite for long chains, which is the
+  one-dimensional seed of a band gap. The colour swatches show white light minus a Gaussian absorption band at
+  each $\lambda_{max}$; a dye that absorbs yellow looks blue, and one that absorbs only UV looks colourless.
+params:
+  series: {default: cyanine, type: choice, options: [cyanine, polyene], label: Homologous series}
+  n_max: {default: 5, min: 1, max: 8, step: 1, type: int, label: 'Longest chain (added CH=CH units)'}
+  bond: {default: 0.139, min: 0.12, max: 0.16, step: 0.001, label: 'Bond length $l$', unit: nm}
+  end: {default: 1.0, min: 0.0, max: 2.0, step: 0.25, label: 'Box extension past each end atom (bonds)'}
+  V_alt: {default: 0.0, min: 0.0, max: 3.0, step: 0.1, label: 'Bond-alternation potential $V_{alt}$', unit: eV}
+  n_points: {default: 400, min: 100, max: 800, step: 50, type: int, label: 'Grid points $M$'}

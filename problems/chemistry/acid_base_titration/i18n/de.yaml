@@ -1,0 +1,19 @@
+source_hash: e3d9a69287ac
+title: Säure-Base-Titrationskurven
+summary: Natronlauge wird tropfenweise zu einer starken Säure, einer schwachen Säure und zu Phosphorsäure gegeben. Statt für jeden Bereich eine andere Lehrbuchnäherung zu verwenden, wird eine einzige Ladungsbilanz per Bisektion nach $[\mathrm{H^+}]$ gelöst, für jede Säure und jedes Volumen gleichzeitig in einem $(A, N)$-Tensor. Die Kurven liefern die Äquivalenzpunkte (Maxima von $d\mathrm{pH}/dV$), den Pufferbereich und die Speziesanteile $\alpha_j(\mathrm{pH})$.
+notes: 'Die Ladungsbilanz gilt überall entlang der Kurve und ersetzt daher die getrennten Rezepte für den Anfang, den Pufferbereich, den Äquivalenzpunkt und den Basenüberschuss. Jeder Term ist eine monotone Funktion des pH-Werts, was die Bisektion sicher macht: Sie halbiert das Intervall immer und kann die Nullstelle nicht verfehlen. Eine starke Säure (modelliert mit pKs $\approx -6$) ergibt einen steilen Sprung mit pH 7 am Äquivalenzpunkt, wo nur noch $\mathrm{Na^+}$, $\mathrm{Cl^-}$ und Wasser übrig sind. Eine schwache Säure startet höher, steigt im Pufferbereich sanft an und hat ihren Äquivalenzpunkt über 7, weil ihre korrespondierende Base $\mathrm{A^-}$ selbst eine schwache Base ist. Am Halbäquivalenzpunkt gilt $[\mathrm{HA}] = [\mathrm{A^-}]$, daher liefert die Henderson-Hasselbalch-Gleichung, $\mathrm{pH} = \mathrm{p}K_a + \log_{10}([\mathrm{A^-}]/[\mathrm{HA}])$, $\mathrm{pH} = \mathrm{p}K_a$: Durch Titration misst man pKs-Werte. Phosphorsäure (pKs ≈ 2,15, 7,20 und 12,35, Näherungswerte
+  bei 25 °C) zeigt zwei Sprünge; das dritte Proton ist so schwach sauer, dass 0,1 M NaOH es nicht sichtbar abspalten kann, und sein Sprung geht im Basenüberschuss unter. Das Speziesdiagramm zeigt, warum: Jedes $\alpha_j$ hat sein Maximum zwischen zwei pKs-Werten, und zwei benachbarte sind genau bei $\mathrm{pH} = \mathrm{p}K$ gleich. Vereinfachungen: Konzentrationen statt Aktivitäten, 25 °C, kein CO₂ aus der Luft.'
+meanings:
+- Säure $a$, Proton $i$; fehlende Protonen mit $+\infty$ aufgefüllt ($K = 0$)
+- 'kumulative Konstanten: $-$ laufende Summe der pKs-Werte, $\beta_{a0} = 1$'
+- Säure und Natrium nach dem Mischen von $V_0$ Säure mit $V_n$ Base
+- Speziesanteile; die Summe über $k$ im Nenner ist die Softmax-Normierung
+- 'wiederholtes $j$ ⇒ summiert: pro Säuremolekül abgegebene Protonen $\bar n$'
+- Bisektion in $\mathrm{pH} = -\log_{10}h$, alle Säuren und Volumina in einem Tensor
+- Steigung; ihre Maxima (per Max-Pooling gefunden) sind die Äquivalenzpunkte
+labels:
+  c_acid: Säurekonzentration $c_a$
+  V0: Säurevolumen $V_0$
+  c_base: NaOH-Konzentration $c_b$
+  V_max: Größtes NaOH-Volumen
+  pKa_weak: pKs der schwachen Säure (Essigsäure ≈ 4,76)

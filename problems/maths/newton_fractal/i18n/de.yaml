@@ -1,0 +1,21 @@
+source_hash: aac1f92f727e
+title: Newton-Fraktal
+summary: Das Newton-Verfahren $z \leftarrow z - p(z)/p'(z)$, auf jedem Pixel der komplexen Ebene gleichzeitig ausgeführt, als ein einziger komplexer Tensor. Färbt man jedes Pixel nach der Nullstelle, die es erreicht, entstehen die Einzugsgebiete, deren Ränder fraktal sind, während sich der Fehler nahe einer Nullstelle in jedem Schritt quadriert.
+notes: 'Die Entwicklung von $p$ um eine einfache Nullstelle $r$ ergibt $e_{k+1} \approx \frac{p''''(r)}{2p''(r)}\,e_k^2$: Die Zahl der korrekten Stellen verdoppelt sich in jedem Schritt, was das rechte Feld als Parabel auf logarithmischer Skala zeigt (für $z^3 - 1$ ist die Konstante genau 1). Weit weg von den Nullstellen ist das Newton-Verfahren chaotisch. Nahe einem kritischen Punkt, wo $p''(z) = 0$, schickt ein winziger Schritt in $z$ die nächste Iterierte irgendwohin in der Ebene, sodass Kopien des ganzen Bildes auf jeder Skala auftauchen. Die Einzugsgebiete eines Polynoms mit drei oder mehr Nullstellen haben einen gemeinsamen Rand, die Julia-Menge der Newton-Abbildung: Jeder Randpunkt eines Einzugsgebiets ist ein Randpunkt aller (die Wada-Eigenschaft). Das Terminal zählt, wie viele Randpixel jede Farbe in ihrer $3\times3$-Nachbarschaft haben, in der Gesamtansicht und nach dem Hineinzoomen. Der Anteil bleibt auf jeder Skala etwa gleich. Probier $z^3 - 2z + 2$, wo Startpunkte nahe 0 in
+  den anziehenden Zyklus $0 \to 1 \to 0$ fallen und nie eine Nullstelle erreichen (graue Bereiche). Das ganze Gitter ist ein einziger komplexer Tensor, sodass ein einsum jedes Pixel aktualisiert.'
+meanings:
+- 'ein Startpunkt pro Pixel $p = (h, w)$: $z = x_w + i\,y_h$'
+- Polynomkoeffizienten ab dem konstanten Term aufwärts, z. B. $z^3 - 1 \to (-1, 0, 0, 1)$
+- Potenzen $1, z, z^2, \dots$ jedes Pixels, durch ein laufendes Produkt aufgebaut
+- 'wiederholtes $k$ ⇒ summiert: $p(z)$ auf jedem Pixel'
+- 'Koeffizienten von $p''(z)$: Ableiten verschiebt die Potenzen nach unten'
+- die Nullstellen, als Eigenwerte der Begleitmatrix
+- Abstand jedes Pixels zu jeder Nullstelle; das Minimum über $j$ liefert die Gebietsmarke
+- 'ein Startpunkt in doppelter Genauigkeit: Das Verhältnis strebt gegen $|p''''(r)/2p''(r)|$'
+labels:
+  polynomial: Polynom $p(z)$
+  pixels: Pixel pro Seite
+  extent: Halbe Breite der Ansicht
+  iterations: Newton-Schritte
+  zoom: Zoomfaktor
+  tol: Konvergenztoleranz $|z - r|$

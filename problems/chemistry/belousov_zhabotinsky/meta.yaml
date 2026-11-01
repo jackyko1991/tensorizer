@@ -1,0 +1,46 @@
+title: Belousov–Zhabotinsky oscillator (Oregonator)
+category: chemistry
+level: intermediate
+order: 2
+summary: >
+  A stirred beaker of bromate, malonic acid and a cerium catalyst flips between colours like a clock. The scaled
+  two-variable Oregonator is a stiff ODE; a positive production–loss (Patankar) step integrates a whole batch of
+  stoichiometric factors $f$ at once, the trace of the Jacobian locates the two Hopf bifurcations that bound the
+  oscillations, and the same kinetics with diffusion turns a broken wave into a rotating spiral.
+animated: true
+vector_form: '\varepsilon\,\dot x = x(1 - x) - f\,z\,\frac{x - q}{x + q},\qquad \dot z = x - z,\qquad \text{Hopf: } \operatorname{tr} J(x^*, z^*) = 0,\ \det J > 0'
+index_form: 'x_b \leftarrow \frac{x_b + \Delta t\,P_b/\varepsilon}{1 + \Delta t\,L_b/\varepsilon},\quad P_b = x_b + \frac{f_b z_b q}{x_b + q},\quad L_b = x_b + \frac{f_b z_b}{x_b + q} \qquad z_b \leftarrow \frac{z_b + \Delta t\,x_b}{1 + \Delta t} \qquad \operatorname{tr} J_b = J_{b\alpha\alpha}'
+translation:
+  - {symbol: 'f_b', code: 'f_values(n, device)', shape: '(B,)', meaning: 'stoichiometric factor (bromide made per catalyst reduced) of reaction $b$, from $0.3$ to $3$'}
+  - {symbol: 'x_b,\ z_b', code: 'x, z', shape: '(B,)', meaning: 'scaled $[\mathrm{HBrO_2}]$ (autocatalyst) and $[\mathrm{Ce^{4+}}]$ (oxidised catalyst) of every reaction'}
+  - {symbol: 'P_b,\ L_b', code: 'production_loss(x, z, f, q)', shape: '(B,)', meaning: 'non-negative gain and loss rate with $\varepsilon\dot x = P - Lx$'}
+  - {symbol: 'x_b \leftarrow \dots', code: 'step(x, z, f, eps, q, dt)', shape: '(B,)', meaning: 'Patankar–Euler: losses implicit, gains explicit, so $x$ stays positive however stiff'}
+  - {symbol: 'x^* = z^*', code: 'steady_state(f, q)', shape: '(B,)', meaning: 'positive root of $x^2 + (f + q - 1)x - q(1 + f) = 0$'}
+  - {symbol: 'J_{b\alpha\beta}', code: 'jacobian(x, z, f, eps, q)', shape: '(B, 2, 2)', meaning: 'linearised kinetics $\partial \dot y_\alpha / \partial y_\beta$ at the steady state'}
+  - {symbol: 'J_{b\alpha\alpha}', code: "einsum('bii->b', J)", shape: '(B,)', meaning: 'repeated $\alpha$ ⇒ summed: the trace; its sign change marks a Hopf bifurcation'}
+  - {symbol: 'z = \frac{x(1-x)(x+q)}{f(x-q)}', code: 'x_nullcline(x, f, q)', shape: '(X,)', meaning: 'the N-shaped $\dot x = 0$ curve of the phase portrait'}
+  - {symbol: '\nabla^2 x_{ij}', code: 'laplacian(x, h)', shape: '(n, n)', meaning: '5-point stencil with no-flux edges; only $x$ diffuses in the 2D medium'}
+notes: >
+  The Belousov–Zhabotinsky reaction (discovered by Belousov in the 1950s, explained by Field, Kőrös and Noyes in 1972)
+  oxidises malonic acid with bromate. Bromide ions inhibit the autocatalytic production of $\mathrm{HBrO_2}$; while
+  bromide is present the reaction creeps, once it is used up $\mathrm{HBrO_2}$ explodes and oxidises the catalyst
+  (the colour change), and the oxidised catalyst then makes new bromide, which shuts the burst down. The Oregonator
+  condenses this into a few steps and, after scaling and eliminating the fast bromide, into two equations. The
+  constants $\varepsilon \approx 0.04$ and $q \approx 8\times10^{-4}$ are approximate values from fits of the
+  Field–Kőrös–Noyes rate constants; recipes differ and so do published values. Because $\varepsilon$ and $q$ are small
+  the $x$ equation is stiff: $x$ jumps by a factor of about a thousand in a time of order $\varepsilon$, then crawls along a
+  branch of its nullcline. Plain RK4 needs steps of about $5\times10^{-4}$ to stay stable; writing $\varepsilon\dot x$ as
+  production minus loss and taking the loss implicitly keeps $x$ positive at any step, and $\Delta t = 2\times10^{-3}$
+  gets the period right to better than 1 %. The steady state (the crossing of the two nullclines) is stable when it sits
+  on an outer branch of the N-shaped $\dot x = 0$ curve and unstable on the middle branch, where a limit cycle
+  surrounds it; the trace of $J$ changes sign at the two Hopf points, near $f = 0.5$ and $f = 2.4$ for small $q$. Try a
+  larger $\varepsilon$: the window shrinks and finally closes. In an unstirred thin layer the catalyst is held in place
+  while $\mathrm{HBrO_2}$ diffuses, so a wave of oxidation runs through the dish; a broken wave front curls at its
+  free end into the famous rotating spiral, whose rotation period is shorter than the bulk oscillation, so it takes
+  over the whole medium.
+params:
+  f: {default: 1.0, min: 0.3, max: 3.0, step: 0.05, label: 'Stoichiometric factor $f$ for the phase portrait and spiral'}
+  eps: {default: 0.04, min: 0.01, max: 0.12, step: 0.01, label: 'Time-scale ratio $\varepsilon$ (approximate)'}
+  t_max: {default: 30.0, min: 10, max: 60, step: 5, label: 'Simulated time', unit: scaled units}
+  spiral: {default: 'on', type: choice, options: ['on', 'off'], label: 2D spiral wave}
+  grid: {default: 128, min: 64, max: 192, step: 16, type: int, label: 'Grid size $n$'}

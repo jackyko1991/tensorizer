@@ -1,0 +1,20 @@
+source_hash: 32bf873c8175
+title: Nernst-Gleichung und Debye-Hückel-Abschirmung
+summary: 'Die Spannung eines Daniell-Elements, Zn | Zn²⁺ ‖ Cu²⁺ | Cu, folgt der Nernst-Gleichung, hier als ein $(T, Q)$-Gitter aus Temperaturen und Konzentrationsverhältnissen berechnet. Reale Ionen sind weniger aktiv, als ihre Konzentration vermuten lässt: Jedes trägt eine Wolke entgegengesetzter Ladung der Dicke $\kappa^{-1}$. Die linearisierte Poisson-Boltzmann-Gleichung um ein Ion wird auf einem radialen Gitter als gebatchtes lineares System gelöst, stimmt mit dem analytischen Yukawa-Potential überein und reproduziert die Debye-Hückel-Aktivitätskoeffizienten, die die EMK verschieben.'
+notes: 'Im Daniell-Element wird Zink oxidiert und Kupferionen werden reduziert, $\mathrm{Zn + Cu^{2+} \to Zn^{2+} + Cu}$, mit $n = 2$ Elektronen und $E^\circ \approx 1.10$ V (hier konstant gehalten, da ihre eigene Temperaturabhängigkeit klein ist). Jede Verzehnfachung von $Q$ verschiebt die EMK um $\ln 10\,RT/nF$, das sind 29,6 mV bei 25 °C, und die Steigung wächst proportional zu $T$. Die Nernst-Gleichung verwendet Aktivitäten $a = \gamma m$, nicht Molalitäten. Debye und Hückel berechneten $\gamma$, indem sie die anderen Ionen sich mit Boltzmann-Gewichten im Potential $\varphi$ eines Zentralions anordnen ließen und linearisierten: $\nabla^2\varphi = \kappa^2\varphi$. Ihre Lösung ist das abgeschirmte Coulomb-(Yukawa-)Potential, das über die Debye-Länge $\kappa^{-1} \approx 0.304\,\mathrm{nm}/\sqrt{I}$ in Wasser bei 25 °C abfällt. Der numerische Löser schreibt die Radialgleichung für $u = r\varphi$ als tridiagonales System, mit dem Gaußschen Gesetz an der Ionenoberfläche und $\varphi = 0$
+  in zwölf Debye-Längen Abstand, und stimmt mit der analytischen Form auf etwa $10^{-4}$ überein. Die Energie des Ions im Potential seiner eigenen Wolke ist $kT\ln\gamma$, was genau das erweiterte Gesetz ergibt; für $I \to 0$ wird daraus das Grenzgesetz $\log_{10}\gamma = -Az^2\sqrt I$ mit $A \approx 0.51$. Jede Halbzelle ist eine eigene 2:2-Sulfatlösung ($I = 4m$), daher ändert eine Änderung von $m(\mathrm{Zn^{2+}})$ das $\gamma_{Zn}$, während $\gamma_{Cu}$ gleich bleibt, und die EMK weicht um einige Millivolt vom idealen Nernst-Wert ab. Einzelionen-Aktivitätskoeffizienten lassen sich nicht für sich messen (nur der Mittelwert $\gamma_\pm$), und oberhalb von $I \approx 0.01$ machen Ionenpaarbildung und spezifische Wechselwirkungen in 2:2-Sulfaten selbst das erweiterte Gesetz nur qualitativ. Die Ionengröße $a \approx 0.5$ nm ist ein typischer Wert für hydratisierte Ionen.'
+meanings:
+- ein Batch von Zelltemperaturen und Reaktionsquotienten
+- 'kein Index summiert: jede Steigung trifft jeden Quotienten'
+- Ionenstärke $I = mz^2$ der variierten ZnSO₄-Halbzelle und die inverse Debye-Länge
+- erweitertes Gesetz; $a \to 0$ ergibt das Grenzgesetz $-Az^2\sqrt I$
+- Gitter von der Ionenoberfläche $a$ bis $a + 12\,\kappa_c^{-1}$, eines pro Konzentration
+- $u^{\prime\prime} - \kappa^2u = 0$ mit $u = r\varphi$; Zeile 0 ist das Gaußsche Gesetz bei $r = a$
+- wiederholtes $j$ ⇒ summiert; ein dichter Löseschritt pro Konzentration, gebatcht
+- 'Energie des Ions in seiner eigenen Wolke: ergibt das erweiterte Debye-Hückel-Gesetz'
+labels:
+  T_C: Temperatur für Aktivitäten und Abschirmung
+  m_Cu: Molalität der Cu²⁺-Halbzelle
+  E0: Standard-EMK $E^\circ$
+  a_ion: Ionengröße $a$
+  n_points: Radiale Gitterpunkte $M$

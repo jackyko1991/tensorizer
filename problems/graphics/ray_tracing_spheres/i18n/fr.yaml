@@ -1,0 +1,21 @@
+source_hash: f1078e5d3894
+title: Lancer de rayons sur des sphères
+summary: Un petit lanceur de rayons à la Whitted où le rayon de chaque pixel est une ligne d'un tenseur $(H\cdot W, 3)$. Tous les rayons sont testés contre toutes les sphères à la fois avec la formule du second degré, ce qui donne une table (rayons $\times$ sphères) dont l'argmin est la surface visible. Ombrage de Lambert et de Blinn–Phong, ombres nettes grâce à un second lot de rayons d'ombre, réflexions miroir et sol en damier, pendant que la lumière ou la caméra tourne autour de la scène.
+notes: La couleur d'un pixel est $I = (1-m)\,I_\text{local} + m\,I_\text{reflected}$, où $m$ est la part miroir de la surface ; la couleur réfléchie s'obtient en relançant le lot de rayons réfléchis, ce qui est l'idée récursive de Whitted (1980). Le modèle d'ombrage est celui de Phong (1975) avec le vecteur médian $\hat{\mathbf h}$ de Blinn (1977). Comme $\hat{\mathbf d}$ est unitaire, le coefficient dominant de l'équation du second degré vaut 1, donc seuls $b$ et $q$ sont nécessaires. Les rayons secondaires partent à une toute petite distance $\varepsilon$ de la surface, sinon les arrondis leur font toucher leur propre sphère (acné d'ombre). Essayez zéro réflexion pour voir la scène sans reflets, une brillance élevée pour des reflets petits et nets, ou un large champ de vision. Les vrais moteurs de rendu ajoutent des ombres douces, la réfraction et de nombreux échantillons par pixel (path tracing), mais la table par lots « rayon contre tout » reste la même.
+meanings:
+- origine et direction unitaire du rayon passant par le pixel $p$ ; $d$ est le point de l'écran $(x, y, 1)$ dans la base de la caméra, un einsum sur l'indice de base
+- centre et rayon de la sphère $s$
+- '$i$ répété ⇒ sommé : chaque rayon contre chaque sphère en un seul appel'
+- racine la plus proche de l'équation du second degré ; $\infty$ si $b^2 < q$ (le rayon passe à côté) ou si l'impact est derrière
+- la surface visible ; le plan du sol $y = 0$ est une colonne supplémentaire avec $t = -o_y/d_y$
+- facteurs diffus et spéculaire, ramenés à 0 sur la face cachée
+- 'rayons d''ombre vers la lumière : 1 si aucune sphère n''est touchée avant la lumière, sinon 0'
+- '$j$ répété ⇒ sommé : direction miroir, le lot de rayons suivant'
+labels:
+  orbit: Ce qui tourne
+  bounces: Réflexions miroir
+  shininess: Exposant de Blinn–Phong $\alpha$
+  fov: Champ de vision
+  width: Largeur de l'image
+  height: Hauteur de l'image
+  frames: Images par tour

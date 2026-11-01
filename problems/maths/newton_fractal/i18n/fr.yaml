@@ -1,0 +1,21 @@
+source_hash: aac1f92f727e
+title: Fractale de Newton
+summary: La méthode de Newton $z \leftarrow z - p(z)/p'(z)$ appliquée à chaque pixel du plan complexe à la fois, sous forme d'un seul tenseur complexe. Colorer chaque pixel selon la racine qu'il atteint dessine les bassins d'attraction, dont les frontières sont fractales, tandis que près d'une racine l'erreur est élevée au carré à chaque pas.
+notes: 'Développer $p$ autour d''une racine simple $r$ donne $e_{k+1} \approx \frac{p''''(r)}{2p''(r)}\,e_k^2$ : le nombre de chiffres exacts double à chaque pas, ce que le panneau de droite montre comme une parabole en échelle logarithmique (pour $z^3 - 1$ la constante vaut exactement 1). Loin des racines, la méthode de Newton est chaotique. Près d''un point critique, où $p''(z) = 0$, un pas minuscule en $z$ envoie l''itéré suivant n''importe où dans le plan, si bien que des copies de toute l''image apparaissent à toutes les échelles. Les bassins d''un polynôme à trois racines ou plus partagent une même frontière, l''ensemble de Julia de l''application de Newton : chaque point frontière d''un bassin est un point frontière de tous (la propriété de Wada). Le terminal compte combien de pixels frontières ont toutes les couleurs dans leur voisinage $3\times3$, en vue d''ensemble et après un zoom. La proportion reste à peu près la même à toutes les échelles. Essayez $z^3 - 2z + 2$, où les points
+  de départ proches de 0 tombent dans le cycle attractif $0 \to 1 \to 0$ et n''atteignent jamais de racine (régions grises). Toute la grille est un seul tenseur complexe, donc un seul einsum met à jour chaque pixel.'
+meanings:
+- 'un point de départ par pixel $p = (h, w)$ : $z = x_w + i\,y_h$'
+- coefficients du polynôme à partir du terme constant, par exemple $z^3 - 1 \to (-1, 0, 0, 1)$
+- puissances $1, z, z^2, \dots$ de chaque pixel, construites par un produit cumulé
+- '$k$ répété ⇒ sommé : $p(z)$ sur chaque pixel'
+- 'coefficients de $p''(z)$ : dériver décale les puissances vers le bas'
+- les racines, comme valeurs propres de la matrice compagnon
+- distance de chaque pixel à chaque racine ; le minimum sur $j$ donne l'étiquette du bassin
+- 'un point de départ en double précision : le rapport tend vers $|p''''(r)/2p''(r)|$'
+labels:
+  polynomial: Polynôme $p(z)$
+  pixels: Pixels par côté
+  extent: Demi-largeur de la vue
+  iterations: Pas de Newton
+  zoom: Facteur de zoom
+  tol: Tolérance de convergence $|z - r|$

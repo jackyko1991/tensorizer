@@ -1,0 +1,37 @@
+title: Limiting reagent and percent yield
+category: chemistry
+level: beginner
+order: 3
+summary: >
+  Mix aluminium with iodine (or nitrogen with hydrogen) in any proportion: which reactant runs out first, how much
+  product can form, and how much of the other is left over? Every amount moves with one reaction extent $\xi$,
+  the limiting reagent is a minimum over $n_s/|\nu_s|$, and a whole batch of experiments, and a 2D map of starting
+  masses, is handled by the same tensor operation.
+animated: false
+vector_form: '\mathbf n(\xi) = \mathbf n^0 + \boldsymbol\nu\,\xi,\qquad \xi^{\max} = \min_{s:\,\nu_s<0}\frac{n^0_s}{|\nu_s|},\qquad m_p^{\mathrm{theo}} = M_p\,\nu_p\,\xi^{\max},\qquad Y = \frac{m_p^{\mathrm{weighed}}}{m_p^{\mathrm{theo}}}'
+index_form: 'n^0_{bs} = \frac{m^0_{bs}}{M_s},\quad M_s = A_{es}\,m_e \qquad n_{bks} = n^0_{bs} + \nu_s\,\xi_{bk} \qquad \xi^{\max}_b = \min_{s\in R}\frac{n^0_{bs}}{|\nu_s|} \qquad Y_b = \frac{m^{\mathrm w}_b}{M_p\,\nu_p\,\xi^{\max}_b}'
+translation:
+  - {symbol: '\nu_s', code: 'nu', shape: '(S,)', meaning: 'signed stoichiometric numbers: $-2, -3, +2$ for 2 Al + 3 I₂ → 2 AlI₃'}
+  - {symbol: 'M_s = A_{es}m_e', code: "einsum('es,e->s', A, m)", shape: '(S,)', meaning: 'repeated $e$ ⇒ summed: molar masses from the atoms in each species'}
+  - {symbol: 'n^0_{bs}', code: 'm0 / molar', shape: '(B, S)', meaning: 'moles at the start for each experiment $b$ (the last one is your run)'}
+  - {symbol: '\xi^{\max}_b', code: 'where(nu < 0, n0 / nu.abs(), inf).min(-1)', shape: '(B,)', meaning: 'largest extent before a reactant hits zero; argmin is the limiting reagent'}
+  - {symbol: 'n_{bks}', code: 'n0[:, None] + nu * xi[..., None]', shape: '(B, K, S)', meaning: 'amounts at $K$ extents from 0 to $\xi^{\max}$ (the bars)'}
+  - {symbol: 'M_p\nu_p\xi^{\max}_b', code: 'theoretical_mass(xi_max, nu, molar)', shape: '(B,)', meaning: 'theoretical yield of the product in g'}
+  - {symbol: 'Y_b', code: '100 * weighed / theory', shape: '(B,)', meaning: 'percent yield'}
+  - {symbol: '\xi^{\max}(m^0_1, m^0_2)', code: 'yield_map(grid_1, grid_2, nu, molar)', shape: '(G, G)', meaning: 'the grid of starting masses is just a bigger batch'}
+notes: >
+  Moles, not grams, react in fixed ratios: first divide each mass by its molar mass. Then one number, the extent
+  $\xi$, describes how far the reaction has gone: $2\,\mathrm{Al} + 3\,\mathrm{I_2} \rightarrow 2\,\mathrm{AlI_3}$ uses $2\xi$ mol of
+  aluminium and $3\xi$ mol of iodine and makes $2\xi$ mol of aluminium iodide. Each reactant allows at most
+  $n^0_s/|\nu_s|$ units of reaction, and the smallest of these numbers wins: that reactant is the limiting
+  reagent, and its bar is the one that reaches zero. With 1.20 g Al (44.5 mmol) and 2.40 g I₂ (9.46 mmol) iodine
+  is limiting: $\xi^{\max} = 3.15$ mmol, at most 2.57 g of AlI₃, and 1.03 g of aluminium stays behind. On the map
+  the product depends on only one reactant on each side of the dashed stoichiometric line; along the line both
+  run out together and nothing is wasted. Real yields are lower than the theoretical ones (losses, side reactions,
+  an equilibrium that does not go to completion: a single pass through a Haber reactor converts only about 15 %),
+  and a yield above 100 % means the product is wet or impure. Change the masses, the weighed product or the reaction.
+params:
+  reaction: {default: aluminium_iodine, type: choice, options: [aluminium_iodine, haber], label: Reaction}
+  mass_1: {default: 1.2, min: 0.01, max: 200, step: 0.01, label: 'Mass of reactant 1 (Al or N₂)', unit: g}
+  mass_2: {default: 2.4, min: 0.01, max: 200, step: 0.01, label: 'Mass of reactant 2 (I₂ or H₂)', unit: g}
+  measured: {default: 2.0, min: 0.0, max: 500, step: 0.01, label: Product weighed, unit: g}

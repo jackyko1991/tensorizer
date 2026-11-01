@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Combustion chamber at temperature T and pressure P: methane and air flow in, a flame burns, and the hot gas holds CO2, H2O, OH, N2 and other species whose amounts minimise the Gibbs energy">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#111827">
+    <!-- chamber walls with an inlet on the left -->
+    <path d="M62,64 V22 H226 V142 H62 V100" fill="none" stroke="#374151" stroke-width="2"/>
+    <!-- inflow of fuel and air -->
+    <line x1="8" y1="82" x2="72" y2="82" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="6" y="72" font-size="12">CH₄ + air</text>
+    <!-- flame -->
+    <path d="M78,82 C92,62 106,68 112,82 C106,96 92,102 78,82 z" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+    <!-- product molecules: CO2 (O=C=O), H2O, OH, N2 -->
+    <g stroke="#1e40af" stroke-width="1.5">
+      <circle cx="140" cy="46" r="6" fill="#93c5fd"/><circle cx="152" cy="46" r="7" fill="#2563eb"/><circle cx="164" cy="46" r="6" fill="#93c5fd"/>
+      <circle cx="190" cy="92" r="7" fill="#93c5fd"/><circle cx="181" cy="101" r="4" fill="#ffffff"/><circle cx="199" cy="101" r="4" fill="#ffffff"/>
+      <circle cx="140" cy="112" r="6" fill="#93c5fd"/><circle cx="148" cy="118" r="4" fill="#ffffff"/>
+    </g>
+    <g stroke="#374151" stroke-width="1.5" fill="#9ca3af">
+      <circle cx="196" cy="40" r="5"/><circle cx="206" cy="40" r="5"/>
+      <circle cx="132" cy="80" r="5"/><circle cx="142" cy="80" r="5"/>
+    </g>
+    <text x="137" y="68" font-size="12">CO₂</text>
+    <text x="178" y="124" font-size="12">H₂O</text>
+    <text x="114" y="136" font-size="12">OH</text>
+    <text x="154" y="84" font-size="12" fill="#6b7280">N₂</text>
+    <!-- state variables -->
+    <text x="10" y="132" font-style="italic">T, P</text>
+    <line x1="42" y1="128" x2="60" y2="128" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+  </g>
+</svg>

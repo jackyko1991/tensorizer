@@ -1,0 +1,20 @@
+source_hash: 32bf873c8175
+title: Ecuación de Nernst y apantallamiento de Debye–Hückel
+summary: 'El voltaje de una pila Daniell, Zn | Zn²⁺ ‖ Cu²⁺ | Cu, sigue la ecuación de Nernst, calculada aquí como una sola malla $(T, Q)$ de temperaturas y cocientes de concentración. Los iones reales son menos activos de lo que sugiere su concentración: cada uno lleva una nube de carga opuesta de espesor $\kappa^{-1}$. La ecuación de Poisson–Boltzmann linealizada alrededor de un ion se resuelve en una malla radial como un sistema lineal por lotes, coincide con el potencial de Yukawa analítico y reproduce los coeficientes de actividad de Debye–Hückel que desplazan la f.e.m.'
+notes: 'En la pila Daniell el zinc se oxida y los iones de cobre se reducen, $\mathrm{Zn + Cu^{2+} \to Zn^{2+} + Cu}$, con $n = 2$ electrones y $E^\circ \approx 1.10$ V (fija aquí, ya que su propia variación con la temperatura es pequeña). Cada cambio de un factor diez en $Q$ desplaza la f.e.m. en $\ln 10\,RT/nF$, que son 29,6 mV a 25 °C, y la pendiente crece en proporción a $T$. La ecuación de Nernst usa actividades $a = \gamma m$, no molalidades. Debye y Hückel calcularon $\gamma$ dejando que los demás iones se ordenasen en el potencial $\varphi$ de un ion central con pesos de Boltzmann, y linealizando: $\nabla^2\varphi = \kappa^2\varphi$. Su solución es el potencial de Coulomb apantallado (de Yukawa), que decae a lo largo de la longitud de Debye $\kappa^{-1} \approx 0.304\,\mathrm{nm}/\sqrt{I}$ en agua a 25 °C. El método numérico escribe la ecuación radial para $u = r\varphi$ como un sistema tridiagonal, con la ley de Gauss en la superficie del ion y $\varphi = 0$ a doce longitudes de
+  Debye, y coincide con la forma analítica hasta unos $10^{-4}$. La energía del ion en el potencial de su propia nube es $kT\ln\gamma$, lo que da exactamente la ley extendida; para $I \to 0$ se convierte en la ley límite $\log_{10}\gamma = -Az^2\sqrt I$ con $A \approx 0.51$. Cada semipila es una disolución de sulfato 2:2 distinta ($I = 4m$), así que cambiar $m(\mathrm{Zn^{2+}})$ cambia $\gamma_{Zn}$ mientras $\gamma_{Cu}$ se queda igual, y la f.e.m. se aparta varios milivoltios del valor de Nernst ideal. Los coeficientes de actividad de un solo ion no pueden medirse por separado (solo el medio $\gamma_\pm$), y por encima de $I \approx 0.01$ el apareamiento iónico y las interacciones específicas en los sulfatos 2:2 hacen que incluso la ley extendida sea solo cualitativa. El tamaño iónico $a \approx 0.5$ nm es un valor típico de ion hidratado.'
+meanings:
+- un lote de temperaturas de la pila y cocientes de reacción
+- 'ningún índice sumado: cada pendiente se combina con cada cociente'
+- fuerza iónica $I = mz^2$ de la semipila de ZnSO₄ barrida y la inversa de la longitud de Debye
+- ley extendida; $a \to 0$ da la ley límite $-Az^2\sqrt I$
+- malla desde la superficie del ion $a$ hasta $a + 12\,\kappa_c^{-1}$, una por concentración
+- $u^{\prime\prime} - \kappa^2u = 0$ con $u = r\varphi$; la fila 0 es la ley de Gauss en $r = a$
+- $j$ repetido ⇒ sumado; una resolución densa por concentración, por lotes
+- 'energía del ion en su propia nube: recupera la ley de Debye–Hückel extendida'
+labels:
+  T_C: Temperatura para actividades y apantallamiento
+  m_Cu: Molalidad de la semipila de Cu²⁺
+  E0: F.e.m. estándar $E^\circ$
+  a_ion: Tamaño del ion $a$
+  n_points: Puntos de la malla radial $M$

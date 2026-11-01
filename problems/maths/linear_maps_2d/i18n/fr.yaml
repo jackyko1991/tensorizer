@@ -1,0 +1,21 @@
+source_hash: 1e3affbcf0e4
+title: Applications linéaires du plan
+summary: 'Une matrice $2\times 2$ déplace chaque point du plan, et un seul einsum déplace toute une grille, le cercle unité et le carré unité pour chaque image de l''animation à la fois. Regardez le plan se déformer de l''identité jusqu''à $A$ : les vecteurs propres restent sur leur propre droite, $|\det A|$ multiplie les aires, un déterminant négatif retourne le plan, et le cercle devient une ellipse dont les demi-axes sont les valeurs singulières.'
+notes: 'Les colonnes de $A$ sont les images des vecteurs de base $\mathbf e_1$ (flèche rouge) et $\mathbf e_2$ (flèche verte), et tous les autres points suivent par linéarité : les lignes droites de la grille restent droites et parallèles. Le long du chemin $M(t) = (1-t)I + tA$, un vecteur propre $\mathbf v$ de $A$ est aussi vecteur propre de $M(t)$, de valeur propre $1 - t + t\lambda$ : les points orange glissent donc le long de leurs droites en pointillés pendant que tout le reste tourne. Le carré unité (jaune) devient un parallélogramme d''aire $|\det A|$ ; il devient rouge quand $\det < 0$, lorsque $\mathbf e_1 \to \mathbf e_2$ tourne dans le sens horaire et que le plan est une image miroir. Une réflexion doit passer par $\det = 0$ en chemin, où le plan est écrasé sur une droite. Les rotations et les réflexions conservent les longueurs, donc $\sigma_1 = \sigma_2 = 1$ ; un cisaillement conserve l''aire ($\det = 1$) mais pas la forme. En général le cercle est envoyé sur une ellipse de
+  demi-axes $\sigma_1 \ge \sigma_2$, les valeurs singulières, et $|\det A| = \sigma_1\sigma_2$. Les produits se multiplient : $\det(AB) = \det A\,\det B$.'
+meanings:
+- 'les matrices à montrer : étirement, cisaillement, rotation, réflexion et retournement, ou la vôtre'
+- 'points du plan : lignes de la grille, cercle unité, carré unité'
+- chemin rectiligne de l'identité $\delta_{ij}$ à $A$, une matrice par image
+- '$j$ répété ⇒ sommé : chaque point déplacé par la matrice de chaque image à la fois'
+- '$\varepsilon_{12} = 1$, $\varepsilon_{21} = -1$ : le symbole de Levi-Civita en 2D'
+- '$i, j$ répétés ⇒ sommés : aire orientée de l''image du carré unité'
+- l'image du cercle est une ellipse de demi-axes $\sigma_1 \mathbf u_1$ et $\sigma_2 \mathbf u_2$
+- valeurs propres et vecteurs propres ; complexes pour une rotation, donc aucune droite ne reste fixe
+labels:
+  matrix: Matrice
+  a11: $A_{11}$ personnalisé
+  a12: $A_{12}$ personnalisé
+  a21: $A_{21}$ personnalisé
+  a22: $A_{22}$ personnalisé
+  grid_lines: Lignes de grille par direction

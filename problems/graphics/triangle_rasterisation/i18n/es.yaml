@@ -1,0 +1,20 @@
+source_hash: e60c88b1723d
+title: Rasterización de triángulos con z-buffer
+summary: 'Así dibujan los juegos en 3D: proyecta una malla de triángulos en la pantalla y calcula a la vez los pesos baricéntricos de cada par (píxel, triángulo). Una reducción de mínimo sobre los triángulos es el z-buffer. Los mismos pesos impulsan luego el sombreado plano, de Gouraud y de Phong, y la consulta de texturas. Interpolar las coordenadas de textura con $\lambda/z$ (corrección de perspectiva) en lugar de $\lambda$ (afín) es lo que mantiene recto un suelo a cuadros.'
+notes: 'Los pesos baricéntricos son áreas con signo: $\lambda_k$ es el área del triángulo pequeño opuesto a la esquina $k$ dividida por el total, así que los tres suman 1 y todos son positivos exactamente en el interior. Aquí se calculan para cada píxel y cada triángulo a la vez, la versión de fuerza bruta de lo que una GPU hace en hardware. Dividir los píxeles en teselas mantiene el tensor $(P, T, 3)$ por debajo de unos pocos millones de entradas; un rasterizador real solo visita la caja delimitadora de cada triángulo. El signo del área en espacio de pantalla también da gratis la eliminación de caras traseras: aproximadamente la mitad de una malla cerrada mira hacia el otro lado. La profundidad a lo largo de un triángulo no es lineal en la pantalla, pero $1/z$ sí lo es, así que tanto la prueba del z-buffer como cada atributo interpolado usan pesos $\lambda_k/z_k$. El suelo son solo dos triángulos, así que la interpolación afín (al estilo de la PlayStation 1) curva visiblemente sus líneas
+  de cuadros, mientras que la versión con corrección de perspectiva las mantiene rectas. El sombreado plano muestra cada faceta. Gouraud ilumina las esquinas y mezcla el brillo, lo que difumina el reflejo especular. Phong mezcla las normales e ilumina cada píxel, lo que mantiene nítido el reflejo.'
+meanings:
+- vértices de la malla más las 4 esquinas del suelo; las caras $(T, 3)$ los indexan
+- '$j$ repetido ⇒ suma: gira la malla (una rotación por fotograma)'
+- posición en pantalla y profundidad de la esquina $k$ del triángulo $t$ (cámara estenopeica $f\,(x, y)/z$)
+- la mitad de $\varepsilon_{ij}(v_1 - v_0)_i (v_2 - v_0)_j$; $A_t \le 0$ ⇒ cara trasera, eliminada
+- pesos baricéntricos de cada píxel en cada triángulo; calculados en teselas de píxeles para acotar la memoria
+- '$k$ repetido ⇒ suma: $1/z$ es lo que varía linealmente en la pantalla'
+- 'el z-buffer: el triángulo cubridor más cercano por píxel (los píxeles fuera valen $+\infty$)'
+- coordenadas de textura, normales, posiciones y brillo de Gouraud interpolados con pesos $\lambda/z$
+- 'interpolación afín: correcta para triángulos de frente, incorrecta para los inclinados'
+labels:
+  mesh: Malla
+  resolution: Tamaño de imagen
+  frames: Fotogramas por vuelta
+  tilt: Inclinación alrededor de $x$

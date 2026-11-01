@@ -1,0 +1,21 @@
+source_hash: 9576f7bf38f3
+title: Chaînes de Markov et PageRank
+summary: Un internaute aléatoire clique sur des liens d'un petit web synthétique et saute de temps en temps vers une page au hasard. La probabilité d'être sur chaque page évolue par un produit matrice–vecteur par clic, et sa distribution stationnaire est le PageRank, obtenu ici par la méthode de la puissance itérée, par une décomposition en éléments propres et par des milliers d'internautes simulés à la fois.
+notes: '$S$ est stochastique par colonnes : elle envoie des vecteurs de probabilité sur des vecteurs de probabilité, mais un graphe du web contient des pages sans lien sortant et des groupes de pages qui piègent l''internaute. Les pages sans issue reçoivent une colonne uniforme (l''internaute tape une adresse au hasard), et le terme de téléportation rend tous les coefficients de $G$ strictement positifs. D''après le théorème de Perron–Frobenius, la distribution stationnaire est alors unique, positive et atteinte depuis n''importe quel point de départ. Toutes les autres valeurs propres de $G$ valent $d$ fois une valeur propre de $S$, donc $|\lambda_2| \le d$ et la puissance itérée converge au moins aussi vite que $d^k$. Le panneau de droite montre le lot de facteurs d''amortissement résolus ensemble. Avec $d = 0.85$ (la valeur proposée par Brin et Page, 1998), 50 pas réduisent l''erreur d''au moins $0.85^{50} \approx 3\times10^{-4}$, quelle que soit la taille du web. Les internautes sont
+  une estimation de Monte-Carlo de la même chaîne : leurs proportions suivent $\mathbf x_k$ à un bruit d''ordre $1/\sqrt W$ près, et la moyenne dans le temps donne des rangs qui concordent avec la puissance itérée. Supprimer la correction des pages sans issue laisse la probabilité fuir, comme le montre le terminal. Essayez $d \to 1$ pour voir la convergence ralentir et les rangs s''accumuler dans des groupes de pages fermés.'
+meanings:
+- '1 si la page $j$ pointe vers la page $i$ : les colonnes sont les pages que l''internaute quitte'
+- 'sommé sur $i$ : nombre de liens sortants de la page $j$'
+- cliquer sur un lien au hasard ; une page sans issue ($d_j = 0$) reçoit la colonne uniforme $1/N$
+- matrice Google pour un lot de facteurs d'amortissement $d_b$ ; $1 - d$ est la probabilité de téléportation
+- '$j$ répété ⇒ sommé : un pas de puissance itérée pour chaque $d_b$ à la fois'
+- vecteur propre de valeur propre 1, normalisé pour que sa somme vaille 1 ; $G$ n'est pas symétrique, d'où eig plutôt qu'eigh
+- 'module de la deuxième plus grande valeur propre : l''erreur diminue de ce facteur à chaque pas, et $|\lambda_2| \le d$'
+- 'page de chacun des $W$ internautes : suivre un lien avec probabilité $d$, sinon se téléporter'
+labels:
+  damping: Facteur d'amortissement $d$
+  pages: Pages $N$
+  dangling: Pages sans issue
+  walkers: Internautes aléatoires $W$
+  iterations: Pas
+  seed: Graine du graphe

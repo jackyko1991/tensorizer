@@ -1,0 +1,22 @@
+source_hash: d134f88d426a
+title: Teoría de Marcus de la transferencia electrónica y la región invertida
+summary: 'Un electrón salta de un dador a un aceptor solo cuando el disolvente que lo rodea fluctúa por casualidad hacia una configuración en la que ambos estados tienen la misma energía: el cruce de dos parábolas. Eso da la velocidad de Marcus $k \propto \exp[-(\Delta G^\circ + \lambda)^2/4\lambda k_BT]$, evaluada aquí en una sola malla difundida de energías de reorganización, temperaturas y fuerzas impulsoras. Es máxima cuando $-\Delta G^\circ = \lambda$ y, contra la intuición, vuelve a disminuir en reacciones aún más exergónicas. Una simulación de Langevin de la coordenada del disolvente con saltos de Landau–Zener en el cruce reproduce la curva.'
+notes: 'Unidades: eV, K y ps. La coordenada del disolvente $x$ es la polarización colectiva que percibe la carga transferida, escalada para que el pozo de los reactivos esté en 0 y el de los productos en 1; $\lambda$ es la energía que cuesta polarizar el disolvente como para el producto mientras la carga sigue en el dador. Marcus dedujo la barrera cuadrática en 1956 (J. Chem. Phys. 24, 966) y predijo la región invertida, que no se confirmó experimentalmente hasta los años ochenta. En la región invertida ($-\Delta G^\circ > \lambda$) la parábola de los productos corta la de los reactivos por su lado opuesto, así que una fuerza impulsora mayor sube el cruce. La fórmula de la velocidad es la regla de oro (no adiabática, $H_{AB}$ pequeño) con un disolvente clásico; las velocidades reales en la región invertida caen más despacio porque las vibraciones moleculares de alta frecuencia abren canales cuánticos (la extensión de Marcus–Levich–Jortner). La simulación es una imagen deliberadamente sencilla:
+  una sola coordenada clásica del disolvente con frecuencia $\omega$ y fricción $\gamma$, que se mueve sobre una parábola diabática cada vez y cambia en el cruce con la probabilidad de Landau–Zener $1 - e^{-2\pi H_{AB}^2/\hbar|\dot x|\,|\Delta F|}$, que supone un paso recto y rápido. Sumada sobre un flujo térmico de pasos, devuelve la velocidad de la regla de oro cuando $P_{\mathrm{LZ}} \ll 1$, por eso los puntos caen sobre la curva; para $H_{AB}$ grande los saltos se saturan (transferencia adiabática) y la fricción empieza a importar. Las trayectorias que saltan siguen en la superficie de los productos y pueden volver a saltar. Prueba a bajar $T$ (la curva se estrecha), a subir $H_{AB}$ (la simulación queda por debajo de la fórmula) o a cambiar $\lambda$.'
+meanings:
+- los tres ejes de la malla de velocidades
+- la difusión construye todas las combinaciones a la vez; no se suma ningún índice
+- dónde se cortan las parábolas; $x^* < 0$ indica la región invertida
+- altura del cruce sobre el mínimo de los reactivos
+- trayectoria $n$ con la fuerza impulsora simulada $d$, iniciada en el pozo de los reactivos con estadística de Boltzmann
+- 0 en la superficie de los reactivos, 1 en la de los productos; fija el mínimo hacia el que es atraído el disolvente
+- medio impulso, media deriva, fricción + ruido, media deriva, medio impulso para todas las trayectorias juntas
+- cambiar de superficie con esta probabilidad cada vez que un paso cruza $x^*$
+- saltos directos por unidad de tiempo pasado en la superficie de los reactivos; barra de error $\sqrt{\text{hops}}/t$
+labels:
+  lam: Energía de reorganización $\lambda$
+  T: Temperatura $T$
+  H_ab: Acoplamiento electrónico $H_{AB}$
+  omega: Frecuencia del disolvente $\omega$
+  friction: Fricción del disolvente $\gamma$
+  steps: Pasos de tiempo

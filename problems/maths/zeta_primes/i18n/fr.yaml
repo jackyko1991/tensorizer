@@ -1,0 +1,20 @@
+source_hash: ba1aea4b5f9d
+title: La fonction zêta de Riemann et les nombres premiers
+summary: 'Évaluez $\zeta(s)$ sur la droite critique $\operatorname{Re} s = \frac12$ pour des milliers de hauteurs à la fois, trouvez ses premiers zéros non triviaux comme changements de signe de la fonction réelle $Z(t)$, et comptez les nombres premiers avec un crible tensoriel booléen. Ensuite, la formule explicite de Riemann reconstruit l''escalier $\pi(x)$ à partir des zéros : chaque zéro ajoute une onde, et avec davantage de zéros la courbe lisse se transforme en marches aux nombres premiers.'
+notes: 'La série $\sum n^{-s}$ ne converge que pour $\operatorname{Re} s > 1$ ; Euler–Maclaurin transforme la queue en une intégrale plus des corrections de Bernoulli, ce qui prolonge $\zeta$ à tout le plan sauf au pôle $s = 1$. Sur la droite critique, $Z(t) = e^{i\theta(t)}\zeta(\frac12 + it)$ est réelle, donc un changement de signe de $Z$ prouve qu''un zéro se trouve entre les deux. Les zéros calculés concordent avec les valeurs publiées $14.134725\ldots$, $21.022040\ldots$, $25.010858\ldots$ à environ $10^{-9}$ près, et le nombre trouvé sous la hauteur $T$ correspond au décompte de Riemann–von Mangoldt $N(T) \approx \theta(T)/\pi + 1$, ce qui vérifie qu''aucun n''a été manqué. La formule de Riemann–Siegel, plus rapide (somme principale plus la première correction), est montrée pour comparaison : son erreur n''est déjà que de $10^{-3}$ à $10^{-2}$ aux premiers zéros et diminue quand $t$ augmente. Le théorème des nombres premiers dit que $\pi(x) \sim x/\ln x$, mais $\operatorname{li}(x)$
+  est bien plus proche, et le $R(x) = \sum_n \frac{\mu(n)}{n}\operatorname{li}(x^{1/n})$ de Riemann plus proche encore (panneau du milieu ; calculé avec la série de Gram). Riemann (1859) a montré que l''erreur restante est entièrement portée par les zéros : $J(x) = \sum_{p^m \le x} \frac1m$ est égal à $\operatorname{li}(x) - \sum_\rho \operatorname{li}(x^\rho) - \ln 2 + \int_x^\infty \frac{dt}{t(t^2-1)\ln t}$ (démontré par von Mangoldt en 1895), et l''inversion de Möbius donne $\pi(x)$. Chaque paire de zéros $\rho = \frac12 \pm i\gamma$ ajoute une onde d''amplitude environ $\sqrt{x}/(\gamma\ln x)$ et de fréquence $\gamma$ en $\ln x$ ; tronquer la somme laisse des ondulations de type Gibbs près de chaque marche. L''hypothèse de Riemann affirme que tout zéro non trivial (tout zéro avec $0 < \operatorname{Re} s < 1$) a une partie réelle exactement égale à $\frac12$. Elle n''est pas démontrée. Elle a été vérifiée par ordinateur pour plus de $10^{12}$ zéros, et elle équivaut à la majoration d''erreur
+  $\pi(x) = \operatorname{li}(x) + O(\sqrt{x}\ln x)$ (von Koch, 1901). Ce programme ne trouve que des zéros sur la droite ; il ne peut pas exclure des zéros en dehors. Pour aller plus loin : H. M. Edwards, Riemann''s Zeta Function (1974).'
+meanings:
+- de nombreuses hauteurs $t$ sur la droite critique à la fois
+- '$n$ répété ⇒ sommé : les $N-1$ premiers termes de la série de Dirichlet'
+- corrections d'Euler–Maclaurin avec les nombres de Bernoulli ; $(s)_{2k-1} = s(s+1)\cdots(s+2k-2)$. Valable pour tout $s \ne 1$
+- une fonction réelle ayant les mêmes zéros que $\zeta(\frac12 + it)$ ; $\theta(t)$ d'après sa série asymptotique
+- changements de signe de $Z$ sur une grille de pas 0,01, puis 48 pas de dichotomie sur tous les intervalles à la fois
+- 'crible d''Ératosthène : une tranche à pas fixe par nombre premier $p \le \sqrt{x}$ ; $\pi(x)$ est sa somme cumulée'
+- chaque zéro en chaque $x$ ; les zéros conjugués donnent ensemble $2\,\mathrm{Re}$
+- 'l''approximation pour chaque $K$ à la fois : une image par ligne'
+- fonction de Möbius ; la somme sur $n$ s'arrête à $x^{1/n} < 2$ car $J(y) = 0$ dans ce cas
+labels:
+  n_zeros: Zéros utilisés $K$
+  x_explicit: Formule explicite jusqu'à $x$
+  log10_x: Crible jusqu'à $10^n$

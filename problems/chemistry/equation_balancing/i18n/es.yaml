@@ -1,0 +1,17 @@
+source_hash: 94551bc4044d
+title: Ajuste de ecuaciones químicas (espacio nulo)
+summary: 'Ajustar una ecuación significa encontrar coeficientes $\nu_s$ que conserven cada elemento y la carga. Escrito como matriz, eso es $M\nu = 0$: los coeficientes forman el espacio nulo de la matriz elementos–especies. Una sola SVD por lotes resuelve siete reacciones a la vez, desde la combustión del metano hasta el permanganato en medio ácido, y detecta aquella cuyo ajuste no es único.'
+notes: 'Cada elemento da una ecuación lineal en los coeficientes desconocidos, así que $S$ especies y $E$ elementos dan un sistema $E\times S$ $M\nu = 0$. Normalmente $M$ tiene rango $S-1$ y las soluciones forman una recta: la ecuación ajustada es única salvo un factor común. La SVD encuentra esa recta como el vector singular derecho con valor singular 0 (el último); dividir por su menor componente y probar multiplicadores $k = 1, 2, \dots$ da los menores números enteros, por ejemplo $\mathrm{CH_4} + 2\,\mathrm{O_2} \rightarrow \mathrm{CO_2} + 2\,\mathrm{H_2O}$. Para los iones, la carga es solo una fila más: sin ella, $\mathrm{MnO_4^-} + \mathrm{Fe^{2+}} + \mathrm{H^+}$ tendría un espacio nulo de dimensión 2, y con ella aparece la conocida ecuación redox $1{:}5{:}8 \rightarrow 1{:}5{:}4$. El ejemplo del peróxido $\mathrm{H_2} + \mathrm{O_2} \rightarrow \mathrm{H_2O} + \mathrm{H_2O_2}$ tiene dos valores singulares nulos: esconde dos reacciones independientes ($2\mathrm{H_2} + \mathrm{O_2}
+  \rightarrow 2\mathrm{H_2O}$ y $\mathrm{H_2} + \mathrm{O_2} \rightarrow \mathrm{H_2O_2}$), y cualquier mezcla positiva de ambas también está ajustada. El álgebra por sí sola no puede elegir una; las proporciones reales las fija la química (cinética, condiciones). El código muestra las reacciones de base obtenidas al anular un coeficiente en el espacio nulo de dimensión 2. Prueba una reacción propia añadiéndola a `REACTIONS` en tensors.py; el analizador lee paréntesis y cargas como ''Ca3(PO4)2'' o ''Fe^3+''.'
+meanings:
+- átomos del elemento $e$ en la especie $s$ de la reacción $r$; la fila q es la carga (del pequeño analizador de fórmulas)
+- $+1$ para un reactivo, $-1$ para un producto
+- 'ningún índice sumado: cada columna lleva signo'
+- todas las reacciones rellenadas en un solo tensor; las columnas sin usar se fijan a $\nu_s = 0$
+- SVD por lotes; valores singulares en orden descendente
+- 'cuántos valores singulares se anulan: 1 → ajuste único, 2 → dos reacciones independientes'
+- último vector singular, escalado para que la menor componente sea 1 y luego por el primer $k_r$ que da enteros
+- '$s$ repetido ⇒ sumado: átomos de $e$ creados; cero para cada elemento y para la carga'
+labels:
+  show: Reacción mostrada como matriz
+  max_scale: Mayor multiplicador $k$ probado

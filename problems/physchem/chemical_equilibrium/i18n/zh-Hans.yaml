@@ -1,0 +1,19 @@
+source_hash: aa144f7ad9f7
+title: 化学平衡与勒夏特列原理
+summary: 反应在哪里停止？由 $\Delta G^\circ = -RT\ln K$，对气相反应（$\mathrm{N_2O_4 \rightleftharpoons 2\,NO_2}$ 或 Haber 反应 $\mathrm{N_2 + 3H_2 \rightleftharpoons 2NH_3}$）的平衡进度 $\xi$，用对 $Q(\xi) = K$ 的二分法在数百个温度和压强下同时求解，展示勒夏特列原理随压强、温度（van 't Hoff）和添加产物的移动。
+notes: $Q$ 衡量混合物现在的位置，$K$ 衡量它想要到达的位置：若 $Q < K$ 反应正向进行，若 $Q > K$ 则逆向进行。由于 $\ln Q$ 随进度 $\xi$ 单调上升（从无产物时的 $-\infty$ 到无反应物时的 $+\infty$），平衡就是 $\ln Q(\xi) - \ln K$ 的唯一根，二分法能对所有条件同时找到它。勒夏特列原理直接从公式中得出。压强：采用理想气体活度时 $Q = K_x\,(P/P^\circ)^{\Delta\nu}$，其中 $\Delta\nu = \sum_i \nu_i$，所以提高 $P$ 有利于气体分子较少的一方（$\mathrm{N_2O_4}$ 解离减少，生成更多 $\mathrm{NH_3}$）。温度：$\ln K = -\Delta H^\circ/RT + \Delta S^\circ/R$，所以对吸热反应 $K$ 随 $T$ 增大（$\mathrm{N_2O_4}$：加热时 $\mathrm{NO_2}$ 的棕色加深），对放热反应则减小（氨）。添加产物：$Q$ 跃升到 $K$ 之上，部分产物变回反应物，但不是全部。对 $\mathrm{N_2O_4}$ 可以手算验证：由 $K = 4\alpha^2 P/((1-\alpha^2)P^\circ)$ 得 $\alpha = \sqrt{K/(K + 4P/P^\circ)}$。热力学数据是 298 K 下的近似教科书值（$\mathrm{N_2O_4}$ 为 $\Delta H^\circ \approx +57.2$ kJ/mol、$\Delta S^\circ \approx +176$ J/(mol K)；氨为 $\approx -92.2$ kJ/mol 和 $\approx -199$ J/(mol K)），视为不随 $T$ 变化，且气体视为理想气体；这两项简化都会使 700 K、100 bar 下的氨产率有所高估（实测：约 20 % $\mathrm{NH_3}$，而非约 30 %）。Haber 反应在室温下热力学上非常有利，但速度太慢：工厂在约 700–750 K 和 150–300 bar 下使用铁催化剂运行，以产率换取速度。试试用 Haber 反应取 T = 700 K。
+meanings:
+- 化学计量数：$\mathrm{N_2O_4 \rightleftharpoons 2NO_2}$ 为 $-1, 2$；氨为 $-1, -3, 2$
+- 每个（温度，压强）组合展平为一个批次索引 $b$
+- $-\Delta G^\circ/RT$，使用近似且与温度无关的 $\Delta H^\circ$、$\Delta S^\circ$
+- 各物种的摩尔数；外积，不求和
+- 总摩尔数；对 $j$ 求和
+- $\ln Q$：对物种指标 $i$ 求和
+- 任何物质的量都不能为负：二分法的区间
+- 二分法，所有条件一起：保留 $\ln Q - \ln K$ 变号的那一半
+- $\ln K$ 对 $1/T$ 的斜率
+labels:
+  reaction: 反应（$\mathrm{N_2O_4}$ 或氨）
+  T: 温度 $T$（黑色曲线）
+  P: 添加产物测试的压强 $P$
+  add_product: 添加的产物

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="An image A written as the sum of rank-1 layers: sigma 1 times u1 v1 transpose plus sigma 2 times u2 v2 transpose plus more, each layer a column vector times a row vector">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- image A: a small picture -->
+    <rect x="8" y="50" width="50" height="50" fill="#93c5fd" stroke="#374151" stroke-width="2"/>
+    <polygon points="8,100 30,72 50,100" fill="#2563eb"/>
+    <circle cx="44" cy="62" r="6" fill="#f59e0b"/>
+    <text x="27" y="122" font-style="italic">A</text>
+    <text x="64" y="80">=</text>
+    <!-- layer 1: column u1 and row v1 -->
+    <rect x="80" y="50" width="8" height="50" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <rect x="92" y="50" width="40" height="8" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="78" y="44" font-size="13" font-style="italic">σ<tspan font-size="10" dy="3">1</tspan></text>
+    <text x="80" y="122" font-size="13"><tspan font-style="italic">u</tspan><tspan font-size="10" dy="3">1</tspan><tspan dy="-3"> </tspan><tspan font-style="italic">v</tspan><tspan font-size="10" dy="3">1</tspan><tspan font-size="10" dy="-9">T</tspan></text>
+    <text x="138" y="80">+</text>
+    <!-- layer 2 -->
+    <rect x="154" y="50" width="8" height="50" fill="#2563eb" stroke="#1e40af" stroke-width="1.5" opacity="0.7"/>
+    <rect x="166" y="50" width="40" height="8" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5" opacity="0.7"/>
+    <text x="152" y="44" font-size="13" font-style="italic">σ<tspan font-size="10" dy="3">2</tspan></text>
+    <text x="154" y="122" font-size="13"><tspan font-style="italic">u</tspan><tspan font-size="10" dy="3">2</tspan><tspan dy="-3"> </tspan><tspan font-style="italic">v</tspan><tspan font-size="10" dy="3">2</tspan><tspan font-size="10" dy="-9">T</tspan></text>
+    <text x="212" y="80">+ …</text>
+    <!-- sigma decreasing guide -->
+    <line x1="80" y1="140" x2="226" y2="140" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="80" y="155" font-size="11" fill="#6b7280">σ₁ ≥ σ₂ ≥ … : keep the first k</text>
+  </g>
+</svg>

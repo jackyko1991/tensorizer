@@ -1,0 +1,32 @@
+title: Image compression with the SVD
+category: maths
+level: intermediate
+order: 2
+summary: >
+  The singular value decomposition writes an image as a sum of rank-1 layers $\sigma_r\,\mathbf u_r\mathbf v_r^T$,
+  strongest first. Keeping only $k$ layers is the best rank-$k$ approximation, its error is exactly the energy of the
+  dropped singular values, and a colour image is three matrices decomposed in one batched call.
+animated: true
+vector_form: 'A = U\Sigma V^T = \sum_r \sigma_r\,\mathbf u_r \mathbf v_r^T,\qquad A_k = \sum_{r\le k} \sigma_r\,\mathbf u_r \mathbf v_r^T,\qquad \lVert A - A_k\rVert_F^2 = \sum_{r>k}\sigma_r^2'
+index_form: 'A_{cij} = U_{cir}\,\sigma_{cr}\,V_{cjr},\qquad (A_k)_{cij} = \sum_{r\le k} U_{cir}\,\sigma_{cr}\,V_{cjr},\qquad U_{cir}U_{cis} = \delta_{rs}'
+translation:
+  - {symbol: 'A_{cij}', code: 'test_image(size, device)', shape: '(3, H, W)', meaning: 'channel $c$, row $i$, column $j$ of a scene drawn with matplotlib, values in $[0, 1]$'}
+  - {symbol: 'A_{ij} = w_c A_{cij}', code: "einsum('c,cij->ij', w, rgb)", shape: '(H, W)', meaning: 'repeated $c$ ⇒ summed: brightness with weights $(0.299, 0.587, 0.114)$'}
+  - {symbol: 'U_{cir},\ \sigma_{cr},\ V_{cjr}', code: 'torch.linalg.svd(A, full_matrices=False)', shape: '(3, H, R), (3, R), (3, W, R)', meaning: 'one SVD per channel, batched over the leading index $c$; $R = \min(H, W)$'}
+  - {symbol: '(A_k)_{cij}', code: "einsum('...ir,...r,...jr->...ij', U[..., :k], s[..., :k], V[..., :k])", shape: '(3, H, W)', meaning: 'repeated $r \le k$ ⇒ summed: the first $k$ rank-1 layers'}
+  - {symbol: '\sigma_r U_{ir} V_{jr}', code: "s[r] * einsum('i,j->ij', U[:, r], V[:, r])", shape: '(H, W)', meaning: 'no repeated index: one outer-product layer of the grey image'}
+  - {symbol: '\sum_{r>k}\sigma_r^2', code: 'flip(cumsum(flip(s**2)))', shape: '(R+1,)', meaning: 'Eckart–Young error for every $k$ at once, without rebuilding any image'}
+  - {symbol: '\mathrm{PSNR}', code: '10 * log10(1 / mse)', shape: '(R,)', meaning: 'peak signal-to-noise ratio in dB, with the mean squared error from the dropped $\sigma$s'}
+notes: >
+  Storing $k$ layers of an $H\times W$ image takes $k(H + W + 1)$ numbers instead of $HW$, so the compression ratio
+  is $HW / k(H + W + 1)$. The Eckart–Young theorem says no rank-$k$ matrix is closer to $A$ in the Frobenius norm,
+  and the error is the sum of the squared singular values left out. The terminal checks this against images actually
+  rebuilt for several $k$. Smooth parts of the scene (the sky gradient) are captured by the first few layers, while
+  sharp edges, diagonals and text need many. That is why the singular values fall quickly at first and then decay
+  slowly, and why JPEG uses local cosine transforms instead. The first layer is roughly the average brightness
+  profile; later layers alternate in sign (red and blue) to add detail. The image is drawn procedurally, so nothing
+  is downloaded. Try a larger image or a higher maximum rank.
+params:
+  size: {default: 256, min: 64, max: 512, step: 32, type: int, label: Image size (pixels)}
+  k_max: {default: 80, min: 5, max: 256, step: 5, type: int, label: 'Largest rank $k$ shown'}
+  frames: {default: 40, min: 10, max: 120, step: 5, type: int, label: Animation frames}

@@ -1,0 +1,45 @@
+title: The Riemann zeta function and the primes
+category: maths
+level: advanced
+order: 3
+summary: >
+  Evaluate $\zeta(s)$ on the critical line $\operatorname{Re} s = \frac12$ for thousands of heights at once, find its
+  first nontrivial zeros as sign changes of the real function $Z(t)$, and count primes with a boolean tensor sieve. Then
+  Riemann's explicit formula rebuilds the staircase $\pi(x)$ from the zeros: each zero adds one wave, and with more
+  zeros the smooth curve sharpens into steps at the primes.
+animated: true
+vector_form: '\zeta(s) = \sum_{n\ge1} n^{-s} = \prod_p \frac{1}{1 - p^{-s}},\qquad Z(t) = e^{i\theta(t)}\,\zeta(\tfrac12 + it) \in \mathbb R,\qquad J(x) = \operatorname{li}(x) - \sum_\rho \operatorname{li}(x^\rho) - \ln 2 + \int_x^\infty \frac{dt}{t(t^2-1)\ln t}'
+index_form: '\zeta_t = E_{tn}1_n + \frac{N^{1-s_t}}{s_t - 1} + \frac{N^{-s_t}}{2} + \sum_{k} \frac{B_{2k}}{(2k)!}\,(s_t)_{2k-1}\,N^{-s_t-2k+1},\quad E_{tn} = n^{-s_t},\qquad \pi_K(x) = \sum_{n} \frac{\mu(n)}{n}\Big[\operatorname{li}(x^{1/n}) - \sum_{k\le K} 2\,\mathrm{Re}\operatorname{Ei}\big(\rho_k \tfrac{\ln x}{n}\big) - \ln 2 + I(x^{1/n})\Big]'
+translation:
+  - {symbol: 's_t = \tfrac12 + it', code: '0.5 + 1j * t', shape: '(T,) complex128', meaning: 'many heights $t$ on the critical line at once'}
+  - {symbol: 'E_{tn}1_n', code: "einsum('tn->t', exp(-s[:, None] * log(n)))", shape: '(T, N) → (T,)', meaning: 'repeated $n$ ⇒ summed: the first $N-1$ terms of the Dirichlet series'}
+  - {symbol: '\frac{B_{2k}}{(2k)!}(s_t)_{2k-1}N^{-s_t-2k+1}', code: 'b / factorial(2k) * rising * n_pow / big**(2k-1)', shape: '(T,)', meaning: 'Euler–Maclaurin corrections with Bernoulli numbers; $(s)_{2k-1} = s(s+1)\cdots(s+2k-2)$. Valid for every $s \ne 1$'}
+  - {symbol: 'Z(t)', code: '(exp(1j * theta(t)) * zeta(0.5 + 1j * t, N)).real', shape: '(T,)', meaning: 'a real function with the same zeros as $\zeta(\frac12 + it)$; $\theta(t)$ from its asymptotic series'}
+  - {symbol: '\gamma_k', code: 'find_zeros(t, z, N)', shape: '(K,)', meaning: 'sign changes of $Z$ on a grid with step 0.01, then 48 bisection steps on all brackets at once'}
+  - {symbol: '[n \text{ prime}]', code: 'is_prime[p * p :: p] = False', shape: '(x_max + 1,) bool', meaning: 'sieve of Eratosthenes: one strided slice per prime $p \le \sqrt{x}$; $\pi(x)$ is its cumulative sum'}
+  - {symbol: '\operatorname{li}(x^{\rho})', code: 'ei(rho[:, None] * log(x)[None, :])', shape: '(K, X) complex', meaning: 'every zero at every $x$; conjugate zeros together give $2\,\mathrm{Re}$'}
+  - {symbol: '\sum_{k\le K}', code: 'torch.cumsum(..., dim=0)', shape: '(K, X)', meaning: 'the approximation for every $K$ at once: one frame per row'}
+  - {symbol: '\mu(n)', code: 'mobius(64)', shape: 'list', meaning: 'Möbius function; the sum over $n$ stops at $x^{1/n} < 2$ because $J(y) = 0$ there'}
+notes: >
+  The series $\sum n^{-s}$ converges only for $\operatorname{Re} s > 1$; Euler–Maclaurin turns the tail into an integral plus
+  Bernoulli corrections, which continues $\zeta$ to the whole plane except the pole at $s = 1$. On the critical line
+  $Z(t) = e^{i\theta(t)}\zeta(\frac12 + it)$ is real, so a sign change of $Z$ proves a zero lies in between. The
+  computed zeros agree with the published values $14.134725\ldots$, $21.022040\ldots$, $25.010858\ldots$ to about $10^{-9}$,
+  and the number found below height $T$ matches the Riemann–von Mangoldt count $N(T) \approx \theta(T)/\pi + 1$, a
+  check that none was missed. The faster Riemann–Siegel formula (main sum plus the first correction) is shown for comparison:
+  its error is already only $10^{-3}$ to $10^{-2}$ at the first zeros and shrinks as $t$ grows. The prime number theorem says
+  $\pi(x) \sim x/\ln x$, but $\operatorname{li}(x)$ is much closer, and Riemann's
+  $R(x) = \sum_n \frac{\mu(n)}{n}\operatorname{li}(x^{1/n})$ closer still (middle panel; computed with Gram's series).
+  Riemann (1859) showed that the remaining error is carried entirely by the zeros: $J(x) = \sum_{p^m \le x} \frac1m$
+  equals $\operatorname{li}(x) - \sum_\rho \operatorname{li}(x^\rho) - \ln 2 + \int_x^\infty \frac{dt}{t(t^2-1)\ln t}$
+  (proved by von Mangoldt in 1895), and Möbius inversion gives $\pi(x)$. Each pair of zeros
+  $\rho = \frac12 \pm i\gamma$ adds a wave of size about $\sqrt{x}/(\gamma\ln x)$ and frequency $\gamma$ in $\ln x$; truncating the sum
+  leaves Gibbs-like ripples near each step. The Riemann hypothesis states that every nontrivial zero (every zero with
+  $0 < \operatorname{Re} s < 1$) has real part exactly $\frac12$. It is unproved. It has been verified by computer for more than
+  $10^{12}$ zeros, and it is equivalent to the error bound $\pi(x) = \operatorname{li}(x) + O(\sqrt{x}\ln x)$ (von Koch, 1901).
+  This program only finds zeros on the line; it cannot rule out zeros off it. Further reading: H. M. Edwards,
+  Riemann's Zeta Function (1974).
+params:
+  n_zeros: {default: 100, min: 10, max: 200, step: 10, type: int, label: 'Zeros used $K$'}
+  x_explicit: {default: 60.0, min: 30, max: 400, step: 10, label: 'Explicit formula up to $x$'}
+  log10_x: {default: 7, min: 3, max: 8, step: 1, type: int, label: 'Sieve up to $10^n$'}

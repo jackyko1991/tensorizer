@@ -1,0 +1,19 @@
+source_hash: 835586f4adf3
+title: Limitierender Reaktant und prozentuale Ausbeute
+summary: 'Mische Aluminium mit Iod (oder Stickstoff mit Wasserstoff) in beliebigem Verhältnis: Welcher Reaktant ist zuerst verbraucht, wie viel Produkt kann entstehen, und wie viel vom anderen bleibt übrig? Jede Stoffmenge ändert sich mit einer einzigen Reaktionslaufzahl $\xi$, der limitierende Reaktant ist ein Minimum über $n_s/|\nu_s|$, und ein ganzer Stapel von Experimenten sowie eine 2D-Karte der Ausgangsmassen werden mit derselben Tensoroperation behandelt.'
+notes: 'Mole, nicht Gramm, reagieren in festen Verhältnissen: Teile zuerst jede Masse durch ihre molare Masse. Dann beschreibt eine einzige Zahl, die Reaktionslaufzahl $\xi$, wie weit die Reaktion fortgeschritten ist: $2\,\mathrm{Al} + 3\,\mathrm{I_2} \rightarrow 2\,\mathrm{AlI_3}$ verbraucht $2\xi$ mol Aluminium und $3\xi$ mol Iod und erzeugt $2\xi$ mol Aluminiumiodid. Jeder Reaktant erlaubt höchstens $n^0_s/|\nu_s|$ Formelumsätze, und die kleinste dieser Zahlen gewinnt: Dieser Reaktant ist der limitierende, und sein Balken ist derjenige, der null erreicht. Mit 1,20 g Al (44,5 mmol) und 2,40 g I₂ (9,46 mmol) ist Iod limitierend: $\xi^{\max} = 3.15$ mmol, höchstens 2,57 g AlI₃, und 1,03 g Aluminium bleiben zurück. Auf der Karte hängt das Produkt auf jeder Seite der gestrichelten stöchiometrischen Linie nur von einem Reaktanten ab; entlang der Linie sind beide gleichzeitig verbraucht, und nichts wird verschwendet. Reale Ausbeuten sind niedriger als die theoretischen (Verluste, Nebenreaktionen,
+  ein Gleichgewicht, das nicht vollständig abläuft: ein einziger Durchgang durch einen Haber-Reaktor setzt nur etwa 15 % um), und eine Ausbeute über 100 % bedeutet, dass das Produkt feucht oder verunreinigt ist. Ändere die Massen, das gewogene Produkt oder die Reaktion.'
+meanings:
+- 'stöchiometrische Zahlen mit Vorzeichen: $-2, -3, +2$ für 2 Al + 3 I₂ → 2 AlI₃'
+- 'wiederholtes $e$ ⇒ summiert: molare Massen aus den Atomen jeder Spezies'
+- Stoffmengen zu Beginn für jedes Experiment $b$ (das letzte ist dein Versuch)
+- größte Laufzahl, bevor ein Reaktant null erreicht; argmin ist der limitierende Reaktant
+- Stoffmengen bei $K$ Laufzahlen von 0 bis $\xi^{\max}$ (die Balken)
+- theoretische Ausbeute des Produkts in g
+- prozentuale Ausbeute
+- das Gitter der Ausgangsmassen ist einfach ein größerer Batch
+labels:
+  reaction: Reaktion
+  mass_1: Masse von Reaktant 1 (Al oder N₂)
+  mass_2: Masse von Reaktant 2 (I₂ oder H₂)
+  measured: Gewogenes Produkt

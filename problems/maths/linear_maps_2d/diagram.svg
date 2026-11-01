@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="A square grid with the unit circle, the unit square and the basis vectors, and its image under a 2 by 2 matrix A: a slanted grid, a parallelogram and an ellipse">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrowg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+    <marker id="flow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- before: grid, unit square, unit circle, e1 and e2 -->
+    <line x1="24.0" y1="118.4" x2="24.0" y2="45.6" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="15.6" y1="110.0" x2="88.4" y2="110.0" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="52.0" y1="118.4" x2="52.0" y2="45.6" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="15.6" y1="82.0" x2="88.4" y2="82.0" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="80.0" y1="118.4" x2="80.0" y2="45.6" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="15.6" y1="54.0" x2="88.4" y2="54.0" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <path d="M52.0,82.0 L80.0,82.0 L80.0,54.0 L52.0,54.0 Z" fill="#fde68a" stroke="#f59e0b" stroke-width="1.5"/>
+    <path d="M80.0,82.0 L79.9,79.6 L79.6,77.1 L79.0,74.8 L78.3,72.4 L77.4,70.2 L76.2,68.0 L74.9,65.9 L73.4,64.0 L71.8,62.2 L70.0,60.6 L68.1,59.1 L66.0,57.8 L63.8,56.6 L61.6,55.7 L59.2,55.0 L56.9,54.4 L54.4,54.1 L52.0,54.0 L49.6,54.1 L47.1,54.4 L44.8,55.0 L42.4,55.7 L40.2,56.6 L38.0,57.8 L35.9,59.1 L34.0,60.6 L32.2,62.2 L30.6,64.0 L29.1,65.9 L27.8,68.0 L26.6,70.2 L25.7,72.4 L25.0,74.8 L24.4,77.1 L24.1,79.6 L24.0,82.0 L24.1,84.4 L24.4,86.9 L25.0,89.2 L25.7,91.6 L26.6,93.8 L27.8,96.0 L29.1,98.1 L30.6,100.0 L32.2,101.8 L34.0,103.4 L35.9,104.9 L38.0,106.2 L40.2,107.4 L42.4,108.3 L44.8,109.0 L47.1,109.6 L49.6,109.9 L52.0,110.0 L54.4,109.9 L56.9,109.6 L59.2,109.0 L61.6,108.3 L63.8,107.4 L66.0,106.2 L68.1,104.9 L70.0,103.4 L71.8,101.8 L73.4,100.0 L74.9,98.1 L76.2,96.0 L77.4,93.8 L78.3,91.6 L79.0,89.2 L79.6,86.9 L79.9,84.4 L80.0,82.0" fill="none" stroke="#2563eb" stroke-width="2"/>
+    <line x1="52.0" y1="82.0" x2="80.0" y2="82.0" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="52.0" y1="82.0" x2="52.0" y2="54.0" stroke="#16a34a" stroke-width="2" marker-end="url(#arrowg)"/>
+    <!-- after: everything multiplied by A -->
+    <line x1="114.6" y1="124.4" x2="158.2" y2="58.8" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="109.5" y1="118.5" x2="196.9" y2="103.9" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="148.2" y1="118.8" x2="191.8" y2="53.2" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="126.3" y1="93.3" x2="213.7" y2="78.7" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="181.8" y1="113.2" x2="225.4" y2="47.6" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="143.1" y1="68.1" x2="230.5" y2="53.5" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3"/>
+    <path d="M170.0,86.0 L203.6,80.4 L220.4,55.2 L186.8,60.8 Z" fill="#fde68a" stroke="#f59e0b" stroke-width="1.5"/>
+    <path d="M203.6,80.4 L204.9,78.2 L206.0,76.1 L206.8,74.1 L207.3,72.1 L207.6,70.3 L207.5,68.6 L207.2,67.0 L206.5,65.5 L205.6,64.2 L204.5,63.1 L203.0,62.1 L201.3,61.4 L199.4,60.8 L197.3,60.4 L194.9,60.2 L192.4,60.2 L189.7,60.4 L186.8,60.8 L183.8,61.4 L180.7,62.2 L177.5,63.1 L174.3,64.2 L171.0,65.5 L167.7,67.0 L164.5,68.6 L161.3,70.3 L158.1,72.1 L155.1,74.1 L152.1,76.1 L149.3,78.2 L146.6,80.4 L144.2,82.6 L141.9,84.9 L139.8,87.1 L138.0,89.4 L136.4,91.6 L135.1,93.8 L134.0,95.9 L133.2,97.9 L132.7,99.9 L132.4,101.7 L132.5,103.4 L132.8,105.0 L133.5,106.5 L134.4,107.8 L135.5,108.9 L137.0,109.9 L138.7,110.6 L140.6,111.2 L142.7,111.6 L145.1,111.8 L147.6,111.8 L150.3,111.6 L153.2,111.2 L156.2,110.6 L159.3,109.8 L162.5,108.9 L165.7,107.8 L169.0,106.5 L172.3,105.0 L175.5,103.4 L178.7,101.7 L181.9,99.9 L184.9,97.9 L187.9,95.9 L190.7,93.8 L193.4,91.6 L195.8,89.4 L198.1,87.1 L200.2,84.9 L202.0,82.6 L203.6,80.4" fill="none" stroke="#2563eb" stroke-width="2"/>
+    <line x1="170.0" y1="86.0" x2="203.6" y2="80.4" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="170.0" y1="86.0" x2="186.8" y2="60.8" stroke="#16a34a" stroke-width="2" marker-end="url(#arrowg)"/>
+    <path d="M98,34 Q114,20 130,34" fill="none" stroke="#374151" stroke-width="2" marker-end="url(#flow)"/>
+    <text x="108" y="18" font-style="italic" font-weight="bold">A</text>
+    <text x="48" y="154" font-style="italic">x</text>
+    <text x="146" y="154"><tspan font-style="italic">y</tspan> = <tspan font-style="italic">A x</tspan></text>
+  </g>
+</svg>

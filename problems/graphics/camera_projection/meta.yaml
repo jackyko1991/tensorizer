@@ -1,0 +1,41 @@
+title: The pinhole camera
+category: graphics
+level: beginner
+order: 2
+summary: >
+  How a 3D scene becomes a 2D image: model, view and projection $4\times4$ matrices act on homogeneous coordinates,
+  then the perspective divide and the viewport give pixels. All vertices of a wireframe object are projected at once with
+  one einsum while the camera orbits. Compare perspective with orthographic projection and with a dolly zoom, see
+  parallel lines meet at vanishing points, and write the same camera as $K[R\,|\,\mathbf t]$.
+animated: true
+vector_form: '\tilde{\mathbf x} = P\,V\,M\,\mathbf X,\quad \mathbf X = (x, y, z, 1)^{\mathsf T},\qquad \mathbf x_\text{ndc} = \tilde{\mathbf x}/\tilde x_4,\qquad \lambda\,(u, v, 1)^{\mathsf T} = K\,[R\,|\,\mathbf t]\,\mathbf X,\quad \mathbf v_\infty = K R\,\hat{\mathbf d}'
+index_form: '\tilde x_{vi} = P_{ij}V_{jk}M_{kl}X_{vl},\quad u_v = \tfrac W2\big(\tilde x_{v1}/\tilde x_{v4} + 1\big),\quad v_v = \tfrac H2\big(1 - \tilde x_{v2}/\tilde x_{v4}\big)\qquad \lambda_v\,\hat u_{va} = K_{ab}\,[R|t]_{bl}\,X_{vl}'
+translation:
+  - {symbol: 'X_{vl}', code: 'tensors.shape(name, device)', shape: '(N, 4)', meaning: 'vertex $v$ in homogeneous coordinates $(x, y, z, 1)$; edges are index pairs $(E, 2)$'}
+  - {symbol: 'M_{kl}', code: 'model_matrix(yaw, scale, lift)', shape: '(4, 4)', meaning: 'object → world: scale, rotate about $y$, then translate (the 4th column)'}
+  - {symbol: 'V_{jk}', code: 'look_at(eye, target)', shape: '(4, 4)', meaning: 'world → camera: rows are the camera axes, translation $-R\,\mathbf e$'}
+  - {symbol: 'P_{ij}', code: 'perspective(fov, aspect, near, far)', shape: '(4, 4)', meaning: 'camera → clip space; its last row copies $-z$ into $\tilde x_4$ (orthographic: $\tilde x_4 = 1$)'}
+  - {symbol: '\tilde x_{vi} = P_{ij}V_{jk}M_{kl}X_{vl}', code: "einsum('ij,jk,kl,vl->vi', P, V, M, X)", shape: '(N, 4)', meaning: 'repeated $j, k, l$ ⇒ summed: every vertex through all three matrices in one call'}
+  - {symbol: '(u_v, v_v)', code: 'to_pixels(clip, W, H)', shape: '(N, 2)', meaning: 'perspective divide by $\tilde x_4$, then the viewport; image rows count downwards'}
+  - {symbol: 'K_{ab},\ [R|t]_{bl}', code: 'intrinsics(fov, W, H), extrinsics(V)', shape: '(3, 3), (3, 4)', meaning: 'focal length $f = \tfrac H2 / \tan\tfrac{\text{fov}}2$ and principal point; the rigid motion world → camera'}
+  - {symbol: 'K_{ab}R_{bc}d_c', code: 'vanishing_point(K, Rt, d)', shape: '(2,)', meaning: 'a point at infinity $(\hat{\mathbf d}, 0)$ loses the translation: all lines along $\hat{\mathbf d}$ meet there'}
+notes: >
+  The 4th coordinate is what makes the camera linear: translation becomes a matrix column, and perspective, which
+  divides by depth, becomes a matrix that copies depth into $\tilde x_4$ followed by one division at the end.
+  Points with $w = 0$ are directions; their images are the vanishing points, and all horizontal directions vanish on
+  the horizon, which sits above the image centre when the camera looks down. The orthographic camera has
+  $\tilde x_4 = 1$, so it has no vanishing points and far objects do not shrink, as in engineering drawings and many
+  strategy games. The dolly zoom (the "Vertigo effect") changes the field of view while moving the camera so that
+  $d\,\tan(\text{fov}/2)$ stays fixed: the object keeps its size but the floor behind it stretches. Vision
+  libraries use $\lambda\,\hat{\mathbf u} = K[R|\mathbf t]\mathbf X$ with $z$ pointing forwards; graphics APIs use $P V M$ with
+  $z$ pointing backwards; the two differ only by flipping the $y$ and $z$ axes, and the terminal checks that they give
+  the same pixels.
+params:
+  shape: {default: house, type: choice, options: [cube, house, torus], label: Object}
+  yaw: {default: 0.0, min: -90, max: 90, step: 5, label: 'Object rotation (model matrix)', unit: °}
+  fov: {default: 50.0, min: 15, max: 110, step: 5, label: 'Field of view', unit: °}
+  distance: {default: 6.5, min: 4.5, max: 15, step: 0.5, label: Camera distance}
+  height_cam: {default: 2.5, min: 0.5, max: 6, step: 0.25, label: Camera height}
+  width: {default: 320, min: 160, max: 640, step: 16, type: int, label: Image width, unit: px}
+  height: {default: 240, min: 120, max: 480, step: 16, type: int, label: Image height, unit: px}
+  frames: {default: 72, min: 12, max: 120, step: 6, type: int, label: Frames per orbit}

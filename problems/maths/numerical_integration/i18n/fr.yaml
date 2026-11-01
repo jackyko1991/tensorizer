@@ -1,0 +1,16 @@
+source_hash: 9e25d7739db7
+title: Intégration numérique et ordre de convergence
+summary: La méthode des trapèzes, la méthode de Simpson et la quadrature de Gauss–Legendre sont toutes une somme pondérée $\sum_k w_k f(x_k)$, un seul einsum sur de nombreuses fonctions à la fois. Les nœuds et les poids de Gauss proviennent d'un problème aux valeurs propres (Golub–Welsch). En échelle log–log, les erreurs décroissent avec des pentes 2 et 4, ou exponentiellement, jusqu'à ce qu'un point anguleux ou une singularité fasse perdre l'ordre élevé.
+notes: 'Pour une fonction régulière, l''erreur des trapèzes décroît comme $h^2 \propto N^{-2}$ et celle de Simpson comme $N^{-4}$ : doubler $N$ les divise par 4 et 16. Gauss–Legendre à $N$ nœuds intègre exactement tout polynôme de degré inférieur ou égal à $2N - 1$, donc pour une fonction analytique son erreur chute exponentiellement jusqu''à atteindre l''erreur d''arrondi de float64, vers $10^{-16}$. Ces ordres proviennent de développements de Taylor : ils exigent donc des dérivées. Avec un point anguleux $|x - a|$, la dérivée seconde est un pic : toute règle dont un intervalle chevauche ce point y commet une erreur en $O(h^2)$, si bien que Simpson et Gauss retombent à l''ordre 2 (la courbe est en dents de scie car la position du point anguleux dans son intervalle change avec $N$). Avec $(1+x)^{\alpha}$, les dérivées explosent à l''extrémité : les méthodes des trapèzes et de Simpson tombent à l''ordre $1 + \alpha$ et Gauss, dont les nœuds se resserrent vers les extrémités, à environ $2
+  + 2\alpha$. Le remède consiste à couper l''intervalle au point anguleux ou à changer de variable pour rendre la fonction régulière. Essayez un $\alpha$ entier (un polynôme) et voyez Gauss devenir exact, ou placez le point anguleux sur un nœud de la grille ($a = 0.3$ en est un dès que $N$ est un multiple de 20) : la méthode des trapèzes est alors exacte sur les deux morceaux droits et tombe à l''erreur d''arrondi.'
+meanings:
+- nœuds équidistants ; poids $h(\tfrac12, 1, \dots, 1, \tfrac12)$ et $\tfrac h3(1, 4, 2, \dots, 4, 1)$
+- matrice tridiagonale de la récurrence de Legendre, $\beta_k = k/\sqrt{4k^2 - 1}$ à côté de la diagonale
+- les valeurs propres sont les nœuds de Gauss–Legendre, les vecteurs propres sont dans les colonnes
+- poids de Gauss à partir de la première composante de chaque vecteur propre ; leur somme vaut $\int_{-1}^{1} dx = 2$
+- les fonctions régulière, à point anguleux et singulière à l'extrémité en chaque nœud
+- '$k$ répété ⇒ sommé : les trois intégrales à la fois'
+labels:
+  n_max: Plus grand $N$
+  kink: Position du point anguleux $a$
+  alpha: Puissance à l'extrémité $\alpha$

@@ -1,0 +1,20 @@
+source_hash: ba1aea4b5f9d
+title: Die Riemannsche Zetafunktion und die Primzahlen
+summary: 'Werte $\zeta(s)$ auf der kritischen Geraden $\operatorname{Re} s = \frac12$ für Tausende von Höhen gleichzeitig aus, finde ihre ersten nichttrivialen Nullstellen als Vorzeichenwechsel der reellen Funktion $Z(t)$ und zähle Primzahlen mit einem booleschen Tensorsieb. Dann baut Riemanns explizite Formel die Treppe $\pi(x)$ aus den Nullstellen wieder auf: Jede Nullstelle fügt eine Welle hinzu, und mit mehr Nullstellen wird die glatte Kurve zu Stufen an den Primzahlen.'
+notes: 'Die Reihe $\sum n^{-s}$ konvergiert nur für $\operatorname{Re} s > 1$; Euler-Maclaurin verwandelt den Rest in ein Integral plus Bernoulli-Korrekturen, was $\zeta$ auf die ganze Ebene fortsetzt, mit Ausnahme des Pols bei $s = 1$. Auf der kritischen Geraden ist $Z(t) = e^{i\theta(t)}\zeta(\frac12 + it)$ reell, sodass ein Vorzeichenwechsel von $Z$ beweist, dass dazwischen eine Nullstelle liegt. Die berechneten Nullstellen stimmen mit den veröffentlichten Werten $14.134725\ldots$, $21.022040\ldots$, $25.010858\ldots$ auf etwa $10^{-9}$ überein, und die Anzahl unterhalb der Höhe $T$ passt zur Riemann-von-Mangoldt-Zählung $N(T) \approx \theta(T)/\pi + 1$, eine Kontrolle, dass keine übersehen wurde. Die schnellere Riemann-Siegel-Formel (Hauptsumme plus erste Korrektur) wird zum Vergleich gezeigt: Ihr Fehler beträgt schon bei den ersten Nullstellen nur $10^{-3}$ bis $10^{-2}$ und schrumpft mit wachsendem $t$. Der Primzahlsatz besagt $\pi(x) \sim x/\ln x$, aber $\operatorname{li}(x)$ liegt
+  viel näher und Riemanns $R(x) = \sum_n \frac{\mu(n)}{n}\operatorname{li}(x^{1/n})$ noch näher (mittleres Feld; mit der Gram-Reihe berechnet). Riemann (1859) zeigte, dass der verbleibende Fehler vollständig von den Nullstellen getragen wird: $J(x) = \sum_{p^m \le x} \frac1m$ ist gleich $\operatorname{li}(x) - \sum_\rho \operatorname{li}(x^\rho) - \ln 2 + \int_x^\infty \frac{dt}{t(t^2-1)\ln t}$ (1895 von von Mangoldt bewiesen), und die Möbius-Inversion liefert $\pi(x)$. Jedes Nullstellenpaar $\rho = \frac12 \pm i\gamma$ fügt eine Welle der Größe etwa $\sqrt{x}/(\gamma\ln x)$ und der Frequenz $\gamma$ in $\ln x$ hinzu; das Abschneiden der Summe hinterlässt Gibbs-artige Wellen nahe jeder Stufe. Die Riemannsche Vermutung besagt, dass jede nichttriviale Nullstelle (jede Nullstelle mit $0 < \operatorname{Re} s < 1$) den Realteil genau $\frac12$ hat. Sie ist unbewiesen. Sie wurde per Computer für mehr als $10^{12}$ Nullstellen geprüft und ist äquivalent zur Fehlerschranke $\pi(x) = \operatorname{li}(x)
+  + O(\sqrt{x}\ln x)$ (von Koch, 1901). Dieses Programm findet nur Nullstellen auf der Geraden; Nullstellen abseits davon kann es nicht ausschließen. Weiterführende Literatur: H. M. Edwards, Riemann''s Zeta Function (1974).'
+meanings:
+- viele Höhen $t$ auf der kritischen Geraden gleichzeitig
+- 'wiederholtes $n$ ⇒ summiert: die ersten $N-1$ Terme der Dirichlet-Reihe'
+- Euler-Maclaurin-Korrekturen mit Bernoulli-Zahlen; $(s)_{2k-1} = s(s+1)\cdots(s+2k-2)$. Gültig für jedes $s \ne 1$
+- eine reelle Funktion mit denselben Nullstellen wie $\zeta(\frac12 + it)$; $\theta(t)$ aus ihrer asymptotischen Reihe
+- Vorzeichenwechsel von $Z$ auf einem Gitter mit Schrittweite 0,01, dann 48 Bisektionsschritte auf allen Intervallen gleichzeitig
+- 'Sieb des Eratosthenes: ein Slice mit Schrittweite pro Primzahl $p \le \sqrt{x}$; $\pi(x)$ ist seine kumulative Summe'
+- jede Nullstelle bei jedem $x$; konjugierte Nullstellen ergeben zusammen $2\,\mathrm{Re}$
+- 'die Näherung für jedes $K$ gleichzeitig: ein Bild pro Zeile'
+- Möbius-Funktion; die Summe über $n$ endet bei $x^{1/n} < 2$, weil dort $J(y) = 0$
+labels:
+  n_zeros: Verwendete Nullstellen $K$
+  x_explicit: Explizite Formel bis $x$
+  log10_x: Sieb bis $10^n$

@@ -1,0 +1,23 @@
+source_hash: 176bf5bc914e
+title: Un réseau de neurones sur graphes pour les molécules (passage de messages)
+summary: 'Une molécule est un graphe, et un réseau de neurones à passage de messages se réduit à quelques einsums sur sa matrice d''adjacence : chaque atome somme de façon répétée les états de ses voisins, $s_{mic} = A_{mij}h_{mjc}$, et la prédiction pour la molécule est une somme sur les atomes. Entraîné à prédire l''énergie π de Hückel d''hydrocarbures conjugués aléatoires, il donne la même réponse quelle que soit la numérotation des atomes, et il fonctionne encore sur des molécules plus grandes que toutes celles de l''entraînement, là où un MLP simple sur la matrice d''adjacence échoue.'
+notes: 'Les données sont volontairement synthétiques, afin que la bonne réponse soit connue exactement. Chaque « molécule » est un squelette carboné aléatoire sans hydrogènes (un arbre avec au plus trois voisins par carbone, refermé en quelques cycles à 5 et 6 chaînons) : des jouets de théorie des graphes, pas un ensemble choisi de composés réels. Son étiquette est l''énergie π de Hückel : avec $H = \alpha + \beta A$ et un électron π par carbone remplissant les orbitales de plus grandes valeurs propres $\lambda_k$ de $A$, $E_\pi = N\alpha + \beta\,\sum_k o_k\lambda_k$, et le réseau apprend $y = \sum_k o_k\lambda_k$ à partir du seul graphe. Il ne voit jamais de valeur propre. La leçon tensorielle est qu''un réseau de neurones sur graphes n''a besoin que d''une seule opération nouvelle, l''einsum sur l''adjacence $A_{mij}h_{mjc}$, qui somme les états des voisins de chaque atome de chaque molécule à la fois. Tous les poids agissent sur un atome à la fois, et les atomes ne sont combinés que
+  par $A$ et la somme finale ; le modèle est donc invariant par permutation par construction, et les mêmes poids conviennent à une molécule de n''importe quelle taille. La console montre ces deux propriétés : renuméroter les atomes change la sortie du GNN d''environ $10^{-6}$ (arrondi float32) et celle du MLP d''unités entières de $|\beta|$ ; sur des molécules de 11 à 16 carbones, plus grandes que toutes celles de l''entraînement, le MLP n''a jamais rien vu dans les lignes supplémentaires de son entrée et échoue, tandis que l''erreur du GNN augmente à peine. Comparez avec la référence « comptage des liaisons » $aN + bN_{bonds} + c$ : l''énergie π est presque additive (environ $1.2|\beta|$ par carbone), et le vrai travail du GNN porte sur les corrections dues aux ramifications, aux cycles et aux électrons célibataires, où il divise l''erreur environ par deux. Quatre tours de messages n''atteignent que quatre liaisons, donc les effets qui dépendent de tout le système conjugué (aromaticité,
+  cycles à 4n) ne sont appris qu''approximativement. C''est le cadre des réseaux de neurones à passage de messages (MPNN) de Gilmer et al. (ICML 2017), qui ont montré que de nombreux réseaux moléculaires sur graphes antérieurs suivent ce schéma et les ont entraînés sur des propriétés DFT des molécules de QM9. Les modèles de cette famille (SchNet, DimeNet, réseaux équivariants comme NequIP ou MACE, qui utilisent aussi la géométrie 3D) sont aujourd''hui largement employés pour prédire des propriétés moléculaires et ajuster des potentiels interatomiques, mais ils ne valent que ce que valent leurs données d''entraînement et peuvent échouer sur une chimie qui en diffère. Essayez 1 couche (voisins immédiats seulement), moins de molécules d''entraînement ou un réseau plus étroit.'
+meanings:
+- adjacence du squelette carboné de la molécule $m$, complétée par des zéros jusqu'à $N = 16$ atomes
+- 'caractéristiques des atomes : nombre de voisins carbonés en one-hot (1, 2 ou 3)'
+- 'la cible : valeurs propres de Hückel occupées de $A$ (eigvalsh), énergie π en unités de $|\beta|$'
+- '$f$ sommé : plonger chaque atome dans $C$ canaux'
+- '$j$ répété ⇒ sommé sur les voisins de l''atome $i$ : le message'
+- '$c$ sommé : les mêmes poids pour chaque atome de chaque molécule'
+- une énergie apprise par atome (les couleurs sur la molécule)
+- '$i$ sommé sur les atomes réels : extensive et indépendante de l''ordre des atomes'
+- 'renumérotation des atomes : la sortie du GNN reste identique à la précision flottante près'
+- 'référence : un réseau de taille fixe sur les 256 entrées aplaties de l''adjacence'
+labels:
+  n_train: Molécules d'entraînement
+  epochs: Époques d'entraînement
+  width: Canaux $C$
+  layers: Couches de passage de messages $L$
+  lr: Taux d'apprentissage d'Adam

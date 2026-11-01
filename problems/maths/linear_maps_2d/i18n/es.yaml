@@ -1,0 +1,21 @@
+source_hash: 1e3affbcf0e4
+title: Aplicaciones lineales del plano
+summary: 'Una matriz $2\times 2$ mueve cada punto del plano, y un solo einsum mueve toda una cuadrícula, la circunferencia unidad y el cuadrado unidad para todos los fotogramas de la animación a la vez. Observa cómo el plano se transforma de la identidad a $A$: los vectores propios se quedan en su propia recta, $|\det A|$ escala las áreas, un determinante negativo da la vuelta al plano, y la circunferencia se convierte en una elipse cuyos semiejes son los valores singulares.'
+notes: 'Las columnas de $A$ son las imágenes de los vectores de la base $\mathbf e_1$ (flecha roja) y $\mathbf e_2$ (flecha verde), y todos los demás puntos siguen por linealidad, así que las líneas rectas de la cuadrícula siguen rectas y paralelas. A lo largo del camino $M(t) = (1-t)I + tA$, un vector propio $\mathbf v$ de $A$ es también vector propio de $M(t)$ con valor propio $1 - t + t\lambda$, así que los puntos naranjas se deslizan por sus rectas discontinuas mientras todo lo demás gira. El cuadrado unidad (amarillo) se convierte en un paralelogramo de área $|\det A|$; se vuelve rojo cuando $\det < 0$, cuando $\mathbf e_1 \to \mathbf e_2$ va en sentido horario y el plano es una imagen especular. Una reflexión tiene que pasar por $\det = 0$ en el camino, donde el plano se aplasta sobre una recta. Las rotaciones y las reflexiones conservan las longitudes, así que $\sigma_1 = \sigma_2 = 1$; una cizalladura conserva el área ($\det = 1$) pero no la forma. En general, la circunferencia se
+  transforma en una elipse con semiejes $\sigma_1 \ge \sigma_2$, los valores singulares, y $|\det A| = \sigma_1\sigma_2$. Los productos se multiplican: $\det(AB) = \det A\,\det B$.'
+meanings:
+- 'las matrices que se muestran: estiramiento, cizalladura, rotación, reflexión y volteo, o la tuya'
+- 'puntos del plano: líneas de la cuadrícula, la circunferencia unidad, el cuadrado unidad'
+- camino recto de la identidad $\delta_{ij}$ a $A$, una matriz por fotograma
+- '$j$ repetido ⇒ sumado: cada punto movido por la matriz de cada fotograma a la vez'
+- '$\varepsilon_{12} = 1$, $\varepsilon_{21} = -1$: el símbolo de Levi-Civita en 2D'
+- '$i, j$ repetidos ⇒ sumados: área con signo de la imagen del cuadrado unidad'
+- la imagen de la circunferencia es una elipse con semiejes $\sigma_1 \mathbf u_1$ y $\sigma_2 \mathbf u_2$
+- valores y vectores propios; complejos para una rotación, así que ninguna recta queda fija
+labels:
+  matrix: Matriz
+  a11: $A_{11}$ personalizado
+  a12: $A_{12}$ personalizado
+  a21: $A_{21}$ personalizado
+  a22: $A_{22}$ personalizado
+  grid_lines: Líneas de la cuadrícula por dirección

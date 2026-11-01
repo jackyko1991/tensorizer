@@ -1,0 +1,23 @@
+source_hash: 176bf5bc914e
+title: Una red neuronal de grafos para moléculas (paso de mensajes)
+summary: 'Una molécula es un grafo, y una red neuronal de paso de mensajes son unos pocos einsums sobre su matriz de adyacencia: cada átomo suma repetidamente los estados de sus vecinos, $s_{mic} = A_{mij}h_{mjc}$, y la predicción para la molécula es una suma sobre los átomos. Entrenada para predecir la energía π de Hückel de hidrocarburos conjugados aleatorios, da la misma respuesta numere como se numere los átomos, y sigue funcionando con moléculas más grandes que cualquiera del entrenamiento, donde un MLP simple sobre la matriz de adyacencia falla.'
+notes: 'Los datos son sintéticos a propósito, para que la respuesta correcta se conozca exactamente. Cada «molécula» es un esqueleto de carbono aleatorio sin hidrógenos (un árbol con como mucho tres vecinos por carbono, cerrado en algunos anillos de 5 y 6 miembros): juguetes de teoría de grafos, no un conjunto seleccionado de compuestos reales. Su etiqueta es la energía π de Hückel: con $H = \alpha + \beta A$ y un electrón π por carbono llenando los orbitales de mayores valores propios $\lambda_k$ de $A$, $E_\pi = N\alpha + \beta\,\sum_k o_k\lambda_k$, y la red aprende $y = \sum_k o_k\lambda_k$ solo a partir del grafo. Nunca ve un valor propio. La lección tensorial es que una red neuronal de grafos solo necesita una operación nueva, el einsum sobre la adyacencia $A_{mij}h_{mjc}$, que suma los estados de los vecinos de cada átomo de cada molécula a la vez. Todos los pesos actúan sobre un átomo cada vez, y los átomos solo se combinan a través de $A$ y de la suma final, así que el modelo es
+  invariante por permutación por construcción y los mismos pesos sirven para moléculas de cualquier tamaño. La consola muestra ambas propiedades: renumerar los átomos cambia la salida de la GNN en unos $10^{-6}$ (redondeo float32) y la del MLP en unidades enteras de $|\beta|$; en moléculas de 11–16 carbonos, más grandes que cualquiera del entrenamiento, el MLP nunca ha visto nada en las filas extra de su entrada y falla, mientras que el error de la GNN apenas crece. Compara con la referencia de «contar enlaces» $aN + bN_{bonds} + c$: la energía π es casi aditiva (unos $1.2|\beta|$ por carbono), y el verdadero trabajo de la GNN son las correcciones debidas a ramificaciones, anillos y electrones desapareados, donde reduce el error aproximadamente a la mitad. Cuatro rondas de mensajes solo alcanzan cuatro enlaces, así que los efectos que dependen de todo el sistema conjugado (aromaticidad, anillos de 4n) solo se aprenden de forma aproximada. Este es el marco de las redes neuronales de paso
+  de mensajes (MPNN) de Gilmer et al. (ICML 2017), que mostraron que muchas redes moleculares de grafos anteriores encajan en este esquema y las entrenaron con propiedades DFT de las moléculas de QM9. Los modelos de esta familia (SchNet, DimeNet, redes equivariantes como NequIP o MACE, que también usan la geometría 3D) se usan hoy ampliamente para predecir propiedades moleculares y ajustar potenciales interatómicos, pero solo son tan buenos como sus datos de entrenamiento y pueden fallar con química distinta. Prueba 1 capa (solo vecinos inmediatos), menos moléculas de entrenamiento o una red más estrecha.'
+meanings:
+- adyacencia del esqueleto de carbono de la molécula $m$, rellenada con ceros hasta $N = 16$ átomos
+- 'características de los átomos: número de vecinos de carbono en one-hot (1, 2 o 3)'
+- 'el objetivo: valores propios de Hückel ocupados de $A$ (eigvalsh), energía π en unidades de $|\beta|$'
+- '$f$ sumado: incrustar cada átomo en $C$ canales'
+- '$j$ repetido ⇒ sumado sobre los vecinos del átomo $i$: el mensaje'
+- '$c$ sumado: los mismos pesos para cada átomo de cada molécula'
+- una energía aprendida por átomo (los colores sobre la molécula)
+- '$i$ sumado sobre los átomos reales: extensiva y que no depende del orden de los átomos'
+- 'renumerar los átomos: la salida de la GNN no cambia salvo la precisión de coma flotante'
+- 'referencia: una red de tamaño fijo sobre las 256 entradas aplanadas de la adyacencia'
+labels:
+  n_train: Moléculas de entrenamiento
+  epochs: Épocas de entrenamiento
+  width: Canales $C$
+  layers: Capas de paso de mensajes $L$
+  lr: Tasa de aprendizaje de Adam

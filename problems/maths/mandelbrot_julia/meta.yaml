@@ -1,0 +1,40 @@
+title: The Mandelbrot set and Julia sets
+category: maths
+level: advanced
+order: 1
+summary: >
+  Iterate $z \mapsto z^2 + c$ on a whole grid of complex pixels at once. Points whose orbit stays bounded form the
+  Mandelbrot set $M$ (vary $c$, start at $z_0 = 0$) or a filled Julia set $K_c$ (fix $c$, start at the pixel). A smooth
+  escape count and a distance estimate from the derivative make the picture sharp all the way down a zoom into the
+  seahorse valley, while the Julia set changes shape as $c$ walks around the main cardioid.
+animated: true
+vector_form: 'z_{n+1} = z_n^2 + c,\qquad z''_{n+1} = 2\,z_n z''_n + c'',\qquad M = \{c : |z_n| \not\to \infty,\ z_0 = 0\},\qquad d(c) \approx \frac{|z_n|\ln|z_n|}{|z''_n|}'
+index_form: 'z_{p}\leftarrow z_{p}\,z_{p} + c_{p},\qquad z''_{p}\leftarrow 2\,z_{p}\,z''_{p} + c'',\qquad \nu_p = n_p + 1 - \log_2\ln|z_{p}|,\qquad d_p = \frac{|z_p|\ln|z_p|}{|z''_p|}'
+translation:
+  - {symbol: 'c_{p}', code: 'pixel_grid(centre, width, n, dev)', shape: '(n, n) complex128', meaning: 'one complex number per pixel $p$; no index is summed, every pixel runs on its own'}
+  - {symbol: 'z_p \leftarrow z_p z_p + c_p', code: 'z * z + c', shape: '(P,)', meaning: 'one step of the quadratic map for all pixels still iterating'}
+  - {symbol: 'z''_p \leftarrow 2 z_p z''_p + c''', code: '2 * z * dz + dc', shape: '(P,)', meaning: "chain rule: $c' = 1$ for $M$ (derivative in $c$), $c' = 0$ and $z'_0 = 1$ for Julia sets (derivative in $z_0$)"}
+  - {symbol: 'n_p', code: 'n_esc[alive[out]] = n + 1', shape: '(P,)', meaning: 'first step with $|z_p| > R$; escaped pixels are dropped from the tensors, so the work shrinks'}
+  - {symbol: '\nu_p', code: 'n + 1 - torch.log2(torch.log(z_abs))', shape: '(P,)', meaning: 'smooth (continuous) escape count: no colour steps between bands'}
+  - {symbol: 'd_p', code: 'z_abs * torch.log(z_abs) / dz_abs', shape: '(P,)', meaning: 'distance estimate: pixels with $d_p$ under a quarter pixel are drawn dark, which reveals the thin filaments'}
+  - {symbol: 'q(q + x - \tfrac14) \le \tfrac{y^2}{4}', code: 'in_cardioid_or_bulb(c)', shape: '(n, n) bool', meaning: 'exact test for the main cardioid (and $|c+1| \le \frac14$ for the period-2 bulb), with $q = (x-\frac14)^2 + y^2$'}
+notes: >
+  Why escape at $|z| > 2$: if $|z| > \max(2, |c|)$ then $|z^2 + c| \ge |z|^2 - |c| > |z|$, and the orbit grows without
+  bound. So every $c$ with $|c| > 2$ escapes at the first step, and $M$ lies inside the disc $|c| \le 2$. A larger bailout
+  $R = 1000$ is used here because it makes the smooth count $\nu = n + 1 - \log_2 \ln|z_n|$ accurate: near infinity
+  $z \mapsto z^2$ doubles $\ln|z|$ each step, and $\log_2$ undoes exactly that. The main cardioid is the set of $c$ where
+  $z^* = z^{*2} + c$ is an attracting fixed point, $|2z^*| < 1$; writing $2z^* = w$ gives $c = w/2 - w^2/4$ with $|w| \le 1$,
+  and the period-2 bulb is where the 2-cycle is attracting, $|4(1+c)| < 1$. These two pieces cover about 1.37 of the
+  total area $\approx 1.5066$ of $M$, and no pixel inside them ever escapes. The distance estimate
+  $d = |z_n|\ln|z_n|/|z'_n|$ comes from the potential $G(c) = \lim 2^{-n}\ln|z_n|$, as $G/|\nabla G|$; near the set
+  the true distance lies within roughly a factor 2 of it (a consequence of the Koebe quarter theorem). The Julia
+  panel keeps $c$ on the cardioid's edge, where the fixed point is neutral: $K_c$ is always connected there because
+  $c \in M$, but its shape changes completely from one angle to the next. Each Julia set looks like $M$ near
+  that $c$, which is why zooms into $M$ show little Julia sets. Zooms deeper than about $10^{-13}$ need more than
+  the 16 digits of complex128.
+params:
+  target: {default: seahorse, type: choice, options: [seahorse, dendrite, minibrot], label: Zoom target}
+  zoom_decades: {default: 5.0, min: 1, max: 11, step: 0.5, label: 'Zoom depth (powers of 10)'}
+  resolution: {default: 160, min: 80, max: 320, step: 20, type: int, label: Pixels per side}
+  max_iter: {default: 300, min: 100, max: 1500, step: 50, type: int, label: 'Iterations at the start (+150 per decade)'}
+  frames: {default: 50, min: 20, max: 120, step: 10, type: int, label: Frames}
