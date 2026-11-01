@@ -1,0 +1,19 @@
+source_hash: 3955d9d3b7d9
+title: Michaelis–Menten-Enzymkinetik
+summary: 'Ein Enzym bindet sein Substrat, bildet einen Komplex und setzt das Produkt frei: $E + S \rightleftharpoons ES \to E + P$. Die vollständigen Massenwirkungsgleichungen werden für drei Enzyme und eine ganze Substrattitration gleichzeitig in einem $(4, B, C)$-Tensor gelöst und mit dem Geschwindigkeitsgesetz der Quasistationarität $v = V_{max} S/(K_m + S)$ sowie einem Lineweaver–Burk-Fit verglichen.'
+notes: 'Das Massenwirkungsgesetz allein liefert vier gekoppelte ODEs. Michaelis und Menten (1913), in der Form von Briggs und Haldane (1925), bemerkten, dass sich der Komplex $ES$ innerhalb von Sekundenbruchteilen aufbaut und sich dann nur langsam ändert, sodass man $d[ES]/dt \approx 0$ setzen darf. Zusammen mit $E + ES = E_0$ ergibt das $[ES] = E_0 S/(K_m + S)$ und das Geschwindigkeitsgesetz $v = k_2 [ES] = V_{max} S/(K_m + S)$ mit $K_m = (k_{-1} + k_2)/k_1$ und $V_{max} = k_2 E_0$. Die Punkte im mittleren Feld zeigen den aktuellen Zustand $(S, k_2 [ES])$ jedes Reagenzglases: Nach der Anfangsphase liegen sie auf der gestrichelten Kurve und gleiten an ihr hinab, während das Substrat verbraucht wird; das ist die Quasistationaritätsnäherung (QSSA) in Aktion. Das reduzierte Modell $dS/dt = -V_{max} S/(K_m + S)$ (orange gestrichelt) hat sogar eine exakte Lösung, $S_0 - S + K_m \ln(S_0/S) = V_{max} t$. Die Näherung gilt, wenn $E_0 \ll S_0 + K_m$; erhöhe $E_0$ auf 2 µM und beobachte, wie die vollständige
+  Kinetik hinter der QSSA zurückbleibt, weil das im Komplex gebundene Substrat nicht mehr vernachlässigbar ist. Biochemiker messen die Anfangsgeschwindigkeit $v_0$ bei mehreren $S_0$ und fitten $1/v_0 = (K_m/V_{max})(1/S_0) + 1/V_{max}$, eine Gerade (Lineweaver–Burk, 1934): Der $y$-Achsenabschnitt ist $1/V_{max}$ und der $x$-Achsenabschnitt ist $-1/K_m$. Die doppelt-reziproke Darstellung verstärkt Fehler bei kleinem $S_0$, daher ist bei verrauschten Daten ein direkter nichtlinearer Fit besser. Die Enzyme A, B und C wägen Bindung gegen Geschwindigkeit ab: A hat ein kleines $K_m$, C das größte $k_{cat}$; die katalytische Effizienz $k_{cat}/K_m$ entscheidet, welches bei niedriger Substratkonzentration gewinnt. Vereinfachungen: ein aktives Zentrum, irreversible Produktfreisetzung, keine Hemmung und ein gut durchmischtes Volumen.'
+meanings:
+- Bindungs-, Dissoziations- und katalytische Ratenkonstanten von Enzym $b$ ($k_2 = k_{cat}$)
+- Startkonzentration $c$ des Substrats in der Titration (µM)
+- freies Enzym, Substrat, Komplex $X = ES$ und Produkt in jedem Reagenzglas
+- 'kein Index summiert: $k_b$ wird über jede Konzentration $c$ gebroadcastet'
+- rechte Seite für RK4; $E + X = E_0$ und $S + X + P = S_0$ bleiben konstant
+- Michaelis-Konstante (Substratkonzentration bei halber Maximalgeschwindigkeit) und Maximalgeschwindigkeit
+- Anfangsgeschwindigkeit (stationär), gemessen nach der kurzen Anfangsphase
+- Lineweaver–Burk-Normalgleichungen, $A_{ck} = [1/S_c,\ 1]$; wiederholtes $c$ ⇒ summiert
+- Steigung $K_m/V_{max}$ und Achsenabschnitt $1/V_{max}$ für jedes Enzym
+labels:
+  E0: Enzym $E_0$
+  t_end: Simulierte Zeit
+  enzyme: Enzym für die Verlaufskurven

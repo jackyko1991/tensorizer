@@ -1,0 +1,41 @@
+title: 'Michaelis–Menten enzyme kinetics'
+category: biophysics
+level: beginner
+order: 2
+summary: >
+  An enzyme binds its substrate, forms a complex and releases the product: $E + S \rightleftharpoons ES \to E + P$.
+  The full mass-action equations are solved for three enzymes and a whole substrate titration at once, in one
+  $(4, B, C)$ tensor, and compared with the quasi-steady-state rate law $v = V_{max} S/(K_m + S)$ and a
+  Lineweaver–Burk fit.
+animated: true
+vector_form: 'E + S \;\underset{k_{-1}}{\overset{k_1}{\rightleftharpoons}}\; ES \;\overset{k_2}{\longrightarrow}\; E + P,\qquad \frac{d[ES]}{dt} = k_1 [E][S] - (k_{-1} + k_2)[ES],\qquad v = \frac{dP}{dt} \approx \frac{V_{max}\,[S]}{K_m + [S]}'
+index_form: '\dot S_{bc} = -k^{1}_b E_{bc} S_{bc} + k^{-1}_b X_{bc} \qquad \dot X_{bc} = k^{1}_b E_{bc} S_{bc} - (k^{-1}_b + k^{2}_b)\,X_{bc} \qquad \dot P_{bc} = k^{2}_b X_{bc} \qquad A_{ck}A_{cl}\,a_{bl} = A_{ck}\,\frac{1}{v_{bc}}'
+translation:
+  - {symbol: 'k^{1}_b,\ k^{-1}_b,\ k^{2}_b', code: 'k1, k_1, k2', shape: '(B,)', meaning: 'binding, unbinding and catalytic rate constants of enzyme $b$ ($k_2 = k_{cat}$)'}
+  - {symbol: 'S^0_c', code: 'S0', shape: '(C,)', meaning: 'starting substrate concentration $c$ of the titration (µM)'}
+  - {symbol: 'E_{bc},\ S_{bc},\ X_{bc},\ P_{bc}', code: 'y[0], y[1], y[2], y[3]', shape: '(4, B, C)', meaning: 'free enzyme, substrate, complex $X = ES$ and product in every test tube'}
+  - {symbol: 'k^{1}_b E_{bc} S_{bc}', code: "einsum('b,bc,bc->bc', k1, E, S)", shape: '(B, C)', meaning: 'no index summed: $k_b$ is broadcast over every concentration $c$'}
+  - {symbol: '\dot y_{bc}', code: 'rhs(y, k1, k_1, k2)', shape: '(4, B, C)', meaning: 'right-hand side for RK4; $E + X = E_0$ and $S + X + P = S_0$ stay constant'}
+  - {symbol: 'K_{m,b},\ V_{max,b}', code: '(k_1 + k2) / k1, k2 * E0', shape: '(B,)', meaning: 'Michaelis constant (half-speed substrate level) and maximal rate'}
+  - {symbol: 'v_{bc}', code: 'k2 * ES.amax(0)', shape: '(B, C)', meaning: 'initial (steady-state) velocity, measured after the short burst'}
+  - {symbol: 'A_{ck}A_{cl}', code: "einsum('ck,cl->kl', A, A)", shape: '(2, 2)', meaning: 'Lineweaver–Burk normal equations, $A_{ck} = [1/S_c,\ 1]$; repeated $c$ ⇒ summed'}
+  - {symbol: 'a_{bl}', code: 'linalg.solve(G, r.T)', shape: '(2, B)', meaning: 'slope $K_m/V_{max}$ and intercept $1/V_{max}$ for every enzyme'}
+notes: >
+  Mass action alone gives four coupled ODEs. Michaelis and Menten (1913), in the form of Briggs and Haldane (1925),
+  noticed that the complex $ES$ builds up within a fraction of a second and then changes only slowly, so one may set
+  $d[ES]/dt \approx 0$. Together with $E + ES = E_0$ this gives $[ES] = E_0 S/(K_m + S)$ and the rate law
+  $v = k_2 [ES] = V_{max} S/(K_m + S)$ with $K_m = (k_{-1} + k_2)/k_1$ and $V_{max} = k_2 E_0$. The dots in the
+  middle panel show every test tube's current $(S, k_2 [ES])$: after the burst they sit on the dashed curve and slide
+  down it as the substrate is used up, which is the quasi-steady-state approximation (QSSA) at work. The reduced model
+  $dS/dt = -V_{max} S/(K_m + S)$ (dashed orange) even has an exact solution, $S_0 - S + K_m \ln(S_0/S) = V_{max} t$.
+  The approximation holds when $E_0 \ll S_0 + K_m$; raise $E_0$ to 2 µM and watch the full kinetics lag behind the
+  QSSA because the substrate locked in the complex is no longer negligible. Biochemists measure the initial velocity
+  $v_0$ at several $S_0$ and fit $1/v_0 = (K_m/V_{max})(1/S_0) + 1/V_{max}$, a straight line (Lineweaver–Burk, 1934):
+  the $y$-intercept is $1/V_{max}$ and the $x$-intercept is $-1/K_m$. The double-reciprocal plot amplifies errors at
+  low $S_0$, so with noisy data a direct nonlinear fit is better. Enzymes A, B and C trade binding against speed:
+  A has a small $K_m$, C the largest $k_{cat}$; the catalytic efficiency $k_{cat}/K_m$ decides which wins at low
+  substrate. Simplifications: one active site, irreversible product release, no inhibition and a well-mixed volume.
+params:
+  E0: {default: 0.1, min: 0.01, max: 2.0, step: 0.01, label: 'Enzyme $E_0$', unit: µM}
+  t_end: {default: 60.0, min: 10, max: 300, step: 10, label: Simulated time, unit: s}
+  enzyme: {default: 'A', type: choice, options: ['A', 'B', 'C'], label: Enzyme for the progress curves}

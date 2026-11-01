@@ -1,0 +1,19 @@
+source_hash: 230765b6cfcc
+title: 'Estirar el ADN: la cadena vermiforme'
+summary: Tira de una molécula de ADN con pinzas ópticas y resiste como un muelle entrópico que se endurece bruscamente cerca de su longitud total. La ley de la cadena vermiforme de Marko–Siggia se compara con una cadena libremente articulada, y una cadena discreta de tangentes unitarias con rigidez de flexión se simula por Monte Carlo para todo un lote de fuerzas a la vez, como un solo tensor $(B, M, N, 3)$. La longitud de persistencia $P \approx 50$ nm se recupera tanto de las correlaciones de tangentes como de un ajuste a la curva fuerza–extensión.
+notes: 'Una molécula de ADN de doble cadena es rígida a escalas cortas pero flexible a escalas largas: la dirección de su esqueleto se recuerda a lo largo de la longitud de persistencia $P \approx 50$ nm (unos 150 pares de bases) y luego se olvida. Estirarla cuesta, por tanto, entropía, no energía de enlace. A fuerza baja la respuesta es lineal, $z/L \approx 2 P F / 3 k_B T$, la misma para cualquier polímero con longitud de Kuhn $b = 2P$; a fuerza alta la cadena vermiforme se acerca a su longitud total solo lentamente, $1 - z/L \approx \tfrac12 \sqrt{k_B T / F P}$, porque debe alisar modos de flexión de todas las longitudes de onda, mientras que una cadena libremente articulada de eslabones rígidos se endereza mucho más rápido, $1 - z/L \approx k_B T / F b$. Los experimentos con ADN del fago λ (Smith, Finzi y Bustamante 1992; Bustamante, Marko, Siggia y Smith 1994) siguen la cadena vermiforme hasta unos 10 pN, donde la doble hélice empieza a estirarse elásticamente, y muestran un sobreestiramiento
+  cerca de 65 pN; este modelo no incluye ninguno de los dos. La fórmula de Marko–Siggia es una interpolación entre los dos límites y difiere de la WLC exacta hasta en un 10 % en fuerza a extensiones intermedias. La simulación usa segmentos de $a = 2.5$ nm, así que la rigidez es $K \approx 20.5$; cada barrido de Monte Carlo gira un poco cada tangente (Metropolis en el campo local) y luego rota la cola de cada cadena alrededor de un eje aleatorio (un pivote). La primera mitad de los barridos es equilibración y la segunda mitad se promedia. A las fuerzas más bajas la extensión fluctúa mucho de una cadena a otra y se relaja lentamente, así que esos puntos se dispersan. El ajuste usa 0,5–4 pN: Marko–Siggia resuelto para $P$ en cada punto, promediado en escala logarítmica (mínimos cuadrados en $\log F$). Por encima de $F \sim K k_B T / a$, la discretización de la cadena se nota como una extensión ligeramente mayor que la de la ley continua. No se incluyen datos experimentales.'
+meanings:
+- tangente unitaria del segmento $i$ de la cadena $m$ estirada con la fuerza $b$; las cadenas empiezan como WLC sin fuerza
+- $F_0 = 0$ más 12 fuerzas de 0,02 a 10 pN; $f_b$ es el trabajo $F a$ en unidades de $k_B T$
+- rigidez de flexión $\kappa / k_B T$ elegida de modo que $\coth K - 1/K = e^{-a/P}$, es decir, $K \approx P/a + \tfrac12$
+- la atracción de las dos tangentes vecinas más la fuerza a lo largo de $z$
+- '$k$ repetido ⇒ sumado: cambio de energía al girar una tangente; los segmentos pares e impares se mueven por turnos'
+- '$i, k$ repetidos ⇒ sumados: energía de flexión total, usada para los movimientos de pivote que giran toda una cola'
+- extensión a lo largo de la fuerza dividida por la longitud de contorno
+- correlación de tangentes de la cadena libre; su longitud de decaimiento es $P$
+labels:
+  persistence: Longitud de persistencia $P$
+  contour_length: Longitud de contorno $L$
+  chains: Cadenas por fuerza $M$
+  sweeps: Barridos de Monte Carlo

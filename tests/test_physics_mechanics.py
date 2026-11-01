@@ -449,8 +449,10 @@ def test_three_body_is_chaotic(three_body_runs):
 def test_three_body_twin_with_zero_offset_stays_identical():
     m, x0, v0 = tb_t.initial_state(0.0, CPU)
     _, xs, vs, _ = tb_solve.solve(m, x0, v0, 1.0, t_max=20.0, tol=1e-10)
-    assert (xs[:, 1] - xs[:, 0]).abs().max() < 1e-12
-    assert tb_eq.phase_space_distance(xs, vs).max() < 1e-12
+    # Rows of a batch can take different SIMD paths, so the twins may differ in the last bits; chaos grows
+    # that round-off, but it stays far below the δ = 1e-6 offset of the real twin (which reaches > 0.1).
+    assert (xs[:, 1] - xs[:, 0]).abs().max() < 1e-6
+    assert tb_eq.phase_space_distance(xs, vs).max() < 1e-6
     assert math.isnan(
         tb_solve.lyapunov_fit(torch.arange(len(xs), dtype=torch.float64), tb_eq.phase_space_distance(xs, vs))[0]
     )

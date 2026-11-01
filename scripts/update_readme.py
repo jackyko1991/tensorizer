@@ -27,6 +27,8 @@ CATEGORIES = {
     "astro": "Astrophysics & Relativity",
     "nuclear": "Nuclear & Particle",
     "medical": "Medical Physics",
+    "biophysics": "Biophysics",
+    "bioinformatics": "Bioinformatics",
     "others": "Others",
 }
 LEVELS = {"beginner": "🟢 Beginner", "intermediate": "🟠 Intermediate", "advanced": "🔴 Advanced"}
@@ -62,6 +64,8 @@ def load() -> dict[str, dict[str, list[dict]]]:
     library: dict[str, dict[str, list[dict]]] = {c: {lv: [] for lv in LEVELS} for c in CATEGORIES}
     for meta_file in sorted((ROOT / "problems").glob("*/*/meta.yaml")):
         meta = yaml.safe_load(meta_file.read_text(encoding="utf-8"))
+        if meta.get("hidden"):  # kept in the repository, off the site
+            continue
         cat, level = meta_file.parent.parent.name, meta.get("level")
         if cat in library and level in LEVELS:
             library[cat][level].append({**meta, "path": meta_file.parent.relative_to(ROOT).as_posix()})

@@ -1,0 +1,22 @@
+source_hash: 92d9eb39c4ac
+title: 'AlphaFold en miniatura: de un mapa de distancias a un plegamiento 3D'
+summary: Una versión de juguete de las dos mitades de un predictor de estructuras, no AlphaFold en sí. Un distograma predicho (distancias Cα entre pares con incertidumbre por intervalos) se limpia opcionalmente con un bloque de autoatención, y luego un «módulo de estructura» encuentra coordenadas 3D $x_{ia}$ que se ajustan a él, por descenso de gradiente sobre el stress a partir de un lote de puntos de partida y por MDS clásico. El resultado se superpone al objetivo con la SVD de Kabsch y se evalúa con el RMSD y una puntuación tipo TM.
+notes: 'Esto es AlphaFold solo en espíritu. El AlphaFold 2 real lee la secuencia de aminoácidos y un alineamiento múltiple de secuencias (MSA) de proteínas relacionadas, cuyas posiciones que coevolucionan indican qué residuos se tocan; su Evoformer (48 bloques de atención sobre el MSA y sobre pares de residuos, con actualizaciones triangulares) construye la representación de pares; y su módulo de estructura coloca un marco completo del esqueleto por residuo (invariant point attention) y las cadenas laterales, refinados en varios reciclajes. Se entrenó con ~170 000 estructuras del Protein Data Bank y produce una confianza (pLDDT). Aquí la «red» es simulada: el distograma son las distancias verdaderas más un ruido que crece con la distancia ($\sigma_{ij} \propto d_{ij}$), y de los pares más allá del último intervalo solo se sabe que están lejos. El bloque de atención se entrena unos cientos de pasos sobre este único mapa, así que memoriza en lugar de predecir; muestra cómo es la atención sobre
+  pares de residuos y, como su salida coloca cada residuo en un punto de un espacio de 6 dimensiones, no puede ajustar ruido independiente, de modo que lo suaviza. El módulo de estructura es geometría de distancias honesta. Las distancias no distinguen una estructura de su imagen especular: el MDS y el descenso de gradiente devuelven cualquiera de los dos enantiómeros, así que la quiralidad correcta se elige por el signo de los pseudodiedros Cα (alrededor de $+50^\circ$ en una hélice α dextrógira de L-aminoácidos) y se muestran ambos RMSD. Se pliegan varios inicios aleatorios a la vez porque algunos se atascan con una hélice de cada quiralidad; gana el menor stress. Prueba a subir el ruido hasta que el plegamiento se rompa, o a desactivar el refinamiento.'
+meanings:
+- posición Cα del residuo $i$, eje $a$; el objetivo es un hélice–giro–hélice sintético construido a partir de la geometría de la hélice
+- probabilidad de que los residuos $i, j$ estén en el intervalo de distancia $k$ (64 intervalos, 2–22 Å); sustituye a una red entrenada
+- distancia esperada, $k$ sumado; la varianza inversa da el peso de confianza $w_{ij}$
+- 'logits de atención: el residuo $i$ pregunta, el residuo $j$ responde; $e$ sumado'
+- cada residuo recoge una mezcla ponderada de los demás, $j$ sumado; $b_{ij}$ es un sesgo de par a partir de $\hat d_{ij}$
+- distancias del modelo para un lote de $B$ inicios, $a$ sumado
+- desajuste ponderado, los pares «lejanos» solo se separan, enlaces mantenidos a 3,8 Å; minimizado con Adam mediante autograd
+- distancias al cuadrado doblemente centradas = matriz de Gram $x_{ia}x_{ja}$; sus 3 vectores propios principales dan una estimación inicial
+- covarianza de las dos estructuras centradas, $i$ sumado; su SVD da la mejor rotación propia
+- error tras la superposición; puntuación tipo TM $\frac1N\sum_i 1/(1+(d_i/d_0)^2)$, 1 = idéntico
+labels:
+  helix_length: Residuos por hélice
+  noise: Ruido del distograma (σ a 10 Å)
+  refine: Refinamiento por atención
+  starts: Inicios aleatorios $B$
+  steps: Pasos de gradiente

@@ -33,7 +33,10 @@ jobs:
       - run: pixi run python scripts/build_assets.py --jobs 4
       # Refuse to publish if any problem lacks its diagram, animation, notebook or translations
       - run: pixi run python scripts/audit.py
+      # The Hugging Face Space URL (repository variable TENSORIZER_API_URL); empty = prebuilt results only
       - run: pixi run web-build
+        env:
+          VITE_API_URL: ${{ vars.TENSORIZER_API_URL }}
       - uses: actions/configure-pages@v6.0.0
       - uses: actions/upload-pages-artifact@v5.0.0
         with:

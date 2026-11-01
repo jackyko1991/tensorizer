@@ -148,11 +148,16 @@ def dumps(notebook: dict) -> str:
     return json.dumps(notebook, ensure_ascii=False, indent=1) + "\n"
 
 
+def hidden(meta_file: Path) -> bool:
+    """`hidden: true` in meta.yaml keeps a problem in the repository (code and tests) but off the site."""
+    return bool(yaml.safe_load(meta_file.read_text(encoding="utf-8")).get("hidden"))
+
+
 def problems() -> list[Path]:
     return sorted(
         p.parent
         for p in PROBLEMS.glob("*/*/meta.yaml")
-        if all((p.parent / f).is_file() for f in FILES) and not p.parent.parent.name.startswith("_")
+        if all((p.parent / f).is_file() for f in FILES) and not p.parent.parent.name.startswith("_") and not hidden(p)
     )
 
 

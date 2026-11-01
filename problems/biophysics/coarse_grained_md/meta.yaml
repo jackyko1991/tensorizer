@@ -1,0 +1,42 @@
+title: 'Coarse-grained protein folding: a Gō model with Langevin dynamics'
+category: biophysics
+level: advanced
+order: 2
+summary: >
+  A small helical-hairpin protein as a chain of beads, one per amino acid, held together by bonds and bond angles
+  and stabilised by attractive native contacts (a Gō model). Forces are the autograd gradient of the total energy,
+  written with pairwise-distance tensors. Langevin dynamics runs a whole batch of temperatures and replicas at once,
+  half started folded and half unfolded; the fraction of native contacts $Q(t)$ shows folding and unfolding, and its
+  average against temperature is the melting curve.
+animated: true
+vector_form: 'm\,\ddot{\mathbf x}_i = -\nabla_{\mathbf x_i} E - \gamma m\,\dot{\mathbf x}_i + \sqrt{2\gamma m k_B T}\;\boldsymbol\xi_i(t),\qquad E = \sum_{\text{bonds}} k_b (r - b)^2 + \sum_{\text{angles}} k_\theta (\theta - \theta^0)^2 + \sum_{\text{native}} \varepsilon\Big[5\Big(\frac{r^0}{r}\Big)^{12} - 6\Big(\frac{r^0}{r}\Big)^{10}\Big] + \sum_{\text{other}} \varepsilon\Big(\frac{\sigma}{r}\Big)^{12}'
+index_form: 'r_{sp} = \sqrt{(x_{s i_p a} - x_{s j_p a})(x_{s i_p a} - x_{s j_p a})} \qquad E_s = \dots + n_p\,\varepsilon\big[5 (r^0_p/r_{sp})^{12} - 6 (r^0_p/r_{sp})^{10}\big] + (1 - n_p)\,\varepsilon\,(\sigma/r_{sp})^{12} \qquad F_{sia} = -\frac{\partial E_s}{\partial x_{sia}} \qquad Q_s = \frac{1}{M}\,n_p\,\big[r_{sp} < 1.2\,r^0_p\big]'
+translation:
+  - {symbol: 'x_{sia}', code: 'initial_chains(native, B, R)', shape: '(S, N, 3)', meaning: 'bead $i$ of system $s$; $S = B\cdot R$ temperatures × replicas'}
+  - {symbol: 'r^0_p,\ n_p', code: "go_model(native)['r0'], ['native']", shape: '(P,)', meaning: 'native distance of pair $p = (i_p, j_p)$, $j - i \ge 3$; $n_p = 1$ if closer than 8 Å in the native fold'}
+  - {symbol: 'r_{sp}', code: 'pair_list_distances(x, i, j)', shape: '(S, P)', meaning: 'all pair distances of every system in one tensor, $a$ summed'}
+  - {symbol: 'E_s', code: 'total_energy(x, model)', shape: '(S,)', meaning: 'bonds + angles + 12–10 native wells (minimum $-\varepsilon$ at $r^0_p$) + repulsion of non-native pairs'}
+  - {symbol: 'F_{sia} = -\partial E_s/\partial x_{sia}', code: 'torch.autograd.grad(E.sum(), x)', shape: '(S, N, 3)', meaning: 'forces by automatic differentiation; summing over $s$ is fine because the systems do not interact'}
+  - {symbol: 'T_s', code: 'temperatures(T_min, T_max, B).repeat_interleave(R)', shape: '(S,)', meaning: 'each system gets its own heat bath'}
+  - {symbol: '\text{BAOAB}', code: 'langevin(x0, T, model, dt, gamma, n_steps)', shape: '(K, S)', meaning: 'kick, drift, friction + noise $v \to e^{-\gamma dt}v + \sqrt{(1-e^{-2\gamma dt})k_BT}\,\xi$, drift, kick'}
+  - {symbol: 'Q_s', code: 'fraction_native(x, model)', shape: '(S,)', meaning: 'share of native contacts formed: 1 folded, about 0.4 for an unfolded chain (local contacts keep forming)'}
+  - {symbol: '\langle Q\rangle(T)', code: 'melting_curve(times, Q, B, R)', shape: '(B,)', meaning: 'time average over the second half of the run; $T_m$ where it crosses ½'}
+notes: >
+  A Gō model is built from the answer: every interaction that exists in the native structure is attractive and
+  everything else only repels, so the energy landscape is a smooth funnel towards the native fold. That is a caricature,
+  but a useful one: small proteins really do fold as if their landscape were minimally frustrated, and Gō models
+  reproduce folding rates, transition states and the cooperative melting of many of them. Units are reduced: energies in
+  $\varepsilon$ (one contact), temperatures in $\varepsilon/k_B$, time in $\tau$. Half of the replicas start folded and half
+  as a straight rod; where the solid and dashed curves agree the runs have equilibrated, where they do not (at low $T$)
+  the unfolded chains are kinetically trapped in misfolded states and would need much longer runs or replica exchange.
+  The melting curve is broad because the protein is tiny; real proteins with hundreds of contacts melt sharply. Without a
+  dihedral term the energy depends only on distances, so the mirror image of the native fold has exactly the same
+  energy and $Q$; real Gō models add dihedral potentials to fix the handedness. Try changing the friction (it changes
+  the kinetics but not the equilibrium curve) or the number of temperatures.
+params:
+  helix_length: {default: 8, min: 6, max: 12, step: 1, type: int, label: Beads per helix}
+  T_min: {default: 0.3, min: 0.1, max: 1.0, step: 0.05, label: 'Lowest temperature $T$', unit: 'ε/k_B'}
+  T_max: {default: 1.3, min: 0.5, max: 2.5, step: 0.05, label: 'Highest temperature $T$', unit: 'ε/k_B'}
+  temperatures: {default: 8, min: 3, max: 16, step: 1, type: int, label: 'Temperatures $B$'}
+  friction: {default: 0.3, min: 0.05, max: 5.0, step: 0.05, label: 'Friction $\gamma$', unit: '1/τ'}
+  steps: {default: 8000, min: 1000, max: 40000, step: 1000, type: int, label: Time steps}

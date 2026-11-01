@@ -1,0 +1,10 @@
+.git
+.pixi
+.cache
+.venv
+**/__pycache__
+**/node_modules
+frontend/dist
+frontend/public/generated
+notebooks
+prof

@@ -10,6 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import i18n  # noqa: E402
+from i18n import hidden  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 GENERATED = ROOT / "frontend" / "public" / "generated"
@@ -19,6 +20,8 @@ CODE = ["meta.yaml", "main.py", "equation.py", "tensors.py", "solve.py", "plot.p
 def audit() -> list[tuple[str, list[str]]]:
     rows = []
     for meta in sorted((ROOT / "problems").glob("*/*/meta.yaml")):
+        if hidden(meta):
+            continue
         d = meta.parent
         pid = f"{d.parent.name}/{d.name}"
         issues = [f"missing {f}" for f in CODE if not (d / f).is_file()]
@@ -45,7 +48,7 @@ def audit() -> list[tuple[str, list[str]]]:
 
 
 if __name__ == "__main__":
-    problems = sorted((ROOT / "problems").glob("*/*/meta.yaml"))
+    problems = [p for p in sorted((ROOT / "problems").glob("*/*/meta.yaml")) if not hidden(p)]
     rows = audit()
     print(f"{len(problems)} problems, {len(rows)} with something missing")
     for pid, issues in rows:

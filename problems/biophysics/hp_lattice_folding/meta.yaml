@@ -1,0 +1,42 @@
+title: HP lattice protein folding
+category: biophysics
+level: intermediate
+order: 2
+summary: >
+  The simplest protein model that still folds: a chain of hydrophobic (H) and polar (P) residues on a square lattice,
+  where every H–H contact between residues that are not chain neighbours lowers the energy by one. Many replicas of a
+  20-residue benchmark fold at once by Metropolis Monte Carlo with pull and crankshaft moves while the temperature
+  is lowered, and the contact map comes out of one pairwise-distance tensor of shape $(R, N, N)$.
+animated: true
+vector_form: 'E(\{\mathbf r\}) = -\varepsilon \sum_{i < j - 1} h_i\, h_j\, \big[\,\lVert \mathbf r_i - \mathbf r_j \rVert = 1\,\big],\qquad \lVert \mathbf r_{i+1} - \mathbf r_i \rVert = 1,\quad \mathbf r_i \ne \mathbf r_j,\qquad P_{\mathrm{acc}} = \min\!\big(1, e^{-\Delta E / T}\big)'
+index_form: 'd_{rij} = x_{rik}x_{rik} + x_{rjk}x_{rjk} - 2\,x_{rik}x_{rjk} \qquad C_{rij} = [d_{rij} = 1]\,[|i - j| > 1] \qquad E_r = -\tfrac12\, h_i\, C_{rij}\, h_j'
+translation:
+  - {symbol: 'x_{rik}', code: 'straight_chains(R, N, device)', shape: '(R, N, 2)', meaning: 'lattice coordinate $k$ of residue $i$ in replica $r$; every replica starts as a straight rod'}
+  - {symbol: 'h_i', code: 'hydrophobic(seq, device)', shape: '(N,)', meaning: '1 for H, 0 for P'}
+  - {symbol: 'x_{rik}x_{rjk}', code: "einsum('rik,rjk->rij', x, x)", shape: '(R, N, N)', meaning: 'repeated $k$ ⇒ summed: a batched Gram matrix; with the squared norms it gives $d_{rij} = \lVert \mathbf r_i - \mathbf r_j\rVert^2$'}
+  - {symbol: 'C_{rij}', code: 'contact_map(d)', shape: '(R, N, N)', meaning: 'lattice neighbours that are not chain neighbours'}
+  - {symbol: 'h_i C_{rij} h_j', code: "einsum('i,rij,j->r', h, C, h)", shape: '(R,)', meaning: 'repeated $i$ and $j$ ⇒ summed: H–H contacts, each counted twice, hence the $\tfrac12$'}
+  - {symbol: 'd_{rij} \ne 0', code: 'self_avoiding(x, d)', shape: '(R,)', meaning: 'bonds of length 1 and no two residues on one site, otherwise the move is rejected'}
+  - {symbol: 'T_s', code: 'temperatures(T_start, T_end, S, device)', shape: '(S,)', meaning: 'annealing schedule: $T$ falls geometrically, step by step'}
+  - {symbol: 'P_{\mathrm{acc}}', code: 'u < exp(-dE / T)', shape: '(R,)', meaning: 'Metropolis rule: downhill always, uphill with probability $e^{-\Delta E/T}$'}
+notes: >
+  Proteins fold largely because hydrophobic side chains hide from water in a compact core. The HP model (Dill, 1985)
+  keeps only that: an H–H contact is worth $-\varepsilon$, nothing else counts, and the chain is a self-avoiding walk
+  on the lattice. Even so, finding the lowest energy is NP-hard, and the number of conformations grows like
+  $2.64^N$. The default sequence HPHPPHHPHPPHPHHPPHPH is the classic 20-residue benchmark of Unger and Moult (1993)
+  with ground state $E = -9$; the others have known minima of $-9$, $-8$ and $-14$. Each step, every replica picks one
+  residue and tries a pull move (Lesh, Mitzenmacher and Whitesides, 2003: the residue jumps to a free corner and drags
+  its neighbours along the chain until the chain is connected again; at the ends this rotates the last residue, and
+  in the simplest case it is a corner flip) or a crankshaft move (a U-shaped pair flips over). A proposal that breaks a
+  bond or puts two residues on one site is rejected; otherwise the Metropolis rule decides. High temperature lets the
+  chains explore, slow cooling lets them settle into compact folds with an H core and P residues on the surface.
+  The energy $E$ is updated by $\Delta E$ of each accepted move and checked against a full recount in the tests.
+  Pull moves are not exactly symmetric proposals, so the run is an optimiser rather than an exact thermal sampler.
+  Try the 36-residue sequence: it needs more steps or replicas, and the share of replicas that reach the ground
+  state shows how rugged its energy landscape is.
+params:
+  sequence: {default: benchmark_20, type: choice, options: [benchmark_20, benchmark_24, benchmark_25, benchmark_36], label: Sequence}
+  replicas: {default: 128, min: 16, max: 1024, step: 16, type: int, label: 'Replicas $R$'}
+  steps: {default: 5000, min: 500, max: 40000, step: 500, type: int, label: Monte Carlo steps}
+  T_start: {default: 1.0, min: 0.2, max: 4.0, step: 0.1, label: 'Start temperature $T_0$ (units of $\varepsilon/k_B$)'}
+  T_end: {default: 0.15, min: 0.05, max: 1.0, step: 0.05, label: 'End temperature $T_1$'}

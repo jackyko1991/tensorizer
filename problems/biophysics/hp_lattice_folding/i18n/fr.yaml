@@ -1,0 +1,20 @@
+source_hash: a25b37200a6c
+title: Repliement de protéine HP sur réseau
+summary: 'Le modèle de protéine le plus simple qui se replie encore : une chaîne de résidus hydrophobes (H) et polaires (P) sur un réseau carré, où chaque contact H–H entre résidus non voisins dans la chaîne abaisse l''énergie d''une unité. De nombreuses répliques d''une séquence de référence de 20 résidus se replient simultanément par Monte Carlo Metropolis avec des mouvements pull et vilebrequin pendant que la température baisse, et la carte de contacts est obtenue à partir d''un seul tenseur de distances entre paires de forme $(R, N, N)$.'
+notes: 'Les protéines se replient en grande partie parce que les chaînes latérales hydrophobes se cachent de l''eau dans un cœur compact. Le modèle HP (Dill, 1985) ne garde que cela : un contact H–H vaut $-\varepsilon$, rien d''autre ne compte, et la chaîne est une marche auto-évitante sur le réseau. Malgré cela, trouver l''énergie minimale est NP-difficile, et le nombre de conformations croît comme $2.64^N$. La séquence par défaut HPHPPHHPHPPHPHHPPHPH est la référence classique de 20 résidus d''Unger et Moult (1993), d''état fondamental $E = -9$ ; les autres ont des minima connus de $-9$, $-8$ et $-14$. À chaque pas, chaque réplique choisit un résidu et tente un mouvement pull (Lesh, Mitzenmacher et Whitesides, 2003 : le résidu saute vers un coin libre et entraîne ses voisins le long de la chaîne jusqu''à ce que la chaîne soit de nouveau connexe ; aux extrémités, cela fait pivoter le dernier résidu, et dans le cas le plus simple c''est un basculement de coin) ou un mouvement vilebrequin
+  (une paire en forme de U bascule). Une proposition qui rompt une liaison ou place deux résidus sur un même site est rejetée ; sinon la règle de Metropolis décide. Une température élevée permet aux chaînes d''explorer, un refroidissement lent les laisse se stabiliser en repliements compacts avec un cœur H et des résidus P en surface. L''énergie $E$ est mise à jour par le $\Delta E$ de chaque mouvement accepté et vérifiée par un recomptage complet dans les tests. Les mouvements pull ne sont pas des propositions exactement symétriques, donc la simulation est un optimiseur plutôt qu''un échantillonneur thermique exact. Essayez la séquence de 36 résidus : elle demande plus de pas ou de répliques, et la part des répliques qui atteignent l''état fondamental montre à quel point son paysage énergétique est accidenté.'
+meanings:
+- coordonnée de réseau $k$ du résidu $i$ dans la réplique $r$ ; chaque réplique part d'un bâtonnet droit
+- 1 pour H, 0 pour P
+- '$k$ répété ⇒ sommé : une matrice de Gram par lot ; avec les normes au carré elle donne $d_{rij} = \lVert \mathbf r_i - \mathbf r_j\rVert^2$'
+- voisins sur le réseau qui ne sont pas voisins dans la chaîne
+- '$i$ et $j$ répétés ⇒ sommés : contacts H–H, chacun compté deux fois, d''où le $\tfrac12$'
+- liaisons de longueur 1 et jamais deux résidus sur un même site, sinon le mouvement est rejeté
+- 'programme de recuit : $T$ décroît géométriquement, pas à pas'
+- 'règle de Metropolis : toujours vers le bas, vers le haut avec la probabilité $e^{-\Delta E/T}$'
+labels:
+  sequence: Séquence
+  replicas: Répliques $R$
+  steps: Pas de Monte Carlo
+  T_start: Température initiale $T_0$ (en unités de $\varepsilon/k_B$)
+  T_end: Température finale $T_1$

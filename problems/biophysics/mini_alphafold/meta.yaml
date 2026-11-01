@@ -1,0 +1,44 @@
+title: 'AlphaFold in miniature: from a distance map to a 3D fold'
+category: biophysics
+level: advanced
+order: 1
+summary: >
+  A toy version of the two halves of a structure predictor, not AlphaFold itself. A predicted distogram (pairwise
+  Cα distances with binned uncertainty) is optionally cleaned up by one self-attention block, then a "structure module"
+  finds 3D coordinates $x_{ia}$ that fit it, by gradient descent on the stress from a batch of starts and by classical
+  MDS. The result is superposed on the target with the Kabsch SVD and scored by RMSD and a TM-like score.
+animated: true
+vector_form: 'S(\mathbf X) = \sum_{i<j} w_{ij}\big(\lVert\mathbf x_i - \mathbf x_j\rVert - \hat d_{ij}\big)^2 + k_b\sum_i\big(\lVert\mathbf x_{i+1} - \mathbf x_i\rVert - 3.8\,\text{Å}\big)^2,\qquad \mathbf G = -\tfrac12\,\mathbf J\,\mathbf D^{\circ 2}\,\mathbf J = \mathbf X\mathbf X^{\mathsf T}'
+index_form: '\hat d_{ij} = p_{ijk}\,c_k \qquad A_{ij} = \operatorname{softmax}_j\!\Big(\frac{q_{ie}k_{je}}{\sqrt E} + b_{ij}\Big),\quad h''_{ie} = h_{ie} + A_{ij}v_{je} \qquad r_{ij} = \sqrt{(x_{ia}-x_{ja})(x_{ia}-x_{ja})} \qquad H_{ab} = p_{ia}\,q_{ib} = U\Sigma V^{\mathsf T}'
+translation:
+  - {symbol: 'x_{ia}', code: 'target_structure(n_helix)', shape: '(N, 3)', meaning: 'Cα position of residue $i$, axis $a$; the target is a synthetic helix–turn–helix built from helix geometry'}
+  - {symbol: 'p_{ijk}', code: 'distogram(d_noisy, sigma, centres)', shape: '(N, N, K)', meaning: 'probability that residues $i, j$ sit in distance bin $k$ (64 bins, 2–22 Å); stands in for a trained network'}
+  - {symbol: '\hat d_{ij} = p_{ijk}c_k', code: "einsum('ijk,k->ij', p, centres)", shape: '(N, N)', meaning: 'expected distance, $k$ summed; the inverse variance gives the confidence weight $w_{ij}$'}
+  - {symbol: 'q_{ie}k_{je}', code: "einsum('ie,je->ij', q, k)", shape: '(N, N)', meaning: 'attention logits: residue $i$ asks, residue $j$ answers; $e$ summed'}
+  - {symbol: 'A_{ij}v_{je}', code: "einsum('ij,je->ie', A, v)", shape: '(N, E)', meaning: 'each residue collects a weighted mix of the others, $j$ summed; $b_{ij}$ is a pair bias from $\hat d_{ij}$'}
+  - {symbol: 'r_{ij}', code: 'pair_distances(x)', shape: '(B, N, N)', meaning: 'model distances for a batch of $B$ starts, $a$ summed'}
+  - {symbol: 'S', code: 'stress(x, d, w, far, d_far, k_bond)', shape: '(B,)', meaning: 'weighted misfit, "far" pairs only pushed apart, bonds held at 3.8 Å; minimised with Adam via autograd'}
+  - {symbol: 'G_{ij}', code: 'classical_mds(D)', shape: '(N, 3)', meaning: 'double-centred squared distances = Gram matrix $x_{ia}x_{ja}$; its top 3 eigenvectors give an initial guess'}
+  - {symbol: 'H_{ab}', code: 'kabsch(P, Q)', shape: '(N, 3)', meaning: 'covariance of the two centred structures, $i$ summed; its SVD gives the best proper rotation'}
+  - {symbol: '\text{RMSD},\ \text{TM}', code: 'rmsd(P, Q), tm_score(P, Q)', shape: '()', meaning: 'error after superposition; TM-like score $\frac1N\sum_i 1/(1+(d_i/d_0)^2)$, 1 = identical'}
+notes: >
+  This is AlphaFold in spirit only. Real AlphaFold 2 reads the amino-acid sequence and a multiple sequence alignment
+  (MSA) of related proteins, whose co-evolving positions hint at which residues touch; its Evoformer (48 blocks of
+  attention over the MSA and over residue pairs, with triangle updates) builds the pair picture; and its structure
+  module places a full backbone frame per residue (invariant point attention) and the side chains, refined in
+  several recycles. It was trained on ~170,000 structures from the Protein Data Bank and outputs a confidence (pLDDT).
+  Here the "network" is faked: the distogram is the true distances plus noise that grows with distance ($\sigma_{ij}
+  \propto d_{ij}$), and pairs beyond the last bin are only known to be far. The attention block is trained for a few
+  hundred steps on this one map, so it memorises rather than predicts; it shows what attention over residue pairs
+  looks like, and because its read-out puts each residue at a point in a 6-dimensional space it cannot fit independent
+  noise, so it smooths it. The structure module is honest distance geometry. Distances cannot tell a structure from
+  its mirror image: MDS and gradient descent return either enantiomer, so the right hand is picked by the sign of the
+  Cα pseudo-dihedrals (about $+50^\circ$ in a right-handed α-helix of L-amino acids) and both RMSDs are printed.
+  Several random starts are folded at once because some get stuck with one helix of each hand; the lowest stress wins.
+  Try raising the noise until the fold breaks, or turning the refinement off.
+params:
+  helix_length: {default: 16, min: 8, max: 26, step: 1, type: int, label: Residues per helix}
+  noise: {default: 0.5, min: 0.0, max: 5.0, step: 0.25, label: 'Distogram noise (σ at 10 Å)', unit: Å}
+  refine: {default: 'on', type: choice, options: ['on', 'off'], label: Attention refinement}
+  starts: {default: 16, min: 1, max: 64, step: 1, type: int, label: 'Random starts $B$'}
+  steps: {default: 800, min: 100, max: 3000, step: 100, type: int, label: Gradient steps}

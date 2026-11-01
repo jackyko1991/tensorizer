@@ -1,0 +1,18 @@
+source_hash: 9c0f102b3159
+title: Hodgkin–Huxley-Aktionspotential
+summary: 'Das Modell des Tintenfisch-Riesenaxons von 1952: ein Membrankondensator, der von Natrium- und Kaliumkanälen entladen wird, deren Tore $m$, $h$, $n$ sich spannungsabhängig öffnen und schließen. Einundvierzig Axone, jedes von einem anderen Stromsprung angetrieben, werden gemeinsam in einem $(4, B)$-Tensor integriert, um die Spike-Schwelle und die Feuerrate in Abhängigkeit vom Strom zu finden.'
+notes: 'Hodgkin und Huxley (Nobelpreis 1963) maßen die Natrium- und Kaliumströme des Tintenfisch-Riesenaxons mit einer Spannungsklemme (Voltage Clamp) und passten sie mit drei Toren an. Der Natriumstrom schaltet schnell über $m^3$ ein und langsamer über das Inaktivierungstor $h$ aus; der Kaliumstrom öffnet spät über $n^4$. Ein Spike ist ein Wettlauf zwischen ihnen: Eine kleine Depolarisation öffnet $m$, das einströmende $\mathrm{Na}^+$ depolarisiert weiter (positive Rückkopplung) und $V$ schießt in Richtung $E_{Na}$; dann schließt $h$ und $n$ öffnet, und $V$ fällt zurück und schießt sogar unter das Ruhepotential. Bei einem anhaltenden Stromsprung zeigt das Modell drei Regime. Unterhalb von etwa 2,3 µA/cm² lädt sich die Membran nur passiv auf. Zwischen diesem Wert und etwa 6,3 µA/cm² feuert sie einen einzelnen Spike und kommt dann zur Ruhe, weil Inaktivierung und Kaliumstrom sie in einer neuen Ruhelage halten. Darüber feuert sie repetitiv, und die Rate beginnt nicht bei null, sondern springt
+  auf etwa 50 Hz: Das Tintenfischaxon ist ein Typ-II-Neuron (Resonator), dessen Ruhezustand in einer Hopf-Bifurkation seine Stabilität verliert, anders als Typ-I-Neuronen, die beliebig langsam feuern können. Die f–I-Kurve steigt dann sanft an, bis etwa 68 Hz bei 10 µA/cm². Die Ratenfunktionen haben hebbare Singularitäten, $0.1(V+40)/(1 - e^{-(V+40)/10})$ ist bei $V = -40$ mV endlich, daher wertet der Code sie über $x/(1 - e^{-x})$ mit einem sicheren Grenzwert aus. Die Originalexperimente wurden bei 6,3 °C durchgeführt; Erwärmen des Axons beschleunigt jedes Tor um $\phi = 3^{(T - 6.3)/10}$, was die Spikes schmaler und das Feuern schneller macht, bis das Axon oberhalb von etwa 30 °C gar nicht mehr feuert. Vereinfachungen: ein raumgeklemmter Membranfleck (keine Ausbreitung entlang des Axons) und deterministische Kanäle.'
+meanings:
+- Stimulusstrom von Axon $b$, ein bei 10 ms eingeschalteter Sprung (µA/cm²)
+- Membranpotential und die Tore $g = (m, h, n)$ jedes Axons
+- Öffnungs- und Schließraten jedes Tors (1/ms), die klassischen Fits am Tintenfischaxon
+- offener Anteil von Kanal $k$ = Na, K, Leck
+- maximale Leitfähigkeiten (120, 36, 0,3 mS/cm²) und Umkehrpotentiale (50, −77, −54,4 mV)
+- gesamter Ionenstrom; wiederholtes $k$ ⇒ über die Kanäle summiert
+- 'Temperaturfaktor ($Q_{10} = 3$): jedes Tor wird pro 10 °C 3× schneller'
+- stationäre Feuerrate aus den Interspike-Intervallen (Hz)
+labels:
+  I_max: Größter Stimulus $I_{max}$
+  t_end: Simulierte Zeit
+  temp: Temperatur $T$

@@ -1,0 +1,20 @@
+source_hash: 230765b6cfcc
+title: 'Étirer l''ADN : la chaîne vermiforme'
+summary: Tirez sur une molécule d'ADN avec des pinces optiques et elle résiste comme un ressort entropique qui se raidit fortement près de sa pleine longueur. La loi de la chaîne vermiforme de Marko–Siggia est comparée à une chaîne librement articulée, et une chaîne discrète de tangentes unitaires avec rigidité de flexion est simulée par Monte Carlo pour tout un lot de forces à la fois, dans un seul tenseur $(B, M, N, 3)$. La longueur de persistance $P \approx 50$ nm est retrouvée à la fois à partir des corrélations de tangentes et d'un ajustement de la courbe force–extension.
+notes: 'Une molécule d''ADN double brin est rigide aux petites échelles mais souple aux grandes : la direction de son squelette est conservée sur la longueur de persistance $P \approx 50$ nm (environ 150 paires de bases), puis oubliée. La redresser coûte donc de l''entropie, pas de l''énergie de liaison. À faible force, la réponse est linéaire, $z/L \approx 2 P F / 3 k_B T$, la même pour tout polymère de longueur de Kuhn $b = 2P$ ; à forte force, la chaîne vermiforme n''approche sa pleine longueur que lentement, $1 - z/L \approx \tfrac12 \sqrt{k_B T / F P}$, car elle doit aplanir des modes de flexion de toutes les longueurs d''onde, alors qu''une chaîne librement articulée de segments rigides se redresse bien plus vite, $1 - z/L \approx k_B T / F b$. Les expériences sur l''ADN du phage λ (Smith, Finzi et Bustamante 1992 ; Bustamante, Marko, Siggia et Smith 1994) suivent la chaîne vermiforme jusqu''à environ 10 pN, où la double hélice commence à s''étirer élastiquement, et présentent un surétirement
+  vers 65 pN ; ce modèle n''inclut ni l''un ni l''autre. La formule de Marko–Siggia est une interpolation entre les deux limites et diffère de la WLC exacte jusqu''à environ 10 % en force aux extensions intermédiaires. La simulation utilise des segments de $a = 2.5$ nm, donc la rigidité est $K \approx 20.5$ ; chaque balayage Monte Carlo tourne légèrement chaque tangente (Metropolis sur le champ local) puis fait pivoter la queue de chaque chaîne autour d''un axe aléatoire (un pivot). La première moitié des balayages sert à l''équilibration et la seconde moitié est moyennée. Aux forces les plus faibles, l''extension fluctue fortement d''une chaîne à l''autre et relaxe lentement, donc ces points sont dispersés. L''ajustement utilise 0,5–4 pN : Marko–Siggia résolu pour $P$ en chaque point, moyenné en échelle logarithmique (moindres carrés en $\log F$). Au-delà de $F \sim K k_B T / a$, la discrétisation de la chaîne apparaît sous forme d''une extension légèrement supérieure à la loi continue.
+  Aucune donnée expérimentale n''est incluse.'
+meanings:
+- tangente unitaire du segment $i$ de la chaîne $m$ tirée par la force $b$ ; les chaînes partent comme des WLC sans force
+- $F_0 = 0$ plus 12 forces de 0,02 à 10 pN ; $f_b$ est le travail $F a$ en unités de $k_B T$
+- rigidité de flexion $\kappa / k_B T$ choisie de sorte que $\coth K - 1/K = e^{-a/P}$, c.-à-d. $K \approx P/a + \tfrac12$
+- l'attraction des deux tangentes voisines plus la force selon $z$
+- '$k$ répété ⇒ sommé : variation d''énergie due à la rotation d''une tangente ; les segments pairs et impairs bougent à tour de rôle'
+- '$i, k$ répétés ⇒ sommés : énergie de flexion totale, utilisée pour les mouvements pivot qui tournent toute une queue'
+- extension selon la force rapportée à la longueur de contour
+- corrélation des tangentes de la chaîne libre ; sa longueur de décroissance est $P$
+labels:
+  persistence: Longueur de persistance $P$
+  contour_length: Longueur de contour $L$
+  chains: Chaînes par force $M$
+  sweeps: Balayages Monte Carlo

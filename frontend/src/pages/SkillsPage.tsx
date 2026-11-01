@@ -42,7 +42,7 @@ F_new  = torch.einsum("ma,nb,ab->mn", L, L, F)      # Lorentz boost of F^{μν}`
     code: `angles = torch.deg2rad(torch.linspace(15, 75, 6))           # (B,)
 v0 = 30 * torch.stack([angles.cos(), angles.sin()], dim=-1)   # (B, 2)
 # one RK4 step now advances all B projectiles`,
-    usedIn: ["mechanics/projectile", "nuclear/radioactive_decay", "others/receptor_binding"],
+    usedIn: ["mechanics/projectile", "nuclear/radioactive_decay", "biophysics/receptor_binding"],
   },
   {
     id: "rk4",

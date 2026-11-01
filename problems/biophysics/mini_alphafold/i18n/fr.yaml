@@ -1,0 +1,22 @@
+source_hash: 92d9eb39c4ac
+title: 'AlphaFold en miniature : d''une carte de distances à un repliement 3D'
+summary: Une version jouet des deux moitiés d'un prédicteur de structure, et non AlphaFold lui-même. Un distogramme prédit (distances Cα entre paires avec une incertitude par intervalles) est éventuellement nettoyé par un bloc d'auto-attention, puis un « module de structure » trouve des coordonnées 3D $x_{ia}$ qui s'y ajustent, par descente de gradient sur le stress à partir d'un lot de points de départ et par MDS classique. Le résultat est superposé à la cible avec la SVD de Kabsch et évalué par la RMSD et un score de type TM.
+notes: 'Ceci n''est AlphaFold que dans l''esprit. Le vrai AlphaFold 2 lit la séquence d''acides aminés et un alignement multiple de séquences (MSA) de protéines apparentées, dont les positions qui co-évoluent indiquent quels résidus se touchent ; son Evoformer (48 blocs d''attention sur le MSA et sur les paires de résidus, avec des mises à jour triangulaires) construit la représentation des paires ; et son module de structure place un repère complet du squelette par résidu (invariant point attention) ainsi que les chaînes latérales, affinés au cours de plusieurs recyclages. Il a été entraîné sur ~170 000 structures de la Protein Data Bank et fournit une confiance (pLDDT). Ici, le « réseau » est simulé : le distogramme est formé des vraies distances plus un bruit qui croît avec la distance ($\sigma_{ij} \propto d_{ij}$), et pour les paires au-delà du dernier intervalle on sait seulement qu''elles sont éloignées. Le bloc d''attention est entraîné pendant quelques centaines de pas sur cette
+  seule carte, il mémorise donc plutôt qu''il ne prédit ; il montre à quoi ressemble l''attention sur des paires de résidus, et comme sa lecture place chaque résidu en un point d''un espace à 6 dimensions, il ne peut pas ajuster un bruit indépendant et le lisse donc. Le module de structure est de la géométrie des distances honnête. Les distances ne permettent pas de distinguer une structure de son image miroir : la MDS et la descente de gradient renvoient l''un ou l''autre énantiomère, donc la bonne chiralité est choisie d''après le signe des pseudo-dièdres Cα (environ $+50^\circ$ dans une hélice α droite d''acides aminés L) et les deux RMSD sont affichées. Plusieurs départs aléatoires sont repliés à la fois car certains restent bloqués avec une hélice de chaque chiralité ; le stress le plus bas l''emporte. Essayez d''augmenter le bruit jusqu''à ce que le repliement casse, ou de désactiver l''affinage.'
+meanings:
+- position Cα du résidu $i$, axe $a$ ; la cible est un hélice–coude–hélice synthétique construit à partir de la géométrie hélicoïdale
+- probabilité que les résidus $i, j$ se trouvent dans l'intervalle de distance $k$ (64 intervalles, 2–22 Å) ; remplace un réseau entraîné
+- distance attendue, $k$ sommé ; l'inverse de la variance donne le poids de confiance $w_{ij}$
+- 'logits d''attention : le résidu $i$ interroge, le résidu $j$ répond ; $e$ sommé'
+- chaque résidu recueille un mélange pondéré des autres, $j$ sommé ; $b_{ij}$ est un biais de paire issu de $\hat d_{ij}$
+- distances du modèle pour un lot de $B$ départs, $a$ sommé
+- écart pondéré, les paires « éloignées » seulement repoussées, liaisons maintenues à 3,8 Å ; minimisé avec Adam via autograd
+- distances au carré doublement centrées = matrice de Gram $x_{ia}x_{ja}$ ; ses 3 premiers vecteurs propres donnent une estimation initiale
+- covariance des deux structures centrées, $i$ sommé ; sa SVD donne la meilleure rotation propre
+- erreur après superposition ; score de type TM $\frac1N\sum_i 1/(1+(d_i/d_0)^2)$, 1 = identique
+labels:
+  helix_length: Résidus par hélice
+  noise: Bruit du distogramme (σ à 10 Å)
+  refine: Affinage par attention
+  starts: Départs aléatoires $B$
+  steps: Pas de gradient

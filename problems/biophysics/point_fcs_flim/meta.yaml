@@ -1,0 +1,59 @@
+title: 'Point FCS with fluorescence lifetimes (FLCS)'
+category: biophysics
+level: advanced
+order: 4
+hidden: true
+summary: >
+  Fluorescent molecules diffuse through a confocal laser focus and every detected photon carries two clocks: its
+  arrival time in the trace and its delay after the laser pulse (TCSPC). All molecules move as one $(N_{mol}, 3)$
+  tensor; the intensity autocorrelation $G(\tau)$ comes from one FFT and gives the number $N$ in the volume and
+  the diffusion coefficient $D$, the microtime histogram gives the lifetimes, and lifetime filters (FLCS) split a
+  fast free dye from a slow labelled protein that plain FCS mixes together.
+animated: true
+vector_form: 'W(\mathbf r) = e^{-2(x^2+y^2)/w_0^2 - 2z^2/z_0^2},\qquad G(\tau) = \frac{\langle\delta I(t)\,\delta I(t+\tau)\rangle}{\langle I\rangle^2} = \frac{1}{N}\Big(1+\frac{\tau}{\tau_D}\Big)^{-1}\Big(1+\frac{\tau}{\kappa^2\tau_D}\Big)^{-1/2},\qquad \tau_D = \frac{w_0^2}{4D}'
+index_form: 'W_{tn} = e^{-x_{tni}A_{ij}x_{tnj}} \qquad I_{ts} = q_s\,S_{ns}\,W_{tn} \qquad G_k(\tau) = \frac{\mathcal F^{-1}\big[|\hat{\delta I}_{k\omega}|^2\big]_\tau}{(T-\tau)\,\langle I_k\rangle^2} \qquad f_{kc}\,M_{cj} = \delta_{kj}'
+translation:
+  - {symbol: 'x_{tni}', code: 'path', shape: '(K, N_mol, 3)', meaning: 'position of molecule $n$ at step $t$ (µm, focus at the origin); a chunk of $K$ steps is drawn at once with cumsum and wrapped into the periodic box'}
+  - {symbol: 'A_{ij}', code: 'shape_matrix(w0, z0)', shape: '(3, 3)', meaning: '$\mathrm{diag}(2/w_0^2, 2/w_0^2, 2/z_0^2)$, the shape of the Gaussian focus, $z_0 = \kappa w_0$'}
+  - {symbol: 'x_{tni}A_{ij}x_{tnj}', code: "einsum('...i,ij,...j->...', x, A, x)", shape: '(K, N_mol)', meaning: 'repeated $i, j$ ⇒ summed: the exponent of the detection profile $W$'}
+  - {symbol: 'S_{ns},\ q_s', code: 'S, peak_brightness(eps)', shape: '(N_mol, s), (s,)', meaning: 'one-hot species membership, and the photon rate at the centre $q = 2^{3/2}\varepsilon$ from the counts per molecule $\varepsilon$'}
+  - {symbol: 'I_{ts}', code: "einsum('tn,ns,s->ts', W, S, q)", shape: '(T, s)', meaning: 'repeated $n$ ⇒ summed over molecules: detected rate per species; photons per bin are Poisson with mean $I_{ts}\Delta t$'}
+  - {symbol: 'h_c', code: 'histogram(chans, C)', shape: '(C,)', meaning: 'TCSPC microtime histogram: delay after the laser pulse, $\mathrm{Exp}(\tau_{fl})$ smeared by the Gaussian IRF, plus flat background'}
+  - {symbol: 'M_{cj}', code: 'decay_pattern(t, tau_fl, ...)', shape: '(C, s+1)', meaning: 'normalised pure decay of each species (fitted lifetimes) and the flat background pattern'}
+  - {symbol: 'f_{kc}', code: 'flcs_filters(M, h)', shape: '(s+1, C)', meaning: '$F = (M^T D^{-1} M)^{-1} M^T D^{-1}$ with $D = \mathrm{diag}(h)$, so $f_{kc}M_{cj} = \delta_{kj}$ (repeated $c$ summed)'}
+  - {symbol: 'I_k(t)', code: 'filtered_traces(bins, chans, F, T)', shape: '(s, T)', meaning: 'each photon adds $f_k$ of its microtime channel: an intensity trace that only counts species $k$'}
+  - {symbol: 'G_k(\tau)', code: 'autocorrelation(I)', shape: '(1+s, T)', meaning: 'all lags from one zero-padded FFT (Wiener–Khinchin), then averaged in log-spaced lag windows'}
+  - {symbol: 'N,\ \tau_D,\ D', code: 'fit_fcs(lag, G, kappa, n)', shape: '(s,)', meaning: 'amplitudes solved linearly, $\log\tau_D$ refined with autograd + Adam; $N = 1/G(0)$ and $D = w_0^2/4\tau_D$'}
+notes: >
+  In point FCS a laser is focused to a diffraction-limited spot, roughly an ellipsoid of $w_0 \approx 0.25$ µm
+  across and $z_0 = \kappa w_0 \approx 1.25$ µm long ($V_{eff} = \pi^{3/2} w_0^2 z_0 \approx 0.4$ fL), and a pinhole
+  passes only light from that spot to a single-photon detector (SPAD). At nanomolar concentrations about one molecule
+  is inside at a time, so the signal flickers: a burst whenever a molecule crosses. The autocorrelation measures how
+  long a burst lasts and how big the flicker is: for a Gaussian volume $G(0) = 1/N$ (Poisson statistics of the
+  number inside) and $G$ falls to half at about the diffusion time $\tau_D = w_0^2/4D$. Background photons are
+  uncorrelated and only dilute $G$ by $((I-B)/I)^2$, which is undone here with the background level found in the
+  lifetime fit. With pulsed excitation a TCSPC card also records each photon's delay after the pulse; the histogram
+  of these microtimes is the fluorescence decay, fitted here by IRF reconvolution (the exponentially modified
+  Gaussian, with a flat background as one more linear term), globally with reference decays of the pure dye and
+  the pure protein that share the lifetimes: 4 and 2.5 ns are too close to pin down from a few $10^5$ photons of the
+  mixture alone, and recording the pure species is also how FLCS is done in practice. Plain FCS of a mixture sees one curve with two
+  shoulders, and a two-component fit has to untangle amplitudes and times from the shape alone, weighted by the
+  brightness squared. FLCS (Enderlein, Gregor and Kapusta) uses the lifetimes instead: weights $f_k$ for every
+  microtime channel, built from the pure decay patterns so that $\sum_c f_k(c)p_j(c) = \delta_{kj}$, turn the one photon
+  stream into a separate intensity trace per species, and each $G_k$ is a clean one-component curve with its own
+  $N_k$ and $D_k$. The background pattern gets a filter too, so it drops out of every $G_k$. Simplifications: no
+  triplet blinking, afterpulsing or detector dead time, a perfect Gaussian focus and a known IRF; the box is
+  periodic and holds a fixed number of molecules, which shifts $G$ by a tiny $-1/N_{box}$. Try a shorter trace (the
+  FLCS curves get noisy first), equal lifetimes (the filters break down) or $\kappa = 1$. Imaging FCS on a light
+  sheet or camera, where every pixel is its own small volume, is the natural next step and has its own problem.
+params:
+  species: {default: both, type: choice, options: [both, dye, protein], label: Species in the sample}
+  N_dye: {default: 1.0, min: 0.1, max: 10, step: 0.1, label: 'Free dye: mean number $N$ in the volume'}
+  N_protein: {default: 1.0, min: 0.1, max: 10, step: 0.1, label: 'Protein: mean number $N$ in the volume'}
+  D_dye: {default: 400.0, min: 50, max: 1000, step: 10, label: 'Free dye $D$', unit: µm²/s}
+  D_protein: {default: 40.0, min: 2, max: 200, step: 1, label: 'Protein $D$', unit: µm²/s}
+  tau_dye: {default: 4.0, min: 0.5, max: 10, step: 0.1, label: 'Free dye lifetime $\tau_{fl}$', unit: ns}
+  tau_protein: {default: 2.5, min: 0.5, max: 10, step: 0.1, label: 'Protein lifetime $\tau_{fl}$', unit: ns}
+  kappa: {default: 5.0, min: 1, max: 10, step: 0.5, label: 'Aspect ratio $\kappa = z_0 / w_0$'}
+  trace: {default: 3.0, min: 0.2, max: 5, step: 0.1, label: Trace length, unit: s}
+  background: {default: 1.0, min: 0, max: 20, step: 0.5, label: Background, unit: kHz}

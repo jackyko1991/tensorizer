@@ -24,7 +24,13 @@ SERVERS = {
     "api": dict(
         args=[sys.executable, "-m", "uvicorn", "backend.app.main:app", "--port", "8000"],
         cwd=ROOT,
-        env={**os.environ, "ALLOW_CODE_EXEC": "1", "TENSORIZER_DEV_SITE": "http://localhost:5173"},
+        env={
+            **os.environ,
+            "ALLOW_CODE_EXEC": "1",
+            "AGENT_ENABLED": "1",
+            "AGENT_AUTH": "local",
+            "TENSORIZER_DEV_SITE": "http://localhost:5173",
+        },
     ),
     "web": dict(args=[NPM, "run", "dev"], cwd=ROOT / "frontend", env=None),
 }

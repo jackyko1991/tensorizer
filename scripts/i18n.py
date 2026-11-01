@@ -30,8 +30,14 @@ FILES = ["meta.yaml", "main.py", "equation.py", "tensors.py", "solve.py", "plot.
 MATH = re.compile(r"(?<!\\)\$(.+?)(?<!\\)\$", re.S)
 
 
+def hidden(meta_file: Path) -> bool:
+    """`hidden: true` in meta.yaml keeps a problem in the repository (code and tests) but off the site."""
+    return bool(yaml.safe_load(meta_file.read_text(encoding="utf-8")).get("hidden"))
+
+
 def problems() -> list[Path]:
-    return sorted(p.parent for p in PROBLEMS.glob("*/*/meta.yaml") if all((p.parent / f).is_file() for f in FILES))
+    metas = PROBLEMS.glob("*/*/meta.yaml")
+    return sorted(p.parent for p in metas if all((p.parent / f).is_file() for f in FILES) and not hidden(p))
 
 
 def english(problem: Path) -> dict:

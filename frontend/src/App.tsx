@@ -1,5 +1,16 @@
 import { useEffect, useState } from "react";
-import { generatedUrl, health, loadManifest, RunFailed, runProblemStream, type Health, type LineEvent } from "./api";
+import {
+  assetUrl,
+  backendChoice,
+  health,
+  loadManifest,
+  RunFailed,
+  runProblemStream,
+  setBackendChoice,
+  type BackendChoice,
+  type Health,
+  type LineEvent,
+} from "./api";
 import CodePanel from "./components/CodePanel";
 import EquationPanel from "./components/EquationPanel";
 import ParamsPanel from "./components/ParamsPanel";
@@ -7,6 +18,8 @@ import PlotPanel from "./components/PlotPanel";
 import Sidebar, { LEVEL_STYLE } from "./components/Sidebar";
 import TerminalPanel from "./components/TerminalPanel";
 import { LANGS, localize, useLang, type Key, type Lang } from "./i18n";
+import { emitContext, onApplyFiles } from "./agentBus";
+import AgentPanel from "./components/AgentPanel";
 import ExportMenu from "./components/ExportMenu";
 import { REPO_URL } from "./notebook";
 import ConceptPage from "./pages/ConceptPage";
@@ -18,7 +31,11 @@ const currentHash = () => decodeURIComponent(window.location.hash.replace(/^#\/?
 const select = (id: string) => (window.location.hash = `/${id}`);
 const PAGES = ["problems", "concept", "skills"] as const;
 type Page = (typeof PAGES)[number];
-const TAB_KEY: Record<Page, Key> = { problems: "tab.problems", concept: "tab.concept", skills: "tab.skills" };
+const TAB_KEY: Record<Page, Key> = {
+  problems: "tab.problems",
+  concept: "tab.concept",
+  skills: "tab.skills",
+};
 
 /**
  * Layout (desktop): a full-height workspace with three columns that scroll independently —
@@ -33,6 +50,8 @@ export default function App() {
   const [backend, setBackend] = useState<Health | null | "checking">("checking");
   const [libraryOpen, setLibraryOpen] = useState(true);
   const [paramsOpen, setParamsOpen] = useState(true);
+  // Problems the agent created this visit (not saved): the left panel's Workspace section.
+  const [workspace, setWorkspace] = useState<Problem[]>([]);
   const { lang, setLang, t } = useLang();
 
   useEffect(() => {
@@ -53,11 +72,14 @@ export default function App() {
   const page: Page = selected === "concept" || selected === "skills" ? selected : "problems";
   const [lastProblemId, setLastProblemId] = useState<string | null>(null);
   const problem =
-    manifest?.problems.find((p) => p.id === (page === "problems" ? selected : lastProblemId)) ?? manifest?.problems[0];
+    [...workspace, ...(manifest?.problems ?? [])].find(
+      (p) => p.id === (page === "problems" ? selected : lastProblemId),
+    ) ?? manifest?.problems[0];
   useEffect(() => {
     if (page === "problems" && problem) setLastProblemId(problem.id);
   }, [page, problem]);
-  const goTo = (target: Page) => (window.location.hash = target === "problems" ? `/${problem?.id ?? ""}` : `/${target}`);
+  const goTo = (target: Page) =>
+    (window.location.hash = target === "problems" ? `/${problem?.id ?? ""}` : `/${target}`);
 
   return (
     <div className="flex min-h-screen flex-col bg-white lg:h-screen lg:overflow-hidden">
@@ -70,22 +92,34 @@ export default function App() {
           <span className="hidden text-sm text-blue-100 xl:inline">{t("tagline")}</span>
         </div>
         {/* On phones the tabs wrap onto their own row under the logo and language menu. */}
-        <nav className="order-last flex w-full items-center gap-1 overflow-x-auto lg:order-none lg:ml-auto lg:w-auto" aria-label="Sections">
-            {PAGES.map((target) => (
-              <button
-                key={target}
-                onClick={() => goTo(target)}
-                aria-current={page === target ? "page" : undefined}
-                className={`shrink-0 rounded-md px-3 py-1.5 text-sm font-medium transition ${
-                  page === target ? "bg-white text-blue-700 shadow-sm" : "text-blue-100 hover:bg-blue-600 hover:text-white"
-                }`}
-              >
-                {t(TAB_KEY[target])}
-              </button>
-            ))}
-          </nav>
+        <nav
+          className="order-last flex w-full items-center gap-1 overflow-x-auto lg:order-none lg:ml-auto lg:w-auto"
+          aria-label="Sections"
+        >
+          {PAGES.map((target) => (
+            <button
+              key={target}
+              onClick={() => goTo(target)}
+              aria-current={page === target ? "page" : undefined}
+              className={`shrink-0 rounded-md px-3 py-1.5 text-sm font-medium transition ${
+                page === target
+                  ? "bg-white text-blue-700 shadow-sm"
+                  : "text-blue-100 hover:bg-blue-600 hover:text-white"
+              }`}
+            >
+              {t(TAB_KEY[target])}
+            </button>
+          ))}
+        </nav>
         <div className="ml-auto flex items-center gap-4 lg:ml-0">
-          <BackendBadge backend={backend} />
+          <BackendBadge
+            backend={backend}
+            onChoose={(choice) => {
+              setBackendChoice(choice);
+              setBackend("checking");
+              health().then(setBackend);
+            }}
+          />
           <select
             value={lang}
             onChange={(e) => setLang(e.target.value as Lang)}
@@ -94,7 +128,7 @@ export default function App() {
             className="rounded-md border border-blue-400 bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-500"
           >
             {LANGS.map((l) => (
-              <option key={l.code} value={l.code}>
+              <option key={l.code} value={l.code} className="bg-white text-gray-900">
                 {l.name}
               </option>
             ))}
@@ -140,9 +174,34 @@ export default function App() {
               </button>
             </div>
             {libraryOpen ? (
-              <div className="min-h-0 flex-1 overflow-y-auto p-3">
-                <Sidebar manifest={manifest} selected={problem.id} onSelect={select} />
-              </div>
+              <>
+                <div className="min-h-0 flex-1 overflow-y-auto p-3">
+                  <Sidebar manifest={manifest} selected={problem.id} onSelect={select} />
+                </div>
+                {/* Workspace: problems created with the agent this visit */}
+                <div className="flex h-8 shrink-0 items-center border-y border-gray-200 bg-gray-50 px-2">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t("workspace")}</span>
+                </div>
+                <div className="max-h-48 shrink-0 overflow-y-auto p-2">
+                  {workspace.length === 0 ? (
+                    <p className="px-1 py-1 text-xs text-gray-400">✨ {t("workspace.empty")}</p>
+                  ) : (
+                    workspace.map((p) => (
+                      <button
+                        key={p.id}
+                        onClick={() => select(p.id)}
+                        className={`block w-full rounded-md px-2 py-1.5 text-left text-sm ${
+                          p.id === problem.id
+                            ? "bg-blue-50 font-medium text-blue-700"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                      >
+                        <RichText text={p.title || p.id} />
+                      </button>
+                    ))
+                  )}
+                </div>
+              </>
             ) : (
               <button
                 onClick={() => setLibraryOpen(true)}
@@ -162,6 +221,16 @@ export default function App() {
             onToggleParams={() => setParamsOpen((o) => !o)}
           />
         </div>
+      )}
+
+      {manifest && problem && (
+        <AgentPanel
+          problem={problem}
+          onWorkspaceProblem={(entry) => {
+            setWorkspace((ws) => [entry, ...ws.filter((w) => w.id !== entry.id)]);
+            select(entry.id);
+          }}
+        />
       )}
 
       <footer className="sticky bottom-0 z-10 flex h-7 shrink-0 items-center justify-end gap-4 border-t border-gray-200 bg-white/95 px-4 text-xs text-gray-500 backdrop-blur">
@@ -198,7 +267,10 @@ function ProblemSelect({ manifest, value }: { manifest: Manifest; value: string 
           const inGroup = manifest.problems.filter((p) => p.category === cat.id && p.level === level);
           return (
             inGroup.length > 0 && (
-              <optgroup key={`${cat.id}-${level}`} label={`${t(`cat.${cat.id}` as Key) ?? cat.title} · ${t(LEVEL_STYLE[level].key)}`}>
+              <optgroup
+                key={`${cat.id}-${level}`}
+                label={`${t(`cat.${cat.id}` as Key) ?? cat.title} · ${t(LEVEL_STYLE[level].key)}`}
+              >
                 {inGroup.map((p) => (
                   <option key={p.id} value={p.id}>
                     {plainText(p.i18n?.[lang]?.title ?? p.title)}
@@ -213,18 +285,40 @@ function ProblemSelect({ manifest, value }: { manifest: Manifest; value: string 
   );
 }
 
-function BackendBadge({ backend }: { backend: Health | null | "checking" }) {
+/** Status dot + label, and a picker: the shared server or a backend running on this computer. */
+function BackendBadge({
+  backend,
+  onChoose,
+}: {
+  backend: Health | null | "checking";
+  onChoose: (choice: BackendChoice) => void;
+}) {
   const { t } = useLang();
+  const choice = backendChoice();
   const [label, color] =
     backend === "checking"
       ? [t("backend.checking"), "bg-gray-300"]
       : backend
         ? [t(backend.allow_code_exec ? "backend.edit" : "backend.online"), "bg-green-500"]
-        : [t("backend.offline"), "bg-amber-400"];
+        : [t(choice === "local" ? "backend.localOffline" : "backend.offline"), "bg-amber-400"];
   return (
     <span className="hidden items-center gap-2 text-xs text-blue-100 sm:flex">
       <span className={`h-2 w-2 rounded-full ${color}`} />
-      {label}
+      <span title={choice === "local" ? t("backend.localHint") : undefined}>{label}</span>
+      <select
+        value={choice}
+        onChange={(e) => onChoose(e.target.value as BackendChoice)}
+        title={t("backend.choose")}
+        aria-label={t("backend.choose")}
+        className="rounded-md border border-blue-400 bg-blue-600 px-1.5 py-0.5 text-xs text-white hover:bg-blue-500"
+      >
+        <option value="server" className="bg-white text-gray-900">
+          {t("backend.server")}
+        </option>
+        <option value="local" className="bg-white text-gray-900">
+          {t("backend.local")}
+        </option>
+      </select>
     </span>
   );
 }
@@ -247,7 +341,16 @@ interface ProblemViewProps {
 function ProblemView({ problem, backend, categoryTitle, paramsOpen, onToggleParams }: ProblemViewProps) {
   const [params, setParams] = useState<Params>(() => defaults(problem));
   const [edits, setEdits] = useState<Record<string, string>>({});
-  const [src, setSrc] = useState<string | null>(problem.output ? generatedUrl(problem.output) : null);
+  // Claude's edits arrive here; and the Ask AI panel always knows what is on screen.
+  useEffect(
+    () => onApplyFiles(({ problem: id, files }) => id === problem.id && setEdits((e) => ({ ...e, ...files }))),
+    [problem.id],
+  );
+  useEffect(
+    () => emitContext({ problem: problem.id, title: plainText(problem.title), edits, params }),
+    [problem.id, problem.title, edits, params],
+  );
+  const [src, setSrc] = useState<string | null>(problem.output ? assetUrl(problem.output) : null);
   const [console, setConsole] = useState(problem.console);
   const [running, setRunning] = useState(false);
   const [verbose, setVerbose] = useState(false);
@@ -260,11 +363,13 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
   // A refreshed manifest may bring a newly rendered default result; show it unless the user ran their own.
   useEffect(() => {
     if (hasRun || running) return;
-    setSrc(problem.output ? generatedUrl(problem.output) : null);
+    setSrc(problem.output ? assetUrl(problem.output) : null);
     setConsole(problem.console);
   }, [problem.output, problem.console, hasRun, running]);
 
-  const editable = !!backend?.allow_code_exec;
+  const inWorkspace = problem.category === "workspace";
+  // Workspace problems run in the agent's sandbox, so they are editable wherever the agent is.
+  const editable = !!backend?.allow_code_exec || inWorkspace;
   const hasEdits = Object.keys(edits).length > 0;
 
   async function run() {
@@ -283,7 +388,20 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
       setConsole(lines.join("\n"));
     };
     try {
-      const result = await runProblemStream(problem.id, params, hasEdits ? edits : undefined, verbose, onLine);
+      // While waiting for a free slot on a shared server, one line shows the place in the queue.
+      const onQueued = (position: number) =>
+        onLine({
+          text: t("queue.wait").replace("{n}", String(position)),
+          replace: true,
+        });
+      const result = await runProblemStream(
+        inWorkspace && problem.session ? { session: problem.session } : problem.id,
+        params,
+        hasEdits ? edits : undefined,
+        verbose,
+        onLine,
+        onQueued,
+      );
       setSrc(result.output);
       setConsole(result.console);
     } catch (e) {
@@ -329,7 +447,9 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
               <RichText text={problem.title} />
             </h2>
             <div className="mt-1.5 flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">{categoryTitle}</span>
+              <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+                {categoryTitle}
+              </span>
               <span
                 className={`flex items-center gap-1.5 rounded-full border border-gray-200 px-2.5 py-0.5 text-xs font-medium ${level.text}`}
               >
@@ -346,7 +466,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
           </div>
           {problem.diagram && (
             <img
-              src={generatedUrl(problem.diagram)}
+              src={assetUrl(problem.diagram)}
               alt={`Sketch of the ${plainText(problem.title)} setup`}
               title={t("setup")}
               className="mx-auto mt-3 h-36 w-full max-w-xs object-contain"
@@ -365,22 +485,24 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
           )}
         </div>
 
-        <div className={`space-y-5 bg-gray-50/60 p-5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto ${onPhone("formulation")}`}>
+        <div
+          className={`space-y-5 bg-gray-50/60 p-5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto ${onPhone("formulation")}`}
+        >
           <EquationPanel problem={problem} />
-
         </div>
       </main>
 
       {/* 3. Code (+ parameters panel), terminal and plot */}
       <section className="flex min-w-0 flex-col lg:min-h-0 lg:w-[54%] lg:shrink-0">
         <CodePanel
+          problem={problem.id}
           className={`lg:min-h-0 lg:flex-[1.7] ${onPhone("code", "lg:flex")}`}
           files={problem.files}
           edits={edits}
           editable={editable}
           onEdit={edit}
           onReset={() => setEdits({})}
-          toolbar={<ExportMenu problem={problem} edits={edits} params={params} />}
+          toolbar={inWorkspace ? undefined : <ExportMenu problem={problem} edits={edits} params={params} />}
           side={
             <ParamsPanel
               specs={problem.params}
@@ -398,7 +520,9 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
             />
           }
         />
-        <div className={`flex flex-col border-t border-gray-200 lg:min-h-0 lg:flex-1 lg:flex-row ${onPhone("results", "lg:flex")}`}>
+        <div
+          className={`flex flex-col border-t border-gray-200 lg:min-h-0 lg:flex-1 lg:flex-row ${onPhone("results", "lg:flex")}`}
+        >
           <TerminalPanel
             className="h-40 lg:h-auto lg:w-1/2 lg:shrink-0"
             problem={problem}
@@ -427,5 +551,8 @@ function wikiLink(problem: Problem, lang: Lang): { url: string; title: string } 
   if (!title) return null;
   const host = local ? site : "en";
   const variant = local && lang === "zh-Hant" ? "zh-tw" : local && lang === "zh-Hans" ? "zh-cn" : "wiki";
-  return { url: `https://${host}.wikipedia.org/${variant}/${encodeURIComponent(title.replace(/ /g, "_"))}`, title };
+  return {
+    url: `https://${host}.wikipedia.org/${variant}/${encodeURIComponent(title.replace(/ /g, "_"))}`,
+    title,
+  };
 }

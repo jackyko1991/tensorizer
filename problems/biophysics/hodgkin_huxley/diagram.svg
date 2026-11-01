@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Hodgkin-Huxley equivalent circuit of the membrane: a capacitor C in parallel with a sodium conductance g_Na, a potassium conductance g_K and a leak g_L, each in series with its reversal battery, driven by an injected current I">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrow-gate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <text x="128" y="14" font-size="11" fill="#6b7280" text-anchor="middle">outside</text>
+    <text x="128" y="156" font-size="11" fill="#6b7280" text-anchor="middle">inside the axon</text>
+    <g stroke="#374151" stroke-width="2" fill="none">
+      <!-- rails -->
+      <line x1="40" y1="24" x2="216" y2="24"/>
+      <line x1="40" y1="138" x2="216" y2="138"/>
+      <!-- capacitor -->
+      <path d="M58,24 V76 M46,76 H70 M46,84 H70 M58,84 V138"/>
+      <!-- three conductances, each a resistor in series with its battery -->
+      <path d="M104,24 V44 l-7,4 l14,6 l-14,6 l14,6 l-14,6 l7,4 V100 M96,100 H112 M100,106 H108 M104,106 V138"/>
+      <path d="M154,24 V44 l-7,4 l14,6 l-14,6 l14,6 l-14,6 l7,4 V100 M146,100 H162 M150,106 H158 M154,106 V138"/>
+      <path d="M204,24 V44 l-7,4 l14,6 l-14,6 l14,6 l-14,6 l7,4 V100 M196,100 H212 M200,106 H208 M204,106 V138"/>
+    </g>
+    <!-- voltage-gated: arrows through the Na and K resistors -->
+    <line x1="92" y1="82" x2="118" y2="46" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-gate)"/>
+    <line x1="142" y1="82" x2="168" y2="46" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-gate)"/>
+    <!-- junctions -->
+    <circle cx="104" cy="24" r="3" fill="#2563eb"/><circle cx="154" cy="24" r="3" fill="#2563eb"/><circle cx="204" cy="24" r="3" fill="#2563eb"/>
+    <!-- labels -->
+    <text x="30" y="85" font-style="italic">C</text>
+    <text x="78" y="124" font-style="italic">g<tspan font-size="10" dy="3" font-style="normal">Na</tspan></text>
+    <text x="128" y="124" font-style="italic">g<tspan font-size="10" dy="3" font-style="normal">K</tspan></text>
+    <text x="180" y="124" font-style="italic">g<tspan font-size="10" dy="3" font-style="normal">L</tspan></text>
+    <!-- injected current -->
+    <line x1="18" y1="132" x2="18" y2="32" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="18" y1="24" x2="40" y2="24" stroke="#dc2626" stroke-width="2"/>
+    <text x="24" y="112" font-style="italic" fill="#b91c1c">I</text>
+  </g>
+</svg>

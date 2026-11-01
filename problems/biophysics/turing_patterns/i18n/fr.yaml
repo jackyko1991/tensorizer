@@ -1,0 +1,19 @@
+source_hash: 302fe326211e
+title: 'Motifs de Turing : réaction–diffusion de Gray–Scott'
+summary: Deux substances chimiques qui réagissent et diffusent à des vitesses différentes peuvent transformer un mélange presque uniforme en taches, rayures et labyrinthes, l'idée de Turing en 1952 pour expliquer la formation des pelages d'animaux et d'autres motifs biologiques. Le modèle de Gray–Scott est résolu sur une grille périodique avec un stencil laplacien à 5 points pour quatre paires $(F, k)$ à la fois, dans un seul tenseur $(2, B, n, n)$, et une analyse de stabilité linéaire (la relation de dispersion $\lambda(q)$) montre où une véritable instabilité de Turing existe.
+notes: 'L''intuition de Turing était que la diffusion, qui d''ordinaire lisse tout, peut déstabiliser un état uniforme lorsqu''un autocatalyseur (ici $v$) diffuse plus lentement que la substance qui le limite ($u$) : une petite bosse de $v$ croît localement en consommant $u$, et l''appauvrissement en $u$ autour d''elle empêche les voisins de croître, une activation à courte portée et une inhibition à longue portée. La stabilité linéaire rend cela précis. Une onde $e^{i\mathbf q\cdot\mathbf x + \lambda t}$ sur un état uniforme croît selon les valeurs propres de $J - q^2\,\mathrm{diag}(D_u, D_v)$ ; si $\lambda(0) < 0$ mais $\lambda(q) > 0$ pour une bande de $q$, la longueur d''onde la plus rapide $2\pi/q_{\max}$ émerge d''un bruit minuscule. Avec $D_u = D_v$, chaque valeur propre est simplement décalée de $-Dq^2$, donc aucune instabilité de Turing n''est possible : réglez le rapport de diffusion à 1 et la région bleue de la carte disparaît. Dans Gray–Scott, seule la paire « Turing » ici est
+  de ce type, et elle part de son état uniforme plus 1 % de bruit ; la ligne pointillée vérifie que l''amplitude croît d''abord comme $e^{\lambda_{\max} t}$. Les célèbres taches, rayures et labyrinthes (Pearson 1993) se trouvent surtout là où le seul état uniforme est $u = 1$, $v = 0$, stable vis-à-vis de toute petite perturbation ; ces motifs nécessitent un germe fini (quelques carrés de $v$) et sont des structures non linéaires auto-réplicatives plutôt qu''une instabilité de Turing linéaire. Le stencil à 5 points voit une onde comme $q^2 \to (4/h^2)\sin^2(qh/2)$, ce qui est proche de $q^2$ pour des longueurs d''onde de nombreuses cellules. Parmi les exemples biologiques réels figurent l''espacement des doigts dans les membres, l''espacement des follicules pileux et les rayures de la peau des poissons, où l''activateur et l''inhibiteur sont des protéines de signalisation.'
+meanings:
+- taux d'alimentation et de destruction de la paire $b$ ; les 1 finaux les diffusent sur la grille
+- concentrations du substrat et de l'autocatalyseur dans la cellule $(i, j)$ pour chaque paire, empilées dans $y$ de forme $(2, B, n, n)$
+- quatre voisins moins quatre fois le centre, avec torch.roll pour les bords périodiques
+- l'étape autocatalytique $U + 2V \to 3V$, l'alimentation et l'élimination
+- Euler explicite avec $\Delta t = 1$, stable tant que $D\,\Delta t / h^2 < 1/4$
+- $(1, 0)$ toujours ; deux de plus lorsque $F \ge 4(F + k)^2$
+- cinétique linéarisée $\partial R_\alpha / \partial c_\beta$ en un état uniforme
+- plus grande valeur propre en $\operatorname{Re}$ de $M(q)$ pour un lot de $Q$ nombres d'onde
+- 'un état avec $\lambda(0) < 0$ mais $\lambda(q) > 0$ dans une bande : l''instabilité de Turing'
+labels:
+  grid: Taille de grille $n$
+  steps: Pas de temps
+  ratio: Rapport de diffusion $D_v / D_u$

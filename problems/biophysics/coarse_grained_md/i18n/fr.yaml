@@ -1,0 +1,22 @@
+source_hash: 125d78b166e3
+title: 'Repliement de protéine à gros grains : un modèle de Gō en dynamique de Langevin'
+summary: Une petite protéine en épingle à cheveux hélicoïdale représentée comme une chaîne de billes, une par acide aminé, maintenue par des liaisons et des angles de liaison et stabilisée par des contacts natifs attractifs (un modèle de Gō). Les forces sont le gradient par autograd de l'énergie totale, écrite avec des tenseurs de distances entre paires. La dynamique de Langevin simule tout un lot de températures et de répliques à la fois, la moitié partant de l'état replié et l'autre moitié de l'état déplié ; la fraction de contacts natifs $Q(t)$ montre le repliement et le dépliement, et sa moyenne en fonction de la température donne la courbe de fusion.
+notes: 'Un modèle de Gō est construit à partir de la réponse : chaque interaction présente dans la structure native est attractive et tout le reste est seulement répulsif, si bien que le paysage énergétique est un entonnoir lisse vers le repliement natif. C''est une caricature, mais utile : les petites protéines se replient réellement comme si leur paysage était minimalement frustré, et les modèles de Gō reproduisent les vitesses de repliement, les états de transition et la fusion coopérative de beaucoup d''entre elles. Les unités sont réduites : énergies en $\varepsilon$ (un contact), températures en $\varepsilon/k_B$, temps en $\tau$. La moitié des répliques part repliée et l''autre moitié sous forme de bâtonnet droit ; là où les courbes pleines et pointillées coïncident, les simulations sont équilibrées ; là où elles divergent (à basse $T$), les chaînes dépliées sont piégées cinétiquement dans des états mal repliés et nécessiteraient des simulations bien plus longues ou un échange de
+  répliques. La courbe de fusion est large parce que la protéine est minuscule ; les vraies protéines avec des centaines de contacts fondent de façon abrupte. Sans terme dièdre, l''énergie ne dépend que des distances, donc l''image miroir du repliement natif a exactement la même énergie et le même $Q$ ; les vrais modèles de Gō ajoutent des potentiels dièdres pour fixer la chiralité. Essayez de modifier la friction (elle change la cinétique mais pas la courbe d''équilibre) ou le nombre de températures.'
+meanings:
+- bille $i$ du système $s$ ; $S = B\cdot R$ températures × répliques
+- distance native de la paire $p = (i_p, j_p)$, $j - i \ge 3$ ; $n_p = 1$ si elle est plus proche que 8 Å dans le repliement natif
+- toutes les distances entre paires de chaque système dans un seul tenseur, $a$ sommé
+- liaisons + angles + puits natifs 12–10 (minimum $-\varepsilon$ en $r^0_p$) + répulsion des paires non natives
+- forces par différentiation automatique ; sommer sur $s$ est correct car les systèmes n'interagissent pas
+- chaque système a son propre thermostat
+- impulsion, dérive, friction + bruit $v \to e^{-\gamma dt}v + \sqrt{(1-e^{-2\gamma dt})k_BT}\,\xi$, dérive, impulsion
+- 'part des contacts natifs formés : 1 replié, environ 0,4 pour une chaîne dépliée (les contacts locaux continuent de se former)'
+- moyenne temporelle sur la seconde moitié de la simulation ; $T_m$ là où elle croise ½
+labels:
+  helix_length: Billes par hélice
+  T_min: Température la plus basse $T$
+  T_max: Température la plus haute $T$
+  temperatures: Températures $B$
+  friction: Friction $\gamma$
+  steps: Pas de temps

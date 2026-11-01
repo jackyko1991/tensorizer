@@ -1,0 +1,19 @@
+source_hash: 302fe326211e
+title: 'Patrones de Turing: reacción–difusión de Gray–Scott'
+summary: Dos sustancias químicas que reaccionan y se difunden a distintas velocidades pueden convertir una mezcla casi uniforme en manchas, rayas y laberintos, la idea de Turing de 1952 sobre cómo se forman los pelajes de los animales y otros patrones biológicos. El modelo de Gray–Scott se resuelve en una malla periódica con un esténcil laplaciano de 5 puntos para cuatro pares $(F, k)$ a la vez, en un solo tensor $(2, B, n, n)$, y un análisis de estabilidad lineal (la relación de dispersión $\lambda(q)$) muestra dónde existe una auténtica inestabilidad de Turing.
+notes: 'La intuición de Turing fue que la difusión, que normalmente lo suaviza todo, puede desestabilizar un estado uniforme cuando un autocatalizador (aquí $v$) se difunde más despacio que la sustancia que lo limita ($u$): un pequeño bulto de $v$ crece localmente consumiendo $u$, y el agotamiento de $u$ a su alrededor impide que los vecinos crezcan, una activación de corto alcance y una inhibición de largo alcance. La estabilidad lineal lo precisa. Una onda $e^{i\mathbf q\cdot\mathbf x + \lambda t}$ sobre un estado uniforme crece según los valores propios de $J - q^2\,\mathrm{diag}(D_u, D_v)$; si $\lambda(0) < 0$ pero $\lambda(q) > 0$ para una banda de $q$, la longitud de onda más rápida $2\pi/q_{\max}$ surge de un ruido diminuto. Con $D_u = D_v$, cada valor propio simplemente se desplaza en $-Dq^2$, así que no es posible ninguna inestabilidad de Turing: pon la razón de difusión en 1 y la región azul del mapa desaparece. En Gray–Scott, solo el par «Turing» de aquí es de ese tipo, y parte
+  de su estado uniforme más un 1 % de ruido; la línea discontinua comprueba que la amplitud crece al principio como $e^{\lambda_{\max} t}$. Las famosas manchas, rayas y laberintos (Pearson 1993) se encuentran sobre todo donde el único estado uniforme es $u = 1$, $v = 0$, que es estable frente a cualquier perturbación pequeña; esos patrones necesitan una semilla finita (unos cuantos cuadrados de $v$) y son estructuras no lineales autorreplicantes, no una inestabilidad de Turing lineal. El esténcil de 5 puntos ve una onda como $q^2 \to (4/h^2)\sin^2(qh/2)$, que es cercano a $q^2$ para longitudes de onda de muchas celdas. Entre los ejemplos biológicos reales están el espaciado de los dedos en las extremidades, el espaciado de los folículos pilosos y las rayas de la piel de los peces, donde el activador y el inhibidor son proteínas de señalización.'
+meanings:
+- tasa de alimentación y de eliminación del par $b$; los 1 finales las difunden sobre la malla
+- concentración de sustrato y de autocatalizador en la celda $(i, j)$ para cada par, apiladas en $y$ de forma $(2, B, n, n)$
+- cuatro vecinos menos cuatro veces el centro, con torch.roll para los bordes periódicos
+- el paso autocatalítico $U + 2V \to 3V$, la alimentación y la eliminación
+- Euler explícito con $\Delta t = 1$, estable mientras $D\,\Delta t / h^2 < 1/4$
+- $(1, 0)$ siempre; dos más cuando $F \ge 4(F + k)^2$
+- cinética linealizada $\partial R_\alpha / \partial c_\beta$ en un estado uniforme
+- mayor valor propio en $\operatorname{Re}$ de $M(q)$ para un lote de $Q$ números de onda
+- 'un estado con $\lambda(0) < 0$ pero $\lambda(q) > 0$ en una banda: la inestabilidad de Turing'
+labels:
+  grid: Tamaño de malla $n$
+  steps: Pasos de tiempo
+  ratio: Razón de difusión $D_v / D_u$

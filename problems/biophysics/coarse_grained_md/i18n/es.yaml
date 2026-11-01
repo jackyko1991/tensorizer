@@ -1,0 +1,22 @@
+source_hash: 125d78b166e3
+title: 'Plegamiento de proteínas de grano grueso: un modelo de Gō con dinámica de Langevin'
+summary: Una pequeña proteína en horquilla helicoidal representada como una cadena de cuentas, una por aminoácido, unidas por enlaces y ángulos de enlace y estabilizadas por contactos nativos atractivos (un modelo de Gō). Las fuerzas son el gradiente por autograd de la energía total, escrita con tensores de distancias entre pares. La dinámica de Langevin simula todo un lote de temperaturas y réplicas a la vez, la mitad empezando plegada y la otra mitad desplegada; la fracción de contactos nativos $Q(t)$ muestra el plegamiento y el desplegamiento, y su promedio frente a la temperatura es la curva de fusión.
+notes: 'Un modelo de Gō se construye a partir de la respuesta: cada interacción presente en la estructura nativa es atractiva y todo lo demás solo repele, de modo que el paisaje energético es un embudo suave hacia el plegamiento nativo. Es una caricatura, pero útil: las proteínas pequeñas realmente se pliegan como si su paisaje estuviera mínimamente frustrado, y los modelos de Gō reproducen las velocidades de plegamiento, los estados de transición y la fusión cooperativa de muchas de ellas. Las unidades son reducidas: energías en $\varepsilon$ (un contacto), temperaturas en $\varepsilon/k_B$, tiempo en $\tau$. La mitad de las réplicas empieza plegada y la otra mitad como una varilla recta; donde las curvas continuas y discontinuas coinciden, las simulaciones se han equilibrado; donde no (a $T$ baja), las cadenas desplegadas quedan atrapadas cinéticamente en estados mal plegados y necesitarían simulaciones mucho más largas o intercambio de réplicas. La curva de fusión es ancha porque la proteína
+  es diminuta; las proteínas reales con cientos de contactos funden de forma abrupta. Sin término diedro, la energía depende solo de las distancias, así que la imagen especular del plegamiento nativo tiene exactamente la misma energía y el mismo $Q$; los modelos de Gō reales añaden potenciales diedros para fijar la quiralidad. Prueba a cambiar la fricción (cambia la cinética pero no la curva de equilibrio) o el número de temperaturas.'
+meanings:
+- cuenta $i$ del sistema $s$; $S = B\cdot R$ temperaturas × réplicas
+- distancia nativa del par $p = (i_p, j_p)$, $j - i \ge 3$; $n_p = 1$ si está a menos de 8 Å en el plegamiento nativo
+- todas las distancias entre pares de cada sistema en un solo tensor, $a$ sumado
+- enlaces + ángulos + pozos nativos 12–10 (mínimo $-\varepsilon$ en $r^0_p$) + repulsión de los pares no nativos
+- fuerzas por diferenciación automática; sumar sobre $s$ está bien porque los sistemas no interactúan
+- cada sistema tiene su propio baño térmico
+- impulso, deriva, fricción + ruido $v \to e^{-\gamma dt}v + \sqrt{(1-e^{-2\gamma dt})k_BT}\,\xi$, deriva, impulso
+- 'fracción de contactos nativos formados: 1 plegada, alrededor de 0,4 para una cadena desplegada (los contactos locales siguen formándose)'
+- promedio temporal sobre la segunda mitad de la simulación; $T_m$ donde cruza ½
+labels:
+  helix_length: Cuentas por hélice
+  T_min: Temperatura más baja $T$
+  T_max: Temperatura más alta $T$
+  temperatures: Temperaturas $B$
+  friction: Fricción $\gamma$
+  steps: Pasos de tiempo

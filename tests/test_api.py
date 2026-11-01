@@ -91,3 +91,22 @@ def test_run_stream_reports_failures_as_events(monkeypatch, tmp_path):
     with client.stream("POST", "/api/run-stream/mechanics/projectile", json=body) as r:
         events = [json.loads(line) for line in r.iter_lines() if line]
     assert events[-1]["type"] == "error" and "before" in events[-1]["console"]
+
+
+def test_public_site_may_call_a_local_backend():
+    """Chrome's Private Network Access preflight from the github.io page to a backend on localhost."""
+    res = client.options(
+        "/api/health",
+        headers={
+            "Origin": "https://jackyko1991.github.io",
+            "Access-Control-Request-Method": "GET",
+            "Access-Control-Request-Private-Network": "true",
+        },
+    )
+    assert res.status_code == 200
+    assert res.headers.get("access-control-allow-private-network") == "true"
+    assert res.headers.get("access-control-allow-origin") in {"*", "https://jackyko1991.github.io"}
+
+
+def test_health_reports_the_queue():
+    assert set(client.get("/api/health").json()["queue"]) == {"running", "waiting", "concurrent"}

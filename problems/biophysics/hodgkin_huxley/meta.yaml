@@ -1,0 +1,40 @@
+title: 'Hodgkin–Huxley action potential'
+category: biophysics
+level: intermediate
+order: 1
+summary: >
+  The 1952 model of the squid giant axon: a membrane capacitor discharged by sodium and potassium channels whose
+  gates $m$, $h$, $n$ open and close with the voltage. Forty-one axons, each driven by a different current step,
+  are integrated together in one $(4, B)$ tensor to find the spike threshold and the firing rate against current.
+animated: true
+vector_form: 'C\,\frac{dV}{dt} = I - \bar g_{\mathrm{Na}}\,m^3 h\,(V - E_{\mathrm{Na}}) - \bar g_{\mathrm{K}}\,n^4\,(V - E_{\mathrm{K}}) - \bar g_L\,(V - E_L),\qquad \frac{dx}{dt} = \phi\,\big[\alpha_x(V)(1 - x) - \beta_x(V)\,x\big],\quad x \in \{m, h, n\}'
+index_form: '\Gamma_{kb} = \big(m_b^3 h_b,\ n_b^4,\ 1\big) \qquad C\,\dot V_b = I_b - \bar g_k\,\Gamma_{kb}\,(V_b - E_k) \qquad \dot x_{gb} = \phi\,\big[\alpha_g(V_b)(1 - x_{gb}) - \beta_g(V_b)\,x_{gb}\big]'
+translation:
+  - {symbol: 'I_b', code: 'I_ext', shape: '(B,)', meaning: 'stimulus current of axon $b$, a step switched on at 10 ms (µA/cm²)'}
+  - {symbol: 'V_b,\ x_{gb}', code: 'y[0], y[1:]', shape: '(4, B)', meaning: 'membrane potential and the gates $g = (m, h, n)$ of every axon'}
+  - {symbol: '\alpha_g(V_b),\ \beta_g(V_b)', code: 'rates(V)', shape: '(3, B)', meaning: 'opening and closing rates of each gate (1/ms), the classic squid-axon fits'}
+  - {symbol: '\Gamma_{kb}', code: 'open_fraction(gates)', shape: '(3, B)', meaning: 'open fraction of channel $k$ = Na, K, leak'}
+  - {symbol: '\bar g_k,\ E_k', code: 'g, E', shape: '(3,)', meaning: 'maximal conductances (120, 36, 0.3 mS/cm²) and reversal potentials (50, −77, −54.4 mV)'}
+  - {symbol: '\bar g_k\,\Gamma_{kb}\,(V_b - E_k)', code: "einsum('k,kb,kb->b', g, Gamma, V - E[:, None])", shape: '(B,)', meaning: 'total ionic current; repeated $k$ ⇒ summed over the channels'}
+  - {symbol: '\phi', code: '3 ** ((temp - 6.3) / 10)', shape: 'scalar', meaning: 'temperature factor ($Q_{10} = 3$): every gate speeds up 3× per 10 °C'}
+  - {symbol: 'f_b', code: 'firing_rate(spike_times(times, V))', shape: '(B,)', meaning: 'steady firing rate from the interspike intervals (Hz)'}
+notes: >
+  Hodgkin and Huxley (Nobel Prize 1963) measured the sodium and potassium currents of the squid giant axon with a
+  voltage clamp and fitted them with three gates. The sodium current switches on fast through $m^3$ and off more
+  slowly through the inactivation gate $h$; the potassium current opens late through $n^4$. A spike is the race
+  between them: a small depolarization opens $m$, the inflowing $\mathrm{Na}^+$ depolarizes further (positive
+  feedback) and $V$ shoots toward $E_{Na}$; then $h$ closes and $n$ opens, and $V$ falls back and even undershoots.
+  With a sustained current step the model shows three regimes. Below about 2.3 µA/cm² the membrane only charges up
+  passively. Between that and about 6.3 µA/cm² it fires a single spike and then settles, because inactivation and
+  the potassium current hold it at a new rest. Above that it fires repetitively, and the rate does not start from zero
+  but jumps to about 50 Hz: the squid axon is a type II (resonator) neuron whose resting state loses stability in a
+  Hopf bifurcation, unlike type I neurons that can fire arbitrarily slowly. The f–I curve then rises gently, to
+  about 68 Hz at 10 µA/cm². The rate functions have removable singularities, $0.1(V+40)/(1 - e^{-(V+40)/10})$ is
+  finite at $V = -40$ mV, so the code evaluates them through $x/(1 - e^{-x})$ with a safe limit. The original
+  experiments were done at 6.3 °C; warming the axon speeds up every gate by $\phi = 3^{(T - 6.3)/10}$, which makes
+  the spikes narrower and the firing faster, until above about 30 °C the axon fails to fire at all.
+  Simplifications: a space-clamped patch (no propagation along the axon) and deterministic channels.
+params:
+  I_max: {default: 20.0, min: 5, max: 100, step: 1, label: 'Largest stimulus $I_{max}$', unit: µA/cm²}
+  t_end: {default: 150.0, min: 100, max: 500, step: 10, label: Simulated time, unit: ms}
+  temp: {default: 6.3, min: 0, max: 25, step: 0.1, label: 'Temperature $T$', unit: °C}

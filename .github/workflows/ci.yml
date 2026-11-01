@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        topic: [mechanics, optics, waves, thermodynamics, em, fluids, quantum, astro, nuclear, medical, others]
+        topic: [mechanics, optics, waves, thermodynamics, em, fluids, quantum, astro, nuclear, medical, biophysics, others]
     env:
       TENSORIZER_CATEGORIES: ${{ matrix.topic }}
     steps:

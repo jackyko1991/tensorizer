@@ -1,0 +1,25 @@
+source_hash: 9231afd9bb4a
+title: Die Enigma mit Permutationstensoren knacken
+summary: 'Keine Physik, nur zum Spaß: Jeder Tastendruck einer Enigma I mit 3 Walzen ist ein Produkt aus acht $26\times26$-Permutationsmatrizen, wobei jede Walze für ihre Stellung mit einer zyklischen Verschiebung konjugiert wird. Verschlüssele eine englische Nachricht mit geheimer Walzenlage und Startstellung und knacke sie dann, indem du mit allen $26^3 = 17\,576$ Startstellungen gleichzeitig als ein Batch-Tensor entschlüsselst, für jede Walzenlage, und den Text behältst, dessen Buchstabenstatistik am meisten nach Englisch aussieht.'
+notes: 'Die Umkehrwalze $U$ ist eine symmetrische Permutation ohne Fixpunkte, daher ist $E = Q^{-1}UQ$ mit $Q = R_3R_2R_1S$ ebenfalls eine: $E^2 = I$ (dieselbe Einstellung entschlüsselt) und $E_{ii} = 0$ (kein Buchstabe wird je auf sich selbst verschlüsselt, eine Schwäche, die die Codeknacker ausnutzten). Vor jedem Tastendruck rückt die rechte Walze weiter; steht sie an ihrer Kerbe, nimmt sie auch die mittlere Walze mit, und steht die mittlere Walze an ihrer eigenen Kerbe, rückt sie zusammen mit der linken Walze weiter (die Doppelschritt-Anomalie). Testvektor: Walzen I-II-III, Umkehrwalze B, Ringe AAA, Start AAA macht aus AAAAA BDZGO. Geschichte: Marian Rejewski knackte die Enigma 1932 mit der Theorie der Permutationsgruppen, und die Bombe von Turing und Welchman (1940) durchsuchte Walzenlagen und Stellungen mithilfe von Cribs, erratenem Klartext wie Wetterberichten, nicht mit Statistik. Der rein statistische Angriff hier, der Entschlüsselungen nach dem Koinzidenzindex ordnet, ist der, den
+  James Gillogly 1995 veröffentlichte (Cryptologia) und der in späteren Stufen auch Ringstellungen und Steckerverbindungen ermittelte. Vereinfachungen: Die Ringstellungen sind AAA und dem Angreifer bekannt, und das Steckerbrett ist leer, sodass der Schlüsselraum nur $60 \times 26^3 \approx 10^6$ Einstellungen umfasst und die richtige deutlich heraussticht. Ein echtes Kriegs-Steckerbrett mit 10 Kabeln fügt etwa $1.5 \times 10^{14}$ Möglichkeiten hinzu, vertauscht 20 der 26 Buchstaben auf beiden Seiten der Walzen und verwischt die Buchstabenstatistik so stark, dass die richtige Walzeneinstellung die falschen kaum noch schlägt; Gilloglys Angriff braucht dann ein Hill Climbing über die Stecker und scheitert bei kurzen Nachrichten. Probier weniger Buchstaben (etwa 60 bis 100) oder den anderen Score, um zu sehen, wann die Statistik unzuverlässig wird; eine Suche nur über die Walzen I–III kann keinen Schlüssel finden, der IV oder V verwendet.'
+meanings:
+- ein Buchstabe ist ein One-Hot-Vektor $e_x$ oder einfach sein Index $x \in \{0, \dots, 25\}$ (A = 0)
+- 'historische Verdrahtung der Walzen I–V: $W_{ab} = 1$, wenn Kontakt $b$ mit Kontakt $a$ verdrahtet ist'
+- zyklische Verschiebung $x \to x + o$; $o_k$ = Fensterbuchstabe − Ringstellung von Walze $k$ beim Tastendruck $t$
+- 'wiederholte $a, b$ ⇒ summiert: die gedrehte Walze; als Indizes $x \to (w[(x + o) \bmod 26] - o) \bmod 26$'
+- 'ein Tastendruck: Steckerbrett $S$, Walzen von rechts $R^{(1)}$ nach links $R^{(3)}$, Umkehrwalze $U$ und zurück; $(R^{-1})_{ab} = R_{ba}$'
+- die Walze bei allen 26 Versätzen als Nachschlagetabelle, sodass $R\,e_x$ für Millionen Buchstaben gleichzeitig zu F[o, x] wird
+- der Geheimtext, entschlüsselt mit jeder Startstellung $b$ ($B = 26^3$); Entschlüsselung = Verschlüsselung, da $E^2 = I$
+- wie oft Buchstabe $k$ in Kandidat $b$ vorkommt
+- 'wiederholtes $k$ ⇒ summiert: Wahrscheinlichkeit, dass zwei Buchstaben übereinstimmen, etwa 0,066 für Englisch und $1/26 \approx 0.038$ für Zufallstext'
+- 'der alternative Score: mittlere englische Unigramm-Log-Likelihood $c_{bk}\log p_k / N$'
+labels:
+  message: Klartext
+  rotor_order: Geheime Walzenlage (links-mitte-rechts)
+  start_left: Geheime Startstellung der linken Walze
+  start_middle: Geheime Startstellung der mittleren Walze
+  start_right: Geheime Startstellung der rechten Walze
+  n_letters: Buchstaben $N$ für die Bewertung
+  score: 'Score: Koinzidenzindex oder Unigramm-Log-Likelihood'
+  search_rotors: Durchsuchte Walzen (60 oder 6 Lagen)

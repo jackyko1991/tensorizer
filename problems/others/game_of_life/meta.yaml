@@ -1,7 +1,7 @@
 title: "Conway's Game of Life as a convolution"
 category: others
 level: beginner
-order: 2
+order: 1
 summary: >
   Not physics, just for fun: a grid of live and dead cells where every cell looks at its eight neighbours. Counting
   them is a $3\times3$ convolution, written as one einsum over unfolded patches, and the birth/survival rule is a

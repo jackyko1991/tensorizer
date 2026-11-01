@@ -1,0 +1,22 @@
+source_hash: 92d9eb39c4ac
+title: 'AlphaFold im Kleinen: von einer Abstandskarte zur 3D-Faltung'
+summary: Eine Spielzeugversion der beiden Hälften eines Strukturvorhersagers, nicht AlphaFold selbst. Ein vorhergesagtes Distogramm (paarweise Cα-Abstände mit in Bins eingeteilter Unsicherheit) wird optional von einem Self-Attention-Block bereinigt, dann findet ein „Strukturmodul“ dazu passende 3D-Koordinaten $x_{ia}$, per Gradientenabstieg auf dem Stress ausgehend von einem Batch von Startpunkten und per klassischem MDS. Das Ergebnis wird mit der Kabsch-SVD auf das Ziel überlagert und per RMSD und einem TM-artigen Score bewertet.
+notes: 'Das ist AlphaFold nur im Geiste. Das echte AlphaFold 2 liest die Aminosäuresequenz und ein multiples Sequenzalignment (MSA) verwandter Proteine, dessen koevolvierende Positionen andeuten, welche Reste sich berühren; sein Evoformer (48 Attention-Blöcke über das MSA und über Restpaare, mit Dreiecks-Updates) baut das Paarbild auf; und sein Strukturmodul platziert pro Rest einen vollständigen Rückgratrahmen (Invariant Point Attention) sowie die Seitenketten, verfeinert in mehreren Recycling-Durchläufen. Es wurde mit ~170.000 Strukturen aus der Protein Data Bank trainiert und gibt eine Konfidenz (pLDDT) aus. Hier ist das „Netzwerk“ vorgetäuscht: Das Distogramm sind die wahren Abstände plus ein mit dem Abstand wachsendes Rauschen ($\sigma_{ij} \propto d_{ij}$), und von Paaren jenseits des letzten Bins weiß man nur, dass sie weit entfernt sind. Der Attention-Block wird einige hundert Schritte auf genau dieser Karte trainiert, er lernt sie also auswendig, statt vorherzusagen; er zeigt, wie
+  Attention über Restpaare aussieht, und weil seine Ausgabe jeden Rest auf einen Punkt in einem 6-dimensionalen Raum setzt, kann er unabhängiges Rauschen nicht fitten und glättet es daher. Das Strukturmodul ist ehrliche Distanzgeometrie. Abstände können eine Struktur nicht von ihrem Spiegelbild unterscheiden: MDS und Gradientenabstieg liefern eines der beiden Enantiomere, daher wird die richtige Händigkeit anhand des Vorzeichens der Cα-Pseudodiederwinkel gewählt (etwa $+50^\circ$ in einer rechtsgängigen α-Helix aus L-Aminosäuren), und beide RMSDs werden ausgegeben. Mehrere zufällige Starts werden gleichzeitig gefaltet, weil manche mit je einer Helix jeder Händigkeit stecken bleiben; der niedrigste Stress gewinnt. Erhöhe probeweise das Rauschen, bis die Faltung zerbricht, oder schalte die Verfeinerung aus.'
+meanings:
+- Cα-Position von Rest $i$, Achse $a$; das Ziel ist ein synthetisches Helix–Turn–Helix, gebaut aus Helixgeometrie
+- Wahrscheinlichkeit, dass die Reste $i, j$ im Abstandsbin $k$ liegen (64 Bins, 2–22 Å); steht für ein trainiertes Netzwerk
+- erwarteter Abstand, $k$ summiert; die inverse Varianz ergibt das Konfidenzgewicht $w_{ij}$
+- 'Attention-Logits: Rest $i$ fragt, Rest $j$ antwortet; $e$ summiert'
+- jeder Rest sammelt eine gewichtete Mischung der anderen, $j$ summiert; $b_{ij}$ ist ein Paar-Bias aus $\hat d_{ij}$
+- Modellabstände für einen Batch von $B$ Starts, $a$ summiert
+- gewichtete Abweichung, „ferne“ Paare nur auseinandergedrückt, Bindungen bei 3,8 Å gehalten; minimiert mit Adam über Autograd
+- doppelt zentrierte quadrierte Abstände = Gram-Matrix $x_{ia}x_{ja}$; ihre 3 obersten Eigenvektoren liefern eine Startschätzung
+- Kovarianz der beiden zentrierten Strukturen, $i$ summiert; ihre SVD liefert die beste eigentliche Drehung
+- Fehler nach der Überlagerung; TM-artiger Score $\frac1N\sum_i 1/(1+(d_i/d_0)^2)$, 1 = identisch
+labels:
+  helix_length: Reste pro Helix
+  noise: Distogramm-Rauschen (σ bei 10 Å)
+  refine: Attention-Verfeinerung
+  starts: Zufällige Starts $B$
+  steps: Gradientenschritte

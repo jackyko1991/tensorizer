@@ -1,0 +1,25 @@
+source_hash: 9231afd9bb4a
+title: Casser l'Enigma avec des tenseurs de permutation
+summary: 'Pas de la physique, juste pour le plaisir : chaque frappe d''une Enigma I à 3 rotors est un produit de huit matrices de permutation $26\times26$, chaque rotor étant conjugué par un décalage cyclique selon sa position. Chiffrez un message anglais avec un ordre de rotors et une position de départ secrets, puis cassez-le en déchiffrant avec les $26^3 = 17\,576$ positions de départ à la fois dans un seul tenseur par lot, pour chaque ordre de rotors, en gardant le texte dont les statistiques de lettres ressemblent le plus à l''anglais.'
+notes: 'Le réflecteur $U$ est une permutation symétrique sans point fixe, donc $E = Q^{-1}UQ$ avec $Q = R_3R_2R_1S$ en est une aussi : $E^2 = I$ (le même réglage déchiffre) et $E_{ii} = 0$ (aucune lettre n''est jamais chiffrée en elle-même, une faiblesse exploitée par les cryptanalystes). Avant chaque frappe, le rotor droit avance ; lorsqu''il est sur son encoche, il entraîne aussi le rotor central, et lorsque le rotor central est sur sa propre encoche, il avance en même temps que le rotor gauche (l''anomalie du double pas). Vecteur de test : rotors I-II-III, réflecteur B, anneaux AAA, départ AAA transforme AAAAA en BDZGO. Histoire : Marian Rejewski a cassé l''Enigma en 1932 grâce à la théorie des groupes de permutations, et la bombe de Turing et Welchman (1940) parcourait les ordres et positions de rotors à l''aide de cribs, des textes clairs devinés comme les bulletins météo, et non de statistiques. L''attaque purement statistique présentée ici, qui classe les déchiffrements par indice
+  de coïncidence, est celle que James Gillogly a publiée en 1995 (Cryptologia), qui retrouvait aussi les réglages d''anneaux et les fiches dans des étapes ultérieures. Simplifications : les réglages d''anneaux sont AAA et connus de l''attaquant, et le tableau de connexions est vide, donc l''espace des clés ne compte que $60 \times 26^3 \approx 10^6$ réglages et le bon se distingue nettement. Un vrai tableau de connexions de guerre à 10 câbles ajoute environ $1.5 \times 10^{14}$ choix, permute 20 des 26 lettres des deux côtés des rotors et brouille tellement les statistiques de lettres que le bon réglage des rotors bat à peine les mauvais ; l''attaque de Gillogly nécessite alors une recherche locale (hill climbing) sur les fiches, et elle échoue avec des messages courts. Essayez moins de lettres (environ 60 à 100) ou l''autre score pour voir quand les statistiques cessent d''être fiables ; ne chercher que parmi les rotors I–III ne peut pas trouver une clé qui utilise IV ou V.'
+meanings:
+- une lettre est un vecteur one-hot $e_x$ ou simplement son indice $x \in \{0, \dots, 25\}$ (A = 0)
+- 'câblage historique des rotors I–V : $W_{ab} = 1$ lorsque le contact $b$ est relié au contact $a$'
+- décalage cyclique $x \to x + o$ ; $o_k$ = lettre de la fenêtre − réglage d'anneau du rotor $k$ à la frappe $t$
+- '$a, b$ répétés ⇒ sommés : le rotor tourné ; en indices $x \to (w[(x + o) \bmod 26] - o) \bmod 26$'
+- 'une frappe : tableau de connexions $S$, rotors de droite $R^{(1)}$ à gauche $R^{(3)}$, réflecteur $U$ et retour ; $(R^{-1})_{ab} = R_{ba}$'
+- le rotor aux 26 décalages sous forme de table de correspondance, de sorte que $R\,e_x$ devient F[o, x] pour des millions de lettres à la fois
+- le texte chiffré déchiffré avec chaque position de départ $b$ ($B = 26^3$) ; déchiffrement = chiffrement puisque $E^2 = I$
+- fréquence de la lettre $k$ dans le candidat $b$
+- '$k$ répété ⇒ sommé : probabilité que deux lettres coïncident, environ 0,066 pour l''anglais et $1/26 \approx 0.038$ pour un texte aléatoire'
+- 'le score alternatif : log-vraisemblance moyenne des unigrammes anglais $c_{bk}\log p_k / N$'
+labels:
+  message: Texte clair
+  rotor_order: Ordre secret des rotors (gauche-centre-droite)
+  start_left: Position de départ secrète du rotor gauche
+  start_middle: Position de départ secrète du rotor central
+  start_right: Position de départ secrète du rotor droit
+  n_letters: Lettres $N$ utilisées pour le score
+  score: 'Score : indice de coïncidence ou log-vraisemblance des unigrammes'
+  search_rotors: Rotors explorés (60 ou 6 ordres)

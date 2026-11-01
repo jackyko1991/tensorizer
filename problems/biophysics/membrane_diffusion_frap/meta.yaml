@@ -1,0 +1,43 @@
+title: 'Membrane diffusion and FRAP'
+category: biophysics
+level: beginner
+order: 3
+hidden: true
+summary: >
+  A laser bleaches a disk of fluorescent molecules in a cell membrane and the spot slowly lights up again as
+  unbleached molecules diffuse in. The 2D diffusion equation is solved with the Laplacian as a 5-point tensor
+  stencil for three species at once, in one $(B, N, N)$ tensor, and $D$ is recovered from the recovery curve
+  with the Soumpasis formula.
+animated: true
+vector_form: '\frac{\partial c}{\partial t} = D\,\nabla^2 c,\qquad f(t) = e^{-2\tau_D/t}\left[I_0\!\left(\tfrac{2\tau_D}{t}\right) + I_1\!\left(\tfrac{2\tau_D}{t}\right)\right],\qquad \tau_D = \frac{w^2}{4D}'
+index_form: '(\nabla^2 c)_{bij} = \frac{1}{h^2}\,w_k\,c_{b,\,i+p_k,\,j+q_k} \qquad \dot c_{bij} = D_b\,(\nabla^2 c)_{bij} \qquad F_b = \frac{M_{ij}\,c_{bij}}{M_{ij}M_{ij}}'
+translation:
+  - {symbol: 'c_{bij}', code: 'c', shape: '(B, N, N)', meaning: 'fluorescence of species $b$ at grid point $(i, j)$, 1 = unbleached'}
+  - {symbol: 'w_k,\ (p_k, q_k)', code: 'WEIGHTS, OFFSETS', shape: '(5,)', meaning: 'the 5-point stencil: centre $-4$, four neighbours $+1$'}
+  - {symbol: 'c_{b,\,i+p_k,\,j+q_k}', code: 'neighbours(c)', shape: '(5, B, N, N)', meaning: 'shifted copies; the padded edge copies itself, so no dye leaves the patch'}
+  - {symbol: 'w_k\,c_{b,\,i+p_k,\,j+q_k}', code: "einsum('k,kbij->bij', weights, nb) / h**2", shape: '(B, N, N)', meaning: 'repeated $k$ ⇒ summed over the stencil'}
+  - {symbol: 'D_b', code: 'D', shape: '(B,)', meaning: 'diffusion coefficient: lipid, membrane protein, crowded protein (µm²/s)'}
+  - {symbol: 'M_{ij}', code: 'bleach_mask(x, w)', shape: '(N, N)', meaning: 'bleached disk of radius $w$, also the measuring region'}
+  - {symbol: 'M_{ij}\,c_{bij}', code: "einsum('bij,ij->b', c, mask)", shape: '(B,)', meaning: 'repeated $i, j$ ⇒ summed over the spot'}
+  - {symbol: 'f_b(t)', code: '(F - F[0]) / (F_inf - F[0])', shape: '(T, B)', meaning: 'normalized recovery: 0 right after the bleach, 1 when recovered'}
+  - {symbol: '\tau_D,\ t_{1/2}', code: 'w**2 / (4 * D), 0.224 * w**2 / D', shape: '(B,)', meaning: 'diffusion time and the Soumpasis half-recovery time $t_{1/2} \approx 0.90\,\tau_D$'}
+notes: >
+  FRAP (fluorescence recovery after photobleaching) is the standard way to measure how fast molecules move in a
+  living membrane. A short, strong laser pulse destroys the fluorescence inside a disk of radius $w$; the bleached
+  molecules are still there and still diffuse, they are just dark. Fresh molecules wander in from outside, and the
+  spot recovers on the time scale $\tau_D = w^2/4D$. Axelrod (1976) and Soumpasis (1983) solved this on an infinite
+  plane: for a uniformly bleached disk the mean intensity follows
+  $f(t) = e^{-2\tau_D/t}[I_0(2\tau_D/t) + I_1(2\tau_D/t)]$, which reaches one half at $t_{1/2} \approx 0.224\,w^2/D$.
+  So one number read off the curve gives $D = 0.224\,w^2/t_{1/2}$; a least-squares fit of the whole early curve does
+  the same more robustly. Doubling the spot radius makes the recovery four times slower but gives the same $D$: try it.
+  The code discretizes $\nabla^2$ as the 5-point stencil, a tensor of weights summed against shifted copies of the
+  field, and steps all three species together with RK4. Explicit steps must satisfy $\Delta t \lesssim h^2/4D$,
+  otherwise the stencil amplifies noise. Typical values are $D \approx 1\,\mu$m²/s for lipids,
+  $0.1$–$0.5\,\mu$m²/s for membrane proteins, and less when they are crowded or tethered to the cytoskeleton.
+  Simplifications: an instant, perfectly uniform bleach, a flat patch with no-flux edges (it holds only a finite
+  amount of dye, so the late recovery deviates slightly from the infinite-plane formula), and every molecule mobile;
+  real experiments often see an immobile fraction that never recovers.
+params:
+  w: {default: 1.0, min: 0.5, max: 3.0, step: 0.25, label: 'Bleach radius $w$', unit: µm}
+  depth: {default: 0.2, min: 0.0, max: 0.8, step: 0.05, label: Fluorescence left in the spot after the bleach}
+  t_end: {default: 20.0, min: 5, max: 60, step: 5, label: Recording time, unit: s}

@@ -1,0 +1,49 @@
+title: Breaking the Enigma with permutation tensors
+category: others
+level: intermediate
+order: 4
+summary: >
+  Not physics, just for fun: every key press of a 3-rotor Enigma I is a product of eight $26\times26$ permutation
+  matrices, with each rotor conjugated by a cyclic shift for its position. Encrypt an English message with a secret
+  rotor order and start position, then break it by decrypting with all $26^3 = 17\,576$ start positions at once as
+  one batch tensor, for every rotor order, and keeping the text whose letter statistics look most like English.
+animated: true
+vector_form: 'E = S^{-1} R_1^{-1} R_2^{-1} R_3^{-1}\, U\, R_3 R_2 R_1\, S,\qquad R_k = \rho^{-o_k}\, W_k\, \rho^{o_k},\qquad E^2 = I,\quad E_{ii} = 0'
+index_form: 'R^{(k)}_{ij} = \rho^{-o_k}_{ia} W^{(k)}_{ab}\, \rho^{o_k}_{bj} \qquad E_{ij} = S_{ai} R^{(1)}_{ba} R^{(2)}_{cb} R^{(3)}_{dc}\, U_{de}\, R^{(3)}_{ef} R^{(2)}_{fg} R^{(1)}_{gh} S_{hj} \qquad c_{bk} = \textstyle\sum_t [y_{bt} = k] \qquad \mathrm{IoC}_b = \frac{c_{bk}(c_{bk} - 1)}{N(N - 1)}'
+translation:
+  - {symbol: 'e_x', code: 'to_index(text)', shape: '(T,)', meaning: 'a letter is a one-hot vector $e_x$ or just its index $x \in \{0, \dots, 25\}$ (A = 0)'}
+  - {symbol: 'W_{ab}', code: 'matrix(perm(ROTORS[name][0]))', shape: '(26, 26)', meaning: 'historical wiring of rotor I–V: $W_{ab} = 1$ when contact $b$ is wired to contact $a$'}
+  - {symbol: '\rho^{o}_{ij}', code: 'shift(o)', shape: '(T, 26, 26)', meaning: 'cyclic shift $x \to x + o$; $o_k$ = window letter − ring setting of rotor $k$ at key press $t$'}
+  - {symbol: 'R^{(k)}_{ij}', code: "einsum('tia,ab,tbj->tij', ...)", shape: '(T, 26, 26)', meaning: 'repeated $a, b$ ⇒ summed: the turned rotor; as indices $x \to (w[(x + o) \bmod 26] - o) \bmod 26$'}
+  - {symbol: 'E_{ij}', code: "einsum('ai,tba,tcb,tdc,de,tef,tfg,tgh,hj->tij', ...)", shape: '(T, 26, 26)', meaning: 'one key press: plugboard $S$, rotors right $R^{(1)}$ to left $R^{(3)}$, reflector $U$ and back; $(R^{-1})_{ab} = R_{ba}$'}
+  - {symbol: 'F_{ox}', code: 'rotor_table(w)', shape: '(26, 26)', meaning: 'the rotor at all 26 offsets as a look-up table, so $R\,e_x$ becomes F[o, x] for millions of letters at once'}
+  - {symbol: 'y_{bt}', code: 'encipher(text, offsets, m, s)', shape: '(B, T)', meaning: 'the ciphertext decrypted with every start position $b$ ($B = 26^3$); decryption = encryption since $E^2 = I$'}
+  - {symbol: 'c_{bk}', code: 'counts.scatter_add_(1, y, ones)', shape: '(B, 26)', meaning: 'how often letter $k$ occurs in candidate $b$'}
+  - {symbol: '\mathrm{IoC}_b', code: "einsum('bk,bk->b', c, c - 1) / (N*(N-1))", shape: '(B,)', meaning: 'repeated $k$ ⇒ summed: chance that two letters agree, about 0.066 for English and $1/26 \approx 0.038$ for random text'}
+  - {symbol: 'L_b', code: "einsum('bk,k->b', c, log_p) / N", shape: '(B,)', meaning: 'the alternative score: mean English unigram log-likelihood $c_{bk}\log p_k / N$'}
+notes: >
+  The reflector $U$ is a symmetric permutation without fixed points, so $E = Q^{-1}UQ$ with $Q = R_3R_2R_1S$ is one
+  too: $E^2 = I$ (the same setting decrypts) and $E_{ii} = 0$ (no letter is ever encrypted to itself, a weakness the
+  codebreakers used). Before each key press the right rotor steps; when it sits at its notch it also kicks the middle
+  rotor, and when the middle rotor sits at its own notch it steps together with the left rotor (the double-step
+  anomaly). Test vector: rotors I-II-III, reflector B, rings AAA, start AAA turns AAAAA into BDZGO.
+  History: Marian Rejewski broke the Enigma in 1932 with permutation group theory, and Turing and Welchman's bombe
+  (1940) searched rotor orders and positions using cribs, guessed plaintext such as weather reports, not
+  statistics. The purely statistical attack here, ranking decryptions by the index of coincidence, is the one James
+  Gillogly published in 1995 (Cryptologia), which also recovered ring settings and plugs in later stages.
+  Simplifications: the ring settings are AAA and known to the attacker, and the plugboard is empty, so the key space
+  is only $60 \times 26^3 \approx 10^6$ settings and the correct one stands out clearly. A real wartime plugboard with
+  10 cables adds about $1.5 \times 10^{14}$ choices, swaps 20 of the 26 letters on both sides of the rotors, and
+  scrambles the letter statistics so much that the correct rotor setting barely beats the wrong ones; Gillogly's
+  attack then needs a hill climb over the plugs, and with short messages it fails. Try fewer letters (about 60 to
+  100) or the other score to see when the statistics stop being reliable; searching only rotors I–III cannot find
+  a key that uses IV or V.
+params:
+  message: {default: weather, type: choice, options: [weather, lighthouse, permutations], label: Plaintext}
+  rotor_order: {default: IV-II-V, type: choice, options: [I-II-III, III-I-II, II-V-III, IV-II-V, V-III-I, IV-V-I], label: 'Secret rotor order (left-middle-right)'}
+  start_left: {default: T, type: choice, options: [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z], label: Secret start of the left rotor}
+  start_middle: {default: D, type: choice, options: [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z], label: Secret start of the middle rotor}
+  start_right: {default: X, type: choice, options: [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z], label: Secret start of the right rotor}
+  n_letters: {default: 200, min: 30, max: 380, step: 10, type: int, label: 'Letters $N$ used for scoring'}
+  score: {default: ioc, type: choice, options: [ioc, unigram], label: 'Score: index of coincidence or unigram log-likelihood'}
+  search_rotors: {default: I-V, type: choice, options: [I-V, I-III], label: 'Rotors searched (60 or 6 orders)'}

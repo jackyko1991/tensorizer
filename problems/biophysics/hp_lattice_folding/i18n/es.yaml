@@ -1,0 +1,20 @@
+source_hash: a25b37200a6c
+title: Plegamiento de proteínas HP en red
+summary: 'El modelo de proteína más sencillo que todavía se pliega: una cadena de residuos hidrofóbicos (H) y polares (P) en una red cuadrada, donde cada contacto H–H entre residuos que no son vecinos en la cadena reduce la energía en uno. Muchas réplicas de una secuencia de referencia de 20 residuos se pliegan a la vez mediante Monte Carlo de Metropolis con movimientos pull y de cigüeñal mientras se baja la temperatura, y el mapa de contactos sale de un único tensor de distancias entre pares de forma $(R, N, N)$.'
+notes: 'Las proteínas se pliegan en gran parte porque las cadenas laterales hidrofóbicas se esconden del agua en un núcleo compacto. El modelo HP (Dill, 1985) conserva solo eso: un contacto H–H vale $-\varepsilon$, nada más cuenta, y la cadena es un camino autoevitante en la red. Aun así, encontrar la energía mínima es NP-difícil, y el número de conformaciones crece como $2.64^N$. La secuencia por defecto HPHPPHHPHPPHPHHPPHPH es la referencia clásica de 20 residuos de Unger y Moult (1993), con estado fundamental $E = -9$; las demás tienen mínimos conocidos de $-9$, $-8$ y $-14$. En cada paso, cada réplica elige un residuo e intenta un movimiento pull (Lesh, Mitzenmacher y Whitesides, 2003: el residuo salta a una esquina libre y arrastra a sus vecinos a lo largo de la cadena hasta que la cadena vuelve a estar conectada; en los extremos esto gira el último residuo, y en el caso más simple es un giro de esquina) o un movimiento de cigüeñal (un par en forma de U se voltea). Una propuesta que
+  rompe un enlace o coloca dos residuos en el mismo sitio se rechaza; si no, decide la regla de Metropolis. La temperatura alta permite a las cadenas explorar, y el enfriamiento lento las deja asentarse en plegamientos compactos con un núcleo H y los residuos P en la superficie. La energía $E$ se actualiza con el $\Delta E$ de cada movimiento aceptado y se comprueba frente a un recuento completo en los tests. Los movimientos pull no son propuestas exactamente simétricas, así que la simulación es un optimizador más que un muestreador térmico exacto. Prueba la secuencia de 36 residuos: necesita más pasos o réplicas, y la fracción de réplicas que alcanzan el estado fundamental muestra lo accidentado que es su paisaje energético.'
+meanings:
+- coordenada de red $k$ del residuo $i$ en la réplica $r$; cada réplica empieza como una varilla recta
+- 1 para H, 0 para P
+- '$k$ repetido ⇒ sumado: una matriz de Gram por lotes; con las normas al cuadrado da $d_{rij} = \lVert \mathbf r_i - \mathbf r_j\rVert^2$'
+- vecinos en la red que no son vecinos en la cadena
+- '$i$ y $j$ repetidos ⇒ sumados: contactos H–H, cada uno contado dos veces, de ahí el $\tfrac12$'
+- enlaces de longitud 1 y nunca dos residuos en el mismo sitio; si no, el movimiento se rechaza
+- 'programa de recocido: $T$ baja geométricamente, paso a paso'
+- 'regla de Metropolis: cuesta abajo siempre, cuesta arriba con probabilidad $e^{-\Delta E/T}$'
+labels:
+  sequence: Secuencia
+  replicas: Réplicas $R$
+  steps: Pasos de Monte Carlo
+  T_start: Temperatura inicial $T_0$ (en unidades de $\varepsilon/k_B$)
+  T_end: Temperatura final $T_1$

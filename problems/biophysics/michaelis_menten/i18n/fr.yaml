@@ -1,0 +1,19 @@
+source_hash: 3955d9d3b7d9
+title: Cinétique enzymatique de Michaelis–Menten
+summary: 'Une enzyme fixe son substrat, forme un complexe et libère le produit : $E + S \rightleftharpoons ES \to E + P$. Les équations complètes d''action de masse sont résolues pour trois enzymes et toute une titration de substrat à la fois, dans un seul tenseur $(4, B, C)$, et comparées à la loi de vitesse en état quasi stationnaire $v = V_{max} S/(K_m + S)$ et à un ajustement de Lineweaver–Burk.'
+notes: 'L''action de masse seule donne quatre EDO couplées. Michaelis et Menten (1913), sous la forme de Briggs et Haldane (1925), ont remarqué que le complexe $ES$ se forme en une fraction de seconde puis ne varie que lentement, de sorte qu''on peut poser $d[ES]/dt \approx 0$. Avec $E + ES = E_0$, cela donne $[ES] = E_0 S/(K_m + S)$ et la loi de vitesse $v = k_2 [ES] = V_{max} S/(K_m + S)$ avec $K_m = (k_{-1} + k_2)/k_1$ et $V_{max} = k_2 E_0$. Les points du panneau central montrent l''état actuel $(S, k_2 [ES])$ de chaque tube à essai : après la phase initiale rapide, ils se placent sur la courbe pointillée et la descendent à mesure que le substrat est consommé, c''est l''approximation de l''état quasi stationnaire (QSSA) à l''œuvre. Le modèle réduit $dS/dt = -V_{max} S/(K_m + S)$ (orange pointillé) a même une solution exacte, $S_0 - S + K_m \ln(S_0/S) = V_{max} t$. L''approximation est valable lorsque $E_0 \ll S_0 + K_m$ ; augmentez $E_0$ à 2 µM et observez la cinétique complète prendre
+  du retard sur la QSSA, car le substrat immobilisé dans le complexe n''est plus négligeable. Les biochimistes mesurent la vitesse initiale $v_0$ à plusieurs $S_0$ et ajustent $1/v_0 = (K_m/V_{max})(1/S_0) + 1/V_{max}$, une droite (Lineweaver–Burk, 1934) : l''intersection avec l''axe des $y$ est $1/V_{max}$ et l''intersection avec l''axe des $x$ est $-1/K_m$. La représentation en double inverse amplifie les erreurs aux faibles $S_0$, donc avec des données bruitées un ajustement non linéaire direct est préférable. Les enzymes A, B et C font un compromis entre affinité et vitesse : A a un petit $K_m$, C le plus grand $k_{cat}$ ; l''efficacité catalytique $k_{cat}/K_m$ décide laquelle l''emporte à faible concentration de substrat. Simplifications : un seul site actif, libération irréversible du produit, pas d''inhibition et un volume homogène.'
+meanings:
+- constantes de vitesse d'association, de dissociation et catalytique de l'enzyme $b$ ($k_2 = k_{cat}$)
+- concentration initiale de substrat $c$ de la titration (µM)
+- enzyme libre, substrat, complexe $X = ES$ et produit dans chaque tube à essai
+- 'aucun indice sommé : $k_b$ est diffusé (broadcast) sur chaque concentration $c$'
+- second membre pour RK4 ; $E + X = E_0$ et $S + X + P = S_0$ restent constants
+- constante de Michaelis (concentration de substrat donnant la demi-vitesse) et vitesse maximale
+- vitesse initiale (stationnaire), mesurée après la courte phase initiale
+- équations normales de Lineweaver–Burk, $A_{ck} = [1/S_c,\ 1]$ ; $c$ répété ⇒ sommé
+- pente $K_m/V_{max}$ et ordonnée à l'origine $1/V_{max}$ pour chaque enzyme
+labels:
+  E0: Enzyme $E_0$
+  t_end: Temps simulé
+  enzyme: Enzyme pour les courbes d'avancement

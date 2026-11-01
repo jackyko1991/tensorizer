@@ -1,0 +1,41 @@
+title: 'Turing patterns: Gray–Scott reaction–diffusion'
+category: biophysics
+level: advanced
+order: 3
+summary: >
+  Two chemicals that react and diffuse at different speeds can turn a nearly uniform mixture into spots, stripes and
+  mazes, Turing's 1952 idea for how animal coats and other biological patterns form. The Gray–Scott model is solved on
+  a periodic grid with a 5-point Laplacian stencil for four $(F, k)$ pairs at once, in one $(2, B, n, n)$ tensor, and a
+  linear-stability analysis (the dispersion relation $\lambda(q)$) shows where a genuine Turing instability exists.
+animated: true
+vector_form: '\partial_t u = D_u\nabla^2 u - u v^2 + F(1 - u),\qquad \partial_t v = D_v\nabla^2 v + u v^2 - (F + k)\,v,\qquad \lambda(q):\ \det\!\big(J - q^2\,\mathrm{diag}(D_u, D_v) - \lambda\,\mathbb 1\big) = 0'
+index_form: '(\nabla^2 u)_{bij} = \frac{u_{b,i+1,j} + u_{b,i-1,j} + u_{b,i,j+1} + u_{b,i,j-1} - 4u_{bij}}{h^2} \qquad u_{bij} \leftarrow u_{bij} + \Delta t\,\big[D_u(\nabla^2 u)_{bij} - u_{bij}v_{bij}^2 + F_b(1 - u_{bij})\big] \qquad M_{\alpha\beta}(q) = J_{\alpha\beta} - q^2 D_\alpha\,\delta_{\alpha\beta}'
+translation:
+  - {symbol: 'F_b,\ k_b', code: 'parameters(device)', shape: '(B, 1, 1)', meaning: 'feed and kill rate of pair $b$; the trailing 1s broadcast them over the grid'}
+  - {symbol: 'u_{bij},\ v_{bij}', code: 'y[0], y[1]', shape: '(B, n, n)', meaning: 'substrate and autocatalyst concentration in cell $(i, j)$ for every pair, stacked into $y$ of shape $(2, B, n, n)$'}
+  - {symbol: '(\nabla^2 u)_{bij}', code: 'laplacian(u)', shape: '(B, n, n)', meaning: 'four neighbours minus four times the centre, with torch.roll for the periodic edges'}
+  - {symbol: 'u v^2,\ F(1-u),\ (F+k)v', code: 'reaction(u, v, F, k)', shape: '(B, n, n)', meaning: 'the autocatalytic step $U + 2V \to 3V$, the feed and the removal'}
+  - {symbol: 'u \leftarrow u + \Delta t\,\dot u', code: 'y + rhs(y, F, k, Du, Dv)', shape: '(2, B, n, n)', meaning: 'explicit Euler with $\Delta t = 1$, stable while $D\,\Delta t / h^2 < 1/4$'}
+  - {symbol: '(u^*, v^*)', code: 'uniform_states(F, k)', shape: 'list', meaning: '$(1, 0)$ always; two more where $F \ge 4(F + k)^2$'}
+  - {symbol: 'J_{\alpha\beta}', code: 'jacobian(u, v, F, k)', shape: '(2, 2)', meaning: 'linearised kinetics $\partial R_\alpha / \partial c_\beta$ at a uniform state'}
+  - {symbol: '\lambda(q)', code: 'growth_rate(J, Du, Dv, q)', shape: '(Q,)', meaning: 'largest $\operatorname{Re}$ eigenvalue of $M(q)$ for a batch of $Q$ wavenumbers'}
+  - {symbol: '\lambda_{\text{Turing}}', code: 'turing_state(F, k, Du, Dv)', shape: '(2,)', meaning: 'a state with $\lambda(0) < 0$ but $\lambda(q) > 0$ in a band: the Turing instability'}
+notes: >
+  Turing's insight was that diffusion, which normally smooths everything out, can destabilise a uniform state when an
+  autocatalyst (here $v$) spreads more slowly than the substance that limits it ($u$): a small bump of $v$ grows
+  locally by eating $u$, and the depletion of $u$ around it stops neighbours from growing, a short-range activation and
+  long-range inhibition. Linear stability makes this precise. A wave $e^{i\mathbf q\cdot\mathbf x + \lambda t}$ on a uniform
+  state grows at the eigenvalues of $J - q^2\,\mathrm{diag}(D_u, D_v)$; if $\lambda(0) < 0$ but $\lambda(q) > 0$ for a band of
+  $q$, the fastest wavelength $2\pi/q_{\max}$ appears out of tiny noise. With $D_u = D_v$ every eigenvalue just shifts by
+  $-Dq^2$, so no Turing instability is possible: set the diffusion ratio to 1 and the blue region on the map disappears.
+  In Gray–Scott only the "Turing" pair here is of that kind, and it starts from its uniform state plus 1 % noise; the
+  dashed line checks that the amplitude first grows as $e^{\lambda_{\max} t}$. The famous spots, stripes and mazes
+  (Pearson 1993) mostly live where the only uniform state is $u = 1$, $v = 0$, which is stable to every small
+  perturbation; those patterns need a finite seed (a few squares of $v$) and are nonlinear, self-replicating
+  structures rather than a linear Turing instability. The 5-point stencil sees a wave as $q^2 \to (4/h^2)\sin^2(qh/2)$,
+  which is close to $q^2$ for wavelengths of many cells. Real biological examples include digit spacing in limbs,
+  hair-follicle spacing and fish skin stripes, where the activator and inhibitor are signalling proteins.
+params:
+  grid: {default: 128, min: 48, max: 256, step: 16, type: int, label: 'Grid size $n$'}
+  steps: {default: 10000, min: 1000, max: 30000, step: 1000, type: int, label: Time steps}
+  ratio: {default: 0.5, min: 0.2, max: 1.0, step: 0.05, label: 'Diffusion ratio $D_v / D_u$'}

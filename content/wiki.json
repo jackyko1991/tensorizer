@@ -120,6 +120,87 @@
   },
   "wikidata": "Q788017"
  },
+ "biophysics/coarse_grained_md": {
+  "titles": {
+   "en": "Coarse-grained modeling"
+  },
+  "wikidata": "Q25305554"
+ },
+ "biophysics/hodgkin_huxley": {
+  "titles": {
+   "en": "Hodgkin–Huxley model",
+   "fr": "Modèle de Hodgkin–Huxley",
+   "de": "Hodgkin-Huxley-Modell",
+   "es": "Modelo de Hodgkin y Huxley",
+   "ru": "Модель Ходжкина — Хаксли"
+  },
+  "wikidata": "Q995215"
+ },
+ "biophysics/hp_lattice_folding": {
+  "titles": {
+   "en": "Lattice protein"
+  },
+  "wikidata": "Q6497130"
+ },
+ "biophysics/michaelis_menten": {
+  "titles": {
+   "en": "Michaelis–Menten kinetics",
+   "zh": "米-门二氏动力学",
+   "fr": "Équation de Michaelis-Menten",
+   "de": "Michaelis-Menten-Theorie",
+   "es": "Cinética de Michaelis-Menten",
+   "ja": "ミカエリス・メンテン式",
+   "ru": "Уравнение Михаэлиса — Ментен",
+   "ko": "미카엘리스-멘텐 반응속도론"
+  },
+  "wikidata": "Q613955"
+ },
+ "biophysics/mini_alphafold": {
+  "titles": {
+   "en": "AlphaFold",
+   "zh": "AlphaFold",
+   "fr": "AlphaFold",
+   "de": "AlphaFold",
+   "es": "AlphaFold",
+   "ja": "AlphaFold",
+   "ru": "AlphaFold",
+   "ko": "알파폴드"
+  },
+  "wikidata": "Q60827595"
+ },
+ "biophysics/receptor_binding": {
+  "titles": {
+   "de": "Dissoziationskonstante",
+   "en": "Dissociation constant",
+   "es": "Constante de disociación",
+   "fr": "Constante de dissociation",
+   "hi": "वियोजन स्थिरांक",
+   "ja": "解離定数",
+   "ko": "이온화 상수",
+   "ru": "Константа диссоциации",
+   "zh": "解离常数"
+  },
+  "wikidata": "Q898254"
+ },
+ "biophysics/turing_patterns": {
+  "titles": {
+   "en": "Turing pattern",
+   "de": "Turing-Mechanismus",
+   "es": "Patrón de Turing",
+   "ja": "チューリング・パターン"
+  },
+  "wikidata": "Q56273850"
+ },
+ "biophysics/worm_like_chain": {
+  "titles": {
+   "en": "Worm-like chain",
+   "zh": "蠕蟲鏈模型",
+   "fr": "Modèle du ver élastique",
+   "de": "Wurmartige Kette",
+   "es": "Modelo de la varilla elástica"
+  },
+  "wikidata": "Q503490"
+ },
  "em/biot_savart": {
   "titles": {
    "de": "Biot-Savart-Gesetz",
@@ -863,6 +944,20 @@
   },
   "wikidata": "Q22329209"
  },
+ "others/enigma_solver": {
+  "titles": {
+   "en": "Enigma machine",
+   "zh": "恩尼格玛密码机",
+   "fr": "Enigma (machine)",
+   "de": "Enigma (Maschine)",
+   "es": "Enigma (máquina)",
+   "ja": "エニグマ (暗号機)",
+   "ru": "Энигма",
+   "ko": "에니그마 기계",
+   "hi": "एनिग्मा (मशीन)"
+  },
+  "wikidata": "Q150758"
+ },
  "others/game_of_life": {
   "titles": {
    "de": "Conways Spiel des Lebens",
@@ -945,20 +1040,6 @@
    "zh": "物理信息神经网络"
   },
   "wikidata": "Q107285102"
- },
- "others/receptor_binding": {
-  "titles": {
-   "de": "Dissoziationskonstante",
-   "en": "Dissociation constant",
-   "es": "Constante de disociación",
-   "fr": "Constante de dissociation",
-   "hi": "वियोजन स्थिरांक",
-   "ja": "解離定数",
-   "ko": "이온화 상수",
-   "ru": "Константа диссоциации",
-   "zh": "解离常数"
-  },
-  "wikidata": "Q898254"
  },
  "quantum/double_well": {
   "titles": {

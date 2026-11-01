@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Michaelis-Menten scheme: enzyme E binds substrate S with rate k1 and releases it with rate k-1; the complex ES turns S into product P with rate k2 and frees the enzyme, which is recycled">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrow-guide" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9ca3af"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- E + S -->
+    <path d="M43.7,44 A15,15 0 1,0 43.7,56 A6,6 0 0,1 43.7,44 Z" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="24" y="82" font-style="italic" fill="#1e40af">E</text>
+    <text x="55" y="55" text-anchor="middle" fill="#374151">+</text>
+    <circle cx="72" cy="50" r="6" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+    <text x="67" y="36" font-style="italic" fill="#b45309">S</text>
+    <!-- binding / unbinding -->
+    <line x1="88" y1="44" x2="130" y2="44" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="130" y1="56" x2="88" y2="56" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="100" y="37" font-style="italic">k<tspan font-size="10" dy="3" font-style="normal">1</tspan></text>
+    <text x="98" y="74" font-style="italic">k<tspan font-size="10" dy="3" font-style="normal">−1</tspan></text>
+    <!-- complex ES -->
+    <path d="M181.7,44 A15,15 0 1,0 181.7,56 A6,6 0 0,1 181.7,44 Z" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="182" cy="50" r="6" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+    <!-- catalysis -->
+    <line x1="172" y1="72" x2="172" y2="98" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="180" y="90" font-style="italic">k<tspan font-size="10" dy="3" font-style="normal">2</tspan></text>
+    <!-- E + P -->
+    <path d="M165.7,114 A15,15 0 1,0 165.7,126 A6,6 0 0,1 165.7,114 Z" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="186" y="125" text-anchor="middle" fill="#374151">+</text>
+    <rect x="200" y="114" width="12" height="12" rx="2" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5" transform="rotate(45 206 120)"/>
+    <text x="218" y="110" font-style="italic" fill="#1e40af">P</text>
+    <!-- the enzyme is recycled -->
+    <path d="M134,122 Q40,132 30,90" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-guide)"/>
+  </g>
+</svg>

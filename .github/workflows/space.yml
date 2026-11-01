@@ -1,0 +1,35 @@
+name: Deploy backend to Hugging Face Space
+
+# Pushes the repository to the Space named in the repository variable HF_SPACE (e.g. jackyko1991/tensorizer-api),
+# with space/README.md as the Space's README (Hugging Face reads its settings from that file's header).
+# Needs the secret HF_TOKEN (a Hugging Face token with write access). Skipped until both are set.
+on:
+  push:
+    branches: [main]
+    paths: [problems/**, backend/**, Dockerfile, pixi.toml, pixi.lock, space/**, .github/workflows/space.yml]
+  workflow_dispatch:
+
+concurrency:
+  group: space
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: vars.HF_SPACE != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Push a snapshot to the Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ vars.HF_SPACE }}
+        run: |
+          rsync -a --exclude .git --exclude notebooks ./ /tmp/space/
+          cp space/README.md /tmp/space/README.md
+          cd /tmp/space
+          git init -q -b main
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Deploy ${GITHUB_SHA::7} from GitHub"
+          git push --force "https://user:${HF_TOKEN}@huggingface.co/spaces/${HF_SPACE}" main

@@ -1,0 +1,20 @@
+source_hash: a25b37200a6c
+title: Proteinfaltung im HP-Gittermodell
+summary: 'Das einfachste Proteinmodell, das sich noch faltet: eine Kette aus hydrophoben (H) und polaren (P) Resten auf einem Quadratgitter, in der jeder H–H-Kontakt zwischen Resten, die keine Kettennachbarn sind, die Energie um eins senkt. Viele Replikate einer Benchmark-Sequenz mit 20 Resten falten sich gleichzeitig per Metropolis-Monte-Carlo mit Pull- und Kurbelwellenzügen, während die Temperatur gesenkt wird, und die Kontaktkarte ergibt sich aus einem einzigen Paarabstandstensor der Form $(R, N, N)$.'
+notes: 'Proteine falten sich größtenteils, weil sich hydrophobe Seitenketten in einem kompakten Kern vor dem Wasser verstecken. Das HP-Modell (Dill, 1985) behält nur das: Ein H–H-Kontakt ist $-\varepsilon$ wert, sonst zählt nichts, und die Kette ist ein selbstvermeidender Pfad auf dem Gitter. Trotzdem ist das Finden der niedrigsten Energie NP-schwer, und die Zahl der Konformationen wächst wie $2.64^N$. Die Standardsequenz HPHPPHHPHPPHPHHPPHPH ist der klassische 20-Reste-Benchmark von Unger und Moult (1993) mit Grundzustand $E = -9$; die anderen haben bekannte Minima von $-9$, $-8$ und $-14$. In jedem Schritt wählt jedes Replikat einen Rest und versucht einen Pull-Zug (Lesh, Mitzenmacher und Whitesides, 2003: Der Rest springt auf eine freie Ecke und zieht seine Nachbarn entlang der Kette nach, bis die Kette wieder zusammenhängt; an den Enden dreht das den letzten Rest, und im einfachsten Fall ist es ein Eckflip) oder einen Kurbelwellenzug (ein U-förmiges Paar klappt um). Ein Vorschlag, der
+  eine Bindung bricht oder zwei Reste auf denselben Platz setzt, wird verworfen; ansonsten entscheidet die Metropolis-Regel. Hohe Temperatur lässt die Ketten erkunden, langsames Abkühlen lässt sie sich in kompakte Faltungen mit H-Kern und P-Resten an der Oberfläche setzen. Die Energie $E$ wird mit dem $\Delta E$ jedes angenommenen Zugs aktualisiert und in den Tests gegen eine vollständige Neuzählung geprüft. Pull-Züge sind keine exakt symmetrischen Vorschläge, daher ist der Lauf eher ein Optimierer als ein exakter thermischer Sampler. Probier die Sequenz mit 36 Resten: Sie braucht mehr Schritte oder Replikate, und der Anteil der Replikate, die den Grundzustand erreichen, zeigt, wie zerklüftet ihre Energielandschaft ist.'
+meanings:
+- Gitterkoordinate $k$ von Rest $i$ in Replikat $r$; jedes Replikat startet als gerader Stab
+- 1 für H, 0 für P
+- 'wiederholtes $k$ ⇒ summiert: eine gebatchte Gram-Matrix; mit den quadrierten Normen ergibt sie $d_{rij} = \lVert \mathbf r_i - \mathbf r_j\rVert^2$'
+- Gitternachbarn, die keine Kettennachbarn sind
+- 'wiederholte $i$ und $j$ ⇒ summiert: H–H-Kontakte, jeder doppelt gezählt, daher das $\tfrac12$'
+- Bindungen der Länge 1 und nie zwei Reste auf einem Platz, sonst wird der Zug verworfen
+- 'Abkühlplan: $T$ fällt geometrisch, Schritt für Schritt'
+- 'Metropolis-Regel: abwärts immer, aufwärts mit Wahrscheinlichkeit $e^{-\Delta E/T}$'
+labels:
+  sequence: Sequenz
+  replicas: Replikate $R$
+  steps: Monte-Carlo-Schritte
+  T_start: Starttemperatur $T_0$ (in Einheiten von $\varepsilon/k_B$)
+  T_end: Endtemperatur $T_1$

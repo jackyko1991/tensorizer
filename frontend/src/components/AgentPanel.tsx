@@ -1,0 +1,531 @@
+import { useEffect, useRef, useState } from "react";
+import { applyFiles, onAsk, onContext, onSelection, type CodeSelection, type ViewContext } from "../agentBus";
+import { agentChat, agentStatus, RunFailed, type AgentEvent, type AgentStatus } from "../api";
+import { useLang, type Key } from "../i18n";
+import type { Problem } from "../types";
+import AgentMascot from "./AgentMascot";
+import { RichText } from "./Tex";
+
+type Block =
+  | { kind: "text"; text: string }
+  | { kind: "tool"; id: string; name: string; input: Record<string, unknown>; ok?: boolean; result?: string }
+  | { kind: "run"; output: string | null; console: string; ok: boolean }
+  | { kind: "files"; problem: string; files: Record<string, string> }
+  | { kind: "error"; text: string };
+interface Message {
+  role: "user" | "assistant";
+  blocks: Block[];
+}
+
+const KEY_STORE = "tensorizer.agent.key";
+const EXAMPLES: Key[] = ["agent.ex1", "agent.ex2", "agent.ex3", "agent.ex4"];
+// "Create a problem" ideas: a different three from the pool each time the panel opens.
+const NEW_IDEAS = Array.from({ length: 9 }, (_, i) => `agent.newEx${i + 1}` as Key);
+const pickIdeas = () => [...NEW_IDEAS].sort(() => Math.random() - 0.5).slice(0, 3);
+
+function load(key: string): string | null {
+  try {
+    return sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+function save(key: string, value: string | null) {
+  try {
+    if (value === null) sessionStorage.removeItem(key);
+    else sessionStorage.setItem(key, value);
+  } catch {
+    // storage blocked: the value lasts until the page closes
+  }
+}
+
+type Mode = "current" | "new";
+interface Chat {
+  messages: Message[];
+  session: string | null;
+}
+const EMPTY_CHAT: Chat = { messages: [], session: null };
+
+/** Floating "Ask AI" button (bottom right) and the conversation drawer it opens. One conversation per problem
+ *  ("This problem" follows the problem on screen) plus one for creating a new problem. */
+export default function AgentPanel({
+  problem,
+  onWorkspaceProblem,
+}: {
+  problem: Problem;
+  /** A problem the agent created: shown in the left panel's Workspace section. */
+  onWorkspaceProblem: (entry: Problem) => void;
+}) {
+  const { t } = useLang();
+  const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState<AgentStatus | null | "checking">("checking");
+  const [apiKey, setApiKey] = useState<string | null>(() => load(KEY_STORE));
+  const [keyDraft, setKeyDraft] = useState("");
+  const [model, setModel] = useState<string>("");
+  const [chats, setChats] = useState<Record<string, Chat>>({});
+  const [draft, setDraft] = useState("");
+  const [busy, setBusy] = useState<string | null>(null); // the chat that is answering
+  const [mode, setMode] = useState<Mode>("current");
+  const [selection, setSelection] = useState<CodeSelection | null>(null);
+  const [view, setView] = useState<ViewContext | null>(null);
+  // A Workspace problem continues the conversation that created it.
+  const chatKey = mode === "new" || problem.category === "workspace" ? "new" : problem.id;
+  const messages = (chats[chatKey] ?? EMPTY_CHAT).messages;
+  const [ideas, setIdeas] = useState(pickIdeas);
+  const abort = useRef<AbortController | null>(null);
+  const bottom = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open || status !== "checking") return;
+    agentStatus().then((s) => {
+      setStatus(s);
+      if (s?.models.length) setModel((m) => m || s.models[0]);
+    });
+  }, [open, status]);
+  useEffect(() => bottom.current?.scrollIntoView({ block: "end" }), [messages]);
+
+  const workProblem = chatKey === "new" ? "new" : problem.id;
+  const connected = status !== "checking" && !!status?.enabled && (status.auth === "local" || !!apiKey);
+  const shownSelection = mode === "current" && selection?.problem === problem.id ? selection : null;
+
+  // What is on screen (problem, edits, parameters) and highlighted in the editor; right-click → Explain / Fix.
+  useEffect(() => onContext(setView), []);
+  useEffect(() => onSelection(setSelection), []);
+  const askRef = useRef<(action: "explain" | "fix", sel: CodeSelection) => void>(() => {});
+  useEffect(() => onAsk(({ action, selection: sel }) => askRef.current(action, sel)), []);
+  askRef.current = (action, sel) => {
+    setOpen(true);
+    setMode("current");
+    const lines = sel.fromLine === sel.toLine ? `${sel.fromLine}` : `${sel.fromLine}–${sel.toLine}`;
+    const prompt = t(action === "explain" ? "agent.explainPrompt" : "agent.fixPrompt")
+      .replace("{file}", sel.file)
+      .replace("{lines}", lines);
+    send(prompt, sel, sel.problem);
+  };
+
+  function edit(key: string, fn: (c: Chat) => Chat) {
+    setChats((cs) => ({ ...cs, [key]: fn(cs[key] ?? EMPTY_CHAT) }));
+  }
+
+  function onEvent(m: string, e: AgentEvent) {
+    const update = (fn: (blocks: Block[]) => Block[]) =>
+      edit(m, (c) => {
+        const last = c.messages[c.messages.length - 1];
+        return { ...c, messages: [...c.messages.slice(0, -1), { ...last, blocks: fn(last.blocks) }] };
+      });
+    if (e.type === "session") edit(m, (c) => ({ ...c, session: e.id }));
+    else if (e.type === "problem") onWorkspaceProblem(e.entry);
+    else if (e.type === "text")
+      update((bs) => {
+        const last = bs[bs.length - 1];
+        return last?.kind === "text"
+          ? [...bs.slice(0, -1), { ...last, text: last.text + e.delta }]
+          : [...bs, { kind: "text", text: e.delta }];
+      });
+    else if (e.type === "tool") update((bs) => [...bs, { kind: "tool", id: e.id, name: e.name, input: e.input }]);
+    else if (e.type === "tool_result")
+      update((bs) => bs.map((b) => (b.kind === "tool" && b.id === e.id ? { ...b, ok: e.ok, result: e.text } : b)));
+    else if (e.type === "run") update((bs) => [...bs, { kind: "run", output: e.output, console: e.console, ok: e.ok }]);
+    else if (e.type === "files") {
+      // Claude's edits go straight into that problem's code panel, so the editor always shows the latest version.
+      if (!e.problem.startsWith("new/")) applyFiles(e.problem, e.files);
+      update((bs) => [...bs.filter((b) => b.kind !== "files"), { kind: "files", problem: e.problem, files: e.files }]);
+    } else if (e.type === "error") update((bs) => [...bs, { kind: "error", text: e.message }]);
+  }
+
+  async function send(text: string, sel: CodeSelection | null = shownSelection, target = workProblem) {
+    const message = text.trim();
+    if (!message || busy || !connected) return;
+    const m = target;
+    setDraft("");
+    setBusy(m);
+    const where = sel ? `${sel.file}:${sel.fromLine}${sel.toLine > sel.fromLine ? `–${sel.toLine}` : ""}` : "";
+    edit(m, (c) => ({
+      ...c,
+      messages: [
+        ...c.messages,
+        { role: "user", blocks: [{ kind: "text", text: where ? `${message}\n\n› ${where}` : message }] },
+        { role: "assistant", blocks: [] },
+      ],
+    }));
+    abort.current = new AbortController();
+    // What the user is looking at: their current code, parameters and highlighted lines.
+    const onScreen = view?.problem === target ? view : null;
+    const context = {
+      title: onScreen?.title,
+      files: onScreen?.edits,
+      params: onScreen?.params,
+      selection: sel ? { file: sel.file, from_line: sel.fromLine, to_line: sel.toLine, text: sel.text } : undefined,
+    };
+    const body = { session: (chats[m] ?? EMPTY_CHAT).session, problem: target, message, model, context };
+    try {
+      await agentChat(body, apiKey, (e) => onEvent(m, e), abort.current.signal);
+    } catch (e) {
+      onEvent(m, { type: "error", message: e instanceof RunFailed ? e.message : String(e) });
+    } finally {
+      setBusy(null);
+      abort.current = null;
+    }
+  }
+
+  function connect() {
+    const key = keyDraft.trim();
+    if (!key) return;
+    setApiKey(key);
+    save(KEY_STORE, key);
+    setKeyDraft("");
+  }
+
+  function disconnect() {
+    setApiKey(null);
+    save(KEY_STORE, null);
+  }
+
+  return (
+    <>
+      <button
+        onClick={() => (setOpen((o) => !o), setIdeas(pickIdeas()))}
+        aria-label={t("agent.open")}
+        aria-expanded={open}
+        className="group fixed right-4 bottom-10 z-40 h-16 w-16 rounded-full border border-blue-100 bg-white p-1.5 shadow-lg transition hover:scale-105 hover:shadow-xl"
+      >
+        <AgentMascot thinking={busy !== null} className="h-full w-full" />
+        {/* "Ask AI" bubble beside the mascot on hover / keyboard focus */}
+        <span className="pointer-events-none absolute top-1/2 right-full mr-2 -translate-y-1/2 rounded-full bg-blue-700 px-3 py-1 text-xs font-medium whitespace-nowrap text-white opacity-0 shadow transition group-hover:opacity-100 group-focus-visible:opacity-100">
+          {t("agent.open")}
+        </span>
+      </button>
+
+      {open && (
+        <section
+          aria-label={t("agent.title")}
+          className="fixed right-4 bottom-28 z-40 flex h-[min(640px,calc(100vh-9rem))] w-[min(440px,calc(100vw-2rem))] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl"
+        >
+          <header className="flex items-center gap-2 border-b border-gray-200 px-3 py-2">
+            <AgentMascot thinking={busy !== null} className="h-7 w-7" />
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-semibold text-gray-900">{t("agent.title")}</div>
+              <div className="truncate text-[11px] text-gray-500">
+                {status === "checking"
+                  ? t("backend.checking")
+                  : !status?.enabled
+                    ? t("agent.unavailable")
+                    : status.auth === "local"
+                      ? t("agent.localLogin")
+                      : apiKey
+                        ? t("agent.keyConnected")
+                        : t("agent.needKey")}
+              </div>
+            </div>
+            {status !== "checking" && status?.auth === "api_key" && apiKey && (
+              <button onClick={disconnect} className="rounded px-2 py-1 text-[11px] text-gray-500 hover:bg-gray-100">
+                {t("agent.disconnect")}
+              </button>
+            )}
+            <button
+              onClick={() => edit(chatKey, () => EMPTY_CHAT)}
+              disabled={busy !== null}
+              className="rounded px-2 py-1 text-[11px] text-gray-500 hover:bg-gray-100 disabled:opacity-40"
+            >
+              {t("agent.newChat")}
+            </button>
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="close"
+              className="rounded px-2 py-1 text-gray-400 hover:bg-gray-100"
+            >
+              ✕
+            </button>
+          </header>
+
+          {/* Two conversations side by side: the current problem, and a brand-new one */}
+          <div role="tablist" className="grid grid-cols-2 gap-1 border-b border-gray-200 bg-gray-50 p-1 text-xs">
+            {(["current", "new"] as const).map((m) => (
+              <button
+                key={m}
+                role="tab"
+                aria-selected={mode === m}
+                onClick={() => setMode(m)}
+                className={`rounded-md px-2 py-1.5 ${mode === m ? "bg-white font-medium text-blue-700 shadow-sm" : "text-gray-600 hover:text-gray-900"}`}
+              >
+                {m === "current" ? t("agent.modeCurrent") : `✨ ${t("agent.modeNew")}`}
+                {busy !== null && (busy === "new") === (m === "new") && (
+                  <span className="ml-1 animate-pulse text-amber-500">●</span>
+                )}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 border-b border-gray-100 px-3 py-1.5 text-[11px] text-gray-600">
+            <span className="shrink-0 text-gray-400">{t("agent.currentProblem")}:</span>
+            <span className="truncate font-medium text-gray-800">
+              {chatKey === "new" && problem.category !== "workspace" ? (
+                `✨ ${t("agent.modeNew")}`
+              ) : (
+                <RichText text={problem.title} />
+              )}
+            </span>
+            <span className="ml-auto shrink-0 rounded-full bg-amber-50 px-2 py-0.5 text-amber-700">
+              {t("agent.trial")}
+            </span>
+          </div>
+
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-3 py-3 text-sm">
+            {status !== "checking" && status?.enabled && status.auth === "api_key" && !apiKey && (
+              <div className="space-y-2 rounded-lg border border-gray-200 bg-gray-50 p-3">
+                <p className="text-xs text-gray-600">{t("agent.keyHelp")}</p>
+                <div className="flex gap-2">
+                  <input
+                    type="password"
+                    value={keyDraft}
+                    onChange={(e) => setKeyDraft(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && connect()}
+                    placeholder="sk-ant-…"
+                    autoComplete="off"
+                    className="min-w-0 flex-1 rounded-md border border-gray-300 px-2 py-1 font-mono text-xs"
+                  />
+                  <button
+                    onClick={connect}
+                    className="rounded-md bg-blue-600 px-3 py-1 text-xs font-medium text-white hover:bg-blue-700"
+                  >
+                    {t("agent.connect")}
+                  </button>
+                </div>
+                <a
+                  href="https://console.anthropic.com/settings/keys"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[11px] text-blue-700 hover:underline"
+                >
+                  {t("agent.getKey")} ↗
+                </a>
+              </div>
+            )}
+            {status !== "checking" && !status?.enabled && (
+              <p className="rounded-lg bg-gray-50 p-3 text-xs text-gray-600">{t("agent.unavailableHelp")}</p>
+            )}
+
+            {messages.length === 0 && connected && (
+              <div className="space-y-2">
+                <p className="text-xs text-gray-500">{t("agent.tryOne")}</p>
+                {(workProblem === "new" ? ideas : EXAMPLES).map((k) => (
+                  <button
+                    key={k}
+                    onClick={() => send(t(k))}
+                    className="block w-full rounded-lg border border-gray-200 px-3 py-2 text-left text-xs text-gray-700 hover:border-blue-300 hover:bg-blue-50"
+                  >
+                    {t(k)}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {messages.map((m, i) =>
+              m.role === "user" ? (
+                <div key={i} className="ml-8 rounded-lg bg-gray-100 px-3 py-2 whitespace-pre-wrap text-gray-900">
+                  {(m.blocks[0] as { text: string }).text}
+                </div>
+              ) : (
+                <div key={i} className="space-y-2">
+                  {m.blocks.map((b, j) => (
+                    <AgentBlock key={j} block={b} />
+                  ))}
+                  {busy === chatKey && i === messages.length - 1 && (
+                    <div className="text-xs text-gray-400">
+                      <span className="animate-pulse">●</span> {t("agent.working")}
+                    </div>
+                  )}
+                </div>
+              ),
+            )}
+            <div ref={bottom} />
+          </div>
+
+          <footer className="border-t border-gray-200 p-2">
+            {shownSelection && (
+              <div className="mb-1.5 flex items-start gap-2 rounded-md border border-blue-100 bg-blue-50 px-2 py-1 text-[11px] text-blue-800">
+                <span className="shrink-0">⌖</span>
+                <span className="min-w-0 flex-1">
+                  <span className="font-mono font-medium">
+                    {shownSelection.file}:{shownSelection.fromLine}
+                    {shownSelection.toLine > shownSelection.fromLine && `–${shownSelection.toLine}`}
+                  </span>
+                  <span className="block truncate font-mono text-blue-700/70">
+                    {shownSelection.text.split("\n")[0]}
+                  </span>
+                </span>
+                <button
+                  onClick={() => setSelection(null)}
+                  title={t("agent.clearSel")}
+                  className="shrink-0 text-blue-400 hover:text-blue-700"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+            <div className="flex items-end gap-2 rounded-lg border border-gray-300 px-2 py-1.5 focus-within:border-blue-400">
+              <textarea
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                    e.preventDefault();
+                    send(draft);
+                  }
+                }}
+                rows={Math.min(5, Math.max(1, draft.split("\n").length))}
+                disabled={!connected}
+                placeholder={t("agent.placeholder")}
+                className="min-w-0 flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-gray-400 disabled:opacity-50"
+              />
+              {busy ? (
+                <button
+                  onClick={() => abort.current?.abort()}
+                  title={t("agent.stop")}
+                  className="rounded-md bg-gray-800 px-2 py-1 text-xs text-white hover:bg-gray-700"
+                >
+                  ■
+                </button>
+              ) : (
+                <button
+                  onClick={() => send(draft)}
+                  disabled={!connected || !draft.trim()}
+                  title={t("agent.send")}
+                  className="rounded-md bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700 disabled:opacity-40"
+                >
+                  ↑
+                </button>
+              )}
+            </div>
+            <div className="mt-1.5 flex items-center justify-between gap-2 text-[10px] text-gray-400">
+              {status !== "checking" && status?.auth === "api_key" && status.models.length > 1 ? (
+                <select
+                  value={model}
+                  onChange={(e) => setModel(e.target.value)}
+                  className="rounded border border-gray-200 px-1 py-0.5"
+                >
+                  {status.models.map((m) => (
+                    <option key={m}>{m}</option>
+                  ))}
+                </select>
+              ) : (
+                <span>{t("agent.hint")}</span>
+              )}
+              <button
+                disabled
+                title={t("agent.proSoon")}
+                className="cursor-not-allowed rounded border border-gray-200 px-1.5 py-0.5"
+              >
+                ☁ {t("agent.pro")}
+              </button>
+            </div>
+          </footer>
+        </section>
+      )}
+    </>
+  );
+}
+
+const TOOL_LABEL: Record<string, string> = {
+  Read: "Read",
+  Write: "Write",
+  Edit: "Edit",
+  Glob: "Glob",
+  Grep: "Grep",
+  mcp__tensorizer__run_problem: "Run",
+};
+
+function AgentBlock({ block }: { block: Block }) {
+  const { t } = useLang();
+  if (block.kind === "text") return <AgentText text={block.text} />;
+  if (block.kind === "error")
+    return <p className="rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">{block.text}</p>;
+  if (block.kind === "tool") {
+    const target = String(block.input.file_path ?? block.input.pattern ?? "")
+      .split(/[\\/]/)
+      .pop();
+    const mark = block.ok === undefined ? "text-gray-400 animate-pulse" : block.ok ? "text-green-600" : "text-red-600";
+    return (
+      <details className="group rounded-md text-xs">
+        <summary className="flex cursor-pointer list-none items-center gap-2 text-gray-700">
+          <span className={mark}>●</span>
+          <span className="font-semibold">{TOOL_LABEL[block.name] ?? block.name}</span>
+          <span className="truncate font-mono text-gray-500">{target}</span>
+        </summary>
+        {block.result && (
+          <pre className="mt-1 max-h-48 overflow-auto rounded bg-gray-50 p-2 text-[11px] whitespace-pre-wrap text-gray-600">
+            {block.result}
+          </pre>
+        )}
+      </details>
+    );
+  }
+  if (block.kind === "run")
+    return (
+      <div className="space-y-1">
+        {block.output && <img src={block.output} alt="" className="w-full rounded border border-gray-200" />}
+        <details className="text-xs">
+          <summary className="cursor-pointer text-gray-500">{t("agent.console")}</summary>
+          <pre className="mt-1 max-h-48 overflow-auto rounded bg-gray-900 p-2 text-[11px] text-gray-100">
+            {block.console}
+          </pre>
+        </details>
+      </div>
+    );
+  if (block.problem.startsWith("new/"))
+    return (
+      <button
+        onClick={() => downloadFiles(block.files)}
+        className="rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100"
+      >
+        ⬇ {t("agent.download")} ({Object.keys(block.files).length})
+      </button>
+    );
+  return (
+    <button
+      onClick={() => window.dispatchEvent(new CustomEvent("tensorizer:agent-files", { detail: block }))}
+      className="rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100"
+    >
+      ⇩ {t("agent.applyFiles")} ({Object.keys(block.files).join(", ")})
+    </button>
+  );
+}
+
+/** Assistant text: paragraphs, ``` code fences and `inline code`. */
+function AgentText({ text }: { text: string }) {
+  const parts = text.split(/```[a-z]*\n?/);
+  return (
+    <div className="space-y-2 text-gray-800">
+      {parts.map((part, i) =>
+        i % 2 ? (
+          <pre key={i} className="overflow-x-auto rounded-md bg-gray-50 p-2 text-[12px]">
+            {part.replace(/\n$/, "")}
+          </pre>
+        ) : (
+          <p key={i} className="whitespace-pre-wrap">
+            {part.split(/(`[^`]+`)/).map((s, j) =>
+              s.startsWith("`") && s.endsWith("`") && s.length > 1 ? (
+                <code key={j} className="rounded bg-gray-100 px-1 text-[12px]">
+                  {s.slice(1, -1)}
+                </code>
+              ) : (
+                s
+              ),
+            )}
+          </p>
+        ),
+      )}
+    </div>
+  );
+}
+
+/** Save a brand-new problem's files as my_problem.zip (drop the folder into problems/<topic>/ to keep it). */
+async function downloadFiles(files: Record<string, string>) {
+  const { zipSync, strToU8 } = await import("fflate");
+  const zip = zipSync(Object.fromEntries(Object.entries(files).map(([n, c]) => [`my_problem/${n}`, strToU8(c)])));
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([zip], { type: "application/zip" }));
+  a.download = "my_problem.zip";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}

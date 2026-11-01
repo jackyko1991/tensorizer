@@ -1,0 +1,19 @@
+source_hash: 3955d9d3b7d9
+title: Cinética enzimática de Michaelis–Menten
+summary: 'Una enzima une su sustrato, forma un complejo y libera el producto: $E + S \rightleftharpoons ES \to E + P$. Las ecuaciones completas de acción de masas se resuelven para tres enzimas y toda una titulación de sustrato a la vez, en un solo tensor $(4, B, C)$, y se comparan con la ley de velocidad de estado cuasiestacionario $v = V_{max} S/(K_m + S)$ y con un ajuste de Lineweaver–Burk.'
+notes: 'La acción de masas por sí sola da cuatro EDO acopladas. Michaelis y Menten (1913), en la forma de Briggs y Haldane (1925), observaron que el complejo $ES$ se forma en una fracción de segundo y luego cambia solo lentamente, de modo que se puede poner $d[ES]/dt \approx 0$. Junto con $E + ES = E_0$, esto da $[ES] = E_0 S/(K_m + S)$ y la ley de velocidad $v = k_2 [ES] = V_{max} S/(K_m + S)$ con $K_m = (k_{-1} + k_2)/k_1$ y $V_{max} = k_2 E_0$. Los puntos del panel central muestran el estado actual $(S, k_2 [ES])$ de cada tubo de ensayo: tras la fase inicial rápida se sitúan sobre la curva discontinua y se deslizan por ella a medida que se consume el sustrato; es la aproximación de estado cuasiestacionario (QSSA) en acción. El modelo reducido $dS/dt = -V_{max} S/(K_m + S)$ (naranja discontinuo) tiene incluso solución exacta, $S_0 - S + K_m \ln(S_0/S) = V_{max} t$. La aproximación es válida cuando $E_0 \ll S_0 + K_m$; sube $E_0$ a 2 µM y verás cómo la cinética completa se queda atrás respecto
+  a la QSSA, porque el sustrato retenido en el complejo ya no es despreciable. Los bioquímicos miden la velocidad inicial $v_0$ a varios $S_0$ y ajustan $1/v_0 = (K_m/V_{max})(1/S_0) + 1/V_{max}$, una recta (Lineweaver–Burk, 1934): la intersección con el eje $y$ es $1/V_{max}$ y la intersección con el eje $x$ es $-1/K_m$. La representación de dobles recíprocos amplifica los errores a $S_0$ bajos, así que con datos ruidosos es mejor un ajuste no lineal directo. Las enzimas A, B y C intercambian afinidad por velocidad: A tiene un $K_m$ pequeño, C el mayor $k_{cat}$; la eficiencia catalítica $k_{cat}/K_m$ decide cuál gana con poco sustrato. Simplificaciones: un único sitio activo, liberación irreversible del producto, sin inhibición y un volumen bien mezclado.'
+meanings:
+- constantes de velocidad de unión, disociación y catalítica de la enzima $b$ ($k_2 = k_{cat}$)
+- concentración inicial de sustrato $c$ de la titulación (µM)
+- enzima libre, sustrato, complejo $X = ES$ y producto en cada tubo de ensayo
+- 'ningún índice sumado: $k_b$ se difunde (broadcast) sobre cada concentración $c$'
+- lado derecho para RK4; $E + X = E_0$ y $S + X + P = S_0$ se mantienen constantes
+- constante de Michaelis (concentración de sustrato a media velocidad) y velocidad máxima
+- velocidad inicial (estacionaria), medida tras la breve fase inicial
+- ecuaciones normales de Lineweaver–Burk, $A_{ck} = [1/S_c,\ 1]$; $c$ repetido ⇒ sumado
+- pendiente $K_m/V_{max}$ e intersección $1/V_{max}$ para cada enzima
+labels:
+  E0: Enzima $E_0$
+  t_end: Tiempo simulado
+  enzyme: Enzima para las curvas de progreso

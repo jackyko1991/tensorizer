@@ -42,6 +42,8 @@ CATEGORIES = {
     "astro": "Astrophysics & Relativity",
     "nuclear": "Nuclear & Particle",
     "medical": "Medical Physics",
+    "biophysics": "Biophysics",
+    "bioinformatics": "Bioinformatics",
     "others": "Others",
 }
 
@@ -55,8 +57,13 @@ def complete(d: Path) -> bool:
     return all((d / f).is_file() for f in CODE_FILES)
 
 
+def hidden(meta_file: Path) -> bool:
+    """`hidden: true` in meta.yaml keeps a problem in the repository (code and tests) but off the site."""
+    return bool(yaml.safe_load(meta_file.read_text(encoding="utf-8")).get("hidden"))
+
+
 def discover() -> list[Path]:
-    dirs = [p.parent for p in PROBLEMS.glob("*/*/meta.yaml")]
+    dirs = [p.parent for p in PROBLEMS.glob("*/*/meta.yaml") if not hidden(p)]
     for d in dirs:
         if not complete(d):
             print(f"skipping incomplete problem {d.parent.name}/{d.name}")

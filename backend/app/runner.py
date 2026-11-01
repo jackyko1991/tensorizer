@@ -16,14 +16,13 @@ from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from pathlib import Path
 
+from .run_queue import QUEUE, QueueFull
+
 ROOT = Path(__file__).resolve().parents[2]
 PROBLEMS = ROOT / "problems"
 CACHE = Path(os.environ.get("TENSORIZER_CACHE", ROOT / ".cache" / "runs"))
 TIMEOUT_S = float(os.environ.get("TENSORIZER_TIMEOUT", "120"))
 CODE_FILES = ["main.py", "equation.py", "tensors.py", "solve.py", "plot.py"]
-
-# Renders are CPU-heavy; on a small free CPU box one at a time is fastest overall.
-_lock = asyncio.Semaphore(1)
 
 
 @dataclass
@@ -119,18 +118,28 @@ async def _stream_process(cmd: list[str], cwd: Path, env: dict[str, str]) -> Asy
 
 
 async def stream_problem(
-    category: str, slug: str, params: dict, files: dict[str, str] | None = None, verbose: bool = False
+    category: str,
+    slug: str,
+    params: dict,
+    files: dict[str, str] | None = None,
+    verbose: bool = False,
+    client: str = "local",
+    root: Path | None = None,
 ) -> AsyncIterator[dict]:
     """Render one problem, yielding line events and finally {"type": "result", ...} (or raising RunError).
 
-    With `files`, the edited code replaces the originals in a scratch copy of the package.
+    With `root`, the problem is taken from <root>/problems/<category>/<slug> (an agent's workspace) instead of the
+    repository.
+
+    With `files`, the edited code replaces the originals in a scratch copy of the package. Renders are CPU-heavy,
+    so new ones wait in the shared queue and get {"type": "queued", "position": n} events meanwhile.
     """
-    src = problem_dir(category, slug)
+    src = root / "problems" / category / slug if root else problem_dir(category, slug)
     if files:
         unknown = set(files) - set(CODE_FILES)
         if unknown:
             raise ValueError(f"unknown file(s): {', '.join(sorted(unknown))}")
-    run_id = _run_id(category, slug, params, files or {}, _source_hash(src), verbose)
+    run_id = _run_id(category, slug, params, files or {}, _source_hash(src), verbose, bool(root))
     out_dir = CACHE / run_id
 
     if (name := _find_output(out_dir)) is not None:
@@ -140,7 +149,13 @@ async def stream_problem(
         yield {"type": "result", "run_id": run_id, "output": name, "console": console, "cached": True}
         return
 
-    async with _lock:
+    try:
+        ticket = QUEUE.join(client)
+    except QueueFull as e:
+        raise RunError(str(e)) from None
+    try:
+        async for position in QUEUE.wait(ticket):
+            yield {"type": "queued", "position": position}
         out_dir.mkdir(parents=True, exist_ok=True)
         module = f"problems.{category}.{slug}.main"
         cmd = [sys.executable, "-m", module, "--out", str(out_dir), "--params", json.dumps(params)]
@@ -148,6 +163,10 @@ async def stream_problem(
             cmd.append("--verbose")
         work = ROOT
         scratch = None
+        if root:
+            for package in (root / "problems", root / "problems" / category):
+                (package / "__init__.py").touch()
+            work = root
         if files:
             scratch = Path(tempfile.mkdtemp())
             shutil.copytree(PROBLEMS / "_common", scratch / "problems" / "_common")
@@ -183,6 +202,8 @@ async def stream_problem(
             shutil.rmtree(out_dir, ignore_errors=True)
             raise RunError("the run failed", console)
         (out_dir / "console.txt").write_text(console, encoding="utf-8")
+    finally:
+        QUEUE.leave(ticket)
 
     name = _find_output(out_dir)
     if name is None:
@@ -191,10 +212,15 @@ async def stream_problem(
 
 
 async def run_problem(
-    category: str, slug: str, params: dict, files: dict[str, str] | None = None, verbose: bool = False
+    category: str,
+    slug: str,
+    params: dict,
+    files: dict[str, str] | None = None,
+    verbose: bool = False,
+    client: str = "local",
 ) -> RunResult:
     """Non-streaming wrapper: run to completion and return the result."""
-    async for event in stream_problem(category, slug, params, files, verbose):
+    async for event in stream_problem(category, slug, params, files, verbose, client):
         if event["type"] == "result":
             return RunResult(event["run_id"], event["output"], event["console"], event["cached"])
     raise RunError("the run produced no result")

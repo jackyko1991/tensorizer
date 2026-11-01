@@ -1,0 +1,18 @@
+source_hash: 9c0f102b3159
+title: Potentiel d'action de Hodgkin–Huxley
+summary: 'Le modèle de 1952 de l''axone géant du calmar : un condensateur membranaire déchargé par des canaux sodium et potassium dont les portes $m$, $h$, $n$ s''ouvrent et se ferment selon la tension. Quarante et un axones, chacun soumis à un échelon de courant différent, sont intégrés ensemble dans un seul tenseur $(4, B)$ pour trouver le seuil de décharge et la fréquence de décharge en fonction du courant.'
+notes: 'Hodgkin et Huxley (prix Nobel 1963) ont mesuré les courants sodium et potassium de l''axone géant du calmar en potentiel imposé (voltage clamp) et les ont ajustés avec trois portes. Le courant sodium s''active rapidement via $m^3$ et s''éteint plus lentement via la porte d''inactivation $h$ ; le courant potassium s''ouvre tardivement via $n^4$. Un potentiel d''action est une course entre eux : une petite dépolarisation ouvre $m$, le $\mathrm{Na}^+$ entrant dépolarise davantage (rétroaction positive) et $V$ grimpe vers $E_{Na}$ ; puis $h$ se ferme et $n$ s''ouvre, et $V$ redescend jusqu''à même passer en dessous du repos (hyperpolarisation). Avec un échelon de courant maintenu, le modèle présente trois régimes. En dessous d''environ 2,3 µA/cm², la membrane se charge seulement de façon passive. Entre cette valeur et environ 6,3 µA/cm², elle émet un seul potentiel d''action puis se stabilise, car l''inactivation et le courant potassium la maintiennent à un nouveau repos. Au-delà, elle
+  décharge de façon répétitive, et la fréquence ne part pas de zéro mais saute à environ 50 Hz : l''axone de calmar est un neurone de type II (résonateur) dont l''état de repos perd sa stabilité par une bifurcation de Hopf, contrairement aux neurones de type I qui peuvent décharger arbitrairement lentement. La courbe f–I monte ensuite doucement, jusqu''à environ 68 Hz à 10 µA/cm². Les fonctions de taux ont des singularités apparentes, $0.1(V+40)/(1 - e^{-(V+40)/10})$ est finie en $V = -40$ mV, donc le code les évalue via $x/(1 - e^{-x})$ avec une limite sûre. Les expériences originales ont été faites à 6,3 °C ; réchauffer l''axone accélère chaque porte d''un facteur $\phi = 3^{(T - 6.3)/10}$, ce qui rend les potentiels d''action plus étroits et la décharge plus rapide, jusqu''à ce qu''au-delà d''environ 30 °C l''axone ne décharge plus du tout. Simplifications : un fragment de membrane en space clamp (pas de propagation le long de l''axone) et des canaux déterministes.'
+meanings:
+- courant de stimulation de l'axone $b$, un échelon activé à 10 ms (µA/cm²)
+- potentiel de membrane et portes $g = (m, h, n)$ de chaque axone
+- taux d'ouverture et de fermeture de chaque porte (1/ms), les ajustements classiques de l'axone de calmar
+- fraction ouverte du canal $k$ = Na, K, fuite
+- conductances maximales (120, 36, 0,3 mS/cm²) et potentiels d'inversion (50, −77, −54,4 mV)
+- courant ionique total ; $k$ répété ⇒ sommé sur les canaux
+- 'facteur de température ($Q_{10} = 3$) : chaque porte s''accélère 3× par 10 °C'
+- fréquence de décharge stationnaire à partir des intervalles entre potentiels d'action (Hz)
+labels:
+  I_max: Stimulus maximal $I_{max}$
+  t_end: Temps simulé
+  temp: Température $T$

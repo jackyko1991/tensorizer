@@ -1,0 +1,22 @@
+source_hash: 125d78b166e3
+title: 'Grobkörnige Proteinfaltung: ein Gō-Modell mit Langevin-Dynamik'
+summary: Ein kleines helikales Haarnadelprotein als Kette von Kugeln, eine pro Aminosäure, zusammengehalten durch Bindungen und Bindungswinkel und stabilisiert durch anziehende native Kontakte (ein Gō-Modell). Die Kräfte sind der Autograd-Gradient der Gesamtenergie, geschrieben mit Paarabstandstensoren. Die Langevin-Dynamik simuliert einen ganzen Batch von Temperaturen und Replikaten gleichzeitig, die Hälfte gefaltet und die Hälfte entfaltet gestartet; der Anteil nativer Kontakte $Q(t)$ zeigt Faltung und Entfaltung, und sein Mittelwert gegen die Temperatur ist die Schmelzkurve.
+notes: 'Ein Gō-Modell wird aus der Antwort gebaut: Jede Wechselwirkung, die in der nativen Struktur vorkommt, ist anziehend, alles andere nur abstoßend, sodass die Energielandschaft ein glatter Trichter hin zur nativen Faltung ist. Das ist eine Karikatur, aber eine nützliche: Kleine Proteine falten sich tatsächlich, als wäre ihre Landschaft minimal frustriert, und Gō-Modelle reproduzieren Faltungsraten, Übergangszustände und das kooperative Schmelzen vieler von ihnen. Die Einheiten sind reduziert: Energien in $\varepsilon$ (ein Kontakt), Temperaturen in $\varepsilon/k_B$, Zeit in $\tau$. Die Hälfte der Replikate startet gefaltet, die andere Hälfte als gerader Stab; wo die durchgezogenen und gestrichelten Kurven übereinstimmen, sind die Läufe equilibriert, wo nicht (bei niedrigem $T$), sind die entfalteten Ketten kinetisch in fehlgefalteten Zuständen gefangen und bräuchten viel längere Läufe oder Replica Exchange. Die Schmelzkurve ist breit, weil das Protein winzig ist; echte Proteine mit
+  Hunderten von Kontakten schmelzen scharf. Ohne Diederterm hängt die Energie nur von Abständen ab, daher hat das Spiegelbild der nativen Faltung genau dieselbe Energie und dasselbe $Q$; echte Gō-Modelle fügen Diederpotentiale hinzu, um die Händigkeit festzulegen. Ändere probeweise die Reibung (sie ändert die Kinetik, aber nicht die Gleichgewichtskurve) oder die Anzahl der Temperaturen.'
+meanings:
+- Kugel $i$ von System $s$; $S = B\cdot R$ Temperaturen × Replikate
+- nativer Abstand des Paares $p = (i_p, j_p)$, $j - i \ge 3$; $n_p = 1$, wenn näher als 8 Å in der nativen Faltung
+- alle Paarabstände jedes Systems in einem Tensor, $a$ summiert
+- Bindungen + Winkel + native 12–10-Mulden (Minimum $-\varepsilon$ bei $r^0_p$) + Abstoßung nicht-nativer Paare
+- Kräfte durch automatische Differentiation; über $s$ zu summieren ist in Ordnung, weil die Systeme nicht wechselwirken
+- jedes System bekommt sein eigenes Wärmebad
+- Kick, Drift, Reibung + Rauschen $v \to e^{-\gamma dt}v + \sqrt{(1-e^{-2\gamma dt})k_BT}\,\xi$, Drift, Kick
+- 'Anteil gebildeter nativer Kontakte: 1 gefaltet, etwa 0,4 für eine entfaltete Kette (lokale Kontakte bilden sich weiterhin)'
+- Zeitmittel über die zweite Hälfte des Laufs; $T_m$ dort, wo es ½ kreuzt
+labels:
+  helix_length: Kugeln pro Helix
+  T_min: Niedrigste Temperatur $T$
+  T_max: Höchste Temperatur $T$
+  temperatures: Temperaturen $B$
+  friction: Reibung $\gamma$
+  steps: Zeitschritte

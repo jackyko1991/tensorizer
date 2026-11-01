@@ -1,6 +1,7 @@
 import { python } from "@codemirror/lang-python";
-import CodeMirror from "@uiw/react-codemirror";
-import { useState, type ReactNode } from "react";
+import CodeMirror, { type ViewUpdate } from "@uiw/react-codemirror";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { askAI, emitSelection, type CodeSelection } from "../agentBus";
 import { useLang, type Key } from "../i18n";
 import type { CodeFile } from "../types";
 
@@ -13,6 +14,8 @@ const ROLE: Record<string, Key> = {
 };
 
 interface Props {
+  /** Problem id, so a code selection can be sent to the Ask AI panel. */
+  problem: string;
   files: CodeFile[];
   edits: Record<string, string>;
   editable: boolean;
@@ -25,11 +28,58 @@ interface Props {
   className?: string;
 }
 
-export default function CodePanel({ files, edits, editable, onEdit, onReset, side, toolbar, className = "" }: Props) {
+export default function CodePanel({
+  problem,
+  files,
+  edits,
+  editable,
+  onEdit,
+  onReset,
+  side,
+  toolbar,
+  className = "",
+}: Props) {
   const { t } = useLang();
   const [active, setActive] = useState(files[0]?.name);
   const file = files.find((f) => f.name === active) ?? files[0];
   const edited = Object.keys(edits).length > 0;
+  const selection = useRef<CodeSelection | null>(null);
+  const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
+
+  // Tell the Ask AI panel what is highlighted (nothing, when the selection is empty).
+  function onUpdate(update: ViewUpdate) {
+    if (!update.selectionSet && !update.docChanged) return;
+    const { from, to } = update.state.selection.main;
+    const doc = update.state.doc;
+    const next =
+      from === to
+        ? null
+        : {
+            problem,
+            file: file.name,
+            fromLine: doc.lineAt(from).number,
+            toLine: doc.lineAt(to).number,
+            text: doc.sliceString(from, to),
+          };
+    if (JSON.stringify(next) !== JSON.stringify(selection.current)) {
+      selection.current = next;
+      emitSelection(next);
+    }
+  }
+  useEffect(() => () => emitSelection(null), [problem, file.name]);
+
+  useEffect(() => {
+    if (!menu) return;
+    const close = () => setMenu(null);
+    window.addEventListener("click", close);
+    window.addEventListener("keydown", close);
+    window.addEventListener("scroll", close, true);
+    return () => {
+      window.removeEventListener("click", close);
+      window.removeEventListener("keydown", close);
+      window.removeEventListener("scroll", close, true);
+    };
+  }, [menu]);
 
   return (
     <section className={`flex flex-col overflow-hidden bg-white lg:flex-row ${className}`}>
@@ -65,7 +115,15 @@ export default function CodePanel({ files, edits, editable, onEdit, onReset, sid
           {toolbar && <span className="flex shrink-0 items-center gap-3">{toolbar}</span>}
         </div>
 
-        <div className="max-h-[60vh] min-h-0 flex-1 overflow-auto lg:max-h-none">
+        <div
+          className="max-h-[60vh] min-h-0 flex-1 overflow-auto lg:max-h-none"
+          onContextMenu={(e) => {
+            // Right-click on highlighted code: offer Explain / Fix with AI instead of the browser menu.
+            if (!selection.current) return;
+            e.preventDefault();
+            setMenu({ x: e.clientX, y: e.clientY });
+          }}
+        >
           <CodeMirror
             value={edits[file.name] ?? file.code}
             extensions={[python()]}
@@ -74,10 +132,31 @@ export default function CodePanel({ files, edits, editable, onEdit, onReset, sid
             theme="light"
             basicSetup={{ foldGutter: false, highlightActiveLine: editable }}
             onChange={(code) => onEdit(file.name, code)}
+            onUpdate={onUpdate}
           />
         </div>
       </div>
       {side}
+
+      {menu && selection.current && (
+        <div
+          role="menu"
+          style={{ left: menu.x, top: menu.y }}
+          className="fixed z-50 w-48 rounded-lg border border-gray-200 bg-white p-1 text-sm shadow-lg"
+        >
+          {(["explain", "fix"] as const).map((action) => (
+            <button
+              key={action}
+              role="menuitem"
+              onClick={() => selection.current && askAI(action, selection.current)}
+              className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-gray-700 hover:bg-blue-50"
+            >
+              <span>{action === "explain" ? "💡" : "🔧"}</span>
+              {t(action === "explain" ? "agent.explainSel" : "agent.fixSel")}
+            </button>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

@@ -1,0 +1,19 @@
+source_hash: 230765b6cfcc
+title: 'DNA dehnen: die wurmartige Kette'
+summary: Zieh mit einer optischen Pinzette an einem DNA-Molekül, und es wehrt sich wie eine entropische Feder, die nahe der vollen Länge stark versteift. Das Marko–Siggia-Gesetz der wurmartigen Kette wird mit einer frei gelenkigen Kette verglichen, und eine diskrete Kette aus Einheitstangenten mit Biegesteifigkeit wird per Monte Carlo für einen ganzen Batch von Kräften gleichzeitig als ein $(B, M, N, 3)$-Tensor simuliert. Die Persistenzlänge $P \approx 50$ nm ergibt sich sowohl aus den Tangentenkorrelationen als auch aus einem Fit an die Kraft–Dehnungs-Kurve.
+notes: 'Ein doppelsträngiges DNA-Molekül ist auf kurzen Skalen steif, auf langen aber biegsam: Die Richtung seines Rückgrats wird über die Persistenzlänge $P \approx 50$ nm (etwa 150 Basenpaare) erinnert und dann vergessen. Es geradezuziehen kostet daher Entropie, keine Bindungsenergie. Bei kleiner Kraft ist die Antwort linear, $z/L \approx 2 P F / 3 k_B T$, gleich für jedes Polymer mit Kuhn-Länge $b = 2P$; bei großer Kraft nähert sich die wurmartige Kette der vollen Länge nur langsam, $1 - z/L \approx \tfrac12 \sqrt{k_B T / F P}$, weil sie Biegemoden aller Wellenlängen ausbügeln muss, während eine frei gelenkige Kette aus starren Gliedern sich viel schneller streckt, $1 - z/L \approx k_B T / F b$. Experimente an λ-Phagen-DNA (Smith, Finzi und Bustamante 1992; Bustamante, Marko, Siggia und Smith 1994) folgen der wurmartigen Kette bis etwa 10 pN, wo sich die Doppelhelix elastisch zu dehnen beginnt, und zeigen bei etwa 65 pN eine Überdehnung; dieses Modell hat beides nicht. Die Marko–Siggia-Formel
+  ist eine Interpolation zwischen den beiden Grenzfällen und weicht bei mittlerer Dehnung um bis zu etwa 10 % in der Kraft von der exakten WLC ab. Die Simulation verwendet Segmente von $a = 2.5$ nm, die Steifigkeit ist also $K \approx 20.5$; jeder Monte-Carlo-Sweep dreht jede Tangente ein wenig (Metropolis im lokalen Feld) und rotiert dann das Ende jeder Kette um eine zufällige Achse (ein Pivot). Die erste Hälfte der Sweeps dient der Equilibrierung, über die zweite Hälfte wird gemittelt. Bei den kleinsten Kräften schwankt die Dehnung stark von Kette zu Kette und relaxiert langsam, daher streuen diese Punkte. Der Fit verwendet 0,5–4 pN: Marko–Siggia an jedem Punkt nach $P$ aufgelöst, im Log-Raum gemittelt (kleinste Quadrate in $\log F$). Oberhalb von $F \sim K k_B T / a$ zeigt sich die Diskretheit der Kette als etwas größere Dehnung als im kontinuierlichen Gesetz. Es sind keine experimentellen Daten enthalten.'
+meanings:
+- Einheitstangente von Segment $i$ der Kette $m$, gezogen mit Kraft $b$; die Ketten starten als kraftfreie WLCs
+- $F_0 = 0$ plus 12 Kräfte von 0,02 bis 10 pN; $f_b$ ist die Arbeit $F a$ in Einheiten von $k_B T$
+- Biegesteifigkeit $\kappa / k_B T$, so gewählt, dass $\coth K - 1/K = e^{-a/P}$, d. h. $K \approx P/a + \tfrac12$
+- der Zug der beiden benachbarten Tangenten plus die Kraft entlang $z$
+- 'wiederholtes $k$ ⇒ summiert: Energieänderung beim Drehen einer Tangente; gerade und ungerade Segmente bewegen sich abwechselnd'
+- 'wiederholte $i, k$ ⇒ summiert: gesamte Biegeenergie, verwendet für Pivot-Züge, die ein ganzes Kettenende drehen'
+- Dehnung entlang der Kraft relativ zur Konturlänge
+- Tangentenkorrelation der freien Kette; ihre Abklinglänge ist $P$
+labels:
+  persistence: Persistenzlänge $P$
+  contour_length: Konturlänge $L$
+  chains: Ketten pro Kraft $M$
+  sweeps: Monte-Carlo-Sweeps

@@ -27,7 +27,7 @@ Here $b$ indexes a batch of balls and $i, j$ are spatial components. The repeate
 
 ## Try it
 
-**Live site: <https://jackyko1991.github.io/tensorizer/>**. It shows every problem's equations, code and prebuilt animation. Re-running with your own parameters or edited code needs the Python backend, so run it locally for that (see [Quick start](#quick-start)).
+**Live site: <https://jackyko1991.github.io/tensorizer/>**. It shows every problem's equations, code and prebuilt animation. Re-running with your own parameters goes to the shared cloud backend (a free Hugging Face Space with a run queue, see [docs/deploy-huggingface.md](docs/deploy-huggingface.md)). Pick **This computer** in the top bar to run on your own CPU/GPU instead: clone the repository and start `pixi run api`, then the public site sends runs to `localhost`.
 
 The app has three tabs:
 
@@ -39,6 +39,8 @@ The app has three tabs:
 
 Every problem can also be taken to a notebook: **Open in Colab** opens it in Google Colab (switch the runtime to GPU and the code uses it automatically), and **Download .ipynb** saves your current version, including edited code and parameters. The notebooks live in [notebooks/](notebooks) and are regenerated from the problem files by `pixi run build-assets` or `pixi run notebooks`.
 
+**Ask AI**: the tensor-face button at the bottom right opens a chat with Claude Code, which can explain the current problem, edit its files and run them. Tensorizer builds no agent of its own; it runs Claude Code through the [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk), limited to the files of one problem and a `run_problem` tool. On your own machine (`pixi run dev` or `pixi run api`) it uses your Claude Code login; on the public site you bring your own Anthropic API key, which stays in your browser tab. The free trial works on one problem per visit and nothing is saved.
+
 On phones the workspace splits into four tabs: Problem, Formulation, Code and Results. Add `?lang=<code>` to a link (for example `?lang=ja`) to open it in a given language; the address bar always shows the current one.
 
 The interface and all problem text are available in 10 languages: English, 繁體中文, 简体中文, Français, Deutsch, Español, 日本語, Русский, 한국어 and हिन्दी. Equations and code stay the same in every language. Check translation coverage with `pixi run i18n-status`; [scripts/i18n.py](scripts/i18n.py) exports what needs translating and validates imports.
@@ -46,7 +48,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 ## Problem library
 
 <!-- library:start -->
-105 problems in 11 topics by difficulty level. Click a topic to expand it.
+113 problems in 12 topics by difficulty level. Click a topic to expand it.
 
 <details>
 <summary><b>Mechanics</b> (12 problems)</summary>
@@ -435,16 +437,15 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary><b>Others</b> (9 problems)</summary>
+<summary><b>Biophysics</b> (8 problems)</summary>
 
 <details>
-<summary>🟢 Beginner (3)</summary>
+<summary>🟢 Beginner (2)</summary>
 
 | Problem | Key equation |
 |---|---|
-| [Receptor–ligand binding ($k_{\mathrm{on}}$, $k_{\mathrm{off}}$)](problems/others/receptor_binding) | $J_{bc} = k^{\mathrm{on}}_b\,R_{bc}\,L_{bc} - k^{\mathrm{off}}_b\,C_{bc}$ |
-| [Conway's Game of Life as a convolution](problems/others/game_of_life) | $N_{bp} = K_k\,P_{bkp}$ |
-| [Monte Carlo: estimating $\pi$ with random darts](problems/others/monte_carlo_pi) | $h_{bn} = [x_{bni}\,x_{bni} \le 1]$ |
+| [Receptor–ligand binding ($k_{\mathrm{on}}$, $k_{\mathrm{off}}$)](problems/biophysics/receptor_binding) | $J_{bc} = k^{\mathrm{on}}_b\,R_{bc}\,L_{bc} - k^{\mathrm{off}}_b\,C_{bc}$ |
+| [Michaelis–Menten enzyme kinetics](problems/biophysics/michaelis_menten) | $\dot S_{bc} = -k^{1}_b E_{bc} S_{bc} + k^{-1}_b X_{bc}$ |
 
 </details>
 
@@ -453,9 +454,47 @@ The interface and all problem text are available in 10 languages: English, 繁�
 
 | Problem | Key equation |
 |---|---|
+| [Hodgkin–Huxley action potential](problems/biophysics/hodgkin_huxley) | $\Gamma_{kb} = \big(m_b^3 h_b,\ n_b^4,\ 1\big)$ |
+| [HP lattice protein folding](problems/biophysics/hp_lattice_folding) | $d_{rij} = x_{rik}x_{rik} + x_{rjk}x_{rjk} - 2\,x_{rik}x_{rjk}$ |
+| [Stretching DNA, the worm-like chain](problems/biophysics/worm_like_chain) | $h_{bmik} = K\,(t_{bm,i-1,k} + t_{bm,i+1,k}) + f_b\,\delta_{kz}$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [AlphaFold in miniature: from a distance map to a 3D fold](problems/biophysics/mini_alphafold) | $\hat d_{ij} = p_{ijk}\,c_k$ |
+| [Coarse-grained protein folding: a Gō model with Langevin dynamics](problems/biophysics/coarse_grained_md) | $r_{sp} = \sqrt{(x_{s i_p a} - x_{s j_p a})(x_{s i_p a} - x_{s j_p a})}$ |
+| [Turing patterns: Gray–Scott reaction–diffusion](problems/biophysics/turing_patterns) | $(\nabla^2 u)_{bij} = \frac{u_{b,i+1,j} + u_{b,i-1,j} + u_{b,i,j+1} + u_{b,i,j-1} - 4u_{bij}}{h^2}$ |
+
+</details>
+
+</details>
+
+<details>
+<summary><b>Others</b> (9 problems)</summary>
+
+<details>
+<summary>🟢 Beginner (2)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Conway's Game of Life as a convolution](problems/others/game_of_life) | $N_{bp} = K_k\,P_{bkp}$ |
+| [Monte Carlo: estimating $\pi$ with random darts](problems/others/monte_carlo_pi) | $h_{bn} = [x_{bni}\,x_{bni} \le 1]$ |
+
+</details>
+
+<details>
+<summary>🟠 Intermediate (4)</summary>
+
+| Problem | Key equation |
+|---|---|
 | [Lorenz attractor and the butterfly effect](problems/others/lorenz_attractor) | $\dot x_{bi} = A_{ij}\,x_{bj} + Q_{ijk}\,x_{bj}\,x_{bk}$ |
 | [Noise and the Langevin equation](problems/others/langevin_noise) | $v_{b,n+1} = v_{bn} + \frac{-\gamma\,v_{bn} - k\,x_{bn}}{m}\,\Delta t + \frac{\sqrt{2\gamma k_BT\,\Delta t}}{m}\,\xi_{nb}$ |
 | [Fitting experimental measurements with tensors](problems/others/measurement_fitting) | $r_i = \frac{x_i - f(t_i;\theta)}{\sigma_{tot,i}},\ \ \sigma_{tot,i}^2 = \sigma_i^2 + s^2$ |
+| [Breaking the Enigma with permutation tensors](problems/others/enigma_solver) | $R^{(k)}_{ij} = \rho^{-o_k}_{ia} W^{(k)}_{ab}\, \rho^{o_k}_{bj}$ |
 
 </details>
 
@@ -579,7 +618,8 @@ A new category also needs an entry in `CATEGORIES` in `scripts/build_assets.py`.
 - More problems in every topic, and more topics.
 - Real datasets: compare simulations with measurements, and fit physical parameters with autograd (inverse problems, PINNs).
 - Free-form input: type LaTeX, handwrite, or photograph an equation → translated to tensor form.
-- Tensorizer Pro (separate hosted service): sign-in page leading to personal workspaces with saved notebooks, GPU runs, and team collaboration. The open-source app in this repository stays free.
+- Tensorizer Pro (separate hosted service): sign-in page leading to personal workspaces with saved projects in the cloud, GPU runs for the agent and the problems, and team collaboration.
+- More agents next to Claude Code in the Ask panel. The open-source app in this repository stays free.
 
 ## License
 

@@ -1,0 +1,19 @@
+source_hash: 302fe326211e
+title: 'Turing-Muster: Gray–Scott-Reaktions–Diffusion'
+summary: Zwei Chemikalien, die reagieren und unterschiedlich schnell diffundieren, können eine nahezu gleichförmige Mischung in Flecken, Streifen und Labyrinthe verwandeln, Turings Idee von 1952, wie Tierfelle und andere biologische Muster entstehen. Das Gray–Scott-Modell wird auf einem periodischen Gitter mit einem 5-Punkt-Laplace-Stencil für vier $(F, k)$-Paare gleichzeitig in einem $(2, B, n, n)$-Tensor gelöst, und eine lineare Stabilitätsanalyse (die Dispersionsrelation $\lambda(q)$) zeigt, wo eine echte Turing-Instabilität existiert.
+notes: 'Turings Einsicht war, dass Diffusion, die normalerweise alles glättet, einen gleichförmigen Zustand destabilisieren kann, wenn sich ein Autokatalysator (hier $v$) langsamer ausbreitet als die Substanz, die ihn begrenzt ($u$): Eine kleine Erhebung von $v$ wächst lokal, indem sie $u$ verbraucht, und die Verarmung an $u$ um sie herum hindert die Nachbarn am Wachsen, eine kurzreichweitige Aktivierung und langreichweitige Hemmung. Lineare Stabilität macht das präzise. Eine Welle $e^{i\mathbf q\cdot\mathbf x + \lambda t}$ auf einem gleichförmigen Zustand wächst mit den Eigenwerten von $J - q^2\,\mathrm{diag}(D_u, D_v)$; wenn $\lambda(0) < 0$, aber $\lambda(q) > 0$ für ein Band von $q$, entsteht die schnellste Wellenlänge $2\pi/q_{\max}$ aus winzigem Rauschen. Mit $D_u = D_v$ verschiebt sich jeder Eigenwert einfach um $-Dq^2$, sodass keine Turing-Instabilität möglich ist: Setz das Diffusionsverhältnis auf 1, und der blaue Bereich auf der Karte verschwindet. In Gray–Scott ist hier nur das
+  Paar „Turing“ von dieser Art, und es startet von seinem gleichförmigen Zustand plus 1 % Rauschen; die gestrichelte Linie prüft, dass die Amplitude zunächst wie $e^{\lambda_{\max} t}$ wächst. Die berühmten Flecken, Streifen und Labyrinthe (Pearson 1993) liegen meist dort, wo der einzige gleichförmige Zustand $u = 1$, $v = 0$ ist, der gegenüber jeder kleinen Störung stabil ist; diese Muster brauchen einen endlichen Keim (ein paar Quadrate aus $v$) und sind nichtlineare, sich selbst replizierende Strukturen statt einer linearen Turing-Instabilität. Der 5-Punkt-Stencil sieht eine Welle als $q^2 \to (4/h^2)\sin^2(qh/2)$, was für Wellenlängen von vielen Zellen nahe bei $q^2$ liegt. Echte biologische Beispiele sind der Fingerabstand in Gliedmaßen, der Abstand von Haarfollikeln und Streifen auf Fischhaut, wo Aktivator und Inhibitor Signalproteine sind.'
+meanings:
+- Zufuhr- und Abbaurate von Paar $b$; die angehängten Einsen broadcasten sie über das Gitter
+- Substrat- und Autokatalysatorkonzentration in Zelle $(i, j)$ für jedes Paar, gestapelt zu $y$ der Form $(2, B, n, n)$
+- vier Nachbarn minus das Vierfache des Zentrums, mit torch.roll für die periodischen Ränder
+- der autokatalytische Schritt $U + 2V \to 3V$, die Zufuhr und der Abbau
+- explizites Euler-Verfahren mit $\Delta t = 1$, stabil solange $D\,\Delta t / h^2 < 1/4$
+- $(1, 0)$ immer; zwei weitere, wenn $F \ge 4(F + k)^2$
+- linearisierte Kinetik $\partial R_\alpha / \partial c_\beta$ in einem gleichförmigen Zustand
+- größter $\operatorname{Re}$-Eigenwert von $M(q)$ für einen Batch von $Q$ Wellenzahlen
+- 'ein Zustand mit $\lambda(0) < 0$, aber $\lambda(q) > 0$ in einem Band: die Turing-Instabilität'
+labels:
+  grid: Gittergröße $n$
+  steps: Zeitschritte
+  ratio: Diffusionsverhältnis $D_v / D_u$

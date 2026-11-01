@@ -1,0 +1,18 @@
+source_hash: 9c0f102b3159
+title: Potencial de acción de Hodgkin–Huxley
+summary: 'El modelo de 1952 del axón gigante del calamar: un condensador de membrana descargado por canales de sodio y potasio cuyas compuertas $m$, $h$, $n$ se abren y cierran con el voltaje. Cuarenta y un axones, cada uno estimulado por un escalón de corriente distinto, se integran juntos en un solo tensor $(4, B)$ para encontrar el umbral de disparo y la frecuencia de disparo en función de la corriente.'
+notes: 'Hodgkin y Huxley (premio Nobel 1963) midieron las corrientes de sodio y potasio del axón gigante del calamar con fijación de voltaje (voltage clamp) y las ajustaron con tres compuertas. La corriente de sodio se activa rápido a través de $m^3$ y se apaga más despacio a través de la compuerta de inactivación $h$; la corriente de potasio se abre tarde a través de $n^4$. Un potencial de acción es una carrera entre ellas: una pequeña despolarización abre $m$, el $\mathrm{Na}^+$ que entra despolariza aún más (retroalimentación positiva) y $V$ se dispara hacia $E_{Na}$; luego $h$ se cierra y $n$ se abre, y $V$ vuelve a bajar e incluso cae por debajo del reposo. Con un escalón de corriente sostenido, el modelo muestra tres regímenes. Por debajo de unos 2,3 µA/cm², la membrana solo se carga pasivamente. Entre ese valor y unos 6,3 µA/cm², dispara un único potencial de acción y luego se estabiliza, porque la inactivación y la corriente de potasio la mantienen en un nuevo reposo. Por encima,
+  dispara de forma repetitiva, y la frecuencia no empieza en cero sino que salta a unos 50 Hz: el axón del calamar es una neurona de tipo II (resonador) cuyo estado de reposo pierde estabilidad en una bifurcación de Hopf, a diferencia de las neuronas de tipo I, que pueden disparar arbitrariamente despacio. La curva f–I sube luego suavemente, hasta unos 68 Hz a 10 µA/cm². Las funciones de tasa tienen singularidades evitables, $0.1(V+40)/(1 - e^{-(V+40)/10})$ es finita en $V = -40$ mV, así que el código las evalúa mediante $x/(1 - e^{-x})$ con un límite seguro. Los experimentos originales se hicieron a 6,3 °C; calentar el axón acelera cada compuerta en $\phi = 3^{(T - 6.3)/10}$, lo que hace los potenciales de acción más estrechos y el disparo más rápido, hasta que por encima de unos 30 °C el axón deja de disparar por completo. Simplificaciones: un parche de membrana con fijación espacial (sin propagación a lo largo del axón) y canales deterministas.'
+meanings:
+- corriente de estímulo del axón $b$, un escalón que se activa a los 10 ms (µA/cm²)
+- potencial de membrana y compuertas $g = (m, h, n)$ de cada axón
+- tasas de apertura y cierre de cada compuerta (1/ms), los ajustes clásicos del axón de calamar
+- fracción abierta del canal $k$ = Na, K, fuga
+- conductancias máximas (120, 36, 0,3 mS/cm²) y potenciales de inversión (50, −77, −54,4 mV)
+- corriente iónica total; $k$ repetido ⇒ sumado sobre los canales
+- 'factor de temperatura ($Q_{10} = 3$): cada compuerta se acelera 3× por cada 10 °C'
+- frecuencia de disparo estacionaria a partir de los intervalos entre potenciales de acción (Hz)
+labels:
+  I_max: Estímulo máximo $I_{max}$
+  t_end: Tiempo simulado
+  temp: Temperatura $T$

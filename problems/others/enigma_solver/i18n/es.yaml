@@ -1,0 +1,25 @@
+source_hash: 9231afd9bb4a
+title: Descifrar la Enigma con tensores de permutación
+summary: 'No es física, solo por diversión: cada pulsación de tecla de una Enigma I de 3 rotores es un producto de ocho matrices de permutación $26\times26$, con cada rotor conjugado por un desplazamiento cíclico según su posición. Cifra un mensaje en inglés con un orden de rotores y una posición inicial secretos, y luego rómpelo descifrando con las $26^3 = 17\,576$ posiciones iniciales a la vez como un único tensor por lotes, para cada orden de rotores, quedándote con el texto cuyas estadísticas de letras más se parezcan al inglés.'
+notes: 'El reflector $U$ es una permutación simétrica sin puntos fijos, así que $E = Q^{-1}UQ$ con $Q = R_3R_2R_1S$ también lo es: $E^2 = I$ (la misma configuración descifra) y $E_{ii} = 0$ (ninguna letra se cifra nunca en sí misma, una debilidad que aprovecharon los criptoanalistas). Antes de cada pulsación avanza el rotor derecho; cuando está en su muesca, también arrastra al rotor central, y cuando el rotor central está en su propia muesca, avanza junto con el rotor izquierdo (la anomalía del doble paso). Vector de prueba: rotores I-II-III, reflector B, anillos AAA, inicio AAA convierte AAAAA en BDZGO. Historia: Marian Rejewski rompió la Enigma en 1932 con la teoría de grupos de permutaciones, y la bomba de Turing y Welchman (1940) recorría órdenes y posiciones de rotores usando cribs, texto en claro adivinado como los partes meteorológicos, no estadística. El ataque puramente estadístico de aquí, que ordena los descifrados por el índice de coincidencia, es el que James Gillogly publicó
+  en 1995 (Cryptologia), que además recuperaba las posiciones de los anillos y las clavijas en etapas posteriores. Simplificaciones: las posiciones de los anillos son AAA y el atacante las conoce, y el panel de conexiones está vacío, así que el espacio de claves es de solo $60 \times 26^3 \approx 10^6$ configuraciones y la correcta destaca claramente. Un panel de conexiones real de la guerra con 10 cables añade unos $1.5 \times 10^{14}$ posibilidades, intercambia 20 de las 26 letras a ambos lados de los rotores y desordena tanto las estadísticas de letras que la configuración correcta de los rotores apenas supera a las incorrectas; el ataque de Gillogly necesita entonces una búsqueda local (hill climbing) sobre las clavijas, y con mensajes cortos falla. Prueba con menos letras (unas 60 a 100) o con la otra puntuación para ver cuándo las estadísticas dejan de ser fiables; buscar solo entre los rotores I–III no puede encontrar una clave que use IV o V.'
+meanings:
+- una letra es un vector one-hot $e_x$ o simplemente su índice $x \in \{0, \dots, 25\}$ (A = 0)
+- 'cableado histórico de los rotores I–V: $W_{ab} = 1$ cuando el contacto $b$ está cableado al contacto $a$'
+- desplazamiento cíclico $x \to x + o$; $o_k$ = letra de la ventana − posición del anillo del rotor $k$ en la pulsación $t$
+- '$a, b$ repetidos ⇒ sumados: el rotor girado; como índices $x \to (w[(x + o) \bmod 26] - o) \bmod 26$'
+- 'una pulsación: panel de conexiones $S$, rotores de derecha $R^{(1)}$ a izquierda $R^{(3)}$, reflector $U$ y vuelta; $(R^{-1})_{ab} = R_{ba}$'
+- el rotor en los 26 desplazamientos como tabla de consulta, de modo que $R\,e_x$ se convierte en F[o, x] para millones de letras a la vez
+- el texto cifrado descifrado con cada posición inicial $b$ ($B = 26^3$); descifrar = cifrar ya que $E^2 = I$
+- cuántas veces aparece la letra $k$ en el candidato $b$
+- '$k$ repetido ⇒ sumado: probabilidad de que dos letras coincidan, unos 0,066 para el inglés y $1/26 \approx 0.038$ para texto aleatorio'
+- 'la puntuación alternativa: log-verosimilitud media de unigramas del inglés $c_{bk}\log p_k / N$'
+labels:
+  message: Texto en claro
+  rotor_order: Orden secreto de los rotores (izquierda-centro-derecha)
+  start_left: Posición inicial secreta del rotor izquierdo
+  start_middle: Posición inicial secreta del rotor central
+  start_right: Posición inicial secreta del rotor derecho
+  n_letters: Letras $N$ usadas para puntuar
+  score: 'Puntuación: índice de coincidencia o log-verosimilitud de unigramas'
+  search_rotors: Rotores explorados (60 o 6 órdenes)

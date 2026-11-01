@@ -1,0 +1,44 @@
+title: Stretching DNA, the worm-like chain
+category: biophysics
+level: intermediate
+order: 3
+summary: >
+  Pull on a DNA molecule with optical tweezers and it resists like an entropic spring that stiffens sharply near full
+  length. The Marko–Siggia worm-like-chain law is compared with a freely jointed chain, and a discrete chain of
+  unit tangents with bending stiffness is simulated by Monte Carlo for a whole batch of forces at once, as one
+  $(B, M, N, 3)$ tensor. The persistence length $P \approx 50$ nm comes back out of both the tangent correlations
+  and a fit to the force–extension curve.
+animated: true
+vector_form: '\frac{F P}{k_B T} = \frac{z}{L} + \frac{1}{4(1 - z/L)^2} - \frac14,\qquad \beta E = -K \sum_i \hat{\mathbf t}_i \cdot \hat{\mathbf t}_{i+1} - \frac{F a}{k_B T} \sum_i \hat t_{i,z},\qquad \langle \hat{\mathbf t}_i \cdot \hat{\mathbf t}_{i+n} \rangle = e^{-n a / P}'
+index_form: 'h_{bmik} = K\,(t_{bm,i-1,k} + t_{bm,i+1,k}) + f_b\,\delta_{kz} \qquad \Delta\beta E_{bmi} = -h_{bmik}\,(t''_{bmik} - t_{bmik}) \qquad \frac{z_{bm}}{L} = \frac1N\, t_{bmiz}'
+translation:
+  - {symbol: 't_{bmik}', code: 'relaxed_chains(B, M, N, K, seed, device)', shape: '(B, M, N, 3)', meaning: 'unit tangent of segment $i$ of chain $m$ pulled by force $b$; chains start as force-free WLCs'}
+  - {symbol: 'F_b,\ f_b', code: 'forces(12, device), F * a / KT', shape: '(B,)', meaning: '$F_0 = 0$ plus 12 forces from 0.02 to 10 pN; $f_b$ is the work $F a$ in units of $k_B T$'}
+  - {symbol: 'K', code: 'stiffness_for(P, a)', shape: '()', meaning: 'bending stiffness $\kappa / k_B T$ chosen so that $\coth K - 1/K = e^{-a/P}$, i.e. $K \approx P/a + \tfrac12$'}
+  - {symbol: 'h_{bmik}', code: 'local_field(t, K, f)', shape: '(B, M, N, 3)', meaning: 'the pull of the two neighbouring tangents plus the force along $z$'}
+  - {symbol: 'h_{bmik}(t''_{bmik} - t_{bmik})', code: "einsum('bmik,bmik->bmi', h, t_new - t)", shape: '(B, M, N)', meaning: 'repeated $k$ ⇒ summed: energy change of turning one tangent; even and odd segments move in turn'}
+  - {symbol: 't_{bmik}t_{bm,i+1,k}', code: "einsum('bmik,bmik->bm', t[:, :, :-1], t[:, :, 1:])", shape: '(B, M)', meaning: 'repeated $i, k$ ⇒ summed: total bending energy, used for pivot moves that turn a whole tail'}
+  - {symbol: 'z_{bm}/L', code: 't[..., 2].mean(-1)', shape: '(B, M)', meaning: 'extension along the force over the contour length'}
+  - {symbol: '\langle t_{ik} t_{i+n,k} \rangle', code: 'tangent_correlation(t[0], n_max)', shape: '(n_max+1,)', meaning: 'tangent correlation of the free chain; its decay length is $P$'}
+notes: >
+  A double-stranded DNA molecule is stiff on short scales but floppy on long ones: the direction of its backbone is
+  remembered over the persistence length $P \approx 50$ nm (about 150 base pairs), then forgotten. Pulling it
+  straight therefore costs entropy, not bond energy. At low force the response is linear, $z/L \approx 2 P F / 3 k_B T$,
+  the same for any polymer with Kuhn length $b = 2P$; at high force the worm-like chain approaches full length only
+  slowly, $1 - z/L \approx \tfrac12 \sqrt{k_B T / F P}$, because it must iron out bending modes of every wavelength,
+  whereas a freely jointed chain of rigid links straightens much faster, $1 - z/L \approx k_B T / F b$. Experiments
+  on λ-phage DNA (Smith, Finzi and Bustamante 1992; Bustamante, Marko, Siggia and Smith 1994) follow the worm-like
+  chain up to about 10 pN, where the double helix starts to stretch elastically, and overstretch near 65 pN; this
+  model has neither. The Marko–Siggia formula is an interpolation between the two limits and differs from the exact
+  WLC by up to about 10 % in force at intermediate extension. The simulation uses segments of $a = 2.5$ nm, so the
+  stiffness is $K \approx 20.5$; each Monte Carlo sweep turns every tangent a little (Metropolis on the local field)
+  and then rotates the tail of every chain about a random axis (a pivot). The first half of the sweeps is
+  equilibration and the second half is averaged. At the lowest forces the extension fluctuates strongly from chain
+  to chain and relaxes slowly, so those points scatter. The fit uses 0.5–4 pN: Marko–Siggia solved for $P$ at each
+  point, averaged in log space (least squares in $\log F$). Above $F \sim K k_B T / a$ the discreteness of the chain
+  shows up as a slightly larger extension than the continuous law. No experimental data are included.
+params:
+  persistence: {default: 50.0, min: 10, max: 150, step: 5, label: 'Persistence length $P$', unit: nm}
+  contour_length: {default: 1000.0, min: 300, max: 2000, step: 100, label: 'Contour length $L$', unit: nm}
+  chains: {default: 12, min: 2, max: 48, step: 2, type: int, label: 'Chains per force $M$'}
+  sweeps: {default: 1200, min: 200, max: 6000, step: 100, type: int, label: Monte Carlo sweeps}
