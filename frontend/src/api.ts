@@ -138,6 +138,8 @@ export interface TestTally {
   passed: number;
   failed: number;
   ok: boolean;
+  /** each test's outcome (and failure message), for the TDD window */
+  items?: { name: string; outcome: string; message: string }[];
 }
 
 export interface RunResult {

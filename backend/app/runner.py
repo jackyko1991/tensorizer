@@ -81,7 +81,24 @@ def _tally(lines: list[str], code: int | None) -> dict:
     for line in lines[-5:]:
         for n, word in TEST_SUMMARY.findall(line):
             counts["passed" if word == "passed" else "failed"] += int(n)
-    return {**counts, "ok": code == 0 and counts["failed"] == 0 and counts["passed"] > 0}
+    return {**counts, "ok": code == 0 and counts["failed"] == 0 and counts["passed"] > 0, "items": _items(lines)}
+
+
+TEST_LINE = re.compile(r"::(\S+) (PASSED|FAILED|ERROR|SKIPPED|XFAIL|XPASS)")
+FAIL_LINE = re.compile(r"^(?:FAILED|ERROR) \S+::(\S+?)(?: - (.*))?$")
+
+
+def _items(lines: list[str]) -> list[dict]:
+    """Each test with its outcome, for the TDD window: [{"name", "outcome", "message"}] from pytest -v output and
+    its short summary ("FAILED file::test - AssertionError: ...")."""
+    items: dict[str, dict] = {}
+    for line in lines:
+        if m := TEST_LINE.search(line):
+            items.setdefault(m[1], {"name": m[1], "outcome": m[2].lower(), "message": ""})
+    for line in lines:
+        if (m := FAIL_LINE.match(line.strip())) and m[1] in items:
+            items[m[1]]["message"] = (m[2] or "")[:300]
+    return list(items.values())[:200]
 
 
 async def _stream_tests(test_file: Path, work: Path, env: dict[str, str]) -> AsyncIterator[dict]:
@@ -93,7 +110,7 @@ async def _stream_tests(test_file: Path, work: Path, env: dict[str, str]) -> Asy
     lines: list[str] = []
     code = None
     try:
-        async for event in _stream_process(cmd, work, env):
+        async for event in _stream_process(cmd, work, {**env, "COLUMNS": "240"}):  # untrimmed failure lines
             if event["type"] == "exit":
                 code = event["code"]
                 break
@@ -204,7 +221,7 @@ async def stream_problem(
     note = f"{device_note}\n" if device_note else ""  # shown first, also for a cached result run on that device
     if device_note:
         yield {"type": "line", "text": device_note, "replace": False}
-    run_id = _run_id(category, slug, params, files or {}, _source_hash(src), verbose, bool(root), "tests", device)
+    run_id = _run_id(category, slug, params, files or {}, _source_hash(src), verbose, bool(root), "tests-v2", device)
     out_dir = CACHE / run_id
 
     # A finished run writes console.txt last; a folder without it is a run cut short (the page closed mid-run, a
@@ -270,7 +287,7 @@ async def stream_problem(
             if code == 0 and test_file.is_file():
                 async for event in _stream_tests(test_file, work, _env(out_dir, device)):
                     if event["type"] == "tests":
-                        tests = {k: event[k] for k in ("passed", "failed", "ok")}
+                        tests = {k: event[k] for k in ("passed", "failed", "ok", "items")}
                         test_log = event["log"]
                     else:
                         yield event

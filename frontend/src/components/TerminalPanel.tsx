@@ -4,6 +4,7 @@ import type { Problem } from "../types";
 import { useLang } from "../i18n";
 import { PanelBar } from "./PlotPanel";
 import QueueModal from "./QueueModal";
+import TestsModal from "./TestsModal";
 
 interface Props {
   problem: Problem;
@@ -57,6 +58,7 @@ export default function TerminalPanel({ problem, console, error, running, tests,
   // "Clear" hides what is shown now; the next run (new output) appears again.
   const [cleared, setCleared] = useState<{ console: string; error: string | null } | null>(null);
   const [queueOpen, setQueueOpen] = useState(false);
+  const [testsOpen, setTestsOpen] = useState(false);
   const isCleared = !running && cleared !== null && cleared.console === console && cleared.error === error;
   useEffect(() => {
     if (running) setCleared(null);
@@ -72,17 +74,20 @@ export default function TerminalPanel({ problem, console, error, running, tests,
     <section data-ai-region="terminal" className={`flex min-w-0 flex-col bg-white ${className}`}>
       <PanelBar title={t("terminal")}>
         {tests && !running && (
-          <span
+          <button
+            onClick={() => setTestsOpen(true)}
             data-testid="tdd-light"
-            title={t("tdd.hint")}
-            className={`flex items-center gap-1.5 rounded-full px-2 py-0.5 font-medium ${
-              tests.ok ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"
+            title={t("tdd.open")}
+            className={`flex items-center gap-1.5 rounded-full px-2 py-0.5 font-medium hover:ring-1 ${
+              tests.ok
+                ? "bg-emerald-50 text-emerald-700 hover:ring-emerald-300"
+                : "bg-red-50 text-red-700 hover:ring-red-300"
             }`}
           >
             <span className={`h-2 w-2 rounded-full ${tests.ok ? "bg-emerald-500" : "bg-red-500"}`} />
             TDD {tests.passed}/{tests.passed + tests.failed} {t("tdd.pass")}
-            {tests.failed > 0 && ` · ${tests.failed} ${t("tdd.fail")}`}
-          </span>
+            {tests.failed > 0 && ` / ${tests.failed} ${t("tdd.fail")}`}
+          </button>
         )}
         <button
           onClick={() => setQueueOpen(true)}
@@ -117,6 +122,7 @@ export default function TerminalPanel({ problem, console, error, running, tests,
         {error && !running && !isCleared && <span className="text-red-600">{`\nerror: ${error}`}</span>}
       </pre>
       {queueOpen && <QueueModal onClose={() => setQueueOpen(false)} />}
+      {testsOpen && tests && <TestsModal tests={tests} onClose={() => setTestsOpen(false)} />}
     </section>
   );
 }
