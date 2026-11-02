@@ -10,48 +10,6 @@ import type { ParamSpec, Problem, TranslationRow } from "../types";
 import EquationPanel from "./EquationPanel";
 import Tex, { RichText } from "./Tex";
 
-export type EditMode = "inline" | "markdown";
-const MODE_KEY = "tensorizer.wsEditMode";
-
-/** The chosen edit mode, remembered per browser. */
-export function useEditMode(): [EditMode, (m: EditMode) => void] {
-  const [mode, setMode] = useState<EditMode>(() => {
-    try {
-      return localStorage.getItem(MODE_KEY) === "markdown" ? "markdown" : "inline";
-    } catch {
-      return "inline";
-    }
-  });
-  const choose = (m: EditMode) => {
-    setMode(m);
-    try {
-      localStorage.setItem(MODE_KEY, m);
-    } catch {
-      // private window: the choice lasts for this page only
-    }
-  };
-  return [mode, choose];
-}
-
-export function ModeToggle({ mode, onMode }: { mode: EditMode; onMode: (m: EditMode) => void }) {
-  const { t } = useLang();
-  return (
-    <div className="inline-flex rounded-md border border-gray-200 bg-gray-50 p-0.5 text-xs" role="tablist">
-      {(["inline", "markdown"] as const).map((m) => (
-        <button
-          key={m}
-          role="tab"
-          aria-selected={mode === m}
-          onClick={() => onMode(m)}
-          className={`rounded px-2.5 py-1 font-medium ${mode === m ? "bg-white text-blue-700 shadow-sm" : "text-gray-500 hover:text-gray-800"}`}
-        >
-          {t(m === "inline" ? "edit.inline" : "edit.markdown")}
-        </button>
-      ))}
-    </div>
-  );
-}
-
 /** A value shown rendered; click to edit, Enter (single line) or blur saves, Esc cancels. */
 export function Field({
   value,
@@ -120,12 +78,16 @@ export function Field({
       onClick={() => setDraft(value)}
       onKeyDown={(e) => e.key === "Enter" && setDraft(value)}
       className={`group/field relative cursor-text rounded-md ${
-        value.trim() ? "hover:bg-blue-50/60" : "border border-dashed border-gray-300 px-2 py-1 text-gray-400 hover:border-blue-300 hover:text-blue-600"
+        value.trim()
+          ? "hover:bg-blue-50/60"
+          : "border border-dashed border-gray-300 px-2 py-1 text-gray-400 hover:border-blue-300 hover:text-blue-600"
       } ${className}`}
     >
       {value.trim() ? (render ? render(value) : value) : `+ ${placeholder}`}
       {value.trim() && (
-        <span className="pointer-events-none absolute -top-1 right-0 text-xs text-blue-500 opacity-0 group-hover/field:opacity-100">✎</span>
+        <span className="pointer-events-none absolute -top-1 right-0 text-xs text-blue-500 opacity-0 group-hover/field:opacity-100">
+          ✎
+        </span>
       )}
     </div>
   );
@@ -152,22 +114,26 @@ export function InlineEquations({ problem, onMeta }: { problem: Problem; onMeta:
     </>
   );
   return (
-    <section data-ai-region="equations" className="rounded-xl border border-gray-200 bg-white p-5" data-testid="ws-equations">
+    <section
+      data-ai-region="equations"
+      className="rounded-xl border border-gray-200 bg-white p-5"
+      data-testid="ws-equations"
+    >
       {eq("vector_form", t("eq.vector"))}
       {eq("index_form", t("eq.index"))}
       <h3 className="mt-5 text-xs font-semibold uppercase tracking-wide text-gray-500">{t("eq.translation")}</h3>
       <TranslationEditor rows={problem.translation} onChange={(translation) => onMeta({ translation })} />
       <h3 className="mt-5 text-xs font-semibold uppercase tracking-wide text-gray-500">{t("edit.notes")}</h3>
       <div data-ai-region="notes">
-      <Field
-        multiline
-        className="mt-1 text-sm leading-relaxed text-gray-600"
-        inputClass="text-sm"
-        value={problem.notes ?? ""}
-        placeholder={t("edit.addNotes")}
-        render={rich}
-        onCommit={(notes) => onMeta({ notes })}
-      />
+        <Field
+          multiline
+          className="mt-1 text-sm leading-relaxed text-gray-600"
+          inputClass="text-sm"
+          value={problem.notes ?? ""}
+          placeholder={t("edit.addNotes")}
+          render={rich}
+          onCommit={(notes) => onMeta({ notes })}
+        />
       </div>
       <h3 className="mt-5 text-xs font-semibold uppercase tracking-wide text-gray-500">{t("edit.params")}</h3>
       <div data-ai-region="params">
@@ -179,7 +145,8 @@ export function InlineEquations({ problem, onMeta }: { problem: Problem; onMeta:
 
 function TranslationEditor({ rows, onChange }: { rows: TranslationRow[]; onChange: (rows: TranslationRow[]) => void }) {
   const { t } = useLang();
-  const set = (i: number, patch: Partial<TranslationRow>) => onChange(rows.map((r, j) => (j === i ? { ...r, ...patch } : r)));
+  const set = (i: number, patch: Partial<TranslationRow>) =>
+    onChange(rows.map((r, j) => (j === i ? { ...r, ...patch } : r)));
   return (
     <div data-ai-region="translation" className="mt-2 overflow-x-auto">
       <table className="w-full text-sm">
@@ -212,15 +179,29 @@ function TranslationEditor({ rows, onChange }: { rows: TranslationRow[]; onChang
                   placeholder="x[i]"
                   label={t("col.code")}
                   inputClass="font-mono text-xs"
-                  render={(v) => <code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs text-gray-800">{v}</code>}
+                  render={(v) => (
+                    <code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs text-gray-800">{v}</code>
+                  )}
                   onCommit={(code) => set(i, { code })}
                 />
               </td>
               <td className="py-1.5 pr-2 font-mono text-xs text-gray-600">
-                <Field value={row.shape} placeholder="(N,)" label={t("col.shape")} inputClass="font-mono text-xs" onCommit={(shape) => set(i, { shape })} />
+                <Field
+                  value={row.shape}
+                  placeholder="(N,)"
+                  label={t("col.shape")}
+                  inputClass="font-mono text-xs"
+                  onCommit={(shape) => set(i, { shape })}
+                />
               </td>
               <td className="py-1.5 pr-2 text-[13px] text-gray-600">
-                <Field value={row.meaning} placeholder={t("col.meaning")} render={rich} inputClass="text-xs" onCommit={(meaning) => set(i, { meaning })} />
+                <Field
+                  value={row.meaning}
+                  placeholder={t("col.meaning")}
+                  render={rich}
+                  inputClass="text-xs"
+                  onCommit={(meaning) => set(i, { meaning })}
+                />
               </td>
               <td className="py-1.5">
                 <button
@@ -248,16 +229,25 @@ function TranslationEditor({ rows, onChange }: { rows: TranslationRow[]; onChang
 
 const num = (s: string) => (s.trim() === "" || isNaN(Number(s)) ? undefined : Number(s));
 
-function ParamsEditor({ params, onChange }: { params: Record<string, ParamSpec>; onChange: (p: Record<string, ParamSpec>) => void }) {
+function ParamsEditor({
+  params,
+  onChange,
+}: {
+  params: Record<string, ParamSpec>;
+  onChange: (p: Record<string, ParamSpec>) => void;
+}) {
   const { t } = useLang();
   const entries = Object.entries(params);
   const write = (list: [string, ParamSpec][]) => onChange(Object.fromEntries(list));
   const set = (i: number, name: string, spec: ParamSpec) => {
     // drop empty optional fields so meta.yaml stays tidy
-    const clean = Object.fromEntries(Object.entries(spec).filter(([, v]) => v !== undefined && v !== "")) as unknown as ParamSpec;
+    const clean = Object.fromEntries(
+      Object.entries(spec).filter(([, v]) => v !== undefined && v !== ""),
+    ) as unknown as ParamSpec;
     write(entries.map((e, j) => (j === i ? [name, clean] : e)));
   };
-  const cellInput = "w-full min-w-[3.5rem] rounded border border-gray-200 px-1.5 py-0.5 font-mono text-xs focus:border-blue-300 focus:outline-none";
+  const cellInput =
+    "w-full min-w-[3.5rem] rounded border border-gray-200 px-1.5 py-0.5 font-mono text-xs focus:border-blue-300 focus:outline-none";
   return (
     <div className="mt-2 overflow-x-auto">
       {entries.length > 0 && (
@@ -290,17 +280,34 @@ function ParamsEditor({ params, onChange }: { params: Record<string, ParamSpec>;
               );
               return (
                 <tr key={i} data-testid="ws-param-row">
-                  {cell(name, (v) => v.trim() && !params[v.trim()] && set(i, v.trim().replace(/\W/g, "_"), spec), t("param.name"))}
-                  {cell(text(spec.default), (v) => set(i, name, { ...spec, default: choice ? v : (num(v) ?? 0) }), t("param.default"))}
+                  {cell(
+                    name,
+                    (v) => v.trim() && !params[v.trim()] && set(i, v.trim().replace(/\W/g, "_"), spec),
+                    t("param.name"),
+                  )}
+                  {cell(
+                    text(spec.default),
+                    (v) => set(i, name, { ...spec, default: choice ? v : (num(v) ?? 0) }),
+                    t("param.default"),
+                  )}
                   {choice
                     ? cell(
                         (spec.options ?? []).join(", "),
-                        (v) => set(i, name, { ...spec, options: v.split(",").map((o) => o.trim()).filter(Boolean) }),
+                        (v) =>
+                          set(i, name, {
+                            ...spec,
+                            options: v
+                              .split(",")
+                              .map((o) => o.trim())
+                              .filter(Boolean),
+                          }),
                         t("param.options"),
                         3,
                       )
                     : (["min", "max", "step"] as const).map((k) => (
-                        <Fragment key={k}>{cell(text(spec[k]), (v) => set(i, name, { ...spec, [k]: num(v) }), t(`param.${k}`))}</Fragment>
+                        <Fragment key={k}>
+                          {cell(text(spec[k]), (v) => set(i, name, { ...spec, [k]: num(v) }), t(`param.${k}`))}
+                        </Fragment>
                       ))}
                   {cell(text(spec.label), (v) => set(i, name, { ...spec, label: v || undefined }), t("param.label"))}
                   {cell(text(spec.unit), (v) => set(i, name, { ...spec, unit: v || undefined }), t("param.unit"))}
@@ -368,7 +375,17 @@ function ParamsEditor({ params, onChange }: { params: Record<string, ParamSpec>;
  */
 const MD_EXTENSIONS = [markdown(), EditorView.lineWrapping];
 
-export function MarkdownEditor({ problem, onMeta }: { problem: Problem; onMeta: (f: Partial<MetaFields>) => void }) {
+/** The problem as one Markdown document; `preview` adds a rendered copy below (off in the floating editor, where the
+ * inline view underneath is the preview). */
+export function MarkdownEditor({
+  problem,
+  onMeta,
+  preview: showPreview = true,
+}: {
+  problem: Problem;
+  onMeta: (f: Partial<MetaFields>) => void;
+  preview?: boolean;
+}) {
   const { t } = useLang();
   const fields = pickMd({ ...problem, notes: problem.notes ?? "" });
   const fieldsKey = JSON.stringify(fields);
@@ -417,26 +434,124 @@ export function MarkdownEditor({ problem, onMeta }: { problem: Problem; onMeta: 
   return (
     <div className="space-y-3" data-testid="ws-markdown">
       <div className="min-w-0 overflow-hidden rounded-xl border border-gray-200 bg-white">
-        <CodeMirror value={text} extensions={MD_EXTENSIONS} theme="light" basicSetup={{ foldGutter: false }} onChange={edit} onUpdate={onUpdate} className="text-sm" />
+        <CodeMirror
+          value={text}
+          extensions={MD_EXTENSIONS}
+          theme="light"
+          basicSetup={{ foldGutter: false }}
+          onChange={edit}
+          onUpdate={onUpdate}
+          className="text-sm"
+        />
         {error && (
           <p className="border-t border-amber-200 bg-amber-50 px-3 py-1.5 text-xs text-amber-800">
             ⚠ {t("edit.mdError")}: {error}
           </p>
         )}
       </div>
-      <div className="min-w-0 space-y-3">
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <h2 className="text-lg font-semibold">
-            <RichText text={preview.title} />
-          </h2>
-          {preview.summary && (
-            <p className="mt-1 whitespace-pre-line text-sm text-gray-600">
-              <RichText text={preview.summary} />
-            </p>
-          )}
+      {showPreview && (
+        <div className="min-w-0 space-y-3">
+          <div className="rounded-xl border border-gray-200 bg-white p-4">
+            <h2 className="text-lg font-semibold">
+              <RichText text={preview.title} />
+            </h2>
+            {preview.summary && (
+              <p className="mt-1 whitespace-pre-line text-sm text-gray-600">
+                <RichText text={preview.summary} />
+              </p>
+            )}
+          </div>
+          <EquationPanel problem={{ ...problem, ...preview }} />
         </div>
-        <EquationPanel problem={{ ...problem, ...preview }} />
-      </div>
+      )}
+    </div>
+  );
+}
+
+/** The problem's own tags as chips; typing lists every tag already used in the workspace (Enter or comma adds). */
+export function TagInput({
+  tags,
+  known,
+  onChange,
+}: {
+  tags: string[];
+  known: string[];
+  onChange: (tags: string[]) => void;
+}) {
+  const { t } = useLang();
+  const [text, setText] = useState("");
+  const [focused, setFocused] = useState(false);
+  const [active, setActive] = useState(0);
+  const query = text.trim().toLowerCase();
+  const suggestions = known.filter((k) => !tags.includes(k) && k.toLowerCase().includes(query)).slice(0, 8);
+  const add = (tag: string) => {
+    const clean = tag.trim().slice(0, 40);
+    if (clean && !tags.includes(clean)) onChange([...tags, clean]);
+    setText("");
+    setActive(0);
+  };
+
+  return (
+    <div className="relative flex flex-wrap items-center gap-1" data-testid="ws-tags">
+      {tags.map((tag) => (
+        <span
+          key={tag}
+          className="flex items-center gap-1 rounded-full bg-violet-50 py-0.5 pr-1 pl-2.5 text-xs text-violet-700"
+        >
+          #{tag}
+          <button
+            onClick={() => onChange(tags.filter((x) => x !== tag))}
+            aria-label={`${t("tags.remove")} ${tag}`}
+            className="rounded-full px-1 text-violet-400 hover:bg-violet-100 hover:text-violet-700"
+          >
+            ×
+          </button>
+        </span>
+      ))}
+      <input
+        value={text}
+        onChange={(e) => {
+          setText(e.target.value.replace(",", ""));
+          setActive(0);
+          if (e.target.value.includes(",")) add(e.target.value.replace(",", ""));
+        }}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setTimeout(() => setFocused(false), 150)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            add(suggestions[active] && query ? suggestions[active] : text);
+          } else if (e.key === "ArrowDown") setActive((a) => Math.min(a + 1, suggestions.length - 1));
+          else if (e.key === "ArrowUp") setActive((a) => Math.max(a - 1, 0));
+          else if (e.key === "Backspace" && !text && tags.length) onChange(tags.slice(0, -1));
+          else if (e.key === "Escape") (e.target as HTMLInputElement).blur();
+        }}
+        placeholder={t("tags.add")}
+        aria-label={t("tags.add")}
+        className="w-24 rounded-full border border-dashed border-gray-300 px-2.5 py-0.5 text-xs focus:w-36 focus:border-blue-400 focus:outline-none"
+      />
+      {focused && suggestions.length > 0 && (
+        <ul
+          role="listbox"
+          className="absolute top-full right-0 z-30 mt-1 w-48 rounded-lg border border-gray-200 bg-white p-1 text-xs shadow-lg"
+        >
+          {suggestions.map((s, i) => (
+            <li key={s}>
+              <button
+                role="option"
+                aria-selected={i === active}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  add(s);
+                }}
+                className={`block w-full rounded px-2 py-1 text-left ${i === active ? "bg-blue-50 text-blue-700" : "text-gray-700 hover:bg-gray-50"}`}
+              >
+                #{s}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

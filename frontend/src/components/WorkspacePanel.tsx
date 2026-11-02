@@ -1,4 +1,5 @@
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { DIAGRAM_FORMATS, exportDiagram } from "../diagramExport";
 import { useLang, type Key } from "../i18n";
 import type { Manifest, Workspace } from "../types";
 import { plainText, RichText } from "./Tex";
@@ -42,6 +43,18 @@ export default function WorkspacePanel({
 }: Props) {
   const { lang, t } = useLang();
   const [menu, setMenu] = useState<null | "new" | "library">(null);
+  // right-click on a diagram.svg item: export it as SVG / PNG / JPG
+  const [fileMenu, setFileMenu] = useState<{ x: number; y: number; src: string; name: string } | null>(null);
+  useEffect(() => {
+    if (!fileMenu) return;
+    const close = () => setFileMenu(null);
+    window.addEventListener("click", close);
+    window.addEventListener("keydown", close);
+    return () => {
+      window.removeEventListener("click", close);
+      window.removeEventListener("keydown", close);
+    };
+  }, [fileMenu]);
   const [busy, setBusy] = useState(false);
   const [folded, setFolded] = useState<Set<string>>(new Set());
   const fileInput = useRef<HTMLInputElement>(null);
@@ -210,6 +223,24 @@ export default function WorkspacePanel({
                         active={selected === route}
                         onClick={() => onSelect(route)}
                       />
+                      {p.entry.diagram && (
+                        <TreeItem
+                          icon="🖼"
+                          label="diagram.svg"
+                          hint={t("diagram.hint")}
+                          active={false}
+                          onClick={() => onSelect(route)}
+                          onContextMenu={(e) => {
+                            e.preventDefault();
+                            setFileMenu({
+                              x: e.clientX,
+                              y: e.clientY,
+                              src: p.entry.diagram!,
+                              name: plainText(p.entry.title) || "diagram",
+                            });
+                          }}
+                        />
+                      )}
                       <TreeItem
                         icon="📊"
                         label={`${t("data.title")}${p.entry.data?.length ? ` (${p.entry.data.length})` : ""}`}
@@ -262,6 +293,25 @@ export default function WorkspacePanel({
           </ul>
         )}
       </div>
+      {fileMenu && (
+        <div
+          role="menu"
+          style={{ left: fileMenu.x, top: fileMenu.y }}
+          className="fixed z-50 w-40 rounded-lg border border-gray-200 bg-white p-1 text-xs shadow-lg"
+        >
+          <p className="px-2 py-1 font-mono text-gray-400">diagram.svg</p>
+          {DIAGRAM_FORMATS.map((f) => (
+            <button
+              key={f}
+              role="menuitem"
+              onClick={() => void exportDiagram(fileMenu.src, fileMenu.name, f)}
+              className="block w-full rounded px-2 py-1 text-left text-gray-700 hover:bg-blue-50"
+            >
+              {t("diagram.as")} {f.toUpperCase()}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -287,12 +337,14 @@ function TreeItem(props: {
   hint?: string;
   active: boolean;
   onClick: () => void;
+  onContextMenu?: (e: React.MouseEvent) => void;
   actions?: ReactNode;
 }) {
   return (
     <li className={`group flex items-center rounded-md ${props.active ? "bg-blue-50" : "hover:bg-gray-100"}`}>
       <button
         onClick={props.onClick}
+        onContextMenu={props.onContextMenu}
         title={props.hint}
         className={`flex min-w-0 flex-1 items-center gap-1.5 truncate px-2 py-0.5 text-left text-xs ${
           props.active ? "font-medium text-blue-700" : "text-gray-600"
@@ -337,13 +389,23 @@ function WsMenu({
           className="absolute right-0 z-30 mt-1 w-52 rounded-lg border border-gray-200 bg-white p-1 shadow-lg"
           onClick={() => setOpen(false)}
         >
-          <button onClick={onExport} disabled={!canExport} title={t("ws.exportHint")} className={`${item} disabled:opacity-40`}>
+          <button
+            onClick={onExport}
+            disabled={!canExport}
+            title={t("ws.exportHint")}
+            className={`${item} disabled:opacity-40`}
+          >
             ⬇ {t("ws.export")}
           </button>
           <button onClick={onImport} title={t("ws.importHint")} className={item}>
             ⬆ {t("ws.import")}
           </button>
-          <button onClick={onGitHub} disabled={!canExport} className={`${item} disabled:opacity-40`} data-testid="ws-github">
+          <button
+            onClick={onGitHub}
+            disabled={!canExport}
+            className={`${item} disabled:opacity-40`}
+            data-testid="ws-github"
+          >
             <svg viewBox="0 0 16 16" className="h-3 w-3" fill="currentColor" aria-hidden="true">
               <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.81.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
             </svg>
@@ -351,7 +413,9 @@ function WsMenu({
           </button>
           <button disabled title={t("ws.cloudHint")} className={`${item} cursor-not-allowed text-gray-400`}>
             ☁ {t("ws.cloud")}
-            <span className="ml-auto rounded-full bg-amber-100 px-1.5 text-[10px] font-semibold text-amber-700">Pro</span>
+            <span className="ml-auto rounded-full bg-amber-100 px-1.5 text-[10px] font-semibold text-amber-700">
+              Pro
+            </span>
           </button>
           <p className="px-2.5 pt-1 text-[10px] text-gray-400">💾 {t("ws.savedLocally")}</p>
         </div>

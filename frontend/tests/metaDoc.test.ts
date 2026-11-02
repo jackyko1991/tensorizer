@@ -1,7 +1,8 @@
 // Markdown ↔ meta round trip and the YAML emitter. Run: node --test frontend/tests (Node ≥ 23 strips the types).
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { fromMarkdown, MarkdownError, pickMd, toMarkdown, toYaml, type MdFields } from "../src/metaDoc.ts";
+import { fromMarkdown, MarkdownError, metaObject, pickMd, toMarkdown, toYaml, type MdFields } from "../src/metaDoc.ts";
+import type { Problem } from "../src/types.ts";
 
 const sample: MdFields = {
   title: "Damped oscillator $\\ddot{x}$",
@@ -56,4 +57,11 @@ test("yaml emitter quotes LaTeX and nests params and rows", () => {
   assert.match(yaml, /^ {4}options: \[a, b\]$/m);
   assert.match(yaml, /^empty: \{\}$/m);
   assert.match(yaml, /^summary: \|-\n {2}two\n {2}lines$/m);
+});
+
+test("tags are written to meta.yaml as a flow list, and left out when empty", () => {
+  const base = { title: "T", level: "beginner", summary: "", animated: false, vector_form: "", index_form: "" };
+  const p = { ...base, translation: [], params: {}, tags: ["homework 3", "orbits"] } as unknown as Problem;
+  assert.match(toYaml(metaObject(p)), /^tags: \[homework 3, orbits\]$/m);
+  assert.doesNotMatch(toYaml(metaObject({ ...p, tags: [] })), /tags:/);
 });

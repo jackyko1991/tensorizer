@@ -62,7 +62,18 @@ DATA_EXTENSIONS = {
     ".hdf5",
 }
 _DATA_NAME = re.compile(r"^\w[\w .()-]{0,99}$")
-EDITED_KEYS = {"title", "level", "summary", "animated", "vector_form", "index_form", "translation", "notes", "params"}
+EDITED_KEYS = {
+    "title",
+    "level",
+    "summary",
+    "animated",
+    "tags",
+    "vector_form",
+    "index_form",
+    "translation",
+    "notes",
+    "params",
+}
 
 # A new problem starts from a small working example (radioactive decay), written test-first: test.py states the
 # physics that must hold, the other files make it pass. "Boilerplate example" marks it as not yet the user's own.
@@ -333,6 +344,13 @@ def _new(files: dict[str, str], diagram: Path | None = None) -> Sandbox:
     return s
 
 
+def _tags(value: object) -> list[str]:
+    """meta.yaml `tags`: a list of short labels (anything else is ignored)."""
+    if not isinstance(value, list):
+        return []
+    return [str(t).strip()[:40] for t in value if str(t).strip()][:20]
+
+
 def blank_files() -> dict[str, str]:
     return {"meta.yaml": BLANK_META, "test.py": BLANK_TEST, "main.py": BLANK_MAIN, **BLANK_DOCS}
 
@@ -462,6 +480,7 @@ def entry(session: str) -> dict:
         "index_form": text_of("index_form"),
         "translation": meta.get("translation") or [],
         "notes": text_of("notes"),
+        "tags": _tags(meta.get("tags")),
         "params": meta.get("params") or {},
         "order": 0,
         "files": [

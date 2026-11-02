@@ -46,6 +46,8 @@ export interface Problem {
   translation: TranslationRow[];
   notes?: string;
   params: Record<string, ParamSpec>;
+  /** Workspace problems only: the user's own labels (meta.yaml `tags`). */
+  tags?: string[];
   files: CodeFile[];
   output: string | null;
   console: string;

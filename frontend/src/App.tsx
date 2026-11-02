@@ -21,8 +21,6 @@ import {
   type TestTally,
   type WsEntry,
 } from "./api";
-import { yaml } from "@codemirror/lang-yaml";
-import CodeMirror from "@uiw/react-codemirror";
 import CodePanel from "./components/CodePanel";
 import EquationPanel from "./components/EquationPanel";
 import ParamsPanel from "./components/ParamsPanel";
@@ -42,7 +40,9 @@ import DataPanel from "./components/DataPanel";
 import WorkspacePanel from "./components/WorkspacePanel";
 import WorkspaceHome from "./components/WorkspaceHome";
 import GitHubDialog from "./components/GitHubDialog";
-import { Field, InlineEquations, MarkdownEditor, ModeToggle, useEditMode } from "./components/WsEditor";
+import FloatingEditor, { EditorButtons, type FloatMode } from "./components/FloatingEditor";
+import { Field, InlineEquations, TagInput } from "./components/WsEditor";
+import DiagramExport from "./components/DiagramExport";
 import { metaObject, pickMd, toMarkdown, toYaml, type MetaFields } from "./metaDoc";
 import type { Level, Manifest, Notebook, Params, Problem, WsProblem } from "./types";
 import {
@@ -667,6 +667,7 @@ export default function App() {
                       meta: wsProblem.meta,
                       onFiles: (files) => patchFiles(wsProblem.id, files),
                       onMeta: (fields) => patchMeta(wsProblem.id, fields),
+                      allTags: [...new Set(wsProblems.flatMap((q) => q.entry.tags ?? []))].sort(),
                       sync: () => syncProblem(wsProblem.id),
                       onOutput: (url) =>
                         update((w) =>
@@ -802,6 +803,8 @@ interface ProblemViewProps {
     meta: string;
     onFiles: (files: Record<string, string>) => void;
     onMeta: (fields: Partial<MetaFields>) => void;
+    /** every tag used in the workspace, suggested while typing a new one */
+    allTags: string[];
     sync: () => Promise<string>;
     /** A successful run's result, kept as the problem's thumbnail. */
     onOutput?: (url: string) => void;
@@ -819,7 +822,8 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
   }, [paramSpecs, problem]);
   // Editing meta.yaml re-parses it on the server after a pause (title, equations and parameters update).
   const [metaError, setMetaError] = useState<string | null>(null);
-  const [editMode, setEditMode] = useEditMode();
+  // Workspace: the floating Markdown / meta.yaml editor (null = closed; the inline view is always shown)
+  const [floating, setFloating] = useState<FloatMode | null>(null);
   const onMeta = (fields: Partial<MetaFields>) => {
     ws?.onMeta(fields);
     setMetaError(null); // meta.yaml is regenerated from the view, so it is valid again
@@ -852,10 +856,8 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
   const [error, setError] = useState<string | null>(null);
   // test.py's verdict on the last run: the TDD light (null = not run here yet)
   const [tests, setTests] = useState<TestTally | null>(null);
-  // Workspace: which editor the user is in — the meta.yaml editor (while open and last used) or the view's mode.
-  const [metaOpen, setMetaOpen] = useState(false);
-  const [inYaml, setInYaml] = useState(false);
-  const wsMode = metaOpen && inYaml ? "yaml" : editMode;
+  // Workspace: which editor the user is in, for the AI panel — the floating one when open, otherwise inline.
+  const wsMode = floating ?? "inline";
   const markdown =
     ws && wsMode === "markdown" ? toMarkdown(pickMd({ ...problem, notes: problem.notes ?? "" })) : undefined;
   useEffect(() => {
@@ -961,11 +963,8 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
         <div className={`shrink-0 border-b border-gray-200 bg-white px-5 py-4 ${onPhone("problem")}`}>
           {ws ? (
             <div data-ai-region="summary">
-              {/* Workspace problem: edited in place (Inline), or as one Markdown document below */}
-              <div className="mb-2 flex items-center justify-between gap-2" title={t("edit.modeHint")}>
-                <ModeToggle mode={editMode} onMode={setEditMode} />
-              </div>
-              {editMode === "inline" && (
+              {/* Workspace problem: edited in place; Markdown / meta.yaml open a floating editor kept in sync */}
+              <div className="flex items-start justify-between gap-3">
                 <Field
                   value={problem.title}
                   placeholder={t("edit.title")}
@@ -979,7 +978,8 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
                   )}
                   onCommit={(title) => title.trim() && onMeta({ title: title.trim() })}
                 />
-              )}
+                <EditorButtons open={floating} onOpen={setFloating} />
+              </div>
               <div className="mt-1.5 flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
                   {categoryTitle}
@@ -1009,20 +1009,32 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
                 >
                   {problem.animated ? "🎞" : "🖼"} {t(problem.animated ? "tag.animated" : "tag.static")} ⇄
                 </button>
+                <TagInput tags={problem.tags ?? []} known={ws.allTags} onChange={(tags) => onMeta({ tags })} />
               </div>
-              {editMode === "inline" && (
-                <Field
-                  multiline
-                  value={problem.summary}
-                  placeholder={t("edit.addSummary")}
-                  className="mt-2 text-sm leading-relaxed text-gray-600"
-                  inputClass="text-sm"
-                  render={(v) => (
-                    <p className="whitespace-pre-line">
-                      <RichText text={v} />
-                    </p>
-                  )}
-                  onCommit={(summary) => onMeta({ summary })}
+              <Field
+                multiline
+                value={problem.summary}
+                placeholder={t("edit.addSummary")}
+                className="mt-2 text-sm leading-relaxed text-gray-600"
+                inputClass="text-sm"
+                render={(v) => (
+                  <p className="whitespace-pre-line">
+                    <RichText text={v} />
+                  </p>
+                )}
+                onCommit={(summary) => onMeta({ summary })}
+              />
+              {floating && (
+                <FloatingEditor
+                  mode={floating}
+                  onMode={setFloating}
+                  onClose={() => setFloating(null)}
+                  problem={problem}
+                  onMeta={onMeta}
+                  meta={ws.meta}
+                  onMetaText={editMeta}
+                  metaError={metaError}
+                  onYamlUpdate={yamlSelection}
                 />
               )}
             </div>
@@ -1062,12 +1074,20 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
             </div>
           )}
           {problem.diagram && (
-            <img
-              src={assetUrl(problem.diagram)}
-              alt={`Sketch of the ${plainText(problem.title)} setup`}
-              title={t("setup")}
-              className="mx-auto mt-3 h-36 w-full max-w-xs object-contain"
-            />
+            <div className="group relative mx-auto mt-3 w-full max-w-xs">
+              <img
+                src={assetUrl(problem.diagram)}
+                alt={`Sketch of the ${plainText(problem.title)} setup`}
+                title={t("setup")}
+                className="h-36 w-full object-contain"
+              />
+              {/* diagram.svg → SVG / PNG / JPG download */}
+              <DiagramExport
+                src={assetUrl(problem.diagram)}
+                name={problem.slug}
+                className="absolute top-0 -right-2 opacity-60 group-hover:opacity-100 focus-within:opacity-100"
+              />
+            </div>
           )}
           {(wiki || problem.papers?.length) && (
             <div className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs">
@@ -1117,45 +1137,8 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
 
         <div
           className={`space-y-5 bg-gray-50/60 p-5 xl:min-h-0 xl:flex-1 xl:overflow-y-auto ${onPhone("formulation")}`}
-          onFocusCapture={(e) => {
-            if (!(e.target as HTMLElement).closest("[data-testid='ws-meta']")) setInYaml(false);
-          }}
         >
-          {!ws ? (
-            <EquationPanel problem={problem} />
-          ) : editMode === "inline" ? (
-            <InlineEquations problem={problem} onMeta={onMeta} />
-          ) : (
-            <MarkdownEditor problem={problem} onMeta={onMeta} />
-          )}
-          {ws && (
-            <details
-              className="rounded-xl border border-gray-200 bg-white"
-              data-testid="ws-meta"
-              onToggle={(e) => setMetaOpen((e.target as HTMLDetailsElement).open)}
-              onFocus={() => setInYaml(true)}
-            >
-              <summary className="cursor-pointer px-4 py-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                meta.yaml · <span className="normal-case">{t("ws.metaHint")}</span>
-              </summary>
-              <div className="border-t border-gray-100">
-                <CodeMirror
-                  value={ws.meta}
-                  extensions={[yaml()]}
-                  theme="light"
-                  basicSetup={{ foldGutter: false }}
-                  onChange={editMeta}
-                  onUpdate={yamlSelection}
-                  className="text-sm"
-                />
-              </div>
-              {metaError && (
-                <p className="border-t border-red-100 bg-red-50 px-4 py-2 text-xs text-red-700">
-                  ⚠ {t("edit.yamlError")}: {metaError}
-                </p>
-              )}
-            </details>
-          )}
+          {!ws ? <EquationPanel problem={problem} /> : <InlineEquations problem={problem} onMeta={onMeta} />}
         </div>
       </main>
 

@@ -164,3 +164,12 @@ def test_data_uploads_are_confined_limited_and_synced(monkeypatch):
     assert "data/m.csv" in note and "t,x" in note and "0,1.0" in note
     assert client.delete(f"/api/ws/{sid}/data/m.csv").status_code == 200
     assert not (folder / "data" / "m.csv").exists()
+
+
+def test_tags_round_trip_through_meta_yaml():
+    entry = client.post("/api/ws/blank").json()
+    files = files_of(entry)
+    files["meta.yaml"] += "tags: [homework 3, orbits, '']\n"
+    synced = client.post("/api/ws/sync", json={"session": entry["session"], "files": files}).json()
+    assert synced["tags"] == ["homework 3", "orbits"]  # blank tags dropped
+    assert "tags" not in synced["meta_extra"]  # edited by the page, not carried as an unknown key
