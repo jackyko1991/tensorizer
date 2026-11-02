@@ -7,10 +7,12 @@ interface Props {
   problem: Problem;
   src: string | null;
   running: boolean;
+  /** share of the animation's frames drawn so far (0..1) while rendering, if known */
+  progress?: number | null;
   className?: string;
 }
 
-export default function PlotPanel({ problem, src, running, className = "" }: Props) {
+export default function PlotPanel({ problem, src, running, progress = null, className = "" }: Props) {
   const { t } = useLang();
   const [zoomed, setZoomed] = useState(false);
 
@@ -24,13 +26,27 @@ export default function PlotPanel({ problem, src, running, className = "" }: Pro
   return (
     <section className={`flex min-w-0 flex-col bg-white ${className}`}>
       <PanelBar title={t("plot")}>
-        {running && <span className="animate-pulse text-blue-600">{t("plot.rendering")}</span>}
+        {running && (
+          <span className="text-blue-600" data-testid="plot-progress">
+            <span className="animate-pulse">{t("plot.rendering")}</span>
+            {progress !== null && <span className="ml-1 tabular-nums">{Math.round(progress * 100)}%</span>}
+          </span>
+        )}
         {src && (
-          <button onClick={() => setZoomed(true)} className="text-gray-500 hover:text-gray-800" title="Zoom (click the plot)">
+          <button
+            onClick={() => setZoomed(true)}
+            className="text-gray-500 hover:text-gray-800"
+            title="Zoom (click the plot)"
+          >
             ⤢ {t("plot.zoom")}
           </button>
         )}
       </PanelBar>
+      {running && progress !== null && (
+        <div className="h-0.5 shrink-0 bg-blue-100">
+          <div className="h-full bg-blue-600 transition-[width] duration-200" style={{ width: `${progress * 100}%` }} />
+        </div>
+      )}
       <div className="flex min-h-48 flex-1 items-center justify-center overflow-hidden p-2 xl:min-h-0">
         {src ? (
           <img
@@ -50,7 +66,11 @@ export default function PlotPanel({ problem, src, running, className = "" }: Pro
           className="fixed inset-0 z-50 flex cursor-zoom-out items-center justify-center bg-gray-900/60 p-6 backdrop-blur-sm"
         >
           <figure className="flex max-h-full max-w-full flex-col rounded-xl bg-white p-4 shadow-2xl">
-            <img src={src} alt={`${plainText(problem.title)} result`} className="min-h-0 max-h-[80vh] max-w-[85vw] object-contain" />
+            <img
+              src={src}
+              alt={`${plainText(problem.title)} result`}
+              className="min-h-0 max-h-[80vh] max-w-[85vw] object-contain"
+            />
             <figcaption className="mt-2 flex justify-between gap-6 text-xs text-gray-500">
               <span>
                 <RichText text={problem.title} />

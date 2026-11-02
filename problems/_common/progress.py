@@ -21,6 +21,13 @@ def bar(total: int, desc: str) -> tqdm:
     return tqdm(total=total, desc=desc, file=sys.stdout, ncols=80, mininterval=0.2, ascii=" █", disable=not verbose())
 
 
+def report(done: int, total: int, stage: str) -> None:
+    """A machine-readable progress line for the web app (TENSORIZER_PROGRESS=1, set by its runner): the runner turns
+    it into a progress bar and keeps it out of the console. Silent on the command line."""
+    if os.environ.get("TENSORIZER_PROGRESS") == "1":
+        print(f"@@progress {done} {total} {stage}", flush=True)
+
+
 def steps(n: int, desc: str = "steps"):
     """range(n), wrapped in a progress bar when the run is verbose."""
     if not verbose():

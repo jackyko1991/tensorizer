@@ -3,6 +3,7 @@ import type { TestTally } from "../api";
 import type { Problem } from "../types";
 import { useLang } from "../i18n";
 import { PanelBar } from "./PlotPanel";
+import QueueModal from "./QueueModal";
 
 interface Props {
   problem: Problem;
@@ -55,6 +56,7 @@ export default function TerminalPanel({ problem, console, error, running, tests,
   const command = `python -m problems.${problem.category}.${problem.slug}.main`;
   // "Clear" hides what is shown now; the next run (new output) appears again.
   const [cleared, setCleared] = useState<{ console: string; error: string | null } | null>(null);
+  const [queueOpen, setQueueOpen] = useState(false);
   const isCleared = !running && cleared !== null && cleared.console === console && cleared.error === error;
   useEffect(() => {
     if (running) setCleared(null);
@@ -83,6 +85,14 @@ export default function TerminalPanel({ problem, console, error, running, tests,
           </span>
         )}
         <button
+          onClick={() => setQueueOpen(true)}
+          title={t("q.title")}
+          data-testid="queue-button"
+          className="text-gray-500 hover:text-gray-800"
+        >
+          ☰ {t("q.button")}
+        </button>
+        <button
           onClick={() => setCleared({ console, error })}
           disabled={running || isCleared || (!console && !error)}
           title={t("terminal.clear")}
@@ -106,6 +116,7 @@ export default function TerminalPanel({ problem, console, error, running, tests,
         {running && <span className="animate-pulse text-gray-400">{"\n"}▍</span>}
         {error && !running && !isCleared && <span className="text-red-600">{`\nerror: ${error}`}</span>}
       </pre>
+      {queueOpen && <QueueModal onClose={() => setQueueOpen(false)} />}
     </section>
   );
 }

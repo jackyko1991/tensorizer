@@ -30,6 +30,7 @@ SERVERS = {
             "AGENT_ENABLED": "1",
             "AGENT_AUTH": "local",
             "TENSORIZER_DEV_SITE": "http://localhost:5173",
+            "TENSORIZER_TIMEOUT": os.environ.get("TENSORIZER_TIMEOUT", "600"),  # this computer: long runs are fine
         },
     ),
     "web": dict(args=[NPM, "run", "dev"], cwd=ROOT / "frontend", env=None),

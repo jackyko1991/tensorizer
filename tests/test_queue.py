@@ -74,3 +74,40 @@ def test_abandoned_waiter_leaves_the_line():
         await first
 
     asyncio.run(main())
+
+
+def test_abandoned_waiter_is_dropped_so_the_line_moves(monkeypatch):
+    """A request that vanished while waiting (its stream never resumed) must not hold the line forever."""
+    from backend.app import run_queue
+
+    monkeypatch.setattr(run_queue, "STALE_S", 0.2)
+    monkeypatch.setattr(run_queue, "CHECK_IN_S", 0.05)
+
+    async def main():
+        q, log, hold = RunQueue(concurrent=1, limit=10), [], asyncio.Event()
+        runner = asyncio.create_task(_run(q, "a", log, hold))
+        await asyncio.sleep(0.05)
+        ghost = q.join("ghost")  # joined, then its page closed: nobody ever waits on it
+        late = asyncio.create_task(_run(q, "b", log, hold))
+        await asyncio.sleep(0.05)
+        hold.set()
+        await asyncio.wait_for(asyncio.gather(runner, late), timeout=2)  # b runs although the ghost was ahead
+        assert ghost not in q.waiting and ("start", "b") in log
+
+    asyncio.run(main())
+
+
+def test_stuck_run_expires_and_details_hide_identities():
+    async def main():
+        q = RunQueue(concurrent=1, limit=10, max_run_s=0.1)
+        stuck = q.join("a", "mechanics/projectile")
+        async for _ in q.wait(stuck):
+            pass
+        details = q.details("b")
+        assert details["runs"] == [{"problem": "mechanics/projectile", "state": "running", "seconds": 0, "mine": False}]
+        await asyncio.sleep(0.15)
+        assert q.status()["running"] == 0  # the abandoned run no longer holds the only slot
+        t = q.join("b", "x")
+        assert q.cancel("b") == 1 and t not in q.waiting
+
+    asyncio.run(main())

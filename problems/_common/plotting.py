@@ -14,7 +14,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.animation import FuncAnimation, PillowWriter  # noqa: E402
 
-from .progress import bar  # noqa: E402
+from .progress import bar, report  # noqa: E402
 from .runtime import fast_mode  # noqa: E402
 
 MAX_FRAMES = 120
@@ -45,8 +45,15 @@ def save_gif(fig: plt.Figure, update: Callable[[int], object], frames: list[int]
     """update(step) redraws the figure for one time step; frames lists the steps to render."""
     anim = FuncAnimation(fig, update, frames=frames, blit=False)
     tmp = _tmp_path(path)
+    every = max(1, len(frames) // 50)  # about 2% steps for the web app's progress bar
+
+    def tick(i: int, n: int) -> None:
+        progress.update(1)
+        if (i + 1) % every == 0 or i + 1 == n:
+            report(i + 1, n, "frames")
+
     with bar(len(frames), "GIF frames") as progress:
-        anim.save(tmp, writer=PillowWriter(fps=fps), dpi=80, progress_callback=lambda i, n: progress.update(1))
+        anim.save(tmp, writer=PillowWriter(fps=fps), dpi=80, progress_callback=tick)
     plt.close(fig)
     return _swap(tmp, path)  # swap in the finished file so a viewer never sees a half-written GIF
 

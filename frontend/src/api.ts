@@ -93,6 +93,37 @@ export async function probe(base: string): Promise<Health | null> {
   }
 }
 
+/** The run queue as the queue window shows it (problems and times; the caller's own runs marked). */
+export interface QueueRun {
+  problem: string;
+  state: "running" | "waiting";
+  position?: number;
+  seconds: number;
+  mine: boolean;
+}
+export interface QueueDetails {
+  running: number;
+  waiting: number;
+  concurrent: number;
+  max_run_s: number;
+  runs: QueueRun[];
+}
+
+export async function queueDetails(): Promise<QueueDetails | null> {
+  try {
+    const res = await fetch(`${API}/api/queue`);
+    return res.ok ? await res.json() : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Drop the caller's own waiting or stuck runs; returns how many. */
+export async function cancelMyRuns(): Promise<number> {
+  const res = await fetch(`${API}/api/queue/cancel`, { method: "POST" });
+  return res.ok ? (await res.json()).cancelled : 0;
+}
+
 export async function health(): Promise<Health | null> {
   try {
     const res = await fetch(`${API}/api/health`);
@@ -140,6 +171,7 @@ export async function runProblemStream(
   verbose: boolean,
   onLine: (line: LineEvent) => void,
   onQueued: (position: number) => void = () => {},
+  onProgress: (fraction: number) => void = () => {},
 ): Promise<RunResult> {
   let res: Response;
   try {
@@ -171,6 +203,7 @@ export async function runProblemStream(
       buffer = buffer.slice(newline + 1);
       if (event.type === "line") onLine({ text: event.text, replace: !!event.replace });
       else if (event.type === "queued") onQueued(event.position);
+      else if (event.type === "progress") onProgress(event.total ? event.done / event.total : 0);
       else if (event.type === "result") return { ...event, output: API + event.output };
       else if (event.type === "error") throw new RunFailed(event.message, event.console);
     }
@@ -540,6 +573,7 @@ export async function wsRunStream(
   verbose: boolean,
   onLine: (line: LineEvent) => void,
   onQueued: (position: number) => void = () => {},
+  onProgress: (fraction: number) => void = () => {},
 ): Promise<RunResult> {
   let res: Response;
   try {
@@ -569,6 +603,7 @@ export async function wsRunStream(
       buffer = buffer.slice(newline + 1);
       if (event.type === "line") onLine({ text: event.text, replace: !!event.replace });
       else if (event.type === "queued") onQueued(event.position);
+      else if (event.type === "progress") onProgress(event.total ? event.done / event.total : 0);
       else if (event.type === "result") return { ...event, output: API + event.output };
       else if (event.type === "error") throw new RunFailed(event.message, event.console);
     }

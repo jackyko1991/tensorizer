@@ -125,6 +125,7 @@ def _env(out_dir: Path, device: str = "auto") -> dict[str, str]:
     env.update(PYTHONIOENCODING="utf-8", PYTHONUNBUFFERED="1", MPLCONFIGDIR=str(out_dir / ".mpl"))
     # problems._common.runtime.device() reads the choice; ops MPS lacks fall back to CPU instead of failing
     env.update(TENSORIZER_DEVICE=device, PYTORCH_ENABLE_MPS_FALLBACK="1")
+    env.update(TENSORIZER_PROGRESS="1")  # "@@progress done total stage" lines → progress events (not console)
     return env
 
 
@@ -219,12 +220,15 @@ async def stream_problem(
         return
 
     try:
-        ticket = QUEUE.join(client)
+        ticket = QUEUE.join(client, f"{category}/{slug}")
     except QueueFull as e:
         raise RunError(str(e)) from None
     try:
-        async for position in QUEUE.wait(ticket):
-            yield {"type": "queued", "position": position}
+        try:
+            async for position in QUEUE.wait(ticket):
+                yield {"type": "queued", "position": position}
+        except QueueFull as e:  # cancelled from the queue window
+            raise RunError(str(e)) from None
         out_dir.mkdir(parents=True, exist_ok=True)
         module = f"problems.{category}.{slug}.main"
         cmd = [sys.executable, "-m", module, "--out", str(out_dir), "--params", json.dumps(params)]
@@ -255,6 +259,10 @@ async def stream_problem(
                 if event["type"] == "exit":
                     code = event["code"]
                     break
+                if event["text"].startswith("@@progress "):  # problems._common.progress.report
+                    done, total, stage = (event["text"].split(" ", 3)[1:] + [""])[:3]
+                    yield {"type": "progress", "done": int(done), "total": int(total), "stage": stage}
+                    continue
                 raw.append(event["text"] + ("\r" if event.get("replace") else "\n"))
                 if not event["text"].startswith('{"output"'):  # the CLI's final machine-readable line
                     yield event

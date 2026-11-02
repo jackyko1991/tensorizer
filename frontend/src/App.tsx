@@ -857,6 +857,8 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
   const [error, setError] = useState<string | null>(null);
   // test.py's verdict on the last run: the TDD light (null = not run here yet)
   const [tests, setTests] = useState<TestTally | null>(null);
+  // drawing progress (GIF frames rendered), 0..1, while a run renders
+  const [progress, setProgress] = useState<number | null>(null);
   // Workspace: which editor the user is in, for the AI panel — the floating one when open, otherwise inline.
   const wsMode = floating ?? "inline";
   const markdown =
@@ -899,6 +901,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
     setMobileTab("results");
     setError(null);
     setTests(null);
+    setProgress(null);
     setConsole("");
     // Lines stream in as the run prints; a progress-bar redraw overwrites the previous redraw.
     const lines: string[] = [];
@@ -917,8 +920,16 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
           replace: true,
         });
       const result = ws
-        ? await wsRunStream(await ws.sync(), params, verbose, onLine, onQueued)
-        : await runProblemStream(problem.id, params, hasEdits ? edits : undefined, verbose, onLine, onQueued);
+        ? await wsRunStream(await ws.sync(), params, verbose, onLine, onQueued, setProgress)
+        : await runProblemStream(
+            problem.id,
+            params,
+            hasEdits ? edits : undefined,
+            verbose,
+            onLine,
+            onQueued,
+            setProgress,
+          );
       setSrc(result.output);
       setConsole(result.console);
       setTests(result.tests ?? null);
@@ -928,6 +939,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
       if (e instanceof RunFailed && e.console) setConsole(e.console);
     } finally {
       setRunning(false);
+      setProgress(null);
     }
   }
 
@@ -1192,6 +1204,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
             problem={problem}
             src={src}
             running={running}
+            progress={progress}
           />
         </div>
       </section>

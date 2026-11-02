@@ -111,6 +111,18 @@ def health() -> dict:
     return {"status": "ok", "allow_code_exec": ALLOW_CODE_EXEC, "queue": QUEUE.status(), **_machine()}
 
 
+@app.get("/api/queue")
+def queue_details(request: Request) -> dict:
+    """The queue window: what is running and waiting (problems and times only), with the caller's own runs marked."""
+    return QUEUE.details(_client(request))
+
+
+@app.post("/api/queue/cancel")
+def queue_cancel(request: Request) -> dict:
+    """Drop the caller's own waiting or stuck runs."""
+    return {"cancelled": QUEUE.cancel(_client(request))}
+
+
 def _client(request: Request) -> str:
     """Who is asking, for the one-run-per-visitor limit; behind a proxy (Hugging Face) the first forwarded hop."""
     forwarded = request.headers.get("x-forwarded-for", "")
