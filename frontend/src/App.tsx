@@ -50,6 +50,7 @@ import {
   dataExtOk,
   dataName,
   deleteData,
+  exportProblem,
   exportWorkspace,
   filesOf,
   getData,
@@ -670,6 +671,7 @@ export default function App() {
                       onMeta: (fields) => patchMeta(wsProblem.id, fields),
                       allTags: [...new Set(wsProblems.flatMap((q) => q.entry.tags ?? []))].sort(),
                       sync: () => syncProblem(wsProblem.id),
+                      onExport: () => ws && manifest && void exportProblem(ws, manifest, wsProblem.id),
                       onDiagram: (svg) => {
                         const id = wsProblem.id;
                         update((w) =>
@@ -817,6 +819,8 @@ interface ProblemViewProps {
     sync: () => Promise<string>;
     /** A successful run's result, kept as the problem's thumbnail. */
     onOutput?: (url: string) => void;
+    /** download the whole problem as one zip (pixi project) */
+    onExport: () => void;
     /** a new physical picture (diagram.svg text), uploaded by the user */
     onDiagram: (svg: string) => void;
   };
@@ -1165,7 +1169,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
           onEdit={edit}
           onReset={() => setEdits({})}
           onFork={onFork}
-          toolbar={inWorkspace ? undefined : <ExportMenu problem={problem} edits={edits} params={params} />}
+          toolbar={<ExportMenu problem={problem} edits={edits} params={params} onWhole={ws?.onExport} />}
           side={
             // display: contents keeps CodePanel's layout; the wrapper only labels the region for the AI panel
             <div data-ai-region="params" className="contents">

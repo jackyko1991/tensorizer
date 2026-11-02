@@ -1,4 +1,5 @@
 import { yaml } from "@codemirror/lang-yaml";
+import { EditorView } from "@codemirror/view";
 import CodeMirror, { type ViewUpdate } from "@uiw/react-codemirror";
 import { useEffect, useRef, useState } from "react";
 import { useLang } from "../i18n";
@@ -7,6 +8,42 @@ import type { Problem } from "../types";
 import { MarkdownEditor } from "./WsEditor";
 
 export type FloatMode = "markdown" | "yaml";
+
+const YAML_EXTENSIONS = [yaml(), EditorView.lineWrapping];
+const BOX_KEY = "tensorizer.floatEditor"; // where the window was and how big: reopens the same way
+interface Box {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+/** The saved box, kept inside the current window (it may have been resized since). */
+function loadBox(): Box {
+  const fallback = { w: Math.min(580, window.innerWidth - 32), h: Math.min(640, window.innerHeight * 0.7) };
+  let box: Box = { x: window.innerWidth - fallback.w - 24, y: 72, ...fallback };
+  try {
+    const saved = JSON.parse(localStorage.getItem(BOX_KEY) ?? "null");
+    if (saved && [saved.x, saved.y, saved.w, saved.h].every(Number.isFinite)) box = saved;
+  } catch {
+    // nothing saved (or storage blocked): the default box
+  }
+  const w = Math.min(Math.max(box.w, 320), window.innerWidth - 16);
+  const h = Math.min(Math.max(box.h, 200), window.innerHeight - 16);
+  return {
+    w,
+    h,
+    x: Math.min(Math.max(0, box.x), window.innerWidth - w),
+    y: Math.min(Math.max(0, box.y), window.innerHeight - 48),
+  };
+}
+function saveBox(box: Box) {
+  try {
+    localStorage.setItem(BOX_KEY, JSON.stringify(box));
+  } catch {
+    // private window: the box lasts until the page closes
+  }
+}
 
 /** The split button in a Workspace problem's header: opens the floating Markdown or meta.yaml editor. */
 export function EditorButtons({ open, onOpen }: { open: FloatMode | null; onOpen: (m: FloatMode | null) => void }) {
@@ -57,17 +94,39 @@ export default function FloatingEditor({
   onYamlUpdate,
 }: Props) {
   const { t } = useLang();
-  const [pos, setPos] = useState(() => ({ x: Math.max(16, window.innerWidth - 600), y: 72 }));
+  const [pos, setPos] = useState(loadBox);
   const drag = useRef<{ dx: number; dy: number } | null>(null);
+  const frame = useRef<HTMLDivElement>(null);
+  const box = useRef(pos); // the live box: updated by drags and resizes, saved when they end
+
+  // Resizing (the corner handle, CSS resize) is read back with a ResizeObserver and remembered with the position.
+  useEffect(() => {
+    const el = frame.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => {
+      const next = { ...box.current, w: el.offsetWidth, h: el.offsetHeight };
+      if (next.w !== box.current.w || next.h !== box.current.h) {
+        box.current = next;
+        saveBox(next);
+      }
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const move = (e: PointerEvent) => {
       if (!drag.current) return;
       const x = Math.min(Math.max(0, e.clientX - drag.current.dx), window.innerWidth - 120);
       const y = Math.min(Math.max(0, e.clientY - drag.current.dy), window.innerHeight - 48);
-      setPos({ x, y });
+      const next = { ...box.current, x, y };
+      box.current = next; // the latest box right away (renders lag behind the pointer)
+      setPos(next);
     };
-    const up = () => (drag.current = null);
+    const up = () => {
+      if (drag.current) saveBox(box.current);
+      drag.current = null;
+    };
     const key = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
@@ -84,8 +143,9 @@ export default function FloatingEditor({
       role="dialog"
       aria-label={mode === "yaml" ? "meta.yaml" : "Markdown"}
       data-testid="floating-editor"
-      style={{ left: pos.x, top: pos.y }}
-      className="fixed z-40 flex h-[min(70dvh,640px)] w-[min(580px,calc(100vw-2rem))] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl"
+      ref={frame}
+      style={{ left: pos.x, top: pos.y, width: pos.w, height: pos.h, resize: "both", minWidth: 320, minHeight: 200 }}
+      className="fixed z-40 flex max-h-[calc(100dvh-1rem)] max-w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl"
     >
       <div
         onPointerDown={(e) => {
@@ -123,7 +183,7 @@ export default function FloatingEditor({
           <div className="overflow-hidden rounded-xl border border-gray-200" data-testid="ws-meta">
             <CodeMirror
               value={meta}
-              extensions={[yaml()]}
+              extensions={YAML_EXTENSIONS}
               theme="light"
               basicSetup={{ foldGutter: false }}
               onChange={onMetaText}

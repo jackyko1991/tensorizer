@@ -45,12 +45,15 @@ matplotlib = ">=3.8"
 pillow = ">=10"
 pyyaml = ">=6"
 tqdm = ">=4.66"
+pytest = ">=8"
 
 [tasks]
 # Render the result into out/ using the values in params.json
 simulate = "python -m {module} --out out --params @params.json"
 # Same, tracing every step with tensor shapes, timings and progress bars
 verbose = "python -m {module} --out out --params @params.json --verbose"
+# The physics checks in test.py (written first: TDD)
+test = "pytest -q problems/{cat}/{slug}/test.py"
 """,
         "params.json": json.dumps(defaults, indent=2, ensure_ascii=False) + "\n",
         "README.md": f"""# {meta["title"]}
@@ -67,6 +70,7 @@ A standalone [Tensorizer]({REPO_URL}) problem ({cat}, {meta["level"]}).
    ```bash
    pixi run simulate   # renders out/{slug}.{"gif" if meta.get("animated", True) else "png"}
    pixi run verbose    # the same, printing every step with tensor shapes and timings
+   pixi run test       # the physics checks in test.py
    ```
 
 The first run downloads Python, PyTorch and matplotlib into `.pixi/` (a few minutes). Change values in

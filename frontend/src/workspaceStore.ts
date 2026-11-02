@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { generatedUrl } from "./api";
 import { dataUriToSvg, svgToDataUri } from "./diagramExport";
+import { pickMd, toMarkdown } from "./metaDoc";
 import type { Cell, Manifest, Notebook, Problem, Workspace, WsProblem } from "./types";
 
 const DB = "tensorizer";
@@ -288,11 +289,14 @@ matplotlib = ">=3.8"
 pillow = ">=10"
 pyyaml = ">=6"
 tqdm = ">=4.66"
+pytest = ">=8"
 jupyterlab = ">=4"
 
 [tasks]
 # Render each problem into out/<problem>/
 ${tasks}
+# Run every problem's test.py (the physics checks)
+test = "pytest -q problems"
 # Open the notebooks
 notebooks = "jupyter lab notebooks"
 `;
@@ -325,6 +329,7 @@ export async function workspaceFiles(
   }
   put("problems/__init__.py", "");
   put("problems/workspace/__init__.py", "");
+  put("pytest.ini", "[pytest]\npython_files = test.py test_*.py\n"); // each problem's test.py, not only test_*.py
   const used = new Set<string>();
   const slugs: string[] = [];
   for (const p of ws.problems) {
@@ -334,6 +339,8 @@ export async function workspaceFiles(
     slugs.push(slug);
     put(`problems/workspace/${slug}/__init__.py`, "");
     for (const [file, code] of Object.entries(filesOf(p))) put(`problems/workspace/${slug}/${file}`, code);
+    // the problem sheet (title, summary, equations, translation table, notes) for reading on GitHub or in VS Code
+    put(`problems/workspace/${slug}/README.md`, toMarkdown(pickMd({ ...p.entry, notes: p.entry.notes ?? "" })));
     for (const d of p.entry.data ?? []) {
       const blob = await getData(p.id, d.name);
       if (blob) files[`problems/workspace/${slug}/data/${d.name}`] = new Uint8Array(await blob.arrayBuffer());
@@ -371,6 +378,14 @@ export async function exportWorkspace(ws: Workspace, manifest: Manifest, name: s
   a.download = `${root.slice(0, -1)}.zip`;
   a.click();
   URL.revokeObjectURL(a.href);
+}
+
+/** One problem as a whole: the same pixi project as a workspace export, holding only this problem (meta.yaml, code,
+ *  test.py, diagram.svg, README problem sheet, data and notebooks). Opens in VS Code; `pixi run test`. */
+export async function exportProblem(ws: Workspace, manifest: Manifest, id: string) {
+  const p = ws.problems.find((q) => q.id === id);
+  if (!p) return;
+  await exportWorkspace({ ...ws, problems: [p] }, manifest, slugify(p.entry.title) || "problem");
 }
 
 /** Problems from an exported .zip (workspace.json, or else its problem folders and .ipynb files), with new ids.
