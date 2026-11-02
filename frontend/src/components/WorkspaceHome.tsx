@@ -5,6 +5,7 @@ import { assetUrl } from "../api";
 import { useLang, type Key } from "../i18n";
 import type { Manifest, Problem, Workspace } from "../types";
 import { plainText, RichText } from "./Tex";
+import DownloadIcon from "./DownloadIcon";
 
 interface Props {
   manifest: Manifest;
@@ -63,8 +64,20 @@ export default function WorkspaceHome(props: Props) {
 
   const actions = (
     <div className="grid gap-3 sm:grid-cols-3">
-      <BigAction icon="📄" label={t("ws.blank")} hint={t("ws.blankHint")} onClick={() => run(props.onNewBlank)} disabled={busy} />
-      <BigAction icon="📚" label={t("ws.fromLibrary")} hint={t("ws.fromLibraryHint")} onClick={() => setPicker((o) => !o)} disabled={busy} />
+      <BigAction
+        icon="📄"
+        label={t("ws.blank")}
+        hint={t("ws.blankHint")}
+        onClick={() => run(props.onNewBlank)}
+        disabled={busy}
+      />
+      <BigAction
+        icon="📚"
+        label={t("ws.fromLibrary")}
+        hint={t("ws.fromLibraryHint")}
+        onClick={() => setPicker((o) => !o)}
+        disabled={busy}
+      />
       <BigAction icon="✨" label={t("home.askAI")} hint={t("home.askAIHint")} onClick={props.onAskAI} />
     </div>
   );
@@ -89,17 +102,33 @@ export default function WorkspaceHome(props: Props) {
           <p className="text-sm text-gray-500">{t("home.subtitle")}</p>
         </div>
         <div className="flex flex-wrap gap-2 text-xs">
-          <button onClick={props.onExport} disabled={!problems.length} className="rounded-md border border-gray-300 px-2.5 py-1.5 hover:bg-gray-50 disabled:opacity-40">
-            ⬇ {t("ws.export")}
+          <button
+            onClick={props.onExport}
+            disabled={!problems.length}
+            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 px-2.5 py-1.5 hover:bg-gray-50 disabled:opacity-40"
+          >
+            <DownloadIcon /> {t("ws.export")}
           </button>
-          <button onClick={() => file.current?.click()} className="rounded-md border border-gray-300 px-2.5 py-1.5 hover:bg-gray-50">
+          <button
+            onClick={() => file.current?.click()}
+            className="rounded-md border border-gray-300 px-2.5 py-1.5 hover:bg-gray-50"
+          >
             ⬆ {t("ws.import")}
           </button>
-          <button onClick={props.onGitHub} disabled={!problems.length} className="rounded-md border border-gray-300 px-2.5 py-1.5 hover:bg-gray-50 disabled:opacity-40">
+          <button
+            onClick={props.onGitHub}
+            disabled={!problems.length}
+            className="rounded-md border border-gray-300 px-2.5 py-1.5 hover:bg-gray-50 disabled:opacity-40"
+          >
             {t("gh.menu")}
           </button>
-          <button disabled title={t("ws.cloudHint")} className="cursor-not-allowed rounded-md border border-gray-200 px-2.5 py-1.5 text-gray-400">
-            ☁ {t("ws.cloud")} <span className="ml-1 rounded-full bg-amber-100 px-1.5 text-[10px] font-semibold text-amber-700">Pro</span>
+          <button
+            disabled
+            title={t("ws.cloudHint")}
+            className="cursor-not-allowed rounded-md border border-gray-200 px-2.5 py-1.5 text-gray-400"
+          >
+            ☁ {t("ws.cloud")}{" "}
+            <span className="ml-1 rounded-full bg-amber-100 px-1.5 text-[10px] font-semibold text-amber-700">Pro</span>
           </button>
           <input
             ref={file}
@@ -152,7 +181,9 @@ export default function WorkspaceHome(props: Props) {
                       <div className="flex flex-wrap gap-x-2 text-[11px] text-gray-500">
                         {p.updated && <span>{t("home.edited").replace("{time}", ago(p.updated, lang))}</span>}
                         <span>{t("home.notebooks").replace("{n}", String(p.notebooks.length))}</span>
-                        {!!p.entry.data?.length && <span>{t("home.dataFiles").replace("{n}", String(p.entry.data.length))}</span>}
+                        {!!p.entry.data?.length && (
+                          <span>{t("home.dataFiles").replace("{n}", String(p.entry.data.length))}</span>
+                        )}
                       </div>
                     </div>
                   </button>
@@ -201,7 +232,9 @@ export default function WorkspaceHome(props: Props) {
                   className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm hover:bg-white disabled:opacity-50"
                 >
                   <span className="min-w-0 flex-1 truncate">{title(p)}</span>
-                  <span className="shrink-0 text-[11px] text-gray-400">{t(`cat.${p.category}` as Key) ?? p.category}</span>
+                  <span className="shrink-0 text-[11px] text-gray-400">
+                    {t(`cat.${p.category}` as Key) ?? p.category}
+                  </span>
                 </button>
               </li>
             ))}
@@ -220,7 +253,9 @@ export default function WorkspaceHome(props: Props) {
                   className="w-44 rounded-lg border border-gray-200 bg-white px-3 py-2 text-left hover:border-blue-300"
                 >
                   <span className="block truncate text-sm font-medium text-gray-800">{title(p)}</span>
-                  <span className="block truncate text-[11px] text-gray-500">{t(`cat.${p.category}` as Key) ?? p.category}</span>
+                  <span className="block truncate text-[11px] text-gray-500">
+                    {t(`cat.${p.category}` as Key) ?? p.category}
+                  </span>
                 </button>
               </li>
             ))}

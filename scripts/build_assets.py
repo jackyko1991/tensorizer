@@ -23,6 +23,7 @@ from pathlib import Path
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import agent_skill  # noqa: E402
 import pixi_project  # noqa: E402
 
 import notebooks  # noqa: E402
@@ -243,6 +244,7 @@ def main() -> None:
     manifest = {"categories": categories, "levels": LEVELS, "problems": problems}
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"wrote {out / 'manifest.json'} ({len(problems)} problems)")
+    agent_skill.write(out)  # the agent skill (SKILL.md, AGENTS.md, GEMINI.md, zip) for the Agent Skills page
 
 
 if __name__ == "__main__":

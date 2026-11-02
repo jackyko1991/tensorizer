@@ -3,6 +3,7 @@ import { DIAGRAM_FORMATS, exportDiagram } from "../diagramExport";
 import { useLang, type Key } from "../i18n";
 import type { Manifest, Workspace } from "../types";
 import { plainText, RichText } from "./Tex";
+import DownloadIcon from "./DownloadIcon";
 
 interface Props {
   manifest: Manifest;
@@ -395,7 +396,7 @@ function WsMenu({
             title={t("ws.exportHint")}
             className={`${item} disabled:opacity-40`}
           >
-            ⬇ {t("ws.export")}
+            <DownloadIcon /> {t("ws.export")}
           </button>
           <button onClick={onImport} title={t("ws.importHint")} className={item}>
             ⬆ {t("ws.import")}

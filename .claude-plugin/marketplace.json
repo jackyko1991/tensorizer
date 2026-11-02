@@ -1,0 +1,12 @@
+{
+  "name": "tensorizer",
+  "description": "Tensorizer: physics equations solved with tensors. Skills for AI coding agents.",
+  "owner": { "name": "Jacky Ko" },
+  "plugins": [
+    {
+      "name": "tensorizer",
+      "source": "./plugins/tensorizer",
+      "description": "The Tensorizer method: vector form → index form → batched PyTorch, tests first (TDD)."
+    }
+  ]
+}

@@ -11,6 +11,8 @@ import {
   type Health,
 } from "../api";
 import { useLang, type Key } from "../i18n";
+import GearIcon from "./GearIcon";
+import ShellCommand from "./ShellCommand";
 
 type Tab = "local" | "remote" | "subscribed";
 type Os = "windows" | "mac" | "linux";
@@ -22,6 +24,15 @@ const PIXI_INSTALL: Record<Os, string> = {
   linux: "curl -fsSL https://pixi.sh/install.sh | sh",
 };
 
+/** Phones and tablets (iPadOS reports itself as a Mac, but with touch): they can't run the local runner. */
+export function isMobileDevice(): boolean {
+  const ua = navigator.userAgent;
+  const hint = (navigator as Navigator & { userAgentData?: { mobile?: boolean } }).userAgentData?.mobile;
+  return (
+    !!hint || /Android|iPhone|iPad|iPod|Mobile/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)
+  );
+}
+
 function detectOs(): Os {
   const p = (navigator.userAgent + " " + (navigator.platform ?? "")).toLowerCase();
   return p.includes("win") ? "windows" : p.includes("mac") ? "mac" : "linux";
@@ -32,21 +43,21 @@ export function BackendButton({ backend, onOpen }: { backend: Health | null | "c
   const { t } = useLang();
   const local = backendChoice() === "local";
   const dot = backend === "checking" ? "bg-gray-300" : backend ? "bg-green-500" : "bg-amber-400";
-  const device = local && backend && backend !== "checking" ? ` · ${deviceChoice()}` : "";
+  const device = local && backend && backend !== "checking" ? ` / ${deviceChoice()}` : "";
   return (
     <button
       onClick={onOpen}
       title={t("be.button")}
       data-testid="backend-button"
-      className="flex items-center gap-2 rounded-md border border-blue-400 bg-blue-600 px-2 py-0.5 text-xs text-white hover:bg-blue-500"
+      className="flex h-8 items-center gap-2 rounded-md border border-blue-400 bg-blue-600 px-2.5 text-xs text-white hover:bg-blue-500"
     >
       <span className={`h-2 w-2 rounded-full ${dot}`} />
       <span className="hidden sm:inline">
         {t(local ? "be.tab.local" : "be.shared")}
         {device}
-        {!backend && ` · ${t("be.offline")}`}
+        {!backend && ` / ${t("be.offline")}`}
       </span>
-      <span aria-hidden>⚙</span>
+      <GearIcon className="h-4 w-4" />
     </button>
   );
 }
@@ -60,7 +71,8 @@ export default function BackendPanel({
   onChoose: (c: BackendChoice) => void;
 }) {
   const { t } = useLang();
-  const [tab, setTab] = useState<Tab>(backendChoice() === "local" ? "local" : "remote");
+  const mobile = isMobileDevice();
+  const [tab, setTab] = useState<Tab>(backendChoice() === "local" && !mobile ? "local" : "remote");
   useEffect(() => {
     const key = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", key);
@@ -108,7 +120,17 @@ export default function BackendPanel({
           ))}
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4 text-sm">
-          {tab === "local" && <LocalTab onUse={() => onChoose("local")} />}
+          {tab === "local" &&
+            (mobile ? (
+              <p
+                className="rounded-md border border-gray-200 bg-gray-50 px-3 py-3 text-gray-600"
+                data-testid="local-mobile"
+              >
+                📱 {t("be.mobile")}
+              </p>
+            ) : (
+              <LocalTab onUse={() => onChoose("local")} />
+            ))}
           {tab === "remote" && <RemoteTab onUse={() => onChoose("server")} />}
           {tab === "subscribed" && <p className="text-gray-600">{t("be.sub.soon")}</p>}
         </div>
@@ -188,10 +210,10 @@ function LocalTab({ onUse }: { onUse: () => void }) {
             <>
               <span className="font-medium text-green-700">● {t("be.connected")}</span>
               <span className="text-gray-500">
-                {h.runner && ` · runner ${h.runner}`}
-                {h.torch && ` · torch ${h.torch}`}
-                {h.os && ` · ${h.os}`}
-                {h.gpu && ` · ${h.gpu}`}
+                {h.runner && ` / runner ${h.runner}`}
+                {h.torch && ` / torch ${h.torch}`}
+                {h.os && ` / ${h.os}`}
+                {h.gpu && ` / ${h.gpu}`}
               </span>
             </>
           ) : (
@@ -258,24 +280,12 @@ function LocalTab({ onUse }: { onUse: () => void }) {
 }
 
 function Step({ n, label, command }: { n: number; label: string; command: string }) {
-  const { t } = useLang();
-  const [copied, setCopied] = useState(false);
   return (
     <div>
       <p className="mb-1 text-gray-600">
         {n}. {label}
       </p>
-      <div className="flex items-center gap-2 rounded-md bg-gray-900 px-2.5 py-1.5">
-        <code className="min-w-0 flex-1 overflow-x-auto font-mono text-[11px] whitespace-nowrap text-gray-100">
-          {command}
-        </code>
-        <button
-          onClick={() => void navigator.clipboard?.writeText(command).then(() => setCopied(true))}
-          className="shrink-0 text-[11px] text-gray-300 hover:text-white"
-        >
-          {copied ? t("be.copied") : t("be.copy")}
-        </button>
-      </div>
+      <ShellCommand text={command} size="text-[11px]" />
     </div>
   );
 }

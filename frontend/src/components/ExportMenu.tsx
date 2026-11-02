@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLang } from "../i18n";
 import { colabUrl, downloadNotebook, downloadPixiProject, vscodeCloneUrl, vscodeWebUrl } from "../notebook";
 import type { Params, Problem } from "../types";
+import DownloadIcon from "./DownloadIcon";
 
 interface Props {
   problem: Problem;
@@ -47,7 +48,9 @@ export default function ExportMenu({ problem, edits, params, onWhole }: Props) {
           className="absolute right-0 z-30 mt-1 w-64 rounded-lg border border-gray-200 bg-white p-1 shadow-lg"
         >
           <button role="menuitem" className={item} onClick={() => (setOpen(false), onWhole())}>
-            <span className="font-medium text-gray-800">⬇ {t("nb.pixi")}</span>
+            <span className="flex items-center gap-1.5 font-medium text-gray-800">
+              <DownloadIcon /> {t("nb.pixi")}
+            </span>
             <span className="text-[11px] text-gray-500">{t("nb.wholeHint")}</span>
           </button>
         </div>
@@ -89,7 +92,9 @@ export default function ExportMenu({ problem, edits, params, onWhole }: Props) {
             className={item}
             onClick={() => (setOpen(false), downloadNotebook(problem, edits, params))}
           >
-            <span className="font-medium text-gray-800">⬇ {t("nb.download")}</span>
+            <span className="flex items-center gap-1.5 font-medium text-gray-800">
+              <DownloadIcon /> {t("nb.download")}
+            </span>
             <span className="text-[11px] text-gray-500">{t("nb.downloadHint")}</span>
           </button>
           <button
@@ -97,7 +102,9 @@ export default function ExportMenu({ problem, edits, params, onWhole }: Props) {
             className={item}
             onClick={() => (setOpen(false), downloadPixiProject(problem, edits, params))}
           >
-            <span className="font-medium text-gray-800">⬇ {t("nb.pixi")}</span>
+            <span className="flex items-center gap-1.5 font-medium text-gray-800">
+              <DownloadIcon /> {t("nb.pixi")}
+            </span>
             <span className="text-[11px] text-gray-500">{t("nb.pixiHint")}</span>
           </button>
         </div>

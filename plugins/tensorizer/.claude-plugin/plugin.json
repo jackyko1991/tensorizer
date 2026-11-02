@@ -1,0 +1,10 @@
+{
+  "name": "tensorizer",
+  "version": "0.1.0",
+  "description": "The Tensorizer method for physics problems: vector form → index (tensor) form → batched PyTorch, with physics tests written first (TDD).",
+  "author": { "name": "Jacky Ko" },
+  "homepage": "https://jackyko1991.github.io/tensorizer/#/agents",
+  "repository": "https://github.com/jackyko1991/tensorizer",
+  "license": "Apache-2.0",
+  "keywords": ["physics", "pytorch", "tensors", "einsum", "tdd", "education"]
+}

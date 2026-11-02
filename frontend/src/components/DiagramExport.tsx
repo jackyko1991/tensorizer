@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { DIAGRAM_FORMATS, exportDiagram } from "../diagramExport";
 import { useLang } from "../i18n";
+import DownloadIcon from "./DownloadIcon";
 
-/** A small ⤓ button next to the physical picture: download diagram.svg as SVG, PNG or JPG. */
+/** A small download button next to the physical picture: download diagram.svg as SVG, PNG or JPG. */
 export default function DiagramExport({
   src,
   name,
@@ -30,7 +31,7 @@ export default function DiagramExport({
         aria-label={t("diagram.export")}
         className="rounded-md border border-gray-200 bg-white px-1.5 py-0.5 text-xs text-gray-600 shadow-sm hover:border-blue-300 hover:text-blue-700"
       >
-        ⤓
+        <DownloadIcon />
       </button>
       {open && (
         <div

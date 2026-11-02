@@ -8,6 +8,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { Problem } from "./types";
 import { AGENT_STRINGS } from "./strings.agent";
 import { BACKEND_STRINGS } from "./strings.backend";
+import { SKILLS_STRINGS } from "./strings.skills";
 import { WORKSPACE_STRINGS } from "./strings.workspace";
 
 export const LANGS = [
@@ -191,7 +192,7 @@ const BASE = {
   "plot.close": ["click or Esc to close", "點擊或按 Esc 關閉", "点击或按 Esc 关闭", "cliquez ou Échap pour fermer", "Klicken oder Esc zum Schließen", "haz clic o pulsa Esc para cerrar", "クリックまたは Esc で閉じる", "щелкните или Esc, чтобы закрыть", "클릭하거나 Esc로 닫기", "बंद करने के लिए क्लिक करें या Esc दबाएँ"],
 } satisfies Record<string, readonly string[]>;
 // Feature strings live in their own files (same row format) so parallel work doesn't collide here.
-const TABLE = { ...BASE, ...AGENT_STRINGS, ...WORKSPACE_STRINGS, ...BACKEND_STRINGS };
+const TABLE = { ...BASE, ...AGENT_STRINGS, ...WORKSPACE_STRINGS, ...BACKEND_STRINGS, ...SKILLS_STRINGS };
 export type Key = keyof typeof TABLE;
 
 const STORAGE_KEY = "tensorizer.lang";

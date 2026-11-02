@@ -33,6 +33,7 @@ import AgentPanel from "./components/AgentPanel";
 import ExportMenu from "./components/ExportMenu";
 import { REPO_URL } from "./notebook";
 import ConceptPage from "./pages/ConceptPage";
+import AgentsPage from "./pages/AgentsPage";
 import SkillsPage from "./pages/SkillsPage";
 import { plainText, RichText } from "./components/Tex";
 import NotebookView from "./components/NotebookView";
@@ -69,7 +70,7 @@ import {
 
 const currentHash = () => decodeURIComponent(window.location.hash.replace(/^#\/?/, "")) || null;
 const select = (id: string) => (window.location.hash = `/${id}`);
-const PAGES = ["problems", "concept", "skills"] as const;
+const PAGES = ["problems", "concept", "skills", "agents"] as const;
 type Page = (typeof PAGES)[number] | "workspace";
 const LEFT_TAB = "tensorizer.leftTab";
 const RECENT = "tensorizer.recent";
@@ -91,6 +92,7 @@ const TAB_KEY: Record<(typeof PAGES)[number], Key> = {
   problems: "tab.problems",
   concept: "tab.concept",
   skills: "tab.skills",
+  agents: "tab.agents",
 };
 
 /**
@@ -130,7 +132,9 @@ export default function App() {
   // #/concept and #/skills are pages; any other hash is a problem id (category/slug), a workspace problem
   // (workspace/<id>) or one of its notebooks (workspace/<id>/nb/<notebook>).
   const page: Page =
-    selected === "concept" || selected === "skills" || selected === "workspace" ? selected : "problems";
+    selected === "concept" || selected === "skills" || selected === "agents" || selected === "workspace"
+      ? selected
+      : "problems";
   // Left panel: the library (Problems) or the Workspace tree, remembered; opening a workspace problem shows it.
   const [leftTab, setLeftTabState] = useState<"problems" | "workspace">(() =>
     stored(LEFT_TAB) === "workspace" ? "workspace" : "problems",
@@ -475,7 +479,7 @@ export default function App() {
               key={target}
               onClick={() => goTo(target)}
               aria-current={page === target ? "page" : undefined}
-              className={`shrink-0 rounded-md px-3 py-1.5 text-sm font-medium transition ${
+              className={`h-8 shrink-0 rounded-md px-3 text-sm font-medium transition ${
                 page === target
                   ? "bg-white text-blue-700 shadow-sm"
                   : "text-blue-100 hover:bg-blue-600 hover:text-white"
@@ -506,7 +510,7 @@ export default function App() {
             onChange={(e) => setLang(e.target.value as Lang)}
             title={t("language")}
             aria-label={t("language")}
-            className="rounded-md border border-blue-400 bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-500"
+            className="h-8 rounded-md border border-blue-400 bg-blue-600 px-2 text-xs text-white hover:bg-blue-500"
           >
             {LANGS.map((l) => (
               <option key={l.code} value={l.code} className="bg-white text-gray-900">
@@ -527,6 +531,11 @@ export default function App() {
       {manifest && page === "skills" && (
         <main className="min-h-0 flex-1">
           <SkillsPage manifest={manifest} />
+        </main>
+      )}
+      {page === "agents" && (
+        <main className="min-h-0 flex-1">
+          <AgentsPage />
         </main>
       )}
       {manifest && page === "workspace" && (

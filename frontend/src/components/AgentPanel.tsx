@@ -27,7 +27,9 @@ import type { Problem } from "../types";
 import AgentMascot from "./AgentMascot";
 import { captureTab, CaptureError, MAX_SCREENSHOT_BYTES, pngBytes, ScreenshotPreview } from "./AgentScreenshot";
 import AgentSettings, { DEFAULT_CHOICE, type AgentChoice } from "./AgentSettings";
+import GearIcon from "./GearIcon";
 import { RichText } from "./Tex";
+import DownloadIcon from "./DownloadIcon";
 
 type Block =
   | { kind: "text"; text: string }
@@ -601,9 +603,9 @@ export default function AgentPanel({
                 onClick={() => setSettingsOpen((o) => !o)}
                 aria-expanded={settingsOpen}
                 title={t("agent.agent")}
-                className={`rounded px-2 py-1 text-[11px] hover:bg-gray-100 ${settingsOpen ? "bg-gray-100 text-gray-800" : "text-gray-500"}`}
+                className={`flex items-center gap-1 rounded px-2 py-1 text-[11px] hover:bg-gray-100 ${settingsOpen ? "bg-gray-100 text-gray-800" : "text-gray-500"}`}
               >
-                ⚙ {t("agent.agent")}
+                <GearIcon className="h-4 w-4" /> {t("agent.agent")}
               </button>
             )}
             <button
@@ -936,15 +938,15 @@ function AgentBlock({ block }: { block: Block }) {
     return (
       <button
         onClick={() => downloadFiles(block.files)}
-        className="rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100"
+        className="inline-flex items-center gap-1.5 rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100"
       >
-        ⬇ {t("agent.download")} ({Object.keys(block.files).length})
+        <DownloadIcon /> {t("agent.download")} ({Object.keys(block.files).length})
       </button>
     );
   return (
     <button
       onClick={() => window.dispatchEvent(new CustomEvent("tensorizer:agent-files", { detail: block }))}
-      className="rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100"
+      className="inline-flex items-center gap-1.5 rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100"
     >
       ⇩ {t("agent.applyFiles")} ({Object.keys(block.files).join(", ")})
     </button>

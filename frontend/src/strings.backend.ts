@@ -295,6 +295,18 @@ export const BACKEND_STRINGS = {
     "구독: 저희가 운영하는 빠른 GPU 머신, 작업 공간 클라우드 저장, 교사용 클래스 요금제.",
     "सदस्यता: हमारी तेज़ GPU मशीनें, आपके वर्कस्पेस का क्लाउड सेव, और शिक्षकों के लिए क्लास प्लान।",
   ],
+  "be.mobile": [
+    "Local runs need a computer (Windows, macOS or Linux): phones and tablets can't run the local runner. Use the shared server here, or open Tensorizer on a computer.",
+    "本機執行需要電腦（Windows、macOS 或 Linux）：手機與平板無法執行本機執行器。請在此使用共用伺服器，或在電腦上開啟 Tensorizer。",
+    "本机运行需要电脑（Windows、macOS 或 Linux）：手机和平板无法运行本机运行器。请在此使用共享服务器，或在电脑上打开 Tensorizer。",
+    "Le calcul local demande un ordinateur (Windows, macOS ou Linux) : téléphones et tablettes ne peuvent pas lancer le serveur local. Utilisez ici le serveur partagé, ou ouvrez Tensorizer sur un ordinateur.",
+    "Lokales Rechnen braucht einen Computer (Windows, macOS oder Linux): Smartphones und Tablets können den lokalen Runner nicht ausführen. Nutzen Sie hier den gemeinsamen Server oder öffnen Sie Tensorizer am Computer.",
+    "Ejecutar en local requiere un ordenador (Windows, macOS o Linux): los móviles y tabletas no pueden ejecutar el ejecutor local. Usa aquí el servidor compartido o abre Tensorizer en un ordenador.",
+    "ローカル実行にはコンピュータ（Windows・macOS・Linux）が必要です。スマートフォンやタブレットではローカルランナーを動かせません。ここでは共有サーバーを使うか、コンピュータで Tensorizer を開いてください。",
+    "Локальные расчёты требуют компьютера (Windows, macOS или Linux): на телефонах и планшетах локальный исполнитель не запустить. Используйте здесь общий сервер или откройте Tensorizer на компьютере.",
+    "로컬 실행에는 컴퓨터(Windows, macOS, Linux)가 필요합니다. 휴대폰과 태블릿에서는 로컬 러너를 실행할 수 없습니다. 여기서는 공용 서버를 쓰거나 컴퓨터에서 Tensorizer를 여세요.",
+    "लोकल रन के लिए कंप्यूटर (Windows, macOS या Linux) चाहिए: फ़ोन और टैबलेट लोकल रनर नहीं चला सकते। यहाँ साझा सर्वर इस्तेमाल करें, या कंप्यूटर पर Tensorizer खोलें।",
+  ],
   "be.offline": [
     "offline",
     "離線",

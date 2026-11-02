@@ -65,7 +65,10 @@ function saveBox(box: Box) {
 export function EditorButtons({ open, onOpen }: { open: FloatMode | null; onOpen: (m: FloatMode | null) => void }) {
   const { t } = useLang();
   return (
-    <div className="inline-flex shrink-0 overflow-hidden rounded-md border border-gray-200 text-xs" title={t("edit.floatHint")}>
+    <div
+      className="inline-flex shrink-0 overflow-hidden rounded-md border border-gray-200 text-xs"
+      title={t("edit.floatHint")}
+    >
       {(["markdown", "yaml"] as const).map((m, i) => (
         <button
           key={m}
