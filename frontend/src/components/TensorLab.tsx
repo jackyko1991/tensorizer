@@ -132,7 +132,7 @@ export default function TensorLab() {
 
   return (
     <figure className="rounded-lg border border-gray-200 bg-gray-50 p-4" data-testid="tensor-lab">
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap justify-center gap-1.5">
         {STEPS.map((s, k) => (
           <button
             key={s.code}
@@ -146,7 +146,7 @@ export default function TensorLab() {
         ))}
       </div>
 
-      <div className="mt-4 grid gap-5 md:grid-cols-[auto_1fr]">
+      <div className="mt-4 flex flex-wrap items-start justify-center gap-x-10 gap-y-5">
         {/* logical view */}
         <div>
           <p className="mb-1.5 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
@@ -177,7 +177,7 @@ export default function TensorLab() {
         </div>
 
         {/* storage */}
-        <div className="min-w-0">
+        <div className="min-w-0 max-w-sm">
           <p className="mb-1.5 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
             {step.shares ? L("storageShared") : L("storageNew")} ({step.buffer.length} × 4 B)
           </p>
@@ -231,7 +231,7 @@ export default function TensorLab() {
         </div>
       </div>
 
-      <div className="mt-4 flex items-center gap-2 text-xs">
+      <div className="mt-4 flex items-center justify-center gap-2 text-xs">
         <button
           onClick={() => go(n - 1)}
           className="rounded-md px-2 py-1 ring-1 ring-gray-300 hover:bg-white"
@@ -255,7 +255,7 @@ export default function TensorLab() {
         </button>
         <span className="ml-2 font-mono text-gray-500">{step.code}</span>
       </div>
-      <figcaption className="mt-2 text-[11px] text-gray-500">{L(`note${n}`)}</figcaption>
+      <figcaption className="mt-2 text-center text-[11px] text-gray-500">{L(`note${n}`)}</figcaption>
     </figure>
   );
 }
