@@ -1,0 +1,20 @@
+source_hash: 55836e86a221
+title: Le problème de l'arrêt avec un lot de machines de Turing
+summary: 'Pas de physique, juste pour le plaisir : faites tourner des centaines de milliers de machines de Turing à la fois sous forme de tenseurs. Un pas de chaque machine est un gather (lire le ruban sous chaque tête), une recherche de sa règle par indexation avancée et un scatter (écrire). Énumérez tous les candidats castors affairés à 2 et 3 états, trouvez les champions $S(2) = 6$ et $S(3) = 21$, et voyez le problème de l''arrêt à l''œuvre : quel que soit le budget de pas choisi, certaines machines restent indécidées.'
+notes: 'Turing (1936) a montré qu''aucun programme ne peut décider, pour toute machine et toute entrée, si elle s''arrête. L''argument diagonal en un paragraphe : supposons qu''une machine $D(M)$ réponde « s''arrête » ou « tourne indéfiniment » pour toute machine $M$ lancée sur sa propre description. Construisons $G$ qui exécute $D(M)$ puis fait le contraire : boucler indéfiniment si $D$ dit « s''arrête », s''arrêter si $D$ dit « tourne indéfiniment ». Demandons maintenant ce que fait $G$ sur sa propre description : s''il s''arrête, $D$ a dit qu''il tourne indéfiniment, et s''il tourne indéfiniment, $D$ a dit qu''il s''arrête. Dans les deux cas $D$ se trompe, donc $D$ ne peut pas exister. Radó (1962) en a fait un jeu, le castor affairé : parmi toutes les machines à $n$ états et 2 symboles lancées sur un ruban vierge qui s''arrêtent, $S(n)$ est la plus longue exécution et $\Sigma(n)$ le plus grand nombre de 1 laissés. Les deux croissent plus vite que toute fonction calculable, car un programme
+  pour $S(n)$ déciderait l''arrêt : exécuter chaque machine $S(n)$ pas, et si elle ne s''est pas arrêtée alors, elle ne s''arrêtera jamais. Valeurs connues : $S(2) = 6$, $\Sigma(2) = 4$ (Radó), $S(3) = 21$, $\Sigma(3) = 6$ (Lin et Radó 1965), $S(4) = 107$, $\Sigma(4) = 13$ (Brady 1983), et $S(5) = 47\,176\,870$, démontré en 2024 par la collaboration bbchallenge avec une preuve vérifiée en Coq que toutes les autres machines à 5 états tournent indéfiniment. Le graphique montre pourquoi c''est difficile : la fraction arrêtée $f(t)$ monte puis s''aplatit, et un budget fini ne peut jamais distinguer une machine lente qui finira par s''arrêter d''une machine qui tourne indéfiniment. Ici le plateau après le pas 21 est la réponse connue pour 3 états, car on a démontré que les machines restantes bouclent. Normalisation pour 3 états : la première règle est fixée à A0 → 1RB, un choix courant qui conserve les champions connus (par symétrie gauche–droite le premier mouvement peut aller à droite, les
+  noms des autres états sont interchangeables, et une machine qui reste en A sur un ruban vierge ne s''arrête jamais), et chaque règle d''arrêt est 1RH, ce qui donne $13^5 = 371\,293$ machines au lieu de $16^6$. Essayez 4 états : un échantillon aléatoire contient rarement le champion à 107 pas.'
+meanings:
+- 'table des règles de la machine $b$ pour l''état $q$ et le symbole lu $r$ : (écrire $w$, se déplacer de $m = \pm1$, état suivant $q''$) ; l''état $n$ est l''état d''arrêt $H$'
+- case $x$ du ruban de la machine $b$, toutes à 0 au départ ; $L = 2t_{\max} + 1$ pour qu'aucune tête n'atteigne le bout
+- position de la tête (au milieu au départ) et état courant (au départ $A$)
+- lire le symbole sous toutes les têtes à la fois
+- 'indexation avancée : chaque machine cherche sa propre règle'
+- écrire ; puis se déplacer et changer d'état, seulement là où $s_b \ne H$ (les machines arrêtées sont figées)
+- 'pas auquel la machine $b$ est entrée dans $H$, ou $-1$ : indécidée dans le budget'
+- 'fraction des machines avec $\tau_b \le t$ : croissante, et bloquée sous 1'
+- '$x$ répété ⇒ sommé : le nombre de 1 laissés par une machine arrêtée'
+labels:
+  states: États $n$ (2 et 3 exhaustifs, 4 échantillonnés)
+  budget: Budget de pas $t_{\max}$
+  n_sample: Machines aléatoires à 4 états

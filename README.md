@@ -55,7 +55,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 ## Problem library
 
 <!-- library:start -->
-171 problems in 17 topics by difficulty level. Click a topic to expand it.
+172 problems in 17 topics by difficulty level. Click a topic to expand it.
 
 <details>
 <summary><b>Mechanics</b> (13 problems)</summary>
@@ -684,7 +684,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary><b>Others</b> (9 problems)</summary>
+<summary><b>Others</b> (10 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (2)</summary>
@@ -709,13 +709,14 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (3)</summary>
+<summary>🔴 Advanced (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Physics-informed neural network (PINN): damped oscillator](problems/others/pinn_oscillator) | $h^{(l+1)}_{ni} = \tanh\!\big(W^{(l)}_{ij}\,h^{(l)}_{nj} + b^{(l)}_i\big)$ |
 | [Fourier neural operator: learning the Burgers solution operator](problems/others/neural_operator) | $\hat w_{bok} = R_{iok}\,\hat v_{bik}$ |
 | [AlphaGo in miniature: tree search on a $5\times5$ Go board](problems/others/alphago_mini) | $r_{bp} \leftarrow r_{bp} \lor \big(s_{bp} \land [A_{pq}\,r_{bq} > 0]\big)$ |
+| [The halting problem with a batch of Turing machines](problems/others/turing_halting) | $r_b = T_{b,h_b}$ |
 
 </details>
 

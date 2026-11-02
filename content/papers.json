@@ -1119,6 +1119,23 @@
    "url": "https://doi.org/10.1016/j.jcp.2018.10.045"
   }
  ],
+ "others/turing_halting": [
+  {
+   "label": "Turing, 1937, Proceedings of the London Mathematical Society",
+   "title": "On Computable Numbers, with an Application to the Entscheidungsproblem",
+   "url": "https://doi.org/10.1112/plms/s2-42.1.230"
+  },
+  {
+   "label": "Rado, 1962, Bell System Technical Journal",
+   "title": "On Non-Computable Functions",
+   "url": "https://doi.org/10.1002/j.1538-7305.1962.tb00480.x"
+  },
+  {
+   "label": "The bbchallenge Collaboration et al., 2025 (arXiv)",
+   "title": "Determination of the fifth Busy Beaver value",
+   "url": "https://arxiv.org/abs/2509.12337"
+  }
+ ],
  "physchem/arrhenius_kinetics": [
   {
    "label": "Arrhenius, 1889, Zeitschrift für Physikalische Chemie",

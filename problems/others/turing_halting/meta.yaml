@@ -1,0 +1,45 @@
+title: The halting problem with a batch of Turing machines
+category: others
+level: advanced
+order: 4
+summary: >
+  Not physics, just for fun: run hundreds of thousands of Turing machines at once as tensors. One step of every
+  machine is a gather (read the tape under each head), an advanced-indexing look-up of its rule and a scatter (write).
+  Enumerate all 2- and 3-state busy beaver candidates, find the champions $S(2) = 6$ and $S(3) = 21$, and watch the
+  halting problem in action: whatever step budget you pick, some machines are still undecided.
+animated: true
+vector_form: '\delta(q, r) = (w, m, q''),\qquad S(n) = \max_{M \text{ halts}} \tau(M),\qquad f(t) = \frac{\#\{M : \tau(M) \le t\}}{\#\{M\}}'
+index_form: 'r_b = T_{b,h_b},\qquad (w_b, m_b, q''_b) = \delta_{b,\,s_b,\,r_b},\qquad T_{b,h_b} \leftarrow w_b,\quad h_b \leftarrow h_b + m_b,\quad s_b \leftarrow q''_b \quad (s_b \ne H)'
+translation:
+  - {symbol: '\delta_{bqr}', code: 'all_machines(n, normalise, device)', shape: '(B, n, 2, 3)', meaning: 'rule table of machine $b$ for state $q$ and read symbol $r$: (write $w$, move $m = \pm1$, next state $q''$); state $n$ is the halt state $H$'}
+  - {symbol: 'T_{bx}', code: 'blank(B, L, device)', shape: '(B, L)', meaning: 'tape cell $x$ of machine $b$, all 0 at the start; $L = 2t_{\max} + 1$ so no head can reach the end'}
+  - {symbol: 'h_b,\ s_b', code: 'head, state', shape: '(B,)', meaning: 'head position (starting in the middle) and current state (starting in $A$)'}
+  - {symbol: 'r_b = T_{b,h_b}', code: 'tape.gather(1, head[:, None])', shape: '(B,)', meaning: 'read the symbol under every head at once'}
+  - {symbol: '\delta_{b,s_b,r_b}', code: 'table[arange(B), state, r]', shape: '(B, 3)', meaning: 'advanced indexing: each machine looks up its own rule'}
+  - {symbol: 'T_{b,h_b} \leftarrow w_b', code: 'tape.scatter_(1, head[:, None], w[:, None])', shape: '(B, L)', meaning: 'write; then move and change state, only where $s_b \ne H$ (halted machines freeze)'}
+  - {symbol: '\tau_b', code: "run(table, budget)['halt_time']", shape: '(B,)', meaning: 'step on which machine $b$ entered $H$, or $-1$: undecided within the budget'}
+  - {symbol: 'f(t)', code: 'halted_fraction(halt_time, budget)', shape: '(t_max+1,)', meaning: 'fraction of machines with $\tau_b \le t$: non-decreasing, and stuck below 1'}
+  - {symbol: '\Sigma_b = \sum_x T_{bx}', code: 'tape.sum(dim=1)', shape: '(B,)', meaning: 'repeated $x$ ⇒ summed: the number of 1s a halted machine leaves'}
+notes: >
+  Turing (1936) showed that no program can decide, for every machine and input, whether it halts. The diagonal
+  argument in one paragraph: suppose a machine $D(M)$ answered "halts" or "runs forever" for every machine $M$
+  started on its own description. Build $G$ that runs $D(M)$ and then does the opposite: loop forever if $D$ says
+  "halts", halt if $D$ says "runs forever". Now ask what $G$ does on its own description: if it halts, $D$ said it
+  runs forever, and if it runs forever, $D$ said it halts. Either way $D$ is wrong, so $D$ cannot exist.
+  Radó (1962) turned this into a game, the busy beaver: among all $n$-state, 2-symbol machines started on a blank
+  tape that do halt, $S(n)$ is the longest run and $\Sigma(n)$ the most 1s left behind. Both grow faster than any
+  computable function, since a program for $S(n)$ would decide halting: run each machine $S(n)$ steps, and if it
+  has not halted by then it never will. Known values: $S(2) = 6$, $\Sigma(2) = 4$ (Radó), $S(3) = 21$,
+  $\Sigma(3) = 6$ (Lin and Radó 1965), $S(4) = 107$, $\Sigma(4) = 13$ (Brady 1983), and $S(5) = 47\,176\,870$,
+  proved in 2024 by the bbchallenge collaboration with a Coq-verified proof that every other 5-state machine
+  runs forever. The plot shows why this is hard: the halted fraction $f(t)$ rises and then flattens, and a finite
+  budget can never tell a slow halter from a machine that runs forever. Here the plateau after step 21 is the
+  known answer for 3 states, because the machines left over were proved to loop. Normalisation for 3 states: the
+  first rule is fixed to A0 → 1RB, a common choice that keeps the known champions (by left–right symmetry the first
+  move can be to the right, the names of the other states are interchangeable, and a machine that stays in A on a
+  blank tape never halts), and every halting rule is 1RH, giving $13^5 = 371\,293$ machines instead of $16^6$.
+  Try 4 states: a random sample rarely contains the 107-step champion.
+params:
+  states: {default: 3, min: 2, max: 4, step: 1, type: int, label: 'States $n$ (2 and 3 exhaustive, 4 sampled)'}
+  budget: {default: 100, min: 10, max: 600, step: 10, type: int, label: 'Step budget $t_{\max}$'}
+  n_sample: {default: 200000, min: 10000, max: 1000000, step: 10000, type: int, label: 'Random 4-state machines'}

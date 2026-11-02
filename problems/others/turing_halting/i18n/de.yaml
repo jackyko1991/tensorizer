@@ -1,0 +1,20 @@
+source_hash: 55836e86a221
+title: Das Halteproblem mit einem Stapel von Turingmaschinen
+summary: 'Keine Physik, nur zum Spaß: Hunderttausende Turingmaschinen laufen gleichzeitig als Tensoren. Ein Schritt jeder Maschine ist ein Gather (das Band unter jedem Kopf lesen), ein Nachschlagen ihrer Regel per erweiterter Indizierung und ein Scatter (schreiben). Zähle alle Fleißiger-Biber-Kandidaten mit 2 und 3 Zuständen auf, finde die Champions $S(2) = 6$ und $S(3) = 21$ und sieh das Halteproblem in Aktion: Welches Schrittbudget man auch wählt, einige Maschinen bleiben unentschieden.'
+notes: 'Turing (1936) zeigte, dass kein Programm für jede Maschine und jede Eingabe entscheiden kann, ob sie hält. Das Diagonalargument in einem Absatz: Angenommen, eine Maschine $D(M)$ antwortet „hält“ oder „läuft ewig“ für jede Maschine $M$, die auf ihrer eigenen Beschreibung gestartet wird. Baue $G$, das $D(M)$ ausführt und dann das Gegenteil tut: ewig weiterlaufen, wenn $D$ „hält“ sagt, anhalten, wenn $D$ „läuft ewig“ sagt. Was tut nun $G$ auf seiner eigenen Beschreibung? Hält es, hat $D$ gesagt, es laufe ewig, und läuft es ewig, hat $D$ gesagt, es halte. In beiden Fällen irrt $D$, also kann $D$ nicht existieren. Radó (1962) machte daraus ein Spiel, den fleißigen Biber: Unter allen Maschinen mit $n$ Zuständen und 2 Symbolen, die auf leerem Band gestartet anhalten, ist $S(n)$ der längste Lauf und $\Sigma(n)$ die größte Zahl hinterlassener Einsen. Beide wachsen schneller als jede berechenbare Funktion, denn ein Programm für $S(n)$ würde das Halteproblem entscheiden: jede Maschine $S(n)$
+  Schritte laufen lassen; hat sie bis dahin nicht gehalten, hält sie nie. Bekannte Werte: $S(2) = 6$, $\Sigma(2) = 4$ (Radó), $S(3) = 21$, $\Sigma(3) = 6$ (Lin und Radó 1965), $S(4) = 107$, $\Sigma(4) = 13$ (Brady 1983) und $S(5) = 47\,176\,870$, 2024 von der bbchallenge-Kollaboration bewiesen, mit einem in Coq verifizierten Beweis, dass jede andere Maschine mit 5 Zuständen ewig läuft. Der Plot zeigt, warum das schwer ist: Der gehaltene Anteil $f(t)$ steigt und flacht dann ab, und ein endliches Budget kann einen langsamen Halter nie von einer ewig laufenden Maschine unterscheiden. Hier ist das Plateau nach Schritt 21 die bekannte Antwort für 3 Zustände, weil für die übrigen Maschinen bewiesen wurde, dass sie endlos laufen. Normierung für 3 Zustände: Die erste Regel ist auf A0 → 1RB festgelegt, eine übliche Wahl, die die bekannten Champions erhält (wegen der Links-rechts-Symmetrie darf der erste Schritt nach rechts gehen, die Namen der anderen Zustände sind austauschbar, und eine Maschine,
+  die auf leerem Band in A bleibt, hält nie), und jede Halteregel ist 1RH; das ergibt $13^5 = 371\,293$ statt $16^6$ Maschinen. Probiere 4 Zustände: Eine Zufallsstichprobe enthält den 107-Schritte-Champion nur selten.'
+meanings:
+- 'Regeltabelle der Maschine $b$ für Zustand $q$ und gelesenes Symbol $r$: (schreibe $w$, bewege $m = \pm1$, nächster Zustand $q''$); Zustand $n$ ist der Haltezustand $H$'
+- Bandzelle $x$ der Maschine $b$, anfangs alle 0; $L = 2t_{\max} + 1$, damit kein Kopf das Ende erreicht
+- Kopfposition (anfangs in der Mitte) und aktueller Zustand (anfangs $A$)
+- das Symbol unter allen Köpfen gleichzeitig lesen
+- 'erweiterte Indizierung: jede Maschine schlägt ihre eigene Regel nach'
+- schreiben; dann bewegen und Zustand wechseln, nur wo $s_b \ne H$ (gehaltene Maschinen frieren ein)
+- 'Schritt, in dem Maschine $b$ in $H$ eintrat, oder $-1$: innerhalb des Budgets unentschieden'
+- 'Anteil der Maschinen mit $\tau_b \le t$: monoton steigend und unter 1 stecken geblieben'
+- 'wiederholtes $x$ ⇒ summiert: die Zahl der Einsen, die eine gehaltene Maschine hinterlässt'
+labels:
+  states: Zustände $n$ (2 und 3 vollständig, 4 gesampelt)
+  budget: Schrittbudget $t_{\max}$
+  n_sample: Zufällige Maschinen mit 4 Zuständen

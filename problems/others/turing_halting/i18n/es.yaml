@@ -1,0 +1,20 @@
+source_hash: 55836e86a221
+title: El problema de la parada con un lote de máquinas de Turing
+summary: 'No es física, solo por diversión: ejecuta cientos de miles de máquinas de Turing a la vez como tensores. Un paso de cada máquina es un gather (leer la cinta bajo cada cabezal), una búsqueda de su regla con indexación avanzada y un scatter (escribir). Enumera todos los candidatos a castor afanoso de 2 y 3 estados, encuentra a los campeones $S(2) = 6$ y $S(3) = 21$, y observa el problema de la parada en acción: elijas el presupuesto de pasos que elijas, algunas máquinas siguen sin decidir.'
+notes: 'Turing (1936) demostró que ningún programa puede decidir, para toda máquina y toda entrada, si se detiene. El argumento diagonal en un párrafo: supongamos que una máquina $D(M)$ respondiera «se detiene» o «corre para siempre» para toda máquina $M$ arrancada sobre su propia descripción. Construimos $G$, que ejecuta $D(M)$ y luego hace lo contrario: entrar en un bucle infinito si $D$ dice «se detiene» y detenerse si $D$ dice «corre para siempre». Ahora preguntemos qué hace $G$ sobre su propia descripción: si se detiene, $D$ dijo que corre para siempre, y si corre para siempre, $D$ dijo que se detiene. En ambos casos $D$ se equivoca, así que $D$ no puede existir. Radó (1962) lo convirtió en un juego, el castor afanoso: entre todas las máquinas de $n$ estados y 2 símbolos que, arrancadas sobre una cinta en blanco, se detienen, $S(n)$ es la ejecución más larga y $\Sigma(n)$ el mayor número de 1 que dejan. Ambas crecen más rápido que cualquier función computable, porque un programa para
+  $S(n)$ decidiría la parada: ejecutar cada máquina $S(n)$ pasos, y si no se ha detenido para entonces, nunca lo hará. Valores conocidos: $S(2) = 6$, $\Sigma(2) = 4$ (Radó), $S(3) = 21$, $\Sigma(3) = 6$ (Lin y Radó 1965), $S(4) = 107$, $\Sigma(4) = 13$ (Brady 1983), y $S(5) = 47\,176\,870$, demostrado en 2024 por la colaboración bbchallenge con una prueba verificada en Coq de que todas las demás máquinas de 5 estados corren para siempre. La gráfica muestra por qué es difícil: la fracción detenida $f(t)$ sube y luego se aplana, y un presupuesto finito nunca puede distinguir una máquina lenta que acabará deteniéndose de una que corre para siempre. Aquí la meseta tras el paso 21 es la respuesta conocida para 3 estados, porque se demostró que las máquinas restantes entran en bucle. Normalización para 3 estados: la primera regla se fija en A0 → 1RB, una elección habitual que conserva a los campeones conocidos (por la simetría izquierda–derecha el primer movimiento puede ser a la derecha, los
+  nombres de los demás estados son intercambiables, y una máquina que se queda en A sobre una cinta en blanco nunca se detiene), y toda regla de parada es 1RH, lo que da $13^5 = 371\,293$ máquinas en lugar de $16^6$. Prueba con 4 estados: una muestra aleatoria rara vez contiene al campeón de 107 pasos.'
+meanings:
+- 'tabla de reglas de la máquina $b$ para el estado $q$ y el símbolo leído $r$: (escribir $w$, mover $m = \pm1$, estado siguiente $q''$); el estado $n$ es el estado de parada $H$'
+- celda $x$ de la cinta de la máquina $b$, todas a 0 al principio; $L = 2t_{\max} + 1$ para que ningún cabezal llegue al extremo
+- posición del cabezal (al principio en el centro) y estado actual (al principio $A$)
+- leer el símbolo bajo todos los cabezales a la vez
+- 'indexación avanzada: cada máquina busca su propia regla'
+- escribir; luego moverse y cambiar de estado, solo donde $s_b \ne H$ (las máquinas detenidas se congelan)
+- 'paso en el que la máquina $b$ entró en $H$, o $-1$: sin decidir dentro del presupuesto'
+- 'fracción de máquinas con $\tau_b \le t$: no decreciente, y estancada por debajo de 1'
+- '$x$ repetido ⇒ sumado: el número de 1 que deja una máquina detenida'
+labels:
+  states: Estados $n$ (2 y 3 exhaustivos, 4 muestreados)
+  budget: Presupuesto de pasos $t_{\max}$
+  n_sample: Máquinas aleatorias de 4 estados

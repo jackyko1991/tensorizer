@@ -1556,6 +1556,19 @@
   },
   "wikidata": "Q107285102"
  },
+ "others/turing_halting": {
+  "titles": {
+   "en": "Busy beaver",
+   "zh": "忙碌的海狸",
+   "fr": "Castor affairé",
+   "de": "Fleißiger Biber",
+   "es": "Busy beaver",
+   "ja": "ビジービーバー",
+   "ru": "Busy beaver",
+   "ko": "바쁜 비버"
+  },
+  "wikidata": "Q1427965"
+ },
  "physchem/arrhenius_kinetics": {
   "titles": {
    "en": "Arrhenius equation",
