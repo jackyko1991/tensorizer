@@ -26,6 +26,7 @@ from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from . import limits
 from .runner import CODE_FILES, PROBLEMS, RunError, problem_dir, stream_problem
 
 ENABLED = os.environ.get("AGENT_ENABLED") == "1"
@@ -553,6 +554,8 @@ async def run_in_session(s: Session, params: dict, client_id: str) -> tuple[str,
         if s.sink is not None:
             await s.sink.put(event)
 
+    if not limits.user_code_allowed():  # the agent writes code; a shared server doesn't run it by default
+        return "Running code is off on this shared server. Ask the user to switch to Backend > Local.", True
     try:
         resolved = resolve_params(load_meta(s.workspace), params or {})
         result = None

@@ -12,6 +12,7 @@ RUN chown -R user /app
 USER user
 
 ENV CORS_ORIGINS=https://jackyko1991.github.io \
+    TENSORIZER_SHARED=1 \
     TENSORIZER_CACHE=/tmp/tensorizer-runs \
     TENSORIZER_MAX_CONCURRENT=1 \
     TENSORIZER_MAX_QUEUE=20 \

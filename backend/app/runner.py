@@ -17,12 +17,13 @@ from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from pathlib import Path
 
+from . import limits
 from .run_queue import QUEUE, QueueFull
 
 ROOT = Path(__file__).resolve().parents[2]
 PROBLEMS = ROOT / "problems"
 CACHE = Path(os.environ.get("TENSORIZER_CACHE", ROOT / ".cache" / "runs"))
-TIMEOUT_S = float(os.environ.get("TENSORIZER_TIMEOUT", "120"))
+TIMEOUT_S = limits.RUN_TIMEOUT_S  # 120 s on a shared server whatever else is set
 CODE_FILES = ["test.py", "main.py", "equation.py", "tensors.py", "solve.py", "plot.py"]
 DEVICES = ("auto", "cpu", "cuda", "mps")
 TEST_SUMMARY = re.compile(r"(\d+) (passed|failed|error|errors)\b")
@@ -162,7 +163,12 @@ async def _stream_process(cmd: list[str], cwd: Path, env: dict[str, str]) -> Asy
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),  # Windows: no console window flashing up per run
+        preexec_fn=limits.PREEXEC,  # shared server on POSIX: CPU-time, file-size and core limits
     )
+    # Killed at the deadline even if nobody reads the output (the page closed): no orphan keeps the CPU busy.
+    watchdog = threading.Timer(TIMEOUT_S + 5, lambda: proc.poll() is None and proc.kill())
+    watchdog.daemon = True
+    watchdog.start()
 
     def reader() -> None:
         buffer = b""
@@ -183,15 +189,24 @@ async def _stream_process(cmd: list[str], cwd: Path, env: dict[str, str]) -> Asy
 
     threading.Thread(target=reader, daemon=True).start()
     deadline = time.monotonic() + TIMEOUT_S
-    while True:
-        try:
-            event = await asyncio.wait_for(queue.get(), max(0.0, deadline - time.monotonic()))
-        except TimeoutError:
+    printed = 0
+    try:
+        while True:
+            try:
+                event = await asyncio.wait_for(queue.get(), max(0.0, deadline - time.monotonic()))
+            except TimeoutError:
+                raise RunError(f"timed out after {TIMEOUT_S:.0f} s") from None
+            if event["type"] == "line":
+                printed += len(event["text"]) + 1
+                if printed > limits.MAX_CONSOLE_BYTES:
+                    raise RunError(f"stopped: more than {limits.MAX_CONSOLE_BYTES // 1000} kB of output")
+            yield event
+            if event["type"] == "exit":
+                return
+    finally:  # timed out, too much output, or the stream was closed early: the process goes too
+        watchdog.cancel()
+        if proc.poll() is None:
             proc.kill()
-            raise RunError(f"timed out after {TIMEOUT_S:.0f} s") from None
-        yield event
-        if event["type"] == "exit":
-            return
 
 
 async def stream_problem(
@@ -236,6 +251,8 @@ async def stream_problem(
         yield {"type": "result", "run_id": run_id, "output": name, "console": console, "cached": True, "tests": tests}
         return
 
+    if wait := limits.RATE.check(client):  # fresh renders only: cached results above are free
+        raise RunError(f"too many runs: try again in {wait:.0f} s")
     try:
         ticket = QUEUE.join(client, f"{category}/{slug}")
     except QueueFull as e:
@@ -309,6 +326,7 @@ async def stream_problem(
             console += "\n\n── tests: test.py ──\n" + test_log
             (out_dir / "tests.json").write_text(json.dumps(tests), encoding="utf-8")
         (out_dir / "console.txt").write_text(console, encoding="utf-8")
+        limits.prune_cache(CACHE, keep=out_dir)
     finally:
         QUEUE.leave(ticket)
 

@@ -22,6 +22,8 @@ import time
 from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 
+from . import limits
+
 CHECK_IN_S = 3.0  # a waiter wakes this often, even when nothing changed
 STALE_S = 15.0  # a waiter that hasn't checked in for this long is gone
 
@@ -143,7 +145,7 @@ class RunQueue:
 
 QUEUE = RunQueue(
     concurrent=int(os.environ.get("TENSORIZER_MAX_CONCURRENT", "1")),
-    limit=int(os.environ.get("TENSORIZER_MAX_QUEUE", "20")),
-    per_client=int(os.environ.get("TENSORIZER_PER_CLIENT", "0")),
-    max_run_s=float(os.environ.get("TENSORIZER_TIMEOUT", "120")) + 60,  # the run timeout plus tests and saving
+    limit=limits.QUEUE_MAX,  # at most 20 on a shared server
+    per_client=limits.PER_CLIENT,  # one job per visitor on a shared server
+    max_run_s=limits.RUN_TIMEOUT_S + 60,  # the run timeout plus tests and saving
 )

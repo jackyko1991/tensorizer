@@ -12,7 +12,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
-from . import agent, workspace
+from . import agent, limits, workspace
 from .runner import RunError
 
 router = APIRouter(prefix="/api/ws")
@@ -23,9 +23,16 @@ def _enabled() -> None:
         raise HTTPException(403, "workspaces are not enabled on this server")
 
 
+def _may_run() -> None:
+    """Running a Workspace problem or notebook executes the visitor's own code: off on a shared server by default."""
+    _enabled()
+    if not limits.user_code_allowed():
+        raise HTTPException(403, "running your own code is off on this shared server: use Backend > Local")
+
+
 def _client(request: Request) -> str:
-    forwarded = request.headers.get("x-forwarded-for", "")
-    return forwarded.split(",")[0].strip() or (request.client.host if request.client else "unknown")
+    peer = request.client.host if request.client else None
+    return limits.client_address(request.headers.get("x-forwarded-for", ""), peer)
 
 
 class CopyRequest(BaseModel):
@@ -130,7 +137,7 @@ def delete(session: str) -> dict:
 @router.post("/{session}/run-stream")
 async def run_stream(session: str, req: RunRequest, request: Request) -> StreamingResponse:
     """Render the problem in its sandbox; the same newline-delimited JSON events as /api/run-stream."""
-    _enabled()
+    _may_run()
     if not workspace.alive(session):
         raise HTTPException(410, "this problem's sandbox has expired")
 
@@ -149,7 +156,7 @@ async def run_stream(session: str, req: RunRequest, request: Request) -> Streami
 @router.post("/{session}/notebook")
 async def notebook(session: str, req: NotebookRequest, request: Request) -> dict:
     """Run code cells 1..k in a fresh process (stateless); returns the last cell's (or every cell's) output."""
-    _enabled()
+    _may_run()
     if not workspace.alive(session):
         raise HTTPException(410, "this problem's sandbox has expired")
     try:

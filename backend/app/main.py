@@ -18,14 +18,15 @@ from pydantic import BaseModel, Field
 
 from problems._common.runtime import load_meta, resolve_params
 
-from . import agent
+from . import agent, limits
 from .routes_agents import router as agents_router
 from .routes_workspace import router as workspace_router
 from .run_queue import QUEUE
 from .runner import CACHE, CODE_FILES, ROOT, RunError, problem_dir, run_problem, stream_problem
 
 # Running edited code executes arbitrary Python: only enable on a private machine.
-ALLOW_CODE_EXEC = os.environ.get("ALLOW_CODE_EXEC") == "1"
+# edited code runs only where allowed, and on a shared server only with TENSORIZER_SHARED_CODE=1
+ALLOW_CODE_EXEC = os.environ.get("ALLOW_CODE_EXEC") == "1" and limits.user_code_allowed()
 ORIGINS = [o for o in os.environ.get("CORS_ORIGINS", "*").split(",") if o]
 MAX_CODE_BYTES = 200_000
 
@@ -124,9 +125,9 @@ def queue_cancel(request: Request) -> dict:
 
 
 def _client(request: Request) -> str:
-    """Who is asking, for the one-run-per-visitor limit; behind a proxy (Hugging Face) the first forwarded hop."""
-    forwarded = request.headers.get("x-forwarded-for", "")
-    return forwarded.split(",")[0].strip() or (request.client.host if request.client else "unknown")
+    """Who is asking, for the per-visitor limits: the address the trusted proxy saw (see limits.client_address)."""
+    peer = request.client.host if request.client else None
+    return limits.client_address(request.headers.get("x-forwarded-for", ""), peer)
 
 
 def _validate(category: str, slug: str, req: RunRequest) -> dict:
