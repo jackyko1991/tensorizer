@@ -446,6 +446,7 @@ export default function App() {
         onRenameNotebook={renameNotebook}
         onDeleteNotebook={deleteNotebook}
         onExport={() => ws && manifest && exportWorkspace(ws, manifest, ws.name || t("ws.default"))}
+        onExportProblem={(id) => ws && manifest && void exportProblem(ws, manifest, id)}
         onImport={importZip}
         onGitHub={() => setGithub(true)}
       />
@@ -624,7 +625,12 @@ export default function App() {
             {libraryOpen ? (
               leftTab === "problems" ? (
                 <div className="min-h-0 flex-1 overflow-y-auto p-3">
-                  <Sidebar manifest={manifest} selected={problem.id} onSelect={select} />
+                  <Sidebar
+                    manifest={manifest}
+                    selected={problem.id}
+                    onSelect={select}
+                    onFork={(id) => create(() => wsCopy(id))}
+                  />
                 </div>
               ) : (
                 // Workspace: blank problems, library copies and AI-created ones, each with Source, Data, notebooks

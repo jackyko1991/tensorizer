@@ -137,7 +137,14 @@ async def _stream_process(cmd: list[str], cwd: Path, env: dict[str, str]) -> Asy
     """
     loop = asyncio.get_running_loop()
     queue: asyncio.Queue = asyncio.Queue()
-    proc = subprocess.Popen(cmd, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    proc = subprocess.Popen(
+        cmd,
+        cwd=cwd,
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),  # Windows: no console window flashing up per run
+    )
 
     def reader() -> None:
         buffer = b""

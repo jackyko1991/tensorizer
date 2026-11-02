@@ -54,3 +54,16 @@ serve = { cmd = "uvicorn backend.app.main:app --port 8000", env = { ALLOW_CODE_E
 [pypi-dependencies]
 claude-agent-sdk = ">=0.2.176, <0.3"
 mcp = ">=2.3, <3"
+
+# NVIDIA GPUs: `pixi run -e cuda api` (Windows, Linux). CUDA 12.x builds run on Pascal (GTX 10xx) through current
+# cards; CUDA 13 dropped Pascal. The default environment stays CPU-only (small, works everywhere, MPS on Macs).
+[feature.cuda]
+platforms = ["win-64", "linux-64"]
+system-requirements = { cuda = "12" }
+
+[feature.cuda.dependencies]
+pytorch-gpu = "*"
+cuda-version = "12.*"
+
+[environments]
+cuda = ["cuda"]

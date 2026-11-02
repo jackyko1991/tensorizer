@@ -6,6 +6,7 @@ import functools
 import json
 import mimetypes
 import os
+import sys
 from pathlib import Path
 from typing import Literal
 
@@ -69,14 +70,40 @@ def _machine() -> dict:
     if torch.backends.mps.is_available():
         devices.append("mps")
     gpu = torch.cuda.get_device_name(0) if "cuda" in devices else ("Apple GPU" if "mps" in devices else None)
+    # sys.platform, not platform.system(): on Windows that runs `cmd /c ver`, flashing a console window
+    os_name = {"win32": "Windows", "darwin": "macOS"}.get(sys.platform, "Linux")
     return {
         "runner": RUNNER_VERSION,
         "torch": torch.__version__.split("+")[0],
         "python": platform.python_version(),
-        "os": platform.system(),
+        "os": os_name,
         "devices": devices,
         "gpu": gpu,
+        # an NVIDIA GPU the installed PyTorch can't use (a CPU-only build): the panel says how to get CUDA
+        "nvidia": None if "cuda" in devices else _nvidia_gpu(),
     }
+
+
+def _nvidia_gpu() -> str | None:
+    """The NVIDIA GPU's name from nvidia-smi (installed with the driver), without opening a console window."""
+    import shutil
+    import subprocess
+
+    exe = shutil.which("nvidia-smi")
+    if not exe:
+        return None
+    try:
+        out = subprocess.run(
+            [exe, "--query-gpu=name", "--format=csv,noheader"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    name = out.stdout.strip().splitlines()[0] if out.returncode == 0 and out.stdout.strip() else ""
+    return name[:80] or None
 
 
 @app.get("/api/health")

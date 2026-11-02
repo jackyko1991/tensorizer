@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { DIAGRAM_FORMATS, exportDiagram } from "../diagramExport";
+import ContextMenu from "./ContextMenu";
 import { useLang, type Key } from "../i18n";
 import type { Manifest, Workspace } from "../types";
 import { plainText, RichText } from "./Tex";
@@ -19,6 +20,8 @@ interface Props {
   onRenameNotebook: (id: string, notebook: string) => void;
   onDeleteNotebook: (id: string, notebook: string) => void;
   onExport: () => void;
+  /** one problem as a whole (zip) */
+  onExportProblem: (id: string) => void;
   onImport: (file: File) => void;
   onGitHub: () => void;
   className?: string;
@@ -38,12 +41,15 @@ export default function WorkspacePanel({
   onRenameNotebook,
   onDeleteNotebook,
   onExport,
+  onExportProblem,
   onImport,
   onGitHub,
   className = "",
 }: Props) {
   const { lang, t } = useLang();
   const [menu, setMenu] = useState<null | "new" | "library">(null);
+  // right-click on a problem: export it whole, push to GitHub, rename, delete
+  const [problemMenu, setProblemMenu] = useState<{ x: number; y: number; id: string; title: string } | null>(null);
   // right-click on a diagram.svg item: export it as SVG / PNG / JPG
   const [fileMenu, setFileMenu] = useState<{ x: number; y: number; src: string; name: string } | null>(null);
   useEffect(() => {
@@ -191,6 +197,10 @@ export default function WorkspacePanel({
                     </button>
                     <button
                       onClick={() => onSelect(route)}
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        setProblemMenu({ x: e.clientX, y: e.clientY, id: p.id, title: plainText(p.entry.title) });
+                      }}
                       className="min-w-0 flex-1 truncate py-1 text-left text-sm font-medium text-gray-800"
                       data-testid="ws-problem-title"
                     >
@@ -294,6 +304,20 @@ export default function WorkspacePanel({
           </ul>
         )}
       </div>
+      {problemMenu && (
+        <ContextMenu
+          x={problemMenu.x}
+          y={problemMenu.y}
+          title={problemMenu.title}
+          onClose={() => setProblemMenu(null)}
+          items={[
+            { label: t("nb.pixi"), icon: <DownloadIcon />, onClick: () => onExportProblem(problemMenu.id) },
+            { label: `${t("gh.title")}…`, icon: "⇪", onClick: onGitHub },
+            { label: t("ws.rename"), icon: "✎", onClick: () => onRename(problemMenu.id) },
+            { label: t("ws.delete"), icon: "🗑", onClick: () => onDelete(problemMenu.id) },
+          ]}
+        />
+      )}
       {fileMenu && (
         <div
           role="menu"

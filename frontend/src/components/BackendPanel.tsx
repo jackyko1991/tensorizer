@@ -17,7 +17,13 @@ import ShellCommand from "./ShellCommand";
 type Tab = "local" | "remote" | "subscribed";
 type Os = "windows" | "mac" | "linux";
 
-const REPO = "https://github.com/jackyko1991/tensorizer";
+const RELEASES = "https://github.com/jackyko1991/tensorizer/releases/tag/runner-latest";
+const RUNNER_ZIP = "https://github.com/jackyko1991/tensorizer/releases/download/runner-latest/tensorizer-runner.zip";
+const DOWNLOAD: Record<Os, string> = {
+  windows: `irm ${RUNNER_ZIP} -OutFile tensorizer-runner.zip; Expand-Archive tensorizer-runner.zip . -Force; cd tensorizer-runner`,
+  mac: `curl -fsSL -o tensorizer-runner.zip ${RUNNER_ZIP} && unzip -o tensorizer-runner.zip && cd tensorizer-runner`,
+  linux: `curl -fsSL -o tensorizer-runner.zip ${RUNNER_ZIP} && unzip -o tensorizer-runner.zip && cd tensorizer-runner`,
+};
 const PIXI_INSTALL: Record<Os, string> = {
   windows: 'powershell -ExecutionPolicy ByPass -c "irm -useb https://pixi.sh/install.ps1 | iex"',
   mac: "curl -fsSL https://pixi.sh/install.sh | sh",
@@ -219,6 +225,11 @@ function LocalTab({ onUse }: { onUse: () => void }) {
           ) : (
             <span className="text-amber-700">● {t("be.waiting")}</span>
           )}
+          {h?.nvidia && (
+            <p className="mt-1.5 rounded-md bg-amber-50 px-2 py-1.5 text-amber-900" data-testid="cuda-hint">
+              {t("be.cudaHint").replace("{gpu}", h.nvidia)} <code className="font-mono">pixi run -e cuda api</code>
+            </p>
+          )}
         </div>
       </div>
 
@@ -254,8 +265,17 @@ function LocalTab({ onUse }: { onUse: () => void }) {
             ))}
           </div>
           <Step n={1} label={t("be.step1")} command={PIXI_INSTALL[os]} />
-          <Step n={2} label={t("be.step2")} command={`git clone ${REPO} && cd tensorizer`} />
+          <Step n={2} label={t("be.step2")} command={DOWNLOAD[os]} />
+          <p className="-mt-1.5 text-gray-500">
+            {t("be.orRelease")}{" "}
+            <a href={RELEASES} target="_blank" rel="noreferrer" className="text-blue-700 hover:underline">
+              GitHub Releases ↗
+            </a>
+          </p>
           <Step n={3} label={t("be.step3")} command="pixi run api" />
+          {os !== "mac" && (
+            <Step n={4} label={t("be.stepGpu")} command="pixi run -e cuda api" badge={t("be.experimental")} />
+          )}
           <p className="text-gray-400">{t("be.later")}</p>
         </div>
       </details>
@@ -279,11 +299,16 @@ function LocalTab({ onUse }: { onUse: () => void }) {
   );
 }
 
-function Step({ n, label, command }: { n: number; label: string; command: string }) {
+function Step({ n, label, command, badge }: { n: number; label: string; command: string; badge?: string }) {
   return (
     <div>
       <p className="mb-1 text-gray-600">
         {n}. {label}
+        {badge && (
+          <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-800">
+            {badge}
+          </span>
+        )}
       </p>
       <ShellCommand text={command} size="text-[11px]" />
     </div>

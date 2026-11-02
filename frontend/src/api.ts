@@ -79,6 +79,8 @@ export interface Health {
   os?: string;
   devices?: Device[];
   gpu?: string | null;
+  /** an NVIDIA GPU this runner's PyTorch can't use (a CPU-only build) */
+  nvidia?: string | null;
 }
 
 /** Check a runner at an address without switching to it (the Backend panel's Test). */
