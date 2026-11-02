@@ -1,17 +1,29 @@
 import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
 import { RichText } from "../components/Tex";
+import TensorLab, { PairMemory } from "../components/TensorLab";
 import { usePageText, type PageKey } from "../content/pages";
 
-const SECTIONS = [1, 2, 3, 4, 5, 6, 7] as const;
+// "mem" (the cost of the output) sits after vectorisation; sections are numbered by position
+const SECTIONS = ["s1", "s2", "mem", "s3", "s4", "s5", "s6", "s7"] as const;
+type Section = (typeof SECTIONS)[number];
 
-const CODE: Record<number, string> = {
-  1: `x = torch.arange(6.0).reshape(2, 3)   # shape (2, 3), one buffer of 6 numbers
+const CODE: Partial<Record<Section, string>> = {
+  s1: `x = torch.arange(6.0).reshape(2, 3)   # shape (2, 3), one buffer of 6 numbers
 x.stride()            # (3, 1): +3 to the next row, +1 to the next column
 x.T.stride()          # (1, 3): the same memory, strides swapped, nothing copied
-x.T.is_contiguous()   # False
+x.T.is_contiguous()   # False: reading it jumps through memory
+y = x.T.contiguous()  # the real copy, laid out row by row again
+x[:, ::2].stride()    # (3, 2): a slice can change the strides, still no copy
+x[[0, 1, 1]]          # advanced indexing: a new tensor (copied)
 x.dtype, x.device     # torch.float32, device(type='cpu')`,
-  2: `# a Python loop: one interpreter round trip per pair
+  mem: `D = X[None, :, :] - X[:, None, :]     # (N, N, 3): 12·N² bytes in float32
+
+# in chunks: never more than chunk·N·3 numbers alive at once
+for a0 in range(0, N, chunk):
+    Dc = X[None, :, :] - X[a0:a0 + chunk, None, :]   # (chunk, N, 3)
+    F[a0:a0 + chunk] = force(Dc).sum(dim=1)          # reduce before the next chunk`,
+  s2: `# a Python loop: one interpreter round trip per pair
 for a in range(N):
     for b in range(N):
         r[a, b] = x[b] - x[a]
@@ -19,22 +31,25 @@ for a in range(N):
 # one kernel for all N² pairs: broadcasting reuses x with stride 0
 r = x[None, :, :] - x[:, None, :]          # (N, N, 3)
 x[:, None, :].expand(N, N, 3).stride()     # (3, 0, 1): the new axis costs no memory`,
-  3: `dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+  s3: `dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 x = torch.randn(4096, 4096, device=dev)    # created on the GPU: no copy
 y = x @ x                                  # queued; returns at once
 if dev.type == "cuda":
     torch.cuda.synchronize()               # wait for the GPU before reading a timer
 y_cpu = y.cpu()                            # the slow part: a copy back over the bus`,
-  4: `F = torch.einsum("abi,b->ai", K, m)    # F_ai = K_abi m_b: a batched GEMM underneath
+  s4: `F = torch.einsum("abi,b->ai", K, m)    # F_ai = K_abi m_b: a batched GEMM underneath
 torch.finfo(torch.float32).eps          # 1.2e-07, about 7 digits
 torch.finfo(torch.float64).eps          # 2.2e-16, about 16 digits`,
-  5: `x = torch.tensor([1.0, 0.5, 0.0], requires_grad=True)
-phi = -G * M / x.norm()                 # forward: each operation is recorded in the graph
+  s5: `x = torch.tensor([1.0, 0.5, 0.0], requires_grad=True)
+phi = -G * M / x.norm()                 # potential per unit mass; each operation is recorded
 (grad,) = torch.autograd.grad(phi, x)   # backward: the chain rule, node by node
-force = -grad                           # F = -∇φ, no derivative written by hand
+acc = -grad                             # -∇φ is an acceleration (GM/r² towards the mass), not a force
+
+U = -G * M * m / x.norm()               # potential energy of a mass m
+force = -torch.autograd.grad(U, x)[0]   # F = -∇U = m · acc
 
 fast_step = torch.compile(rk4_step)     # fuse the element-wise kernels of one step`,
-  7: `def device() -> torch.device:          # problems/_common/runtime.py
+  s7: `def device() -> torch.device:          # problems/_common/runtime.py
     choice = os.environ.get("TENSORIZER_DEVICE", "auto")   # set by the Backend panel
     if choice == "mps" and torch.backends.mps.is_available():
         return torch.device("mps")
@@ -64,7 +79,7 @@ export default function DataflowConcept() {
     <div className="mx-auto flex max-w-6xl gap-8 px-5 pb-10">
       <PageToc
         scrollRoot="concept-scroll"
-        items={SECTIONS.map((n) => ({ id: `flow-${n}`, mark: n, label: T(`flow.s${n}.title` as PageKey) }))}
+        items={SECTIONS.map((key, i) => ({ id: `flow-${key}`, mark: i + 1, label: T(`flow.${key}.title` as PageKey) }))}
       />
       <article className="min-w-0 max-w-4xl flex-1 space-y-10">
         <header>
@@ -76,19 +91,32 @@ export default function DataflowConcept() {
           </p>
         </header>
 
-        {SECTIONS.map((n) => (
-          <section key={n} id={`flow-${n}`} className="scroll-mt-6 rounded-xl border border-gray-200 bg-white p-6">
+        {SECTIONS.map((key, i) => (
+          <section key={key} id={`flow-${key}`} className="scroll-mt-6 rounded-xl border border-gray-200 bg-white p-6">
             <h2 className="flex flex-wrap items-baseline gap-3 text-lg font-semibold">
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-sm text-white">
-                {n}
+                {i + 1}
               </span>
-              {T(`flow.s${n}.title` as PageKey)}
+              {T(`flow.${key}.title` as PageKey)}
             </h2>
             <div className="mt-4 space-y-4 text-sm leading-relaxed text-gray-700">
-              <p>{R(`flow.s${n}.p1` as PageKey)}</p>
-              {n === 1 && <StridesDiagram />}
-              {has(`flow.s${n}.p2`) && <p>{R(`flow.s${n}.p2` as PageKey)}</p>}
-              {n === 6 ? <FrameworkTable concept={T("flow.table.concept")} /> : CODE[n] && <CodeBlock code={CODE[n]} />}
+              {[1, 2, 3, 4].map(
+                (k) =>
+                  has(`flow.${key}.p${k}`) && (
+                    <div key={k} className="space-y-4">
+                      <p className={key === "s5" && k === 4 ? "rounded-lg bg-amber-50 px-3 py-2 text-amber-900" : ""}>
+                        {R(`flow.${key}.p${k}` as PageKey)}
+                      </p>
+                      {key === "s1" && k === 2 && <TensorLab />}
+                      {key === "mem" && k === 1 && <PairMemory />}
+                    </div>
+                  ),
+              )}
+              {key === "s6" ? (
+                <FrameworkTable concept={T("flow.table.concept")} />
+              ) : (
+                CODE[key] && <CodeBlock code={CODE[key]!} />
+              )}
             </div>
           </section>
         ))}
@@ -125,53 +153,5 @@ function FrameworkTable({ concept }: { concept: string }) {
         </tbody>
       </table>
     </div>
-  );
-}
-
-/** A (2, 3) tensor, its flat buffer, and the strides that map one to the other; the transpose only swaps strides. */
-function StridesDiagram() {
-  const cell = (x: number, y: number, v: number, fill = "#dbeafe") => (
-    <g key={`${x}-${y}-${v}`}>
-      <rect x={x} y={y} width={30} height={26} rx={3} fill={fill} stroke="#3b82f6" />
-      <text x={x + 15} y={y + 17.5} textAnchor="middle" fontSize="12" fill="#1e3a8a">
-        {v}
-      </text>
-    </g>
-  );
-  return (
-    <figure className="flex justify-center rounded-lg bg-gray-50 py-3" data-testid="strides-diagram">
-      <svg viewBox="0 0 520 170" className="h-44 w-full max-w-2xl" role="img" aria-label="shape (2, 3), strides (3, 1)">
-        <text x="20" y="18" fontSize="12" fill="#374151" fontWeight="600">
-          shape (2, 3)
-        </text>
-        {[0, 1].map((i) => [0, 1, 2].map((j) => cell(20 + 34 * j, 28 + 30 * i, 3 * i + j)))}
-        <text x="20" y="108" fontSize="11" fill="#6b7280">
-          x[i, j] → offset 3i + j
-        </text>
-        <text x="190" y="18" fontSize="12" fill="#374151" fontWeight="600">
-          memory: one flat buffer
-        </text>
-        {[0, 1, 2, 3, 4, 5].map((k) => cell(190 + 34 * k, 48, k, k < 3 ? "#dbeafe" : "#e0e7ff"))}
-        <path d="M205 80 q51 22 102 0" fill="none" stroke="#f59e0b" strokeWidth="1.6" markerEnd="url(#arrow)" />
-        <text x="232" y="112" fontSize="11" fill="#b45309">
-          next row: +3
-        </text>
-        <path d="M205 46 q17 -12 34 0" fill="none" stroke="#10b981" strokeWidth="1.6" markerEnd="url(#arrow)" />
-        <text x="246" y="38" fontSize="11" fill="#047857">
-          next column: +1
-        </text>
-        <text x="190" y="138" fontSize="12" fill="#374151">
-          strides (3, 1)
-        </text>
-        <text x="190" y="158" fontSize="11" fill="#6b7280">
-          x.T: the same buffer with strides (1, 3), no copy
-        </text>
-        <defs>
-          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-            <path d="M0 0 L10 5 L0 10 z" fill="#6b7280" />
-          </marker>
-        </defs>
-      </svg>
-    </figure>
   );
 }
