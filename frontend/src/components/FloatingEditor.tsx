@@ -19,9 +19,25 @@ interface Box {
 }
 
 /** The saved box, kept inside the current window (it may have been resized since). */
+/** First open: just to the right of the inline problem column (over the code), else at the window's right edge. */
+function defaultBox(): Box {
+  const inline = document.querySelector("[data-ws-inline]")?.getBoundingClientRect();
+  const h = Math.min(640, window.innerHeight * 0.7);
+  if (inline && window.innerWidth - inline.right >= 340) {
+    const y = Math.max(8, inline.top + 8);
+    return {
+      x: inline.right + 8,
+      y,
+      w: Math.min(580, window.innerWidth - inline.right - 24),
+      h: Math.min(h, window.innerHeight - y - 16),
+    };
+  }
+  const w = Math.min(580, window.innerWidth - 32);
+  return { x: window.innerWidth - w - 24, y: 72, w, h };
+}
+
 function loadBox(): Box {
-  const fallback = { w: Math.min(580, window.innerWidth - 32), h: Math.min(640, window.innerHeight * 0.7) };
-  let box: Box = { x: window.innerWidth - fallback.w - 24, y: 72, ...fallback };
+  let box = defaultBox();
   try {
     const saved = JSON.parse(localStorage.getItem(BOX_KEY) ?? "null");
     if (saved && [saved.x, saved.y, saved.w, saved.h].every(Number.isFinite)) box = saved;
@@ -49,7 +65,7 @@ function saveBox(box: Box) {
 export function EditorButtons({ open, onOpen }: { open: FloatMode | null; onOpen: (m: FloatMode | null) => void }) {
   const { t } = useLang();
   return (
-    <div className="inline-flex overflow-hidden rounded-md border border-gray-200 text-xs" title={t("edit.floatHint")}>
+    <div className="inline-flex shrink-0 overflow-hidden rounded-md border border-gray-200 text-xs" title={t("edit.floatHint")}>
       {(["markdown", "yaml"] as const).map((m, i) => (
         <button
           key={m}

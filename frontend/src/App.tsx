@@ -974,7 +974,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
       </div>
 
       {/* 2. Problem body: title, tags and setup sketch pinned; equations scroll */}
-      <main className="flex min-w-0 flex-col border-r border-gray-200 xl:min-h-0 xl:flex-1">
+      <main data-ws-inline className="flex min-w-0 flex-col border-r border-gray-200 xl:min-h-0 xl:flex-1">
         <div className={`shrink-0 border-b border-gray-200 bg-white px-5 py-4 ${onPhone("problem")}`}>
           {ws ? (
             <div data-ai-region="summary">
