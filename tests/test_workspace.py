@@ -173,3 +173,22 @@ def test_tags_round_trip_through_meta_yaml():
     synced = client.post("/api/ws/sync", json={"session": entry["session"], "files": files}).json()
     assert synced["tags"] == ["homework 3", "orbits"]  # blank tags dropped
     assert "tags" not in synced["meta_extra"]  # edited by the page, not carried as an unknown key
+
+
+def test_uploaded_picture_is_kept_and_unsafe_svg_rejected():
+    entry = client.post("/api/ws/blank").json()
+    files = files_of(entry)
+    svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4"/></svg>'
+    synced = client.post("/api/ws/sync", json={"session": entry["session"], "files": {**files, "diagram.svg": svg}})
+    assert synced.json()["diagram"].startswith("data:image/svg+xml;base64,")
+    workspace._sandboxes.clear()  # a re-created sandbox gets the picture back from the browser's files
+    restored = client.post("/api/ws/sync", json={"session": entry["session"], "files": {**files, "diagram.svg": svg}})
+    assert restored.json()["diagram"]
+    for bad in (
+        '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"/>',
+        '<svg xmlns="http://www.w3.org/2000/svg"><image href="https://evil.example/x.png"/></svg>',
+        "<html/>",
+    ):
+        r = client.post("/api/ws/sync", json={"files": {**files, "diagram.svg": bad}})
+        assert r.status_code == 422, bad

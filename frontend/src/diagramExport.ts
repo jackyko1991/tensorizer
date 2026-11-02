@@ -50,3 +50,34 @@ export async function exportDiagram(src: string, name: string, format: DiagramFo
     URL.revokeObjectURL(url);
   }
 }
+
+/** An uploaded picture as diagram.svg text: an SVG as is, a PNG/JPG embedded in an SVG of its own size. */
+export async function pictureToSvg(file: File): Promise<string> {
+  if (file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg")) return file.text();
+  if (!/^image\/(png|jpeg)$/.test(file.type)) throw new Error("use an SVG, PNG or JPG picture");
+  const dataUrl = await new Promise<string>((ok, fail) => {
+    const reader = new FileReader();
+    reader.onload = () => ok(String(reader.result));
+    reader.onerror = () => fail(reader.error);
+    reader.readAsDataURL(file);
+  });
+  const img = new Image();
+  img.src = dataUrl;
+  await img.decode();
+  const w = img.naturalWidth;
+  const h = img.naturalHeight;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><image href="${dataUrl}" width="${w}" height="${h}"/></svg>`;
+}
+
+/** diagram.svg text ⇄ the data: URI the page shows (UTF-8 safe base64). */
+export function svgToDataUri(svg: string): string {
+  const bytes = new TextEncoder().encode(svg);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return "data:image/svg+xml;base64," + btoa(binary);
+}
+export function dataUriToSvg(uri: string): string | null {
+  const m = /^data:image\/svg\+xml;base64,(.*)$/.exec(uri);
+  if (!m) return null;
+  return new TextDecoder().decode(Uint8Array.from(atob(m[1]), (c) => c.charCodeAt(0)));
+}

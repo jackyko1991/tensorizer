@@ -43,6 +43,7 @@ import GitHubDialog from "./components/GitHubDialog";
 import FloatingEditor, { EditorButtons, type FloatMode } from "./components/FloatingEditor";
 import { Field, InlineEquations, TagInput } from "./components/WsEditor";
 import DiagramExport from "./components/DiagramExport";
+import { pictureToSvg, svgToDataUri } from "./diagramExport";
 import { metaObject, pickMd, toMarkdown, toYaml, type MetaFields } from "./metaDoc";
 import type { Level, Manifest, Notebook, Params, Problem, WsProblem } from "./types";
 import {
@@ -669,6 +670,14 @@ export default function App() {
                       onMeta: (fields) => patchMeta(wsProblem.id, fields),
                       allTags: [...new Set(wsProblems.flatMap((q) => q.entry.tags ?? []))].sort(),
                       sync: () => syncProblem(wsProblem.id),
+                      onDiagram: (svg) => {
+                        const id = wsProblem.id;
+                        update((w) =>
+                          patchProblem(w, id, (q) => ({ ...q, entry: { ...q.entry, diagram: svgToDataUri(svg) } })),
+                        );
+                        // after the store has the picture: the sandbox checks it (no scripts) and keeps it
+                        window.setTimeout(() => syncProblem(id).catch((e: Error) => alert(e.message)), 100);
+                      },
                       onOutput: (url) =>
                         update((w) =>
                           patchProblem(w, wsProblem.id, (q) => ({ ...q, entry: { ...q.entry, output: url } })),
@@ -808,6 +817,8 @@ interface ProblemViewProps {
     sync: () => Promise<string>;
     /** A successful run's result, kept as the problem's thumbnail. */
     onOutput?: (url: string) => void;
+    /** a new physical picture (diagram.svg text), uploaded by the user */
+    onDiagram: (svg: string) => void;
   };
 }
 
@@ -1073,6 +1084,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
               </p>
             </div>
           )}
+          {ws && <PictureUpload hasPicture={!!problem.diagram} onPicture={ws.onDiagram} />}
           {problem.diagram && (
             <div className="group relative mx-auto mt-3 w-full max-w-xs">
               <img
@@ -1194,6 +1206,48 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
         </div>
       </section>
     </>
+  );
+}
+
+/** Workspace: upload the physical picture (SVG, PNG or JPG; a bitmap is wrapped in diagram.svg). */
+function PictureUpload({ hasPicture, onPicture }: { hasPicture: boolean; onPicture: (svg: string) => void }) {
+  const { t } = useLang();
+  const input = useRef<HTMLInputElement>(null);
+  const pick = async (file: File | undefined) => {
+    if (!file) return;
+    try {
+      onPicture(await pictureToSvg(file));
+    } catch (e) {
+      alert(e instanceof Error ? e.message : String(e));
+    }
+  };
+  return (
+    <div className={hasPicture ? "mt-2 flex justify-end" : "mt-3"}>
+      <input
+        ref={input}
+        type="file"
+        accept=".svg,.png,.jpg,.jpeg,image/svg+xml,image/png,image/jpeg"
+        className="hidden"
+        data-testid="picture-input"
+        onChange={(e) => {
+          void pick(e.target.files?.[0]);
+          e.target.value = "";
+        }}
+      />
+      {hasPicture ? (
+        <button onClick={() => input.current?.click()} className="text-xs text-blue-700 hover:underline">
+          ⤒ {t("picture.replace")}
+        </button>
+      ) : (
+        <button
+          onClick={() => input.current?.click()}
+          className="flex h-24 w-full flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-gray-300 text-xs text-gray-500 hover:border-blue-400 hover:text-blue-700"
+        >
+          <span className="text-lg">🖼</span>
+          {t("picture.upload")}
+        </button>
+      )}
+    </div>
   );
 }
 

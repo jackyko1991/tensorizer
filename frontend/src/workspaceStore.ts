@@ -1,6 +1,7 @@
 /** Workspaces in the browser's IndexedDB (memory when it is unavailable), and .zip export/import. */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { generatedUrl } from "./api";
+import { dataUriToSvg, svgToDataUri } from "./diagramExport";
 import type { Cell, Manifest, Notebook, Problem, Workspace, WsProblem } from "./types";
 
 const DB = "tensorizer";
@@ -8,7 +9,7 @@ const STORE = "workspaces";
 const DATA_STORE = "data"; // uploaded data files' bytes, keyed "<problem id>/<name>" (kept out of the workspace record)
 /** The free trial has one workspace. */
 export const MAX_WORKSPACES = 1;
-export const CODE_FILES = ["main.py", "equation.py", "tensors.py", "solve.py", "plot.py"];
+export const CODE_FILES = ["test.py", "main.py", "equation.py", "tensors.py", "solve.py", "plot.py"];
 
 const memory = new Map<string, Workspace>();
 let dbPromise: Promise<IDBDatabase | null> | null = null;
@@ -67,18 +68,38 @@ async function write(ws: Workspace): Promise<void> {
 export const MAX_DATA_FILE = 20 * 1024 * 1024;
 export const MAX_DATA_TOTAL = 100 * 1024 * 1024;
 export const DATA_EXTENSIONS = [
-  ".csv", ".tsv", ".json", ".npy", ".npz", ".txt", ".dat", ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".h5", ".hdf5",
+  ".csv",
+  ".tsv",
+  ".json",
+  ".npy",
+  ".npz",
+  ".txt",
+  ".dat",
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".tif",
+  ".tiff",
+  ".h5",
+  ".hdf5",
 ];
 const memoryData = new Map<string, Blob>();
 
 /** A file name the server accepts (letters, digits, space, _ . ( ) -), keeping the extension. */
 export function dataName(name: string): string {
-  const clean = name.normalize("NFC").replace(/[^\p{L}\p{N}_ .()-]/gu, "_").replace(/\.{2,}/g, ".").trim();
+  const clean = name
+    .normalize("NFC")
+    .replace(/[^\p{L}\p{N}_ .()-]/gu, "_")
+    .replace(/\.{2,}/g, ".")
+    .trim();
   return (/^[\p{L}\p{N}_]/u.test(clean) ? clean : `f_${clean}`).slice(0, 100);
 }
 export const dataExtOk = (name: string) => DATA_EXTENSIONS.some((e) => name.toLowerCase().endsWith(e));
 
-async function dataTx<T>(mode: IDBTransactionMode, fn: (store: IDBObjectStore) => IDBRequest<T>): Promise<T | undefined> {
+async function dataTx<T>(
+  mode: IDBTransactionMode,
+  fn: (store: IDBObjectStore) => IDBRequest<T>,
+): Promise<T | undefined> {
   const db = await openDb();
   if (!db) return undefined;
   return new Promise((resolve, reject) => {
@@ -98,7 +119,10 @@ export async function putData(problem: string, name: string, blob: Blob): Promis
 }
 export async function getData(problem: string, name: string): Promise<Blob | undefined> {
   try {
-    return ((await dataTx("readonly", (s) => s.get(dataKey(problem, name)))) as Blob | undefined) ?? memoryData.get(dataKey(problem, name));
+    return (
+      ((await dataTx("readonly", (s) => s.get(dataKey(problem, name)))) as Blob | undefined) ??
+      memoryData.get(dataKey(problem, name))
+    );
   } catch {
     return memoryData.get(dataKey(problem, name));
   }
@@ -174,11 +198,15 @@ export function toWsProblem(entry: Problem, meta: string, id = newId(), notebook
   };
 }
 
-/** Every file the sandbox needs: the five code files and meta.yaml (not yet known for a fresh AI problem). */
-export const filesOf = (p: WsProblem): Record<string, string> => ({
-  ...Object.fromEntries(p.entry.files.map((f) => [f.name, f.code])),
-  ...(p.meta ? { "meta.yaml": p.meta } : {}),
-});
+/** Every file the sandbox needs: the code files, meta.yaml (not yet known for a fresh AI problem) and diagram.svg. */
+export function filesOf(p: WsProblem): Record<string, string> {
+  const diagram = p.entry.diagram ? dataUriToSvg(p.entry.diagram) : null; // so a re-created sandbox keeps it
+  return {
+    ...Object.fromEntries(p.entry.files.map((f) => [f.name, f.code])),
+    ...(p.meta ? { "meta.yaml": p.meta } : {}),
+    ...(diagram ? { "diagram.svg": diagram } : {}),
+  };
+}
 
 /** meta.yaml with a new title (a JSON string is valid YAML). */
 export function withTitle(meta: string, title: string): string {
@@ -272,7 +300,11 @@ notebooks = "jupyter lab notebooks"
 
 /** The workspace as a pixi project: problems/workspace/<slug>/ per problem (with its data/), notebooks/<slug>/*.ipynb,
  *  and workspace.json (everything, including cell outputs) so Import restores it exactly. Paths have no root folder. */
-export async function workspaceFiles(ws: Workspace, manifest: Manifest, name: string): Promise<Record<string, Uint8Array>> {
+export async function workspaceFiles(
+  ws: Workspace,
+  manifest: Manifest,
+  name: string,
+): Promise<Record<string, Uint8Array>> {
   const { unzipSync, strToU8 } = await import("fflate");
   const root = "";
   const files: Record<string, Uint8Array> = {};
@@ -331,7 +363,9 @@ export async function workspaceFiles(ws: Workspace, manifest: Manifest, name: st
 export async function exportWorkspace(ws: Workspace, manifest: Manifest, name: string) {
   const { zipSync } = await import("fflate");
   const root = `${slugify(name) || "workspace"}/`;
-  const files = Object.fromEntries(Object.entries(await workspaceFiles(ws, manifest, name)).map(([k, v]) => [root + k, v]));
+  const files = Object.fromEntries(
+    Object.entries(await workspaceFiles(ws, manifest, name)).map(([k, v]) => [root + k, v]),
+  );
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([zipSync(files)], { type: "application/zip" }));
   a.download = `${root.slice(0, -1)}.zip`;
@@ -387,7 +421,15 @@ export async function importWorkspace(file: File): Promise<WsProblem[]> {
     const title = meta.match(/^title:\s*"?(.*?)"?\s*$/m)?.[1] ?? slug;
     const notebooks = Object.keys(zip)
       .filter((p) => p.startsWith(`${root}notebooks/${slug}/`) && p.endsWith(".ipynb"))
-      .map((p) => fromIpynb(JSON.parse(text(p)), p.split("/").pop()!.replace(/\.ipynb$/, "")));
+      .map((p) =>
+        fromIpynb(
+          JSON.parse(text(p)),
+          p
+            .split("/")
+            .pop()!
+            .replace(/\.ipynb$/, ""),
+        ),
+      );
     const dataFiles = Object.keys(zip).filter((p) => p.startsWith(`${dir}data/`) && !p.endsWith("/"));
     const entry = {
       title,
@@ -401,8 +443,12 @@ export async function importWorkspace(file: File): Promise<WsProblem[]> {
       order: 0,
       output: null,
       console: "",
-      diagram: null,
-      files: CODE_FILES.map((name) => ({ name, code: zip[dir + name] ? text(dir + name) : "" })),
+      diagram: zip[`${dir}diagram.svg`] ? svgToDataUri(text(`${dir}diagram.svg`)) : null,
+      // test.py only when the zip has one (older exports predate it)
+      files: CODE_FILES.filter((name) => name !== "test.py" || zip[dir + name]).map((name) => ({
+        name,
+        code: zip[dir + name] ? text(dir + name) : "",
+      })),
     } as unknown as Problem;
     const p = fresh(toWsProblem(entry, meta, slug, notebooks));
     const data = [];
@@ -418,7 +464,13 @@ export async function importWorkspace(file: File): Promise<WsProblem[]> {
   return out;
 }
 
-function fromIpynb(nb: { cells: { cell_type: string; source: string | string[]; metadata?: { tensorizer?: string } }[]; metadata?: { tensorizer?: string } }, name: string): Notebook {
+function fromIpynb(
+  nb: {
+    cells: { cell_type: string; source: string | string[]; metadata?: { tensorizer?: string } }[];
+    metadata?: { tensorizer?: string };
+  },
+  name: string,
+): Notebook {
   const src = (s: string | string[]) => (Array.isArray(s) ? s.join("") : s);
   return {
     id: newId(),

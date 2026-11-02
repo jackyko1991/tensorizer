@@ -36,6 +36,8 @@ from .runner import CODE_FILES, PROBLEMS, RunError, _env, _stream_process, probl
 WS_ROOT = Path(os.environ.get("TENSORIZER_WORKSPACES", Path(tempfile.gettempdir()) / "tensorizer-ws"))
 IDLE_S = 60 * 60
 FILES = ["meta.yaml", *CODE_FILES]
+DIAGRAM = "diagram.svg"  # the physical picture: uploaded by the user (a PNG/JPG arrives wrapped in an SVG)
+MAX_DIAGRAM_BYTES = 3_000_000
 MAX_CODE_BYTES = 200_000
 MAX_CELLS = 60
 MAX_FIGURES = 8
@@ -320,10 +322,42 @@ def _cleanup() -> None:
 
 
 def _check_files(files: dict[str, str]) -> None:
-    if set(files) - set(FILES):
-        raise ValueError(f"unknown file(s): {', '.join(sorted(set(files) - set(FILES)))}")
-    if sum(len(c) for c in files.values()) > MAX_CODE_BYTES:
+    allowed = {*FILES, DIAGRAM}
+    if set(files) - allowed:
+        raise ValueError(f"unknown file(s): {', '.join(sorted(set(files) - allowed))}")
+    if sum(len(c) for n, c in files.items() if n != DIAGRAM) > MAX_CODE_BYTES:
         raise ValueError("code too large")
+    if DIAGRAM in files:
+        check_svg(files[DIAGRAM])
+
+
+_SVG_BAD_TAGS = {"script", "foreignobject", "iframe", "object", "embed"}
+
+
+def check_svg(text: str) -> None:
+    """The picture is shown on the page, so it must be plain drawing: no scripts, event handlers or links out
+    (embedded data:image/ pictures and #fragment references are fine). ValueError otherwise."""
+    import xml.etree.ElementTree as ET
+
+    if len(text) > MAX_DIAGRAM_BYTES:
+        raise ValueError("picture too large")
+    if "<!ENTITY" in text or "<!DOCTYPE" in text:
+        raise ValueError("picture: DOCTYPE/ENTITY not allowed")
+    try:
+        root = ET.fromstring(text)
+    except ET.ParseError as e:
+        raise ValueError(f"picture is not valid SVG: {e}") from None
+    if root.tag.rsplit("}", 1)[-1] != "svg":
+        raise ValueError("picture is not an SVG")
+    for el in root.iter():
+        if el.tag.rsplit("}", 1)[-1].lower() in _SVG_BAD_TAGS:
+            raise ValueError("picture: scripts and embedded pages are not allowed")
+        for key, value in el.attrib.items():
+            name = key.rsplit("}", 1)[-1].lower()
+            if name.startswith("on"):
+                raise ValueError("picture: event handlers are not allowed")
+            if name == "href" and not value.startswith(("#", "data:image/")):
+                raise ValueError("picture: links to other files are not allowed")
 
 
 def _new(files: dict[str, str], diagram: Path | None = None) -> Sandbox:
@@ -338,7 +372,9 @@ def _new(files: dict[str, str], diagram: Path | None = None) -> Sandbox:
         (package / "__init__.py").touch()
     for name, code in blank_files().items():
         (s.folder / name).write_text(files.get(name, code), encoding="utf-8")
-    if diagram and diagram.is_file():
+    if DIAGRAM in files:
+        (s.folder / DIAGRAM).write_text(files[DIAGRAM], encoding="utf-8")
+    elif diagram and diagram.is_file():
         shutil.copy(diagram, s.folder / "diagram.svg")
     _sandboxes[sid] = s
     return s
