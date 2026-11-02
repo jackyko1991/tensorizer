@@ -21,8 +21,14 @@ import yaml
 
 
 def device() -> torch.device:
-    """Use the GPU when there is one; every problem runs fine on CPU."""
-    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    """TENSORIZER_DEVICE (auto | cpu | cuda | mps, set by the web app's Backend panel); auto = the GPU when there
+    is one. A choice the machine doesn't have falls back to CPU; every problem runs fine on CPU."""
+    choice = os.environ.get("TENSORIZER_DEVICE", "auto")
+    if choice == "mps" and torch.backends.mps.is_available():
+        return torch.device("mps")
+    if choice in ("auto", "cuda") and torch.cuda.is_available():
+        return torch.device("cuda")
+    return torch.device("cpu")
 
 
 def fast_mode() -> bool:

@@ -110,3 +110,23 @@ def test_public_site_may_call_a_local_backend():
 
 def test_health_reports_the_queue():
     assert set(client.get("/api/health").json()["queue"]) == {"running", "waiting", "concurrent"}
+
+
+def test_half_finished_run_is_not_served_from_cache(monkeypatch, tmp_path):
+    monkeypatch.setattr("backend.app.runner.CACHE", tmp_path)
+    monkeypatch.setattr(api, "CACHE", tmp_path)
+    body = {"params": {"n_angles": 2, "t_max": 1}}
+    client.post("/api/run/mechanics/projectile", json=body)
+    run_dir = next(tmp_path.iterdir())  # the one cached run
+    (run_dir / "console.txt").unlink()  # as if the page closed after the GIF but before the run finished
+    again = client.post("/api/run/mechanics/projectile", json=body).json()
+    assert again["cached"] is False and again["console"]
+
+
+def test_health_reports_devices_and_runs_take_a_device(monkeypatch, tmp_path):
+    monkeypatch.setattr("backend.app.runner.CACHE", tmp_path)
+    h = client.get("/api/health").json()
+    assert "cpu" in h["devices"] and h["torch"] and h["runner"]
+    r = client.post("/api/run-stream/mechanics/n_body_gravity", json={"params": {"t_max": 2}, "device": "mps"})
+    assert "device: cpu (this problem uses float64" in r.text  # MPS has no float64: falls back with a note
+    assert client.post("/api/run-stream/mechanics/projectile", json={"device": "tpu"}).status_code == 422

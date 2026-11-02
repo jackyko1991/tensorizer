@@ -2,13 +2,47 @@ import { AGENT_STRINGS } from "./strings.agent";
 import { WORKSPACE_STRINGS } from "./strings.workspace";
 import type { Manifest, Params, Problem } from "./types";
 
-// Where runs go. "server": VITE_API_URL (the public Hugging Face Space on GitHub Pages), else the same origin
-// (Vite proxies /api in dev; uvicorn serves both in `pixi run serve`). "local": a backend on the visitor's own
-// machine (`pixi run api`), reachable from the public site because it allows Private Network Access.
+// Where runs go (chosen in the Backend panel, kept in localStorage). "server": VITE_API_URL (the public Hugging Face
+// Space on GitHub Pages), else the same origin (Vite proxies /api in dev; uvicorn serves both in `pixi run serve`).
+// "local": a runner on the visitor's own machine at an address they can change, reachable from the public site
+// because it allows Private Network Access.
 export type BackendChoice = "server" | "local";
-export const LOCAL_API = "http://localhost:8000";
+export type Device = "auto" | "cpu" | "cuda" | "mps";
+export const DEFAULT_LOCAL_API = "http://localhost:8000";
 const SERVER_API = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
 const CHOICE_KEY = "tensorizer.backend";
+const LOCAL_KEY = "tensorizer.localUrl";
+const DEVICE_KEY = "tensorizer.device";
+
+function stored(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+function store(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // private window: the setting lasts for this page only
+  }
+}
+
+/** The local runner's address (no trailing slash). */
+export const localAddress = () => (stored(LOCAL_KEY) ?? DEFAULT_LOCAL_API).replace(/\/$/, "");
+export function setLocalAddress(url: string) {
+  store(LOCAL_KEY, url.trim().replace(/\/$/, "") || DEFAULT_LOCAL_API);
+  if (backendChoice() === "local") API = localAddress();
+}
+
+/** The device runs ask for on the local runner (the shared server always uses its default). */
+export function deviceChoice(): Device {
+  const d = stored(DEVICE_KEY);
+  return d === "cpu" || d === "cuda" || d === "mps" ? d : "auto";
+}
+export const setDeviceChoice = (d: Device) => store(DEVICE_KEY, d);
+const runDevice = (): Device => (backendChoice() === "local" ? deviceChoice() : "auto");
 
 export function backendChoice(): BackendChoice {
   try {
@@ -19,25 +53,18 @@ export function backendChoice(): BackendChoice {
 }
 
 export function setBackendChoice(choice: BackendChoice) {
-  try {
-    localStorage.setItem(CHOICE_KEY, choice);
-  } catch {
-    // private window: the choice lasts for this page only
-  }
-  API = choice === "local" ? LOCAL_API : SERVER_API;
+  store(CHOICE_KEY, choice);
+  API = choice === "local" ? localAddress() : SERVER_API;
 }
 
-let API = backendChoice() === "local" ? LOCAL_API : SERVER_API;
+let API = backendChoice() === "local" ? localAddress() : SERVER_API;
 const GENERATED = `${import.meta.env.BASE_URL}generated/`;
 
 export const generatedUrl = (path: string) => GENERATED + path;
 
 export async function loadManifest(): Promise<Manifest> {
   const res = await fetch(generatedUrl("manifest.json"));
-  if (!res.ok)
-    throw new Error(
-      "manifest.json not found — run `pixi run build-assets` first",
-    );
+  if (!res.ok) throw new Error("manifest.json not found — run `pixi run build-assets` first");
   return res.json();
 }
 
@@ -45,6 +72,23 @@ export interface Health {
   status: string;
   allow_code_exec: boolean;
   queue?: { running: number; waiting: number; concurrent: number };
+  /** what the runner computes on (newer runners) */
+  runner?: string;
+  torch?: string;
+  python?: string;
+  os?: string;
+  devices?: Device[];
+  gpu?: string | null;
+}
+
+/** Check a runner at an address without switching to it (the Backend panel's Test). */
+export async function probe(base: string): Promise<Health | null> {
+  try {
+    const res = await fetch(`${base.replace(/\/$/, "")}/api/health`, { signal: AbortSignal.timeout(4000) });
+    return res.ok ? await res.json() : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function health(): Promise<Health | null> {
@@ -97,25 +141,18 @@ export async function runProblemStream(
 ): Promise<RunResult> {
   let res: Response;
   try {
-    const path =
-      typeof id === "string"
-        ? `/api/run-stream/${id}`
-        : `/api/workspace/${id.session}/run-stream`;
+    const path = typeof id === "string" ? `/api/run-stream/${id}` : `/api/workspace/${id.session}/run-stream`;
     res = await fetch(`${API}${path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ params, files, verbose }),
+      body: JSON.stringify({ params, files, verbose, device: runDevice() }),
     });
   } catch {
     throw new RunFailed(unreachable());
   }
   if (!res.ok || !res.body) {
     const body = await res.json().catch(() => ({}));
-    throw new RunFailed(
-      typeof body.detail === "string"
-        ? body.detail
-        : `request failed (${res.status})`,
-    );
+    throw new RunFailed(typeof body.detail === "string" ? body.detail : `request failed (${res.status})`);
   }
 
   const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
@@ -130,13 +167,10 @@ export async function runProblemStream(
     while ((newline = buffer.indexOf("\n")) >= 0) {
       const event = JSON.parse(buffer.slice(0, newline));
       buffer = buffer.slice(newline + 1);
-      if (event.type === "line")
-        onLine({ text: event.text, replace: !!event.replace });
+      if (event.type === "line") onLine({ text: event.text, replace: !!event.replace });
       else if (event.type === "queued") onQueued(event.position);
-      else if (event.type === "result")
-        return { ...event, output: API + event.output };
-      else if (event.type === "error")
-        throw new RunFailed(event.message, event.console);
+      else if (event.type === "result") return { ...event, output: API + event.output };
+      else if (event.type === "error") throw new RunFailed(event.message, event.console);
     }
   }
   throw new RunFailed("the run ended without a result");
@@ -153,7 +187,7 @@ export async function runProblem(
     res = await fetch(`${API}/api/run/${id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ params, files, verbose }),
+      body: JSON.stringify({ params, files, verbose, device: runDevice() }),
     });
   } catch {
     throw new RunFailed(unreachable());
@@ -161,11 +195,8 @@ export async function runProblem(
   const body = await res.json().catch(() => ({}));
   if (!res.ok) {
     const detail = body.detail;
-    if (detail && typeof detail === "object")
-      throw new RunFailed(detail.message, detail.console);
-    throw new RunFailed(
-      typeof detail === "string" ? detail : `request failed (${res.status})`,
-    );
+    if (detail && typeof detail === "object") throw new RunFailed(detail.message, detail.console);
+    throw new RunFailed(typeof detail === "string" ? detail : `request failed (${res.status})`);
   }
   return { ...body, output: API + body.output };
 }
@@ -180,8 +211,8 @@ function interrupted(row: readonly string[], cause: unknown): RunFailed {
 }
 
 function unreachable(): string {
-  return API === LOCAL_API
-    ? "can't reach this computer's backend — start it with `pixi run api` (port 8000)"
+  return backendChoice() === "local"
+    ? `can't reach this computer's runner at ${localAddress()}: start it (see ⚙ Backend → Local)`
     : "can't reach the backend — the server may be waking up; try again in a minute";
 }
 
@@ -244,12 +275,7 @@ export async function scanAgents(): Promise<FoundAgent[]> {
     throw new RunFailed(unreachable());
   }
   const data = await res.json().catch(() => ({}));
-  if (!res.ok)
-    throw new RunFailed(
-      typeof data.detail === "string"
-        ? data.detail
-        : `request failed (${res.status})`,
-    );
+  if (!res.ok) throw new RunFailed(typeof data.detail === "string" ? data.detail : `request failed (${res.status})`);
   return data.agents;
 }
 
@@ -259,7 +285,12 @@ export type AgentEvent =
   | { type: "tool"; id: string; name: string; input: Record<string, unknown> }
   | { type: "tool_result"; id: string; ok: boolean; text: string }
   | { type: "files"; problem: string; files: Record<string, string>; entry?: WsEntry }
-  | { type: "notebook"; problem: string; notebook: string; cells: { id: string; type: "markdown" | "code"; source: string }[] }
+  | {
+      type: "notebook";
+      problem: string;
+      notebook: string;
+      cells: { id: string; type: "markdown" | "code"; source: string }[];
+    }
   | { type: "problem"; entry: Problem }
   | { type: "run"; output: string | null; console: string; ok: boolean }
   | { type: "queued"; position: number }
@@ -304,11 +335,7 @@ export async function agentChat(
   }
   if (!res.ok || !res.body) {
     const detail = await res.json().catch(() => ({}));
-    throw new RunFailed(
-      typeof detail.detail === "string"
-        ? detail.detail
-        : `request failed (${res.status})`,
-    );
+    throw new RunFailed(typeof detail.detail === "string" ? detail.detail : `request failed (${res.status})`);
   }
   const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
   let buffer = "";
@@ -323,8 +350,7 @@ export async function agentChat(
     while ((newline = buffer.indexOf("\n")) >= 0) {
       const event = JSON.parse(buffer.slice(0, newline)) as AgentEvent;
       buffer = buffer.slice(newline + 1);
-      if (event.type === "run" && event.output)
-        event.output = API + event.output;
+      if (event.type === "run" && event.output) event.output = API + event.output;
       onEvent(event);
     }
   }
@@ -338,9 +364,7 @@ export interface Connector {
   local: boolean;
 }
 
-export async function createConnector(
-  previous: string | null,
-): Promise<Connector> {
+export async function createConnector(previous: string | null): Promise<Connector> {
   let res: Response;
   try {
     res = await fetch(`${API}/api/agents/connector`, {
@@ -368,8 +392,7 @@ export async function connectorEvents(
   if (res.status === 401) return null;
   if (!res.ok) throw new RunFailed(`request failed (${res.status})`);
   const data = await res.json();
-  for (const e of data.events as ConnectorEvent[])
-    if (e.type === "run" && e.output) e.output = API + e.output;
+  for (const e of data.events as ConnectorEvent[]) if (e.type === "run" && e.output) e.output = API + e.output;
   return data;
 }
 
@@ -389,9 +412,7 @@ function base64url(bytes: Uint8Array): string {
 export async function openRouterSignIn(): Promise<void> {
   const verifier = base64url(crypto.getRandomValues(new Uint8Array(32)));
   const challenge = base64url(
-    new Uint8Array(
-      await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)),
-    ),
+    new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier))),
   );
   sessionStorage.setItem(OR_VERIFIER, verifier);
   sessionStorage.setItem(OR_RETURN, location.search + location.hash);
@@ -429,8 +450,7 @@ export async function openRouterCallback(): Promise<string | null> {
     }),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok || typeof data.key !== "string")
-    throw new RunFailed(`OpenRouter: request failed (${res.status})`);
+  if (!res.ok || typeof data.key !== "string") throw new RunFailed(`OpenRouter: request failed (${res.status})`);
   return data.key;
 }
 
@@ -466,11 +486,8 @@ async function wsPost<T>(path: string, body?: unknown): Promise<T> {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     const detail = data.detail;
-    if (detail && typeof detail === "object")
-      throw new RunFailed(detail.message, detail.console);
-    throw new RunFailed(
-      typeof detail === "string" ? detail : `request failed (${res.status})`,
-    );
+    if (detail && typeof detail === "object") throw new RunFailed(detail.message, detail.console);
+    throw new RunFailed(typeof detail === "string" ? detail : `request failed (${res.status})`);
   }
   return data as T;
 }
@@ -478,8 +495,7 @@ async function wsPost<T>(path: string, body?: unknown): Promise<T> {
 /** A new, empty problem: a skeleton that runs. */
 export const wsBlank = () => wsPost<WsEntry>("/blank");
 /** A new problem copied from the library ("category/slug"). */
-export const wsCopy = (problem: string) =>
-  wsPost<WsEntry>("/copy", { problem });
+export const wsCopy = (problem: string) => wsPost<WsEntry>("/copy", { problem });
 /** Write the files into the problem's sandbox (re-created when it expired); returns the parsed entry. */
 export const wsSync = (session: string | null, files: Record<string, string>, data?: string[]) =>
   wsPost<WsEntry & { data: { name: string; size: number }[] }>("/sync", { session, files, data });
@@ -498,11 +514,8 @@ export async function wsPutData(session: string, name: string, blob: Blob): Prom
 }
 /** All files of a sandbox, including meta.yaml (for problems the AI created). */
 export const wsFiles = (session: string) =>
-  wsPost<{ files: Record<string, string> }>(`/${session}/files`).then(
-    (r) => r.files,
-  );
-export const wsDelete = (session: string) =>
-  wsPost<{ ok: boolean }>(`/${session}/delete`);
+  wsPost<{ files: Record<string, string> }>(`/${session}/files`).then((r) => r.files);
+export const wsDelete = (session: string) => wsPost<{ ok: boolean }>(`/${session}/delete`);
 
 export interface NotebookCellResult {
   index: number;
@@ -531,18 +544,14 @@ export async function wsRunStream(
     res = await fetch(`${API}/api/ws/${session}/run-stream`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ params, verbose }),
+      body: JSON.stringify({ params, verbose, device: runDevice() }),
     });
   } catch {
     throw new RunFailed(unreachable());
   }
   if (!res.ok || !res.body) {
     const body = await res.json().catch(() => ({}));
-    throw new RunFailed(
-      typeof body.detail === "string"
-        ? body.detail
-        : `request failed (${res.status})`,
-    );
+    throw new RunFailed(typeof body.detail === "string" ? body.detail : `request failed (${res.status})`);
   }
   const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
   let buffer = "";
@@ -556,13 +565,10 @@ export async function wsRunStream(
     while ((newline = buffer.indexOf("\n")) >= 0) {
       const event = JSON.parse(buffer.slice(0, newline));
       buffer = buffer.slice(newline + 1);
-      if (event.type === "line")
-        onLine({ text: event.text, replace: !!event.replace });
+      if (event.type === "line") onLine({ text: event.text, replace: !!event.replace });
       else if (event.type === "queued") onQueued(event.position);
-      else if (event.type === "result")
-        return { ...event, output: API + event.output };
-      else if (event.type === "error")
-        throw new RunFailed(event.message, event.console);
+      else if (event.type === "result") return { ...event, output: API + event.output };
+      else if (event.type === "error") throw new RunFailed(event.message, event.console);
     }
   }
   throw new RunFailed("the run ended without a result");

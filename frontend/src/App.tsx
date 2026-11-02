@@ -15,12 +15,12 @@ import {
   wsPutData,
   wsRunStream,
   wsSync,
-  type BackendChoice,
   type Health,
   type LineEvent,
   type TestTally,
   type WsEntry,
 } from "./api";
+import BackendPanel, { BackendButton } from "./components/BackendPanel";
 import CodePanel from "./components/CodePanel";
 import EquationPanel from "./components/EquationPanel";
 import ParamsPanel from "./components/ParamsPanel";
@@ -104,6 +104,7 @@ export default function App() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(currentHash);
   const [backend, setBackend] = useState<Health | null | "checking">("checking");
+  const [backendOpen, setBackendOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(true);
   const [paramsOpen, setParamsOpen] = useState(true);
   // The Workspace (IndexedDB): problems made blank, copied from the library or created by the AI, with notebooks.
@@ -485,14 +486,21 @@ export default function App() {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-4 lg:ml-0">
-          <BackendBadge
-            backend={backend}
-            onChoose={(choice) => {
-              setBackendChoice(choice);
-              setBackend("checking");
-              health().then(setBackend);
-            }}
-          />
+          <BackendButton backend={backend} onOpen={() => setBackendOpen(true)} />
+          {backendOpen && (
+            <BackendPanel
+              onClose={() => {
+                setBackendOpen(false);
+                setBackend("checking"); // the address or device may have changed
+                health().then(setBackend);
+              }}
+              onChoose={(choice) => {
+                setBackendChoice(choice);
+                setBackend("checking");
+                health().then(setBackend);
+              }}
+            />
+          )}
           <select
             value={lang}
             onChange={(e) => setLang(e.target.value as Lang)}
@@ -757,43 +765,6 @@ function ProblemSelect({ manifest, value }: { manifest: Manifest; value: string 
 }
 
 /** Status dot + label, and a picker: the shared server or a backend running on this computer. */
-function BackendBadge({
-  backend,
-  onChoose,
-}: {
-  backend: Health | null | "checking";
-  onChoose: (choice: BackendChoice) => void;
-}) {
-  const { t } = useLang();
-  const choice = backendChoice();
-  const [label, color] =
-    backend === "checking"
-      ? [t("backend.checking"), "bg-gray-300"]
-      : backend
-        ? [t(backend.allow_code_exec ? "backend.edit" : "backend.online"), "bg-green-500"]
-        : [t(choice === "local" ? "backend.localOffline" : "backend.offline"), "bg-amber-400"];
-  return (
-    <span className="hidden items-center gap-2 text-xs text-blue-100 sm:flex">
-      <span className={`h-2 w-2 rounded-full ${color}`} />
-      <span title={choice === "local" ? t("backend.localHint") : undefined}>{label}</span>
-      <select
-        value={choice}
-        onChange={(e) => onChoose(e.target.value as BackendChoice)}
-        title={t("backend.choose")}
-        aria-label={t("backend.choose")}
-        className="rounded-md border border-blue-400 bg-blue-600 px-1.5 py-0.5 text-xs text-white hover:bg-blue-500"
-      >
-        <option value="server" className="bg-white text-gray-900">
-          {t("backend.server")}
-        </option>
-        <option value="local" className="bg-white text-gray-900">
-          {t("backend.local")}
-        </option>
-      </select>
-    </span>
-  );
-}
-
 function defaults(problem: Problem): Params {
   return Object.fromEntries(Object.entries(problem.params).map(([k, s]) => [k, s.default]));
 }

@@ -24,6 +24,7 @@ PROBLEMS = ROOT / "problems"
 CACHE = Path(os.environ.get("TENSORIZER_CACHE", ROOT / ".cache" / "runs"))
 TIMEOUT_S = float(os.environ.get("TENSORIZER_TIMEOUT", "120"))
 CODE_FILES = ["test.py", "main.py", "equation.py", "tensors.py", "solve.py", "plot.py"]
+DEVICES = ("auto", "cpu", "cuda", "mps")
 TEST_SUMMARY = re.compile(r"(\d+) (passed|failed|error|errors)\b")
 
 
@@ -105,10 +106,25 @@ async def _stream_tests(test_file: Path, work: Path, env: dict[str, str]) -> Asy
     yield {"type": "tests", **_tally(lines, code), "log": "\n".join(lines)}
 
 
-def _env(out_dir: Path) -> dict[str, str]:
+def _effective_device(device: str, src: Path, files: dict[str, str] | None) -> tuple[str, str | None]:
+    """The device to run on, and a console note when it differs from the choice: Apple's MPS has no float64, so a
+    problem whose code uses float64 runs on CPU."""
+    if device not in DEVICES:
+        raise ValueError(f"unknown device: {device} (use {', '.join(DEVICES)})")
+    if device != "mps":
+        return device, None
+    code = {f.name: f.read_text(encoding="utf-8") for f in src.glob("*.py")} | (files or {})
+    if any("float64" in c for name, c in code.items() if name != "test.py"):
+        return "cpu", "device: cpu (this problem uses float64, which MPS does not support)"
+    return "mps", None
+
+
+def _env(out_dir: Path, device: str = "auto") -> dict[str, str]:
     # Keep the environment (conda/pixi needs it to find DLLs) but never hand secrets to user code.
     env = {k: v for k, v in os.environ.items() if not any(s in k.upper() for s in ("TOKEN", "SECRET", "KEY"))}
     env.update(PYTHONIOENCODING="utf-8", PYTHONUNBUFFERED="1", MPLCONFIGDIR=str(out_dir / ".mpl"))
+    # problems._common.runtime.device() reads the choice; ops MPS lacks fall back to CPU instead of failing
+    env.update(TENSORIZER_DEVICE=device, PYTORCH_ENABLE_MPS_FALLBACK="1")
     return env
 
 
@@ -161,6 +177,7 @@ async def stream_problem(
     verbose: bool = False,
     client: str = "local",
     root: Path | None = None,
+    device: str = "auto",
 ) -> AsyncIterator[dict]:
     """Render one problem, yielding line events and finally {"type": "result", ...} (or raising RunError).
 
@@ -175,15 +192,22 @@ async def stream_problem(
         unknown = set(files) - set(CODE_FILES)
         if unknown:
             raise ValueError(f"unknown file(s): {', '.join(sorted(unknown))}")
-    run_id = _run_id(category, slug, params, files or {}, _source_hash(src), verbose, bool(root), "tests")
+    device, device_note = _effective_device(device, src, files)
+    note = f"{device_note}\n" if device_note else ""  # shown first, also for a cached result run on that device
+    if device_note:
+        yield {"type": "line", "text": device_note, "replace": False}
+    run_id = _run_id(category, slug, params, files or {}, _source_hash(src), verbose, bool(root), "tests", device)
     out_dir = CACHE / run_id
 
-    if (name := _find_output(out_dir)) is not None:
-        console = (out_dir / "console.txt").read_text(encoding="utf-8") if (out_dir / "console.txt").exists() else ""
+    # A finished run writes console.txt last; a folder without it is a run cut short (the page closed mid-run, a
+    # crash), so it is rendered again instead of being served half-done.
+    if (out_dir / "console.txt").exists() and (name := _find_output(out_dir)) is not None:
+        console = (out_dir / "console.txt").read_text(encoding="utf-8")
         for line in console.splitlines():
             yield {"type": "line", "text": line, "replace": False}
         tests_file = out_dir / "tests.json"
         tests = json.loads(tests_file.read_text(encoding="utf-8")) if tests_file.exists() else None
+        console = note + console
         yield {"type": "result", "run_id": run_id, "output": name, "console": console, "cached": True, "tests": tests}
         return
 
@@ -220,7 +244,7 @@ async def stream_problem(
         tests: dict | None = None
         test_log = ""
         try:
-            async for event in _stream_process(cmd, work, _env(out_dir)):
+            async for event in _stream_process(cmd, work, _env(out_dir, device)):
                 if event["type"] == "exit":
                     code = event["code"]
                     break
@@ -229,7 +253,7 @@ async def stream_problem(
                     yield event
             test_file = work / "problems" / category / slug / "test.py"  # the edited copy when there are edits
             if code == 0 and test_file.is_file():
-                async for event in _stream_tests(test_file, work, _env(out_dir)):
+                async for event in _stream_tests(test_file, work, _env(out_dir, device)):
                     if event["type"] == "tests":
                         tests = {k: event[k] for k in ("passed", "failed", "ok")}
                         test_log = event["log"]
@@ -259,6 +283,7 @@ async def stream_problem(
     name = _find_output(out_dir)
     if name is None:
         raise RunError("the run produced no GIF/PNG", console)
+    console = note + console
     yield {"type": "result", "run_id": run_id, "output": name, "console": console, "cached": False, "tests": tests}
 
 

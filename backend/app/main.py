@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import functools
 import json
 import mimetypes
 import os
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -48,11 +50,38 @@ class RunRequest(BaseModel):
     params: dict = Field(default_factory=dict)
     files: dict[str, str] | None = None
     verbose: bool = False
+    device: Literal["auto", "cpu", "cuda", "mps"] = "auto"
+
+
+RUNNER_VERSION = "0.1.0"
+
+
+@functools.cache
+def _machine() -> dict:
+    """What this runner can compute on, for the Backend panel (torch is imported once, on the first health check)."""
+    import platform
+
+    import torch
+
+    devices = ["cpu"]
+    if torch.cuda.is_available():
+        devices.append("cuda")
+    if torch.backends.mps.is_available():
+        devices.append("mps")
+    gpu = torch.cuda.get_device_name(0) if "cuda" in devices else ("Apple GPU" if "mps" in devices else None)
+    return {
+        "runner": RUNNER_VERSION,
+        "torch": torch.__version__.split("+")[0],
+        "python": platform.python_version(),
+        "os": platform.system(),
+        "devices": devices,
+        "gpu": gpu,
+    }
 
 
 @app.get("/api/health")
 def health() -> dict:
-    return {"status": "ok", "allow_code_exec": ALLOW_CODE_EXEC, "queue": QUEUE.status()}
+    return {"status": "ok", "allow_code_exec": ALLOW_CODE_EXEC, "queue": QUEUE.status(), **_machine()}
 
 
 def _client(request: Request) -> str:
@@ -92,7 +121,9 @@ async def run_stream(category: str, slug: str, req: RunRequest, request: Request
 
     async def events():
         try:
-            async for event in stream_problem(category, slug, params, req.files, req.verbose, _client(request)):
+            async for event in stream_problem(
+                category, slug, params, req.files, req.verbose, _client(request), device=req.device
+            ):
                 if event["type"] == "result":
                     event = {**event, "output": f"/api/outputs/{event['run_id']}/{event['output']}", "params": params}
                 yield json.dumps(event) + "\n"

@@ -6,6 +6,7 @@ Like the agent's workspace routes, everything here needs AGENT_ENABLED=1.
 """
 
 import json
+from typing import Literal
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
@@ -40,6 +41,7 @@ class SyncRequest(BaseModel):
 class RunRequest(BaseModel):
     params: dict = Field(default_factory=dict)
     verbose: bool = False
+    device: Literal["auto", "cpu", "cuda", "mps"] = "auto"
 
 
 class NotebookRequest(BaseModel):
@@ -134,7 +136,7 @@ async def run_stream(session: str, req: RunRequest, request: Request) -> Streami
 
     async def events():
         try:
-            async for event in workspace.run(session, req.params, req.verbose, _client(request)):
+            async for event in workspace.run(session, req.params, req.verbose, _client(request), req.device):
                 if event["type"] == "result":
                     event = {**event, "output": f"/api/outputs/{event['run_id']}/{event['output']}"}
                 yield json.dumps(event) + "\n"

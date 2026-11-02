@@ -532,14 +532,14 @@ def entry(session: str) -> dict:
     }
 
 
-async def run(session: str, params: dict, verbose: bool, client: str) -> AsyncIterator[dict]:
+async def run(session: str, params: dict, verbose: bool, client: str, device: str = "auto") -> AsyncIterator[dict]:
     """Render the problem in its sandbox; the same events as runner.stream_problem."""
     try:
         folder, category, slug = _resolve(session)
     except KeyError:
         raise RunError("this problem's sandbox has expired — sync its files first") from None
     params = resolve_params(load_meta(folder), params)
-    async for event in stream_problem(category, slug, params, None, verbose, client, folder.parents[2]):
+    async for event in stream_problem(category, slug, params, None, verbose, client, folder.parents[2], device):
         yield event
 
 
