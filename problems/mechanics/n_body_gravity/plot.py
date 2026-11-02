@@ -8,8 +8,17 @@ import torch
 from problems._common.plotting import ACCENT, frame_indices, save_gif
 
 
-def animate(times: torch.Tensor, xs: torch.Tensor, m: torch.Tensor, path: Path, trail: float = 0.3) -> Path:
-    """trail = fraction of the run that each body's tail remembers."""
+def animate(
+    times: torch.Tensor,
+    xs: torch.Tensor,
+    m: torch.Tensor,
+    path: Path,
+    trail: float = 0.3,
+    drift: torch.Tensor | None = None,
+    p_norm: torch.Tensor | None = None,
+) -> Path:
+    """trail = fraction of the run that each body's tail remembers; drift (T,) = ΔE/|E₀| and p_norm (T,) = |P| are
+    shown as a live readout (the conservation laws the run must obey)."""
     pos = xs.cpu().numpy()  # (T, N, 3)
     t = times.cpu().numpy()  # (T,)
     mass = m.cpu().numpy()  # (N,)
@@ -31,6 +40,12 @@ def animate(times: torch.Tensor, xs: torch.Tensor, m: torch.Tensor, path: Path, 
     trails = [ax.plot([], [], [], lw=1.2, color=c, alpha=0.7)[0] for c in colors]
     dots = [ax.plot([], [], [], "o", ms=s, color=c)[0] for s, c in zip(sizes, colors)]
     clock = ax.text2D(0.02, 0.95, "", transform=ax.transAxes)
+    readout = ax.text2D(
+        0.98, 0.97, "", transform=ax.transAxes, ha="right", va="top", fontsize=8, family="monospace", color="#374151"
+    )
+    e_drift = drift.cpu().numpy() if drift is not None else None
+    p_total = p_norm.cpu().numpy() if p_norm is not None else None
+    ax.set_title(f"{len(mass)} bodies, G = 1", fontsize=10)
 
     def update(step: int):
         start = max(0, step - tail)
@@ -39,6 +54,8 @@ def animate(times: torch.Tensor, xs: torch.Tensor, m: torch.Tensor, path: Path, 
             line.set_data_3d(path_a[:, 0], path_a[:, 1], path_a[:, 2])
             dot.set_data_3d([pos[step, a, 0]], [pos[step, a, 1]], [pos[step, a, 2]])
         clock.set_text(f"t = {t[step]:.2f}")
+        if e_drift is not None and p_total is not None:
+            readout.set_text(f"ΔE/|E₀| = {e_drift[step]:+.1e}\n|P|      = {p_total[step]:.1e}")
         ax.view_init(elev=25, azim=-60 + 120 * step / max(1, len(t) - 1))  # a third of a turn over the run
 
     ax.view_init(elev=25, azim=-60)

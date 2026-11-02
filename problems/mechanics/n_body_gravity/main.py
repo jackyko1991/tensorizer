@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+import torch
+
 from problems._common.runtime import cli, device
 
 from . import equation, plot, solve, tensors
@@ -20,7 +22,11 @@ def run(params: dict, out_dir: Path) -> Path:
     print(f"{len(m)} bodies, {len(times) - 1} steps")
     print(f"energy {e_start:.6f} -> {e_end:.6f}  (relative change {abs(e_end - e_start) / abs(e_start):.2e})")
     print(f"total momentum at the end |P| = {p_end:.2e}")
-    return plot.animate(times, xs, m, out_dir / "n_body_gravity.gif")
+    # conserved quantities at every step, shown live on the animation as the run's own accuracy check
+    energies = torch.stack([equation.energy(x, v, m, G, eps) for x, v in zip(xs, vs)])  # (T,)
+    drift = (energies - energies[0]) / energies[0].abs()  # (T,) relative energy error ΔE/|E₀|
+    p_norm = equation.momentum(vs, m).norm(dim=-1)  # (T,) |P|, should stay 0
+    return plot.animate(times, xs, m, out_dir / "n_body_gravity.gif", drift=drift, p_norm=p_norm)
 
 
 if __name__ == "__main__":
