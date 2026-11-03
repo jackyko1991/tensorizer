@@ -105,41 +105,44 @@ export default function Sidebar({ manifest, selected, onSelect, onFork }: Props)
 
   return (
     <nav className="space-y-1">
-      <div className="relative mb-2">
-        <input
-          ref={box}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Escape" && setQuery("")}
-          placeholder={t("search.placeholder")}
-          aria-label={t("search.placeholder")}
-          data-testid="problem-search"
-          className="w-full rounded-md border border-gray-200 bg-white py-1.5 pr-7 pl-7 text-sm placeholder:text-gray-400 focus:border-blue-400 focus:outline-none"
-        />
-        <svg
-          viewBox="0 0 24 24"
-          className="pointer-events-none absolute top-2 left-2 h-4 w-4 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          aria-hidden="true"
-        >
-          <circle cx="11" cy="11" r="7" />
-          <path d="M20 20l-4-4" />
-        </svg>
-        {query ? (
-          <button
-            onClick={() => setQuery("")}
-            aria-label={t("search.clear")}
-            className="absolute top-1 right-1.5 px-1 text-lg leading-none text-gray-400 hover:text-gray-700"
+      {/* stays put while the list scrolls under it */}
+      <div className="sticky -top-3 z-10 -mx-3 -mt-3 mb-2 bg-white px-3 pt-3 pb-1">
+        <div className="relative">
+          <input
+            ref={box}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Escape" && setQuery("")}
+            placeholder={t("search.placeholder")}
+            aria-label={t("search.placeholder")}
+            data-testid="problem-search"
+            className="w-full rounded-md border border-gray-200 bg-white py-1.5 pr-7 pl-7 text-sm placeholder:text-gray-400 focus:border-blue-400 focus:outline-none"
+          />
+          <svg
+            viewBox="0 0 24 24"
+            className="pointer-events-none absolute top-2 left-2 h-4 w-4 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden="true"
           >
-            ×
-          </button>
-        ) : (
-          <kbd className="absolute top-1.5 right-2 rounded border border-gray-200 px-1 text-[10px] text-gray-400">
-            /
-          </kbd>
-        )}
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-4-4" />
+          </svg>
+          {query ? (
+            <button
+              onClick={() => setQuery("")}
+              aria-label={t("search.clear")}
+              className="absolute top-1 right-1.5 px-1 text-lg leading-none text-gray-400 hover:text-gray-700"
+            >
+              ×
+            </button>
+          ) : (
+            <kbd className="absolute top-1.5 right-2 rounded border border-gray-200 px-1 text-[10px] text-gray-400">
+              /
+            </kbd>
+          )}
+        </div>
       </div>
       {words.length > 0 && (
         <div data-testid="search-results">
