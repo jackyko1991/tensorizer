@@ -41,6 +41,7 @@ CATEGORIES = {
     "fluids": "Fluids & Continuum",
     "quantum": "Quantum",
     "astro": "Astrophysics & Relativity",
+    "cosmology": "Cosmology & New Physics",
     "nuclear": "Nuclear & Particle",
     "physchem": "Physical Chemistry",
     "chemistry": "Chemistry",
@@ -235,6 +236,7 @@ def main() -> None:
                 "diagram": copy_diagram(d, target),
                 "wiki": wiki.get(f"{cat}/{slug}"),
                 "papers": papers.get(f"{cat}/{slug}", []),
+                "tags": [str(t) for t in meta.get("tags") or []],  # e.g. millennium
                 "i18n": load_translations(d),
                 "notebook": write_notebook(d, target),
                 "pixi_zip": write_pixi_zip(d, target),

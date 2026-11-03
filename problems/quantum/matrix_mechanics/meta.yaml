@@ -2,6 +2,7 @@ title: "Matrix mechanics: Heisenberg's oscillator from ladder operators"
 category: quantum
 level: intermediate
 order: 5
+tags: [nobel:physics:1932]
 summary: >
   No wavefunctions, no grid: in the number basis $|0\rangle, \dots, |N-1\rangle$ the lowering operator is the matrix
   $a_{mn} = \sqrt n\,\delta_{m,n-1}$, and $X$, $P$ and $H = \tfrac12(P^2 + X^2)$ follow by matrix products. Its

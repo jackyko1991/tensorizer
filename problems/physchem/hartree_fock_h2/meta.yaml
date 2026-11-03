@@ -2,6 +2,7 @@ title: 'Hartree–Fock for $\mathrm{H_2}$ in a minimal STO-3G basis'
 category: physchem
 level: advanced
 order: 1
+tags: [nobel:chemistry:1998]
 summary: >
   The textbook self-consistent field calculation of Szabo and Ostlund, written with tensors. Each hydrogen carries one
   1s function made of three Gaussians (STO-3G); overlap, kinetic, nuclear-attraction and two-electron integrals have

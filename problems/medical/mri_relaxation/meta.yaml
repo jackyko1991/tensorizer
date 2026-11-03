@@ -2,6 +2,7 @@ title: 'MRI: T1 and T2 relaxation and image contrast'
 category: medical
 level: beginner
 order: 2
+tags: [nobel:medicine:2003]
 summary: >
   After a radio-frequency pulse, the magnetisation of each tissue grows back along the field with time constant $T_1$
   and its transverse part decays with $T_2$. Evaluating the spin-echo signal as one tensor over (tissue, $TR$, $TE$)

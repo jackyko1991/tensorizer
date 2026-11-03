@@ -2,6 +2,7 @@ title: X-ray attenuation and image contrast
 category: medical
 level: beginner
 order: 1
+tags: [nobel:physics:1901]
 summary: >
   X-rays fade exponentially through the body, $I = I_0\,e^{-\int\mu\,dl}$. A chest phantom made of
   lung, soft tissue, bone and iodine contrast is projected ray by ray with one einsum, showing why bone

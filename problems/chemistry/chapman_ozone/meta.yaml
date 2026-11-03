@@ -2,6 +2,7 @@ title: Chapman mechanism and the ozone layer
 category: chemistry
 level: intermediate
 order: 3
+tags: [nobel:chemistry:1995]
 summary: >
   Four reactions between O, O₂ and O₃, driven by sunlight, make an ozone layer. Written as a reaction network
   $\dot c = S\,r(c)$ with a $3\times4$ stoichiometry matrix, the stiff system is integrated by backward Euler with

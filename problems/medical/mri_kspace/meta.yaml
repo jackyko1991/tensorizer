@@ -2,6 +2,7 @@ title: 'MRI k-space: imaging with gradients and Fourier transforms'
 category: medical
 level: advanced
 order: 2
+tags: [nobel:medicine:2003]
 summary: >
   Magnetic-field gradients give every pixel its own precession phase, so the coil records the Fourier transform of the
   image: $s(\mathbf k) = \sum_x \rho(x)\,e^{-2\pi i\,\mathbf k\cdot\mathbf x}$ with $\mathbf k(t) = \tfrac{\gamma}{2\pi}\int \mathbf G\,dt$.

@@ -2,6 +2,7 @@ title: Bloch equations and the spin echo
 category: medical
 level: intermediate
 order: 2
+tags: [nobel:physics:1952]
 summary: >
   The Bloch equation is a cross product, $\varepsilon_{ijk} M_j \Omega_k$, plus relaxation. Hundreds of isochromats with
   slightly different off-resonance frequencies $\Delta\omega_n$ are stepped together in one batched RK4 update: after a

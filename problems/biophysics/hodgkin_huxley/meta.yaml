@@ -2,6 +2,7 @@ title: 'Hodgkin–Huxley action potential'
 category: biophysics
 level: intermediate
 order: 1
+tags: [nobel:medicine:1963]
 summary: >
   The 1952 model of the squid giant axon: a membrane capacitor discharged by sodium and potassium channels whose
   gates $m$, $h$, $n$ open and close with the voltage. Forty-one axons, each driven by a different current step,

@@ -1080,6 +1080,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
                 <span className="rounded-full border border-gray-200 px-2.5 py-0.5 text-xs text-gray-500">
                   {t(problem.animated ? "tag.animated" : "tag.static")}
                 </span>
+                <PrizeBadges tags={problem.tags ?? []} />
               </div>
               <p className="mt-2 text-sm leading-relaxed text-gray-600">
                 <RichText text={problem.summary} />
@@ -1251,6 +1252,40 @@ function PictureUpload({ hasPicture, onPicture }: { hasPicture: boolean; onPictu
         </button>
       )}
     </div>
+  );
+}
+
+/** Library tags as badges: the Millennium Prize problems and prizes won by the work behind a problem
+ *  (`nobel:physics:2016`, `fields:2006`, `turing:2019`, `abel:2005`, `millennium`). Unknown tags are not shown. */
+function PrizeBadges({ tags }: { tags: string[] }) {
+  const { t } = useLang();
+  const label = (tag: string): string | null => {
+    const [prize, a, b] = tag.split(":");
+    if (prize === "millennium") return `★ ${t("tag.millennium")}`;
+    if (prize === "nobel" && ["physics", "chemistry", "medicine"].includes(a))
+      return `🏅 ${t(`prize.nobel.${a}` as Key)}${b ? ` ${b}` : ""}`;
+    if (prize === "fields" || prize === "abel" || prize === "turing")
+      return `🏅 ${t(`prize.${prize}` as Key)}${a ? ` ${a}` : ""}`;
+    return null;
+  };
+  return (
+    <>
+      {tags.map((tag) => {
+        const text = label(tag);
+        return (
+          text && (
+            <span
+              key={tag}
+              title={t(tag === "millennium" ? "tag.millenniumHint" : "prize.hint")}
+              data-testid={`tag-${tag.split(":")[0]}`}
+              className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800"
+            >
+              {text}
+            </span>
+          )
+        );
+      })}
+    </>
   );
 }
 

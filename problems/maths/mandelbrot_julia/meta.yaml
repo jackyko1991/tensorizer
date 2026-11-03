@@ -2,6 +2,7 @@ title: The Mandelbrot set and Julia sets
 category: maths
 level: advanced
 order: 1
+tags: [fields:1994]
 summary: >
   Iterate $z \mapsto z^2 + c$ on a whole grid of complex pixels at once. Points whose orbit stays bounded form the
   Mandelbrot set $M$ (vary $c$, start at $z_0 = 0$) or a filled Julia set $K_c$ (fix $c$, start at the pixel). A smooth

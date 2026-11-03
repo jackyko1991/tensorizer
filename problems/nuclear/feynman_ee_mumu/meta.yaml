@@ -2,6 +2,7 @@ title: 'Feynman diagram: $e^+e^- \to \mu^+\mu^-$ from Dirac traces'
 category: nuclear
 level: advanced
 order: 4
+tags: [nobel:physics:1965]
 summary: >
   The simplest QED diagram: an electron and a positron annihilate into a virtual photon that makes a muon pair.
   The Feynman rules turn the picture into an amplitude, the spin sums turn it into traces of $4\times4$ Dirac

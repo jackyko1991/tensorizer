@@ -2,6 +2,7 @@ title: Nuclear shell model
 category: nuclear
 level: advanced
 order: 1
+tags: [nobel:physics:1963]
 summary: >
   Nucleons orbit independently in a Woods–Saxon well. Solving the radial Schrödinger equation for every
   $(l, j)$ channel as one batch of finite-difference Hamiltonians and turning up the spin–orbit force makes the

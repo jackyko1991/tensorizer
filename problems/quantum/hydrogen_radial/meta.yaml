@@ -2,6 +2,7 @@ title: Hydrogen atom orbitals
 category: quantum
 level: intermediate
 order: 2
+tags: [nobel:physics:1922]
 summary: >
   Writing $\psi = (u(r)/r)\,Y_{lm}(\theta, \phi)$ turns the 3D hydrogen problem into a 1D radial equation with an extra
   centrifugal term $l(l+1)/2r^2$. One finite-difference Hamiltonian per angular momentum $l$ is stacked into

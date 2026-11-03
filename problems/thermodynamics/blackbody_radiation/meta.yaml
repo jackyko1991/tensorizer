@@ -2,6 +2,7 @@ title: Black-body radiation
 category: thermodynamics
 level: intermediate
 order: 3
+tags: [nobel:physics:1918]
 summary: >
   Planck's law gives the energy density of thermal radiation at every wavelength. Broadcasting a column of
   temperatures against a row of wavelengths builds the whole $(T, \lambda)$ spectrum table in one line; argmax finds Wien's

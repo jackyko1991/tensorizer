@@ -50,6 +50,13 @@ const PATHS: Record<string, React.ReactNode> = {
       <path d="M19 3v4M17 5h4" />
     </>
   ),
+  // galaxy spiral and a distant star: cosmology
+  cosmology: (
+    <>
+      <path d="M12 12c0-1.5 1.5-2.5 3-2 2 .7 2.5 3.3 1 5-2 2.3-6 2-7.5-.5C6.6 11.3 8.5 6.5 13 6c4.5-.5 8 3.5 7 8" />
+      <path d="M4 5l.6 1.4L6 7l-1.4.6L4 9l-.6-1.4L2 7l1.4-.6z" />
+    </>
+  ),
   // radiation trefoil
   nuclear: (
     <>

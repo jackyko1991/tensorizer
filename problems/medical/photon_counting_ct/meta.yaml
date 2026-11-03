@@ -2,6 +2,7 @@ title: Photon-counting CT and material decomposition
 category: medical
 level: advanced
 order: 4
+tags: [nobel:medicine:1979]
 summary: >
   A photon-counting detector sorts every X-ray into energy bins, so each ray gives several Beer–Lambert
   measurements $\lambda_{rb} = N_0 R_{be}S_e e^{-\mu_{em}A_{rm}}$ instead of one. A batched maximum-likelihood fit

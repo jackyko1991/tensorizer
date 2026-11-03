@@ -46,7 +46,7 @@ export interface Problem {
   translation: TranslationRow[];
   notes?: string;
   params: Record<string, ParamSpec>;
-  /** Workspace problems only: the user's own labels (meta.yaml `tags`). */
+  /** Labels from meta.yaml `tags`: library tags such as `millennium`, or a Workspace problem's own labels. */
   tags?: string[];
   files: CodeFile[];
   output: string | null;

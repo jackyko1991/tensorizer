@@ -2,6 +2,7 @@
 
     python scripts/i18n.py status
     python scripts/i18n.py export --lang ja --out ja.json     # missing or outdated items, English text
+    python scripts/i18n.py export --lang ja --out ja.json --only maths/x,astro/y   # just these problems
     python scripts/i18n.py import --lang ja ja.json           # validate and write problems/*/*/i18n/ja.yaml
     python scripts/i18n.py pages-status                       # the same three commands for the Concept /
     python scripts/i18n.py pages-export --lang ja --out p.json  # Coding Skills page text
@@ -106,6 +107,9 @@ def cmd_status(_args) -> None:
 
 def cmd_export(args) -> None:
     items = todo(args.lang)
+    if args.only:  # just these problems (comma-separated ids), so parallel work doesn't overlap
+        wanted = set(args.only.split(","))
+        items = {k: v for k, v in items.items() if k in wanted}
     Path(args.out).write_text(json.dumps(items, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"exported {len(items)} item(s) for {args.lang} -> {args.out}")
 
@@ -222,6 +226,7 @@ def main() -> None:
     e = sub.add_parser("export")
     e.add_argument("--lang", required=True, choices=LANGS)
     e.add_argument("--out", required=True)
+    e.add_argument("--only", help="comma-separated problem ids, e.g. maths/riemann_zeros,astro/kerr_black_hole")
     e.set_defaults(fn=cmd_export)
     i = sub.add_parser("import")
     i.add_argument("--lang", required=True, choices=LANGS)

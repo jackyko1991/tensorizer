@@ -2,6 +2,7 @@ title: 'A tiny CNN finds a DNA binding motif'
 category: bioinformatics
 level: advanced
 order: 3
+tags: [turing:2018]
 summary: >
   Half of a set of random DNA sequences carry one degenerate copy of a transcription-factor binding site. A
   one-layer 1D convolutional network, $z_{nfp} = W_{fkb}\,x_{n,p+k,b}$ then max-pooling, learns with autograd and

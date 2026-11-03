@@ -2,6 +2,7 @@ title: Quantum tunnelling
 category: quantum
 level: advanced
 order: 1
+tags: [nobel:physics:1973]
 summary: >
   A Gaussian wave packet hits a rectangular barrier. The time-dependent Schrödinger equation is
   solved with the split-step Fourier method: the potential is a diagonal operator in $x$-space and the

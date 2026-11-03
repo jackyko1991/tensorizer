@@ -2,6 +2,7 @@ title: 'Schrödinger equation: Crank–Nicolson time stepping'
 category: quantum
 level: intermediate
 order: 4
+tags: [nobel:physics:1933]
 summary: >
   The time-dependent Schrödinger equation $i\,\partial_t\psi = H\psi$ is marched on a grid with the implicit
   Crank–Nicolson scheme $(I + \tfrac{i\Delta t}{2}H)\,\psi^{n+1} = (I - \tfrac{i\Delta t}{2}H)\,\psi^n$. The left matrix

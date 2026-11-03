@@ -25,6 +25,7 @@ CATEGORIES = {
     "fluids": "Fluids & Continuum",
     "quantum": "Quantum",
     "astro": "Astrophysics & Relativity",
+    "cosmology": "Cosmology & New Physics",
     "nuclear": "Nuclear & Particle",
     "physchem": "Physical Chemistry",
     "chemistry": "Chemistry",

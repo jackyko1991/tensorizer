@@ -2,6 +2,7 @@ title: Two-qubit entanglement
 category: quantum
 level: advanced
 order: 3
+tags: [nobel:physics:2022]
 summary: >
   Two qubits stored as a $(2, 2)$ tensor $\psi_{ab}$. Gates are rank-4 tensors applied with one einsum: a Hadamard on
   qubit 1 followed by a CNOT turns $\lvert 00\rangle$ into a Bell state. The singular value decomposition of $\psi_{ab}$ is the

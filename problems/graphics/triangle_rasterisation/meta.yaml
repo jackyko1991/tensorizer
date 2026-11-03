@@ -2,6 +2,7 @@ title: Triangle rasterisation with a z-buffer
 category: graphics
 level: intermediate
 order: 1
+tags: [turing:2019]
 summary: >
   The way games draw 3D: project a triangle mesh onto the screen and compute the barycentric weights of every
   (pixel, triangle) pair at once. A min-reduction over triangles is the z-buffer. The same weights then drive flat,

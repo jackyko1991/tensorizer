@@ -2,6 +2,7 @@ title: Radon transform and CT reconstruction
 category: medical
 level: intermediate
 order: 1
+tags: [nobel:medicine:1979]
 summary: >
   A CT scanner records line integrals $p(\theta, s)$ of the attenuation map from every angle. The
   Shepp–Logan head phantom is projected by rotating and summing a tensor, and rebuilt by filtered

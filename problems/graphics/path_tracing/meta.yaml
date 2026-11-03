@@ -2,6 +2,7 @@ title: Monte Carlo path tracing of a Cornell box
 category: graphics
 level: intermediate
 order: 2
+tags: [turing:2019]
 summary: >
   Photorealistic rendering solves the rendering equation by Monte Carlo. Every camera ray of every sample is traced
   as one batch through a box of planes and spheres: cosine-weighted bounces, a shadow ray to the area light at each
