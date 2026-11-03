@@ -2,7 +2,7 @@ title: Random walk and diffusion
 category: thermodynamics
 level: intermediate
 order: 2
-tags: [nobel:physics:1926]
+tags: [nobel:physics:1926, annus-mirabilis:1905]
 summary: >
   Thousands of Brownian particles each take random kicks. Stored as one (time, walker, 2) tensor, the walk is a
   single cumsum, and the mean-squared displacement $\langle x_i x_i\rangle$ — one einsum — grows linearly in time as $2dDt$,

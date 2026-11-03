@@ -2,6 +2,7 @@ title: Kinetic theory of an ideal gas
 category: thermodynamics
 level: advanced
 order: 1
+tags: [hilbert:6]
 summary: >
   Hundreds of hard disks bounce around a box. Every disk starts with the same speed, yet elastic collisions
   shuffle the energy until the speeds follow the Maxwell–Boltzmann distribution, and the momentum the disks

@@ -2,7 +2,7 @@ title: The Riemann zeta function and the primes
 category: maths
 level: advanced
 order: 3
-tags: [millennium]  # the Riemann Hypothesis is a Clay Millennium Prize problem
+tags: [millennium, hilbert:8, smale:1]  # the Riemann Hypothesis is a Clay Millennium Prize problem
 summary: >
   Evaluate $\zeta(s)$ on the critical line $\operatorname{Re} s = \frac12$ for thousands of heights at once, find its
   first nontrivial zeros as sign changes of the real function $Z(t)$, and count primes with a boolean tensor sieve. Then

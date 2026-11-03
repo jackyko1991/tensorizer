@@ -2,6 +2,7 @@ title: 'Three-body chaos: the Pythagorean problem'
 category: mechanics
 level: advanced
 order: 4
+tags: [kingoscar:1889]
 summary: >
   Burrau's problem: masses 3, 4 and 5 start at rest on the corners of a 3-4-5 triangle and dance chaotically until
   one is flung out. A twin run started $\delta = 10^{-6}$ away is integrated in the same tensor (run index $k$);
