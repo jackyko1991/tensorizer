@@ -104,20 +104,15 @@ export default function TensorLab() {
   const step = STEPS[n];
   const els = useMemo(() => elements(step), [step]);
 
-  // the read cursor walks the elements; when playing, the lab moves to the next step after one full pass
+  // while playing, the read cursor walks the elements and starts over on the same step (the user picks the next)
   useEffect(() => {
+    if (!playing) return;
     const timer = window.setTimeout(
-      () => {
-        if (cursor + 1 < els.length) setCursor(cursor + 1);
-        else if (playing) {
-          setN((n + 1) % STEPS.length);
-          setCursor(0);
-        } else setCursor(0);
-      },
+      () => setCursor(cursor + 1 < els.length ? cursor + 1 : 0),
       cursor + 1 < els.length ? TICK_MS : 1400,
     );
     return () => window.clearTimeout(timer);
-  }, [cursor, els.length, playing, n]);
+  }, [cursor, els.length, playing]);
 
   const go = (k: number) => {
     setN((k + STEPS.length) % STEPS.length);
