@@ -1260,13 +1260,14 @@ function PictureUpload({ hasPicture, onPicture }: { hasPicture: boolean; onPictu
 function PrizeBadges({ tags }: { tags: string[] }) {
   const { t } = useLang();
   const label = (tag: string): string | null => {
-    const [prize, a, b] = tag.split(":");
+    const [prize, ...rest] = tag.split(":");
     if (prize === "millennium") return `★ ${t("tag.millennium")}`;
-    if (prize === "nobel" && ["physics", "chemistry", "medicine"].includes(a))
-      return `🏅 ${t(`prize.nobel.${a}` as Key)}${b ? ` ${b}` : ""}`;
-    if (prize === "fields" || prize === "abel" || prize === "turing")
-      return `🏅 ${t(`prize.${prize}` as Key)}${a ? ` ${a}` : ""}`;
-    return null;
+    // prize:field:year (nobel, wolf, breakthrough) or prize:year (fields, abel, turing, boltzmann, ...)
+    const field = rest.length > 1 ? rest[0] : null;
+    const year = rest.at(-1) ?? "";
+    const key = (field ? `prize.${prize}.${field}` : `prize.${prize}`) as Key;
+    const name = t(key);
+    return name === key ? null : `🏅 ${name} ${year}`.trim();
   };
   return (
     <>

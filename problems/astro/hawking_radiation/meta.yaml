@@ -2,6 +2,7 @@ title: Hawking radiation and black-hole evaporation
 category: astro
 level: advanced
 order: 2
+tags: [wolf:physics:1988]
 summary: >
   A black hole glows like a black body at the Hawking temperature $T_H = \hbar c^3/(8\pi G M k_B)$. One broadcast evaluates
   Planck's law for many masses and wavelengths at once, and RK4 integrates the mass loss $dM/dt = -\alpha/M^2$:

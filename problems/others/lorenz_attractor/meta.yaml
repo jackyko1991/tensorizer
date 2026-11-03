@@ -2,6 +2,7 @@ title: Lorenz attractor and the butterfly effect
 category: others
 level: intermediate
 order: 1
+tags: [crafoord:1983]
 summary: >
   Three coupled equations from a model of convection never settle and never repeat. Written as a linear part
   $A_{ij}x_j$ plus a quadratic part $Q_{ijk}x_j x_k$ with a rank-3 tensor, one einsum moves a whole batch of

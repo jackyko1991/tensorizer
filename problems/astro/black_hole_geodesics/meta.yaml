@@ -2,7 +2,7 @@ title: 'General relativity: orbits and infall around a black hole'
 category: astro
 level: advanced
 order: 1
-tags: [nobel:physics:2020]
+tags: [nobel:physics:2020, wolf:physics:1988]
 summary: >
   Geodesics in the Schwarzschild metric, with the Christoffel symbols obtained from $g_{\mu\nu}(x)$ by automatic differentiation and contracted
   with einsum. A bound orbit precesses instead of closing, the effective potential shows the innermost stable circular orbit at $6GM/c^2$ and the

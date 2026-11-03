@@ -2,6 +2,7 @@ title: 2D Ising model
 category: thermodynamics
 level: advanced
 order: 2
+tags: [nobel:physics:1982]
 summary: >
   A lattice of $\pm 1$ spins that prefer to align with their neighbours. The neighbour sum of every site is one conv2d
   with a cross-shaped kernel, and a checkerboard Metropolis update flips half the lattice in parallel. Below the

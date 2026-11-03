@@ -2,6 +2,7 @@ title: KdV soliton collision
 category: waves
 level: advanced
 order: 1
+tags: [abel:2005]
 summary: >
   Two solitary waves of the Korteweg–de Vries equation. The taller one is faster, catches up, and both come out of the
   collision with their shapes intact, only shifted. Derivatives are taken in Fourier space ($\partial_x \to ik$), the stiff

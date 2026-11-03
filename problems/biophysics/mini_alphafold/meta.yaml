@@ -2,7 +2,7 @@ title: 'AlphaFold in miniature: from a distance map to a 3D fold'
 category: biophysics
 level: advanced
 order: 1
-tags: [nobel:chemistry:2024]
+tags: [nobel:chemistry:2024, lasker:2023]
 summary: >
   A toy version of the two halves of a structure predictor, not AlphaFold itself. A predicted distogram (pairwise
   Cα distances with binned uncertainty) is optionally cleaned up by one self-attention block, then a "structure module"
