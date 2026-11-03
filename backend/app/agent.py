@@ -27,7 +27,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from . import limits
-from .runner import CODE_FILES, PROBLEMS, RunError, problem_dir, stream_problem
+from .runner import CODE_FILES, PROBLEMS, RunError, copy_core, problem_dir, stream_problem
 
 ENABLED = os.environ.get("AGENT_ENABLED") == "1"
 # On a personal machine (AGENT_AUTH=local) the agent may use this machine's Claude Code login; a shared server
@@ -165,7 +165,7 @@ def _session(session_id: str | None, problem: str) -> Session:
     sid = uuid.uuid4().hex
     root = WORK_ROOT / sid / "problems"
     shutil.copytree(src, root / category / slug, ignore=shutil.ignore_patterns("__pycache__", "i18n"))
-    shutil.copytree(PROBLEMS / "_common", root / "_common", ignore=shutil.ignore_patterns("__pycache__"))
+    copy_core(root.parent)  # problems/_common and tensorizer_physics next to problems/
     s = Session(sid, problem, root / category / slug)
     if problem == NEW_ID:
         shutil.copy(PROBLEMS.parent / "docs" / "adding-problems.md", s.workspace / "ADDING_PROBLEMS.md")

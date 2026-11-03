@@ -18,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TOP = "tensorizer-runner"
 FILES = ["pixi.toml", "pixi.lock", "LICENSE", "NOTICE", "pyproject.toml"]
-DIRS = ["backend", "problems"]
+DIRS = ["backend", "problems", "tensorizer_physics"]
 SKIP_DIRS = {"__pycache__", ".pytest_cache", ".ruff_cache"}
 
 README = """# Tensorizer local runner

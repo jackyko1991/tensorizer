@@ -3,9 +3,10 @@ import {
   backendChoice,
   deviceChoice,
   localAddress,
+  localPort,
   probe,
   setDeviceChoice,
-  setLocalAddress,
+  setLocalPort,
   type BackendChoice,
   type Device,
   type Health,
@@ -147,7 +148,10 @@ export default function BackendPanel({
 
 function LocalTab({ onUse }: { onUse: () => void }) {
   const { t } = useLang();
-  const [address, setAddress] = useState(localAddress);
+  const [port, setPort] = useState(String(localPort()));
+  const portNumber = Number(port);
+  const portOk = Number.isInteger(portNumber) && portNumber > 0 && portNumber < 65536;
+  const address = localAddress(portOk ? portNumber : localPort());
   const [health, setHealth] = useState<Health | null | "checking">("checking");
   const [device, setDevice] = useState<Device>(deviceChoice);
   const [os, setOs] = useState<Os>(detectOs);
@@ -185,27 +189,35 @@ function LocalTab({ onUse }: { onUse: () => void }) {
         ⚠ {t("be.local.warn")}
       </p>
 
-      <label className="flex items-center gap-2">
-        <span className="w-20 shrink-0 text-gray-500">{t("be.address")}</span>
-        <input
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          onBlur={() => setLocalAddress(address)}
-          spellCheck={false}
-          data-testid="local-address"
-          className="min-w-0 flex-1 rounded-md border border-gray-300 px-2 py-1 font-mono text-xs"
-        />
-        <button
-          onClick={() => {
-            setLocalAddress(address);
-            setHealth("checking");
-            void probe(address).then(setHealth);
-          }}
-          className="rounded-md border border-gray-300 px-2.5 py-1 text-xs hover:bg-gray-50"
-        >
-          {t("be.test")}
-        </button>
-      </label>
+      <div className="flex items-start gap-2">
+        <span className="w-20 shrink-0 pt-1 text-gray-500">{t("be.port")}</span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-xs text-gray-400">localhost:</span>
+            <input
+              value={port}
+              onChange={(e) => setPort(e.target.value.replace(/\D/g, "").slice(0, 5))}
+              onBlur={() => portOk && setLocalPort(portNumber)}
+              inputMode="numeric"
+              aria-label={t("be.port")}
+              data-testid="local-port"
+              className={`w-20 rounded-md border px-2 py-1 font-mono text-xs ${portOk ? "border-gray-300" : "border-red-400"}`}
+            />
+            <button
+              onClick={() => {
+                if (!portOk) return;
+                setLocalPort(portNumber);
+                setHealth("checking");
+                void probe(address).then(setHealth);
+              }}
+              className="rounded-md border border-gray-300 px-2.5 py-1 text-xs hover:bg-gray-50"
+            >
+              {t("be.test")}
+            </button>
+          </div>
+          <p className="mt-1 text-[11px] text-gray-500">{t("be.portHint")}</p>
+        </div>
+      </div>
 
       <div className="flex items-start gap-2">
         <span className="w-20 shrink-0 text-gray-500">{t("be.status")}</span>

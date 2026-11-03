@@ -31,7 +31,7 @@ from problems._common.runtime import load_meta, resolve_params
 
 from . import agent
 from .run_queue import QUEUE, QueueFull
-from .runner import CODE_FILES, PROBLEMS, RunError, _env, _stream_process, problem_dir, stream_problem
+from .runner import CODE_FILES, RunError, _env, _stream_process, copy_core, problem_dir, stream_problem
 
 WS_ROOT = Path(os.environ.get("TENSORIZER_WORKSPACES", Path(tempfile.gettempdir()) / "tensorizer-ws"))
 IDLE_S = 60 * 60
@@ -366,7 +366,7 @@ def _new(files: dict[str, str], diagram: Path | None = None) -> Sandbox:
     _check_files(files)
     sid = uuid.uuid4().hex
     s = Sandbox(sid, WS_ROOT / sid)
-    shutil.copytree(PROBLEMS / "_common", s.root / "problems" / "_common", ignore=shutil.ignore_patterns("__pycache__"))
+    copy_core(s.root)
     s.folder.mkdir(parents=True)
     for package in (s.root / "problems", s.root / "problems" / CATEGORY, s.folder):
         (package / "__init__.py").touch()

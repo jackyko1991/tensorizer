@@ -314,14 +314,16 @@ export async function workspaceFiles(
   const files: Record<string, Uint8Array> = {};
   const put = (path: string, text: string) => (files[root + path] = strToU8(text));
 
-  // problems/_common comes from any library problem's pixi project (static, works without the backend).
+  // The shared code comes from any library problem's pixi project (static, works without the backend):
+  // problems/_common (aliases) and the tensorizer_physics package they point to.
   const sample = manifest.problems.find((p) => p.pixi_zip);
   if (sample?.pixi_zip) {
     try {
       const zip = unzipSync(new Uint8Array(await (await fetch(generatedUrl(sample.pixi_zip))).arrayBuffer()));
       for (const [path, data] of Object.entries(zip)) {
-        const at = path.indexOf("problems/_common/");
-        if (at >= 0 && path.endsWith(".py")) files[root + path.slice(at)] = data;
+        if (!path.endsWith(".py")) continue;
+        const at = Math.max(path.indexOf("problems/_common/"), path.indexOf("tensorizer_physics/"));
+        if (at >= 0) files[root + path.slice(at)] = data;
       }
     } catch {
       // without _common the problems still export; pixi run will ask for it

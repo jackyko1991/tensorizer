@@ -1,35 +1,7 @@
-"""Progress bars for verbose runs.
+"""Alias of tensorizer_physics.core.progress (the same module object), so the old import path keeps working."""
 
-for step in steps(n_steps, "time steps"):   # plain range(n) unless --verbose is on
-    ...
-"""
-
-from __future__ import annotations
-
-import os
 import sys
 
-from tqdm import tqdm
+from tensorizer_physics.core import progress as _module
 
-
-def verbose() -> bool:
-    return os.environ.get("TENSORIZER_VERBOSE") == "1"
-
-
-def bar(total: int, desc: str) -> tqdm:
-    """A tqdm bar on stdout (so it shows in the app's terminal); disabled unless verbose."""
-    return tqdm(total=total, desc=desc, file=sys.stdout, ncols=80, mininterval=0.2, ascii=" █", disable=not verbose())
-
-
-def report(done: int, total: int, stage: str) -> None:
-    """A machine-readable progress line for the web app (TENSORIZER_PROGRESS=1, set by its runner): the runner turns
-    it into a progress bar and keeps it out of the console. Silent on the command line."""
-    if os.environ.get("TENSORIZER_PROGRESS") == "1":
-        print(f"@@progress {done} {total} {stage}", flush=True)
-
-
-def steps(n: int, desc: str = "steps"):
-    """range(n), wrapped in a progress bar when the run is verbose."""
-    if not verbose():
-        return range(n)
-    return tqdm(range(n), desc=desc, file=sys.stdout, ncols=80, mininterval=0.2, ascii=" █")
+sys.modules[__name__] = _module

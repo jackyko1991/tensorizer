@@ -88,7 +88,8 @@ def source_hash(problem: Path) -> str:
     """Hash of everything that affects the rendered output: the problem's code, meta.yaml and _common."""
     h = hashlib.sha256()
     code = [f for f in problem.glob("*.py") if f.name != "test.py"]  # tests don't change the picture
-    for f in sorted([*code, problem / "meta.yaml", *(PROBLEMS / "_common").glob("*.py")]):
+    core = [*(ROOT / "tensorizer_physics" / "core").glob("*.py"), *(PROBLEMS / "_common").glob("*.py")]
+    for f in sorted([*code, problem / "meta.yaml", *core]):
         h.update(f.name.encode() + f.read_bytes().replace(b"\r\n", b"\n"))
     return h.hexdigest()[:16]
 

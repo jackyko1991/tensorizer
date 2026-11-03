@@ -8,10 +8,11 @@ import type { Manifest, Params, Problem } from "./types";
 // because it allows Private Network Access.
 export type BackendChoice = "server" | "local";
 export type Device = "auto" | "cpu" | "cuda" | "mps";
-export const DEFAULT_LOCAL_API = "http://localhost:8000";
+export const DEFAULT_LOCAL_PORT = 8000;
 const SERVER_API = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
 const CHOICE_KEY = "tensorizer.backend";
-const LOCAL_KEY = "tensorizer.localUrl";
+const PORT_KEY = "tensorizer.localPort";
+const OLD_URL_KEY = "tensorizer.localUrl"; // before the port-only field
 const DEVICE_KEY = "tensorizer.device";
 
 function stored(key: string): string | null {
@@ -29,10 +30,14 @@ function store(key: string, value: string) {
   }
 }
 
-/** The local runner's address (no trailing slash). */
-export const localAddress = () => (stored(LOCAL_KEY) ?? DEFAULT_LOCAL_API).replace(/\/$/, "");
-export function setLocalAddress(url: string) {
-  store(LOCAL_KEY, url.trim().replace(/\/$/, "") || DEFAULT_LOCAL_API);
+/** The local runner's port: Local always means this computer, so only the port can change. */
+export function localPort(): number {
+  const saved = Number(stored(PORT_KEY) ?? /:(\d+)/.exec(stored(OLD_URL_KEY) ?? "")?.[1]);
+  return Number.isInteger(saved) && saved > 0 && saved < 65536 ? saved : DEFAULT_LOCAL_PORT;
+}
+export const localAddress = (port = localPort()) => `http://localhost:${port}`;
+export function setLocalPort(port: number) {
+  store(PORT_KEY, String(Number.isInteger(port) && port > 0 && port < 65536 ? port : DEFAULT_LOCAL_PORT));
   if (backendChoice() === "local") API = localAddress();
 }
 

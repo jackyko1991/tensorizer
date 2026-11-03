@@ -5,7 +5,7 @@ import json
 import pytest
 from fastapi.testclient import TestClient
 
-from backend.app import agent, workspace
+from backend.app import agent, runner, workspace
 from backend.app import main as api
 
 client = TestClient(api.app)
@@ -119,7 +119,7 @@ def test_notebook_code_runs_inside_its_sandbox(sandboxes):
     assert out["stdout"].strip() == str(folder)
     assert (folder / "notes.txt").read_text() == "hi"
     assert folder.resolve().is_relative_to((sandboxes / "ws").resolve())
-    assert not (workspace.PROBLEMS.parent / "notes.txt").exists()
+    assert not (runner.PROBLEMS.parent / "notes.txt").exists()
 
 
 def test_problems_the_ai_created_resolve_through_the_agent_session(tmp_path, monkeypatch):

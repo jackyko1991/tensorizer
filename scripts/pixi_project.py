@@ -93,6 +93,9 @@ Licensed under the Apache License 2.0 — see {REPO_URL}.
     }
     for f in sorted((PROBLEMS / "_common").glob("*.py")):
         out[f"problems/_common/{f.name}"] = f.read_text(encoding="utf-8")
+    for f in sorted((ROOT / "tensorizer_physics").rglob("*.py")):  # the code problems/_common aliases
+        if "__pycache__" not in f.parts:
+            out[f.relative_to(ROOT).as_posix()] = f.read_text(encoding="utf-8")
     out[f"problems/{cat}/{slug}/__init__.py"] = ""
     for name in FILES:
         if (problem / name).is_file():
