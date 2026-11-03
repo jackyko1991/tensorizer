@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLang } from "../i18n";
 import { downloadPixiProject, vscodeCloneUrl, vscodeWebUrl } from "../notebook";
 import ContextMenu from "./ContextMenu";
 import DownloadIcon from "./DownloadIcon";
+import { prizeLabel } from "./PrizeBadges";
 import CategoryIcon from "./CategoryIcon";
 import { RichText } from "./Tex";
 import type { Level, Manifest, Problem } from "../types";
@@ -38,6 +39,42 @@ export default function Sidebar({ manifest, selected, onSelect, onFork }: Props)
   const [menu, setMenu] = useState<{ x: number; y: number; problem: Problem } | null>(null);
   const defaults = (p: Problem) => Object.fromEntries(Object.entries(p.params).map(([k, s]) => [k, s.default]));
 
+  // search: title (your language and English), summary, topic, slug and prize badges; case and accents ignored
+  const [query, setQuery] = useState("");
+  const box = useRef<HTMLInputElement>(null);
+  const fold = (text: string) => text.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+  const index = useMemo(
+    () =>
+      manifest.problems.map((p) => ({
+        p,
+        text: fold(
+          [
+            p.title,
+            p.i18n?.[lang]?.title ?? "",
+            p.summary,
+            p.i18n?.[lang]?.summary ?? "",
+            t(`cat.${p.category}` as Parameters<typeof t>[0]) ?? "",
+            p.id.replace(/_/g, " "),
+            ...(p.tags ?? []).map((tag) => `${tag} ${prizeLabel(tag, t) ?? ""}`),
+          ].join(" "),
+        ),
+      })),
+    [manifest, lang, t],
+  );
+  const words = fold(query).split(/\s+/).filter(Boolean);
+  const hits = words.length ? index.filter((e) => words.every((w) => e.text.includes(w))).map((e) => e.p) : [];
+  useEffect(() => {
+    const key = (e: KeyboardEvent) => {
+      const typing = (e.target as HTMLElement).closest("input, textarea, [contenteditable=true], .cm-editor");
+      if (e.key === "/" && !typing) {
+        e.preventDefault();
+        box.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
+  }, []);
+
   const toggle = (id: string) =>
     setOpen((s) => {
       const next = new Set(s);
@@ -46,69 +83,143 @@ export default function Sidebar({ manifest, selected, onSelect, onFork }: Props)
       return next;
     });
 
+  const item = (p: Problem) => (
+    <li key={p.id}>
+      <button
+        onClick={() => onSelect(p.id)}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          setMenu({ x: e.clientX, y: e.clientY, problem: p });
+        }}
+        className={`flex w-full items-center gap-2 rounded-md px-2 py-1 text-left text-sm transition ${
+          selected === p.id ? "bg-blue-50 font-medium text-blue-700" : "text-gray-700 hover:bg-gray-100"
+        }`}
+      >
+        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${LEVEL_STYLE[p.level].dot}`} />
+        <span className="min-w-0">
+          <RichText text={p.i18n?.[lang]?.title ?? p.title} />
+        </span>
+      </button>
+    </li>
+  );
+
   return (
     <nav className="space-y-1">
-      {manifest.categories.map((cat) => {
-        const isOpen = open.has(cat.id);
-        const problems = manifest.problems.filter((p) => p.category === cat.id);
-        return (
-          <div key={cat.id}>
-            <button
-              onClick={() => toggle(cat.id)}
-              className="flex w-full items-center justify-between rounded-md px-2 py-2 text-left text-sm font-semibold text-gray-800 hover:bg-gray-100"
-            >
-              <span className="flex items-center gap-2">
-                <CategoryIcon id={cat.id} className="h-4 w-4 shrink-0 text-blue-600" />
-                {t(`cat.${cat.id}` as Parameters<typeof t>[0]) ?? cat.title}
-              </span>
-              <span className="flex items-center gap-2 text-xs font-normal text-gray-400">
-                {problems.length}
-                <span className={`transition-transform ${isOpen ? "rotate-90" : ""}`}>›</span>
-              </span>
-            </button>
-
-            {isOpen && (
-              <div className="mb-2 ml-2 space-y-2 border-l border-gray-200 pl-2">
-                {manifest.levels.map((level) => {
-                  const inLevel = problems.filter((p) => p.level === level);
-                  if (inLevel.length === 0) return null;
-                  const style = LEVEL_STYLE[level];
-                  return (
-                    <div key={level}>
-                      <h3
-                        className={`flex items-center gap-1.5 px-2 pt-1 pb-0.5 text-[11px] font-semibold uppercase tracking-wide ${style.text}`}
-                      >
-                        <span className={`h-1.5 w-1.5 rounded-full ${style.dot}`} />
-                        {t(style.key)}
-                      </h3>
-                      <ul>
-                        {inLevel.map((p) => (
-                          <li key={p.id}>
-                            <button
-                              onClick={() => onSelect(p.id)}
-                              onContextMenu={(e) => {
-                                e.preventDefault();
-                                setMenu({ x: e.clientX, y: e.clientY, problem: p });
-                              }}
-                              className={`w-full rounded-md px-2 py-1 text-left text-sm transition ${
-                                selected === p.id
-                                  ? "bg-blue-50 font-medium text-blue-700"
-                                  : "text-gray-700 hover:bg-gray-100"
-                              }`}
-                            >
-                              <RichText text={p.i18n?.[lang]?.title ?? p.title} />
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  );
-                })}
+      <div className="relative mb-2">
+        <input
+          ref={box}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === "Escape" && setQuery("")}
+          placeholder={t("search.placeholder")}
+          aria-label={t("search.placeholder")}
+          data-testid="problem-search"
+          className="w-full rounded-md border border-gray-200 bg-white py-1.5 pr-7 pl-7 text-sm placeholder:text-gray-400 focus:border-blue-400 focus:outline-none"
+        />
+        <svg
+          viewBox="0 0 24 24"
+          className="pointer-events-none absolute top-2 left-2 h-4 w-4 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <path d="M20 20l-4-4" />
+        </svg>
+        {query ? (
+          <button
+            onClick={() => setQuery("")}
+            aria-label={t("search.clear")}
+            className="absolute top-1 right-1.5 px-1 text-lg leading-none text-gray-400 hover:text-gray-700"
+          >
+            ×
+          </button>
+        ) : (
+          <kbd className="absolute top-1.5 right-2 rounded border border-gray-200 px-1 text-[10px] text-gray-400">
+            /
+          </kbd>
+        )}
+      </div>
+      {words.length > 0 && (
+        <div data-testid="search-results">
+          <p className="px-2 pb-1 text-[11px] text-gray-500">{t("search.count").replace("{n}", String(hits.length))}</p>
+          {hits.length === 0 && <p className="px-2 py-2 text-sm text-gray-400">{t("search.none")}</p>}
+          {manifest.categories
+            .filter((cat) => hits.some((p) => p.category === cat.id))
+            .map((cat) => (
+              <div key={cat.id} className="mb-2">
+                <h3 className="flex items-center gap-1.5 px-2 pt-1 pb-0.5 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
+                  <CategoryIcon id={cat.id} className="h-3.5 w-3.5 text-blue-600" />
+                  {t(`cat.${cat.id}` as Parameters<typeof t>[0]) ?? cat.title}
+                </h3>
+                <ul>{hits.filter((p) => p.category === cat.id).map(item)}</ul>
               </div>
-            )}
-          </div>
-        );
-      })}
+            ))}
+        </div>
+      )}
+      {words.length === 0 &&
+        manifest.categories.map((cat) => {
+          const isOpen = open.has(cat.id);
+          const problems = manifest.problems.filter((p) => p.category === cat.id);
+          return (
+            <div key={cat.id}>
+              <button
+                onClick={() => toggle(cat.id)}
+                className="flex w-full items-center justify-between rounded-md px-2 py-2 text-left text-sm font-semibold text-gray-800 hover:bg-gray-100"
+              >
+                <span className="flex items-center gap-2">
+                  <CategoryIcon id={cat.id} className="h-4 w-4 shrink-0 text-blue-600" />
+                  {t(`cat.${cat.id}` as Parameters<typeof t>[0]) ?? cat.title}
+                </span>
+                <span className="flex items-center gap-2 text-xs font-normal text-gray-400">
+                  {problems.length}
+                  <span className={`transition-transform ${isOpen ? "rotate-90" : ""}`}>›</span>
+                </span>
+              </button>
+
+              {isOpen && (
+                <div className="mb-2 ml-2 space-y-2 border-l border-gray-200 pl-2">
+                  {manifest.levels.map((level) => {
+                    const inLevel = problems.filter((p) => p.level === level);
+                    if (inLevel.length === 0) return null;
+                    const style = LEVEL_STYLE[level];
+                    return (
+                      <div key={level}>
+                        <h3
+                          className={`flex items-center gap-1.5 px-2 pt-1 pb-0.5 text-[11px] font-semibold uppercase tracking-wide ${style.text}`}
+                        >
+                          <span className={`h-1.5 w-1.5 rounded-full ${style.dot}`} />
+                          {t(style.key)}
+                        </h3>
+                        <ul>
+                          {inLevel.map((p) => (
+                            <li key={p.id}>
+                              <button
+                                onClick={() => onSelect(p.id)}
+                                onContextMenu={(e) => {
+                                  e.preventDefault();
+                                  setMenu({ x: e.clientX, y: e.clientY, problem: p });
+                                }}
+                                className={`w-full rounded-md px-2 py-1 text-left text-sm transition ${
+                                  selected === p.id
+                                    ? "bg-blue-50 font-medium text-blue-700"
+                                    : "text-gray-700 hover:bg-gray-100"
+                                }`}
+                              >
+                                <RichText text={p.i18n?.[lang]?.title ?? p.title} />
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
       {menu && (
         <ContextMenu
           x={menu.x}

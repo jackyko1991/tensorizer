@@ -44,6 +44,7 @@ import GitHubDialog from "./components/GitHubDialog";
 import FloatingEditor, { EditorButtons, type FloatMode } from "./components/FloatingEditor";
 import { Field, InlineEquations, TagInput } from "./components/WsEditor";
 import DiagramExport from "./components/DiagramExport";
+import PrizeBadges from "./components/PrizeBadges";
 import { pictureToSvg, svgToDataUri } from "./diagramExport";
 import { metaObject, pickMd, toMarkdown, toYaml, type MetaFields } from "./metaDoc";
 import type { Level, Manifest, Notebook, Params, Problem, WsProblem } from "./types";
@@ -1252,41 +1253,6 @@ function PictureUpload({ hasPicture, onPicture }: { hasPicture: boolean; onPictu
         </button>
       )}
     </div>
-  );
-}
-
-/** Library tags as badges: the Millennium Prize problems and prizes won by the work behind a problem
- *  (`nobel:physics:2016`, `fields:2006`, `turing:2019`, `abel:2005`, `millennium`). Unknown tags are not shown. */
-function PrizeBadges({ tags }: { tags: string[] }) {
-  const { t } = useLang();
-  const label = (tag: string): string | null => {
-    const [prize, ...rest] = tag.split(":");
-    if (prize === "millennium") return `★ ${t("tag.millennium")}`;
-    // prize:field:year (nobel, wolf, breakthrough) or prize:year (fields, abel, turing, boltzmann, ...)
-    const field = rest.length > 1 ? rest[0] : null;
-    const year = rest.at(-1) ?? "";
-    const key = (field ? `prize.${prize}.${field}` : `prize.${prize}`) as Key;
-    const name = t(key);
-    return name === key ? null : `🏅 ${name} ${year}`.trim();
-  };
-  return (
-    <>
-      {tags.map((tag) => {
-        const text = label(tag);
-        return (
-          text && (
-            <span
-              key={tag}
-              title={t(tag === "millennium" ? "tag.millenniumHint" : "prize.hint")}
-              data-testid={`tag-${tag.split(":")[0]}`}
-              className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800"
-            >
-              {text}
-            </span>
-          )
-        );
-      })}
-    </>
   );
 }
 
