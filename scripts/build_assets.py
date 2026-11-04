@@ -165,18 +165,20 @@ def copy_datasets(problem: Path, target: Path) -> list[dict]:
     """Copy the problem's bundled data/ files next to its output and describe them for the page: path, kind, size,
     and for text files the leading # comment lines (source, licence, citation), the column names and the row count."""
     out = []
-    for src in sorted((problem / "data").glob("*")):
-        if not src.is_file() or src.name.startswith("."):
+    root = problem / "data"
+    for src in sorted(root.rglob("*")):  # subfolders become folders in the page's data browser
+        rel = src.relative_to(root).as_posix()
+        if not src.is_file() or any(part.startswith((".", "__")) for part in src.relative_to(root).parts):
             continue
-        dst = target / "data" / src.name
-        dst.parent.mkdir(exist_ok=True)
+        dst = target / "data" / rel
+        dst.parent.mkdir(parents=True, exist_ok=True)
         if not dst.is_file() or dst.read_bytes() != src.read_bytes():
             shutil.copyfile(src, dst)
         kind = DATA_KINDS.get(src.suffix.lower(), "other")
         entry = {
-            "name": f"data/{src.name}",
+            "name": f"data/{rel}",
             "kind": kind,
-            "url": f"{problem.parent.name}/{problem.name}/data/{src.name}?v={int(src.stat().st_mtime)}",
+            "url": f"{problem.parent.name}/{problem.name}/data/{rel}?v={int(src.stat().st_mtime)}",
             "size": src.stat().st_size,
             "comments": [],
             "columns": [],

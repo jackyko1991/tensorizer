@@ -38,6 +38,7 @@ import SkillsPage from "./pages/SkillsPage";
 import { plainText, RichText } from "./components/Tex";
 import NotebookView from "./components/NotebookView";
 import DataPanel from "./components/DataPanel";
+import SciCard from "./components/SciCard";
 import { DataSources } from "./components/DataView";
 import WorkspacePanel from "./components/WorkspacePanel";
 import WorkspaceHome from "./components/WorkspaceHome";
@@ -717,6 +718,8 @@ export default function App() {
         </div>
       )}
 
+      <SciCard />
+
       {manifest && problem && (
         <AgentPanel
           problem={problem}
@@ -1087,7 +1090,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
                 <PrizeBadges tags={problem.tags ?? []} />
               </div>
               <p className="mt-2 text-sm leading-relaxed text-gray-600">
-                <RichText text={problem.summary} />
+                <RichText text={problem.summary} people />
               </p>
             </div>
           )}
@@ -1161,7 +1164,10 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
             <InlineEquations problem={problem} onMeta={onMeta} />
           ) : (
             <>
-              <div className="flex gap-1" role="tablist">
+              <div
+                className="-mx-5 -mt-5 flex items-end gap-1 border-b border-gray-200 bg-gray-50 px-3 pt-2"
+                role="tablist"
+              >
                 {(["formulation", "data"] as const).map((tab) => (
                   <button
                     key={tab}
@@ -1169,14 +1175,14 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
                     aria-selected={lowerTab === tab}
                     onClick={() => setLowerTab(tab)}
                     data-testid={`lower-tab-${tab}`}
-                    className={`rounded-md px-3 py-1 text-xs font-medium transition ${
+                    className={`-mb-px rounded-t-md border px-4 py-1.5 text-xs font-medium ${
                       lowerTab === tab
-                        ? "bg-white text-blue-700 shadow-sm ring-1 ring-gray-200"
-                        : "text-gray-500 hover:text-gray-800"
+                        ? "border-gray-200 border-b-white bg-white text-blue-700"
+                        : "border-transparent text-gray-500 hover:text-gray-800"
                     }`}
                   >
                     {tab === "formulation"
-                      ? t("mtab.formulation")
+                      ? `📐 ${t("mtab.formulation")}`
                       : `📊 ${t("dataset.title")}${problem.datasets?.length ? ` (${problem.datasets.length})` : ""}`}
                   </button>
                 ))}

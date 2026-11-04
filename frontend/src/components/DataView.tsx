@@ -2,7 +2,7 @@
  *  (a scrollable table for csv/tsv, plain text for txt/json; other kinds get the card and a download for now).
  *  Shown in the Data tab of the lower panel, next to the formulation. The file is fetched only when
  *  shown, and kept for the session. */
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { assetUrl } from "../api";
 import { useLang } from "../i18n";
 import type { Dataset } from "../types";
@@ -92,7 +92,7 @@ export default function DataView({ dataset, tall = false }: { dataset: Dataset; 
       className="flex min-h-0 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white"
       data-testid="dataset"
     >
-      <div className="flex items-center gap-3 border-b border-gray-100 px-3 py-2 text-xs">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-gray-100 px-3 py-2 text-xs">
         <span className="font-mono font-medium text-gray-800">📊 {dataset.name}</span>
         <span className="text-gray-500">
           {shape} / {formatSize(dataset.size)}
@@ -159,9 +159,92 @@ export default function DataView({ dataset, tall = false }: { dataset: Dataset; 
   );
 }
 
-/** The Data tab of the lower panel: every bundled data file, or a note that the problem has none. */
+/** A folder of the data tree: sub-folders and files, by name. */
+interface Folder {
+  folders: Map<string, Folder>;
+  files: Dataset[];
+}
+
+function buildTree(datasets: Dataset[]): Folder {
+  const root: Folder = { folders: new Map(), files: [] };
+  for (const d of datasets) {
+    const parts = d.name.replace(/^data\//, "").split("/");
+    let node = root;
+    for (const dir of parts.slice(0, -1)) {
+      if (!node.folders.has(dir)) node.folders.set(dir, { folders: new Map(), files: [] });
+      node = node.folders.get(dir)!;
+    }
+    node.files.push(d);
+  }
+  return root;
+}
+
+function Tree({
+  node,
+  path,
+  depth,
+  selected,
+  onSelect,
+}: {
+  node: Folder;
+  path: string;
+  depth: number;
+  selected: string;
+  onSelect: (name: string) => void;
+}) {
+  const [closed, setClosed] = useState<Set<string>>(new Set());
+  const pad = { paddingLeft: 8 + depth * 12 };
+  return (
+    <ul>
+      {[...node.folders].map(([name, sub]) => {
+        const key = `${path}${name}/`;
+        const open = !closed.has(key);
+        return (
+          <li key={key}>
+            <button
+              onClick={() =>
+                setClosed((c) => {
+                  const next = new Set(c);
+                  if (open) next.add(key);
+                  else next.delete(key);
+                  return next;
+                })
+              }
+              style={pad}
+              className="flex w-full items-center gap-1 py-1 pr-2 text-left text-xs text-gray-700 hover:bg-gray-100"
+            >
+              <span className="w-3 text-gray-400">{open ? "▾" : "▸"}</span>📁 {name}
+            </button>
+            {open && <Tree node={sub} path={key} depth={depth + 1} selected={selected} onSelect={onSelect} />}
+          </li>
+        );
+      })}
+      {node.files.map((d) => (
+        <li key={d.name}>
+          <button
+            onClick={() => onSelect(d.name)}
+            style={{ paddingLeft: 8 + depth * 12 + 16 }}
+            title={d.name}
+            data-testid="data-file"
+            className={`flex w-full items-center gap-1 truncate py-1 pr-2 text-left font-mono text-xs ${
+              d.name === selected ? "bg-blue-50 font-medium text-blue-700" : "text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            📊 <span className="truncate">{d.name.split("/").pop()}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** The Data tab of the lower panel: a foldable list of the bundled files (sub-folders of data/ become folders) next
+ *  to the chosen file, or a note that the problem has none. */
 export function DataSources({ datasets }: { datasets: Dataset[] }) {
   const { t } = useLang();
+  const [selected, setSelected] = useState(datasets[0]?.name ?? "");
+  const [listOpen, setListOpen] = useState(true);
+  const tree = useMemo(() => buildTree(datasets), [datasets]);
   if (!datasets.length)
     return (
       <p
@@ -171,13 +254,40 @@ export function DataSources({ datasets }: { datasets: Dataset[] }) {
         {t("dataset.none")}
       </p>
     );
+  const current = datasets.find((d) => d.name === selected) ?? datasets[0];
   return (
-    <section data-testid="data-sources">
-      <div className="space-y-3">
-        {datasets.map((d) => (
-          <DataView key={d.name} dataset={d} />
-        ))}
-      </div>
-    </section>
+    // side by side only when the panel itself is wide (container query), stacked in the narrow middle column
+    <div className="@container">
+      <section data-testid="data-sources" className="flex flex-col gap-3 @2xl:flex-row @2xl:items-start">
+        <nav
+          className={`shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-white ${listOpen ? "@2xl:w-52" : "@2xl:w-9"}`}
+          aria-label={t("dataset.files")}
+        >
+          <div className="flex items-center justify-between border-b border-gray-100 px-2 py-1.5">
+            {listOpen && (
+              <span className="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
+                data/ ({datasets.length})
+              </span>
+            )}
+            <button
+              onClick={() => setListOpen((o) => !o)}
+              title={t(listOpen ? "dataset.hideList" : "dataset.showList")}
+              data-testid="data-list-toggle"
+              className="rounded px-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+            >
+              {listOpen ? "«" : "»"}
+            </button>
+          </div>
+          {listOpen && (
+            <div className="max-h-40 overflow-y-auto py-1 @2xl:max-h-80">
+              <Tree node={tree} path="" depth={0} selected={current.name} onSelect={setSelected} />
+            </div>
+          )}
+        </nav>
+        <div className="min-w-0 flex-1">
+          <DataView dataset={current} />
+        </div>
+      </section>
+    </div>
   );
 }

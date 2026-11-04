@@ -1,4 +1,5 @@
 import katex from "katex";
+import { ALIAS_INDEX, ALIAS_RE } from "../scientists";
 import { useLayoutEffect, useMemo, useRef } from "react";
 
 const MIN_SCALE = 0.6; // below this, a piece scrolls sideways instead of shrinking further
@@ -95,9 +96,31 @@ export function plainText(text: string): string {
 }
 
 /** Plain text with inline math: every `$...$` span is typeset with KaTeX (`\$` is a literal dollar), `code` is monospaced. */
-export function RichText({ text }: { text: string }) {
+/** Wrap the first mention of each historical scientist (outside `code`) in a dotted-underline span that the
+ *  SciCard easter egg reacts to. Plain text in, HTML out (the text is already escaped). */
+function markPeople(html: string): string {
+  const seen = new Set<string>();
+  return html
+    .split(/(`[^`]+`)/)
+    .map((part, i) =>
+      i % 2
+        ? part
+        : part.replace(ALIAS_RE, (name) => {
+            const s = ALIAS_INDEX.get(name);
+            if (!s || seen.has(s.id)) return name;
+            seen.add(s.id);
+            return `<span data-sci="${s.id}" class="cursor-help border-b border-dotted border-slate-400">${name}</span>`;
+          }),
+    )
+    .join("");
+}
+
+export function RichText({ text, people = false }: { text: string; people?: boolean }) {
   const html = useMemo(() => {
-    const escape = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const escape = (s: string) => {
+      const e = s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      return people ? markPeople(e) : e;
+    };
     return text
       .split(/(?<!\\)\$(.+?)(?<!\\)\$/s)
       .map((part, i) =>
@@ -111,6 +134,6 @@ export function RichText({ text }: { text: string }) {
               .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>"),
       )
       .join("");
-  }, [text]);
+  }, [text, people]);
   return <span dangerouslySetInnerHTML={{ __html: html }} />;
 }

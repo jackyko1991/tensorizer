@@ -24,7 +24,7 @@ export default function EquationPanel({ problem }: { problem: Problem }) {
 
       {problem.notes && (
         <p data-ai-region="notes" className="mt-4 text-sm leading-relaxed text-gray-600">
-          <RichText text={problem.notes} />
+          <RichText text={problem.notes} people />
         </p>
       )}
     </section>
