@@ -53,6 +53,63 @@ def display_mesh(tris, ids, grid, cell: float = 0.7e-3):
     return Vc, ct, lambda a: np.stack([np.bincount(cl, row, nc) / cnt for row in np.atleast_2d(a)])
 
 
+def _ring(centre, rad, u, v, m=32) -> list:
+    return [centre + rad * (np.cos(t) * u + np.sin(t) * v) for t in np.linspace(0, 2 * np.pi, m, endpoint=False)]
+
+
+def _fan(pts: list, tri: list, centre, rim: list, flip: bool = False) -> None:
+    """Triangle fan from a centre to a closed rim (a disc, or a cone when the centre is off the rim's plane)."""
+    i0 = len(pts)
+    pts.append(centre)
+    pts.extend(rim)
+    m = len(rim)
+    for j in range(m):
+        a, b = i0 + 1 + j, i0 + 1 + (j + 1) % m
+        tri.append((i0, b, a) if flip else (i0, a, b))
+
+
+def _tube(pts: list, tri: list, ring0: list, ring1: list) -> None:
+    """Open cylinder between two rings of the same size."""
+    i0, m = len(pts), len(ring0)
+    pts.extend(ring0 + ring1)
+    for j in range(m):
+        a, b = i0 + j, i0 + (j + 1) % m
+        tri.extend([(a, b, b + m), (a, b + m, a + m)])
+
+
+def boundary_glyphs(tris, ids, wall_points_mm: np.ndarray) -> dict:
+    """Venova-style markers per opening: a flat circular disc in the cap plane (radius from the cap area) and an
+    arrow along the normal, 3 radii long; inlets point in (the arrow ends at the disc), outlets point out.
+    Returns {"inlet": (points, triangles), "outlets": (points, triangles)} in mm."""
+    out: dict = {"inlet": ([], []), "outlets": ([], [])}
+    for k in sorted(int(x) for x in torch.unique(ids) if int(x) > 0):
+        cap = tris[ids == k].numpy() * MM  # (T, 3, 3)
+        cross = np.cross(cap[:, 1] - cap[:, 0], cap[:, 2] - cap[:, 0]) / 2  # area vectors
+        w = np.linalg.norm(cross, axis=1, keepdims=True)
+        area = float(w.sum())
+        c = (cap.mean(1) * w).sum(0) / area
+        n = cross.sum(0) / np.linalg.norm(cross.sum(0))
+        r = float(np.sqrt(area / np.pi))
+        near = wall_points_mm[np.linalg.norm(wall_points_mm - c, axis=1) < 4 * r]
+        if len(near) and np.dot(c - near.mean(0), n) < 0:  # make the normal point out of the vessel
+            n = -n
+        u = np.cross(n, [1.0, 0, 0] if abs(n[0]) < 0.9 else [0, 1.0, 0])
+        u /= np.linalg.norm(u)
+        v = np.cross(n, u)
+        pts, tri = out["inlet" if k == 1 else "outlets"]
+        _fan(pts, tri, c, _ring(c, r, u, v))  # the disc
+        length = 3 * r
+        tail, head = (c + n * length, c + n * 0.15 * r) if k == 1 else (c + n * 0.15 * r, c + n * length)
+        d = (head - tail) / np.linalg.norm(head - tail)
+        neck = head - d * 0.32 * length
+        shaft, cone = 0.09 * length, 0.22 * length
+        _tube(pts, tri, _ring(tail, shaft, u, v, 16), _ring(neck, shaft, u, v, 16))
+        _fan(pts, tri, tail, _ring(tail, shaft, u, v, 16), flip=True)  # shaft end
+        _fan(pts, tri, head, _ring(neck, cone, u, v, 16), flip=True)  # cone, apex at the head
+        _fan(pts, tri, neck, _ring(neck, cone, u, v, 16))  # cone base
+    return {key: (np.array(pp), np.array(tt)) for key, (pp, tt) in out.items() if pp}
+
+
 def _b64(a: np.ndarray) -> str:
     """VTK binary DataArray payload: one zlib block, header [1, n, n, compressed size] (UInt32), both base64."""
     raw = np.ascontiguousarray(a).tobytes()
@@ -144,12 +201,14 @@ def write_vtk_series(folder: Path, tris, ids, grid, rec, TA, OS) -> Path:
                                    "age": (rec["P_age"][k].numpy(), "s")})  # fmt: skip
         for part, (group, f) in enumerate((("surface", f1), ("streamlines", f2), ("particles", f3))):
             entries.append(f'<DataSet timestep="{t:.4f}" group="{group}" part="{part}" file="{f.name}"/>')
-    # the openings (STL attribute 1 inlet, 2, 3 outlets): static layers in a solid colour, shown from the first step
-    for name, sel, colour in (("inlet", ids == 1, "#16a34a"), ("outlets", ids >= 2, "#dc2626")):
-        cap = tris[sel].reshape(-1, 3).numpy() * MM
-        f = write_vtp(folder / f"{name}.vtp", cap, polys=np.arange(len(cap)).reshape(-1, 3))
-        entries.append(f'<DataSet timestep="{tf[0]:.4f}" group="{name}" part="{3 + (name == "outlets")}" '
-                       f'file="{f.name}" color="{colour}"/>')  # fmt: skip
+    # the openings: a disc in each cap plane and an arrow along the flow (inlet green in, outlets magenta out)
+    glyphs = boundary_glyphs(tris, ids, Vc)
+    for part, (name, colour) in enumerate((("inlet", "#40e65a"), ("outlets", "#f24dd9")), start=3):
+        if name in glyphs:
+            pts, tri = glyphs[name]
+            f = write_vtp(folder / f"{name}.vtp", pts, polys=tri)
+            entries.append(f'<DataSet timestep="{tf[0]:.4f}" group="{name}" part="{part}" file="{f.name}" '
+                           f'color="{colour}"/>')  # fmt: skip
     pvd = folder / "aneurysm.pvd"
     pvd.write_text('<?xml version="1.0"?>\n<VTKFile type="Collection" version="1.0" byte_order="LittleEndian">'
                    "<Collection>\n" + "\n".join(entries) + "\n</Collection></VTKFile>\n", encoding="ascii")  # fmt: skip

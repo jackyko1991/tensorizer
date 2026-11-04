@@ -56,10 +56,14 @@ def face_laplacian(u: torch.Tensor, fnb: torch.Tensor, ghost: torch.Tensor, h: f
 # ---------------------------------------------------------------- vessel laws (analytic checks)
 def bessel_j(nu: int, z: torch.Tensor, terms: int = 60) -> torch.Tensor:
     r"""J_ν(z) = Σ_k (−1)^k (z/2)^{2k+ν} / (k! (k+ν)!) for complex z (power series, fine for |z| ≲ 20)."""
-    k = torch.arange(terms, dtype=torch.float64, device=z.device)
-    log_fact = torch.lgamma(k + 1) + torch.lgamma(k + nu + 1)  # (K,)
-    zz = (z[..., None] / 2) ** (2 * k + nu)  # (..., K)
-    return (zz * ((-1.0) ** k * torch.exp(-log_fact))).sum(-1)
+    # term ratios t_k / t_{k-1} = −(z/2)² / (k(k+ν)), multiplied up (no complex powers: 0⁰ is NaN on some builds)
+    w = z / 2
+    first = torch.ones_like(w)
+    for j in range(1, nu + 1):
+        first = first * w / j  # (z/2)^ν / ν!
+    k = torch.arange(1, terms, dtype=torch.float64, device=z.device)
+    ratio = -(w[..., None] ** 2) / (k * (k + nu))  # (..., K−1)
+    return first * (1 + torch.cumprod(ratio, dim=-1).sum(-1))
 
 
 def poiseuille_wss(Q: float, R: float, mu: float) -> float:

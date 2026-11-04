@@ -81,6 +81,16 @@ def test_inflow_equals_total_outflow(coarse_aneurysm):
     assert (q_out > 0).all()  # every outlet carries flow
 
 
+def test_bessel_series_matches_tables_including_zero():
+    # J_0(0) = 1, J_1(0) = 0 exactly (a complex 0**0 gives NaN on some builds); A&S table values; J_0(ix) = I_0(x)
+    z = torch.tensor([0.0, 1.0, 2.0j], dtype=torch.complex128)
+    j0, j1 = equation.bessel_j(0, z), equation.bessel_j(1, z)
+    assert torch.isfinite(j0).all() and torch.isfinite(j1).all()
+    assert j0[0] == 1 and j1[0] == 0
+    assert abs(j0[1] - 0.7651976866) < 1e-9 and abs(j1[1] - 0.4400505857) < 1e-9
+    assert abs(j0[2] - 2.2795853023) < 1e-9
+
+
 def test_womersley_profile_carries_the_prescribed_flow():
     t, Q = tensors.inflow_waveform()
     Qhat = solve.fourier(Q, 12)

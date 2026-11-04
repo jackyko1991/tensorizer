@@ -242,7 +242,8 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
         g.computeVertexNormals();
         const first =
           L.name === scene.layers.find((x) => scene.data.get(fileAt(x, time) ?? "")?.polys.offsets.length)?.name;
-        const alpha = first ? surfaceOpacity : Math.min(surfaceOpacity, 0.45); // later surfaces (wakes) see-through
+        // later surfaces (wakes) see-through; solid-colour markers (inlet / outlet glyphs) always opaque
+        const alpha = L.color ? 1 : first ? surfaceOpacity : Math.min(surfaceOpacity, 0.45);
         const opaque = alpha >= 1;
         v.group.add(
           new THREE.Mesh(
