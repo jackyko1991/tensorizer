@@ -48,15 +48,6 @@ export default function PlotPanel({ problem, src, running, progress = null, clas
             {progress !== null && <span className="ml-1 tabular-nums">{Math.round(progress * 100)}%</span>}
           </span>
         )}
-        {src && (
-          <button
-            onClick={() => setZoomed(true)}
-            className="text-gray-500 hover:text-gray-800"
-            title="Zoom (click the plot)"
-          >
-            ⤢ {t("plot.zoom")}
-          </button>
-        )}
       </PanelBar>
       {running && progress !== null && (
         <div className="h-0.5 shrink-0 bg-blue-100">

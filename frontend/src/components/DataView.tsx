@@ -82,6 +82,15 @@ export default function DataView({
   const url = /^(\/|https?:|data:|blob:)/.test(dataset.url) ? dataset.url : assetUrl(dataset.url);
   const [text, setText] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
+  // ⤢ any file to the whole page (an overlay); Esc or ⤡ brings it back
+  const [big, setBig] = useState(false);
+  useEffect(() => {
+    if (!big) return;
+    const key = (e: KeyboardEvent) => e.key === "Escape" && setBig(false);
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
+  }, [big]);
+  const fit = fill || big;
   const readable = dataset.kind === "table" || dataset.kind === "text";
   useEffect(() => {
     let live = true;
@@ -109,7 +118,11 @@ export default function DataView({
 
   return (
     <div
-      className={`flex min-h-0 flex-col overflow-hidden bg-white ${bare ? "" : "rounded-lg border border-gray-200"} ${fill ? "h-full" : ""}`}
+      className={`flex min-h-0 flex-col overflow-hidden bg-white ${
+        big
+          ? "fixed inset-3 z-50 rounded-lg border border-gray-200 shadow-2xl"
+          : `${bare ? "" : "rounded-lg border border-gray-200"} ${fill ? "h-full" : ""}`
+      }`}
       data-testid="dataset"
     >
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-gray-100 px-3 py-2 text-xs">
@@ -128,6 +141,16 @@ export default function DataView({
           <DownloadIcon className="h-3.5 w-3.5" />
           {t("dataset.download")}
         </a>
+        <button
+          onClick={() => setBig((b) => !b)}
+          title={t(big ? "mesh.shrink" : "mesh.expand")}
+          aria-label={t(big ? "mesh.shrink" : "mesh.expand")}
+          aria-pressed={big}
+          data-testid="data-expand"
+          className="rounded px-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+        >
+          {big ? "⤡" : "⤢"}
+        </button>
       </div>
       {(dataset.kind === "table" || dataset.kind === "text") && dataset.comments.length === 0 && (
         <p className="border-b border-amber-200 bg-amber-50 px-3 py-1.5 text-xs text-amber-800" data-testid="no-source">
@@ -142,7 +165,7 @@ export default function DataView({
         </ul>
       )}
       <div
-        className={`min-h-0 ${(dataset.kind === "mesh" || dataset.kind === "scene") && fill ? "relative overflow-hidden" : "overflow-auto"} ${tall || fill ? "flex-1" : "max-h-72"}`}
+        className={`min-h-0 ${(dataset.kind === "mesh" || dataset.kind === "scene") && fit ? "relative overflow-hidden" : "overflow-auto"} ${tall || fit ? "flex-1" : "max-h-72"}`}
       >
         {/* one renderer per kind: table and text today; image / array canvases can slot in here */}
         {dataset.kind === "scene" ? (
@@ -153,13 +176,13 @@ export default function DataView({
               </div>
             }
           >
-            <SceneView url={url} fill={fill} />
+            <SceneView url={url} fill={fit} />
           </Suspense>
         ) : dataset.kind === "image" ? (
           <img
             src={url}
             alt={dataset.name}
-            className={`mx-auto max-w-full object-contain ${fill ? "h-full" : "max-h-[70vh]"}`}
+            className={`mx-auto max-w-full object-contain ${fit ? "h-full" : "max-h-[70vh]"}`}
           />
         ) : dataset.kind === "mesh" ? (
           <Suspense
@@ -169,7 +192,7 @@ export default function DataView({
               </div>
             }
           >
-            <MeshView url={url} tall={tall} fill={fill} legend={dataset.legend} />
+            <MeshView url={url} tall={tall} fill={fit} legend={dataset.legend} />
           </Suspense>
         ) : !readable ? (
           <p className="p-3 text-xs text-gray-500">{t("dataset.noPreview")}</p>
