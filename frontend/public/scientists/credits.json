@@ -1,0 +1,189 @@
+{
+  "ramanujan": {
+    "source": "https://commons.wikimedia.org/wiki/File:Srinivasa_Ramanujan_-_OPC_-_2_(cleaned).jpg",
+    "title": "File:Srinivasa Ramanujan - OPC - 2 (cleaned).jpg",
+    "author": "Unknown photographer (via Oberwolfach Photo Collection, Konrad Jacobs)",
+    "licence": "Public domain",
+    "year": 1919
+  },
+  "markov": {
+    "source": "https://commons.wikimedia.org/wiki/File:Andrei_Markov.jpg",
+    "title": "File:Andrei Markov.jpg",
+    "author": "Unknown author",
+    "licence": "Public domain",
+    "year": 1886
+  },
+  "schrodinger": {
+    "source": "https://commons.wikimedia.org/wiki/File:Erwin_Schr%C3%B6dinger_-_Narodowe_Archiwum_Cyfrowe_(1-E-939).jpg",
+    "title": "File:Erwin Schrödinger - Narodowe Archiwum Cyfrowe (1-E-939).jpg",
+    "author": "Unknown author",
+    "licence": "Public domain",
+    "year": 1933
+  },
+  "einstein": {
+    "source": "https://commons.wikimedia.org/wiki/File:Albert_Einstein_Head_cleaned.jpg",
+    "title": "File:Albert Einstein Head cleaned.jpg",
+    "author": "Oren Jack Turner",
+    "licence": "Public domain",
+    "year": 1947
+  },
+  "newton": {
+    "source": "https://commons.wikimedia.org/wiki/File:Portrait_of_Sir_Isaac_Newton,_1689_(brightened).jpg",
+    "title": "File:Portrait of Sir Isaac Newton, 1689 (brightened).jpg",
+    "author": "Godfrey Kneller",
+    "licence": "Public domain",
+    "year": 1689
+  },
+  "gauss": {
+    "source": "https://commons.wikimedia.org/wiki/File:Carl_Friedrich_Gauss_1840_by_Jensen.jpg",
+    "title": "File:Carl Friedrich Gauss 1840 by Jensen.jpg",
+    "author": "Christian Albrecht Jensen",
+    "licence": "Public domain",
+    "year": 1840
+  },
+  "euler": {
+    "source": "https://commons.wikimedia.org/wiki/File:Leonhard_Euler_-_Jakob_Emanuel_Handmann_(Kunstmuseum_Basel).jpg",
+    "title": "File:Leonhard Euler - Jakob Emanuel Handmann (Kunstmuseum Basel).jpg",
+    "author": "Jakob Emanuel Handmann",
+    "licence": "Public domain",
+    "year": 1753
+  },
+  "riemann": {
+    "source": "https://commons.wikimedia.org/wiki/File:Georg_Friedrich_Bernhard_Riemann.jpeg",
+    "title": "File:Georg Friedrich Bernhard Riemann.jpeg",
+    "author": "Unknown author",
+    "licence": "Public domain",
+    "year": 1863
+  },
+  "fourier": {
+    "source": "https://commons.wikimedia.org/wiki/File:Fourier2_-_restoration1.jpg",
+    "title": "File:Fourier2 - restoration1.jpg",
+    "author": "Julien-Léopold Boilly",
+    "licence": "Public domain"
+  },
+  "maxwell": {
+    "source": "https://commons.wikimedia.org/wiki/File:James-Clerk-Maxwell-1831-1879.jpg",
+    "title": "File:James-Clerk-Maxwell-1831-1879.jpg",
+    "author": "Unknown author",
+    "licence": "Public domain",
+    "year": 1870
+  },
+  "boltzmann": {
+    "source": "https://commons.wikimedia.org/wiki/File:Boltzmann2.jpg",
+    "title": "File:Boltzmann2.jpg",
+    "author": "Unknown author",
+    "licence": "Public domain",
+    "year": 1902
+  },
+  "planck": {
+    "source": "https://commons.wikimedia.org/wiki/File:Max_Planck_by_Hugo_Erfurth_1938cr_-_restoration1.jpg",
+    "title": "File:Max Planck by Hugo Erfurth 1938cr - restoration1.jpg",
+    "author": "Hugo Erfurth",
+    "licence": "Public domain",
+    "year": 1938
+  },
+  "bohr": {
+    "source": "https://commons.wikimedia.org/wiki/File:Niels_Bohr.jpg",
+    "title": "File:Niels Bohr.jpg",
+    "author": "AB Lagrelius & Westphal (credited by the American Institute of Physics)",
+    "licence": "Public domain",
+    "year": 1922
+  },
+  "heisenberg": {
+    "source": "https://commons.wikimedia.org/wiki/File:Werner_Heisenberg_Portrait_(3x4_cropped).jpg",
+    "title": "File:Werner Heisenberg Portrait (3x4 cropped).jpg",
+    "author": "Unknown author (Bundesarchiv, Bild 183-R57262)",
+    "licence": "CC BY-SA 3.0 de",
+    "year": 1933,
+    "attribution": "Bundesarchiv, Bild 183-R57262 / Unknown author / CC-BY-SA 3.0"
+  },
+  "dirac": {
+    "source": "https://commons.wikimedia.org/wiki/File:Paul_Dirac,_1933.jpg",
+    "title": "File:Paul Dirac, 1933.jpg",
+    "author": "Nobel Foundation",
+    "licence": "Public domain",
+    "year": 1933
+  },
+  "feynman": {
+    "source": "https://commons.wikimedia.org/wiki/File:Richard_Feynman_1959_(cropped).png",
+    "title": "File:Richard Feynman 1959 (cropped).png",
+    "author": "Unknown author",
+    "licence": "Public domain",
+    "year": 1959
+  },
+  "hawking": {
+    "source": "https://commons.wikimedia.org/wiki/File:Stephen_Hawking.StarChild.jpg",
+    "title": "File:Stephen Hawking.StarChild.jpg",
+    "author": "NASA",
+    "licence": "Public domain",
+    "year": 1980
+  },
+  "turing": {
+    "source": "https://commons.wikimedia.org/wiki/File:Alan_turing_header.jpg",
+    "title": "File:Alan turing header.jpg",
+    "author": "Elliott & Fry",
+    "licence": "Public domain",
+    "year": 1951
+  },
+  "kepler": {
+    "source": "https://commons.wikimedia.org/wiki/File:JKepler.jpg",
+    "title": "File:JKepler.jpg",
+    "author": "August Köhler (copy of an anonymous 1610 portrait)",
+    "licence": "Public domain",
+    "year": 1910
+  },
+  "galileo": {
+    "source": "https://commons.wikimedia.org/wiki/File:Galileo_Galilei_(1564-1642)_RMG_BHC2700.tiff",
+    "title": "File:Galileo Galilei (1564-1642) RMG BHC2700.tiff",
+    "author": "Justus Sustermans",
+    "licence": "Public domain",
+    "year": 1640
+  },
+  "lagrange": {
+    "source": "https://commons.wikimedia.org/wiki/File:Lagrange_crop.jpg",
+    "title": "File:Lagrange crop.jpg",
+    "author": "Unknown author",
+    "licence": "CC0"
+  },
+  "hamilton": {
+    "source": "https://commons.wikimedia.org/wiki/File:William_Rowan_Hamilton_portrait_oval_combined.png",
+    "title": "File:William Rowan Hamilton portrait oval combined.png",
+    "author": "Unknown author",
+    "licence": "Public domain"
+  },
+  "poincare": {
+    "source": "https://commons.wikimedia.org/wiki/File:PSM_V82_D416_Henri_Poincare.png",
+    "title": "File:PSM V82 D416 Henri Poincare.png",
+    "author": "Unknown author",
+    "licence": "Public domain",
+    "year": 1913
+  },
+  "hilbert": {
+    "source": "https://commons.wikimedia.org/wiki/File:Hilbert.jpg",
+    "title": "File:Hilbert.jpg",
+    "author": "Unknown author",
+    "licence": "Public domain",
+    "year": 1912
+  },
+  "fermat": {
+    "source": "https://commons.wikimedia.org/wiki/File:Pierre_de_Fermat.jpg",
+    "title": "File:Pierre de Fermat.jpg",
+    "author": "Unknown author",
+    "licence": "Public domain",
+    "year": 1650
+  },
+  "noether": {
+    "source": "https://commons.wikimedia.org/wiki/File:Emmy_Noether_(3x4_cropped).jpg",
+    "title": "File:Emmy Noether (3x4 cropped).jpg",
+    "author": "Unknown author",
+    "licence": "Public domain",
+    "year": 1910
+  },
+  "shannon": {
+    "source": "https://commons.wikimedia.org/wiki/File:C.E._Shannon._Tekniska_museet_43069_(2x3_crop).jpg",
+    "title": "File:C.E. Shannon. Tekniska museet 43069 (2x3 crop).jpg",
+    "author": "Unknown author (Tekniska museet, Sweden)",
+    "licence": "CC BY 2.0",
+    "attribution": "Tekniska museet, Item 43069, CC BY 2.0"
+  }
+}

@@ -13,6 +13,8 @@ interface Credit {
   source: string;
   author: string;
   licence: string;
+  /** The exact credit line a CC BY / BY-SA licence asks for, when there is one. */
+  attribution?: string;
 }
 /** Photo credits for the pixel portraits (public/scientists/credits.json), fetched once on the first card. */
 let credits: Promise<Record<string, Credit>> | null = null;
@@ -156,9 +158,9 @@ export default function SciCard() {
             target="_blank"
             rel="noreferrer"
             className="mt-1.5 block truncate text-[10px] text-gray-400 hover:underline"
-            title={`${credit.author} / ${credit.licence}`}
+            title={credit.attribution ?? `${credit.author} / ${credit.licence}`}
           >
-            {t("sci.photo")}: {credit.author} / {credit.licence}
+            {t("sci.photo")}: {credit.attribution ?? `${credit.author} / ${credit.licence}`}
           </a>
         )}
       </div>
