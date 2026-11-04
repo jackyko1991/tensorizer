@@ -240,6 +240,7 @@ const BASE = {
   "mesh.flat": ["Flat shading (facets)", "平面著色（顯示面片）", "平面着色（显示面片）", "Ombrage plat (facettes)", "Flache Schattierung (Facetten)", "Sombreado plano (facetas)", "フラットシェーディング（面を表示）", "Плоское затенение (грани)", "플랫 셰이딩(면 표시)", "समतल छायांकन (फलक)"],
   "mesh.glossy": ["Glossy material", "光澤材質", "光泽材质", "Matériau brillant", "Glänzendes Material", "Material brillante", "光沢のある素材", "Глянцевый материал", "광택 재질", "चमकदार सामग्री"],
   "mesh.opacity": ["Opacity", "不透明度", "不透明度", "Opacité", "Deckkraft", "Opacidad", "不透明度", "Непрозрачность", "불투명도", "अपारदर्शिता"],
+  "scene.layers": ["Layers", "圖層", "图层", "Calques", "Ebenen", "Capas", "レイヤー", "Слои", "레이어", "परतें"],
   "image.zoomHint": ["Click to zoom in · Shift+click or right-click to zoom out", "點擊放大 · Shift+點擊或右鍵縮小", "点击放大 · Shift+点击或右键缩小", "Cliquer pour agrandir · Maj+clic ou clic droit pour réduire", "Klicken zum Vergrößern · Umschalt+Klick oder Rechtsklick zum Verkleinern", "Clic para ampliar · Mayús+clic o clic derecho para reducir", "クリックで拡大 · Shift+クリックまたは右クリックで縮小", "Щелчок — увеличить · Shift+щелчок или правый щелчок — уменьшить", "클릭하여 확대 · Shift+클릭 또는 오른쪽 클릭으로 축소", "बड़ा करने के लिए क्लिक करें · छोटा करने के लिए Shift+क्लिक या राइट-क्लिक"],
   "image.zoomIn": ["Zoom in", "放大", "放大", "Agrandir", "Vergrößern", "Ampliar", "拡大", "Увеличить", "확대", "बड़ा करें"],
   "image.zoomOut": ["Zoom out", "縮小", "缩小", "Réduire", "Verkleinern", "Reducir", "縮小", "Уменьшить", "축소", "छोटा करें"],

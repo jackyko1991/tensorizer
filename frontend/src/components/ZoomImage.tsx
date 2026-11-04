@@ -1,34 +1,29 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { useLang } from "../i18n";
 
-// Zoom levels as multiples of the fitted size (1 = the whole image fills the frame, centred).
-const LEVELS = [1, 1.5, 2, 3, 4, 6];
+const STEP = 1.5;
+const MAX = 8; // × the image's own pixels
 
-/** An image in the expanded viewer: click zooms in at the pointer, Shift+click or right-click zooms out; − / + too. */
+/** An image in the expanded viewer. Top right: zoom-in / zoom-out mode toggle, Fit, 100 % (native pixels) and the
+ * current zoom. A click on the image zooms by the mode at the pointer (Shift inverts it); right-click zooms out. */
 export default function ZoomImage({ src, alt }: { src: string; alt: string }) {
   const { t } = useLang();
   const box = useRef<HTMLDivElement>(null);
   const img = useRef<HTMLImageElement>(null);
-  const [level, setLevel] = useState(0);
-  const [fitW, setFitW] = useState(0); // width of the image when it just fits the frame (px)
+  const [z, setZ] = useState<number | null>(null); // × natural size; null = fit the frame
+  const [mode, setMode] = useState<"in" | "out">("in");
+  const [, setLoaded] = useState(0);
   // the point (fractions of the image) to keep under the pointer after a zoom, and where the pointer was
-  const anchor = useRef<{
-    fx: number;
-    fy: number;
-    px: number;
-    py: number;
-  } | null>(null);
-  const scale = LEVELS[level];
+  const anchor = useRef<{ fx: number; fy: number; px: number; py: number } | null>(null);
 
-  const fitWidth = () => {
+  const natural = () => ({ w: img.current?.naturalWidth || 1, h: img.current?.naturalHeight || 1 });
+  const fitScale = () => {
     const b = box.current;
-    const i = img.current;
-    if (!b || !i || !i.naturalWidth) return 0;
-    return Math.min(
-      b.clientWidth,
-      (b.clientHeight * i.naturalWidth) / i.naturalHeight,
-    );
+    const n = natural();
+    if (!b) return 1;
+    return Math.min(b.clientWidth / n.w, b.clientHeight / n.h);
   };
+  const current = () => z ?? fitScale();
 
   useLayoutEffect(() => {
     const a = anchor.current;
@@ -38,107 +33,98 @@ export default function ZoomImage({ src, alt }: { src: string; alt: string }) {
     anchor.current = null;
     b.scrollLeft = i.offsetLeft + a.fx * i.offsetWidth - a.px;
     b.scrollTop = i.offsetTop + a.fy * i.offsetHeight - a.py;
-  }, [level]);
+  }, [z]);
 
-  const zoom = (dir: 1 | -1, e?: { clientX: number; clientY: number }) => {
-    const next = Math.min(LEVELS.length - 1, Math.max(0, level + dir));
-    if (next === level) return;
-    const b = box.current!;
-    const i = img.current!;
+  const setScale = (next: number | null, e?: { clientX: number; clientY: number }) => {
+    const b = box.current;
+    if (!b) return;
+    const s = current();
+    const n = natural();
     const br = b.getBoundingClientRect();
-    // where the drawn image is now (at fit it is centred inside the box)
-    const w = level === 0 ? fitWidth() : i.offsetWidth;
-    const h = (w * i.naturalHeight) / Math.max(i.naturalWidth, 1);
-    const left =
-      level === 0
-        ? br.left + (b.clientWidth - w) / 2
-        : i.getBoundingClientRect().left;
-    const top =
-      level === 0
-        ? br.top + (b.clientHeight - h) / 2
-        : i.getBoundingClientRect().top;
-    const cx = e?.clientX ?? br.left + br.width / 2;
-    const cy = e?.clientY ?? br.top + br.height / 2;
+    const w = n.w * s;
+    const h = n.h * s;
+    // where the drawn image is now: centred while it is smaller than the frame, else scrolled
+    const left = br.left + Math.max(0, (b.clientWidth - w) / 2) - (w > b.clientWidth ? b.scrollLeft : 0);
+    const top = br.top + Math.max(0, (b.clientHeight - h) / 2) - (h > b.clientHeight ? b.scrollTop : 0);
+    const cx = e?.clientX ?? br.left + b.clientWidth / 2;
+    const cy = e?.clientY ?? br.top + b.clientHeight / 2;
     anchor.current = {
       fx: Math.min(1, Math.max(0, (cx - left) / w)),
       fy: Math.min(1, Math.max(0, (cy - top) / h)),
       px: cx - br.left,
       py: cy - br.top,
     };
-    if (level === 0) setFitW(w);
-    setLevel(next);
+    setZ(next);
   };
 
+  const zoom = (dir: "in" | "out", e?: { clientX: number; clientY: number }) => {
+    const s = current();
+    const fit = fitScale();
+    if (dir === "in") return setScale(Math.min(MAX, s * STEP), e);
+    const next = s / STEP;
+    // going out stops at "fit" (smaller than the frame gains nothing)
+    setScale(next <= fit * 1.01 ? null : next, e);
+  };
+
+  const s = current();
+  const btn = (active: boolean) =>
+    `rounded px-1.5 py-0.5 ${active ? "bg-blue-600 text-white" : "hover:bg-gray-100"}`;
   return (
     <div className="absolute inset-0">
-      <div
-        ref={box}
-        className="h-full w-full overflow-auto"
-        data-testid="zoom-box"
-      >
-        {level === 0 ? (
+      <div ref={box} className="h-full w-full overflow-auto" data-testid="zoom-box">
+        <div className="flex min-h-full w-max min-w-full">
           <img
             ref={img}
             src={src}
             alt={alt}
             title={t("image.zoomHint")}
             draggable={false}
-            onClick={(e) => zoom(e.shiftKey ? -1 : 1, e)}
-            onContextMenu={(e) => e.preventDefault()}
+            onLoad={() => setLoaded((k) => k + 1)}
+            onClick={(e) => zoom(e.shiftKey ? (mode === "in" ? "out" : "in") : mode, e)}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              zoom("out", e);
+            }}
             data-testid="zoom-image"
-            className="h-full w-full cursor-zoom-in object-contain select-none"
+            className={`m-auto max-w-none select-none ${mode === "in" ? "cursor-zoom-in" : "cursor-zoom-out"}`}
+            style={{ width: natural().w * s, height: natural().h * s }}
           />
-        ) : (
-          <div className="flex min-h-full w-max min-w-full">
-            <img
-              ref={img}
-              src={src}
-              alt={alt}
-              title={t("image.zoomHint")}
-              draggable={false}
-              onClick={(e) => zoom(e.shiftKey ? -1 : 1, e)}
-              onContextMenu={(e) => {
-                e.preventDefault();
-                zoom(-1, e);
-              }}
-              data-testid="zoom-image"
-              className={`m-auto max-w-none select-none ${
-                level === LEVELS.length - 1
-                  ? "cursor-zoom-out"
-                  : "cursor-zoom-in"
-              }`}
-              style={{ width: fitW * scale }}
-            />
-          </div>
-        )}
+        </div>
       </div>
-      <div className="absolute right-2 bottom-2 flex items-center gap-0.5 rounded-md border border-gray-200 bg-white/90 p-0.5 text-xs text-gray-700 shadow-sm">
+      <div
+        className="absolute top-2 right-4 flex items-center gap-0.5 rounded-md border border-gray-200 bg-white/95 p-0.5 text-xs text-gray-700 shadow-sm"
+        data-testid="zoom-bar"
+      >
         <button
-          onClick={() => zoom(-1)}
-          disabled={level === 0}
-          aria-label={t("image.zoomOut")}
-          title={t("image.zoomOut")}
-          className="w-6 rounded hover:bg-gray-100 disabled:opacity-30"
-        >
-          −
-        </button>
-        <button
-          onClick={() => setLevel(0)}
-          className="min-w-12 rounded px-1 tabular-nums hover:bg-gray-100"
-          title={t("image.fit")}
-          data-testid="zoom-level"
-        >
-          {level === 0 ? t("image.fit") : `${Math.round(scale * 100)}%`}
-        </button>
-        <button
-          onClick={() => zoom(1)}
-          disabled={level === LEVELS.length - 1}
-          aria-label={t("image.zoomIn")}
+          onClick={() => setMode("in")}
+          aria-pressed={mode === "in"}
           title={t("image.zoomIn")}
-          className="w-6 rounded hover:bg-gray-100 disabled:opacity-30"
+          aria-label={t("image.zoomIn")}
+          data-testid="zoom-mode-in"
+          className={btn(mode === "in")}
         >
-          +
+          🔍+
         </button>
+        <button
+          onClick={() => setMode("out")}
+          aria-pressed={mode === "out"}
+          title={t("image.zoomOut")}
+          aria-label={t("image.zoomOut")}
+          data-testid="zoom-mode-out"
+          className={btn(mode === "out")}
+        >
+          🔍−
+        </button>
+        <span className="mx-1 h-4 w-px bg-gray-200" />
+        <button onClick={() => setScale(null)} className={btn(z === null)} data-testid="zoom-fit">
+          {t("image.fit")}
+        </button>
+        <button onClick={() => setScale(1)} className={btn(z === 1)} data-testid="zoom-100">
+          100%
+        </button>
+        <span className="w-12 text-right tabular-nums text-gray-500" data-testid="zoom-level">
+          {Math.round(s * 100)}%
+        </span>
       </div>
     </div>
   );

@@ -13,6 +13,8 @@ interface Layer {
   name: string;
   /** One file per time step (a static layer has one file for all steps). */
   files: Map<number, string>;
+  /** Solid colour (from the .pvd) when there is nothing to colour by. */
+  color?: string;
 }
 
 interface Loaded {
@@ -51,6 +53,7 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
   // surfaces see-through when the scene has flow inside them (streamlines, particles), so it shows
   const [surfaceOpacity, setSurfaceOpacity] = useState(1);
   const [expanded, setExpanded] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(true);
   const view = useRef<{ group: THREE.Group; home: () => void; renderer: THREE.WebGLRenderer } | null>(null);
 
   // 1. load the collection and every file it lists (budgeted to ~10 MB by the problems)
@@ -77,7 +80,7 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
         );
         const layers = new Map<string, Layer>();
         for (const e of entries) {
-          if (!layers.has(e.layer)) layers.set(e.layer, { name: e.layer, files: new Map() });
+          if (!layers.has(e.layer)) layers.set(e.layer, { name: e.layer, files: new Map(), color: e.color });
           layers.get(e.layer)!.files.set(e.time, e.file);
         }
         const ranges = new Map<string, [number, number]>();
@@ -119,6 +122,8 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
         );
         const hasFlow = [...data.values()].some((d) => d.lines.offsets.length || d.verts.offsets.length);
         setSurfaceOpacity(hasFlow ? 0.35 : 1);
+        // the layer panel starts open only when there is room for it (a big or expanded view)
+        setPanelOpen((host.current?.clientHeight ?? 0) > 520);
         setScene(loaded);
       } catch (e) {
         if (live) setError(e instanceof Error ? e.message : String(e));
@@ -216,7 +221,11 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
       const colors = new Float32Array(d.points.length);
       const range = arr ? scene.ranges.get(`${L.name}/${arr.name}`) : undefined;
       if (arr && range && range[1] > range[0]) colorize(scalar(arr), range[0], range[1], CMAP_FOR(arr.name), colors);
-      else colors.fill(0.6); // nothing to colour by, or a constant array: a plain neutral grey
+      else if (L.color) {
+        // nothing to colour by, and the .pvd names a colour (inlet / outlet caps…)
+        const c = new THREE.Color(L.color);
+        for (let i = 0; i < colors.length; i += 3) colors.set([c.r, c.g, c.b], i);
+      } else colors.fill(0.6); // nothing to colour by, or a constant array: a plain neutral grey
       const color = new THREE.BufferAttribute(colors, 3);
       if (d.polys.offsets.length) {
         const idx: number[] = [];
@@ -337,10 +346,21 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
           <>
             {/* one compact panel: per layer its switch, colour-by and colour bar (legend), so nothing overlaps */}
             <div
-              className="absolute top-1 left-1 max-h-[calc(100%-0.5rem)] w-44 space-y-1.5 overflow-y-auto rounded-md border border-gray-200 bg-white/90 p-1.5 text-[11px] text-gray-700 shadow-sm"
+              className={`absolute top-1 left-1 max-h-[calc(100%-0.5rem)] ${panelOpen ? "w-60" : "w-auto"} space-y-2 overflow-y-auto rounded-md border border-gray-200 bg-white/90 p-2 text-[13px] text-gray-800 shadow-sm`}
               data-testid="scene-layers"
             >
-              {scene.layers.map((L) => {
+              <button
+                onClick={() => setPanelOpen((o) => !o)}
+                aria-expanded={panelOpen}
+                data-testid="scene-layers-toggle"
+                className="flex w-full items-center justify-between rounded px-0.5 text-xs font-semibold text-gray-600 hover:bg-gray-100"
+              >
+                <span>
+                  {t("scene.layers")} ({scene.layers.filter((L) => visible[L.name]).length}/{scene.layers.length})
+                </span>
+                <span aria-hidden>{panelOpen ? "▾" : "▸"}</span>
+              </button>
+              {panelOpen && scene.layers.map((L) => {
                 const legend = legends.find((l) => l.layer === L.name);
                 return (
                   <div key={L.name}>
@@ -352,13 +372,19 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
                           onChange={() => setVisible((v) => ({ ...v, [L.name]: !v[L.name] }))}
                           data-testid={`scene-layer-${L.name}`}
                         />
+                        {L.color && (
+                          <span
+                            className="h-3 w-3 shrink-0 rounded-sm border border-black/20"
+                            style={{ background: L.color }}
+                          />
+                        )}
                         <span className="truncate font-medium">{L.name}</span>
                       </label>
                       {arraysOf(L).length > 1 && (
                         <select
                           value={colorBy[L.name]}
                           onChange={(e) => setColorBy((c) => ({ ...c, [L.name]: e.target.value }))}
-                          className="max-w-20 rounded border border-gray-200 bg-white px-0.5 text-[10px]"
+                          className="max-w-24 rounded border border-gray-200 bg-white px-0.5 text-xs"
                           aria-label={t("scene.colorBy")}
                         >
                           {arraysOf(L).map((a) => (
@@ -368,12 +394,12 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
                       )}
                     </div>
                     {legend && (
-                      <div className="mt-0.5 pl-5 text-[10px] text-gray-700" data-testid="scene-legend">
+                      <div className="mt-0.5 pl-5 text-xs text-gray-700" data-testid="scene-legend">
                         <p className="leading-tight">
                           {legend.array}
                           {legend.unit ? ` (${legend.unit})` : ""}
                         </p>
-                        <div className="my-0.5 h-1.5 rounded-sm" style={{ background: gradient(legend.cmap) }} />
+                        <div className="my-0.5 h-2 rounded-sm" style={{ background: gradient(legend.cmap) }} />
                         <p className="flex justify-between gap-1 tabular-nums">
                           <span>{legend.lo.toPrecision(3)}</span>
                           <span>{legend.hi.toPrecision(3)}</span>
@@ -417,7 +443,7 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
       </div>
       {scene && scene.times.length > 1 && (
         <div
-          className={`flex shrink-0 items-center gap-2 border-t px-2 py-1 text-[11px] ${
+          className={`flex shrink-0 items-center gap-2 border-t px-2 py-1 text-xs ${
             dark ? "border-gray-700 text-gray-100" : "border-gray-200 text-gray-700"
           }`}
         >
@@ -445,7 +471,7 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
           <select
             value={fps}
             onChange={(e) => setFps(Number(e.target.value))}
-            className={`rounded border text-[10px] ${
+            className={`rounded border text-xs ${
               dark ? "border-gray-600 bg-gray-800 text-gray-100" : "border-gray-200 bg-white"
             }`}
             aria-label={t("scene.speed")}

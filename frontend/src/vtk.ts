@@ -27,6 +27,8 @@ export interface PvdEntry {
   time: number;
   layer: string;
   file: string;
+  /** Solid colour for a layer with nothing to colour by, e.g. inlet / outlet caps (CSS colour). */
+  color?: string;
 }
 
 // --- a tiny XML reader (VTK files are simple: elements, attributes, text; no DOM needed, so tests run in Node) ---
@@ -217,7 +219,7 @@ export function parsePvd(xml: string): PvdEntry[] {
         .split("/")
         .pop()!
         .replace(/(_t?\d+)?\.vtp$/i, "");
-    return { time: Number(a.timestep ?? 0), layer: layer || "layer", file };
+    return { time: Number(a.timestep ?? 0), layer: layer || "layer", file, color: a.color };
   });
 }
 
