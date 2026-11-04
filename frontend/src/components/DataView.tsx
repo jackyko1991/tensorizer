@@ -57,7 +57,16 @@ function linkify(text: string): ReactNode[] {
   return parts;
 }
 
-export default function DataView({ dataset, tall = false }: { dataset: Dataset; tall?: boolean }) {
+export default function DataView({
+  dataset,
+  tall = false,
+  comments = true,
+}: {
+  dataset: Dataset;
+  tall?: boolean;
+  /** Show the file's source lines above the table (the data browser shows them in its side panel instead). */
+  comments?: boolean;
+}) {
   const { t } = useLang();
   const url = assetUrl(dataset.url);
   const [text, setText] = useState<string | null>(null);
@@ -106,7 +115,7 @@ export default function DataView({ dataset, tall = false }: { dataset: Dataset; 
           {t("dataset.download")}
         </a>
       </div>
-      {dataset.comments.length > 0 && (
+      {comments && dataset.comments.length > 0 && (
         <ul className="space-y-0.5 border-b border-gray-100 bg-gray-50/70 px-3 py-2 text-xs break-words text-gray-600">
           {dataset.comments.map((c, i) => (
             <li key={i}>{linkify(c)}</li>
@@ -283,9 +292,21 @@ export function DataSources({ datasets }: { datasets: Dataset[] }) {
               <Tree node={tree} path="" depth={0} selected={current.name} onSelect={setSelected} />
             </div>
           )}
+          {listOpen && current.comments.length > 0 && (
+            <details className="border-t border-gray-100" data-testid="data-source-notes">
+              <summary className="cursor-pointer px-2 py-1.5 text-[11px] font-semibold tracking-wide text-gray-500 uppercase select-none hover:text-gray-800">
+                ℹ {t("dataset.source")}
+              </summary>
+              <ul className="max-h-60 space-y-1 overflow-y-auto px-2 pb-2 text-[11px] leading-snug break-words text-gray-600">
+                {current.comments.map((c, i) => (
+                  <li key={i}>{linkify(c)}</li>
+                ))}
+              </ul>
+            </details>
+          )}
         </nav>
         <div className="min-w-0 flex-1">
-          <DataView dataset={current} />
+          <DataView dataset={current} comments={false} />
         </div>
       </section>
     </div>
