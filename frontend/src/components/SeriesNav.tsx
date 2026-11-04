@@ -28,12 +28,18 @@ export default function SeriesNav({
             data-testid="series-nav"
             className="flex flex-wrap items-center gap-2 rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-xs"
           >
-            <span
-              className="cursor-help font-medium text-gray-800"
-              title={c.summary ?? c.title}
-              data-testid="series-title"
-            >
-              🧭 {c.title}
+            {/* hover card (white), instead of the browser's dark title tooltip */}
+            <span className="group relative" data-testid="series-title" tabIndex={0}>
+              <span className="cursor-help font-medium text-gray-800">🧭 {c.title}</span>
+              {c.summary && (
+                <span
+                  role="tooltip"
+                  data-testid="series-card"
+                  className="invisible absolute top-full left-0 z-40 mt-1 w-80 max-w-[80vw] rounded-lg border border-gray-200 bg-white p-3 text-xs leading-relaxed font-normal text-gray-700 opacity-0 shadow-lg transition-opacity group-hover:visible group-hover:opacity-100 group-focus:visible group-focus:opacity-100"
+                >
+                  {c.summary}
+                </span>
+              )}
             </span>
             <span className="text-gray-500">
               {t("coll.step")

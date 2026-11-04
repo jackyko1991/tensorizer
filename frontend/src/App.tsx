@@ -22,7 +22,7 @@ import {
 } from "./api";
 import BackendPanel, { BackendButton } from "./components/BackendPanel";
 import CodePanel from "./components/CodePanel";
-import EquationPanel from "./components/EquationPanel";
+import EquationPanel, { FormulationExport } from "./components/EquationPanel";
 import ParamsPanel from "./components/ParamsPanel";
 import PlotPanel from "./components/PlotPanel";
 import Sidebar, { LEVEL_STYLE } from "./components/Sidebar";
@@ -1172,7 +1172,9 @@ function ProblemView({
         </div>
 
         <div
-          className={`space-y-5 bg-gray-50/60 p-5 xl:min-h-0 xl:flex-1 xl:overflow-y-auto ${onPhone("formulation")}`}
+          className={`bg-gray-50/60 p-5 xl:min-h-0 xl:flex-1 ${
+            !ws && lowerTab === "data" ? "flex flex-col gap-3 xl:flex! xl:overflow-hidden" : "space-y-5 xl:overflow-y-auto"
+          } ${onPhone("formulation")}`}
         >
           {ws ? (
             <InlineEquations problem={problem} onMeta={onMeta} />
@@ -1200,11 +1202,15 @@ function ProblemView({
                       : `📊 ${t("dataset.title")} (${problem.datasets?.length ?? 0})`}
                   </button>
                 ))}
+                {/* in the pinned tab bar, so they stay put while the formulation scrolls */}
+                {lowerTab === "formulation" && <FormulationExport problem={problem} className="mb-1 ml-auto" />}
               </div>
               {lowerTab === "formulation" ? (
-                <EquationPanel problem={problem} />
+                <EquationPanel problem={problem} exportable={false} />
               ) : (
-                <DataSources datasets={problem.datasets ?? []} />
+                <div className="min-h-80 flex-1 xl:min-h-0">
+                  <DataSources datasets={problem.datasets ?? []} fill />
+                </div>
               )}
             </>
           )}

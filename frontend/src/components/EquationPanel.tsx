@@ -33,13 +33,13 @@ export function FormulationExport({ problem, className = "" }: { problem: Proble
   );
 }
 
-export default function EquationPanel({ problem }: { problem: Problem }) {
+export default function EquationPanel({ problem, exportable = true }: { problem: Problem; exportable?: boolean }) {
   const { t } = useLang();
   return (
     <section data-ai-region="equations" className="rounded-xl border border-gray-200 bg-white p-5">
       <div className="flex items-start justify-between gap-2">
         <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t("eq.vector")}</h3>
-        <FormulationExport problem={problem} className="-mt-1 -mr-2" />
+        {exportable && <FormulationExport problem={problem} className="-mt-1 -mr-2" />}
       </div>
       <div className="mt-1 text-lg">
         <Tex tex={problem.vector_form} display />

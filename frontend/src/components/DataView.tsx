@@ -66,11 +66,14 @@ export default function DataView({
   tall = false,
   comments = true,
   bare = false,
+  fill = false,
 }: {
   dataset: Dataset;
   tall?: boolean;
   /** No own border (inside a frame that already has one, e.g. the data browser). */
   bare?: boolean;
+  /** Fill the parent's height (a flex panel): meshes and images fit inside, tables scroll inside. */
+  fill?: boolean;
   /** Show the file's source lines above the table (the data browser shows them in its side panel instead). */
   comments?: boolean;
 }) {
@@ -105,7 +108,7 @@ export default function DataView({
 
   return (
     <div
-      className={`flex min-h-0 flex-col overflow-hidden bg-white ${bare ? "" : "rounded-lg border border-gray-200"}`}
+      className={`flex min-h-0 flex-col overflow-hidden bg-white ${bare ? "" : "rounded-lg border border-gray-200"} ${fill ? "h-full" : ""}`}
       data-testid="dataset"
     >
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-gray-100 px-3 py-2 text-xs">
@@ -137,10 +140,16 @@ export default function DataView({
           ))}
         </ul>
       )}
-      <div className={`min-h-0 overflow-auto ${tall ? "flex-1" : "max-h-72"}`}>
+      <div
+        className={`min-h-0 ${dataset.kind === "mesh" && fill ? "relative overflow-hidden" : "overflow-auto"} ${tall || fill ? "flex-1" : "max-h-72"}`}
+      >
         {/* one renderer per kind: table and text today; image / array canvases can slot in here */}
         {dataset.kind === "image" ? (
-          <img src={url} alt={dataset.name} className="mx-auto max-h-[70vh] max-w-full object-contain" />
+          <img
+            src={url}
+            alt={dataset.name}
+            className={`mx-auto max-w-full object-contain ${fill ? "h-full" : "max-h-[70vh]"}`}
+          />
         ) : dataset.kind === "mesh" ? (
           <Suspense
             fallback={
@@ -149,7 +158,7 @@ export default function DataView({
               </div>
             }
           >
-            <MeshView url={url} tall={tall} />
+            <MeshView url={url} tall={tall} fill={fill} legend={dataset.legend} />
           </Suspense>
         ) : !readable ? (
           <p className="p-3 text-xs text-gray-500">{t("dataset.noPreview")}</p>
@@ -308,12 +317,15 @@ export function DataSources({
   datasets,
   rail: railIds = ["files", "source"],
   listTitle = "data/",
+  fill = false,
 }: {
   datasets: Dataset[];
   /** Rail icons: the file list and/or the source & licence notes. */
   rail?: ("files" | "source")[];
   /** Heading of the file list (data/ for bundled data, results for run outputs). */
   listTitle?: string;
+  /** Take the whole height of the parent panel. */
+  fill?: boolean;
 }) {
   const { t } = useLang();
   const [selected, setSelected] = useState(datasets[0]?.name ?? "");
@@ -340,11 +352,11 @@ export function DataSources({
     { id: "source" as const, label: t("dataset.source") },
   ].filter((r) => railIds.includes(r.id));
   return (
-    <div className="@container">
+    <div className={`@container ${fill ? "h-full" : ""}`}>
       <section
         ref={frame}
         data-testid="data-sources"
-        className="relative flex overflow-hidden rounded-lg border border-gray-200 bg-white"
+        className={`relative flex overflow-hidden bg-white ${fill ? "h-full" : ""}`}
       >
         <nav className="flex w-10 shrink-0 flex-col items-center gap-1 border-r border-gray-200 bg-gray-50 py-2">
           {rail.map((r) => (
@@ -406,8 +418,8 @@ export function DataSources({
             )}
           </aside>
         )}
-        <div className="min-w-0 flex-1">
-          <DataView dataset={current} comments={false} bare />
+        <div className="flex min-w-0 flex-1 flex-col">
+          <DataView dataset={current} comments={false} bare fill={fill} />
         </div>
       </section>
     </div>

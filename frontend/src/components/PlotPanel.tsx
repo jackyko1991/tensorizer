@@ -64,8 +64,8 @@ export default function PlotPanel({ problem, src, running, progress = null, clas
         </div>
       )}
       {main && !running ? (
-        <div className="min-h-48 flex-1 overflow-auto xl:min-h-0" data-testid="results-browser">
-          <DataSources datasets={[main, ...(problem.results ?? [])]} rail={["files"]} listTitle={t("results")} />
+        <div className="min-h-72 flex-1 xl:min-h-0" data-testid="results-browser">
+          <DataSources datasets={[main, ...(problem.results ?? [])]} rail={["files"]} listTitle={t("results")} fill />
         </div>
       ) : (
         <div className="flex min-h-48 flex-1 items-center justify-center overflow-hidden p-2 xl:min-h-0">
