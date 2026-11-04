@@ -26,7 +26,8 @@ def test_png_writes_lines_scatter_and_3d(tmp_path):
     save_png(fig, tmp_path / "x.png")
     rows = _rows(tmp_path / "x_plot_data.csv")
     assert [r["series"] for r in rows] == ["E", "E", "E", "points 1", "line 1", "line 1"]
-    assert rows[0]["panel"] == "energy" and rows[0]["x_label"] == "t (s)"
+    assert rows[0]["panel"] == "energy"
+    assert "# axes of 'energy': x = t (s)" in (tmp_path / "x_plot_data.csv").read_text(encoding="utf-8")
     assert rows[-1]["z"] == "2" and rows[0]["z"] == ""
 
 
