@@ -13,6 +13,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -160,6 +161,7 @@ DATA_KINDS = {
     **dict.fromkeys([".png", ".jpg", ".jpeg", ".gif", ".tif", ".tiff", ".svg"], "image"),
     **dict.fromkeys([".npy", ".npz", ".pt", ".h5", ".hdf5", ".nc", ".fits"], "array"),
     **dict.fromkeys([".stl", ".ply"], "mesh"),
+    **dict.fromkeys([".pvd", ".vtp"], "scene"),  # VTK: layered, animated 3D results
 }
 
 
@@ -206,17 +208,28 @@ def describe(src: Path, name: str, url: str) -> dict:
     return entry
 
 
-RESULT_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".ply", ".stl", ".csv"}
+RESULT_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".ply", ".stl", ".csv", ".pvd", ".vtp"}
 
 
 def describe_results(target: Path, main: Path | None) -> list[dict]:
-    """Extra files a run wrote next to its main GIF/PNG (more plots, PLY/STL result meshes, CSV tables), for the
-    result tabs. A mesh may have a <stem>.json beside it with its colour legend {label, unit, min, max, cmap}."""
+    """Extra files a run wrote next to its main GIF/PNG, or in a results/ folder beside it: more plots, PLY/STL result
+    meshes, CSV tables and VTK scenes (a .pvd collection is one entry; the .vtp files it lists are not listed again).
+    A mesh may have a <stem>.json beside it with its colour legend {label, unit, min, max, cmap}."""
     out = []
-    for f in sorted(target.iterdir()):
+    files = sorted(target.iterdir()) + (sorted((target / "results").iterdir()) if (target / "results").is_dir() else [])
+    in_collections = {
+        (f.parent / m).resolve()
+        for f in files
+        if f.suffix.lower() == ".pvd"
+        for m in re.findall(r'file="([^"]+)"', f.read_text(encoding="utf-8", errors="replace"))
+    }
+    for f in files:
         if not f.is_file() or f.name.startswith(".") or f == main or f.suffix.lower() not in RESULT_SUFFIXES:
             continue
-        entry = describe(f, f.name, f"{target.parent.name}/{target.name}/{f.name}")
+        if f.resolve() in in_collections:
+            continue
+        rel = f.relative_to(target).as_posix()
+        entry = describe(f, rel, f"{target.parent.name}/{target.name}/{rel}")
         legend = f.with_suffix(".json")
         if entry["kind"] == "mesh" and legend.is_file():
             try:

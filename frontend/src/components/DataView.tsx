@@ -12,6 +12,7 @@ import { formatSize } from "./DataPanel";
 const PREVIEW_ROWS = 200;
 // three.js is only downloaded when someone opens a mesh
 const MeshView = lazy(() => import("./MeshView"));
+const SceneView = lazy(() => import("./SceneView"));
 const cache = new Map<string, Promise<string>>();
 
 function load(url: string): Promise<string> {
@@ -141,10 +142,20 @@ export default function DataView({
         </ul>
       )}
       <div
-        className={`min-h-0 ${dataset.kind === "mesh" && fill ? "relative overflow-hidden" : "overflow-auto"} ${tall || fill ? "flex-1" : "max-h-72"}`}
+        className={`min-h-0 ${(dataset.kind === "mesh" || dataset.kind === "scene") && fill ? "relative overflow-hidden" : "overflow-auto"} ${tall || fill ? "flex-1" : "max-h-72"}`}
       >
         {/* one renderer per kind: table and text today; image / array canvases can slot in here */}
-        {dataset.kind === "image" ? (
+        {dataset.kind === "scene" ? (
+          <Suspense
+            fallback={
+              <div className="flex h-72 items-center justify-center">
+                <span className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600" />
+              </div>
+            }
+          >
+            <SceneView url={url} fill={fill} />
+          </Suspense>
+        ) : dataset.kind === "image" ? (
           <img
             src={url}
             alt={dataset.name}
@@ -215,6 +226,7 @@ const KIND_ICON: Record<Dataset["kind"], string> = {
   image: "🖼",
   array: "🔢",
   mesh: "🧊",
+  scene: "🎬",
   other: "📦",
 };
 
