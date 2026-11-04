@@ -185,5 +185,18 @@
     "author": "Unknown author (Tekniska museet, Sweden)",
     "licence": "CC BY 2.0",
     "attribution": "Tekniska museet, Item 43069, CC BY 2.0"
+  },
+  "navier": {
+    "source": "https://commons.wikimedia.org/wiki/File:Claude-Louis_Navier.jpg",
+    "title": "File:Claude-Louis Navier.jpg",
+    "author": "Unknown author",
+    "licence": "Public domain"
+  },
+  "stokes": {
+    "source": "https://commons.wikimedia.org/wiki/File:Sir_George_Gabriel_Stokes_(46991670455).jpg",
+    "title": "File:Sir George Gabriel Stokes (46991670455).jpg",
+    "author": "Teresa Stokes (Flickr)",
+    "licence": "CC BY-SA 2.0",
+    "attribution": "Teresa Stokes, CC BY-SA 2.0"
   }
 }
