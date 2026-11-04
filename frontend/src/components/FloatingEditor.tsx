@@ -1,4 +1,6 @@
 import { yaml } from "@codemirror/lang-yaml";
+import { pickText, saveText } from "../fileIO";
+import { fromMarkdown, MarkdownError, pickMd, toLatex, toMarkdown } from "../metaDoc";
 import { EditorView } from "@codemirror/view";
 import CodeMirror, { type ViewUpdate } from "@uiw/react-codemirror";
 import { useEffect, useRef, useState } from "react";
@@ -101,6 +103,8 @@ interface Props {
  * A floating window over the page for the Markdown document or the raw meta.yaml. Both stay in sync with the inline
  * view underneath, which is the live preview while typing. Drag it by its title bar.
  */
+const IO = "rounded px-1.5 py-0.5 text-gray-500 hover:bg-white hover:text-blue-700";
+
 export default function FloatingEditor({
   mode,
   onMode,
@@ -157,6 +161,24 @@ export default function FloatingEditor({
     };
   }, [onClose]);
 
+  const name = problem.slug || "problem";
+  const fields = () => pickMd({ ...problem, notes: problem.notes ?? "" });
+  const [ioError, setIoError] = useState<string | null>(null);
+  async function importMd() {
+    const text = await pickText(".md,.markdown,text/markdown,text/plain");
+    if (text === null) return;
+    try {
+      onMeta(fromMarkdown(text)); // the same parser as typing in the editor: a bad file changes nothing
+      setIoError(null);
+    } catch (e) {
+      setIoError(e instanceof MarkdownError ? e.message : String(e));
+    }
+  }
+  async function uploadYaml() {
+    const text = await pickText(".yaml,.yml,text/yaml,text/plain");
+    if (text !== null) onMetaText(text); // re-parsed on the server like an edit; errors show below the editor
+  }
+
   return (
     <div
       role="dialog"
@@ -185,7 +207,31 @@ export default function FloatingEditor({
               {m === "yaml" ? "meta.yaml" : "Markdown"}
             </button>
           ))}
-          <span className="ml-2 text-gray-400">{t("edit.floatSync")}</span>
+          <span className="ml-2 hidden text-gray-400 sm:inline">{t("edit.floatSync")}</span>
+        </div>
+        <div className="ml-auto flex items-center gap-0.5 text-[11px]">
+          {mode === "markdown" ? (
+            <>
+              <button onClick={importMd} className={IO} title={t("edit.importMd")} data-testid="import-md">
+                ⬆ .md
+              </button>
+              <button onClick={() => saveText(`${name}.md`, toMarkdown(fields()), "text/markdown")} className={IO}>
+                ⬇ .md
+              </button>
+              <button onClick={() => saveText(`${name}.tex`, toLatex(fields()), "application/x-tex")} className={IO}>
+                ⬇ .tex
+              </button>
+            </>
+          ) : (
+            <>
+              <button onClick={uploadYaml} className={IO} title={t("edit.uploadYaml")} data-testid="upload-yaml">
+                ⬆ meta.yaml
+              </button>
+              <button onClick={() => saveText("meta.yaml", meta, "text/yaml")} className={IO}>
+                ⬇ meta.yaml
+              </button>
+            </>
+          )}
         </div>
         <button
           onClick={onClose}
@@ -196,6 +242,11 @@ export default function FloatingEditor({
         </button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
+        {ioError && mode === "markdown" && (
+          <p className="mb-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs text-amber-800">
+            ⚠ {t("edit.mdError")}: {ioError}
+          </p>
+        )}
         {mode === "markdown" ? (
           <MarkdownEditor problem={problem} onMeta={onMeta} preview={false} />
         ) : (

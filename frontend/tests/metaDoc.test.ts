@@ -1,7 +1,7 @@
 // Markdown ↔ meta round trip and the YAML emitter. Run: node --test frontend/tests (Node ≥ 23 strips the types).
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { fromMarkdown, MarkdownError, metaObject, pickMd, toMarkdown, toYaml, type MdFields } from "../src/metaDoc.ts";
+import { fromMarkdown, MarkdownError, metaObject, pickMd, toLatex, toMarkdown, toYaml, type MdFields } from "../src/metaDoc.ts";
 import type { Problem } from "../src/types.ts";
 
 const sample: MdFields = {
@@ -64,4 +64,17 @@ test("tags are written to meta.yaml as a flow list, and left out when empty", ()
   const p = { ...base, translation: [], params: {}, tags: ["homework 3", "orbits"] } as unknown as Problem;
   assert.match(toYaml(metaObject(p)), /^tags: \[homework 3, orbits\]$/m);
   assert.doesNotMatch(toYaml(metaObject({ ...p, tags: [] })), /tags:/);
+});
+
+test("latex export keeps math, escapes text and code", () => {
+  const tex = toLatex(sample);
+  assert.ok(tex.includes("\\section*{Damped oscillator $\\ddot{x}$}"));
+  assert.ok(tex.includes("\\texttt{x[b]}"));
+  assert.ok(tex.includes("\\textbf{bold}"));
+  assert.ok(tex.includes("\\[\n\\ddot{x} = -\\omega^2 x - 2\\gamma \\dot{x}\n\\]"));
+  assert.ok(tex.includes("a | b pipe"));
+  assert.ok(!tex.includes("xeCJK"));
+  assert.ok(toLatex({ ...sample, title: "阻尼振子" }).includes("xeCJK"));
+  assert.equal(tex.split("\\begin{document}").length, 2);
+  assert.ok(toLatex({ ...sample, notes: "50% of `a_b`" }).includes("50\\% of \\texttt{a\\_b}"));
 });

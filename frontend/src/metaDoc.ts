@@ -205,3 +205,87 @@ function table(lines: string[], start: number, end: number): TranslationRow[] {
   }
   return rows;
 }
+
+// --- LaTeX (export only) -------------------------------------------------------------------------------
+
+const TEX_SPECIAL: Record<string, string> = {
+  "\\": "\\textbackslash{}",
+  "{": "\\{",
+  "}": "\\}",
+  $: "\\$",
+  "&": "\\&",
+  "%": "\\%",
+  "#": "\\#",
+  _: "\\_",
+  "~": "\\textasciitilde{}",
+  "^": "\\textasciicircum{}",
+};
+const texEscape = (s: string) => s.replace(/[\\{}$&%#_~^]/g, (c) => TEX_SPECIAL[c]);
+
+/** Prose with $math$, `code` and **bold** → LaTeX: math kept as written, everything else escaped. */
+function texText(s: string): string {
+  return s
+    .split(/(?<!\\)\$(.+?)(?<!\\)\$/s)
+    .map((part, i) =>
+      i % 2
+        ? `$${part}$`
+        : part
+            .replace(/\\\$/g, "$")
+            .split(/(`[^`]+`|\*\*[^*]+\*\*)/)
+            .map((bit) =>
+              bit.startsWith("`") && bit.endsWith("`") && bit.length > 1
+                ? `\\texttt{${texEscape(bit.slice(1, -1))}}`
+                : bit.startsWith("**") && bit.endsWith("**") && bit.length > 4
+                  ? `\\textbf{${texEscape(bit.slice(2, -2))}}`
+                  : texEscape(bit),
+            )
+            .join(""),
+    )
+    .join("");
+}
+
+/** The formulation as a standalone LaTeX document (compile with xelatex or lualatex: the text is Unicode). */
+export function toLatex(f: MdFields): string {
+  const all = [f.title, f.summary, f.notes, ...f.translation.map((r) => r.meaning)].join(" ");
+  const cjk = /[぀-ヿ㐀-鿿가-힯]/.test(all);
+  const eq = (tex: string) => (tex.trim() ? `\\[\n${tex.trim()}\n\\]` : "");
+  const rows = f.translation
+    .filter((r) => r.symbol || r.code || r.shape || r.meaning)
+    .map(
+      (r) =>
+        `${r.symbol ? `$${r.symbol}$` : ""} & ${r.code ? `\\texttt{${texEscape(r.code)}}` : ""} & ${texText(r.shape)} & ${texText(r.meaning)} \\\\`,
+    );
+  const col = (w: number, last = false) => `${last ? "" : ">{\\raggedright}"}p{${w}\\linewidth}`;
+  return [
+    "% Exported from Tensorizer. Compile with xelatex or lualatex (Unicode text).",
+    "\\documentclass[11pt]{article}",
+    "\\usepackage{amsmath,amssymb}",
+    "\\usepackage{fontspec}",
+    ...(cjk ? ["\\usepackage{xeCJK}"] : []),
+    "\\usepackage{longtable,booktabs,array}",
+    "\\usepackage[margin=2.2cm]{geometry}",
+    "\\begin{document}",
+    "",
+    `\\section*{${texText(f.title)}}`,
+    texText(f.summary.trim()),
+    "",
+    "\\subsection*{Vector form}",
+    eq(f.vector_form),
+    "",
+    "\\subsection*{Index form}",
+    eq(f.index_form),
+    "",
+    "\\subsection*{Translation}",
+    `\\begin{longtable}{${col(0.17)}${col(0.3)}${col(0.13)}${col(0.32, true)}}`,
+    "\\toprule",
+    "symbol & code & shape & meaning \\tabularnewline",
+    "\\midrule",
+    ...rows.map((r) => r.replace(/ \\\\$/, " \\tabularnewline")),
+    "\\bottomrule",
+    "\\end{longtable}",
+    ...(f.notes.trim() ? ["", "\\subsection*{Notes}", texText(f.notes.trim())] : []),
+    "",
+    "\\end{document}",
+    "",
+  ].join("\n");
+}
