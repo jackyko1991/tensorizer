@@ -243,9 +243,7 @@ function initialLang(): Lang {
   } catch {
     /* storage unavailable */
   }
-  const nav = navigator.language.toLowerCase();
-  if (nav.startsWith("zh")) return /tw|hk|mo|hant/.test(nav) ? "zh-Hant" : "zh-Hans";
-  return (LANGS.find((l) => nav.startsWith(l.code))?.code ?? "en") as Lang;
+  return "en"; // first visit: English, whatever the browser's language; the picker remembers a change
 }
 
 interface LangState {
