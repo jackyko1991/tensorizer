@@ -7,9 +7,40 @@ import { useLang } from "../i18n";
 import { portrait, SCIENTISTS, type Scientist } from "../scientists";
 
 const BY_ID = new Map(SCIENTISTS.map((s) => [s.id, s]));
+const PORTRAITS = `${import.meta.env.BASE_URL}scientists/`;
+
+interface Credit {
+  source: string;
+  author: string;
+  licence: string;
+}
+/** Photo credits for the pixel portraits (public/scientists/credits.json), fetched once on the first card. */
+let credits: Promise<Record<string, Credit>> | null = null;
+const loadCredits = () =>
+  (credits ??= fetch(`${PORTRAITS}credits.json`)
+    .then((r): Promise<Record<string, Credit>> => (r.ok ? r.json() : Promise.resolve({})))
+    .catch((): Record<string, Credit> => ({})));
 const WIDTH = 288;
 
+/** The pixelated photo (32×40) when the scientist has one, else the hand-drawn 16×16 sprite. */
 function Portrait({ s }: { s: Scientist }) {
+  const [photo, setPhoto] = useState(true);
+  if (photo)
+    return (
+      <img
+        src={`${PORTRAITS}${s.id}.png`}
+        alt=""
+        width={64}
+        height={80}
+        onError={() => setPhoto(false)}
+        style={{ imageRendering: "pixelated" }}
+        className="shrink-0 rounded bg-[#f5f1e6]"
+      />
+    );
+  return <Sprite s={s} />;
+}
+
+function Sprite({ s }: { s: Scientist }) {
   const rects = useMemo(() => {
     const out: { x: number; y: number; w: number; c: string }[] = [];
     portrait(s).forEach((row, y) => {
@@ -43,6 +74,15 @@ export default function SciCard() {
   const { lang, t } = useLang();
   const [open, setOpen] = useState<{ s: Scientist; rect: DOMRect } | null>(null);
   const hideTimer = useRef<number>(0);
+  const [credit, setCredit] = useState<Credit | null>(null);
+  useEffect(() => {
+    if (!open) return;
+    let live = true;
+    loadCredits().then((c) => live && setCredit(c[open.s.id] ?? null));
+    return () => {
+      live = false;
+    };
+  }, [open]);
 
   useEffect(() => {
     const target = (e: Event) => (e.target as HTMLElement | null)?.closest?.("[data-sci]") as HTMLElement | null;
@@ -102,7 +142,7 @@ export default function SciCard() {
       style={{ ...style, width: WIDTH }}
       className="fixed z-[60] flex gap-3 rounded-lg border border-gray-200 bg-white p-3 text-left shadow-lg"
     >
-      <Portrait s={s} />
+      <Portrait key={s.id} s={s} />
       <div className="min-w-0 text-xs">
         <p className="font-semibold text-gray-900">
           {s.name} <span className="font-normal text-gray-500">({s.years})</span>
@@ -110,6 +150,17 @@ export default function SciCard() {
         <p className="mt-1 leading-snug text-gray-600 italic" title={t("sci.joke")}>
           {s.meme[lang] ?? s.meme.en}
         </p>
+        {credit && (
+          <a
+            href={credit.source}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-1.5 block truncate text-[10px] text-gray-400 hover:underline"
+            title={`${credit.author} / ${credit.licence}`}
+          >
+            {t("sci.photo")}: {credit.author} / {credit.licence}
+          </a>
+        )}
       </div>
     </div>,
     document.body,

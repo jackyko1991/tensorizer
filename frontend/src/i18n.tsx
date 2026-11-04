@@ -188,6 +188,7 @@ const BASE = {
   setup: ["Physical setup", "物理情境", "物理情境", "Dispositif physique", "Physikalischer Aufbau", "Montaje físico", "物理的な設定", "Физическая постановка", "물리적 설정", "भौतिक व्यवस्था"],
   "eq.vector": ["Vector form", "向量形式", "向量形式", "Forme vectorielle", "Vektorform", "Forma vectorial", "ベクトル形式", "Векторная форма", "벡터 형식", "सदिश रूप"],
   "eq.index": ["Index (tensor) form", "指標（張量）形式", "指标（张量）形式", "Forme indicielle (tensorielle)", "Indexform (Tensor)", "Forma indicial (tensorial)", "添字（テンソル）形式", "Индексная (тензорная) форма", "첨자(텐서) 형식", "सूचकांक (टेंसर) रूप"],
+  "sci.photo": ["Photo", "照片", "照片", "Photo", "Foto", "Foto", "写真", "Фото", "사진", "फ़ोटो"],
   "sci.joke": ["A joke in their voice, not a real quote", "以其口吻寫的玩笑，並非真實引言", "以其口吻写的玩笑，并非真实引言", "Une blague à sa manière, pas une vraie citation", "Ein Witz in ihrem Ton, kein echtes Zitat", "Una broma a su estilo, no una cita real", "本人風のジョークで、実際の発言ではありません", "Шутка в их духе, а не настоящая цитата", "그 사람 말투의 농담일 뿐 실제 인용이 아닙니다", "उनके अंदाज़ में मज़ाक, असली उद्धरण नहीं"],
   "dataset.files": ["Data files", "數據檔案", "数据文件", "Fichiers de données", "Datendateien", "Archivos de datos", "データファイル", "Файлы данных", "데이터 파일", "डेटा फ़ाइलें"],
   "dataset.hideList": ["Hide the file list", "收起檔案列表", "收起文件列表", "Masquer la liste", "Liste ausblenden", "Ocultar la lista", "ファイル一覧を閉じる", "Скрыть список", "파일 목록 접기", "फ़ाइल सूची छिपाएँ"],
