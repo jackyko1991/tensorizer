@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { assetUrl } from "../api";
 import { DIAGRAM_FORMATS, exportDiagram } from "../diagramExport";
 import ContextMenu from "./ContextMenu";
 import { useLang, type Key } from "../i18n";
@@ -239,6 +241,7 @@ export default function WorkspacePanel({
                           icon="🖼"
                           label="diagram.svg"
                           hint={t("diagram.hint")}
+                          preview={assetUrl(p.entry.diagram)}
                           active={false}
                           onClick={() => onSelect(route)}
                           onContextMenu={(e) => {
@@ -364,13 +367,18 @@ function TreeItem(props: {
   onClick: () => void;
   onContextMenu?: (e: React.MouseEvent) => void;
   actions?: ReactNode;
+  /** An image to show, rendered, in a floating card while the item is hovered (diagram.svg). */
+  preview?: string;
 }) {
+  const [at, setAt] = useState<DOMRect | null>(null);
   return (
     <li className={`group flex items-center rounded-md ${props.active ? "bg-blue-50" : "hover:bg-gray-100"}`}>
       <button
         onClick={props.onClick}
         onContextMenu={props.onContextMenu}
-        title={props.hint}
+        onPointerEnter={(e) => props.preview && setAt(e.currentTarget.getBoundingClientRect())}
+        onPointerLeave={() => setAt(null)}
+        title={props.preview ? undefined : props.hint}
         className={`flex min-w-0 flex-1 items-center gap-1.5 truncate px-2 py-0.5 text-left text-xs ${
           props.active ? "font-medium text-blue-700" : "text-gray-600"
         }`}
@@ -379,6 +387,20 @@ function TreeItem(props: {
         <span className="truncate">{props.label}</span>
       </button>
       {props.actions && <span className={`flex shrink-0 ${HOVER_ONLY}`}>{props.actions}</span>}
+      {props.preview &&
+        at &&
+        createPortal(
+          <div
+            role="tooltip"
+            data-testid="tree-preview"
+            style={{ left: at.right + 8, top: Math.max(8, Math.min(at.top - 60, window.innerHeight - 200)) }}
+            className="pointer-events-none fixed z-50 w-64 rounded-lg border border-gray-200 bg-white p-2 shadow-lg"
+          >
+            <img src={props.preview} alt="" className="h-auto w-full" />
+            {props.hint && <p className="mt-1 text-[11px] text-gray-500">{props.hint}</p>}
+          </div>,
+          document.body,
+        )}
     </li>
   );
 }
