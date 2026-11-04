@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { backendChoice, cancelMyRuns, queueDetails, type QueueDetails } from "../api";
+import { abortMyRun, backendChoice, cancelMyRuns, queueDetails, type QueueDetails } from "../api";
 import { useLang } from "../i18n";
 
 /** The run queue: what is running and waiting on the current backend, refreshed every 2 s; cancel your own runs. */
@@ -91,6 +91,7 @@ export default function QueueModal({ onClose }: { onClose: () => void }) {
                     onClick={async () => {
                       setBusy(true);
                       await cancelMyRuns();
+                      abortMyRun(); // the page stops showing it as running straight away
                       setQ(await queueDetails());
                       setBusy(false);
                     }}

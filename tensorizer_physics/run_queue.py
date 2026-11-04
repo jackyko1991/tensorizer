@@ -39,6 +39,7 @@ class Ticket:
     joined: float = field(default_factory=time.monotonic)
     seen: float = field(default_factory=time.monotonic)
     started: float | None = None
+    cancelled: bool = False  # set by the queue window's Cancel; a running job's process is then stopped
 
 
 class RunQueue:
@@ -104,6 +105,7 @@ class RunQueue:
         """Drop this client's tickets (the queue window's Cancel); returns how many."""
         mine = [t for t in (*self.waiting, *self.running) if t.client == client]
         for t in mine:
+            t.cancelled = True
             self.leave(t)
         return len(mine)
 

@@ -171,6 +171,15 @@ export interface LineEvent {
 
 /** Run a problem, calling onLine for every printed line as it happens (newline-delimited JSON stream).
  *  `id` is a library problem id, or a Workspace problem's agent session ({session} → its sandbox). */
+// The run stream in flight, so the queue window's Cancel can end it on this page at once (the server stops the
+// process too, but an older server would keep streaming).
+let current: AbortController | null = null;
+
+/** End this page's run stream now (after the queue window's Cancel). */
+export function abortMyRun(): void {
+  current?.abort();
+}
+
 export async function runProblemStream(
   id: string | { session: string },
   params: Params,
@@ -181,15 +190,18 @@ export async function runProblemStream(
   onProgress: (fraction: number) => void = () => {},
 ): Promise<RunResult> {
   let res: Response;
+  const controller = new AbortController();
+  current = controller;
   try {
     const path = typeof id === "string" ? `/api/run-stream/${id}` : `/api/workspace/${id.session}/run-stream`;
     res = await fetch(`${API}${path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ params, files, verbose, device: runDevice() }),
+      signal: controller.signal,
     });
   } catch {
-    throw new RunFailed(unreachable());
+    throw new RunFailed(controller.signal.aborted ? "cancelled" : unreachable());
   }
   if (!res.ok || !res.body) {
     const body = await res.json().catch(() => ({}));
@@ -200,6 +212,7 @@ export async function runProblemStream(
   let buffer = "";
   for (;;) {
     const { value, done } = await reader.read().catch((e) => {
+      if (controller.signal.aborted) throw new RunFailed("cancelled");
       throw interrupted(WORKSPACE_STRINGS["ws.streamCut"], e);
     });
     if (done) break;

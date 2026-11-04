@@ -161,12 +161,13 @@ def _env(out_dir: Path, device: str = "auto") -> dict[str, str]:
     return env
 
 
-async def _stream_process(cmd: list[str], cwd: Path, env: dict[str, str]) -> AsyncIterator[dict]:
+async def _stream_process(cmd: list[str], cwd: Path, env: dict[str, str], stop=lambda: False) -> AsyncIterator[dict]:
     """Yield {"type": "line", "text", "replace"} events as the process prints, then {"type": "exit", "code"}.
 
     A segment ending in \\r (a tqdm redraw) is sent with replace=True so the terminal overwrites it in place.
     A plain Popen read by a thread is used because asyncio subprocesses are unsupported by the event loop
-    uvicorn uses on Windows with --reload.
+    uvicorn uses on Windows with --reload. `stop()` is checked about once a second (a cancelled run); when it turns
+    true the process is killed, even if it prints nothing.
     """
     loop = asyncio.get_running_loop()
     queue: asyncio.Queue = asyncio.Queue()
@@ -206,10 +207,17 @@ async def _stream_process(cmd: list[str], cwd: Path, env: dict[str, str]) -> Asy
     printed = 0
     try:
         while True:
+            left = deadline - time.monotonic()
             try:
-                event = await asyncio.wait_for(queue.get(), max(0.0, deadline - time.monotonic()))
+                event = await asyncio.wait_for(queue.get(), max(0.0, min(1.0, left)))
             except TimeoutError:
-                raise RunError(f"timed out after {TIMEOUT_S:.0f} s") from None
+                if stop():
+                    raise RunError("cancelled") from None
+                if left <= 1.0:
+                    raise RunError(f"timed out after {TIMEOUT_S:.0f} s") from None
+                continue
+            if stop():
+                raise RunError("cancelled")
             if event["type"] == "line":
                 printed += len(event["text"]) + 1
                 if printed > limits.MAX_CONSOLE_BYTES:
@@ -303,7 +311,7 @@ async def stream_problem(
         tests: dict | None = None
         test_log = ""
         try:
-            async for event in _stream_process(cmd, work, _env(out_dir, device)):
+            async for event in _stream_process(cmd, work, _env(out_dir, device), stop=lambda: ticket.cancelled):
                 if event["type"] == "exit":
                     code = event["code"]
                     break
