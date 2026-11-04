@@ -2,6 +2,7 @@ import type { Problem } from "../types";
 import { useLang } from "../i18n";
 import { pickMd, toLatex, toMarkdown } from "../metaDoc";
 import { saveText } from "../fileIO";
+import { paragraphs } from "../paragraphs";
 import DownloadIcon from "./DownloadIcon";
 import Tex, { RichText } from "./Tex";
 import TranslationTable from "./TranslationTable";
@@ -55,9 +56,13 @@ export default function EquationPanel({ problem }: { problem: Problem }) {
       </div>
 
       {problem.notes && (
-        <p data-ai-region="notes" className="mt-4 text-sm leading-relaxed text-gray-600">
-          <RichText text={problem.notes} people />
-        </p>
+        <div data-ai-region="notes" className="mt-4 space-y-2.5 text-sm leading-relaxed text-gray-600">
+          {paragraphs(problem.notes).map((para, i) => (
+            <p key={i}>
+              <RichText text={para} people />
+            </p>
+          ))}
+        </div>
       )}
     </section>
   );
