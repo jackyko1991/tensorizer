@@ -25,7 +25,8 @@ def test_classic_energy_never_increases_under_single_neuron_updates():
         s = equation.async_sweep(s, w, i[None])  # one neuron at a time
         energies.append(equation.energy(s, w))
     e = torch.stack(energies)  # (601, 1, 16)
-    assert (e.diff(dim=0) <= 1e-5).all()  # ΔE = −Δs_i h_i ≤ 0 for symmetric W with zero diagonal
+    # ΔE = −Δs_i h_i ≤ 0 for symmetric W with zero diagonal; tolerance relative to |E| (float32 rounding at E ~ 10²)
+    assert (e.diff(dim=0) <= 1e-6 * e.abs().max()).all()
 
 
 def test_stored_patterns_are_fixed_points_below_capacity():
