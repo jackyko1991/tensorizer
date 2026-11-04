@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { buildCollections, ROLE_STYLE } from "../collections";
+import { buildCollections, GROUP_TITLE, GROUPS, ROLE_STYLE } from "../collections";
 import { useLang } from "../i18n";
 import { downloadPixiProject, vscodeCloneUrl, vscodeWebUrl } from "../notebook";
 import ContextMenu from "./ContextMenu";
@@ -162,11 +162,16 @@ export default function Sidebar({ manifest, selected, onSelect, onFork }: Props)
             <option value="">
               {t("coll.title")}: {t("coll.back")}
             </option>
-            {collections.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.kind === "series" ? "🧭 " : ""}
-                {c.title} ({c.items.length})
-              </option>
+            {GROUPS.filter((g) => collections.some((c) => c.group === g)).map((g) => (
+              <optgroup key={g} label={t(GROUP_TITLE[g])}>
+                {collections
+                  .filter((c) => c.group === g)
+                  .map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.title} ({c.items.length})
+                    </option>
+                  ))}
+              </optgroup>
             ))}
           </select>
         </label>

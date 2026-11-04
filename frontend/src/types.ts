@@ -99,7 +99,10 @@ export interface Manifest {
   levels: Level[];
   problems: Problem[];
   /** Series (ordered collections) by id: title and summary per language, from content/series.json. */
-  series?: Record<string, { title: Record<string, string>; summary?: Record<string, string>; author?: string }>;
+  series?: Record<
+    string,
+    { title: Record<string, string>; summary?: Record<string, string>; author?: string; group?: string }
+  >;
 }
 
 export type Params = Record<string, number | string>;

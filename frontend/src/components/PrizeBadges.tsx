@@ -15,6 +15,7 @@ const LANDMARKS: Record<string, { label: Key; hint: Key }> = {
 export function prizeLabel(tag: string, t: T): string | null {
   const [prize, ...rest] = tag.split(":");
   if (prize === "millennium") return `★ ${t("tag.millennium")}`;
+  if (prize === "speculative") return `🧪 ${t("tag.speculative")}`;
   const landmark = LANDMARKS[prize];
   if (landmark) return `✦ ${t(landmark.label).replace("{n}", rest[0] ?? "")}`.trim();
   const field = rest.length > 1 ? rest[0] : null;
@@ -37,10 +38,21 @@ export default function PrizeBadges({ tags }: { tags: string[] }) {
           text && (
             <span
               key={tag}
-              title={t(LANDMARKS[kind(tag)]?.hint ?? (tag === "millennium" ? "tag.millenniumHint" : "prize.hint"))}
+              title={t(
+                LANDMARKS[kind(tag)]?.hint ??
+                  (tag === "millennium"
+                    ? "tag.millenniumHint"
+                    : tag === "speculative"
+                      ? "tag.speculativeHint"
+                      : "prize.hint"),
+              )}
               data-testid={`tag-${kind(tag)}`}
               className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                LANDMARKS[kind(tag)] ? "bg-violet-100 text-violet-800" : "bg-amber-100 text-amber-800"
+                tag === "speculative"
+                  ? "border border-dashed border-orange-300 bg-orange-50 text-orange-800"
+                  : LANDMARKS[kind(tag)]
+                    ? "bg-violet-100 text-violet-800"
+                    : "bg-amber-100 text-amber-800"
               }`}
             >
               {text}

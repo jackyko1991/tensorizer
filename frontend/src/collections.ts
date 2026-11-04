@@ -41,6 +41,8 @@ export interface CollectionItem {
 export interface Collection {
   id: string;
   kind: "series" | "tags";
+  /** Where the combobox lists it: stories, hypothesis-lab (series) or lists / prizes (automatic). */
+  group: Group;
   title: string;
   author?: string;
   summary?: string;
@@ -48,6 +50,15 @@ export interface Collection {
 }
 
 type T = (key: Key) => string;
+
+export const GROUPS = ["stories", "hypothesis-lab", "lists", "prizes"] as const;
+export type Group = (typeof GROUPS)[number];
+export const GROUP_TITLE: Record<Group, Key> = {
+  stories: "coll.group.stories",
+  "hypothesis-lab": "coll.group.lab",
+  lists: "coll.group.lists",
+  prizes: "coll.group.prizes",
+};
 
 /** Automatic collections: tag prefix → title key. The number after the prefix (problem number or year) orders them. */
 const AUTO: { id: string; match: (tag: string) => number | null; title: Key }[] = [
@@ -88,6 +99,7 @@ export function buildCollections(manifest: Manifest, lang: string, t: T): Collec
     return {
       id,
       kind: "series" as const,
+      group: (GROUPS as readonly string[]).includes(info?.group ?? "") ? (info!.group as Group) : "stories",
       title: pick(info?.title, lang) ?? id,
       author: info?.author,
       summary: pick(info?.summary, lang),
@@ -101,7 +113,13 @@ export function buildCollections(manifest: Manifest, lang: string, t: T): Collec
       if (steps.length) items.push({ problem: p, step: Math.min(...steps) });
     }
     if (items.length)
-      out.push({ id: auto.id, kind: "tags", title: t(auto.title), items: items.sort((a, b) => a.step - b.step) });
+      out.push({
+        id: auto.id,
+        kind: "tags",
+        group: ["millennium", "hilbert", "smale", "landau"].includes(auto.id) ? "lists" : "prizes",
+        title: t(auto.title),
+        items: items.sort((a, b) => a.step - b.step),
+      });
   }
   return out;
 }

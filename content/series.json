@@ -16,6 +16,72 @@
    "en": "The 1905 papers in the order they appeared: light quanta (March), Brownian motion (May), special relativity (June) and E = mc² (September).",
    "zh-Hant": "1905 年的論文，依發表順序：光量子（3 月）、布朗運動（5 月）、狹義相對論（6 月）與 E = mc²（9 月）。",
    "zh-Hans": "1905 年的论文，依发表顺序：光量子（3 月）、布朗运动（5 月）、狭义相对论（6 月）与 E = mc²（9 月）。"
+  },
+  "group": "stories"
+ },
+ "quantum-gravity": {
+  "group": "hypothesis-lab",
+  "title": {
+   "en": "Quantum gravity",
+   "zh-Hant": "量子重力",
+   "zh-Hans": "量子引力"
+  },
+  "summary": {
+   "en": "Two candidate routes to quantum gravity, neither tested by experiment: strings and a loop-quantum-cosmology bounce.",
+   "zh-Hant": "兩條通往量子重力的候選路線，都尚未被實驗檢驗：弦論，以及迴圈量子宇宙學的反彈。",
+   "zh-Hans": "两条通往量子引力的候选路线，都尚未被实验检验：弦论，以及圈量子宇宙学的反弹。"
+  }
+ },
+ "extra-dimensions": {
+  "group": "hypothesis-lab",
+  "title": {
+   "en": "Extra dimensions",
+   "zh-Hant": "額外維度",
+   "zh-Hans": "额外维度"
+  },
+  "summary": {
+   "en": "Is gravity weak because it leaks into hidden dimensions? Models, then the torsion-balance and LHC limits.",
+   "zh-Hant": "重力之所以弱，是因為洩漏到隱藏的維度嗎？先看模型，再看扭秤與 LHC 的限制。",
+   "zh-Hans": "引力之所以弱，是因为泄漏到隐藏的维度吗？先看模型，再看扭秤与 LHC 的限制。"
+  }
+ },
+ "varying-light-speed": {
+  "group": "hypothesis-lab",
+  "title": {
+   "en": "A varying speed of light",
+   "zh-Hant": "可變光速",
+   "zh-Hans": "可变光速"
+  },
+  "summary": {
+   "en": "A minority alternative to inflation for the horizon problem, set against the bounds on any change in c.",
+   "zh-Hant": "解決視界問題的少數派替代方案（取代暴脹），並對照光速變化的觀測限制。",
+   "zh-Hans": "解决视界问题的少数派替代方案（取代暴胀），并对照光速变化的观测限制。"
+  }
+ },
+ "tachyons": {
+  "group": "hypothesis-lab",
+  "title": {
+   "en": "Faster-than-light particles",
+   "zh-Hant": "超光速粒子",
+   "zh-Hans": "超光速粒子"
+  },
+  "summary": {
+   "en": "Imaginary mass, causality paradoxes, and how the 2011 OPERA anomaly turned out.",
+   "zh-Hant": "虛質量、因果悖論，以及 2011 年 OPERA 異常的真相。",
+   "zh-Hans": "虚质量、因果悖论，以及 2011 年 OPERA 异常的真相。"
+  }
+ },
+ "early-universe": {
+  "group": "hypothesis-lab",
+  "title": {
+   "en": "Unconfirmed early-universe physics",
+   "zh-Hant": "未經證實的早期宇宙物理",
+   "zh-Hans": "未经证实的早期宇宙物理"
+  },
+  "summary": {
+   "en": "Leading but unconfirmed ideas: inflation tested against Planck and BICEP/Keck, and leptogenesis for the matter excess.",
+   "zh-Hant": "主流但未經證實的想法：以 Planck 與 BICEP/Keck 檢驗暴脹，以及解釋物質過剩的輕子生成。",
+   "zh-Hans": "主流但未经证实的想法：以 Planck 与 BICEP/Keck 检验暴胀，以及解释物质过剩的轻子生成。"
   }
  }
 }
