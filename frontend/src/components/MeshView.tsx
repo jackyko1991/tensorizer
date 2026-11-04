@@ -1,4 +1,4 @@
-/** A 3D view of an STL file (three.js, loaded only when a mesh is opened): shaded, on a floor grid, auto-rotating,
+/** A 3D view of an STL file (three.js, loaded only when a mesh is opened): shaded, on a floor grid (rotation off until asked for),
  *  orbit / zoom with the mouse or touch, and a small toolbar for colour, grid, axes, wireframe, edges, rotation,
  *  background and a view reset (remembered in the browser). */
 import { useEffect, useRef, useState } from "react";
@@ -26,14 +26,14 @@ const DEFAULTS: Options = {
   axes: false,
   wireframe: false,
   edges: false,
-  rotate: true,
+  rotate: false,
   dark: false,
   surface: true,
   flat: false,
   glossy: false,
   opacity: 1,
 };
-const STORE = "tensorizer.meshView";
+const STORE = "tensorizer.meshView.v2"; // v2: auto-rotate now off by default
 
 function loadOptions(): Options {
   try {
