@@ -407,13 +407,6 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
               >
                 ⌂
               </button>
-              <button
-                onClick={() => setExpanded((e) => !e)}
-                title={t(expanded ? "mesh.shrink" : "mesh.expand")}
-                className="h-6 w-6 rounded hover:bg-gray-100"
-              >
-                {expanded ? "⤡" : "⤢"}
-              </button>
             </div>
           </>
         )}

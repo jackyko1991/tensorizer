@@ -287,16 +287,6 @@ export default function MeshView({
         >
           ⌂
         </button>
-        <button
-          onClick={() => setExpanded((e) => !e)}
-          title={t(expanded ? "mesh.shrink" : "mesh.expand")}
-          aria-label={t(expanded ? "mesh.shrink" : "mesh.expand")}
-          aria-pressed={expanded}
-          data-testid="mesh-expand"
-          className="h-6 w-6 rounded text-gray-500 hover:bg-gray-100"
-        >
-          {expanded ? "⤡" : "⤢"}
-        </button>
       </div>
       {legend && (
         <div
