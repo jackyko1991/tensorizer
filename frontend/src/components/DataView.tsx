@@ -113,7 +113,8 @@ export default function DataView({
           {KIND_ICON[dataset.kind]} {dataset.name}
         </span>
         <span className="text-gray-500">
-          {shape} / {formatSize(dataset.size)}
+          {shape}
+          {dataset.size > 0 && ` / ${formatSize(dataset.size)}`}
         </span>
         <a
           href={url}
