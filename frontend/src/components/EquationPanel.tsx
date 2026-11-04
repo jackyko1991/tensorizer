@@ -1,5 +1,4 @@
 import type { Problem } from "../types";
-import { DataSources } from "./DataView";
 import { useLang } from "../i18n";
 import Tex, { RichText } from "./Tex";
 import TranslationTable from "./TranslationTable";
@@ -28,8 +27,6 @@ export default function EquationPanel({ problem }: { problem: Problem }) {
           <RichText text={problem.notes} />
         </p>
       )}
-
-      <DataSources datasets={problem.datasets ?? []} />
     </section>
   );
 }

@@ -38,6 +38,7 @@ import SkillsPage from "./pages/SkillsPage";
 import { plainText, RichText } from "./components/Tex";
 import NotebookView from "./components/NotebookView";
 import DataPanel from "./components/DataPanel";
+import { DataSources } from "./components/DataView";
 import WorkspacePanel from "./components/WorkspacePanel";
 import WorkspaceHome from "./components/WorkspaceHome";
 import GitHubDialog from "./components/GitHubDialog";
@@ -815,6 +816,8 @@ interface ProblemViewProps {
 
 function ProblemView({ problem, backend, categoryTitle, paramsOpen, onToggleParams, onFork, ws }: ProblemViewProps) {
   const [params, setParams] = useState<Params>(() => defaults(problem));
+  // lower panel of a library problem: the formulation, or the real data bundled with it
+  const [lowerTab, setLowerTab] = useState<"formulation" | "data">("formulation");
   // A workspace problem's meta.yaml may add or remove parameters: start again from the new defaults.
   const paramSpecs = JSON.stringify(problem.params);
   const lastSpecs = useRef(paramSpecs);
@@ -1154,7 +1157,37 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
         <div
           className={`space-y-5 bg-gray-50/60 p-5 xl:min-h-0 xl:flex-1 xl:overflow-y-auto ${onPhone("formulation")}`}
         >
-          {!ws ? <EquationPanel problem={problem} /> : <InlineEquations problem={problem} onMeta={onMeta} />}
+          {ws ? (
+            <InlineEquations problem={problem} onMeta={onMeta} />
+          ) : (
+            <>
+              <div className="flex gap-1" role="tablist">
+                {(["formulation", "data"] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    role="tab"
+                    aria-selected={lowerTab === tab}
+                    onClick={() => setLowerTab(tab)}
+                    data-testid={`lower-tab-${tab}`}
+                    className={`rounded-md px-3 py-1 text-xs font-medium transition ${
+                      lowerTab === tab
+                        ? "bg-white text-blue-700 shadow-sm ring-1 ring-gray-200"
+                        : "text-gray-500 hover:text-gray-800"
+                    }`}
+                  >
+                    {tab === "formulation"
+                      ? t("mtab.formulation")
+                      : `📊 ${t("dataset.title")}${problem.datasets?.length ? ` (${problem.datasets.length})` : ""}`}
+                  </button>
+                ))}
+              </div>
+              {lowerTab === "formulation" ? (
+                <EquationPanel problem={problem} />
+              ) : (
+                <DataSources datasets={problem.datasets ?? []} />
+              )}
+            </>
+          )}
         </div>
       </main>
 
@@ -1164,7 +1197,6 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
           problem={problem.id}
           className={`xl:min-h-0 xl:flex-[1.7] ${onPhone("code", "xl:flex")}`}
           files={problem.files}
-          datasets={ws ? undefined : (problem.datasets ?? [])}
           edits={edits}
           editable={editable}
           onEdit={edit}

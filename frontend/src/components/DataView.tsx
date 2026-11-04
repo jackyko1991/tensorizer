@@ -1,6 +1,6 @@
 /** A library problem's bundled real data (data/*): its source lines, size and a preview chosen by the file's kind
  *  (a scrollable table for csv/tsv, plain text for txt/json; other kinds get the card and a download for now).
- *  Used at the bottom of the formulation and as a read-only tab in the code area. The file is fetched only when
+ *  Shown in the Data tab of the lower panel, next to the formulation. The file is fetched only when
  *  shown, and kept for the session. */
 import { useEffect, useState, type ReactNode } from "react";
 import { assetUrl } from "../api";
@@ -150,20 +150,29 @@ export default function DataView({ dataset, tall = false }: { dataset: Dataset; 
           </pre>
         )}
         {(table ? dataset.rows : body.length) > PREVIEW_ROWS && text !== null && (
-          <p className="px-3 py-1.5 text-[11px] text-gray-400">{t("dataset.more").replace("{n}", String(PREVIEW_ROWS))}</p>
+          <p className="px-3 py-1.5 text-[11px] text-gray-400">
+            {t("dataset.more").replace("{n}", String(PREVIEW_ROWS))}
+          </p>
         )}
       </div>
     </div>
   );
 }
 
-/** The "Data source" section at the bottom of the formulation, for problems that bundle real data. */
+/** The Data tab of the lower panel: every bundled data file, or a note that the problem has none. */
 export function DataSources({ datasets }: { datasets: Dataset[] }) {
   const { t } = useLang();
-  if (!datasets.length) return null;
+  if (!datasets.length)
+    return (
+      <p
+        className="rounded-xl border border-dashed border-gray-300 p-6 text-center text-sm text-gray-400"
+        data-testid="no-data"
+      >
+        {t("dataset.none")}
+      </p>
+    );
   return (
     <section data-testid="data-sources">
-      <h3 className="mt-5 mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase">{t("dataset.title")}</h3>
       <div className="space-y-3">
         {datasets.map((d) => (
           <DataView key={d.name} dataset={d} />
