@@ -292,7 +292,9 @@ def main() -> None:
         )
 
     categories = [{"id": c, "title": t} for c, t in CATEGORIES.items() if any(p["category"] == c for p in problems)]
-    manifest = {"categories": categories, "levels": LEVELS, "problems": problems}
+    series_file = ROOT / "content" / "series.json"  # collection titles and summaries (tags put problems in)
+    series = json.loads(series_file.read_text(encoding="utf-8")) if series_file.is_file() else {}
+    manifest = {"categories": categories, "levels": LEVELS, "problems": problems, "series": series}
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"wrote {out / 'manifest.json'} ({len(problems)} problems)")
     agent_skill.write(out)  # the agent skill (SKILL.md, AGENTS.md, GEMINI.md, zip) for the Agent Skills page

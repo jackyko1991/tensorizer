@@ -39,6 +39,7 @@ import { plainText, RichText } from "./components/Tex";
 import NotebookView from "./components/NotebookView";
 import DataPanel from "./components/DataPanel";
 import SciCard from "./components/SciCard";
+import SeriesNav from "./components/SeriesNav";
 import { DataSources } from "./components/DataView";
 import WorkspacePanel from "./components/WorkspacePanel";
 import WorkspaceHome from "./components/WorkspaceHome";
@@ -684,6 +685,7 @@ export default function App() {
             <ProblemView
               key={problem.id}
               problem={localize(problem, lang)}
+              manifest={manifest}
               backend={backend === "checking" ? null : backend}
               categoryTitle={t(`cat.${problem.category}` as Key) ?? problem.category}
               paramsOpen={paramsOpen}
@@ -794,6 +796,8 @@ type MobileTab = (typeof MOBILE_TABS)[number];
 
 interface ProblemViewProps {
   problem: Problem;
+  /** For the series step navigator under a library problem's summary. */
+  manifest?: Manifest | null;
   backend: Health | null;
   categoryTitle: string;
   paramsOpen: boolean;
@@ -817,7 +821,16 @@ interface ProblemViewProps {
   };
 }
 
-function ProblemView({ problem, backend, categoryTitle, paramsOpen, onToggleParams, onFork, ws }: ProblemViewProps) {
+function ProblemView({
+  problem,
+  manifest,
+  backend,
+  categoryTitle,
+  paramsOpen,
+  onToggleParams,
+  onFork,
+  ws,
+}: ProblemViewProps) {
   const [params, setParams] = useState<Params>(() => defaults(problem));
   // lower panel of a library problem: the formulation, or the real data bundled with it
   const [lowerTab, setLowerTab] = useState<"formulation" | "data">("formulation");
@@ -1092,6 +1105,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
               <p className="mt-2 text-sm leading-relaxed text-gray-600">
                 <RichText text={problem.summary} people />
               </p>
+              {manifest && <SeriesNav manifest={manifest} problemId={problem.id} onSelect={select} />}
             </div>
           )}
           {ws && <PictureUpload hasPicture={!!problem.diagram} onPicture={ws.onDiagram} />}

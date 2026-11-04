@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { buildCollections, ROLE_STYLE } from "../collections";
 import { useLang } from "../i18n";
 import { downloadPixiProject, vscodeCloneUrl, vscodeWebUrl } from "../notebook";
 import ContextMenu from "./ContextMenu";
@@ -62,6 +63,10 @@ export default function Sidebar({ manifest, selected, onSelect, onFork }: Props)
     [manifest, lang, t],
   );
   const words = fold(query).split(/\s+/).filter(Boolean);
+  // collections: the index sits under the search box; choosing one lists its problems in order
+  const collections = useMemo(() => buildCollections(manifest, lang, t), [manifest, lang, t]);
+  const [collection, setCollection] = useState<string | null>(null);
+  const current = collections.find((c) => c.id === collection) ?? null;
   const hits = words.length ? index.filter((e) => words.every((w) => e.text.includes(w))).map((e) => e.p) : [];
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
@@ -144,6 +149,56 @@ export default function Sidebar({ manifest, selected, onSelect, onFork }: Props)
           )}
         </div>
       </div>
+      {words.length === 0 && collections.length > 0 && (
+        <label className="mb-2 flex items-center gap-1.5 px-1 text-xs text-gray-500" data-testid="collections">
+          <span className="shrink-0">📚</span>
+          <select
+            value={collection ?? ""}
+            onChange={(e) => setCollection(e.target.value || null)}
+            aria-label={t("coll.title")}
+            data-testid="collection-select"
+            className="min-w-0 flex-1 rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700 focus:border-blue-400 focus:outline-none"
+          >
+            <option value="">
+              {t("coll.title")}: {t("coll.back")}
+            </option>
+            {collections.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.kind === "series" ? "🧭 " : ""}
+                {c.title} ({c.items.length})
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+      {words.length === 0 && current && (
+        <div data-testid="collection-list">
+          <div className="flex items-center justify-between px-2 pb-1">
+            <span className="text-xs font-semibold text-gray-800">{current.title}</span>
+            <button onClick={() => setCollection(null)} className="text-[11px] text-blue-600 hover:underline">
+              {t("coll.back")}
+            </button>
+          </div>
+          {current.summary && <p className="px-2 pb-1 text-[11px] text-gray-500">{current.summary}</p>}
+          <ol>
+            {current.items.map((it, i) => (
+              <li key={it.problem.id} className="flex items-start gap-1">
+                <span className="mt-1.5 w-5 shrink-0 text-right font-mono text-[10px] text-gray-400">
+                  {current.kind === "series" ? `${i + 1}.` : it.step ? it.step : ""}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <ul>{item(it.problem)}</ul>
+                  {it.role && (
+                    <span className={`ml-5 rounded px-1.5 py-0.5 text-[10px] ${ROLE_STYLE[it.role]}`}>
+                      {t(`srole.${it.role}` as Parameters<typeof t>[0])}
+                    </span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
       {words.length > 0 && (
         <div data-testid="search-results">
           <p className="px-2 pb-1 text-[11px] text-gray-500">{t("search.count").replace("{n}", String(hits.length))}</p>
@@ -162,6 +217,7 @@ export default function Sidebar({ manifest, selected, onSelect, onFork }: Props)
         </div>
       )}
       {words.length === 0 &&
+        !current &&
         manifest.categories.map((cat) => {
           const isOpen = open.has(cat.id);
           const problems = manifest.problems.filter((p) => p.category === cat.id);
