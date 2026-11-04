@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Problem } from "../types";
 import { useLang } from "../i18n";
 import { pickMd, toLatex, toMarkdown } from "../metaDoc";
@@ -7,14 +8,31 @@ import DownloadIcon from "./DownloadIcon";
 import Tex, { RichText } from "./Tex";
 import TranslationTable from "./TranslationTable";
 
-/** ⬇ Markdown / ⬇ LaTeX: the formulation (title, summary, equations, translation, notes) in the shown language. */
+/** ⧉ Copy (Markdown to the clipboard) / ⬇ Markdown / ⬇ LaTeX: the formulation (title, summary, equations, translation, notes) in the shown language. */
 export function FormulationExport({ problem, className = "" }: { problem: Problem; className?: string }) {
   const fields = () => pickMd({ ...problem, notes: problem.notes ?? "" });
   const name = problem.slug || "problem";
+  const { t } = useLang();
+  const [copied, setCopied] = useState<"" | "ok" | "fail">("");
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(toMarkdown(fields()));
+      setCopied("ok");
+    } catch {
+      setCopied("fail");
+    }
+    window.setTimeout(() => setCopied(""), 1500);
+  };
   const button =
     "flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] text-gray-500 hover:bg-gray-100 hover:text-blue-700";
   return (
     <span className={`flex items-center gap-1 ${className}`}>
+      <button onClick={copy} className={button} title={t("formula.copyHint")} data-testid="copy-md">
+        <span aria-hidden className="text-xs leading-none">
+          {copied === "ok" ? "✓" : "⧉"}
+        </span>
+        {copied === "ok" ? t("formula.copied") : copied === "fail" ? t("formula.copyFail") : t("formula.copy")}
+      </button>
       <button
         onClick={() => saveText(`${name}.md`, toMarkdown(fields()), "text/markdown")}
         className={button}
