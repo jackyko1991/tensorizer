@@ -844,6 +844,14 @@ function ProblemView({
   const [params, setParams] = useState<Params>(() => defaults(problem));
   // lower panel of a library problem: the formulation, or the real data bundled with it
   const [lowerTab, setLowerTab] = useState<"formulation" | "data">("formulation");
+  // ⤢ the formulation over the whole page (larger maths, scrolls); Esc or ⤡ brings it back
+  const [formulaBig, setFormulaBig] = useState(false);
+  useEffect(() => {
+    if (!formulaBig) return;
+    const key = (e: KeyboardEvent) => e.key === "Escape" && setFormulaBig(false);
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
+  }, [formulaBig]);
   // A workspace problem's meta.yaml may add or remove parameters: start again from the new defaults.
   const paramSpecs = JSON.stringify(problem.params);
   const lastSpecs = useRef(paramSpecs);
@@ -1213,7 +1221,46 @@ function ProblemView({
                   </button>
                 ))}
                 {/* in the pinned tab bar, so they stay put while the formulation scrolls */}
-                {lowerTab === "formulation" && <FormulationExport problem={problem} className="mb-1 ml-auto" />}
+                {lowerTab === "formulation" && (
+                  <span className="mb-1 ml-auto flex items-center gap-1">
+                    <FormulationExport problem={problem} />
+                    <button
+                      onClick={() => setFormulaBig(true)}
+                      title={t("mesh.expand")}
+                      aria-label={t("mesh.expand")}
+                      data-testid="formula-expand"
+                      className="rounded px-1 text-xs text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                    >
+                      ⤢
+                    </button>
+                  </span>
+                )}
+                {formulaBig && (
+                  <div
+                    className="fixed inset-3 z-50 flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-gray-50 shadow-2xl"
+                    data-testid="formula-big"
+                  >
+                    <div className="flex shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 py-1.5 text-xs text-gray-600">
+                      <span className="font-medium">📐 {t("mtab.formulation")}</span>
+                      <span className="flex items-center gap-1">
+                        <FormulationExport problem={problem} />
+                        <button
+                          onClick={() => setFormulaBig(false)}
+                          title={t("mesh.shrink")}
+                          aria-label={t("mesh.shrink")}
+                          className="rounded px-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                        >
+                          ⤡
+                        </button>
+                      </span>
+                    </div>
+                    <div className="min-h-0 flex-1 overflow-y-auto p-6 text-[1.15rem]">
+                      <div className="mx-auto max-w-5xl">
+                        <EquationPanel problem={problem} exportable={false} />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
               {lowerTab === "formulation" ? (
                 <EquationPanel problem={problem} exportable={false} />
