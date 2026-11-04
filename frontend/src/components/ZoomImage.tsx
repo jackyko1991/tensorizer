@@ -61,9 +61,11 @@ export default function ZoomImage({ src, alt }: { src: string; alt: string }) {
     const s = current();
     const fit = fitScale();
     if (dir === "in") return setScale(Math.min(MAX, s * STEP), e);
-    const next = s / STEP;
-    // going out stops at "fit" (smaller than the frame gains nothing)
-    setScale(next <= fit * 1.01 ? null : next, e);
+    // going out always shrinks: it snaps to "fit" when it passes it from above, then keeps going down to a floor
+    const floor = Math.min(fit, 1) / 4;
+    if (s <= floor * 1.01) return;
+    const next = Math.max(floor, s / STEP);
+    setScale(s > fit * 1.01 && next < fit ? null : next, e);
   };
 
   const s = current();
