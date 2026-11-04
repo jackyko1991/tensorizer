@@ -59,6 +59,8 @@ export interface Problem {
   meta_extra?: Record<string, unknown>;
   /** Workspace problems only: uploaded data files (the bytes are in the browser's IndexedDB, synced to data/). */
   data?: DataFile[];
+  /** Library problems: the bundled real data (data/*.csv), served next to the output. */
+  datasets?: Dataset[];
   /** Wikipedia article titles by wiki language code (en, zh, fr, …), from content/wiki.json. */
   wiki?: { wikidata: string; titles: Record<string, string> } | null;
   /** Key papers (label, title, DOI/arXiv url), from content/papers.json. */
@@ -67,6 +69,20 @@ export interface Problem {
   pixi_zip?: string;
   /** Translations by language code; any missing field falls back to English. */
   i18n?: Record<string, ProblemTranslation>;
+}
+
+export interface Dataset {
+  /** Path in the problem folder, e.g. data/s2.csv. */
+  name: string;
+  /** Which renderer shows it: table (csv/tsv) and text today; image and array files get the info card only. */
+  kind: "table" | "text" | "image" | "array" | "other";
+  /** Under generated/, for assetUrl(). */
+  url: string;
+  size: number;
+  /** The file's leading # lines: source, licence, citation, column meanings. */
+  comments: string[];
+  columns: string[];
+  rows: number;
 }
 
 export interface DataFile {

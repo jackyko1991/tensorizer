@@ -3,7 +3,8 @@ import CodeMirror, { type ViewUpdate } from "@uiw/react-codemirror";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { askAI, emitSelection, type CodeSelection } from "../agentBus";
 import { useLang, type Key } from "../i18n";
-import type { CodeFile } from "../types";
+import type { CodeFile, Dataset } from "../types";
+import DataView from "./DataView";
 
 const ROLE: Record<string, Key> = {
   "test.py": "role.test",
@@ -18,6 +19,8 @@ interface Props {
   /** Problem id, so a code selection can be sent to the Ask AI panel. */
   problem: string;
   files: CodeFile[];
+  /** Library problems: bundled data files, shown as read-only tabs after the code. */
+  datasets?: Dataset[];
   edits: Record<string, string>;
   editable: boolean;
   onEdit: (name: string, code: string) => void;
@@ -34,6 +37,7 @@ interface Props {
 export default function CodePanel({
   problem,
   files,
+  datasets = [],
   edits,
   editable,
   onEdit,
@@ -45,6 +49,7 @@ export default function CodePanel({
 }: Props) {
   const { t } = useLang();
   const [active, setActive] = useState(files[0]?.name);
+  const dataset = datasets.find((d) => d.name === active);
   const file = files.find((f) => f.name === active) ?? files[0];
   const edited = Object.keys(edits).length > 0;
   const selection = useRef<CodeSelection | null>(null);
@@ -106,11 +111,27 @@ export default function CodePanel({
               {edits[f.name] !== undefined && <span className="ml-1 text-amber-600">●</span>}
             </button>
           ))}
+          {datasets.map((d) => (
+            <button
+              key={d.name}
+              onClick={() => setActive(d.name)}
+              title={t("dataset.role")}
+              data-testid="data-tab"
+              className={`shrink-0 rounded-t-md border border-b-0 px-3 py-1.5 font-mono text-xs ${
+                d.name === dataset?.name
+                  ? "border-emerald-200 bg-emerald-50 font-medium text-emerald-700"
+                  : "border-transparent text-gray-500 hover:text-gray-800"
+              }`}
+            >
+              📊 {d.name.replace(/^data\//, "")}
+            </button>
+          ))}
         </div>
 
         <div className="flex h-7 shrink-0 items-center justify-between gap-3 border-b border-gray-100 px-3 text-xs text-gray-500">
           <span className="truncate">
-            {t(ROLE[file.name])} ({t(editable ? "code.editable" : "code.readonly")})
+            {dataset ? t("dataset.role") : t(ROLE[file.name])} (
+            {t(editable && !dataset ? "code.editable" : "code.readonly")})
             {edited && (
               <button onClick={onReset} className="ml-3 text-blue-600 hover:underline">
                 {t("code.reset")}
@@ -129,16 +150,22 @@ export default function CodePanel({
             setMenu({ x: e.clientX, y: e.clientY });
           }}
         >
-          <CodeMirror
-            value={edits[file.name] ?? file.code}
-            extensions={[python()]}
-            editable={editable}
-            readOnly={!editable}
-            theme="light"
-            basicSetup={{ foldGutter: false, highlightActiveLine: editable }}
-            onChange={(code) => onEdit(file.name, code)}
-            onUpdate={onUpdate}
-          />
+          {dataset ? (
+            <div className="flex h-full flex-col p-2">
+              <DataView dataset={dataset} tall />
+            </div>
+          ) : (
+            <CodeMirror
+              value={edits[file.name] ?? file.code}
+              extensions={[python()]}
+              editable={editable}
+              readOnly={!editable}
+              theme="light"
+              basicSetup={{ foldGutter: false, highlightActiveLine: editable }}
+              onChange={(code) => onEdit(file.name, code)}
+              onUpdate={onUpdate}
+            />
+          )}
         </div>
       </div>
       {side}

@@ -151,6 +151,51 @@ def copy_diagram(problem: Path, target: Path) -> str | None:
     return f"{problem.parent.name}/{problem.name}/diagram.svg?v={int(src.stat().st_mtime)}"
 
 
+# Kind of each bundled data file, by suffix: the page picks a renderer per kind (table and text today; image and
+# dense array viewers can be added later without changing the manifest).
+DATA_KINDS = {
+    **dict.fromkeys([".csv", ".tsv"], "table"),
+    **dict.fromkeys([".txt", ".dat", ".json", ".md"], "text"),
+    **dict.fromkeys([".png", ".jpg", ".jpeg", ".tif", ".tiff", ".svg"], "image"),
+    **dict.fromkeys([".npy", ".npz", ".pt", ".h5", ".hdf5", ".nc", ".fits"], "array"),
+}
+
+
+def copy_datasets(problem: Path, target: Path) -> list[dict]:
+    """Copy the problem's bundled data/ files next to its output and describe them for the page: path, kind, size,
+    and for text files the leading # comment lines (source, licence, citation), the column names and the row count."""
+    out = []
+    for src in sorted((problem / "data").glob("*")):
+        if not src.is_file() or src.name.startswith("."):
+            continue
+        dst = target / "data" / src.name
+        dst.parent.mkdir(exist_ok=True)
+        if not dst.is_file() or dst.read_bytes() != src.read_bytes():
+            shutil.copyfile(src, dst)
+        kind = DATA_KINDS.get(src.suffix.lower(), "other")
+        entry = {
+            "name": f"data/{src.name}",
+            "kind": kind,
+            "url": f"{problem.parent.name}/{problem.name}/data/{src.name}?v={int(src.stat().st_mtime)}",
+            "size": src.stat().st_size,
+            "comments": [],
+            "columns": [],
+            "rows": 0,
+        }
+        if kind in ("table", "text"):
+            lines = src.read_text(encoding="utf-8", errors="replace").splitlines()
+            body = [line for line in lines if line.strip() and not line.startswith("#")]
+            entry["comments"] = [line.lstrip("#").strip() for line in lines if line.startswith("#")]
+            if kind == "table":
+                sep = "\t" if src.suffix.lower() == ".tsv" else ","
+                entry["columns"] = [c.strip() for c in body[0].split(sep)] if body else []
+                entry["rows"] = max(0, len(body) - 1)
+            else:
+                entry["rows"] = len(lines)
+        out.append(entry)
+    return out
+
+
 def render(problem: Path, out_dir: Path) -> tuple[Path, str]:
     module = f"problems.{problem.parent.name}.{problem.name}.main"
     env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
@@ -234,6 +279,7 @@ def main() -> None:
                 "output": f"{cat}/{slug}/{existing[0].name}?v={int(existing[0].stat().st_mtime)}" if existing else None,
                 "console": console_file.read_text(encoding="utf-8") if console_file.exists() else "",
                 "diagram": copy_diagram(d, target),
+                "datasets": copy_datasets(d, target),  # bundled real data (data/*.csv) with its source lines
                 "wiki": wiki.get(f"{cat}/{slug}"),
                 "papers": papers.get(f"{cat}/{slug}", []),
                 "tags": [str(t) for t in meta.get("tags") or []],  # e.g. millennium
