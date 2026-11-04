@@ -1179,7 +1179,7 @@ function ProblemView({
           ) : (
             <>
               <div
-                className="-mx-5 -mt-5 flex items-end gap-1 border-b border-gray-200 bg-gray-50 px-3 pt-2"
+                className="sticky -top-5 z-20 -mx-5 -mt-5 flex items-end gap-1 border-b border-gray-200 bg-gray-50 px-3 pt-2"
                 role="tablist"
               >
                 {(["formulation", "data"] as const).map((tab) => (

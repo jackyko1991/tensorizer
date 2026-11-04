@@ -98,10 +98,27 @@ export function plainText(text: string): string {
 /** Plain text with inline math: every `$...$` span is typeset with KaTeX (`\$` is a literal dollar), `code` is monospaced. */
 /** Wrap the first mention of each historical scientist (outside `code`) in a dotted-underline span that the
  *  SciCard easter egg reacts to. Plain text in, HTML out (the text is already escaped). */
+/** Plain http(s) URLs → links that open in a new tab (outside `code`; trailing punctuation, ASCII or full-width,
+ *  stays out of the link). Text in, HTML out (already escaped). */
+function linkUrls(html: string): string {
+  return html
+    .split(/(`[^`]+`)/)
+    .map((part, i) =>
+      i % 2
+        ? part
+        : part.replace(
+            /https?:\/\/[^\s<>"'`，。；、）（]+[^\s<>"'`，。；、）（.,;:!?)\]]/g,
+            (url) =>
+              `<a href="${url}" target="_blank" rel="noreferrer" class="text-blue-700 hover:underline">${url}</a>`,
+          ),
+    )
+    .join("");
+}
+
 function markPeople(html: string): string {
   const seen = new Set<string>();
   return html
-    .split(/(`[^`]+`)/)
+    .split(/(`[^`]+`|<a [^>]*>.*?<\/a>)/)
     .map((part, i) =>
       i % 2
         ? part
@@ -119,7 +136,8 @@ export function RichText({ text, people = false }: { text: string; people?: bool
   const html = useMemo(() => {
     const escape = (s: string) => {
       const e = s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      return people ? markPeople(e) : e;
+      const linked = linkUrls(e);
+      return people ? markPeople(linked) : linked;
     };
     return text
       .split(/(?<!\\)\$(.+?)(?<!\\)\$/s)

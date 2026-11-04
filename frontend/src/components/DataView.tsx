@@ -40,7 +40,9 @@ function cells(line: string, sep: string): string[] {
 /** URLs, doi:… and arXiv:… in a source line become links. */
 function linkify(text: string): ReactNode[] {
   const parts: ReactNode[] = [];
-  const re = /(https?:\/\/[^\s),;]+)|\bdoi:\s*(10\.[^\s),;]+)|\barXiv:\s*([\w.\-/]+\d)/gi;
+  // a link never ends in sentence punctuation (ASCII or full-width)
+  const re =
+    /(https?:\/\/[^\s),;，。；）]*[^\s),;，。；）.:!?])|\bdoi:\s*(10\.[^\s),;，。；）]*[^\s),;，。；）.:!?])|\barXiv:\s*([\w.\-/]+\d)/gi;
   let last = 0;
   for (const m of text.matchAll(re)) {
     const i = m.index ?? 0;
@@ -151,7 +153,7 @@ export default function DataView({
                 <tr key={i} className="odd:bg-white even:bg-gray-50/60">
                   {dataset.columns.map((_, j) => (
                     <td key={j} className="px-2 py-0.5 whitespace-nowrap text-gray-800">
-                      {r[j] ?? ""}
+                      {linkify(r[j] ?? "")}
                     </td>
                   ))}
                 </tr>
@@ -160,7 +162,12 @@ export default function DataView({
           </table>
         ) : (
           <pre className="p-3 font-mono text-[11px] whitespace-pre-wrap text-gray-800">
-            {body.slice(0, PREVIEW_ROWS).join("\n")}
+            {body.slice(0, PREVIEW_ROWS).map((line, i) => (
+              <span key={i}>
+                {linkify(line)}
+                {"\n"}
+              </span>
+            ))}
           </pre>
         )}
         {(table ? dataset.rows : body.length) > PREVIEW_ROWS && text !== null && (
@@ -172,6 +179,8 @@ export default function DataView({
     </div>
   );
 }
+
+const KIND_ICON: Record<Dataset["kind"], string> = { table: "📊", text: "📄", image: "🖼", array: "🔢", other: "🧊" };
 
 /** A folder of the data tree: sub-folders and files, by name. */
 interface Folder {
@@ -244,7 +253,7 @@ function Tree({
               d.name === selected ? "bg-blue-50 font-medium text-blue-700" : "text-gray-600 hover:bg-gray-100"
             }`}
           >
-            📊 <span className="truncate">{d.name.split("/").pop()}</span>
+            {KIND_ICON[d.kind]} <span className="truncate">{d.name.split("/").pop()}</span>
           </button>
         </li>
       ))}
@@ -254,10 +263,24 @@ function Tree({
 
 /** The Data tab of the lower panel: a foldable list of the bundled files (sub-folders of data/ become folders) next
  *  to the chosen file, or a note that the problem has none. */
+/** Thin line icons for the rail (stroke = current colour). */
+const RAIL_ICON = {
+  files: <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5M9 13h6M9 17h6" />,
+  source: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v6M12 7.5v.5" />
+    </>
+  ),
+};
+
+/** The Data tab of the lower panel, laid out like an editor's activity bar: a thin icon rail on the left (Files,
+ *  Source & licence); clicking an icon opens its panel beside the rail, clicking it again closes it. The chosen file
+ *  fills the rest. In a narrow column the open panel floats over the file instead of squeezing it. */
 export function DataSources({ datasets }: { datasets: Dataset[] }) {
   const { t } = useLang();
   const [selected, setSelected] = useState(datasets[0]?.name ?? "");
-  const [listOpen, setListOpen] = useState(true);
+  const [panel, setPanel] = useState<"files" | "source" | null>(null);
   const tree = useMemo(() => buildTree(datasets), [datasets]);
   if (!datasets.length)
     return (
@@ -269,48 +292,77 @@ export function DataSources({ datasets }: { datasets: Dataset[] }) {
       </p>
     );
   const current = datasets.find((d) => d.name === selected) ?? datasets[0];
+  const rail = [
+    { id: "files" as const, label: `${t("dataset.files")} (${datasets.length})` },
+    { id: "source" as const, label: t("dataset.source") },
+  ];
   return (
-    // side by side only when the panel itself is wide (container query), stacked in the narrow middle column
     <div className="@container">
-      <section data-testid="data-sources" className="flex flex-col gap-3 @2xl:flex-row @2xl:items-start">
-        <nav
-          className={`shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-white ${listOpen ? "@2xl:w-52" : "@2xl:w-9"}`}
-          aria-label={t("dataset.files")}
-        >
-          <div className="flex items-center justify-between border-b border-gray-100 px-2 py-1.5">
-            {listOpen && (
-              <span className="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
-                data/ ({datasets.length})
-              </span>
-            )}
+      <section
+        data-testid="data-sources"
+        className="relative flex overflow-hidden rounded-lg border border-gray-200 bg-white"
+      >
+        <nav className="flex w-10 shrink-0 flex-col items-center gap-1 border-r border-gray-200 bg-gray-50 py-2">
+          {rail.map((r) => (
             <button
-              onClick={() => setListOpen((o) => !o)}
-              title={t(listOpen ? "dataset.hideList" : "dataset.showList")}
-              data-testid="data-list-toggle"
-              className="rounded px-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+              key={r.id}
+              onClick={() => setPanel((p) => (p === r.id ? null : r.id))}
+              title={r.label}
+              aria-label={r.label}
+              aria-pressed={panel === r.id}
+              data-testid={`data-rail-${r.id}`}
+              className={`relative flex h-8 w-8 items-center justify-center rounded-md ${
+                panel === r.id ? "bg-white text-blue-700 shadow-sm" : "text-gray-500 hover:bg-white hover:text-gray-800"
+              }`}
             >
-              {listOpen ? "«" : "»"}
+              <svg
+                viewBox="0 0 24 24"
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                {RAIL_ICON[r.id]}
+              </svg>
+              {r.id === "files" && datasets.length > 1 && (
+                <span className="absolute -top-1 -right-1 rounded-full bg-blue-600 px-1 text-[9px] leading-tight text-white">
+                  {datasets.length}
+                </span>
+              )}
             </button>
-          </div>
-          {listOpen && (
-            <div className="max-h-40 overflow-y-auto py-1 @2xl:max-h-80">
-              <Tree node={tree} path="" depth={0} selected={current.name} onSelect={setSelected} />
-            </div>
-          )}
-          {listOpen && current.comments.length > 0 && (
-            <details className="border-t border-gray-100" data-testid="data-source-notes">
-              <summary className="cursor-pointer px-2 py-1.5 text-[11px] font-semibold tracking-wide text-gray-500 uppercase select-none hover:text-gray-800">
-                ℹ {t("dataset.source")}
-              </summary>
-              <ul className="max-h-60 space-y-1 overflow-y-auto px-2 pb-2 text-[11px] leading-snug break-words text-gray-600">
+          ))}
+        </nav>
+        {panel && (
+          <aside
+            data-testid={`data-panel-${panel}`}
+            className="absolute top-0 bottom-0 left-10 z-10 w-56 overflow-y-auto border-r border-gray-200 bg-white shadow-lg @2xl:static @2xl:shadow-none"
+          >
+            <p className="border-b border-gray-100 px-2 py-1.5 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
+              {panel === "files" ? `data/ (${datasets.length})` : t("dataset.source")}
+            </p>
+            {panel === "files" ? (
+              <div className="py-1">
+                <Tree node={tree} path="" depth={0} selected={current.name} onSelect={setSelected} />
+              </div>
+            ) : current.comments.length ? (
+              <ul
+                className="space-y-1 px-2 py-2 text-[11px] leading-snug break-words text-gray-600"
+                data-testid="data-source-notes"
+              >
+                <li className="font-mono text-gray-800">{current.name}</li>
                 {current.comments.map((c, i) => (
                   <li key={i}>{linkify(c)}</li>
                 ))}
               </ul>
-            </details>
-          )}
-        </nav>
-        <div className="min-w-0 flex-1">
+            ) : (
+              <p className="px-2 py-2 text-[11px] text-gray-400">{t("dataset.noSource")}</p>
+            )}
+          </aside>
+        )}
+        <div className="min-w-0 flex-1 p-2">
           <DataView dataset={current} comments={false} />
         </div>
       </section>
