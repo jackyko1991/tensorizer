@@ -178,7 +178,7 @@ export default function Sidebar({ manifest, selected, onSelect, onFork }: Props)
                 {collections
                   .filter((c) => c.group === g)
                   .map((c) => (
-                    <option key={c.id} value={c.id}>
+                    <option key={c.id} value={c.id} title={c.summary}>
                       {c.title} ({c.items.length})
                     </option>
                   ))}

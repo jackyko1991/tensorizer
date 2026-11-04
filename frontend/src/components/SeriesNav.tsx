@@ -28,7 +28,13 @@ export default function SeriesNav({
             data-testid="series-nav"
             className="flex flex-wrap items-center gap-2 rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-xs"
           >
-            <span className="font-medium text-gray-800">🧭 {c.title}</span>
+            <span
+              className="cursor-help font-medium text-gray-800"
+              title={c.summary ?? c.title}
+              data-testid="series-title"
+            >
+              🧭 {c.title}
+            </span>
             <span className="text-gray-500">
               {t("coll.step")
                 .replace("{k}", String(index + 1))
