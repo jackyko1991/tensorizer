@@ -1,6 +1,6 @@
 """Physics checks, written first (TDD): what any correct physics-informed neural network must satisfy.
 
-Run with `pytest problems/others/pinn_oscillator/test.py`. Each test is a physical or mathematical law, not an
+Run with `pytest problems/ai/pinn_oscillator/test.py`. Each test is a physical or mathematical law, not an
 implementation detail: the exact damped-oscillator solution has zero residual m ẍ + μ ẋ + k x = 0, the trained
 PINN matches it and extrapolates beyond the data, the inverse problem recovers μ, and without physics it fails.
 """

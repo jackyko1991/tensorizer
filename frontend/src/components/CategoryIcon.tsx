@@ -107,6 +107,18 @@ const PATHS: Record<string, React.ReactNode> = {
       <path d="M4 7.5l8 4.5 8-4.5M12 12v9" />
     </>
   ),
+  // a small network: three layers of nodes
+  ai: (
+    <>
+      <circle cx="5" cy="7" r="1.6" />
+      <circle cx="5" cy="17" r="1.6" />
+      <circle cx="12" cy="5" r="1.6" />
+      <circle cx="12" cy="12" r="1.6" />
+      <circle cx="12" cy="19" r="1.6" />
+      <circle cx="19" cy="12" r="1.6" />
+      <path d="M6.5 7.5l4 -2M6.5 7.8l4 3.6M6.5 16.2l4 -3.6M6.5 16.5l4 2M13.6 5.6l3.9 5.4M13.6 12h3.8M13.6 18.4l3.9 -5.4" />
+    </>
+  ),
   // sparkles
   others: (
     <>

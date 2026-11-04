@@ -50,6 +50,7 @@ CATEGORIES = {
     "bioinformatics": "Bioinformatics",
     "maths": "Mathematics",
     "graphics": "Gaming & Computer Vision",
+    "ai": "AI & Machine Learning",
     "others": "Others",
 }
 

@@ -1,6 +1,6 @@
 """Physics checks, written first (TDD): what any correct Go engine must satisfy.
 
-Run with `pytest problems/others/alphago_mini/test.py`. Each test is a rule or invariant of the game, not an
+Run with `pytest problems/ai/alphago_mini/test.py`. Each test is a rule or invariant of the game, not an
 implementation detail: the board is the grid graph, surrounded groups are captured, suicide and immediate ko
 retakes are illegal, the area score is antisymmetric under swapping colours and invariant under the board's
 symmetries, and the tree search finds a capture.

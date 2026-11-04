@@ -1,6 +1,6 @@
 """Physics checks, written first (TDD): what any correct Fourier-neural-operator code for Burgers must satisfy.
 
-Run with `pytest problems/others/neural_operator/test.py`. Each test is a physical or mathematical law, not an
+Run with `pytest problems/ai/neural_operator/test.py`. Each test is a physical or mathematical law, not an
 implementation detail: the spectral convolution is resolution invariant, the data solver conserves mass, decays
 small sines at rate νk² and matches the exact Cole–Hopf solution, and the trained operator beats the identity.
 """

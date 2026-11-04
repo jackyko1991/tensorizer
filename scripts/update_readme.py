@@ -34,6 +34,7 @@ CATEGORIES = {
     "bioinformatics": "Bioinformatics",
     "maths": "Mathematics",
     "graphics": "Gaming & Computer Vision",
+    "ai": "AI & Machine Learning",
     "others": "Others",
 }
 LEVELS = {"beginner": "🟢 Beginner", "intermediate": "🟠 Intermediate", "advanced": "🔴 Advanced"}
@@ -44,7 +45,7 @@ KEY_OVERRIDES = {
     "mechanics/three_body_chaos": (
         r"\ddot x_{kai} = G\,m_b\,(r_{kabj}r_{kabj})^{-3/2}\,r_{kabi},\;\; \lVert\Delta\rVert \propto e^{\lambda t}"
     ),
-    "others/neural_operator": r"\hat w_{bok} = R_{iok}\,\hat v_{bik}",
+    "ai/neural_operator": r"\hat w_{bok} = R_{iok}\,\hat v_{bik}",
     "mechanics/mass_spring_cloth": r"m\,\ddot x_{ai} = -k\,D_{ea}\,(\lVert d_e\rVert - \ell_0)\,\hat d_{ei} + m\,g_i",
     "optics/grin_mirage": r"\frac{d}{ds}\Big(n\,\frac{dr_i}{ds}\Big) = \partial_i n",
     "thermodynamics/carnot_cycle": r"W = \oint p\,dV,\;\; \eta = 1 - T_c/T_h",

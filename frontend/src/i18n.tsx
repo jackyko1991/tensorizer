@@ -221,6 +221,7 @@ const BASE = {
   "cat.physchem": ["Physical Chemistry", "物理化學", "物理化学", "Chimie physique", "Physikalische Chemie", "Química física", "物理化学", "Физическая химия", "물리화학", "भौतिक रसायन"],
   "cat.chemistry": ["Chemistry", "化學", "化学", "Chimie", "Chemie", "Química", "化学", "Химия", "화학", "रसायन विज्ञान"],
   "cat.medical": ["Medical Physics", "醫學物理", "医学物理", "Physique médicale", "Medizinische Physik", "Física médica", "医学物理", "Медицинская физика", "의학물리", "चिकित्सा भौतिकी"],
+  "cat.ai": ["AI & Machine Learning", "人工智能與機器學習", "人工智能与机器学习", "IA et apprentissage automatique", "KI & maschinelles Lernen", "IA y aprendizaje automático", "AI・機械学習", "ИИ и машинное обучение", "AI·머신러닝", "एआई और मशीन लर्निंग"],
   "cat.others": ["Others", "其他", "其他", "Autres", "Weitere Themen", "Otros", "その他", "Другое", "기타", "अन्य"],
   "tag.animated": ["animated", "動畫", "动画", "animé", "animiert", "animado", "アニメーション", "анимация", "애니메이션", "एनिमेटेड"],
   "tag.static": ["static", "靜態", "静态", "statique", "statisch", "estático", "静止画", "статично", "정적", "स्थिर"],

@@ -133,6 +133,16 @@ export default function App() {
     };
   }, []);
 
+  // A problem that moved to another category (e.g. others/tiny_transformer → ai/tiny_transformer): old links follow
+  // it by its slug.
+  useEffect(() => {
+    if (!manifest || !selected || !selected.includes("/") || selected.startsWith("workspace/")) return;
+    if (manifest.problems.some((p) => p.id === selected)) return;
+    const slug = selected.split("/").pop();
+    const moved = manifest.problems.find((p) => p.slug === slug);
+    if (moved) window.location.replace(`#/${moved.id}`);
+  }, [manifest, selected]);
+
   // #/concept and #/skills are pages; any other hash is a problem id (category/slug), a workspace problem
   // (workspace/<id>) or one of its notebooks (workspace/<id>/nb/<notebook>).
   const page: Page =
