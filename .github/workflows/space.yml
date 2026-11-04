@@ -6,7 +6,7 @@ name: Deploy backend to Hugging Face Space
 on:
   push:
     branches: [main]
-    paths: [problems/**, backend/**, Dockerfile, pixi.toml, pixi.lock, space/**, .github/workflows/space.yml]
+    paths: [problems/**, backend/**, tensorizer_physics/**, docker/**, Dockerfile, .dockerignore, pixi.toml, pixi.lock, space/**, .github/workflows/space.yml]
   workflow_dispatch:
 
 concurrency:

@@ -8,3 +8,5 @@ frontend/dist
 frontend/public/generated
 notebooks
 prof
+*.pt
+.github
