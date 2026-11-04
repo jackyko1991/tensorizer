@@ -1,0 +1,79 @@
+title: 'Operator search on MNIST: a tensor DAG writes its own classification equation'
+category: ai
+level: advanced
+order: 7
+tags: [series:workflow-orchestration:4]
+summary: >
+  Can a few readable tensor operators, wired as a DAG, compete with a CNN when there are only a handful of training
+  images? Every edge of a small DAG holds a softmax-weighted mixture of 23 candidate operators (Sobel, Laplacian,
+  Gabor, a learned 3×3 filter, ReLU, $x^2$, pooling, row sums, FFT magnitude, class templates, PCA, moments, linear
+  and prototype read-outs); a DARTS search on 1 to 100 images per digit picks one operator per edge, and the DAG is
+  printed as a LaTeX equation that reproduces its predictions exactly. Then data and compute against a LeNet-style CNN
+  and two closed-form baselines, every seed shown.
+animated: true
+vector_form: '\bar o_e(z) = \sum_{o} \operatorname{softmax}(\alpha_e/T)_o\, o(z),\qquad z_i = \sum_{j<i} \bar o_{(j,i)}(z_j),\qquad \ell = \sum_{r,h} a_r b_h\, \mathrm{head}_h\!\Big(\frac{\mathrm{reduce}_r(\mathrm{pool}(z)) - m_r}{s_r}\Big),\qquad \hat y = \arg\max_k \ell_k'
+index_form: 'w_{eo} = \frac{M_{eo}\, e^{\alpha_{eo}/T}}{\sum_{o''} M_{eo''}\, e^{\alpha_{eo''}/T}} \qquad z_{i,bhw} = \sum_{e \to i} \sum_o w_{eo}\, S_{o,bhw}(z_{j(e)}) \qquad \ell_{bk} = \sum_j W_{kj}\, \hat f_{bj} + b_k \qquad \theta \leftarrow \theta - \eta\, \partial_\theta \mathcal L_{\mathrm{train}},\ \ \alpha \leftarrow \alpha - \eta_\alpha\, \partial_\alpha \mathcal L_{\mathrm{val}}'
+translation:
+  - {symbol: 'M_{eo}', code: 'family_mask()', shape: '(9, 23)', meaning: 'the typing rule: operator $o$ may sit on edge $e$ only if it maps that edge''s input shape to its output shape (cell map → map, pool, reduce map → vector, head vector → logits)'}
+  - {symbol: 'w_{eo}', code: 'mixture_weights(alpha / T, mask)', shape: '(9, 23)', meaning: 'masked softmax of the architecture tensor $\alpha$ (edges × operators); the temperature $T$ falls from 1 to 0.001 so the mixture ends one-hot'}
+  - {symbol: 'S_{o}(z_j)', code: 'conv2d(z, cat([bank, K]))', shape: '(B, 10 + E_j, 14, 14)', meaning: 'every operator a node feeds, computed once for all its outgoing edges: one convolution gives Sobel-$x$, Sobel-$y$, Laplacian, Gabor and the learned $3\times 3$ filters $K_e$'}
+  - {symbol: 'z_i', code: "einsum('bol,eo->bel', S, w)", shape: '(B, 1, 14, 14)', meaning: 'repeated $o$ ⇒ summed: each node is the sum of its mixed incoming edges; the cell output is the stack $(x, z_1, z_2, z_3)$'}
+  - {symbol: '\hat f_r', code: '(reduce_op(r, pool(z)) - m) / s', shape: '(B, D_r)', meaning: 'features of reduction $r$ (vec, row/column sums, $|\mathcal F|$, templates $\langle z, \mu_k\rangle$, PCA $U^\top \mathrm{vec}$, moments), standardised with the training images'}
+  - {symbol: '\ell_{bk}', code: 'logits(Z, w, th, st)', shape: '(B, 10)', meaning: 'all reductions × heads mixed at the logit level (their feature lengths differ); linear $W\hat f + b$ or prototypes $-e^\tau\lVert \hat f - p_k\rVert^2/D$, both started at the nearest class mean'}
+  - {symbol: '\partial_\alpha \mathcal L_{\mathrm{val}}', code: 'autograd.grad(loss_val, [alpha])', shape: '(9, 23)', meaning: 'first-order DARTS: $\theta$ steps on a training mini-batch, then $\alpha$ steps on a validation mini-batch'}
+  - {symbol: '\hat y', code: 'evaluate_equation(write_equation(arch), x, th, st)', shape: '(B,)', meaning: 'the discrete DAG written as LaTeX, read back by a small parser and evaluated: the same predictions as the DAG, exactly'}
+notes: >
+  The question. This toy problem is Jacky Ka Long Ko's: an attempt at small-batch AI training with white-box equation
+  writing. CNN versus a tensor method on MNIST; list the candidate tensor operators; let a tensor that encodes the DAG
+  find the best operators and their wiring; train on small batches and compare the data and compute each needs for the
+  same accuracy; and write the classification equation of the DAG found.
+
+  Method. Images are 14×14 (MNIST averaged over 2×2 blocks, so 30 runs fit in about a minute of CPU). The supernet is
+  a DARTS cell (Liu, Simonyan and Yang 2019) with three nodes $z_1, z_2, z_3$ fed by every earlier node through 6
+  edges, each a mixture of 12 cell operators (zero, identity, $x^2$, $|x|$, ReLU, tanh, soft threshold $S_\lambda$,
+  learned $3\times 3$ filter, Sobel-$x$, Sobel-$y$, Laplacian, Gabor), then a pooling edge (average or max $2\times 2$), a
+  reduction edge (vec, row sums, column sums, low-frequency FFT magnitude, class-template correlations, PCA
+  projection, image moments) and a head edge (linear read-out or 10 prototypes). The architecture is the tensor
+  $\alpha$ (9 edges × 23 operators) with a mask for the typing rule. Search: first-order DARTS, alternating a
+  $\theta$ step on a mini-batch of the train half and an $\alpha$ step on the validation half, with the softmax
+  temperature annealed from 1 to 0.001; the DAG keeps the argmax operator of every edge (zero removes the edge),
+  inherits the trained $\theta$ and is fine-tuned briefly, the best validation step kept. Departures from DARTS, stated
+  because they matter: the annealing (as in SNAS and GDAS) and the argmax rule close a discretisation gap that in a
+  first trial cost up to 25 accuracy points; the image is kept as a fourth channel of the cell output; heads start at
+  the nearest class mean in their feature space. The CNN (8 and 16 channels of $3\times 3$, max pooling, a linear
+  layer: 2698 weights) is trained with Adam on the same images with the same early stopping. The baselines have no
+  learned parameter: nearest class mean in pixels, and PCA followed by shrunk LDA.
+
+  Results. The tests check that every operator equals its formula on a small input, that a one-hot mixture is the
+  single operator and the one-hot supernet the discrete DAG, that discretisation picks the argmax, that the written
+  equation, read back from its LaTeX alone, gives exactly the DAG's predictions, and that the baselines are their
+  closed forms. Bundled run (CPU, one thread, 3 seeds), mean test accuracy for $n$ = 1, 5, 10, 50, 100 images per
+  digit: CNN 0.35, 0.53, 0.64, 0.81, 0.85; searched DAG 0.38, 0.48, 0.52, 0.69, 0.82; PCA + LDA 0.41, 0.58, 0.66,
+  0.75, 0.76; nearest class mean 0.41, 0.56, 0.64, 0.68, 0.69. Images per digit to reach 70 %: CNN 18, DAG 52,
+  PCA + LDA 20; to reach 80 %: CNN 45, DAG 91. Training time per run: CNN 0.4 to 1 s, search plus fine-tune 2 to 4 s.
+  So, honestly: the CNN needs less data and less compute for the same accuracy from about 10 images per digit on;
+  below that the closed-form baselines are best and no learner beats them; the structured model did not win at tiny
+  $n$ (at $n$ = 1 it ties with the class means). Why: the search runs on a validation split that is itself tiny, so
+  its choice is noisy, and its validation loss often prefers row sums (28 features, 290 learned numbers, a calmer loss)
+  that classify worse than all pixels (about 2000 learned numbers); 7 of the 15 DAGs chose row sums. As reported for
+  DARTS, the search favours parameter-free operators: Sobel filters fill most edges and a learned filter appears in 3
+  of 15 DAGs. Outside the bundled run, shorter searches (20 or 40 steps) chose all pixels and reached 0.74 to 0.79 at
+  $n$ = 50, a hint that the longer search over-commits; this was seen on the test set, so it is an observation, not a
+  tuned setting. The GPU (a GTX 1080 Ti) gave no speed-up: thousands of tiny kernels, not arithmetic, set the time.
+  results/stages.csv has every number, results/equation.tex every equation found.
+
+  Related work. Neural architecture search (Zoph and Le 2017) and its differentiable form DARTS; symbolic regression,
+  which searches formulas instead of networks (AI Feynman, Udrescu and Tegmark 2020; PySR, Cranmer 2023; genetic
+  programming, Koza 1992); LeNet (LeCun et al. 1998) for the CNN. Data: MNIST (LeCun, Cortes and Burges), licence
+  CC BY-SA 3.0; data/mnist_subset.npz holds 1000 training-pool and 2000 test images (the share-alike licence applies
+  to this subset), see data/SOURCES.md.
+
+  Try it. Change show_n to see the DAG found with 1 or 100 images per digit, more search steps, or one seed for a
+  quick run.
+params:
+  search_steps: {default: 100, min: 20, max: 400, step: 10, type: int, label: 'DARTS search steps (each a $\theta$ and an $\alpha$ update)'}
+  retrain_steps: {default: 50, min: 0, max: 300, step: 10, type: int, label: 'Fine-tune steps of the discrete DAG'}
+  cnn_steps: {default: 200, min: 20, max: 1000, step: 10, type: int, label: 'CNN training steps'}
+  seeds: {default: 3, min: 1, max: 5, step: 1, type: int, label: 'Seeds per training-set size'}
+  batch: {default: 64, min: 20, max: 250, step: 10, type: int, label: 'Mini-batch size (balanced over digits)'}
+  show_n: {default: 10, type: choice, options: [1, 5, 10, 50, 100], label: 'Training images per digit of the DAG shown'}
