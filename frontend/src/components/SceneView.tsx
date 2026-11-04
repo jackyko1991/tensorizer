@@ -26,28 +26,17 @@ interface Loaded {
 }
 
 const CMAP_FOR = (name: string) =>
-  /age|time/i.test(name)
-    ? "plasma"
-    : /cp|pressure|delta|Δ|residual/i.test(name)
-      ? "coolwarm"
-      : "viridis";
+  /age|time/i.test(name) ? "plasma" : /cp|pressure|delta|Δ|residual/i.test(name) ? "coolwarm" : "viridis";
 
 /** The file a layer shows at time t: its own step, else the latest earlier one (static layers: the only one). */
 function fileAt(layer: Layer, t: number): string | undefined {
   if (layer.files.has(t)) return layer.files.get(t);
   let best: number | undefined;
-  for (const k of layer.files.keys())
-    if (k <= t && (best === undefined || k > best)) best = k;
+  for (const k of layer.files.keys()) if (k <= t && (best === undefined || k > best)) best = k;
   return layer.files.get(best ?? [...layer.files.keys()][0]);
 }
 
-export default function SceneView({
-  url,
-  fill = false,
-}: {
-  url: string;
-  fill?: boolean;
-}) {
+export default function SceneView({ url, fill = false }: { url: string; fill?: boolean }) {
   const { t } = useLang();
   const host = useRef<HTMLDivElement>(null);
   const [scene, setScene] = useState<Loaded | null>(null);
@@ -62,11 +51,7 @@ export default function SceneView({
   // surfaces see-through when the scene has flow inside them (streamlines, particles), so it shows
   const [surfaceOpacity, setSurfaceOpacity] = useState(1);
   const [expanded, setExpanded] = useState(false);
-  const view = useRef<{
-    group: THREE.Group;
-    home: () => void;
-    renderer: THREE.WebGLRenderer;
-  } | null>(null);
+  const view = useRef<{ group: THREE.Group; home: () => void; renderer: THREE.WebGLRenderer } | null>(null);
 
   // 1. load the collection and every file it lists (budgeted to ~10 MB by the problems)
   useEffect(() => {
@@ -85,17 +70,14 @@ export default function SceneView({
         let done = 0;
         await Promise.all(
           files.map(async (f) => {
-            const body = base.endsWith(".pvd")
-              ? await (await fetch(dir + f + query)).text()
-              : text;
+            const body = base.endsWith(".pvd") ? await (await fetch(dir + f + query)).text() : text;
             data.set(f, parseVtp(body));
             if (live) setProgress(++done / files.length);
           }),
         );
         const layers = new Map<string, Layer>();
         for (const e of entries) {
-          if (!layers.has(e.layer))
-            layers.set(e.layer, { name: e.layer, files: new Map() });
+          if (!layers.has(e.layer)) layers.set(e.layer, { name: e.layer, files: new Map() });
           layers.get(e.layer)!.files.set(e.time, e.file);
         }
         const ranges = new Map<string, [number, number]>();
@@ -105,13 +87,7 @@ export default function SceneView({
           for (const f of L.files.values()) {
             const d = data.get(f)!;
             for (let i = 0; i < d.points.length; i += 3)
-              box.expandByPoint(
-                new THREE.Vector3(
-                  d.points[i],
-                  d.points[i + 1],
-                  d.points[i + 2],
-                ),
-              );
+              box.expandByPoint(new THREE.Vector3(d.points[i], d.points[i + 1], d.points[i + 2]));
             for (const a of d.pointData) {
               const key = `${L.name}/${a.name}`;
               const v = scalar(a);
@@ -125,8 +101,7 @@ export default function SceneView({
             }
           }
         // an array that is empty in every step (a layer that only appears later) has no range yet
-        for (const [k, [lo, hi]] of ranges)
-          if (!(lo <= hi)) ranges.set(k, [0, 1]);
+        for (const [k, [lo, hi]] of ranges) if (!(lo <= hi)) ranges.set(k, [0, 1]);
         if (!live) return;
         const loaded: Loaded = {
           times: [...new Set(entries.map((e) => e.time))].sort((a, b) => a - b),
@@ -136,20 +111,13 @@ export default function SceneView({
           units,
           span: box.getSize(new THREE.Vector3()).length() || 1,
         };
-        setVisible(
-          Object.fromEntries(loaded.layers.map((L) => [L.name, true])),
-        );
+        setVisible(Object.fromEntries(loaded.layers.map((L) => [L.name, true])));
         setColorBy(
           Object.fromEntries(
-            loaded.layers.map((L) => [
-              L.name,
-              data.get(fileAt(L, loaded.times[0])!)?.pointData[0]?.name ?? "",
-            ]),
+            loaded.layers.map((L) => [L.name, data.get(fileAt(L, loaded.times[0])!)?.pointData[0]?.name ?? ""]),
           ),
         );
-        const hasFlow = [...data.values()].some(
-          (d) => d.lines.offsets.length || d.verts.offsets.length,
-        );
+        const hasFlow = [...data.values()].some((d) => d.lines.offsets.length || d.verts.offsets.length);
         setSurfaceOpacity(hasFlow ? 0.35 : 1);
         setScene(loaded);
       } catch (e) {
@@ -184,17 +152,11 @@ export default function SceneView({
     const box = new THREE.Box3();
     for (const d of scene.data.values())
       for (let i = 0; i < d.points.length; i += 3)
-        box.expandByPoint(
-          new THREE.Vector3(d.points[i], d.points[i + 2], -d.points[i + 1]),
-        );
+        box.expandByPoint(new THREE.Vector3(d.points[i], d.points[i + 2], -d.points[i + 1]));
     const centre = box.getCenter(new THREE.Vector3());
     const home = () => {
       const back = 1 / Math.min(1, camera.aspect);
-      camera.position.set(
-        centre.x - s * 0.9 * back,
-        centre.y + s * 0.55 * back,
-        centre.z + s * 0.9 * back,
-      );
+      camera.position.set(centre.x - s * 0.9 * back, centre.y + s * 0.55 * back, centre.z + s * 0.9 * back);
       controls.target.copy(centre);
       controls.update();
     };
@@ -223,11 +185,7 @@ export default function SceneView({
       observer.disconnect();
       controls.dispose();
       group.traverse((o) => {
-        if (
-          o instanceof THREE.Mesh ||
-          o instanceof THREE.LineSegments ||
-          o instanceof THREE.Points
-        ) {
+        if (o instanceof THREE.Mesh || o instanceof THREE.LineSegments || o instanceof THREE.Points) {
           o.geometry.dispose();
           (o.material as THREE.Material).dispose();
         }
@@ -243,11 +201,7 @@ export default function SceneView({
     if (!v || !scene) return;
     for (const child of [...v.group.children]) {
       v.group.remove(child);
-      if (
-        child instanceof THREE.Mesh ||
-        child instanceof THREE.LineSegments ||
-        child instanceof THREE.Points
-      ) {
+      if (child instanceof THREE.Mesh || child instanceof THREE.LineSegments || child instanceof THREE.Points) {
         child.geometry.dispose();
         (child.material as THREE.Material).dispose();
       }
@@ -261,8 +215,7 @@ export default function SceneView({
       const arr = d.pointData.find((a) => a.name === colorBy[L.name]);
       const colors = new Float32Array(d.points.length);
       const range = arr ? scene.ranges.get(`${L.name}/${arr.name}`) : undefined;
-      if (arr && range && range[1] > range[0])
-        colorize(scalar(arr), range[0], range[1], CMAP_FOR(arr.name), colors);
+      if (arr && range && range[1] > range[0]) colorize(scalar(arr), range[0], range[1], CMAP_FOR(arr.name), colors);
       else colors.fill(0.6); // nothing to colour by, or a constant array: a plain neutral grey
       const color = new THREE.BufferAttribute(colors, 3);
       if (d.polys.offsets.length) {
@@ -270,11 +223,7 @@ export default function SceneView({
         let start = 0;
         for (const end of d.polys.offsets) {
           for (let k = start + 1; k < end - 1; k++)
-            idx.push(
-              d.polys.connectivity[start],
-              d.polys.connectivity[k],
-              d.polys.connectivity[k + 1],
-            );
+            idx.push(d.polys.connectivity[start], d.polys.connectivity[k], d.polys.connectivity[k + 1]);
           start = end;
         }
         const g = new THREE.BufferGeometry();
@@ -283,10 +232,7 @@ export default function SceneView({
         g.setIndex(idx);
         g.computeVertexNormals();
         const first =
-          L.name ===
-          scene.layers.find(
-            (x) => scene.data.get(fileAt(x, time) ?? "")?.polys.offsets.length,
-          )?.name;
+          L.name === scene.layers.find((x) => scene.data.get(fileAt(x, time) ?? "")?.polys.offsets.length)?.name;
         const alpha = first ? surfaceOpacity : Math.min(surfaceOpacity, 0.45); // later surfaces (wakes) see-through
         const opaque = alpha >= 1;
         v.group.add(
@@ -307,8 +253,7 @@ export default function SceneView({
         const seg: number[] = [];
         let start = 0;
         for (const end of d.lines.offsets) {
-          for (let k = start; k < end - 1; k++)
-            seg.push(d.lines.connectivity[k], d.lines.connectivity[k + 1]);
+          for (let k = start; k < end - 1; k++) seg.push(d.lines.connectivity[k], d.lines.connectivity[k + 1]);
           start = end;
         }
         const g = new THREE.BufferGeometry();
@@ -318,11 +263,7 @@ export default function SceneView({
         v.group.add(
           new THREE.LineSegments(
             g,
-            new THREE.LineBasicMaterial({
-              vertexColors: true,
-              transparent: true,
-              opacity: 0.6,
-            }),
+            new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.6 }),
           ),
         );
       }
@@ -330,15 +271,7 @@ export default function SceneView({
         const g = new THREE.BufferGeometry();
         g.setAttribute("position", position);
         g.setAttribute("color", color);
-        v.group.add(
-          new THREE.Points(
-            g,
-            new THREE.PointsMaterial({
-              vertexColors: true,
-              size: scene.span / 250,
-            }),
-          ),
-        );
+        v.group.add(new THREE.Points(g, new THREE.PointsMaterial({ vertexColors: true, size: scene.span / 250 })));
       }
     }
     v.renderer.setClearColor(dark ? 0x111827 : 0x000000, dark ? 1 : 0);
@@ -347,10 +280,7 @@ export default function SceneView({
   // 4. play
   useEffect(() => {
     if (!playing || !scene || scene.times.length < 2) return;
-    const id = window.setInterval(
-      () => setStep((s) => (s + 1) % scene.times.length),
-      1000 / fps,
-    );
+    const id = window.setInterval(() => setStep((s) => (s + 1) % scene.times.length), 1000 / fps);
     return () => window.clearInterval(id);
   }, [playing, fps, scene]);
   useEffect(() => {
@@ -390,11 +320,7 @@ export default function SceneView({
   return (
     <div
       className={`flex flex-col ${dark ? "bg-gray-900 text-gray-100" : "bg-white"} ${
-        expanded
-          ? "fixed inset-3 z-50 rounded border border-gray-200 shadow-2xl"
-          : fill
-            ? "h-full"
-            : "h-96"
+        expanded ? "fixed inset-3 z-50 rounded border border-gray-200 shadow-2xl" : fill ? "h-full" : "h-96"
       }`}
       data-testid="scene-view"
     >
@@ -406,9 +332,7 @@ export default function SceneView({
             {Math.round(progress * 100)}%
           </div>
         )}
-        {error && (
-          <p className="absolute inset-0 p-4 text-xs text-red-600">{error}</p>
-        )}
+        {error && <p className="absolute inset-0 p-4 text-xs text-red-600">{error}</p>}
         {scene && (
           <>
             {/* one compact panel: per layer its switch, colour-by and colour bar (legend), so nothing overlaps */}
@@ -425,9 +349,7 @@ export default function SceneView({
                         <input
                           type="checkbox"
                           checked={!!visible[L.name]}
-                          onChange={() =>
-                            setVisible((v) => ({ ...v, [L.name]: !v[L.name] }))
-                          }
+                          onChange={() => setVisible((v) => ({ ...v, [L.name]: !v[L.name] }))}
                           data-testid={`scene-layer-${L.name}`}
                         />
                         <span className="truncate font-medium">{L.name}</span>
@@ -435,12 +357,7 @@ export default function SceneView({
                       {arraysOf(L).length > 1 && (
                         <select
                           value={colorBy[L.name]}
-                          onChange={(e) =>
-                            setColorBy((c) => ({
-                              ...c,
-                              [L.name]: e.target.value,
-                            }))
-                          }
+                          onChange={(e) => setColorBy((c) => ({ ...c, [L.name]: e.target.value }))}
                           className="max-w-20 rounded border border-gray-200 bg-white px-0.5 text-[10px]"
                           aria-label={t("scene.colorBy")}
                         >
@@ -451,18 +368,12 @@ export default function SceneView({
                       )}
                     </div>
                     {legend && (
-                      <div
-                        className="mt-0.5 pl-5 text-[10px] text-gray-700"
-                        data-testid="scene-legend"
-                      >
+                      <div className="mt-0.5 pl-5 text-[10px] text-gray-700" data-testid="scene-legend">
                         <p className="leading-tight">
                           {legend.array}
                           {legend.unit ? ` (${legend.unit})` : ""}
                         </p>
-                        <div
-                          className="my-0.5 h-1.5 rounded-sm"
-                          style={{ background: gradient(legend.cmap) }}
-                        />
+                        <div className="my-0.5 h-1.5 rounded-sm" style={{ background: gradient(legend.cmap) }} />
                         <p className="flex justify-between gap-1 tabular-nums">
                           <span>{legend.lo.toPrecision(3)}</span>
                           <span>{legend.hi.toPrecision(3)}</span>
@@ -507,9 +418,7 @@ export default function SceneView({
       {scene && scene.times.length > 1 && (
         <div
           className={`flex shrink-0 items-center gap-2 border-t px-2 py-1 text-[11px] ${
-            dark
-              ? "border-gray-700 text-gray-100"
-              : "border-gray-200 text-gray-700"
+            dark ? "border-gray-700 text-gray-100" : "border-gray-200 text-gray-700"
           }`}
         >
           <button
@@ -531,16 +440,13 @@ export default function SceneView({
             data-testid="scene-time"
           />
           <span className="w-24 shrink-0 text-right tabular-nums">
-            t = {scene.times[step].toPrecision(3)} ({step + 1}/
-            {scene.times.length})
+            t = {scene.times[step].toPrecision(3)} ({step + 1}/{scene.times.length})
           </span>
           <select
             value={fps}
             onChange={(e) => setFps(Number(e.target.value))}
             className={`rounded border text-[10px] ${
-              dark
-                ? "border-gray-600 bg-gray-800 text-gray-100"
-                : "border-gray-200 bg-white"
+              dark ? "border-gray-600 bg-gray-800 text-gray-100" : "border-gray-200 bg-white"
             }`}
             aria-label={t("scene.speed")}
           >

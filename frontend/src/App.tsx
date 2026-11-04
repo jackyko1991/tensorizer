@@ -1250,7 +1250,7 @@ function ProblemView({
                           aria-label={t("mesh.shrink")}
                           className="rounded px-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
                         >
-                          ⤡
+                          ✕
                         </button>
                       </span>
                     </div>
