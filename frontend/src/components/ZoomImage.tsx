@@ -81,7 +81,10 @@ export default function ZoomImage({ src, alt }: { src: string; alt: string }) {
             alt={alt}
             title={t("image.zoomHint")}
             draggable={false}
-            onLoad={() => setLoaded((k) => k + 1)}
+            onLoad={() => {
+              setLoaded((k) => k + 1);
+              setZ(fitScale() >= 1 ? 1 : null); // open at 100 %, or fit when the image is bigger than the frame
+            }}
             onClick={(e) => zoom(e.shiftKey ? (mode === "in" ? "out" : "in") : mode, e)}
             onContextMenu={(e) => {
               e.preventDefault();
