@@ -2,7 +2,7 @@
  *  (a scrollable table for csv/tsv, plain text for txt/json; other kinds get the card and a download for now).
  *  Shown in the Data tab of the lower panel, next to the formulation. The file is fetched only when
  *  shown, and kept for the session. */
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { assetUrl } from "../api";
 import { useLang } from "../i18n";
 import type { Dataset } from "../types";
@@ -10,6 +10,8 @@ import DownloadIcon from "./DownloadIcon";
 import { formatSize } from "./DataPanel";
 
 const PREVIEW_ROWS = 200;
+// three.js is only downloaded when someone opens a mesh
+const MeshView = lazy(() => import("./MeshView"));
 const cache = new Map<string, Promise<string>>();
 
 function load(url: string): Promise<string> {
@@ -104,7 +106,9 @@ export default function DataView({
       data-testid="dataset"
     >
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-gray-100 px-3 py-2 text-xs">
-        <span className="font-mono font-medium text-gray-800">📊 {dataset.name}</span>
+        <span className="font-mono font-medium text-gray-800">
+          {KIND_ICON[dataset.kind]} {dataset.name}
+        </span>
         <span className="text-gray-500">
           {shape} / {formatSize(dataset.size)}
         </span>
@@ -131,7 +135,17 @@ export default function DataView({
       )}
       <div className={`min-h-0 overflow-auto ${tall ? "flex-1" : "max-h-72"}`}>
         {/* one renderer per kind: table and text today; image / array canvases can slot in here */}
-        {!readable ? (
+        {dataset.kind === "mesh" ? (
+          <Suspense
+            fallback={
+              <div className="flex h-72 items-center justify-center">
+                <span className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600" />
+              </div>
+            }
+          >
+            <MeshView url={url} tall={tall} />
+          </Suspense>
+        ) : !readable ? (
           <p className="p-3 text-xs text-gray-500">{t("dataset.noPreview")}</p>
         ) : failed ? (
           <p className="p-3 text-xs text-red-600">{t("dataset.failed")}</p>
@@ -180,7 +194,14 @@ export default function DataView({
   );
 }
 
-const KIND_ICON: Record<Dataset["kind"], string> = { table: "📊", text: "📄", image: "🖼", array: "🔢", other: "🧊" };
+const KIND_ICON: Record<Dataset["kind"], string> = {
+  table: "📊",
+  text: "📄",
+  image: "🖼",
+  array: "🔢",
+  mesh: "🧊",
+  other: "📦",
+};
 
 /** A folder of the data tree: sub-folders and files, by name. */
 interface Folder {
@@ -281,6 +302,12 @@ export function DataSources({ datasets }: { datasets: Dataset[] }) {
   const { t } = useLang();
   const [selected, setSelected] = useState(datasets[0]?.name ?? "");
   const [panel, setPanel] = useState<"files" | "source" | null>(null);
+  const frame = useRef<HTMLElement>(null);
+  // picking a file closes the panel when it floats over the viewer (narrow column); a wide layout keeps it open
+  const choose = (name: string) => {
+    setSelected(name);
+    if ((frame.current?.clientWidth ?? 0) < 672) setPanel(null);
+  };
   const tree = useMemo(() => buildTree(datasets), [datasets]);
   if (!datasets.length)
     return (
@@ -299,6 +326,7 @@ export function DataSources({ datasets }: { datasets: Dataset[] }) {
   return (
     <div className="@container">
       <section
+        ref={frame}
         data-testid="data-sources"
         className="relative flex overflow-hidden rounded-lg border border-gray-200 bg-white"
       >
@@ -345,7 +373,7 @@ export function DataSources({ datasets }: { datasets: Dataset[] }) {
             </p>
             {panel === "files" ? (
               <div className="py-1">
-                <Tree node={tree} path="" depth={0} selected={current.name} onSelect={setSelected} />
+                <Tree node={tree} path="" depth={0} selected={current.name} onSelect={choose} />
               </div>
             ) : current.comments.length ? (
               <ul

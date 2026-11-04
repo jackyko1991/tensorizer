@@ -75,7 +75,7 @@ export interface Dataset {
   /** Path in the problem folder, e.g. data/s2.csv. */
   name: string;
   /** Which renderer shows it: table (csv/tsv) and text today; image and array files get the info card only. */
-  kind: "table" | "text" | "image" | "array" | "other";
+  kind: "table" | "text" | "image" | "array" | "mesh" | "other";
   /** Under generated/, for assetUrl(). */
   url: string;
   size: number;

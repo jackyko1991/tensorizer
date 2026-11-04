@@ -158,6 +158,7 @@ DATA_KINDS = {
     **dict.fromkeys([".txt", ".dat", ".json", ".md"], "text"),
     **dict.fromkeys([".png", ".jpg", ".jpeg", ".tif", ".tiff", ".svg"], "image"),
     **dict.fromkeys([".npy", ".npz", ".pt", ".h5", ".hdf5", ".nc", ".fits"], "array"),
+    **dict.fromkeys([".stl"], "mesh"),
 }
 
 

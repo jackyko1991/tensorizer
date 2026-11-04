@@ -1197,7 +1197,7 @@ function ProblemView({
                   >
                     {tab === "formulation"
                       ? `📐 ${t("mtab.formulation")}`
-                      : `📊 ${t("dataset.title")}${problem.datasets?.length ? ` (${problem.datasets.length})` : ""}`}
+                      : `📊 ${t("dataset.title")} (${problem.datasets?.length ?? 0})`}
                   </button>
                 ))}
               </div>
