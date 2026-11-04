@@ -239,6 +239,8 @@ const BASE = {
   "mesh.flat": ["Flat shading (facets)", "平面著色（顯示面片）", "平面着色（显示面片）", "Ombrage plat (facettes)", "Flache Schattierung (Facetten)", "Sombreado plano (facetas)", "フラットシェーディング（面を表示）", "Плоское затенение (грани)", "플랫 셰이딩(면 표시)", "समतल छायांकन (फलक)"],
   "mesh.glossy": ["Glossy material", "光澤材質", "光泽材质", "Matériau brillant", "Glänzendes Material", "Material brillante", "光沢のある素材", "Глянцевый материал", "광택 재질", "चमकदार सामग्री"],
   "mesh.opacity": ["Opacity", "不透明度", "不透明度", "Opacité", "Deckkraft", "Opacidad", "不透明度", "Непрозрачность", "불투명도", "अपारदर्शिता"],
+  "mesh.expand": ["Expand to the page (Esc to close)", "放大至整頁（按 Esc 關閉）", "放大至整页（按 Esc 关闭）", "Agrandir à la page (Échap pour fermer)", "Auf Seitengröße vergrößern (Esc schließt)", "Ampliar a toda la página (Esc para cerrar)", "ページいっぱいに拡大（Esc で閉じる）", "Развернуть на страницу (Esc — закрыть)", "페이지 전체로 확대 (Esc로 닫기)", "पूरे पृष्ठ पर बड़ा करें (बंद करने के लिए Esc)"],
+  "mesh.shrink": ["Back to the panel", "返回面板", "返回面板", "Revenir au panneau", "Zurück ins Feld", "Volver al panel", "パネルに戻す", "Вернуть в панель", "패널로 돌아가기", "पैनल में वापस"],
   "mesh.color": ["Colour", "顏色", "颜色", "Couleur", "Farbe", "Color", "色", "Цвет", "색", "रंग"],
   "mesh.grid": ["Floor grid", "地面網格", "地面网格", "Grille au sol", "Bodenraster", "Rejilla del suelo", "床グリッド", "Сетка пола", "바닥 격자", "फ़र्श ग्रिड"],
   "mesh.axes": ["Axes (x red, z up green, y blue)", "座標軸（x 紅、z 向上綠、y 藍）", "坐标轴（x 红、z 向上绿、y 蓝）", "Axes (x rouge, z vert vers le haut, y bleu)", "Achsen (x rot, z grün nach oben, y blau)", "Ejes (x rojo, z verde hacia arriba, y azul)", "座標軸（x 赤、上向き z 緑、y 青）", "Оси (x красная, z вверх зелёная, y синяя)", "좌표축 (x 빨강, 위쪽 z 초록, y 파랑)", "अक्ष (x लाल, ऊपर z हरा, y नीला)"],

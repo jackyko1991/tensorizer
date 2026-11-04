@@ -61,6 +61,14 @@ export default function MeshView({ url, tall = false }: { url: string; tall?: bo
   const [opts, setOpts] = useState<Options>(loadOptions);
   const scene = useRef<Scene | null>(null);
   const optsRef = useRef(opts);
+  // ⤢ fills the page with the view (an overlay, so it also works inside frames); Esc or ⤡ brings it back
+  const [expanded, setExpanded] = useState(false);
+  useEffect(() => {
+    if (!expanded) return;
+    const key = (e: KeyboardEvent) => e.key === "Escape" && setExpanded(false);
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
+  }, [expanded]);
   optsRef.current = opts;
 
   useEffect(() => {
@@ -186,8 +194,17 @@ export default function MeshView({ url, tall = false }: { url: string; tall?: bo
   ];
 
   return (
-    <div className={`relative rounded ${opts.dark ? "bg-gray-900" : ""}`}>
-      <div ref={host} className={`w-full ${tall ? "h-[60vh]" : "h-72"}`} data-testid="mesh-view" />
+    <div
+      className={`rounded ${opts.dark ? "bg-gray-900" : expanded ? "bg-white" : ""} ${
+        expanded ? "fixed inset-3 z-50 border border-gray-200 shadow-2xl" : "relative"
+      }`}
+      data-testid="mesh-frame"
+    >
+      <div
+        ref={host}
+        className={`w-full ${expanded ? "h-full" : tall ? "h-[60vh]" : "h-72"}`}
+        data-testid="mesh-view"
+      />
       <div
         className="absolute top-1 right-1 flex items-center gap-0.5 rounded-md border border-gray-200 bg-white/90 p-0.5 text-xs shadow-sm"
         data-testid="mesh-tools"
@@ -236,6 +253,16 @@ export default function MeshView({ url, tall = false }: { url: string; tall?: bo
           className="h-6 w-6 rounded text-gray-500 hover:bg-gray-100"
         >
           ⌂
+        </button>
+        <button
+          onClick={() => setExpanded((e) => !e)}
+          title={t(expanded ? "mesh.shrink" : "mesh.expand")}
+          aria-label={t(expanded ? "mesh.shrink" : "mesh.expand")}
+          aria-pressed={expanded}
+          data-testid="mesh-expand"
+          className="h-6 w-6 rounded text-gray-500 hover:bg-gray-100"
+        >
+          {expanded ? "⤡" : "⤢"}
         </button>
       </div>
       {info === "…" && (
