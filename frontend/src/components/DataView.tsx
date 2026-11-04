@@ -187,7 +187,7 @@ export default function DataView({
             <img
               src={url}
               alt={dataset.name}
-              className={`m-auto max-w-full object-contain ${fill ? "h-full" : "max-h-[70vh]"}`}
+              className={`m-auto max-w-full object-contain ${fill ? "h-full object-top xl:object-center" : "max-h-[70vh]"}`}
             />
           )
         ) : dataset.kind === "mesh" ? (

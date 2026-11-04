@@ -55,7 +55,8 @@ export default function PlotPanel({ problem, src, running, progress = null, clas
         </div>
       )}
       {main && !running ? (
-        <div className="min-h-72 flex-1 xl:min-h-0" data-testid="results-browser">
+        <div className="h-[70vh] min-h-72 shrink-0 xl:h-auto xl:min-h-0 xl:flex-1 xl:shrink" data-testid="results-browser">
+          {/* a definite height on phones (the fill layout sizes to it); on desktop the panel's flex height */}
           <DataSources datasets={[main, ...(problem.results ?? [])]} rail={["files"]} listTitle={t("results")} fill />
         </div>
       ) : (

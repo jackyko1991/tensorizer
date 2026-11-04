@@ -123,7 +123,7 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
         const hasFlow = [...data.values()].some((d) => d.lines.offsets.length || d.verts.offsets.length);
         setSurfaceOpacity(hasFlow ? 0.35 : 1);
         // the layer panel starts open only when there is room for it (a big or expanded view)
-        setPanelOpen((host.current?.clientHeight ?? 0) > 520);
+        setPanelOpen((host.current?.clientHeight ?? 0) > 520 && (host.current?.clientWidth ?? 0) >= 720);
         setScene(loaded);
       } catch (e) {
         if (live) setError(e instanceof Error ? e.message : String(e));
@@ -347,7 +347,7 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
           <>
             {/* one compact panel: per layer its switch, colour-by and colour bar (legend), so nothing overlaps */}
             <div
-              className={`absolute top-1 left-1 max-h-[calc(100%-0.5rem)] ${panelOpen ? "w-60" : "w-auto"} space-y-2 overflow-y-auto rounded-md border border-gray-200 bg-white/90 p-2 text-[13px] text-gray-800 shadow-sm`}
+              className={`absolute top-1 left-1 max-h-[calc(100%-0.5rem)] ${panelOpen ? "w-60 max-w-[calc(100%-9rem)]" : "w-auto"} space-y-2 overflow-y-auto rounded-md border border-gray-200 bg-white/90 p-2 text-[13px] text-gray-800 shadow-sm`}
               data-testid="scene-layers"
             >
               <button
