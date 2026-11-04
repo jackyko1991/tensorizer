@@ -1,0 +1,20 @@
+source_hash: 49928f544229
+title: Modos de la cuerda relativista y dualidad T
+summary: 'La cuerda de Nambu–Goto en el gauge del cono de luz son 24 ondas transversales libres. Una sola suma de modos por lotes dibuja una cuerda cerrada o abierta que vibra; la energía en sus modos es el nivel $N$, cuantizado como $\alpha'' M^2 = N - 1$ (abierta) o $4(N-1)$ (cerrada), con $1, 24, 324, 3200, \dots$ estados leídos de la serie de potencias $\prod (1-q^n)^{-24}$. Sobre un círculo de radio $R$, el espectro de la cuerda cerrada no cambia bajo $R \leftrightarrow \alpha''/R$: la dualidad T. La teoría de cuerdas es un marco sin confirmación experimental directa.'
+notes: 'Unidades $\alpha'' = 1$. Estado: la teoría de cuerdas es un marco candidato matemáticamente consistente para la gravedad cuántica, pero no hay evidencia experimental directa a su favor; nada de lo que aquí se muestra es una predicción que se haya puesto a prueba. Lo que se muestra son matemáticas estándar de libro de texto de la cuerda bosónica (Goddard–Goldstone–Rebbi–Thorn 1973; Polchinski, String Theory vol. 1): la cuantización en el cono de luz solo es consistente en $D = 26$, con intercepto $a = 1$, lo que deja un taquión en $N = 0$ ($M^2 < 0$, en rojo), un vector sin masa en $N = 1$ para cuerdas abiertas y el gravitón, el campo B y el dilatón en $N = \tilde N = 1$ para cuerdas cerradas. Las supercuerdas (D = 10) eliminan el taquión. La cuerda dibujada es una configuración clásica cuya energía de osciladores es igual al nivel $N$ (cada cuanto del modo $n$ lleva $n$ unidades); para cuerdas cerradas, los modos derechos e izquierdos se eligen con $N = \tilde N$ (emparejamiento
+  de niveles, $\int \dot X\cdot X''\,d\sigma = 0$), y la cuerda está en su sistema de reposo, por lo que la coordenada del cono de luz $X^-$ no se dibuja. El panel de dualidad T sigue las masas de algunos estados al variar el radio: los estados de momento ($n/R$) y de enrollamiento ($wR/\alpha''$) se intercambian bajo $R \to \alpha''/R$, y en el radio autodual $R = \sqrt{\alpha''}$ aparecen estados adicionales sin masa. El título comprueba que todo el espectro truncado, con multiplicidades, es idéntico en $R$ y en $\alpha''/R$.'
+meanings:
+- amplitudes complejas de los modos derechos e izquierdos $n$ en 3 de las 24 direcciones transversales $i$
+- fase $e^{-in(\tau-\sigma)}$ de cada modo en cada punto de la hoja de mundo (broadcast)
+- 'índice de modo $n$ repetido ⇒ sumado: la forma de la cuerda en cada $\tau$ y $\sigma$'
+- densidad de energía; integrada sobre $\sigma$ da el nivel $N$ (Parseval)
+- 'sumas de divisores a partir de una máscara de divisibilidad por broadcast: $\log\prod(1-q^n)^{-1} = \sum_m \sigma_1(m) q^m/m$'
+- las series de potencias truncadas se multiplican como matrices de Toeplitz triangulares inferiores, así que la $\exp$ de la serie es una exponencial de matriz
+- masas de todos los estados con niveles emparejados $N-\tilde N = nw$ en cada radio $R_b$ a la vez
+labels:
+  string: Tipo de cuerda
+  mode_a: 'Modo $n$ de los modos derechos (abierta: primer modo)'
+  mode_b: 'Modo $\tilde n$ de los modos izquierdos (abierta: segundo modo)'
+  n_points: Puntos a lo largo de la cuerda $\sigma$
+  n_levels: Niveles de masa mostrados
+  R_max: Mayor radio del círculo $R/\sqrt{\alpha'}$ del barrido

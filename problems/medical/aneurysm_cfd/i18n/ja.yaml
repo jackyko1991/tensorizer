@@ -1,0 +1,26 @@
+source_hash: 96c00309dd36
+title: 動脈瘤 CFD：OpenFOAM + VMTK のワークフローをテンソルで再構築
+summary: 公開（CC0）の TOF-MRA から分割した実際の頭蓋内動脈瘤を流れる拍動血流を、標準的な研究ワークフロー（VMTK による中心線と流れの延長、OpenFOAM 型の非圧縮ソルバー、その後の壁面せん断応力・TAWSS・OSI）に沿って計算し、各ステップをテンソル演算として書きます。ソルバーは Poiseuille 流・Womersley 流と、円管および同じ動脈瘤メッシュでの OpenFOAM 計算で、中心線は VMTK で検証します。教育目的のみで、臨床には使えません。
+notes: ワークフロー。典型的な動脈瘤研究では、内腔をセグメンテーションし、VMTK（Antiga ら 2008）で整え、OpenFOAM（Weller ら 1998）で流れを解き、壁面せん断応力を後処理します。ここでは各ステップを私たち自身がテンソルで書いており、どちらの GPL プロジェクトからもコードは複製していません。VMTK の各ステップとその置き換え：vmtksurfacesmoothing、vmtksurfaceremeshing、vmtkflowextensions（-adaptivelength 1 -extensionratio 5）はオフラインで一度だけ実行して STL ファイルを作りました。vmtkcenterlines -seedselector profileidlist（Voronoi 図、$|\nabla T| = 1/R$ 上の fast marching、最急降下による逆追跡）は solve.centrelines になります：内接半径 $R$ は各ボクセルの壁面距離、アイコナール方程式は 26 近傍グラフ上の min-plus 掃引の繰り返しで解き（fast marching のテンソル向け代替。グラフがすでに中軸上にある Voronoi 図ではなく内腔全体なので速度は $R^2$）、すべての出口から先行ノードを同時にたどります。OpenFOAM の icoFoam/pimpleFoam と私たちのコード：lduAddressing owner/neighbour → mesh['owner']、mesh['neigh']；phi → u；fvc::div(phi) → divergence；fvm::laplacian(p) とその PCG 解法 → pressure_matrix と pcg；PISO の圧力補正 → project（1 ステップに 1 回の Chorin 射影）；fvm::laplacian(nu, U) → face_laplacian；div(phi,U) → セミラグランジュ法の advect；関数オブジェクト wallShearStress → wss_at。メッシュ：STL の立方ボクセルで、壁では埋め込み境界のゴースト値を用います。形状：既定は Lausanne TOF-MRA Aneurysm
+  Cohort（Di Noto ら 2022；OpenNeuro ds003949、CC0）の被験者 074 の動脈瘤です。ラベル付きの動脈瘤の周囲 28 mm を切り出し、しきい値で分割し、marching cubes でメッシュ化し、平滑化と延長を行いました（data/SOURCES.md）；入口 1 つ、出口 3 つ。選択肢「synthetic」は私たち自身の分岐部動脈瘤（CC0）です。確認した他のデータセット：AneuriskWeb（CC BY-NC）と AneuX（CC BY-NC 4.0）は非商用、IntrA と AnXplore はライセンスを明示しておらず、Vascular Model Repository は独自の研究用ライセンス、キールのファントム STL（CC BY 4.0）は非常に細い枝をもつ壁のシェルです。流入：解析的な内頸動脈様波形（平均 4.58 ml/s、ピーク/平均 1.66、Ford ら 2005、周期 1 s）を Murray の法則で入口半径に合わせて縮尺し、Womersley 分布で与えます；出口は圧力ゼロ。血液：ニュートン流体、$\nu = 3.5\times10^{-6}$ m²/s、$\rho = 1060$ kg/m³；剛体壁。残差（既定の実行）：円管で OpenFOAM v1912 pimpleFoam と比べて軸上速度 L2 1.2 %、位相 −10 mrad、WSS L2 2.5 %；円管で Womersley の厳密解と比べて L2 0.4 %；中心線は VMTK 1.5.0 と比べて平均距離 0.20 mm（0.5 ボクセル）、最大 0.5 mm、半径差は平均 0.12 mm；動脈瘤は、polyMesh として書き出した私たち自身のボクセルメッシュ（同じ流入と出口）上の pimpleFoam と比べて、断面の |u| が L2 35 %、収縮期ピークの WSS が L2 38 %、TAWSS が L2 32 % です。この最後の差は大きく、時間刻みを 4 分の 1 にしても同じだったので、原因は壁の扱いの違い（滑らかな面上の私たちのゴースト値と OpenFOAM の階段状の面）、出口の位置、そしてどちらのコードも収束していない粗いメッシュ上の移流スキームの違いです。動脈瘤の結果は定性的なものとして読んでください。圧力ゼロの出口は最も細い枝に流量を流しすぎ、圧力降下も非現実的になります。出力：GIF
+  のほかに、results/aneurysm.pvd は壁（WSS、TAWSS、OSI）・流線・トレーサーの ParaView 時系列です。注意：しきい値分割に基づく粗い教育用シミュレーションであり、臨床には使えません。瘤内の低 WSS と高 OSI は文献上、動脈瘤の増大や破裂と関連づけられていますが、知見は矛盾しており議論があります（Meng ら 2014）。OpenFOAM と VMTK の参照結果はオフラインで一度だけ作成したもので、この問題やそのテストが実行することはありません。
+meanings:
+- 各ボクセル面の所有セルと隣接セル（OpenFOAM の owner/neighbour リストと同じ）
+- 面に垂直な速度（OpenFOAM の流束 $\phi_f = u_f h^2$）
+- 面にわたる 2 回の index_add 呼び出し：fvc::div(phi)
+- 面から組み立てた $-\nabla^2$（fvm::laplacian）；壁と入口は Neumann、出口は $p = 0$
+- 共役勾配法、Jacobi と粗い集約による補正
+- 同じ向きの 6 つの隣接面；ゴースト値で壁上をちょうど $u = 0$ にする
+- セミラグランジュ法：各面を流れに沿って逆にたどり補間する（grid_sample）
+- $Q(t)$ の各調和成分の Womersley 分布、複素引数の Bessel 関数 $J_0, J_1$
+- 壁で $u = 0$ を通り、内向き法線に沿った $h$、$2h$ の標本を通る放物線
+- 記録した周期での平均、tau の形は (T, V, 3)
+- 壁面距離 = 最大内接球の半径
+- 三線形補間した速度場を通る RK4 流線を一括で計算（入口から出発）
+- 26 近傍ボクセルグラフ上でのアイコナール方程式の min-plus（Bellman–Ford）掃引
+labels:
+  geometry: 形状：実形状（ローザンヌ TOF-MRA、CC0）または合成
+  voxel: ボクセルサイズ $h$
+  cycles: 計算する心周期の数（最後の周期を記録）
+  dt_ms: 時間刻み $\Delta t$
+  frames: 1 周期あたりのアニメーションのフレーム数

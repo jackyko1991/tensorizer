@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Photoelectric effect: light quanta h nu strike a metal cathode in a vacuum tube and free electrons, which a retarding voltage V between cathode and collector can stop">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- vacuum tube -->
+    <rect x="58" y="22" width="130" height="80" rx="30" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- cathode (metal) and collector -->
+    <rect x="78" y="38" width="10" height="48" fill="#93c5fd" stroke="#374151" stroke-width="2"/>
+    <line x1="166" y1="38" x2="166" y2="86" stroke="#374151" stroke-width="2"/>
+    <!-- incoming light quanta -->
+    <path d="M14,30 q4,-5 8,0 t8,0 t8,0 t8,0 t8,0 l14,16" fill="none" stroke="#f59e0b" stroke-width="2" marker-end="url(#amber)"/>
+    <path d="M14,58 q4,-5 8,0 t8,0 t8,0 t8,0 t8,0 l12,0" fill="none" stroke="#f59e0b" stroke-width="2" marker-end="url(#amber)"/>
+    <text x="18" y="84" font-style="italic" fill="#b45309">hν</text>
+    <!-- ejected electron -->
+    <circle cx="112" cy="56" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <line x1="120" y1="56" x2="154" y2="56" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="104" y="44" font-style="italic">e⁻</text>
+    <text x="126" y="76" font-style="italic" font-size="13">K</text>
+    <!-- circuit with retarding voltage and ammeter -->
+    <polyline points="83,86 83,138 108,138" fill="none" stroke="#374151" stroke-width="2"/>
+    <polyline points="166,86 166,138 146,138" fill="none" stroke="#374151" stroke-width="2"/>
+    <line x1="108" y1="128" x2="108" y2="148" stroke="#374151" stroke-width="2"/>
+    <line x1="114" y1="132" x2="114" y2="144" stroke="#374151" stroke-width="4"/>
+    <line x1="114" y1="138" x2="128" y2="138" stroke="#374151" stroke-width="2"/>
+    <circle cx="137" cy="138" r="9" fill="#ffffff" stroke="#374151" stroke-width="2"/>
+    <text x="132" y="143" font-size="12">A</text>
+    <text x="104" y="124" font-style="italic">V</text>
+  </g>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Bifurcation aneurysm: pulsatile inflow Q(t) enters a parent artery, which splits into two daughter branches with outlets at zero pressure; a saccular dome sits on the bifurcation apex; a dashed centreline of inscribed radius R runs through the vessels and the wall shear stress acts along the wall">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#111827">
+    <!-- lumen: parent artery from the bottom, two daughters, dome on the apex -->
+    <path d="M62,152 L62,104 Q62,78 88,70 L100,66 L176,30 L184,44 L118,80 L184,104 L178,118 L104,92 Q84,98 82,108 L82,152 Z"
+          fill="#93c5fd" stroke="#374151" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="124" cy="60" r="20" fill="#93c5fd" stroke="#374151" stroke-width="2"/>
+    <path d="M106,68 Q112,76 120,79" fill="none" stroke="#93c5fd" stroke-width="7"/>
+    <!-- centreline with inscribed radius -->
+    <path d="M72,150 L72,106 Q72,86 96,79 L108,77 L180,37 M108,77 L181,111" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="72" y1="126" x2="82" y2="126" stroke="#f59e0b" stroke-width="2"/>
+    <text x="86" y="131" font-style="italic" fill="#b45309">R</text>
+    <!-- inflow and outlets -->
+    <line x1="72" y1="158" x2="72" y2="132" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="30" y="150" font-style="italic" fill="#b91c1c">Q(t)</text>
+    <text x="190" y="36" font-style="italic">p = 0</text>
+    <text x="190" y="122" font-style="italic">p = 0</text>
+    <!-- wall shear stress on the dome -->
+    <path d="M139,47 Q146,56 144,68" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="150" y="62" font-style="italic" fill="#b91c1c">τ</text>
+    <text x="158" y="66" font-size="10" fill="#b91c1c">w</text>
+  </g>
+</svg>

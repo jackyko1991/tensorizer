@@ -1,0 +1,16 @@
+source_hash: 52a00886e77c
+title: Birch 与 Swinnerton-Dyer：模 p 数点
+summary: 对秩 0 到 4 的五条椭圆曲线，一次性计算它们在 $\mathbb F_p$ 上、对每个不超过 $X$ 的素数的点数，观察乘积 $\prod_{p\le X} N_p/p$ 如 Birch 与 Swinnerton-Dyer 最初发现的那样以 $(\log X)^r$ 的速度增长，并计算 $L(E, s)$ 在 $s = 1$ 处的值：它在该处的零点阶数等于秩。“这总是成立”这一猜想仍未解决；目前只在解析秩为 0 和 1 时得到证明。
+notes: '$\mathbb Q$ 上的椭圆曲线 $E: y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6$ 的有理点群是有限生成的：$E(\mathbb Q) \cong \mathbb Z^r \oplus T$（Mordell 1922）；秩 $r$ 很难计算。20 世纪 60 年代初，Birch 与 Swinnerton-Dyer 在 EDSAC 计算机上计算曲线模素数的点数，发现 $\prod_{p \le X} N_p/p$ 以 $(\log X)^r$ 的速度增长：有理点越多，模 $p$ 的点也必然越多。他们猜想由 $a_p$ 构造的 $L(E, s)$ 在 $s = 1$ 处的零点阶数恰好是 $r$，且首项系数为 $\frac{L^{(r)}(E,1)}{r!} = \frac{\Omega\, R\, \#\text{Ш}\, \prod_p c_p}{\#T^2}$。这是克雷千禧年大奖难题之一，至今未解决。已证明的部分：若解析秩为 0 或 1，则秩等于解析秩且 Ш 有限（Gross 与 Zagier 1986、Kolyvagin 1989），其证明用到模性（Wiles、Taylor–Wiles 1995、Breuil–Conrad–Diamond–Taylor 2001）——正是模性使 $L(E, s)$ 能够延拓到 $s = 1$。对于解析秩 $\ge 2$，目前没有任何一般性结果。这五条曲线是秩 0 到 4 中导子最小的曲线（Cremona 表中的 11a1、37a1、389a1、5077a1 和 234446a1）。本程序验证：迹满足 Hasse 界 $|a_p| \le 2\sqrt p$；对 11a1，它们等于模形式 $\eta(q)^2\eta(q^{11})^2$ 的系数（已测试）；根数为 $\varepsilon = (-1)^r$；每条曲线在 $s = 1$ 处第一个不为零的导数都是第 $r$ 阶，且 $L(E,1) = 0.2538418608\ldots$、$L''(E,1) = 0.3059997738\ldots$、$L''''(E,1)/2 = 0.7593165\ldots$ 和 $L''''''(E,1)/6 = 1.7318499\ldots$ 与 LMFDB 吻合。对
+  11a1，完整公式也成立：$L(E,1)/\Omega = 1/5 = \#\text{Ш}\cdot c_{11}/\#T^2 = 1 \cdot 5 / 5^2$。某个导数在数值上为零只是证据，并不能证明它真的为零。部分乘积是最初的启发式依据：Goldfeld（1982）证明，若它们真的表现得像 $C(\log X)^r$，则 $r$ 就是解析秩，且黎曼猜想对 $L(E, s)$ 成立；因此它们的收敛本身就是猜想性的，而且很慢。到 $X = 2\times 10^4$ 时，斜率已能正确排列秩 0 到 3，但在 $X = 3\times 10^4$ 时，秩 4 的曲线仍落后于其秩。$a_p/2\sqrt p$ 的 Sato–Tate 分布，即半圆分布 $\frac{2}{\pi}\sqrt{1-x^2}$，对没有复乘的曲线是已证明的定理（Taylor 及其合作者，2008–2011）。'
+meanings:
+- 所有曲线、一个分块中的所有素数以及所有 $x \in \mathbb F_p$ 一次性处理（Horner 法，每一步都模 $p$ 约化）
+- 由平方表 $y^2 \bmod p$ 得到 Legendre 符号；$v = 0$ 时 $\chi = 0$
+- Frobenius 迹；Hasse：$|a_p| \le 2\sqrt p$
+- 一次性得到所有 $X$ 的部分乘积（只用好素数）
+- 在 $\sqrt{X} \le p \le X$ 上的斜率；收敛非常慢
+- 利用积性得到 Dirichlet 系数，每个素数幂 $q = p^k$ 对应一个跨步切片
+- 重复的 $n$ ⇒ 求和：在 Gauss–Legendre 节点 $t = e^{u_m}$ 处的 $F(t)$
+- 一次性得到 $s = 1$ 处的所有导数；第一个非零者给出解析秩
+labels:
+  x_max: 素数上限 $X$

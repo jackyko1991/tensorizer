@@ -1,0 +1,45 @@
+title: Big Bang nucleosynthesis
+category: cosmology
+level: advanced
+order: 10
+summary: >
+  The first three minutes as a stiff reaction network: neutrons and protons freeze out of weak equilibrium, the
+  deuterium bottleneck opens near $T \approx 80$ keV and almost every neutron ends up in $^4$He. Twelve reactions
+  link n, p, d, t, $^3$He, $^4$He, $^7$Li and $^7$Be; a whole batch of baryon-to-photon ratios $\eta$ is integrated
+  at once with an implicit BDF2 scheme, giving the Schramm plot. At the Planck value $\eta \approx 6.1\times10^{-10}$
+  helium and deuterium agree with observation, while lithium comes out about 3× too high: the cosmological lithium
+  problem, still unresolved.
+animated: true
+vector_form: '\frac{dY_i}{dt} = \sum_r (P_{ri} - R_{ri})\Big(\lambda^+_r \prod_j Y_j^{R_{rj}} - \lambda^-_r \prod_j Y_j^{P_{rj}}\Big),\qquad \lambda^-_r = \lambda^+_r\, n_b^{-\Delta N_r} \prod_i (g_i n_{Q,i})^{R_{ri}-P_{ri}}\, e^{-Q_r/T},\qquad H^2 = \frac{8\pi}{3M_P^2}\big(\rho_\gamma + \rho_{e^\pm} + \rho_\nu\big)'
+index_form: '\frac{dY_{bi}}{du} = \frac{dt}{du}\,S_{ri}\big(\lambda^+_{br} M^+_{br} - \lambda^-_{br} M^-_{br}\big),\qquad M^\pm_{br} = \prod_j Y_{bj}^{E^\pm_{rj}},\qquad \Big(\delta_{ik} - \beta h\,\frac{dt}{du}\,J_{bik}\Big)\,\Delta Y_{bk} = -G_{bi}'
+translation:
+  - {symbol: 'R_{ri},\ P_{ri}', code: 'stoichiometry(device)', shape: '(Rx, N)', meaning: 'how many nuclei $i$ reaction $r$ consumes and produces (12 reactions, 8 species)'}
+  - {symbol: 'S_{ri}', code: 'P - R', shape: '(Rx, N)', meaning: 'net change; $\sum_i A_i S_{ri} = 0$ for every $r$ (baryon number)'}
+  - {symbol: 'N_A\langle\sigma v\rangle_r', code: "exp(einsum('sk,tk->ts', a, phi)).index_add", shape: '(T, Rx)', meaning: 'REACLIB fits: repeated $k$ (7 basis functions of $T_9$) ⇒ summed, then sets of one reaction added'}
+  - {symbol: '\lambda^\pm_{br}', code: 'rate_coefficients(T, eta, tau_n)', shape: '(T, B, Rx)', meaning: 'forward ($\propto n_b \propto \eta$) and reverse (detailed balance) rates for every $\eta_b$'}
+  - {symbol: 'M^\pm_{br}', code: 'monomials(Y, R)', shape: '(B, Rx)', meaning: '$\prod_j Y_j^{R_{rj}}$, e.g. $Y_d^2$ for d + d'}
+  - {symbol: 'S_{ri}(\dots)_{br}', code: "einsum('ri,br->bi', S, flux)", shape: '(B, N)', meaning: 'repeated $r$ ⇒ summed over reactions'}
+  - {symbol: 'J_{bik}', code: "einsum('ri,brk->bik', S, dflux)", shape: '(B, N, N)', meaning: 'exact Jacobian for Newton''s method'}
+  - {symbol: '\Delta Y_{bk}', code: 'torch.linalg.solve(eye - k * J, G)', shape: '(B, N)', meaning: 'one Newton update of the implicit BDF2 step for the whole $\eta$ batch'}
+  - {symbol: '\lambda_{n\to p}', code: 'weak_rates(T, T_nu, tau_n)', shape: '(T,)', meaning: 'Born-approximation weak rates, normalised to the neutron lifetime $\tau_n$'}
+notes: >
+  Status: standard Big Bang nucleosynthesis is established physics. Its predictions for $^4$He and D agree with
+  observations at the baryon density measured independently from the cosmic microwave background, one of the
+  pillars of the hot Big Bang model (Alpher, Bethe and Gamow 1948; Wagoner, Fowler and Hoyle 1967). The
+  cosmological lithium problem is open: the predicted $^7$Li/H is about 3× the Spite plateau of old halo stars
+  ($(1.6\pm0.3)\times10^{-10}$), and neither nuclear physics, stellar depletion nor new particles has been shown to
+  explain it. Observed values (cited constants): $Y_p = 0.245\pm0.003$ (PDG review of BBN), D/H $= (2.527\pm0.030)\times10^{-5}$
+  (Cooke, Pettini and Steidel 2018). Model: the 12 reactions of Smith, Kawano and Malaney (1993) with thermonuclear
+  rates from the JINA REACLIB database (Cyburt et al. 2010; sets an06, de04, gi17, go17, cd08, db18) and reverse rates
+  from detailed balance. Approximations, stated: Born-approximation weak rates (no radiative, finite-mass or
+  finite-temperature corrections), instantaneous neutrino decoupling ($N_\mathrm{eff} = N_\nu$ instead of 3.044),
+  $^7$Be counted as $^7$Li and t as $^3$He (later decays), and the T9 fits held constant above $T_9 = 10$. These make
+  $Y_p$ about 2% lower than precision codes such as PRIMAT or PArthENoPE ($0.2470$); D/H agrees to a few per cent.
+  Try $N_\nu = 4$: faster expansion freezes out more neutrons and raises $Y_p$ by about 0.013, which is how BBN
+  counts neutrino species.
+params:
+  n_eta: {default: 24, min: 6, max: 48, step: 1, type: int, label: 'Number of $\eta$ values in the batch'}
+  eta10: {default: 6.1, min: 1.0, max: 10.0, step: 0.1, label: 'Marked $\eta \times 10^{10}$ (left panel)'}
+  tau_n: {default: 878.4, min: 850.0, max: 900.0, step: 0.1, label: 'Neutron lifetime $\tau_n$', unit: s}
+  n_nu: {default: 3.0, min: 2.0, max: 5.0, step: 0.5, label: 'Neutrino species $N_\nu$'}
+  n_steps: {default: 1200, min: 400, max: 3000, step: 100, type: int, label: 'BDF2 steps in $\ln T$'}

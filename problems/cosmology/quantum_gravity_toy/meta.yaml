@@ -1,0 +1,43 @@
+title: 'Quantum cosmology: the loop bounce'
+category: cosmology
+level: advanced
+order: 2
+tags: [series:quantum-gravity:2, role:theory, speculative]
+summary: >
+  A toy model of quantum gravity: loop quantum cosmology (LQC) of a flat universe filled with a massless scalar field.
+  Replacing the connection $b$ by the holonomy $\sin(\lambda b)/\lambda$ of a loop of Planck-size area turns the
+  Friedmann equation into $H^2 = \frac{8\pi G}{3}\rho(1-\rho/\rho_c)$. RK4 on a batch of universes shows the Big Bang
+  replaced by a bounce at $\rho = \rho_c \approx 0.41\,\rho_\mathrm{P}$, while the Wheeler–DeWitt wave packet of the
+  same model follows classical collapse into the singularity. Quantum gravity is an open research problem; this is one
+  simplified approach.
+animated: true
+vector_form: 'C = \frac{p_\varphi^2}{2V} - \frac{3V\sin^2(\lambda b)}{8\pi G\gamma^2\lambda^2} = 0,\qquad \dot V = -4\pi G\gamma\,\frac{\partial C}{\partial b},\quad \dot b = 4\pi G\gamma\,\frac{\partial C}{\partial V},\quad \dot\varphi = \frac{p_\varphi}{V},\qquad H^2 = \frac{8\pi G}{3}\,\rho\Big(1 - \frac{\rho}{\rho_c}\Big),\qquad \partial_\varphi^2\Psi = 12\pi G\,\partial_{\ln V}^2\Psi'
+index_form: '\dot y_{bk} = f_k(y_b;\,p_b,\lambda_b),\qquad y_{bk} = (V_b, b_b, \varphi_b),\qquad \rho_{tb} = \frac{p_b^2}{2V_{tb}^2},\qquad H_{tb} = \frac{\sin(2\lambda_b b_{tb})}{2\gamma\lambda_b},\qquad \Psi_{px} = A_k\,e^{\,i k (x_x - x_B + \ln 2 + \sqrt{12\pi G}\,\varphi_p)}'
+translation:
+  - {symbol: 'y_{bk}', code: 'initial_state(p, lam, rho0)', shape: '(B, 3)', meaning: 'volume, connection and scalar field of each universe $b$ in the batch, on the constraint surface $C = 0$'}
+  - {symbol: '\lambda_b', code: 'LAMBDA * scales', shape: '(B,)', meaning: 'loop size: $\lambda^2 = 4\sqrt3\pi\gamma\,\ell_P^2$ is the LQG area gap; smaller $\lambda$ ⇒ larger $\rho_c$'}
+  - {symbol: 'f_k(y_b)', code: 'rhs(y, p, lam)', shape: '(B, 3)', meaning: 'Hamilton''s equations of the effective constraint, all universes at once'}
+  - {symbol: 'y_{tbk}', code: 'integrate(rhs, y0, dt, n)', shape: '(T, B, 3)', meaning: 'RK4 trajectory in proper time'}
+  - {symbol: 'C_{tb}', code: 'constraint(y, p, lam)', shape: '(T, B)', meaning: 'Hamiltonian constraint, must stay $0$ (its RK4 drift is printed in the terminal)'}
+  - {symbol: '\rho_c', code: 'critical_density(lam)', shape: '(B,)', meaning: '$3/(8\pi G\gamma^2\lambda^2)$: the bounce density'}
+  - {symbol: '\Psi_{px}', code: "einsum('k,pxk->px', A, waves)", shape: '(P, X)', meaning: 'repeated $k$ ⇒ summed: Wheeler–DeWitt packet on the grid of clock $\varphi_p$ and $x = \ln V$'}
+notes: >
+  Planck units $G = \hbar = c = 1$; Barbero–Immirzi parameter $\gamma = 0.2375$. Which approach: the effective
+  equations of loop quantum cosmology with improved ($\bar\mu$) dynamics (Ashtekar, Pawlowski and Singh 2006;
+  Taveras 2008), for a spatially flat FRW universe with a massless scalar field that also serves as a clock. Status:
+  there is no accepted theory of quantum gravity. LQC is a symmetry-reduced quantisation inspired by loop quantum
+  gravity; its link to full LQG is not established, and the effective equations are an approximation that agrees with
+  the numerical evolution of sharply peaked quantum states in this model. No observation has tested the bounce. What is
+  shown is exact for the model: the constraint is preserved, the effective Friedmann equation holds, the bounce density
+  $\rho_c$ is the same for every $p_\varphi$, and the volume follows $V(t) = \sqrt{V_B^2 + 12\pi G p_\varphi^2 t^2}$.
+  Far from $\rho_c$ (or for $\lambda \to 0$) classical general relativity returns: $H^2 = 8\pi G\rho/3$ and the volume
+  falls linearly to $V = 0$ in finite time (red dashed: the singularity). The grey band is an exact Wheeler–DeWitt
+  solution of the same model (quantised without loops, $x = \ln V$): it is a free wave packet that slides along the
+  classical contracting line into $V \to 0$, as APS found. The lighter curves use smaller loops ($\lambda/2$,
+  $\lambda/4$): the bounce happens later, at higher density. Frames are spaced densely around the bounce.
+params:
+  p_phi: {default: 100.0, min: 10, max: 1000, step: 10, label: 'Scalar field momentum $p_\varphi$ ($\hbar$)'}
+  gap_scale: {default: 1.0, min: 0.25, max: 2.0, step: 0.05, label: 'Loop size $\lambda$ relative to the LQG area gap'}
+  log10_rho_start: {default: -3.0, min: -5, max: -1, step: 0.5, label: 'Starting density $\log_{10}(\rho/\rho_c)$'}
+  dt: {default: 0.002, min: 0.0005, max: 0.01, step: 0.0005, label: 'RK4 time step $\Delta t$', unit: t_P}
+  spread: {default: 0.15, min: 0.05, max: 0.4, step: 0.01, label: 'Wheeler–DeWitt packet width $\Delta k/k_0$'}

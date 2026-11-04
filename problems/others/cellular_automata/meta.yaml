@@ -1,0 +1,42 @@
+title: 'All 256 elementary cellular automata, and Lenia'
+category: others
+level: intermediate
+order: 5
+summary: >
+  A line of cells where each new cell depends on itself and its two neighbours: the three bits form a code
+  $k \in \{0, \dots, 7\}$ and the rule number written in binary is the lookup table. All 256 rules run as one
+  $(256, W)$ tensor advanced by a single gather: rule 90 draws Sierpinski's triangle, rule 30 looks random, rule 110
+  builds interacting structures and rule 184 moves traffic. A continuous cousin, Lenia, replaces the table by a
+  smooth ring kernel and grows a gliding creature.
+animated: true
+vector_form: 'x''_i = f_r(x_{i-1}, x_i, x_{i+1}),\qquad f_r(a, b, c) = \Big\lfloor \frac{r}{2^{4a + 2b + c}} \Big\rfloor \bmod 2,\qquad A'' = \operatorname{clip}\Big(A + \tfrac1T\,G(K * A),\ 0,\ 1\Big)'
+index_form: 'k_{ri} = P_{rij}\,w_j,\qquad x''_{ri} = T_{r,\,k_{ri}},\qquad U_{\mathbf p} = \sum_{\mathbf q} K_{\mathbf p - \mathbf q}\,A_{\mathbf q},\qquad G(U) = 2\,e^{-(U-\mu)^2/2\sigma^2} - 1'
+translation:
+  - {symbol: 'T_{rk}', code: '(rules[:, None] >> k) & 1', shape: '(256, 8)', meaning: 'bit $k$ of rule number $r$: the new state when the neighbourhood code is $k$'}
+  - {symbol: 'P_{rij}', code: 'torch.stack([roll(x, 1), x, roll(x, -1)], -1)', shape: '(R, W, 3)', meaning: 'left, centre and right cell around cell $i$ on a ring'}
+  - {symbol: 'k_{ri} = P_{rij} w_j', code: "einsum('rij,j->ri', P, [4, 2, 1])", shape: '(R, W)', meaning: 'repeated $j$ ⇒ summed: the 3-bit neighbourhood code $4\,\text{left} + 2\,\text{centre} + \text{right}$'}
+  - {symbol: "x'_{ri} = T_{r,k_{ri}}", code: 'table.gather(1, code)', shape: '(R, W)', meaning: 'one lookup advances every rule at once'}
+  - {symbol: '\tilde r,\ \bar r', code: 'mirror_rule(r), complement_rule(r)', shape: '(R,)', meaning: 'left-right mirror and 0/1 complement of a rule; the 256 rules form 88 symmetry classes'}
+  - {symbol: 'K_{\mathbf p}', code: 'lenia_kernel(S, R)', shape: '(S, S)', meaning: 'smooth ring of radius $R = 13$, normalised to sum 1'}
+  - {symbol: 'U = K * A', code: 'ifft2(fft2(A) * fft2(K)).real', shape: '(S, S)', meaning: 'convolution on the periodic grid as a product of Fourier transforms'}
+  - {symbol: "A'", code: 'lenia_step(A, K_hat, mu, sigma, T)', shape: '(S, S)', meaning: 'grow where $U \approx \mu$, decay elsewhere, in steps of $1/T$'}
+notes: >
+  Wolfram sorted the elementary rules into four classes: (1) everything dies or fills, (2) still or periodic
+  patterns, (3) chaos, such as rule 30, whose centre column was long used as a random number generator, and
+  (4) complex, long-lived interacting structures, such as rule 110, which Matthew Cook proved (published 2004)
+  is Turing complete. The mosaic colours each rule with a rough automatic test after 600 steps on a ring of 151
+  cells: uniform, periodic up to a shift, or no period found. The last group mixes classes 3 and 4, and telling
+  them apart has no exact definition. Rule 90 adds neighbours mod 2, so from one cell it is Pascal's triangle mod 2,
+  and rule 184 is the simplest traffic model: a car moves right if the cell ahead is free, so the number of cars
+  is conserved. Unlike the Game of Life (2D, a $3\times3$ count, one rule), here every rule runs at once.
+  Lenia (Bert Chan, 2019) makes space, time and states continuous; Orbium, its classic glider, starts from the
+  cell table published with Lenia (MIT licence) and keeps its mass while it moves, an example of a soliton-like
+  pattern that no conservation law enforces.
+params:
+  rule: {default: 30, min: 0, max: 255, step: 1, type: int, label: 'Your rule $r$ (first panel)'}
+  start: {default: single, type: choice, options: [single, random], label: Start of your rule}
+  width: {default: 161, min: 41, max: 401, step: 20, type: int, label: 'Line width $W$'}
+  generations: {default: 80, min: 20, max: 300, step: 10, type: int, label: Generations}
+  density: {default: 0.5, min: 0.05, max: 0.95, step: 0.05, label: Random start density}
+  lenia_size: {default: 64, min: 48, max: 128, step: 16, type: int, label: 'Lenia world $S$'}
+  lenia_steps: {default: 600, min: 100, max: 2000, step: 100, type: int, label: Lenia steps}

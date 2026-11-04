@@ -1,0 +1,63 @@
+title: 'Bell tests of the projection race'
+category: cosmology
+level: advanced
+order: 17
+tags: [series:projection-hypothesis:5, role:theory, speculative]
+summary: >
+  A speculative hypothesis, not established physics: two entangled particles are one shared state $\Psi$ in $D$
+  dimensions, and each measurement is a projection followed by the race of step 1. Run jointly on $\Psi$, as one event
+  in the full space, the race gives exactly the quantum $E = -\cos\theta$ and CHSH $S = 2\sqrt2$. Run separately on
+  each party's local hidden coordinates, it is a local hidden-variable model with $S\leq2$, which loophole-free Bell
+  tests rule out. A race with more than one hidden dimension per outcome breaks Tsirelson's bound and allows
+  faster-than-light signalling.
+animated: true
+vector_form: 'w_{ij}(a,b) = \big\|(P^a_i\otimes P^b_j)\,\Psi\big\|^2,\quad P^n_\pm = \tfrac12(1\pm n\cdot\sigma),\qquad k^* = \arg\max_k \frac{w_k}{E_k},\qquad E(a,b) = \sum_{ij} s_is_j P_{ij} \overset{m=1}{=} -a\cdot b,\qquad S = \big|E(a,b) - E(a,b^\prime) + E(a^\prime,b) + E(a^\prime,b^\prime)\big| \leq 2\sqrt2,\qquad E_{\rm local}(a,b) = -\big\langle g_m(a\cdot n)\,g_m(b\cdot n)\big\rangle_n,\quad g_m(x) = 2I_{\frac{1+x}{2}}(m,m)-1,\quad S_{\rm local}\leq 2'
+index_form: 'w_{bij} = \bar\psi_{xy}\,(P^a)_{bixu}\,(P^b)_{bjyv}\,\psi_{uv},\qquad E_b = s_i\,s_j\,P_{bij},\qquad P_{bk} = \int ds\; e^{\,m\ln(w_{bk}t) - w_{bk}t - \ln\Gamma(m) + \sum_l \ln Q(m, w_{bl}t) - \ln Q(m, w_{bk}t)},\qquad E^{\rm loc}_b = -\tfrac1N\, g_m(a_{bk}n_{\nu k})\,g_m(b_{bk}n_{\nu k}),\qquad S_b = \max_q\Big|\sum_p E_{pb} - 2E_{qb}\Big|'
+translation:
+  - {symbol: 'P^n_{\pm}', code: 'projectors(n)', shape: '(B, 2, 2, 2)', meaning: 'spin projectors along unit vectors $n$, built with an einsum over the Pauli matrices'}
+  - {symbol: 'w_{bij}', code: "einsum('xy,bixu,bjyv,uv->bij', psi.conj(), Pa, Pb, psi)", shape: '(B, 2, 2)', meaning: 'weight of each joint outcome: the qubit indices $x, y, u, v$ are summed'}
+  - {symbol: 'E_b', code: "einsum('i,j,bij->b', s, s, P)", shape: '(B,)', meaning: 'correlation, outcome signs $s = (+1, -1)$ summed'}
+  - {symbol: 'P_{bk}', code: 'race_probabilities(w, m)', shape: '(M, B, 4)', meaning: 'the joint race over the four outcomes; the sum over $l$ (minus $l = k$) is the product over the other outcomes; $m = 1$ gives $P = w$'}
+  - {symbol: 'E_{tk}', code: 'hidden_block_energies(T, 4, m, D)', shape: '(T, 4)', meaning: 'hidden-block energies read from samples of $\Psi$ uniform on the sphere of $\mathbb C^D$'}
+  - {symbol: 'n_{\nu k}', code: 'shared_directions(N, D)', shape: '(N, 3)', meaning: 'hidden direction set at the source, three real coordinates of $\Psi$: uniform on $S^2$ for any $D$'}
+  - {symbol: 'E^{\rm loc}_b', code: '-(g(a @ n.T) * g(b @ n.T)).mean(-1)', shape: '(B,)', meaning: 'local races: each party races on its own weights $(1\pm a\cdot n)/2$; the shared $\nu$ is averaged'}
+  - {symbol: 'S_b', code: '(Es.sum(0) - 2 * Es).abs().amax(0)', shape: '(B,)', meaning: 'CHSH value, maximised over which of the four terms carries the minus sign'}
+notes: >
+  Step 5 of the Projection Hypothesis (see the series description), the author's speculative hypothesis, not
+  established physics. It tests postulates P1 (projection) and P2 (event) of step 1 (cosmology/projection_postulate)
+  on entanglement. Step 4 (cosmology/projection_singularity_fold) is the geometry, and step 6
+  (cosmology/projection_telescope_tests) the observations. The dimension $D$ of the shared state stays open: it is a
+  parameter, and no result depends on it. Known physics first. The singlet gives $E(a,b) = -a\cdot b = -\cos\theta$.
+  Bell (1964) and Clauser, Horne, Shimony and Holt (1969) proved $S\leq2$ for any local hidden-variable model, while
+  quantum mechanics reaches Tsirelson's bound $S = 2\sqrt2$. The hypothesis: there is one shared $\Psi$ (P0, P3); each
+  party's measurement is a projection plus the race of step 1, where the outcome with the largest
+  $\|P_k\Psi\|^2/E_k$ happens and $E_k$ is the energy in $m$ hidden complex coordinates of $\Psi$. (i) Joint model:
+  the race runs once over the four joint outcomes, with weights $\|(P^a_i\otimes P^b_j)\Psi\|^2$. Nonlocal in 3D, it
+  is a single event in $D$ dimensions. With $m = 1$ (the only value step 1 left alive) it reproduces quantum
+  mechanics exactly: $E = -\cos\theta$ in closed form to $10^{-15}$, and a Monte Carlo from $\Psi$ in $\mathbb C^D$
+  within statistics. $S = 2\sqrt2$ at the optimal settings, the maximum over 2000 random settings stays below it,
+  and Alice's marginals do not depend on Bob's setting (no signalling). (ii) Local model: each party races only on
+  its own hidden energies and a hidden direction $n$ set at the source, i.e. on weights $(1\pm a\cdot n)/2$. This is a
+  local hidden-variable model, so $S\leq2$ is guaranteed. $m = 1$ gives $E = -\cos\theta/3$ (max $S\approx0.93$),
+  and $m\to\infty$ is Bell's own deterministic model $E = -(1-2\theta/\pi)$, which reaches exactly $S = 2$. Beyond
+  Born: a joint race with $m\neq1$ is not quantum mechanics. For $m > 1$ it breaks Tsirelson's bound ($S = 3.85$ at
+  $m = 3$, tending to the PR-box value 4). For a partly entangled state it lets Alice's statistics depend on Bob's
+  setting, which is faster-than-light signalling ($dS/dm = 1.34$, signalling $\approx0.18\,|m-1|$). So $m = 1$ is
+  required by relativistic causality as well as by the triple-slit data. Data
+  (data/bell_tests.csv, cited numbers from the abstracts). Hensen et al. (Nature 526, 682, 2015): NV spins 1.3 km
+  apart, $S = 2.42\pm0.20$, $p = 0.039$. Their second run (Sci. Rep. 6, 30289, 2016): $S = 2.35\pm0.18$. Giustina
+  et al. and Shalm et al. (Phys. Rev. Lett. 115, 250401 and 250402, 2015): photons, CH–Eberhard inequality,
+  $p\leq3.74\times10^{-31}$ and $2.3\times10^{-7}$. Rosenfeld et al. (Phys. Rev. Lett. 119, 010402, 2017): atoms
+  398 m apart, $S = 2.221\pm0.033$. Storz et al. (Nature 617, 265, 2023): superconducting qubits 30 m apart,
+  $S = 2.0747\pm0.0033$, 22.6$\sigma$ above 2. Verdict: model (ii), and with it every local version of the race, is
+  ruled out. Model (i) agrees with every test, but only because it is quantum mechanics rewritten; it makes no new
+  prediction. The deviation still allowed by step 1 ($|m-1|\leq6\times10^{-3}$) would shift $S$ by at most
+  $8\times10^{-3}$. That is more than Storz's $\sigma_S$, but measured $S$ values sit well below $2\sqrt2$ (visibility
+  0.73), and an unknown visibility absorbs such a shift. Only the shape of $E(\theta)$ (residual
+  $\leq1.5\times10^{-3}$) or a direct no-signalling test ($\leq10^{-3}$) could see it. Wikipedia: Bell's theorem,
+  CHSH inequality.
+params:
+  D: {default: 64, min: 8, max: 4096, step: 8, type: int, label: 'Total dimension $D$ of the shared state $\Psi$ (open)'}
+  m_max: {default: 3, min: 2, max: 8, step: 1, type: int, label: 'Largest number of hidden dimensions per outcome $m$'}
+  settings: {default: 2000, min: 200, max: 20000, step: 100, type: int, label: 'Random measurement settings'}
+  trials: {default: 40000, min: 2000, max: 200000, step: 2000, type: int, label: 'Race events per angle (Monte Carlo)'}

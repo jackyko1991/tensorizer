@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="A heavy Majorana neutrino N decays into a lepton and Higgs slightly more often than into the antilepton and anti-Higgs; inverse decays wash out part of the asymmetry">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- heavy neutrino -->
+    <circle cx="60" cy="80" r="18" fill="#2563eb" stroke="#1e40af" stroke-width="2"/>
+    <text x="53" y="85" font-style="italic" fill="white">N</text>
+    <!-- decay to lepton + Higgs (more often) -->
+    <line x1="78" y1="72" x2="150" y2="38" stroke="#dc2626" stroke-width="2.6" marker-end="url(#arrow)"/>
+    <circle cx="166" cy="30" r="9" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="162" y="35" font-style="italic">ℓ</text>
+    <circle cx="192" cy="44" r="9" fill="#e5e7eb" stroke="#374151" stroke-width="1.5"/>
+    <text x="186" y="49" font-style="italic">H</text>
+    <!-- decay to antilepton + anti-Higgs (less often) -->
+    <line x1="78" y1="88" x2="150" y2="122" stroke="#dc2626" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <circle cx="166" cy="130" r="9" fill="#fde68a" stroke="#b45309" stroke-width="1.5"/>
+    <text x="162" y="135" font-style="italic">ℓ̄</text>
+    <circle cx="192" cy="116" r="9" fill="#e5e7eb" stroke="#374151" stroke-width="1.5"/>
+    <text x="186" y="121" font-style="italic">H̄</text>
+    <!-- CP asymmetry and washout -->
+    <text x="104" y="86" font-style="italic" fill="#b45309">ε</text>
+    <path d="M206,58 C 226,80 226,92 206,106" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="214" y="86" font-style="italic">K</text>
+    <text x="10" y="150" font-size="12">T falls: z = M/T grows →</text>
+  </g>
+</svg>

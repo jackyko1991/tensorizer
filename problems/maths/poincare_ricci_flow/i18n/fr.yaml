@@ -1,0 +1,20 @@
+source_hash: 51ed4214e669
+title: La conjecture de Poincaré et le flot de Ricci
+summary: 'Démontrée : toute 3-variété fermée et simplement connexe est la 3-sphère (Perelman 2002–03, achevant le programme du flot de Ricci de Hamilton). Le flot de Ricci $\partial_t g = -2\,\mathrm{Ric}$ lisse une métrique comme la chaleur lisse la température. Ici, il arrondit un lot de 2-sphères bosselées (Gauss–Bonnet $\int K\,dA = 4\pi$ est vérifié à l''arrondi près) et pince le col d''une 3-sphère en haltère en temps fini : la singularité que la chirurgie de Perelman découpe, après quoi chaque morceau devient rond.'
+notes: 'Statut : démontrée. Poincaré a demandé en 1904 si une 3-variété fermée dans laquelle toute boucle peut être contractée en un point doit être la 3-sphère. Hamilton a introduit le flot de Ricci en 1982 et prouvé qu''une 3-variété à courbure de Ricci positive évolue vers une métrique ronde ; en dimension deux, toute métrique sur la sphère devient ronde (Hamilton 1988, Chow 1991), ce que montrent les sphères bosselées : la dispersion de $K$ décroît vers zéro tandis que $\int K\,dA = 4\pi$ et l''aire restent fixes. Les harmoniques $l = 1$ sont des mouvements conformes de la sphère ronde et ne décroissent pas, mais elles ne changent pas la forme. En dimension trois, le flot peut développer des singularités. Pour un haltère à symétrie de révolution dont le col est assez fin, Angenent et Knopf (2004) ont prouvé un pincement du col : le col rétrécit comme un cylindre $S^2 \times \mathbb R$, $\psi_\mathrm{neck}^2 \approx 2(T - t)$, tandis que les bulbes restent grands. Les articles de Perelman
+  (arXiv 2002–03) ont contrôlé toutes les singularités en dimension trois (absence d''effondrement local, voisinages canoniques), défini le flot de Ricci avec chirurgie, qui coupe les cols et les recouvre de calottes, et montré que pour une variété simplement connexe le flot s''éteint en temps fini, chaque morceau étant une sphère ronde juste avant de disparaître, de sorte que la variété était une 3-sphère. La preuve a été vérifiée en détail par Kleiner–Lott, Morgan–Tian et Cao–Zhu ; Perelman a refusé la médaille Fields en 2006 et le prix du millénaire Clay en 2010. Aspects numériques : les surfaces utilisent une grille en volumes finis selon l''angle polaire, de sorte que le Gauss–Bonnet discret est exact. La 3-sphère est écrite sous forme conforme, régulière aux pôles (la forme en abscisse curviligne y divise par $\psi \to 0$ et est instable), avec des cellules resserrées vers les pôles car les bulbes y sont comprimés à mesure que le col s''amincit ; le flot s''arrête à un rayon de col
+  de $0.05$, où les bulbes sont encore résolus. La chirurgie ici n''est qu''une caricature de la construction de Perelman. Essayez un col épais ($\varepsilon \gtrsim 0.5$) : il ne se pince pas, et toute la sphère s''arrondit.'
+meanings:
+- facteur conforme de chaque sphère bosselée $b$, métrique $e^{2u}(dx^2 + \sin^2x\,d\theta^2)$, à la cellule $i$
+- '$j$ répété ⇒ sommé : le laplacien sous forme de flux de la sphère ronde ; ses flux s''annulent aux pôles'
+- courbure de Gauss de la métrique conforme ; le flot de Ricci sur une surface est $\partial_t g = -2Kg$
+- 'courbure totale : exactement $4\pi$ pour toute métrique (Gauss–Bonnet discret), une vérification à chaque pas'
+- courbure moyenne cible du flot normalisé ; elle maintient chaque aire fixe
+- courbures sectionnelles de la 3-sphère $g = e^{2u}(dx^2 + \sin^2x\,g_{S^2})$, $-\psi_{ss}/\psi$ et $(1-\psi_s^2)/\psi^2$ avec $\psi = e^u\sin x$
+- un terme de difféomorphisme (jauge) qui maintient la métrique sous forme conforme ; il change les coordonnées, pas la géométrie
+- rayon de la plus petite section transversale $S^2$ ; $\psi_\mathrm{neck}^2$ décroît à peu près au taux du cylindre $2$ jusqu'au pincement
+- couper le col à forte courbure et recoller une calotte ronde tangente au profil (une caricature de la chirurgie de Perelman)
+labels:
+  neck: Rayon initial du col $\varepsilon$ de l'haltère
+  t_surface: Temps de flot pour les surfaces
+  cells: Cellules de grille $N$

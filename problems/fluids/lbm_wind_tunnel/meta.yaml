@@ -1,0 +1,59 @@
+title: 'Digital wind tunnel: 3D lattice Boltzmann around an STL airplane'
+category: fluids
+level: advanced
+order: 7
+summary: >
+  A small 3D wind tunnel in the style of the OpenLB library: the STL file of a model airplane is read into a triangle
+  tensor, voxelised by ray casting over all lattice nodes at once, pitched to an angle of attack and placed in a D3Q19
+  lattice Boltzmann flow with TRT or MRT collisions, optional Smagorinsky LES and bounce-back on the body. Drag and lift
+  come from momentum exchange; streamlines (batched RK4) and tracer particles show the flow. A sphere case checks the
+  solver against a precomputed run of OpenLB itself and shows the residual.
+animated: true
+vector_form: '\partial_t\mathbf u + (\mathbf u\cdot\nabla)\mathbf u = -\tfrac1\rho\nabla p + \nabla\cdot\big[(\nu + \nu_t)(\nabla\mathbf u + \nabla\mathbf u^\mathsf T)\big],\qquad C_D = \frac{F_x}{\tfrac12\rho U^2 A},\quad C_L = \frac{F_z}{\tfrac12\rho U^2 A}'
+index_form: 'f_i(\mathbf x + \mathbf e_i, t + 1) = f_i - \omega^+\Delta_i^+ - \omega^-\Delta_i^-,\quad \Delta_i^\pm = \tfrac12\big(\Delta_i \pm \Delta_{\bar\imath}\big),\ \Delta_i = f_i - f_i^\text{eq},\quad f^\text{eq}_i = w_i\rho\big(1 + 3e_{ia}u_a + \tfrac92(e_{ia}u_a)^2 - \tfrac32u_au_a\big),\quad F_a = 2\,L_{ixyz}\,f^*_{ixyz}\,e_{ia}'
+translation:
+  - {symbol: 'f_{ixyz}', code: 'f', shape: '(19, Nx, Ny, Nz)', meaning: 'populations: fluid at node $(x, y, z)$ moving with lattice velocity $i$'}
+  - {symbol: 'e_{ia},\ w_i,\ \bar\imath', code: 'lattice(dev)', shape: '(19, 3), (19,), (19,)', meaning: 'D3Q19 velocities (rest, 6 faces, 12 edges), weights and opposite directions'}
+  - {symbol: 'T_{tva}', code: 'read_stl(path)', shape: '(T, 3, 3)', meaning: 'STL triangles: triangle $t$, vertex $v$, coordinate $a$'}
+  - {symbol: 's_{xyz}', code: 'voxelise(tri, shape)', shape: '(Nx, Ny, Nz)', meaning: 'inside if the signed crossings of a ray along $+x$ (winding number) are positive; all rays × all triangles, then searchsorted'}
+  - {symbol: 'e_{ia}u_a', code: "einsum('ia,a...->i...', e, u)", shape: '(19, Nx, Ny, Nz)', meaning: 'repeated $a$ ⇒ summed: velocity along each lattice direction'}
+  - {symbol: '\rho u_a = e_{ia}f_i', code: "einsum('ia,i...->a...', e, f)", shape: '(3, Nx, Ny, Nz)', meaning: 'repeated $i$ ⇒ summed: momentum density'}
+  - {symbol: 'M_{kj}\Delta_j', code: "einsum('kj,j...->k...', M, f - f_eq)", shape: '(19, Nx, Ny, Nz)', meaning: 'MRT: non-equilibrium moments, each relaxed at its own rate $s_k$'}
+  - {symbol: '\Pi_{ab} = e_{ia}e_{ib}\Delta_i', code: "einsum('ia,ib,i...->ab...', e, e, f - f_eq)", shape: '(3, 3, Nx, Ny, Nz)', meaning: 'non-equilibrium momentum flux; its size sets the Smagorinsky eddy viscosity $\nu_t$'}
+  - {symbol: 'f(\mathbf x + \mathbf e_i)', code: 'torch.roll(f[i], e_i)', shape: '(Nx, Ny, Nz)', meaning: 'streaming: shift each population one link'}
+  - {symbol: 'L_{ixyz}', code: 'body_links(solid, e)', shape: '(19, Nx, Ny, Nz)', meaning: '1 where a population leaves a fluid node towards the body (bounce-back as a masked swap)'}
+  - {symbol: '2\,L_{ixyz}f^*_{ixyz}e_{ia}', code: "2 * einsum('l,la->a', f_post[links], e[i])", shape: '(3,)', meaning: 'momentum exchange: force on the body, summed over its boundary links'}
+notes: >
+  Lattice units: node spacing and time step 1, free stream $U = 0.08$ (Mach 0.14), viscosity $\nu = UL/\mathrm{Re}$ with $L$ the
+  body length in nodes, and $\tau = 3\nu + \tfrac12$. The airplane flies in an $80\times 36\times 26$ lattice with $L = 32$
+  (fuselage length; span 28 nodes), the optional NACA 0012 wing in $72\times 24\times 24$ (chord 20). Both STL files were
+  generated for this problem (see data/SOURCES.md): a chunky model plane (fuselage of revolution, swept NACA 0018 wing,
+  horizontal and vertical tail) whose parts overlap where they join, so the voxeliser counts winding numbers (signed
+  crossings) instead of plain ray parity; and a wing that spans the periodic width, i.e. an infinite wing (compare $C_L$ with
+  $2\pi\alpha$). Coefficients use the planform area (the body seen from above). Boundaries: periodic across the flow (a
+  lattice of aircraft) and half-way bounce-back on the voxelised body; solve.simulate also offers a moving ground and a
+  free-slip ceiling. Instead of an inlet and an outlet, the last 16 nodes are a fringe zone that relaxes the flow back to
+  the free stream before it re-enters at $x = 0$; the speed ramps up over 300 steps (the early bump in $C_D$ is the
+  pressure gradient that accelerates the air) and the animation starts after it. TRT uses the "magic" $\Lambda = 3/16$, MRT
+  the D3Q19 rates of d'Humières et al. (2002), Smagorinsky $C_s = 0.17$. At the default Re = 1000 ($\tau \approx 0.508$)
+  plain TRT blows up on this coarse lattice and LES keeps it stable: try switching LES off. Results at 8°: airplane
+  $C_D \approx 0.39$, $C_L \approx 0.12$; wing $C_L \approx 0.31$ against $2\pi\alpha = 0.88$. The lift is low because the
+  wings are only 1–3 cells thick, Re is laminar and the periodic images above and below act like a stack of biplanes:
+  these are illustrations of the method, not predictions. Validation, run live after the airplane in the same execution
+  (param validate, default on; or alone as body sphere_openlb) and shown in the residual panel: a sphere at Re = 20
+  ($D = 10$, $80\times 40\times 40$, BGK, equilibrium inlet) against OpenLB 1.7 on the same lattice, run once offline
+  (data/openlb_reference_*.csv), 2000 steps: $C_D$ 3.360 vs 3.378 (−0.5 %); mid-plane $u_x$: relative L2 0.8 %, L∞ 1.1 %, max
+  $|\Delta u|/U$ 1.3 %. The remaining difference comes from the boundary schemes (OpenLB uses interpolated velocity and
+  pressure boundaries and keeps ringing with sound waves, ±5 % in $C_D$) and full-way versus half-way bounce-back; the
+  collision (BGK) and the resolution are the same. Both codes sit above the Schiller–Naumann value 2.61 because this
+  sphere is not free: OpenLB in a $160\times 60\times 60$ box gives 3.04 and with $D = 20$ in the same proportions 3.21.
+  OpenLB served only as a precomputed reference; none of its (GPL) code is used here.
+params:
+  body: {default: airplane, type: choice, options: [airplane, naca0012_wing, sphere_openlb], label: 'Body (STL in data/; sphere_openlb = the OpenLB check case)'}
+  re: {default: 1000.0, min: 20, max: 5000, step: 10, label: 'Reynolds number $UL/\nu$ (body length $L$)'}
+  collision: {default: trt, type: choice, options: [trt, mrt, bgk], label: Collision operator}
+  les: {default: 'on', type: choice, options: ['on', 'off'], label: Smagorinsky LES}
+  pitch: {default: 8.0, min: -10, max: 15, step: 1, label: 'Angle of attack (airplane and wing)', unit: °}
+  validate: {default: 'on', type: choice, options: ['on', 'off'], label: 'Also run the OpenLB sphere check (residual panel)'}
+  steps: {default: 1200, min: 500, max: 8000, step: 250, type: int, label: Lattice time steps}
+tags: []

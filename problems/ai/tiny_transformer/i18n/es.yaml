@@ -1,0 +1,23 @@
+source_hash: 888a525ecc84
+title: Un GPT diminuto escribe a Shakespeare
+summary: 'Un GPT a nivel de caracteres construido con operaciones tensoriales básicas: embeddings, autoatención causal multicabeza escrita con einsum, LayerNorm, un MLP y conexiones residuales, sin nn.Transformer. Entrenado durante aproximadamente un minuto con Macbeth y Romeo y Julieta, su pérdida baja desde $\ln V$ (una conjetura uniforme entre los $V$ caracteres) y sus muestras pasan de galimatías a palabras, nombres y líneas con forma de verso, mientras los mapas de atención siguen siendo estrictamente triangulares inferiores.'
+notes: 'La arquitectura es la de Vaswani et al., "Attention is all you need" (2017), en su forma GPT de solo decodificador con bloques pre-norm: $X \leftarrow X + \mathrm{Attn}(\mathrm{LN}\,X)$, y luego $X \leftarrow X + \mathrm{MLP}(\mathrm{LN}\,X)$. Los tests comprueban la mecánica con exactitud: la atención en einsum es igual a la función fusionada de PyTorch `scaled_dot_product_attention` con `is_causal=True`; cambiar caracteres después de la posición $t$ deja sin cambios todas las salidas hasta $t$ (la máscara); las filas de $A$ suman 1; la pérdida sin entrenar es $\ln V$; el modelo puede memorizar un lote; y el número de pesos es $Vd + Td + L(12d^2 + 13d) + 2d + dV + V$. Gracias a la máscara, una sola pasada hacia delante entrena a la vez las $T$ predicciones del siguiente carácter de una ventana, mientras que la generación debe avanzar carácter a carácter. Un modelo tan pequeño (113 093 pesos, alrededor de un minuto de CPU) aprende ortografía, espacios, nombres de personajes en mayúsculas
+  y saltos de línea, no significado; la pérdida de validación termina cerca de 2 nats por carácter. Los mapas de calor muestran, para cada capa, la cabeza que más atiende al carácter anterior en la línea "When shall we three meet again?". El modelo de lenguaje de proteínas del problema de bioinformática usa la misma atención sin máscara, para rellenar letras ocultas. Texto: Macbeth y Romeo y Julieta de The Complete Works of William Shakespeare, eBook n.º 100 del Project Gutenberg (dominio público), sin la cabecera ni la licencia del eBook y con las comillas tipográficas pasadas a ASCII; 247 kB en data/shakespeare.txt. Prueba más pasos, un modelo más ancho o una temperatura de 0.5 frente a 1.2.'
+meanings:
+- ventanas aleatorias del texto como identificadores de caracteres; los objetivos son las mismas ventanas desplazadas un carácter a la izquierda
+- embedding del token más embedding de posición aprendido
+- cada vector de token desplazado a media 0 y escalado a varianza 1 sobre sus canales, y luego una escala y un desplazamiento aprendidos
+- '$c$ repetido ⇒ sumado: las consultas (queries) de cada cabeza (igual para claves y valores)'
+- '$0$ en y debajo de la diagonal, $-\infty$ encima: tras el softmax una posición no puede ver caracteres posteriores'
+- $k$ repetido ⇒ sumado; cada fila es una distribución de probabilidad sobre las posiciones anteriores $j \le i$
+- '$j$ repetido, luego $h, k$ ⇒ sumados: lo que cada posición recoge de su pasado, sumado de nuevo a través de la conexión residual'
+- media de $-\log p$ del verdadero carácter siguiente en nats; empieza en $\ln V$
+labels:
+  steps: Pasos de entrenamiento
+  d_model: Anchura del modelo $d$
+  heads: Cabezas de atención $H$
+  layers: Bloques Transformer
+  context: Longitud de contexto $T$
+  batch: Tamaño de lote
+  lr: Tasa de aprendizaje
+  temperature: Temperatura de muestreo

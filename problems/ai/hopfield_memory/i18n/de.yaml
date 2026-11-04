@@ -1,0 +1,20 @@
+source_hash: a8220b6707c1
+title: 'Hopfield-Netze: klassischer und moderner assoziativer Speicher'
+summary: 'Ein Speicher, der ein Bild aus einer verfälschten oder halb verdeckten Version vervollständigt. Das klassische Hopfield-Netz speichert binäre Muster in Hebbschen Gewichten $W_{ij}$ und gleitet in einer Energie bergab; es fasst höchstens etwa $0.138\,N$ zufällige Muster und weit weniger korrelierte. Das moderne kontinuierliche Hopfield-Netz von Ramsauer et al. (2020) behält die Muster und aktualisiert $\xi \leftarrow X\,\mathrm{softmax}(\beta X^\top \xi)$, die Attention der Transformer: Es ruft Cartoon-Gesichter in einem Schritt ab, wo das klassische Netz sie vermischt.'
+notes: 'Die Gesichter zeigen niemanden: Jedes wird vom Code aus ein paar Zufallszahlen gezeichnet (Kopfform, Augen, Brille, Augenbrauen, Nase, Mundkrümmung, Haare, Ohren), daher werden weder urheberrechtlich geschützte Figuren noch Fotos verwendet. Jede Anfrage verdeckt die unteren 40 % eines Gesichts und kippt 5 % der übrigen Pixel. Für zufällige Muster wurde die Grenze des klassischen Netzes $\alpha_c \approx 0.138$ von Amit, Gutfreund und Sompolinsky (1985) mit Methoden aus der Theorie der Spingläser berechnet, und die Bitfehlerrate nach einem Schritt folgt dem Gaußschen Übersprechgesetz $\Phi(-1/\sqrt\alpha)$ (beides wird in den Tests geprüft). Gesichter sind stark korreliert (sie teilen einen Umriss und viel leeres Papier), sodass das klassische Netz sie schon bei einer Last weit unter $0.138$ verwechselt: Es fällt in Mischungen von Gesichtern. Die Energie des modernen Netzes hat einen Log-Sum-Exp-Term; Ramsauer et al. beweisen, dass sie bei jeder Aktualisierung abnimmt, dass eine Aktualisierung
+  meist genügt und dass die Kapazität für gut getrennte Muster exponentiell mit $N$ wächst. Seine Aktualisierung ist genau die Transformer-Attention mit den gespeicherten Mustern als Keys und Values. Mach $\beta$ klein, um metastabile Mittelwerte mehrerer Gesichter statt eines einzelnen zu sehen. Die Idee folgt dem Blogbeitrag zum Paper, mit prozeduralen Gesichtern anstelle seiner Cartoon-Bilder.'
+meanings:
+- 'Muster $\mu$: ein prozedural gezeichnetes Cartoon-Gesicht, Tinte $+1$, Papier $-1$, $N = 32 \times 32$ Pixel'
+- Hebbsche Regel, wiederholtes $\mu$ ⇒ summiert; ein Netz $f$ pro Anzahl gespeicherter Gesichter, Diagonale auf 0 gesetzt
+- 'wiederholtes $j$ ⇒ summiert: Feld auf Neuron $i$ für jedes Netz und jede Anfrage; $s_i$ übernimmt sein Vorzeichen'
+- Energie; steigt nie bei Aktualisierungen von jeweils einem Neuron
+- 'wiederholtes $n$ ⇒ summiert: Ähnlichkeit der Anfrage mit jedem gespeicherten Muster, geschärft durch $\beta$'
+- 'wiederholtes $\mu$ ⇒ summiert: der neue Zustand ist ein gewichteter Mittelwert der Muster, ein einzelnes Muster, wenn $\beta$ groß ist'
+- 'Abrufqualität: 1, wenn das Gesicht exakt wiederhergestellt ist'
+labels:
+  n_faces: Höchstens gespeicherte Gesichter $P$
+  beta: Inverse Temperatur $\beta$
+  mask: Verdeckter Anteil jedes Gesichts
+  noise: Gekippte Pixel
+  sweeps: Klassische Aktualisierungsdurchläufe
+  n_random: Neuronen $N$ für die Kapazitätskurve

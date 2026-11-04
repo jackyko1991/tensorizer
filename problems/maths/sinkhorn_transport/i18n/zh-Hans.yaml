@@ -1,0 +1,18 @@
+source_hash: 796c13483137
+title: 用 Sinkhorn 算法求解最优传输
+summary: 要把一堆环形的沙子搬成两座小丘，再搬成一个螺旋，怎样才能让总代价最小？最优传输要找出传输方案 $P_{ij}$，把质量从 $x_i$ 搬到 $y_j$，代价为 $|x_i - y_j|^2$；其最小值就是 Wasserstein 距离的平方 $W_2^2$。加入少量熵正则化 $\varepsilon$ 后，问题便可用 Sinkhorn 的交替更新求解；这里在对数域中用 logsumexp 实现，并一次处理整批 $\varepsilon$。当 $\varepsilon \to 0$ 时，代价会下降到匈牙利算法求得的精确最优值。
+notes: Monge 于 1781 年提出这个问题，Kantorovich 在 1942 年将其松弛为对传输方案 $P$ 的优化。Cuturi（2013）证明熵正则化版本可用 Sinkhorn 矩阵缩放求解，每次迭代只需几次矩阵乘法，使最优传输在机器学习中变得实用。$\varepsilon$ 很小时需要小心处理：代码使用对偶势 $f, g$ 和 logsumexp，而不是直接计算 $e^{-C/\varepsilon}$（会发生下溢），并把 $\varepsilon$ 从 1 逐步退火到目标值（$\varepsilon$-scaling）。代价 $\langle P_\varepsilon, C\rangle$ 会递减至由匈牙利算法算出的精确 $W_2^2$（这是一个较慢的精确参考解，并已与穷举所有排列的暴力解比对），而对偶值 $\mathrm{OT}_\varepsilon$ 则带有熵偏差，Feydy 等人（2019）提出的 Sinkhorn 散度可以消除这一偏差。测试还检验了两个解析解：在一维中，最优方案就是把排序后的点一一配对（分位数函数）；而在两个高斯分布之间，$W_2^2 = |m_1 - m_2|^2 + \operatorname{tr}(S_1 + S_2 - 2(S_1^{1/2} S_2 S_1^{1/2})^{1/2})$（Bures 度量），这用到了 Brenier 定理：凸函数的梯度就是最优映射。所有形状均由代码生成，没有使用任何图片。
+meanings:
+- 由公式和随机数生成的合成点云，每个点的质量为 $a_i = 1/N$
+- 距离平方，重复的 $k$ ⇒ 求和
+- 同时求解的一批正则化强度
+- 对数域中的 Sinkhorn 更新，对 $j$ 的求和用 logsumexp 计算；即使 $\varepsilon$ 极小也不会溢出
+- 对 $i$ 做同样的更新：之后 $P$ 的各列和恰好等于 $b$
+- 传输方案：$\varepsilon$ 大时模糊，$\varepsilon$ 小时几乎是一个置换
+- 重心映射：$x_i$ 的质量去向；点沿直线 $(1-t)\,x + t\,T(x)$ 移动（McCann 插值）
+- $\mathrm{OT}_\varepsilon(\mu,\nu) - \tfrac12\mathrm{OT}_\varepsilon(\mu,\mu) - \tfrac12\mathrm{OT}_\varepsilon(\nu,\nu)$，当 $\mu = \nu$ 时为零
+labels:
+  n_points: 每个形状的点数 $N$
+  eps_min: 最小正则化强度 $\varepsilon$
+  n_eps: 批次中 $\varepsilon$ 的取值个数
+  n_iter: Sinkhorn 迭代次数

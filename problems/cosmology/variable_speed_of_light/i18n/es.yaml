@@ -1,0 +1,17 @@
+source_hash: b1b7792277b6
+title: Velocidad de la luz variable y el problema del horizonte
+summary: '¿Por qué el CMB tiene la misma temperatura en todas las direcciones si, en el ΛCDM estándar, su cielo se divide en unas $10^4$ regiones que nunca intercambiaron una señal? Integrar $\chi_p = \int c\,d\ln a/(aH)$ para un lote de universos compara tres respuestas: ninguna (ΛCDM), la inflación ($\sim 60$ e-folds de un radio de Hubble que se encoge) y la idea especulativa de velocidad de la luz variable (VSL) de Moffat y de Albrecht–Magueijo, en la que la luz era unas $10^{26}$ veces más rápida antes de una transición de fase. La inflación es la explicación dominante; la VSL es una alternativa minoritaria y especulativa.'
+notes: 'Parámetros de Planck 2018 ($H_0 = 67.4$ km/s/Mpc, $\Omega_m = 0.315$, $\Omega_r = 9.1\times10^{-5}$, plano), última dispersión en $a_\mathrm{rec} = 1/1090$. El ΛCDM da un horizonte de partículas de 14,2 Gpc hoy, pero de solo unos 0,28 Gpc en la recombinación, de modo que una región causal abarca unos 1,2° y el cielo contiene unas $10^4$. La luz se mueve a 45° en el diagrama conforme; los conos de luz pasados de dos puntos opuestos del CMB solo se solapan si $\chi_p(a_\mathrm{rec}) \ge D$ (distancia al CMB, 13,9 Gpc). La inflación lo consigue con $N$ e-folds de expansión de de Sitter que terminan en $a_*$ (el radio de Hubble comóvil se encoge $\propto 1/a$); la VSL mantiene la expansión estándar pero hace $c$ mayor en un factor $r$ antes de una transición en $a_*$, un escalón suave de anchura $w = 0.1$ e-folds. La animación activa ambas gradualmente. Estado: la VSL (Moffat 1993; Albrecht y Magueijo 1999) es especulativa y una visión minoritaria; requiere un marco en el que una constante
+  con dimensiones pueda variar (solo son medibles combinaciones adimensionales como $\alpha = e^2/4\pi\varepsilon_0\hbar c$), sus predicciones dependen del modelo y no tiene respaldo observacional. La inflación es la explicación estándar, tampoco confirmada directamente (aún no hay modos B primordiales) pero coherente con el espectro medido de las fluctuaciones del CMB. Cotas (impresas en el terminal): relojes atómicos $\dot\alpha/\alpha = (1.0\pm1.1)\times10^{-18}$/año, el reactor de Oklo $|\Delta\alpha/\alpha| \lesssim 10^{-7}$ en 2000 millones de años, el CMB $|\Delta\alpha/\alpha| \lesssim 4\times10^{-3}$ en la recombinación y GW170817 $-3\times10^{-15} \le (v_\mathrm{gw}-c)/c \le 7\times10^{-16}$. Una transición en $a_* \sim 10^{-28}$ las elude todas, y por eso mismo es tan difícil de poner a prueba.'
+meanings:
+- malla en $\ln a$ desde mucho antes de $a_*$ hasta hoy
+- 'velocidad de la luz del universo (fotograma) $m$ en cada $a$: $r$ veces $c_0$ antes de $a_*$'
+- tasa de expansión, congelada en $H(a_*)$ durante $N$ e-folds de inflación
+- 'radio de Hubble comóvil: hasta dónde llega la luz en un tiempo de expansión'
+- 'trapecios acumulados a lo largo de $a$: el horizonte de partículas comóvil'
+- ángulo de una región causal en el cielo del CMB y número de regiones
+labels:
+  log10_c_ratio: 'VSL: velocidad de la luz temprana $\log_{10}(c_\mathrm{early}/c_0)$'
+  efolds: 'Inflación: número de e-folds $N$'
+  log10_a_star: Transición / fin de la inflación $\log_{10} a_*$
+  n_grid: Puntos de malla en $\ln a$

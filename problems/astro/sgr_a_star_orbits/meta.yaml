@@ -1,0 +1,53 @@
+title: 'Weighing Sgr A*: the orbit of the star S2'
+category: astro
+level: intermediate
+order: 8
+tags: [shaw:2008, nobel:physics:2020, crafoord:2012]
+summary: >
+  The star S2 circles the centre of the Milky Way every 16 years, passing within 120 AU of an invisible mass. A
+  Keplerian orbit, with Kepler's equation solved by vectorised Newton iterations, is fitted to 25 years of real
+  positions and radial velocities. Levenberg–Marquardt with autograd Jacobians runs from 64 random starts at once
+  and recovers a black hole of about $4.3\times 10^6\,M_\odot$ at $R_0 \approx 8.3$ kpc. The fit then predicts the two
+  relativistic effects GRAVITY later detected: about 200 km/s of redshift at pericentre and $12'$ of precession per
+  orbit.
+animated: true
+vector_form: 'E - e\sin E = \frac{2\pi}{P}(t - t_p),\qquad \mathbf r = R_z(\Omega)R_x(i)R_z(\omega)\begin{pmatrix} a(\cos E - e)\\ a\sqrt{1-e^2}\sin E\\ 0\end{pmatrix},\qquad P^2 = \frac{4\pi^2 (aR_0)^3}{GM}'
+index_form: 'E_{bt} \leftarrow E_{bt} - \frac{E_{bt} - e_b\sin E_{bt} - M_{bt}}{1 - e_b\cos E_{bt}},\qquad r_{bti} = R_{bij}\,q_{btj},\qquad \chi^2_b = \sum_n \Big(\frac{y_{bn} - y_n^{\mathrm{obs}}}{\sigma_n}\Big)^2,\qquad (J^\top J + \lambda\,\mathrm{diag})_{bkl}\,\delta_{bl} = -J_{bnk}\,r_{bn}'
+translation:
+  - {symbol: 'p_b', code: 'random_starts(B, gen)', shape: '(B, 8)', meaning: 'one orbit per start: $a$, $e$, $i$, $\Omega$, $\omega$, $t_p$, $M$, $R_0$'}
+  - {symbol: 'E_{bt}', code: 'kepler_solve(n * (t - tp), e)', shape: '(B, T)', meaning: 'eccentric anomaly by Newton iterations, every orbit and epoch at once'}
+  - {symbol: 'R_{bij}', code: 'rotation(p)', shape: '(B, 3, 3)', meaning: 'orbital plane → (north, east, line of sight), built with einsum'}
+  - {symbol: 'r_{bti}', code: "einsum('bij,btj->bti', R, q)", shape: '(B, T, 3)', meaning: '$j$ summed: position of S2 in AU; divided by $R_0$ gives mas on the sky'}
+  - {symbol: 'v_{bt3}', code: 'observables(p, t)[2]', shape: '(B, T)', meaning: 'line-of-sight velocity in km/s: this is what fixes $R_0$'}
+  - {symbol: 'r_{bn}', code: 'residuals(theta, data)', shape: '(B, 334)', meaning: '(model − data)/$\sigma$ for 145 RA, 145 Dec and 44 velocities'}
+  - {symbol: 'J_{bnk}', code: 'jacobian(theta, data)', shape: '(B, 334, 8)', meaning: 'forward-mode autograd, vmapped over the 8 parameter directions'}
+  - {symbol: '\delta_{bl}', code: 'torch.linalg.solve(JtJ + damp, -grad)', shape: '(B, 8)', meaning: 'one Levenberg–Marquardt step for every start at once'}
+  - {symbol: '\Delta\varphi', code: 'precession_per_orbit(M, a, e)', shape: '()', meaning: '$6\pi GM/(c^2a(1-e^2))$: Schwarzschild precession, $\approx 12''$ for S2'}
+notes: >
+  Since the early 1990s two teams, led by Reinhard Genzel (MPE, ESO telescopes) and Andrea Ghez (UCLA, Keck), have
+  followed stars in the central arcsecond of the Galaxy. S2 is the brightest star with a short orbit. Its 16-year
+  ellipse fixes the enclosed mass in a volume too small for anything but a black hole. Positions give the orbit's
+  angular size and period, and the radial velocities (Doppler shifts of spectral lines) give its true size in km.
+  Together they yield the distance $R_0$ and, through Kepler's third law, the mass. The model has 8 parameters: six
+  elements plus $M$ and $R_0$ (the period follows from $P^2 = 4\pi^2(aR_0)^3/GM$). The fit uses Levenberg–Marquardt
+  with Jacobians from autograd, run from many random starting orbits at once. Many of them fall into local minima,
+  which is why a batch of starts is needed, and the best $\chi^2$ is kept. Kepler's equation is solved by Newton
+  iterations on detached tensors plus one final live step, so autograd sees the exact implicit derivative. Result
+  with the defaults: $M \approx 4.32 \pm 0.15 \times 10^6\,M_\odot$, $R_0 \approx 8.35 \pm 0.12$ kpc, $P \approx 16.03$ yr,
+  $e \approx 0.884$, with $\chi^2 \approx 336$ for 334 data. Published values: $4.28 \pm 0.10 \pm 0.21 \times 10^6\,M_\odot$ and
+  $8.32 \pm 0.07 \pm 0.14$ kpc from 17 stars (Gillessen et al. 2017). The fit then predicts two relativistic effects
+  that it does not include. At pericentre (120 AU, 7700 km/s, 2.6 % of $c$) the gravitational redshift plus the
+  transverse Doppler shift add about 200 km/s; GRAVITY measured $f = 0.90 \pm 0.09\,(\mathrm{stat}) \pm
+  0.15\,(\mathrm{sys})$ of that GR value after the May 2018 pericentre (GRAVITY Collaboration 2018). The orbit also
+  precesses by $6\pi GM/(c^2a(1-e^2)) \approx 12'$ per revolution, measured as $f_{SP} = 1.10 \pm 0.19$ of the GR value
+  (GRAVITY Collaboration 2020). These are cited detections, not computed from these data: the 2016 table ends before
+  the 2018 pericentre. Simplifications: a pure Kepler orbit, with no Rømer delay (light-travel time across the orbit,
+  about 8 days), no relativistic terms and no drift of the reference frame (the paper fits 5 extra frame parameters).
+  Data: Gillessen et al. 2017, ApJ 837, 30 (arXiv:1611.09144), table 5 of S2 data from VizieR/CDS catalogue
+  J/ApJ/837/30 (doi:10.26093/cds/vizier.18370030), used with citation under the CDS conditions of use. Prizes: Shaw
+  Prize in Astronomy 2008 (Genzel), Crafoord Prize in Astronomy 2012 (Genzel and Ghez) and Nobel Prize in Physics
+  2020 (half to Genzel and Ghez, for the discovery of a supermassive compact object at the centre of our galaxy).
+params:
+  n_starts: {default: 64, min: 8, max: 256, step: 8, type: int, label: 'Random starting orbits'}
+  n_iter: {default: 40, min: 10, max: 120, step: 5, type: int, label: 'Levenberg–Marquardt steps'}
+  seed: {default: 0, min: 0, max: 1000, step: 1, type: int, label: Random seed}

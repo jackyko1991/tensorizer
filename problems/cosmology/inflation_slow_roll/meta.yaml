@@ -1,0 +1,51 @@
+title: Slow-roll inflation and the (n_s, r) plane
+category: cosmology
+level: advanced
+order: 9
+tags: [series:early-universe:1, role:theory, speculative]
+summary: >
+  Five inflaton potentials ($m^2\phi^2$, $\lambda\phi^4$, Starobinsky $R^2$, natural inflation, a quartic hilltop) roll in one
+  batched tensor through the Friedmann and Klein–Gordon equations, with the number of e-folds $N = \ln a$ as the clock. The
+  slow-roll parameters $\epsilon$, $\eta$ and the predictions $n_s$ and $r$ at $N_* = 50$–$60$ are checked against the exact
+  background and placed against Planck 2018 and BICEP/Keck 2021: $m^2\phi^2$ and $\lambda\phi^4$ are disfavoured, Starobinsky
+  sits inside. Inflation is the leading explanation of the initial conditions, but it is not confirmed: primordial B-modes
+  have not been detected.
+animated: true
+vector_form: 'H^2 = \frac{\dot\phi^2/2 + V}{3M_\mathrm{pl}^2},\qquad \ddot\phi + 3H\dot\phi + V''(\phi) = 0,\qquad \epsilon_V = \frac{M_\mathrm{pl}^2}{2}\Big(\frac{V''}{V}\Big)^2,\qquad \eta_V = M_\mathrm{pl}^2\frac{V''''}{V},\qquad n_s = 1 - 6\epsilon_V + 2\eta_V,\qquad r = 16\,\epsilon_V'
+index_form: '\frac{d\phi_b}{dN} = \psi_b,\qquad \frac{d\psi_b}{dN} = -\Big(3 - \frac{\psi_b^2}{2}\Big)\Big(\psi_b + \frac{w_{bp}U''_p(\phi_b)}{w_{bq}U_q(\phi_b)}\Big),\qquad \epsilon_{1,b} = \frac{\psi_b^2}{2},\qquad \epsilon_{i+1} = \frac{d\ln\epsilon_i}{dN}'
+translation:
+  - {symbol: 'w_{bp}', code: 'model(KINDS, f, mu, device)', shape: '(B, 5)', meaning: 'one-hot row: field $b$ uses potential $p$'}
+  - {symbol: 'U_p(\phi_b)', code: 'shapes(phi, f, mu)', shape: '(B, 5)', meaning: 'the five potential shapes evaluated on every field'}
+  - {symbol: 'V_b = w_{bp}U_p', code: "einsum('bp,...bp->...b', w, U)", shape: '(B,)', meaning: 'repeated $p$ ⇒ summed: each field''s own potential'}
+  - {symbol: '\phi_b,\ \psi_b', code: 'torch.stack([phi, psi])', shape: '(2, B)', meaning: 'field and $d\phi/dN$, advanced together by RK4 in e-folds'}
+  - {symbol: 'V''/V', code: 'log_slope(phi, model)', shape: '(B,)', meaning: 'the only thing the background needs: the height of $V$ drops out'}
+  - {symbol: '\epsilon_V,\ \eta_V', code: 'slow_roll_potential(phi, model)', shape: '(B,)', meaning: '$V''$ and $V''''$ by autograd'}
+  - {symbol: 'N_\mathrm{end}', code: "sol['N_end']", shape: '(B,)', meaning: 'where $\epsilon_H$ rises through 1, i.e. $\ddot a$ changes sign'}
+  - {symbol: '\epsilon_{1,2,3}(N_*)', code: 'predictions(sol, model, N_star)', shape: '(S, B)', meaning: 'Hubble-flow parameters $N_*$ e-folds before the end, by one gather'}
+  - {symbol: 'n_s,\ r', code: 'ns_r_hubble_flow(e1, e2, e3)', shape: '(S, B)', meaning: 'second-order predictions from the exact background'}
+notes: >
+  Units: reduced Planck mass $M_\mathrm{pl} = 1$. Writing the equations with $N = \ln a$ as time, $\psi = d\phi/dN$ and
+  $\epsilon_H = \psi^2/2$ gives $d\psi/dN = -(3-\epsilon_H)(\psi + V'/V)$ and $H^2 = V/(3-\epsilon_H)$, so only $V'/V$ matters and
+  every potential is drawn with height 1 (the amplitude $A_s = 2.1\times10^{-9}$ then fixes the energy scale, printed as
+  $V_*^{1/4}$, about $10^{16}$ GeV for most models). Every field starts about 68 e-folds before its end, at a point from the
+  textbook slow-roll count, on the slow-roll velocity $\psi = -V'/V$; the test starts $m^2\phi^2$ with very different velocities
+  and finds all of them on the same curve within a few e-folds: slow roll is an attractor. Inflation ends where $\epsilon_H = 1$.
+  The predictions are computed twice: from the potential at first order ($n_s = 1 - 6\epsilon_V + 2\eta_V$, $r = 16\epsilon_V$, the ×
+  marks) and from the Hubble-flow parameters $\epsilon_{1,2,3}$ of the numerical background at second order (Stewart and Lyth 1993;
+  Schwarz, Terrero-Escalante and García 2001; the dots); they differ at $O(\epsilon^2)$, a few $10^{-4}$ in $n_s$. A full
+  mode-by-mode Mukhanov–Sasaki solution is not done here. Results at $N_* = 55$: $m^2\phi^2$ gives $n_s \approx 1 - 2/N_*$,
+  $r \approx 8/N_* \approx 0.14$; $\lambda\phi^4$ gives $r \approx 0.29$ and too red an $n_s$; Starobinsky gives $n_s \approx 0.965$,
+  $r \approx 12/N_*^2 \approx 0.004$; natural inflation ($f = 7$) gives $r \approx 0.08$, above the limit; the quartic hilltop
+  ($\mu = 15$) lands inside. The observational region is drawn as a box (Planck 2018 $n_s = 0.9649 \pm 0.0042$ at 68 %, TT,TE,EE+lowE+lensing;
+  BICEP/Keck 2021 $r_{0.05} < 0.036$ at 95 %), not the published two-dimensional contours, which are slightly tilted and
+  depend on the data combination. Honest status: inflation explains the flatness, the horizon problem and the nearly
+  scale-invariant, Gaussian, adiabatic fluctuations, and $n_s < 1$ was predicted before it was measured; but there are
+  rival ideas (bouncing and ekpyrotic models), the inflaton has not been identified, and the smoking gun, primordial B-mode
+  polarisation from gravitational waves, has not been detected (BICEP2's 2014 claim turned out to be Galactic dust).
+  Try $N_*$ between 50 and 60 (it depends on how the universe reheated), or change $f$ and $\mu$: at $N_* = 55$ natural
+  inflation never reaches the box, because lowering $f$ brings $r$ down but makes $n_s$ too red ($f = 5$: $n_s \approx 0.950$,
+  $r \approx 0.04$).
+params:
+  N_star: {default: 55, min: 50, max: 60, step: 1, type: int, label: 'Pivot e-folds before the end $N_*$'}
+  f: {default: 7.0, min: 3.0, max: 15.0, step: 0.5, label: 'Natural inflation scale $f$', unit: M_pl}
+  mu: {default: 15.0, min: 8.0, max: 40.0, step: 1.0, label: 'Hilltop width $\mu$', unit: M_pl}

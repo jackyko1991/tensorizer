@@ -1,0 +1,21 @@
+source_hash: fcafdb67dc0d
+title: Nucléosynthèse primordiale
+summary: 'Les trois premières minutes comme un réseau de réactions raide : neutrons et protons sortent de l''équilibre faible, le goulot du deutérium s''ouvre vers $T \approx 80$ keV et presque tous les neutrons finissent dans l''$^4$He. Douze réactions relient n, p, d, t, $^3$He, $^4$He, $^7$Li et $^7$Be ; tout un lot de rapports baryons/photons $\eta$ est intégré d''un coup par un schéma implicite BDF2, ce qui donne le diagramme de Schramm. À la valeur de Planck $\eta \approx 6.1\times10^{-10}$, l''hélium et le deutérium s''accordent avec les observations, tandis que le lithium sort environ 3× trop élevé : le problème cosmologique du lithium, toujours non résolu.'
+notes: 'Statut : la nucléosynthèse primordiale standard est de la physique établie. Ses prédictions pour l''$^4$He et le D concordent avec les observations à la densité baryonique mesurée indépendamment par le fond diffus cosmologique, l''un des piliers du modèle du Big Bang chaud (Alpher, Bethe et Gamow 1948 ; Wagoner, Fowler et Hoyle 1967). Le problème cosmologique du lithium est ouvert : le rapport $^7$Li/H prédit vaut environ 3× le plateau de Spite des vieilles étoiles du halo ($(1.6\pm0.3)\times10^{-10}$), et ni la physique nucléaire, ni l''appauvrissement stellaire, ni de nouvelles particules n''ont pu l''expliquer. Valeurs observées (constantes citées) : $Y_p = 0.245\pm0.003$ (revue BBN du PDG), D/H $= (2.527\pm0.030)\times10^{-5}$ (Cooke, Pettini et Steidel 2018). Modèle : les 12 réactions de Smith, Kawano et Malaney (1993), taux thermonucléaires de la base JINA REACLIB (Cyburt et al. 2010 ; jeux an06, de04, gi17, go17, cd08, db18) et taux inverses par bilan détaillé. Approximations,
+  déclarées : taux faibles dans l''approximation de Born (sans corrections radiatives, de masse finie ni de température finie), découplage instantané des neutrinos ($N_\mathrm{eff} = N_\nu$ au lieu de 3,044), $^7$Be compté comme $^7$Li et t comme $^3$He (désintégrations ultérieures), ajustements en T9 tenus constants au-dessus de $T_9 = 10$. Cela rend $Y_p$ environ 2 % plus bas que les codes de précision comme PRIMAT ou PArthENoPE ($0.2470$) ; D/H concorde à quelques pour cent. Essayez $N_\nu = 4$ : une expansion plus rapide gèle davantage de neutrons et augmente $Y_p$ d''environ 0,013 ; c''est ainsi que la BBN compte les espèces de neutrinos.'
+meanings:
+- nombre de noyaux $i$ consommés et produits par la réaction $r$ (12 réactions, 8 espèces)
+- variation nette ; $\sum_i A_i S_{ri} = 0$ pour tout $r$ (nombre baryonique)
+- 'ajustements REACLIB : $k$ répété (7 fonctions de base de $T_9$) ⇒ sommé, puis les jeux d''une même réaction additionnés'
+- taux directs ($\propto n_b \propto \eta$) et inverses (bilan détaillé) pour chaque $\eta_b$
+- $\prod_j Y_j^{R_{rj}}$, p. ex. $Y_d^2$ pour d + d
+- $r$ répété ⇒ sommé sur les réactions
+- jacobienne exacte pour la méthode de Newton
+- une mise à jour de Newton du pas implicite BDF2 pour tout le lot de $\eta$
+- taux faibles dans l'approximation de Born, normalisés par la durée de vie du neutron $\tau_n$
+labels:
+  n_eta: Nombre de valeurs de $\eta$ dans le lot
+  eta10: $\eta \times 10^{10}$ mis en évidence (panneau de gauche)
+  tau_n: Durée de vie du neutron $\tau_n$
+  n_nu: Espèces de neutrinos $N_\nu$
+  n_steps: Pas BDF2 en $\ln T$

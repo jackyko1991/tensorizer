@@ -1,0 +1,22 @@
+source_hash: 6884660f84d2
+title: Maxwells Dämon, die Szilard-Maschine und das Landauer-Prinzip
+summary: 'Ein Dämon sieht nach, in welcher Hälfte einer Box sich ein Brownsches Teilchen befindet, und schiebt eine Trennwand so, dass es sie drücken kann – Arbeit aus einem einzigen Wärmebad. Viele überdämpfte Langevin-Maschinen zeigen die Rechnung: Die Arbeit beträgt höchstens $kT\,I \le kT\ln 2$ pro Bit, mit $I$ der Transinformation einer verrauschten Messung, das Löschen des Bits kostet mindestens $kT\ln 2$ (Landauer), und die Sagawa-Ueda-Gleichung $\langle e^{-\beta(W-\Delta F)-I}\rangle = 1$ stellt den zweiten Hauptsatz wieder her, sobald die Information mitgezählt wird. Rückwärts abgespielt ist der Logarithmus des Verhältnisses der Pfadwahrscheinlichkeiten die erzeugte Entropie.'
+notes: 'Einheiten: $kT = 1$, Beweglichkeit $1$ (also $D = 1$), halbe Boxbreite $a = 1$, Zeit in $a^2/D$. Maxwell (1867) stellte sich ein Wesen vor, das Moleküle sortiert und den zweiten Hauptsatz schlägt; Szilard (1929) reduzierte es auf ein Teilchen und ein Bit, das höchstens $kT\ln 2$ Arbeit wert ist. Landauer (1961) und Bennett (1982) lösten das Paradox: Der Dämon muss sein Gedächtnis irgendwann löschen, was mindestens $kT\ln 2$ pro Bit kostet, sodass der ganze Zyklus dem zweiten Hauptsatz gehorcht. Sagawa und Ueda (2010) machten das für Rückkopplung mit Fehlern quantitativ: $\langle e^{-\beta(W-\Delta F)-I}\rangle = 1$, also $\langle W_{ext}\rangle \le kT\langle I\rangle - \langle\Delta F\rangle$. Das sind bewiesene Sätze für diese Art stochastischer Dynamik, und die Simulation prüft sie numerisch. Modell: Die Wände sind steife Federn $\kappa u^2/2$ ($\kappa = 500\,kT/a^2$), daher werden freie Energien numerisch aus $Z$ berechnet und nicht auf ihre Werte für harte Wände gesetzt. Die
+  Trennwand ist undurchdringlich, jedes Teilchen behält also seine Seite $s$. Die Langevin-Schritte sind Metropolis-korrigiert (MALA), daher gelten Boltzmann-Verteilung, Jarzynski, Sagawa-Ueda und Crooks bis auf Stichprobenrauschen exakt. Das Löschen beginnt mit der geteilten Box und endet mit dem Kolben in der Mitte, was $\Delta F = kT\ln 2$ auch bei weichen Wänden exakt macht. Das Kontobuch zählt die Arbeit beim Verschieben der Trennwand. Das Herausziehen der Trennwand am Ende gibt ihre kleine Federenergie zurück. Echte Daten, nur als zitierte Zahlen (keine Abbildungen übernommen): Bérut et al., Nature 483, 187 (2012) und die ausführliche Fassung in J. Stat. Mech. P06015 (2015) löschten ein Bit, gespeichert in einer $2\,\mu$m großen Silikakugel in einem optischen Doppeltopf. Die mittlere Wärme fiel mit der Zykluszeit $\tau$ wie $\langle Q\rangle = kT\ln 2 + B/\tau$ mit $B = 8.15\,kT\cdot$s, und eine Anpassung mit zwei Parametern ergab eine Asymptote $A = 0.72\,kT$ ($\pm 0.15\,kT$), nahe
+  bei $kT\ln 2 \approx 0.693\,kT$. Das simulierte Löschen zeigt dasselbe $1/\tau$-Gesetz in eigenen Einheiten. Zeitumkehr: Der letzte Teil des Films spielt das Löschen rückwärts. Für jede Trajektorie ist der Logarithmus des Verhältnisses ihrer Vorwärtswahrscheinlichkeit zu der des umgekehrten Pfades unter dem umgekehrten Protokoll gleich $\beta(W - \Delta F)$, der erzeugten Entropie (Crooks 1999). Ihr Mittelwert ist positiv, und $\langle e^{-\sigma}\rangle = 1$. Zum Ausprobieren: eine größere Fehlerrate $\varepsilon$ (weniger Information, weniger Arbeit; $\varepsilon = 0.5$ bringt nichts) oder ein kürzeres $\tau$ (mehr Dissipation).'
+meanings:
+- weiche Boxwände bei $0$ und $2a$ plus die Trennwand bei $p$, gespürt von der Seite $s=\pm1$, auf der das Teilchen ist
+- jede Maschine startet im Gleichgewicht $e^{-V/kT}/Z$ mit der Trennwand in der Mitte
+- die Ablesung des Dämons, falsch mit Wahrscheinlichkeit $\varepsilon$
+- 'Rückkopplung: die Trennwand gleitet bis $2a(1-\varepsilon)$ auf der Seite, an die der Dämon glaubt'
+- Euler-Maruyama-Vorschlag für alle Maschinen zugleich, per Metropolis-Hastings angenommen, sodass $e^{-V/kT}$ exakt stationär ist
+- am Teilchen verrichtete Arbeit, wenn sich die Wand bei festem $x$ bewegt
+- $\ln 2(1-\varepsilon)$, wenn der Dämon recht hatte, $\ln 2\varepsilon$, wenn nicht; ihr Mittel ist $I$
+- 'Trapezregel auf einem Gitter für viele Trennwandpositionen: $\Delta F = -kT\ln Z_1/Z_0$'
+- $\ln P_F[x]/P_R[\tilde x]$ aus den Übergangswahrscheinlichkeiten jedes Schritts plus Randterme
+labels:
+  eps: Messfehlerrate des Dämons $\varepsilon$
+  tau: Rückkopplungszeit $\tau$ (Verschieben der Trennwand, $a^2/D$)
+  tau_erase: Langsamste Löschzeit ($a^2/D$)
+  n_engines: Maschinen pro Fehlerrate
+  seed: Zufallsstartwert

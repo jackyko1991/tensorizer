@@ -1,0 +1,18 @@
+# TrackML state of the art: CITED numbers (not re-run here), for the full TrackML detector and full events.
+# Accuracy phase (Kaggle 2018, 125 test events, no time limit): final leaderboard, Fig. 11 of S. Amrouche et al.,
+#   "The Tracking Machine Learning challenge: accuracy phase", arXiv:1904.06778 (2019). Time per event not reported.
+# Throughput phase (Codalab 2018-19, 50 test events, 2 cores of an Intel Xeon E5-2650 v4 @ 2.2 GHz, 4 GB):
+#   Table 1 of S. Amrouche et al., "The Tracking Machine Learning challenge: throughput phase", arXiv:2105.01160;
+#   that score ignores secondary particles. sgorbuno is the Mikado solution (S. Gorbunov), fastrack is D. Emeliyanov.
+# Exa.TrkX GNN pipeline: X. Ju et al., Eur. Phys. J. C 81 (2021) 876, arXiv:2103.06995: TrackML score 0.877 +- 0.005
+#   (all tracks), physics efficiency 88.7% for pT > 500 MeV, purity 58.3% (fake rate = 1 - purity), 2.2 +- 0.3 s/event
+#   on one NVIDIA V100 (202 +- 35 s on one Xeon 6148 core).
+# Numbers are facts quoted from these papers (with citation); empty = not reported.
+method,type,phase,score,efficiency,fake_rate,time_s,hardware,citation
+Top Quarks,combinatorial + ML seeds,accuracy,0.92182,,,,not timed,arXiv:1904.06778 Fig. 11
+outrunner,ML (deep net on hit pairs),accuracy,0.90302,,,,not timed,arXiv:1904.06778 Fig. 11
+Sergey Gorbunov,combinatorial,accuracy,0.89353,,,,not timed,arXiv:1904.06778 Fig. 11
+Mikado (sgorbuno),combinatorial,throughput,0.944,,,0.56,2 Xeon E5-2650 v4 cores,arXiv:2105.01160 Table 1
+FASTrack (fastrack),combinatorial,throughput,0.944,,,1.11,2 Xeon E5-2650 v4 cores,arXiv:2105.01160 Table 1
+cloudkitchen,combinatorial + ML,throughput,0.928,,,7.28,2 Xeon E5-2650 v4 cores,arXiv:2105.01160 Table 1
+Exa.TrkX,GNN,—,0.877,0.887,0.417,2.2,1 NVIDIA V100,arXiv:2103.06995

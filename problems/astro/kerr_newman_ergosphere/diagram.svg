@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Kerr-Newman black hole: a spinning, charged hole with horizon r plus inside the pumpkin-shaped ergosphere r_E that touches it at the poles, spin a along the axis, charge Q and the ring singularity">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- spin axis -->
+    <line x1="110" y1="10" x2="110" y2="150" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- ergosphere: touches the horizon at the poles, bulges at the equator -->
+    <path d="M110,42 C150,42 162,62 162,80 C162,98 150,118 110,118 C70,118 58,98 58,80 C58,62 70,42 110,42 z" fill="#fde7c7" stroke="#f59e0b" stroke-width="2"/>
+    <!-- horizon -->
+    <ellipse cx="110" cy="80" rx="40" ry="38" fill="#111827"/>
+    <!-- ring singularity, seen edge-on -->
+    <line x1="96" y1="80" x2="124" y2="80" stroke="#dc2626" stroke-width="2"/>
+    <circle cx="96" cy="80" r="2.5" fill="#dc2626"/>
+    <circle cx="124" cy="80" r="2.5" fill="#dc2626"/>
+    <!-- rotation -->
+    <path d="M92,24 A22,7 0 1 0 128,24" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="134" y="22" font-style="italic" fill="#b91c1c">a</text>
+    <!-- labels -->
+    <line x1="150" y1="80" x2="190" y2="66" stroke="#374151" stroke-width="1"/>
+    <text x="192" y="68" font-style="italic">r<tspan font-size="10" dy="3">+</tspan></text>
+    <line x1="160" y1="100" x2="190" y2="112" stroke="#374151" stroke-width="1"/>
+    <text x="192" y="118" font-style="italic">r<tspan font-size="10" dy="3">E</tspan></text>
+    <text x="22" y="62" font-style="italic" fill="#1e40af">Q</text>
+    <circle cx="40" cy="57" r="6" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="36.5" y="61" font-size="11" fill="#1e40af">+</text>
+  </g>
+</svg>

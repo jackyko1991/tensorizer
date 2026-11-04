@@ -1,0 +1,20 @@
+source_hash: 49928f544229
+title: Modes de la corde relativiste et dualité T
+summary: 'La corde de Nambu–Goto en jauge du cône de lumière se réduit à 24 ondes transverses libres. Une seule somme de modes en lot dessine une corde fermée ou ouverte qui vibre ; l''énergie de ses modes est le niveau $N$, quantifié selon $\alpha'' M^2 = N - 1$ (ouverte) ou $4(N-1)$ (fermée), avec $1, 24, 324, 3200, \dots$ états lus dans la série entière $\prod (1-q^n)^{-24}$. Sur un cercle de rayon $R$, le spectre de la corde fermée est invariant sous $R \leftrightarrow \alpha''/R$ : c''est la dualité T. La théorie des cordes est un cadre sans aucune confirmation expérimentale directe.'
+notes: 'Unités $\alpha'' = 1$. Statut : la théorie des cordes est un cadre candidat mathématiquement cohérent pour la gravité quantique, mais il n''existe aucune preuve expérimentale directe en sa faveur ; rien ici n''est une prédiction qui aurait été testée. Ce qui est montré relève des mathématiques standard de manuel de la corde bosonique (Goddard–Goldstone–Rebbi–Thorn 1973 ; Polchinski, String Theory vol. 1) : la quantification sur le cône de lumière n''est cohérente qu''en $D = 26$, avec l''intercept $a = 1$, ce qui laisse un tachyon à $N = 0$ ($M^2 < 0$, en rouge), un vecteur sans masse à $N = 1$ pour les cordes ouvertes, et le graviton, le champ B et le dilaton à $N = \tilde N = 1$ pour les cordes fermées. Les supercordes (D = 10) éliminent le tachyon. La corde dessinée est une configuration classique dont l''énergie des oscillateurs vaut le niveau $N$ (chaque quantum du mode $n$ porte $n$ unités) ; pour les cordes fermées, les modes droits et gauches sont choisis avec $N = \tilde
+  N$ (appariement des niveaux, $\int \dot X\cdot X''\,d\sigma = 0$), et la corde est dans son référentiel au repos, si bien que la coordonnée de cône de lumière $X^-$ n''est pas dessinée. Le panneau de dualité T suit les masses de quelques états quand le rayon varie : les états d''impulsion ($n/R$) et d''enroulement ($wR/\alpha''$) s''échangent sous $R \to \alpha''/R$, et au rayon autodual $R = \sqrt{\alpha''}$ des états supplémentaires deviennent sans masse. Le titre vérifie que tout le spectre tronqué, multiplicités comprises, est identique en $R$ et en $\alpha''/R$.'
+meanings:
+- amplitudes complexes des modes droits et gauches $n$ dans 3 des 24 directions transverses $i$
+- phase $e^{-in(\tau-\sigma)}$ de chaque mode en chaque point de la surface d'univers (broadcast)
+- 'indice de mode $n$ répété ⇒ sommé : la forme de la corde à chaque $\tau$ et $\sigma$'
+- densité d'énergie ; intégrée sur $\sigma$, elle donne le niveau $N$ (Parseval)
+- 'sommes de diviseurs obtenues par un masque de divisibilité diffusé : $\log\prod(1-q^n)^{-1} = \sum_m \sigma_1(m) q^m/m$'
+- les séries entières tronquées se multiplient comme des matrices de Toeplitz triangulaires inférieures, donc l'$\exp$ de la série est une exponentielle de matrice
+- masses de tous les états à niveaux appariés $N-\tilde N = nw$ pour chaque rayon $R_b$ à la fois
+labels:
+  string: Type de corde
+  mode_a: 'Mode $n$ des modes droits (ouverte : premier mode)'
+  mode_b: 'Mode $\tilde n$ des modes gauches (ouverte : second mode)'
+  n_points: Points le long de la corde $\sigma$
+  n_levels: Niveaux de masse affichés
+  R_max: Plus grand rayon du cercle $R/\sqrt{\alpha'}$ du balayage

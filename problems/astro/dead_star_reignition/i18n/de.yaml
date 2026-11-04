@@ -1,0 +1,24 @@
+source_hash: d29dc3e384c1
+title: 'Tote Sterne neu zünden: Braune Zwerge, Novae, Röntgenbursts und Schwarze Löcher'
+summary: Was passiert, wenn ein Sternüberrest frisches Gas bekommt? Ein Brauner Zwerg, der über etwa $0.075\,M_\odot$ hinaus wächst, kann Wasserstoff brennen und zum Stern werden; ein Weißer Zwerg zündet seine akkretierte Wasserstoffschale als klassische Nova; ein Neutronenstern entflammt sein akkretiertes H/He alle paar Stunden als Röntgenburst vom Typ I; ein Schwarzes Loch hat keine Oberfläche, also zündet nichts, und es leuchtet nur, bis zur Eddington-Grenze. Ein einziges gebatchtes Tensormodell (Lane–Emden-Polytropen, eine entartete Zustandsgleichung und Ein-Zonen-Schalenzündung mit Autograd) liefert die kritische akkretierte Masse für jeden Überrest und jede Masse auf einmal.
+notes: 'Exakte Ergebnisse: die Lane–Emden-Konstanten, die Chandrasekhar-Masse ($1.456\,M_\odot$ für $\mu_e = 2$), die Eddington-Leuchtkraft ($1.26\times10^{38}$ erg/s pro $M_\odot$) und der ISCO-Wirkungsgrad ($5.7\%$ bis $42\%$). Alles andere ist ein Größenordnungsmodell: (1) Braune Zwerge: die höchste Temperatur, die ein kontrahierender $n = 3/2$-Polytrop je erreicht, $T_{\max} \propto M^{4/3}$, verglichen mit $3\times10^5$ K (langsames Deuteriumbrennen über Gyr) und $3\times10^6$ K (Wasserstoff); das Modell ergibt etwa $14\,M_J$ und $0.074\,M_\odot$, nahe an den Grenzen aus Entwicklungsmodellen von etwa $13\,M_J$ (Spiegel et al. 2011) und $0.07$–$0.08\,M_\odot$ (Burrows et al. 2001). Es ist eine notwendige Bedingung: Ein alter, kalter Brauner Zwerg, der über die Grenze geschoben wird, muss vor der Zündung zusätzlich durch die Akkretion (Kompression) aufgeheizt werden. (2) Novae: Zündmassen von $10^{-7}$ bis $10^{-3}\,M_\odot$, kleiner für schwerere Weiße Zwerge und schnellere Akkretion,
+  wie in den Nova-Gittern von Yaron et al. (2005), aber nur bis auf einen Faktor von einigen (Wärmeleitung, Durchmischung und Abschirmung sind vernachlässigt). Novae stoßen wahrscheinlich mindestens das Akkretierte wieder ab, daher ist umstritten, ob ein Weißer Zwerg bis $M_{\rm Ch}$ wachsen und als Supernova vom Typ Ia explodieren kann (single-degenerate-Kanal). (3) Röntgenbursts: Zündsäulen nahe $10^8$ g/cm² und Wiederholzeiten von Stunden, wie beobachtet (Galloway und Keek 2021); die Gravitationsenergie pro Gramm ist etwa 40-mal so groß wie die nukleare ($\alpha$). Dieselbe Akkretion, die Bursts auslöst, beschleunigt die Rotation des Neutronensterns: etwa $0.04\,M_\odot$ recycelt einen alten Pulsar zu einem Millisekundenpulsar. (4) Schwarze Löcher: keine Oberfläche, kein Aufblitzen.'
+meanings:
+- 'ein akkretierender Überrest pro Eintrag: Weiße Zwerge (Masse $\times$ Rate) und Neutronensterne (Brennstoff $\times$ Rate)'
+- Säulentiefe der akkretierten Schicht, g/cm²; Druck $P = g y$
+- ideale Ionen + teilweise entartete Elektronen per gebatchter Bisektion invertieren
+- radiative Basistemperatur, Fixpunktiteration ($\kappa$, $\rho$ hängen von $T$ ab)
+- 'Dünnschalen-Instabilität: Heizung wächst mit $T$ schneller als Kühlung ⇒ thermonukleares Durchgehen'
+- 'kritische akkretierte Masse: Nova oder Röntgenburst'
+- $n = 3/2$-Polytrop, der durch alle Radien kontrahiert; Maximum über $r$ ⇒ Grenzen für Braune Zwerge
+- 'Lane–Emden für $n = 1, 3/2, 3$ gleichzeitig: Konstanten $\omega_3$, $\rho_c/\bar\rho$, $P_c$'
+- 'Schwarzes Loch: nur Akkretionslicht, $\eta = 1 - E_{\rm ISCO}$'
+labels:
+  bd_mass: Anfangsmasse des Braunen Zwergs
+  bd_rate: Akkretionsrate des Braunen Zwergs $\log_{10}\dot M$
+  wd_mass: Masse des Weißen Zwergs
+  wd_rate: Akkretionsrate des Weißen Zwergs $\log_{10}\dot M$
+  core_temp: Kerntemperatur des Weißen Zwergs
+  ns_rate: Akkretionsrate des Neutronensterns $\log_{10}\dot M$
+  ns_fuel: Brennstoff des Neutronensterns
+  bh_spin: Spin des Schwarzen Lochs $a/M$

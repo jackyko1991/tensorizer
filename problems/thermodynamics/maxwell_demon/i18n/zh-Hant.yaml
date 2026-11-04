@@ -1,0 +1,21 @@
+source_hash: 6884660f84d2
+title: 馬克士威妖、西拉德引擎與蘭道爾原理
+summary: 一個妖精查看布朗粒子在盒子的哪一半，然後滑動隔板讓粒子推動它，從單一熱庫中取出功。一批批過阻尼 Langevin 引擎列出帳單：每位元的功最多為 $kT\,I \le kT\ln 2$，其中 $I$ 是有雜訊測量的互信息；抹除該位元至少花費 $kT\ln 2$（蘭道爾）；而一旦把信息計入，Sagawa–Ueda 等式 $\langle e^{-\beta(W-\Delta F)-I}\rangle = 1$ 就恢復了熱力學第二定律。倒著播放時，路徑機率比的對數就是產生的熵。
+notes: 單位：$kT = 1$，遷移率 $1$（故 $D = 1$），半盒寬 $a = 1$，時間以 $a^2/D$ 計。馬克士威（1867）設想一個能分揀分子、打敗第二定律的生物；西拉德（1929）把它化約為一個粒子和一個位元，最多值 $kT\ln 2$ 的功。蘭道爾（1961）與班奈特（1982）解決了這個悖論：妖精最終必須抹除自己的記憶，每位元至少花費 $kT\ln 2$，因此整個循環仍遵守第二定律。Sagawa 與 Ueda（2010）把它推廣到帶誤差的回饋並量化：$\langle e^{-\beta(W-\Delta F)-I}\rangle = 1$，因此 $\langle W_{ext}\rangle \le kT\langle I\rangle - \langle\Delta F\rangle$。這些是對此類隨機動力學已證明的定理，模擬則以數值檢驗它們。模型：牆壁是硬彈簧 $\kappa u^2/2$（$\kappa = 500\,kT/a^2$），所以自由能由 $Z$ 數值計算，而不是取硬牆的值。隔板不可穿透，所以每個粒子保持它所在的一側 $s$。Langevin 步驟經 Metropolis 校正（MALA），所以玻茲曼分布、Jarzynski、Sagawa–Ueda 與 Crooks 在取樣雜訊內嚴格成立。抹除從有隔板的盒子開始，以活塞停在中間結束，這使得即使牆是軟的 $\Delta F = kT\ln 2$ 也嚴格成立。帳本記錄移動隔板的功。最後抽出隔板會返還它少量的彈簧能。真實數據（僅引用數值，未複製圖表）：Bérut 等人，Nature 483, 187（2012）及其詳細版本 J. Stat. Mech. P06015（2015）抹除了儲存在光學雙勢阱中一顆 $2\,\mu$m 二氧化矽珠上的一個位元。平均熱量隨循環時間 $\tau$ 按 $\langle Q\rangle = kT\ln 2 + B/\tau$ 下降，其中 $B = 8.15\,kT\cdot$s；雙參數擬合給出漸近值 $A = 0.72\,kT$（$\pm 0.15\,kT$），接近 $kT\ln 2 \approx 0.693\,kT$。模擬的抹除在自身單位下給出相同的 $1/\tau$ 規律。時間反演：影片最後一段把抹除倒著播放。對每條軌跡，其正向機率與反向協議下反向路徑機率之比的對數等於
+  $\beta(W - \Delta F)$，即產生的熵（Crooks 1999）。它的平均為正，且 $\langle e^{-\sigma}\rangle = 1$。試試看：更大的誤差率 $\varepsilon$（信息更少，功更少；$\varepsilon = 0.5$ 什麼也得不到），或更短的 $\tau$（耗散更多）。
+meanings:
+- 位於 $0$ 與 $2a$ 的軟盒壁，加上位於 $p$ 的隔板，從粒子所在的一側 $s=\pm1$ 感受到
+- 每台引擎都從隔板位於中間的平衡態 $e^{-V/kT}/Z$ 開始
+- 妖精的讀數，以機率 $\varepsilon$ 出錯
+- 回饋：隔板滑到妖精相信的那一側的 $2a(1-\varepsilon)$
+- 對所有引擎同時做 Euler–Maruyama 提議，以 Metropolis–Hastings 接受，使 $e^{-V/kT}$ 嚴格為穩態
+- 在固定 $x$ 下牆移動時對粒子做的功
+- 妖精正確時為 $\ln 2(1-\varepsilon)$，錯誤時為 $\ln 2\varepsilon$；其平均為 $I$
+- 在網格上用梯形法則計算一批隔板位置：$\Delta F = -kT\ln Z_1/Z_0$
+- 由每一步的轉移機率加上邊界項得到的 $\ln P_F[x]/P_R[\tilde x]$
+labels:
+  eps: 妖精的測量誤差率 $\varepsilon$
+  tau: 回饋時間 $\tau$（移動隔板，$a^2/D$）
+  tau_erase: 最慢的抹除時間（$a^2/D$）
+  n_engines: 每個誤差率的引擎數
+  seed: 隨機種子

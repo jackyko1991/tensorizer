@@ -1,0 +1,27 @@
+source_hash: b1a74b85fb17
+title: 點雲配準：PCL 流程（FPFH、RANSAC、ICP）
+summary: 同一物體的兩次局部 3D 掃描，從兩個視點拍攝，並被一個未知的剛體運動移開，依照點雲函式庫（PCL）的做法以批次化的 PyTorch 對齊：體素網格降採樣、統計離群點去除、由鄰域共變異數估計法向量、FPFH 描述子、在特徵匹配上做 RANSAC（同時進行數千次 Kabsch 擬合），以及從多個初值出發的 ICP 精配準（點到點與點到面）。結果與已知運動比較：旋轉誤差（度）、平移誤差和 RMSE。
+notes: 示範物體是 Keenan Crane 的乳牛「Spot」（5856 個三角形），作者已將其釋出至公有領域（CC0 1.0；https://www.cs.cmu.edu/~kmcrane/Projects/ModelRepository/，以 data/spot_vertices.csv 和 data/spot_faces.csv 附帶，見 data/SOURCES.md；Crane、Pinkall 與 Schröder 2013，ACM TOG 32(4)）。我們沒有使用史丹佛兔子：史丹佛 3D 掃描庫允許研究使用與免費再散布，但說明未經許可模型不得用於商業目的或出現在販售的產品中，這對一個日後可能推出付費版本的開放專案而言並不明確。PCL 自帶的測試檔 bunny.pcd 來自同一份史丹佛掃描，沒有另外的資料授權（PCL 的 BSD 授權只涵蓋其程式碼）。掃描是合成的：在網格表面上密集隨機取樣，只保留掃描器看得到的點（背面剔除加 z 緩衝，即隱藏點去除），加上高斯雜訊 $\sigma$、百分之幾的均勻離群點，並對掃描 B 施加一個隨機剛體運動（30–60°，物體尺寸的一半）。物體尺寸是包圍盒對角線，縮放為 1。流程（括號內為 PCL 類別名稱）：VoxelGrid；StatisticalOutlierRemoval；NormalEstimation，使用 $k = 15$ 個鄰居，法向量翻轉朝向各自掃描的視點；FPFH，$k = 25$；描述子空間中的互為最近匹配；RANSAC 使用 4000 個假設，每個假設取 3 對匹配，要求三角形邊長相差不超過 10 %（如 PCL 的 CorrespondenceRejectorPoly），以 Kabsch 擬合並依內點數評分，再於內點上重新擬合；ICP 從 RANSAC 位姿的 6 個擾動副本出發，以按半個體素降採樣的目標為參照，忽略距離超過一個體素的點對。簡化：FPFH 使用固定的 $k$ 個鄰居而非半徑，總以查詢點作為 Darboux 標架的來源點（PCL 依法向量夾角選擇點對順序），並把每個 11 格直方圖正規化到 100；體素網格只平均位置。預設執行的結果：每次掃描約 12000 個可見點經兩個濾波後約剩 1650 個；365 對互為最近的 FPFH 匹配中 RANSAC 保留 73 對（約 20 %），給出誤差約
+  6.4° 和 0.056 的粗略位姿；接著點到面 ICP 從每個初值出發約 5 次迭代即達到 0.37° 和 0.0021（物體尺寸的 0.2 %，RMSE 0.007），而點到點在 25 次迭代後仍沿表面緩慢滑動（約 2.1°，0.018），因為局部、重新取樣的表面上的最近鄰會把它往側面拉。測試檢查：Kabsch 精確；運動與其逆合成為恆等；平面與球面的法向量正確；體素網格與慢速參考一致；遠處離群點被去除；FPFH 在剛體運動下不變；z 緩衝可見性去除了球的背面；RANSAC 能承受 50 % 的錯誤匹配；ICP 收斂；在光滑曲面上點到面比點到點更快；完整流程的誤差低於 2° 和物體尺寸的 2 %。這些都是成熟的方法：ICP（Besl 與 McKay 1992；點到面：Chen 與 Medioni 1992）、FPFH（Rusu、Blodow 與 Beetz 2009）、PCL（Rusu 與 Cousins 2011，BSD 授權，https://pointclouds.org）。這裡的程式碼是依據論文撰寫，並非從 PCL 翻譯而來。可以試試更大的視角差（重疊較少：RANSAC 找到的內點較少，可能失敗）、更多離群點或更粗的體素。
+meanings:
+- 每個批次成員 $b$（RANSAC 假設或 ICP 初值）一個剛體運動，對 $j$ 求和
+- $k$ 個最近鄰，每次計算距離矩陣的一塊列
+- VoxelGrid：對共用同一體素鍵的點做散射平均
+- StatisticalOutlierRemoval：平均鄰居距離與其在整片點雲上的平均值和標準差比較
+- 鄰域共變異數；最小特徵值對應的特徵向量即法向量，翻轉朝向視點
+- 表面變化度（PCL 曲率）：平面上為 0
+- 點對的 Darboux 標架角：$\alpha = \mathbf v\cdot\mathbf n_q$、$\phi = \mathbf u\cdot\hat{\mathbf d}$、$\theta = \operatorname{atan2}(\mathbf w\cdot\mathbf n_q, \mathbf u\cdot\mathbf n_q)$
+- 三個 11 格直方圖；點本身的直方圖加上其鄰居直方圖的距離加權平均
+- Kabsch 交叉共變異數，每個假設一個；一次批次 SVD 得到所有旋轉
+- 同時計算所有假設的 RANSAC 分數
+- 點到面 ICP 步 $\boldsymbol\xi = (\boldsymbol\omega, \delta\mathbf t)$，對各初值批次求解
+- 相對於已知真值的旋轉誤差
+labels:
+  n_points: 每次掃描的表面取樣數
+  view_angle: 兩個視點之間的夾角
+  noise: 感測器雜訊 $\sigma$（物體尺寸為 1）
+  outliers: 離群點比例
+  voxel: 體素大小 $s$
+  hypotheses: RANSAC 假設數
+  icp_iterations: ICP 迭代次數
+  starts: ICP 初值數（批次）

@@ -1,0 +1,24 @@
+source_hash: 4c18d665b55e
+title: Warum gibt es mehr Materie als Antimaterie?
+summary: 'Das Universum enthält etwa $6\times 10^{-10}$ Baryonen pro Photon und fast keine Antimaterie. Sacharows drei Bedingungen sagen, was jede Erklärung braucht; die Leptogenese ist ein führender Kandidat: Schwere Majorana-Neutrinos zerfallen etwas häufiger in Leptonen als in Antileptonen (CP-Asymmetrie $\varepsilon$), inverse Zerfälle waschen einen Teil davon aus (Stärke $K$), und Sphaleronen verwandeln die Leptonen in Baryonen. Die Boltzmann-Gleichungen für Tausende von $(\varepsilon, K)$-Modellen werden als eine gestapelte DGL gelöst und mit dem beobachteten $\eta_B$ verglichen. Ein offenes Problem.'
+notes: 'Beobachtungen: Das Baryon-zu-Photon-Verhältnis beträgt $\eta_B = (6.12 \pm 0.04)\times 10^{-10}$ aus dem CMB (Planck 2018, $\Omega_bh^2 = 0.0224$), in Übereinstimmung mit der primordialen Nukleosynthese, und es gibt keine Hinweise auf Antimaterie-Galaxien. Ausgehend von einem symmetrischen Universum zeigte Sacharow (1967), dass eine Asymmetrie (1) Verletzung der Baryonenzahl, (2) C- und CP-Verletzung und (3) eine Abweichung vom thermischen Gleichgewicht braucht. Die Tests prüfen (2) und (3) direkt: $\varepsilon = 0$ oder im Gleichgewicht gehaltene schwere Neutrinos ergeben exakt null; (1) ist der Sphaleron-Prozess des Standardmodells, der oberhalb von etwa 130 GeV $B - L$ in $B = \tfrac{28}{79}(B - L)$ umwandelt. Die CP-Verletzung der Quarks (CKM-Phase) ist viel zu klein, und der elektroschwache Übergang ist ein Crossover, also scheitert das Standardmodell allein: Es braucht neue Physik. Die Leptogenese (Fukugita und Yanagida 1986) nutzt die schweren rechtshändigen Neutrinos des
+  Seesaw-Mechanismus, der auch erklären würde, warum die leichten Neutrinos so leicht sind. Dieses Spielzeugmodell behält nur Zerfälle und inverse Zerfälle des leichtesten, $N_1$ (keine $\Delta L = 2$-Streuungen, Flavour-Effekte oder thermischen Korrekturen), in der Normierung von Buchmüller, Di Bari und Plümacher (2005). Schwaches Auswaschen ($K \ll 1$) mit thermischem Start erhält die volle Asymmetrie ($\kappa_f \to 1$, geprüft); starkes Auswaschen ($K \gg 1$) verliert den Großteil, vergisst aber die Anfangsbedingungen (die beiden Starts laufen zusammen), und der Löser stimmt mit ihrer analytischen Näherung auf etwa 10 % überein. Mit $K = \tilde m_1/m_*$, $m_* \approx 1.08\times10^{-3}$ eV, weisen die in Oszillationen gesehenen Neutrinomassen ($\approx 0.009$–$0.05$ eV) auf $K \approx 10$–$50$, wo $\varepsilon \approx 2\times10^{-6}$–$10^{-5}$ nötig ist; die Davidson–Ibarra-Schranke $\varepsilon \lesssim 10^{-6}\,(M_1/10^{10}\,\mathrm{GeV})$ verlangt dann $M_1 \gtrsim 10^{10}$ GeV. Status:
+  offen. Die Leptogenese ist attraktiv und mit allem Bekannten verträglich, aber unbestätigt: Die schweren Neutrinos liegen weit jenseits aller Beschleuniger. Indirekte Hinweise wären der neutrinolose Doppel-Betazerfall (Majorana-Natur) und CP-Verletzung in Neutrino-Oszillationen (T2K, NOvA, als Nächstes DUNE und Hyper-Kamiokande); elektroschwache Baryogenese und andere Mechanismen bleiben Alternativen. Die Seite untersucht die Spielzeuggleichungen numerisch und behauptet nicht, dass die Asymmetrie so entstanden ist.'
+meanings:
+- '$z = M/T$, logarithmisch verteilt: die Uhr läuft, während das Universum abkühlt'
+- 'CP-Asymmetrie als Spalte, Zerfallsparameter als Zeile: alles broadcastet auf $(E, K)$'
+- '$\tfrac38 z^2K_2(z)$: $3/4$ pro Photon, solange relativistisch, danach $e^{-z}$'
+- Zerfälle und inverse Zerfälle pro Hubble-Zeit in der Schrittmitte
+- '$N_N - N_N^{eq}$: die Abweichung vom Gleichgewicht (Sacharow 3)'
+- 'exakter Ein-Schritt-Faktor einer linearen DGL: stabil selbst für $K = 1000$'
+- $B - L$-Asymmetrie jedes Modells, mit einer Tensor-Aktualisierung pro Schritt fortgeschrieben
+- Sphaleronen lassen $28/79$ von $B - L$ als Baryonen übrig; Photonen wachsen um $f = 2387/86$
+- 'Effizienz: $1$ bei schwachem Auswaschen, $\approx 1/(K z_B)$ bei starkem Auswaschen'
+labels:
+  log_eps: 'Gezeigtes Modell: $\log_{10}\varepsilon$'
+  log_K: 'Gezeigtes Modell: $\log_{10}K$'
+  initial: Anfangshäufigkeit der schweren Neutrinos
+  n_eps: Gitterpunkte in $\varepsilon$
+  n_K: Gitterpunkte in $K$
+  steps: Integrationsschritte in $z$
+  z_max: End-$z = M/T$

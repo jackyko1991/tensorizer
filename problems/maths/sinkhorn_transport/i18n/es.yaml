@@ -1,0 +1,19 @@
+source_hash: 796c13483137
+title: Transporte óptimo con Sinkhorn
+summary: ¿Cómo se transforma un montón de arena con forma de anillo en dos montículos, y después en una espiral, con el menor esfuerzo total? El transporte óptimo encuentra el plan $P_{ij}$ que mueve masa de $x_i$ a $y_j$ con coste $|x_i - y_j|^2$; su mínimo es la distancia de Wasserstein al cuadrado $W_2^2$. Añadir un poco de entropía $\varepsilon$ hace que el problema se resuelva con las actualizaciones alternadas de Sinkhorn, escritas aquí en el dominio logarítmico con logsumexp para todo un lote de valores de $\varepsilon$ a la vez; cuando $\varepsilon \to 0$ el coste baja hasta el óptimo exacto que encuentra el algoritmo húngaro.
+notes: 'Monge planteó el problema en 1781 y Kantoróvich lo relajó a planes $P$ en 1942. Cuturi (2013) mostró que la versión entrópica se resuelve con el escalado matricial de Sinkhorn, unos pocos productos de matrices por iteración, lo que hizo práctico el transporte óptimo en aprendizaje automático. Un $\varepsilon$ pequeño requiere cuidado: el código trabaja con los potenciales $f, g$ y logsumexp en lugar de $e^{-C/\varepsilon}$ (que sufre subdesbordamiento), y reduce $\varepsilon$ gradualmente desde 1 hasta su valor objetivo ($\varepsilon$-scaling). El coste $\langle P_\varepsilon, C\rangle$ disminuye hasta el valor exacto $W_2^2$ calculado por el algoritmo húngaro (una referencia exacta pero lenta, comprobada por fuerza bruta sobre todas las permutaciones), mientras que el valor dual $\mathrm{OT}_\varepsilon$ arrastra un sesgo entrópico que elimina la divergencia de Sinkhorn de Feydy et al. (2019). Los tests comprueban además dos fórmulas cerradas: en una dimensión el plan óptimo empareja
+  los puntos ordenados (funciones cuantil), y entre gaussianas $W_2^2 = |m_1 - m_2|^2 + \operatorname{tr}(S_1 + S_2 - 2(S_1^{1/2} S_2 S_1^{1/2})^{1/2})$ (la métrica de Bures), usando el teorema de Brenier, según el cual el gradiente de una función convexa es la aplicación óptima. Todas las formas se generan con el código; no se usa ninguna imagen.'
+meanings:
+- nubes de puntos sintéticas generadas a partir de fórmulas y números aleatorios, cada punto con masa $a_i = 1/N$
+- distancia al cuadrado, $k$ repetido ⇒ sumado
+- un lote de intensidades de regularización resueltas al mismo tiempo
+- actualización de Sinkhorn en el dominio logarítmico, suma sobre $j$ como logsumexp; nunca desborda, ni siquiera para un $\varepsilon$ diminuto
+- 'lo mismo sobre $i$: después, las sumas de las columnas de $P$ son exactamente $b$'
+- 'plan de transporte: difuso para $\varepsilon$ grande, casi una permutación para $\varepsilon$ pequeño'
+- 'aplicación baricéntrica: adónde va la masa de $x_i$; los puntos se mueven en línea recta $(1-t)\,x + t\,T(x)$ (interpolación de McCann)'
+- $\mathrm{OT}_\varepsilon(\mu,\nu) - \tfrac12\mathrm{OT}_\varepsilon(\mu,\mu) - \tfrac12\mathrm{OT}_\varepsilon(\nu,\nu)$, nula cuando $\mu = \nu$
+labels:
+  n_points: Puntos por forma $N$
+  eps_min: Regularización mínima $\varepsilon$
+  n_eps: Valores de $\varepsilon$ en el lote
+  n_iter: Iteraciones de Sinkhorn

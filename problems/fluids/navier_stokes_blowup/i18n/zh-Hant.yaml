@@ -1,0 +1,17 @@
+source_hash: b740fafad36e
+title: Navier–Stokes 方程的正則性與爆破候選
+summary: 克雷千禧年大獎難題問：三維不可壓縮光滑流是否永遠保持光滑。環面上的偽譜求解器把 Euler（$\nu = 0$）與兩種黏度下的 Taylor–Green 渦旋作為同一批 FFT 一併計算，追蹤最大渦度、擬能，以及 Beale–Kato–Majda 積分 $\int\|\omega\|_\infty dt$——任何爆破都必須使它發散。渦旋拉伸令 Euler 的渦度不斷增長，直到網格再也無法解析；黏性則把它壓住。這只是示意，不是證明。
+notes: 克雷難題（Fefferman 的官方描述）要求證明四個命題之一：對 $\nu > 0$，在 $\mathbb R^3$ 上（A）或在環面 $\mathbb T^3$ 上（B）存在整體光滑解，或在 $\mathbb R^3$ 上（C）或在 $\mathbb T^3$ 上（D）出現破裂。GitHub 上的儲存庫 openai/NavierStokesAndEuler 聲稱，其中包含經 Lean 4 機器驗證的證明及配套論文，證明了 $\mathbb R^3$ 與 $\mathbb T^3$ 上有外力的 Navier–Stokes 方程會破裂（選項 C 與 D），以及無外力的 Euler 方程從光滑、緊支撐的初值出發會在有限時間內爆破。這些是新近的聲稱，仍有待數學界與克雷研究所評估；本頁並不把這道懸賞難題視為已經解決。就 Euler 方程而言，光滑解在有限時間內出現奇點，先後得到 Luo–Hou（2014）帶邊界的軸對稱計算以及後來電腦輔助證明（Chen–Hou）的支持，而 Elgindi（2021）證明了 $C^{1,\alpha}$ 初值會爆破。這裡的模擬只是示意這些工作所控制的量。Taylor–Green 渦旋 $\mathbf u_0 = (\sin x\cos y\cos z, -\cos x\sin y\cos z, 0)$ 是經典測試（Brachet 等人 1983）：渦旋拉伸把它擠成薄片，擬能上升，能譜變平。能譜尾部按 $e^{-2\delta k}$ 衰減；爆破需要解析帶寬度 $\delta(t)$ 在有限時間內降到零，而 Brachet 發現它只是指數式收縮。一旦 $\delta\,k_\max < 1$，Euler 的計算便解析不足（陰影部分）：截斷後的系統仍精確守恆能量，但此後 $\|\omega\|_\infty$ 的增長是網格造成的假象，並非奇點的證據。有黏性時能量滿足 $dE/dt = -2\nu\Omega$（驗證至捨入誤差），擬能先達峰值後衰減。二維 Taylor–Green 渦旋是精確解 $e^{-2\nu t}$，三維的則可由 $p_0 = \frac1{16}(\cos 2x + \cos 2y)(\cos 2z + 2)$ 得到已知的初始加速度：兩者都是測試。試試更大的 $N$，把可解析的時間往後推。
+meanings:
+- 環面 $[0, 2\pi)^3$ 上每個算例 $b$（各對應一種黏度）的速度傅立葉係數
+- 用 Levi-Civita 張量求旋度；重複的 $j, l$ ⇒ 求和
+- 旋轉形式的非線性項，在實空間中計算（偽譜法）
+- Leray 投影：去掉梯度部分，因此從不需要計算壓力，且 $k_i\hat u_i = 0$
+- 去掉二次項會產生混疊的模態；$k_\max = N/3$
+- 動能 $\frac12\langle|\mathbf u|^2\rangle$ 與擬能 $\frac12\langle|\boldsymbol\omega|^2\rangle$
+- Beale–Kato–Majda 判據：光滑解只有在此量於 $T^*$ 處發散時才可能在那裡破裂
+- 擬合 $E(k) \propto k^{-3}e^{-2\delta k}$；真正的奇點需要 $\delta \to 0$，而只有當 $\delta\,k_\max \gtrsim 1$ 時網格才能解析流動
+labels:
+  n: 網格 $N^3$
+  nu: 黏度 $\nu$（算例 $0$、$\nu$、$2\nu$）
+  t_max: 模擬時間

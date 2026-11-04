@@ -1,0 +1,27 @@
+source_hash: b1a74b85fb17
+title: 点云配准：PCL 流程（FPFH、RANSAC、ICP）
+summary: 同一物体的两次局部 3D 扫描，从两个视点拍摄，并被一个未知的刚体运动移开，按照点云库（PCL）的做法用批量化的 PyTorch 对齐：体素网格降采样、统计离群点去除、由邻域协方差估计法向、FPFH 描述子、在特征匹配上做 RANSAC（同时进行数千次 Kabsch 拟合），以及从多个初值出发的 ICP 精配准（点到点与点到面）。结果与已知运动对比：旋转误差（度）、平移误差和 RMSE。
+notes: 演示物体是 Keenan Crane 的奶牛“Spot”（5856 个三角形），作者已将其置于公有领域（CC0 1.0；https://www.cs.cmu.edu/~kmcrane/Projects/ModelRepository/，以 data/spot_vertices.csv 和 data/spot_faces.csv 附带，见 data/SOURCES.md；Crane、Pinkall 与 Schröder 2013，ACM TOG 32(4)）。我们没有使用斯坦福兔子：斯坦福 3D 扫描库允许研究使用和免费再分发，但说明未经许可模型不得用于商业目的或出现在出售的产品中，这对一个以后可能推出付费版本的开放项目来说并不明确。PCL 自带的测试文件 bunny.pcd 来自同一份斯坦福扫描，没有单独的数据许可（PCL 的 BSD 许可只覆盖其代码）。扫描是合成的：在网格表面上密集随机采样，只保留扫描仪能看到的点（背面剔除加 z 缓冲，即隐藏点去除），加上高斯噪声 $\sigma$、百分之几的均匀离群点，并对扫描 B 施加一个随机刚体运动（30–60°，物体尺寸的一半）。物体尺寸是包围盒对角线，缩放为 1。流程（括号内为 PCL 类名）：VoxelGrid；StatisticalOutlierRemoval；NormalEstimation，使用 $k = 15$ 个邻居，法向翻转朝向各自扫描的视点；FPFH，$k = 25$；描述子空间中的互为最近匹配；RANSAC 使用 4000 个假设，每个假设取 3 对匹配，要求三角形边长相差不超过 10 %（如 PCL 的 CorrespondenceRejectorPoly），用 Kabsch 拟合并按内点数评分，再在内点上重新拟合；ICP 从 RANSAC 位姿的 6 个扰动副本出发，以按半个体素降采样的目标为参照，忽略距离超过一个体素的点对。简化：FPFH 使用固定的 $k$ 个邻居而不是半径，总以查询点作为 Darboux 标架的源点（PCL 按法向夹角选择点对顺序），并把每个 11 格直方图归一化到 100；体素网格只平均位置。默认运行的结果：每次扫描约 12000 个可见点经两个滤波后约剩 1650 个；365 对互为最近的 FPFH 匹配中 RANSAC 保留 73 对（约 20 %），给出误差约
+  6.4° 和 0.056 的粗略位姿；随后点到面 ICP 从每个初值出发约 5 次迭代就达到 0.37° 和 0.0021（物体尺寸的 0.2 %，RMSE 0.007），而点到点在 25 次迭代后仍在沿表面缓慢滑动（约 2.1°，0.018），因为局部、重新采样的表面上的最近邻会把它往侧面拉。测试检查：Kabsch 精确；运动与其逆复合为恒等；平面和球面的法向正确；体素网格与慢速参考一致；远处离群点被去除；FPFH 在刚体运动下不变；z 缓冲可见性去除了球的背面；RANSAC 能承受 50 % 的错误匹配；ICP 收敛；在光滑曲面上点到面比点到点更快；完整流程的误差低于 2° 和物体尺寸的 2 %。这些都是成熟的方法：ICP（Besl 与 McKay 1992；点到面：Chen 与 Medioni 1992）、FPFH（Rusu、Blodow 与 Beetz 2009）、PCL（Rusu 与 Cousins 2011，BSD 许可，https://pointclouds.org）。这里的代码是依据论文编写的，不是从 PCL 翻译而来。可以试试更大的视角差（重叠更少：RANSAC 找到的内点更少，可能失败）、更多离群点或更粗的体素。
+meanings:
+- 每个批次成员 $b$（RANSAC 假设或 ICP 初值）一个刚体运动，对 $j$ 求和
+- $k$ 个最近邻，每次计算距离矩阵的一块行
+- VoxelGrid：对共享同一体素键的点做散射平均
+- StatisticalOutlierRemoval：平均邻居距离与其在整片点云上的均值和标准差比较
+- 邻域协方差；最小特征值对应的特征向量即法向，翻转朝向视点
+- 表面变化度（PCL 曲率）：平面上为 0
+- 点对的 Darboux 标架角：$\alpha = \mathbf v\cdot\mathbf n_q$、$\phi = \mathbf u\cdot\hat{\mathbf d}$、$\theta = \operatorname{atan2}(\mathbf w\cdot\mathbf n_q, \mathbf u\cdot\mathbf n_q)$
+- 三个 11 格直方图；点自身的直方图加上其邻居直方图的距离加权平均
+- Kabsch 互协方差，每个假设一个；一次批量 SVD 得到所有旋转
+- 同时计算所有假设的 RANSAC 得分
+- 点到面 ICP 步 $\boldsymbol\xi = (\boldsymbol\omega, \delta\mathbf t)$，对各初值批量求解
+- 相对于已知真值的旋转误差
+labels:
+  n_points: 每次扫描的表面采样数
+  view_angle: 两个视点之间的夹角
+  noise: 传感器噪声 $\sigma$（物体尺寸为 1）
+  outliers: 离群点比例
+  voxel: 体素大小 $s$
+  hypotheses: RANSAC 假设数
+  icp_iterations: ICP 迭代次数
+  starts: ICP 初值数（批量）

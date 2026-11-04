@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Schematic of the upper half-plane with the fundamental domain of the modular group, where the cusp form Delta lives, and its q-expansion q times the product of 1 minus q to the n, to the 24th power">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- real axis -->
+    <line x1="10" y1="140" x2="150" y2="140" stroke="#374151" stroke-width="2"/>
+    <!-- unit circle arc |z| = 1 (centre 80,140, radius 50) -->
+    <path d="M30,140 A50,50 0 0 1 130,140" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- fundamental domain: |Re z| ≤ 1/2, |z| ≥ 1 -->
+    <path d="M55,96.7 A50,50 0 0 1 105,96.7 L105,16 L55,16 Z" fill="#93c5fd" stroke="#1e40af" stroke-width="2"/>
+    <line x1="55" y1="96.7" x2="55" y2="140" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="105" y1="96.7" x2="105" y2="140" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- the cusp at i∞ -->
+    <text x="72" y="12" font-size="13" font-style="italic" fill="#b45309">i∞</text>
+    <text x="68" y="64" font-style="italic">Δ(z)</text>
+    <text x="40" y="155" font-size="12">−½</text>
+    <text x="100" y="155" font-size="12">½</text>
+    <!-- q-expansion -->
+    <text x="148" y="54" font-size="13" font-style="italic">q = e<tspan font-size="10" dy="-6">2πiz</tspan></text>
+    <text x="148" y="84" font-size="13" font-style="italic">q∏(1−qⁿ)²⁴</text>
+    <text x="148" y="112" font-size="13" font-style="italic">= Σ τ(n) qⁿ</text>
+  </g>
+</svg>

@@ -1,0 +1,66 @@
+# Source: computed offline by the Tensorizer authors on data/trackml_event1000_barrel.csv (TrackML, doi:10.5281/zenodo.4730167,
+# licence CC BY 4.0); these benchmark numbers are released under the same licence (CC BY 4.0).
+# Offline solver benchmark for nuclear/ilp_track_finding (run once, not at page run time), 2026-11-04.
+# Instances: TrackML event 1000 pixel barrel |eta| < 1 (data/trackml_event1000_barrel.csv), phi wedge [0, dphi_deg),
+# pT_min = 0.5 GeV, default cuts of tensors.Cuts; same candidate segments/triplets/ILP for every solver.
+# wall_s: median of 3 runs (1 run for HiGHS MILP and our Hungarian at dphi >= 90), solver only (candidate building
+# excluded); CPU solvers single-threaded. gap = (HiGHS MILP optimum - objective) / optimum (for HiGHS LP: LP - MILP).
+# objective for the assignment rows = the ILP objective of their chained tracks. n_diff_vs_highs = triplets selected
+# by one solver and not the other. efficiency/fake_rate/trackml_score as in equation.py.
+# Software: HiGHS via scipy 1.18.1 (milp, linprog); Gurobi via gurobipy (pip/conda size-limited licence: at most 2000
+# variables and 2000 constraints, so larger instances were skipped); torch 2.x CPU and CUDA 12 builds.
+# NVIDIA cuOpt 26.10.0 (conda, WSL Ubuntu 24.04) was tried and SKIPPED: built for compute capability >= 7.0, the GTX
+# 1080 Ti is 6.1 -> "cudaErrorNoKernelImageForDevice". No cuOpt numbers exist here.
+solver,kind,version,hardware,dphi_deg,n_hits,n_vars,n_cons,wall_s,objective,gap,efficiency,fake_rate,trackml_score,n_diff_vs_highs,note
+HiGHS MILP,exact MILP,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,5,151,76,150,0.01687370002,9.604587535,0,1,0,0.340198855,0,status 0
+HiGHS LP,LP relaxation,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,5,151,76,150,0.004746099992,9.604587535,-7.397951585e-16,,,,,upper bound (LP optimum)
+Gurobi MILP,exact MILP,gurobipy 13.0.3 (size-limited licence),AMD Ryzen 5 5600G; 1 thread,5,151,76,150,0.002934999997,9.604587535,1.849487896e-16,1,0,0.340198855,0,MIPGap 0.0e+00
+Hungarian (ours; PyTorch),assignment chain,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,5,151,76,150,0.02497179998,9.604587535,1.849487896e-16,1,0,0.340198855,0,layer-by-layer LAPs
+scipy linear_sum_assignment,assignment chain,scipy 1.18.1,AMD Ryzen 5 5600G; 1 thread,5,151,76,150,0.002633700031,9.604587535,1.849487896e-16,1,0,0.340198855,0,layer-by-layer LAPs
+tensor PDLP (CPU),LP + rounding,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,5,151,76,150,0.02883129998,9.604587535,1.849487896e-16,1,0,0.340198855,0,192 iterations; LP 9.6042
+HiGHS MILP,exact MILP,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,10,266,151,313,0.01460170001,25.71232079,0,0.9473684211,0,0.4613943237,0,status 0
+HiGHS LP,LP relaxation,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,10,266,151,313,0.00614230003,25.71232079,2.763432914e-15,,,,,upper bound (LP optimum)
+Gurobi MILP,exact MILP,gurobipy 13.0.3 (size-limited licence),AMD Ryzen 5 5600G; 1 thread,10,266,151,313,0.005296399991,25.71232079,0,0.9473684211,0,0.4613943237,0,MIPGap 0.0e+00
+Hungarian (ours; PyTorch),assignment chain,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,10,266,151,313,0.03669720003,25.66916635,0.001678356626,1,0,0.4748527629,5,layer-by-layer LAPs
+scipy linear_sum_assignment,assignment chain,scipy 1.18.1,AMD Ryzen 5 5600G; 1 thread,10,266,151,313,0.002925700042,25.66916635,0.001678356626,1,0,0.4748527629,5,layer-by-layer LAPs
+tensor PDLP (CPU),LP + rounding,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,10,266,151,313,0.02992180001,25.71232079,0,0.9473684211,0,0.4613943237,0,192 iterations; LP 25.7094
+HiGHS MILP,exact MILP,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,20,560,375,802,0.01874150004,64.14404305,0,0.9791666667,0.03773584906,0.4988827708,0,status 0
+HiGHS LP,LP relaxation,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,20,560,375,802,0.009339899989,64.14404305,-1.307121267e-14,,,,,upper bound (LP optimum)
+Gurobi MILP,exact MILP,gurobipy 13.0.3 (size-limited licence),AMD Ryzen 5 5600G; 1 thread,20,560,375,802,0.01243569999,64.14404305,4.430919549e-16,0.9791666667,0.03773584906,0.4988827708,0,MIPGap 0.0e+00
+Hungarian (ours; PyTorch),assignment chain,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,20,560,375,802,0.1087594,63.93185208,0.003308038588,1,0.05454545455,0.5060827349,29,layer-by-layer LAPs
+scipy linear_sum_assignment,assignment chain,scipy 1.18.1,AMD Ryzen 5 5600G; 1 thread,20,560,375,802,0.00320929999,63.93185208,0.003308038588,1,0.05454545455,0.5060827349,29,layer-by-layer LAPs
+tensor PDLP (CPU),LP + rounding,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,20,560,375,802,0.03964440001,64.14404305,4.430919549e-16,0.9791666667,0.03773584906,0.4988827708,0,256 iterations; LP 64.1355
+HiGHS MILP,exact MILP,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,30,860,651,1359,0.03578029998,102.6673991,0,0.9480519481,0.05952380952,0.5009774359,0,status 0
+HiGHS LP,LP relaxation,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,30,860,651,1359,0.01159549999,102.6673991,-1.342639358e-14,,,,,upper bound (LP optimum)
+Gurobi MILP,exact MILP,gurobipy 13.0.3 (size-limited licence),AMD Ryzen 5 5600G; 1 thread,30,860,651,1359,0.01705870003,102.6673991,0,0.9480519481,0.05952380952,0.5009774359,0,MIPGap 0.0e+00
+Hungarian (ours; PyTorch),assignment chain,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,30,860,651,1359,0.2852732,101.7296886,0.009133478441,0.974025974,0.07865168539,0.5079500409,54,layer-by-layer LAPs
+scipy linear_sum_assignment,assignment chain,scipy 1.18.1,AMD Ryzen 5 5600G; 1 thread,30,860,651,1359,0.004388100002,101.7296886,0.009133478441,0.974025974,0.07865168539,0.5079500409,54,layer-by-layer LAPs
+tensor PDLP (CPU),LP + rounding,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,30,860,651,1359,0.04870389996,102.6673991,0,0.9480519481,0.05952380952,0.5009774359,0,256 iterations; LP 102.6568
+HiGHS MILP,exact MILP,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,45,1383,1073,2229,0.04717440001,168.1477396,0,0.9516129032,0.06428571429,0.5081799468,0,status 0
+HiGHS LP,LP relaxation,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,45,1383,1073,2229,0.02322750003,168.1477396,-1.250808666e-14,,,,,upper bound (LP optimum)
+Hungarian (ours; PyTorch),assignment chain,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,45,1383,1073,2229,0.5989821,165.28992,0.01699588467,0.9596774194,0.08783783784,0.5023521601,83,layer-by-layer LAPs
+scipy linear_sum_assignment,assignment chain,scipy 1.18.1,AMD Ryzen 5 5600G; 1 thread,45,1383,1073,2229,0.004666800029,165.28992,0.01699588467,0.9596774194,0.08783783784,0.5023521601,83,layer-by-layer LAPs
+tensor PDLP (CPU),LP + rounding,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,45,1383,1073,2229,0.0520578,168.1477396,0,0.9516129032,0.06428571429,0.5081799468,0,256 iterations; LP 168.1319
+HiGHS MILP,exact MILP,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,90,3017,2642,5368,0.0774682,378.9748001,0,0.9264705882,0.1028037383,0.4910353184,0,status 0
+HiGHS LP,LP relaxation,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,90,3017,2642,5368,0.03724460001,378.9748001,5.294739084e-14,,,,,upper bound (LP optimum)
+Hungarian (ours; PyTorch),assignment chain,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,90,3017,2642,5368,2.9416257,371.0986562,0.02078276419,0.9154411765,0.1279761905,0.4780222018,165,layer-by-layer LAPs
+scipy linear_sum_assignment,assignment chain,scipy 1.18.1,AMD Ryzen 5 5600G; 1 thread,90,3017,2642,5368,0.006540399976,371.0986562,0.02078276419,0.9154411765,0.1279761905,0.4780222018,165,layer-by-layer LAPs
+tensor PDLP (CPU),LP + rounding,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,90,3017,2642,5368,0.08394159999,378.9748001,-1.499926086e-16,0.9264705882,0.1028037383,0.4910353184,0,384 iterations; LP 378.9643
+HiGHS MILP,exact MILP,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,180,6013,5614,11300,0.1854871,781.2541581,0,0.9174147217,0.1220238095,0.500028252,0,status 0
+HiGHS LP,LP relaxation,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,180,6013,5614,11300,0.0743557,781.2541581,5.456939166e-14,,,,,upper bound (LP optimum)
+Hungarian (ours; PyTorch),assignment chain,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,180,6013,5614,11300,12.2831204,764.1120298,0.02194180747,0.8976660682,0.1545064378,0.4852981009,377,layer-by-layer LAPs
+scipy linear_sum_assignment,assignment chain,scipy 1.18.1,AMD Ryzen 5 5600G; 1 thread,180,6013,5614,11300,0.04556469998,764.1120298,0.02194180747,0.8976660682,0.1545064378,0.4852981009,377,layer-by-layer LAPs
+tensor PDLP (CPU),LP + rounding,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,180,6013,5614,11300,0.1211065,781.2541581,-4.365551333e-16,0.9174147217,0.1220238095,0.500028252,0,384 iterations; LP 781.2277
+HiGHS MILP,exact MILP,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,360,11519,10818,21585,0.5273176,1482.955442,0,0.9309366131,0.1303335919,0.4945002031,0,status 0
+HiGHS LP,LP relaxation,scipy 1.18.1 (HiGHS),AMD Ryzen 5 5600G; 1 thread,360,11519,10818,21585,0.2023522,1482.955442,-2.160344806e-13,,,,,upper bound (LP optimum)
+Hungarian (ours; PyTorch),assignment chain,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,360,11519,10818,21585,56.5927868,1455.777441,0.01832691719,0.9091769158,0.1618975904,0.4817304905,651,layer-by-layer LAPs
+scipy linear_sum_assignment,assignment chain,scipy 1.18.1,AMD Ryzen 5 5600G; 1 thread,360,11519,10818,21585,0.09980540001,1455.777441,0.01832691719,0.9091769158,0.1618975904,0.4817304905,651,layer-by-layer LAPs
+tensor PDLP (CPU),LP + rounding,torch 2.14.1,AMD Ryzen 5 5600G; 1 thread,360,11519,10818,21585,0.4087702,1482.955442,3.066493691e-16,0.9309366131,0.1303335919,0.4945002031,0,640 iterations; LP 1482.9544
+tensor PDLP (CUDA),LP + rounding,torch 2.13.0,NVIDIA GTX 1080 Ti (CUDA 12),5,151,76,150,0.1278061,9.604587535,-1.049288463e-11,1,0,0.340198855,0,192 iterations; LP 9.6042
+tensor PDLP (CUDA),LP + rounding,torch 2.13.0,NVIDIA GTX 1080 Ti (CUDA 12),10,266,151,313,0.1427321,25.71232079,-1.199168224e-10,0.9473684211,0,0.4613943237,0,192 iterations; LP 25.7094
+tensor PDLP (CUDA),LP + rounding,torch 2.13.0,NVIDIA GTX 1080 Ti (CUDA 12),20,560,375,802,0.1445378,64.14404305,-5.288169554e-11,0.9791666667,0.03773584906,0.4988827708,0,256 iterations; LP 64.1355
+tensor PDLP (CUDA),LP + rounding,torch 2.13.0,NVIDIA GTX 1080 Ti (CUDA 12),30,860,651,1359,0.1546315,102.6673991,1.990403328e-10,0.9480519481,0.05952380952,0.5009774359,0,256 iterations; LP 102.6568
+tensor PDLP (CUDA),LP + rounding,torch 2.13.0,NVIDIA GTX 1080 Ti (CUDA 12),45,1383,1073,2229,0.1382489,168.1477396,8.678516189e-11,0.9516129032,0.06428571429,0.5081799468,0,256 iterations; LP 168.1319
+tensor PDLP (CUDA),LP + rounding,torch 2.13.0,NVIDIA GTX 1080 Ti (CUDA 12),90,3017,2642,5368,0.2121538,378.9748001,2.797107163e-11,0.9264705882,0.1028037383,0.4910353184,0,384 iterations; LP 378.9643
+tensor PDLP (CUDA),LP + rounding,torch 2.13.0,NVIDIA GTX 1080 Ti (CUDA 12),180,6013,5614,11300,0.240072,781.2541581,-6.257624937e-11,0.9174147217,0.1220238095,0.500028252,0,384 iterations; LP 781.2277
+tensor PDLP (CUDA),LP + rounding,torch 2.13.0,NVIDIA GTX 1080 Ti (CUDA 12),360,11519,10818,21585,0.3079229,1482.955442,-3.003648971e-10,0.9309366131,0.1303335919,0.4945002031,0,640 iterations; LP 1482.9544

@@ -1,0 +1,19 @@
+source_hash: 97673949f948
+title: Epidemien auf einem Kontaktnetzwerk
+summary: SIR- und SIS-Epidemien auf einem realen Netzwerk von Kontakten von Angesicht zu Angesicht, mit Hunderten stochastischer Ausbrüche, die gleichzeitig als ein gebündelter Tensor laufen, und daneben der individuenbasierten Mean-Field-DGL. Ein Ausbruch kann nur oberhalb der Schwelle $\beta/\gamma > 1/\lambda_{\max}(A)$ abheben, die durch den größten Eigenwert der Adjazenzmatrix festgelegt ist, und auf einem skalenfreien Netzwerk stoppt das Impfen der Hubs ihn mit weit weniger Dosen als zufälliges Impfen.
+notes: 'Jede Person ist S, I oder R; in jedem Schritt $\Delta t$ steckt sich eine empfängliche Person bei jedem infizierten Kontakt mit Rate $\beta$ an, und eine infizierte Person genest mit Rate $\gamma$ (bei SIS wird sie wieder empfänglich). Die Tests prüfen, dass Personen nur zwischen Kompartimenten verschoben werden, dass ein $k$-regulärer Graph $\lambda_{\max} = k$ hat, dass Ausbrüche unterhalb der Schwelle verpuffen und dass auf einem vollständigen Graphen (jeder trifft jeden, $R_0 = \beta(N-1)/\gamma$) die mittlere Endgröße großer Ausbrüche der Gleichung von Kermack–McKendrick (1927) $z = 1 - e^{-R_0 z}$ entspricht ($z \approx 0.80$ für $R_0 = 2$). Die Schwelle $1/\lambda_{\max}$ stammt aus der Linearisierung des individuenbasierten Mean-Field; sie ist für diese DGL exakt, aber die DGL behandelt Nachbarn als unabhängig und lässt die Infektion auf derselben Kante hin und her hallen, daher überschätzt sie auf diesem kleinen, dichten, geclusterten Netzwerk, wie groß die Epidemie wird.
+  Eine SIR-Infektion kann nicht direkt über die Kante zurücklaufen, über die sie kam: die Message-Passing-Schwelle $T = \beta/(\beta + \gamma) = 1/\lambda_{NB}$, mit $\lambda_{NB}$ dem führenden Eigenwert der Non-Backtracking-Matrix (Karrer, Newman und Zdeborová 2014), ist ebenfalls eingezeichnet. Die simulierte Kurve ist der Mittelwert über alle Läufe, einschließlich der vielen, die nach dem ersten Fall zufällig aussterben, daher steigt sie allmählich an. Auf skalenfreien Netzwerken wächst $\lambda_{\max}$ mit dem größten Hub, daher ist die Schwelle winzig (Pastor-Satorras und Vespignani 2001), und das Entfernen der Hubs senkt $\lambda_{\max}$ schnell: Herdenimmunität mit weit weniger Dosen. Das Erdős–Rényi-Netzwerk mit demselben mittleren Grad hat keine großen Hubs, daher hilft gezieltes Impfen viel weniger. Daten: SocioPatterns "Contacts in a workplace" (Bürogebäude in Frankreich, 2013; 92 Personen, 755 Paare, die in 20-Sekunden-Fenstern von Angesicht zu Angesicht gesehen wurden, hier
+  aggregiert), M. Génois et al., Network Science 3, 326 (2015), veröffentlicht unter einer Creative Commons Public Domain Dedication (CC0), www.sociopatterns.org. Die BA- und ER-Netzwerke sind synthetisch. Simulierte Personen und Raten sind illustrativ, kein Modell einer realen Krankheit.'
+meanings:
+- 1, wenn die Personen $i$ und $j$ von Angesicht zu Angesicht gesehen wurden, sonst 0 (symmetrisch, dicht)
+- wer in jeder der $B$ gemeinsam laufenden Realisierungen infiziert ist
+- 'wiederholtes $j$ ⇒ summiert: die Zahl der infizierten Kontakte jeder Person'
+- Wahrscheinlichkeit, dass sich eine empfängliche Person in einem Schritt $\Delta t$ infiziert; Infizierte genesen mit Wahrscheinlichkeit $1 - e^{-\gamma \Delta t}$
+- Wahrscheinlichkeiten, dass Person $i$ empfänglich, infiziert oder genesen ist, integriert mit RK4
+- 'größter Eigenwert: das linearisierte Mean-Field $\dot x = (\beta A - \gamma)x$ wächst nur, wenn $\beta \lambda_{\max} > \gamma$'
+- Endgröße bei homogener Durchmischung, die Wurzel von $z = 1 - e^{-R_0 z}$ (Kermack–McKendrick)
+labels:
+  beta_x_lambda: $\beta/\gamma$ in Einheiten der Schwelle $1/\lambda_{\max}$
+  n_runs: Stochastische Realisierungen $B$
+  n_synthetic: Personen in den synthetischen Netzwerken
+  vacc_beta: $\beta/\gamma$ für den Impfvergleich

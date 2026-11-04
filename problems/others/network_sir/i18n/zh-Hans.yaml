@@ -1,0 +1,17 @@
+source_hash: 97673949f948
+title: 接触网络上的传染病
+summary: 在真实的面对面接触网络上模拟 SIR 与 SIS 传染病：数百次随机暴发以一个批量张量同时运行，旁边并列基于个体的平均场 ODE。只有超过由邻接矩阵最大特征值决定的阈值 $\beta/\gamma > 1/\lambda_{\max}(A)$，暴发才能扩散开来；而在无标度网络上，为枢纽节点接种疫苗所需的剂量远少于随机接种就能阻止疫情。
+notes: 每个人处于 S、I 或 R 状态；在每个时间步 $\Delta t$ 中，易感者会以速率 $\beta$ 从每个受感染的接触者那里被传染，感染者则以速率 $\gamma$ 康复（在 SIS 中会重新变回易感）。测试检查：人只会在各仓室之间移动；$k$-正则图有 $\lambda_{\max} = k$；低于阈值时暴发会自行熄灭；在完全图上（每个人都和每个人接触，$R_0 = \beta(N-1)/\gamma$），大规模暴发的平均最终规模符合 Kermack–McKendrick（1927）方程 $z = 1 - e^{-R_0 z}$（$R_0 = 2$ 时 $z \approx 0.80$）。阈值 $1/\lambda_{\max}$ 来自把基于个体的平均场线性化；对该 ODE 而言它是精确的，但这个 ODE 把邻居当成彼此独立，并让感染沿同一条边来回反弹，因此在这个小而稠密、聚集度高的网络上，它会高估疫情的规模。SIR 感染无法沿着它刚走过的那条边直接传回去：图中也画出了消息传递阈值 $T = \beta/(\beta + \gamma) = 1/\lambda_{NB}$，其中 $\lambda_{NB}$ 是非回溯矩阵的最大特征值（Karrer、Newman 与 Zdeborová 2014）。模拟曲线是所有运行的平均值，包括许多在第一个病例之后就偶然消亡的运行，所以它是逐渐上升的。在无标度网络上，$\lambda_{\max}$ 随最大的枢纽增长，因此阈值极小（Pastor-Satorras 与 Vespignani 2001），而移除枢纽能让 $\lambda_{\max}$ 迅速下降：用少得多的剂量就达到群体免疫。平均度相同的 Erdős–Rényi 网络没有大枢纽，所以针对性接种的帮助小得多。数据：SocioPatterns“Contacts in a workplace”（法国一栋办公楼，2013 年；92 人，在 20 秒时间窗内观察到 755 对面对面接触，此处已汇总），M. Génois et al., Network Science 3, 326 (2015)，以 Creative Commons 公共领域贡献声明（CC0）发布，www.sociopatterns.org。BA 与 ER 网络是合成的。模拟中的人和速率仅作示意，并非任何真实疾病的模型。
+meanings:
+- 若观察到人 $i$ 与 $j$ 面对面接触则为 1，否则为 0（对称、稠密）
+- 在同时运行的 $B$ 次实现中，各自有谁受感染
+- 重复的 $j$ ⇒ 求和：每个人受感染的接触者数目
+- 易感者在一个时间步 $\Delta t$ 内被感染的概率；感染者以概率 $1 - e^{-\gamma \Delta t}$ 康复
+- 人 $i$ 处于易感、感染或康复状态的概率，用 RK4 积分
+- 最大特征值：线性化平均场 $\dot x = (\beta A - \gamma)x$ 只有在 $\beta \lambda_{\max} > \gamma$ 时才会增长
+- 充分混合下的最终规模，即 $z = 1 - e^{-R_0 z}$ 的根（Kermack–McKendrick）
+labels:
+  beta_x_lambda: 以阈值 $1/\lambda_{\max}$ 为单位的 $\beta/\gamma$
+  n_runs: 随机实现次数 $B$
+  n_synthetic: 合成网络中的人数
+  vacc_beta: 接种比较所用的 $\beta/\gamma$

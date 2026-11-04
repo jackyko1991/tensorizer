@@ -1,0 +1,54 @@
+title: Prime spirals and the Hardy–Littlewood conjectures
+category: maths
+level: intermediate
+order: 4
+tags: [landau, status:open]  # twin primes, Goldbach and n² + 1: three of Landau's four problems
+summary: >
+  Sieve the primes into one boolean tensor and draw them on the Ulam and Sacks spirals, where they crowd onto lines.
+  Each line is a quadratic such as Euler's $k^2 + k + 41$, and the Hardy–Littlewood conjectures predict how many primes
+  it holds. The same sieve then tests their twin-prime and Goldbach predictions and Cramér's random model of prime
+  gaps. These are conjectures: the program checks them numerically, it does not prove them.
+animated: true
+vector_form: 'Q_f(K) \sim C(f)\sum_{k\le K}\frac{1}{\ln f(k)},\quad C(f) = \prod_p \frac{1 - w_f(p)/p}{1 - 1/p},\qquad \pi_2(x) \sim 2C_2\int_2^x \frac{dt}{\ln^2 t},\qquad r(N) \sim 2C_2\prod_{p\mid N,\,p>2}\frac{p-1}{p-2}\int_2^{N-2}\frac{dt}{\ln t\,\ln(N-t)}'
+index_form: 'F_{ik} = a_i k^2 + b_i k + c_i,\quad Q_{iK} = \sum_{k\le K} \mathbb 1_P(F_{ik}),\qquad w_{ip} = 1 + \Big(\frac{D_i}{p}\Big),\quad \log C_i = \sum_p \log\frac{1 - w_{ip}/p}{1 - 1/p},\qquad r_N = \sum_{m} \mathbb 1_P(m)\,\mathbb 1_P(N - m)'
+translation:
+  - {symbol: '\mathbb 1_P(n)', code: 'is_prime[p * p :: p] = False', shape: '(n_max + 1,) bool', meaning: 'sieve of Eratosthenes: one strided slice per prime $p \le \sqrt{n_\text{max}}$'}
+  - {symbol: '(x_n, y_n)', code: 'ulam_xy(n, start)', shape: '(N, 2)', meaning: 'Ulam spiral position of every number at once, from its ring $k = \lceil(\sqrt m - 1)/2\rceil$ and its distance to the corner $(2k+1)^2$'}
+  - {symbol: '(\sqrt n\cos 2\pi\sqrt n,\ \sqrt n\sin 2\pi\sqrt n)', code: 'sacks_xy(n)', shape: '(N, 2)', meaning: 'Sacks spiral: the squares $k^2$ sit on the positive $x$-axis'}
+  - {symbol: 'F_{ik}', code: 'quadratic(coef, k)', shape: '(F, K)', meaning: 'the values of $F$ quadratics $4k^2 + bk + c$ (the diagonal rays of the Ulam spiral) at every $k$'}
+  - {symbol: 'Q_{iK}', code: 'cumsum(is_prime[values], dim=1)', shape: '(F, K)', meaning: 'look every value up in the sieve; the running sum counts primes on each ray'}
+  - {symbol: 'w_{ip} = 1 + (D_i/p)', code: '_power_mod(D % p, (p - 1) // 2, p)', shape: '(F, P)', meaning: 'roots of $f_i$ mod $p$ from Euler''s criterion $(D/p) \equiv D^{(p-1)/2}$, with $D = b^2 - 4ac$; tried directly for $p < 50$'}
+  - {symbol: '\log C_i', code: 'log((1 - w / p) / (1 - 1 / p)).sum(dim=1)', shape: '(F,)', meaning: 'repeated $p$ ⇒ summed: the Euler product as a sum of logs over primes $p < 10^5$'}
+  - {symbol: 'r_N', code: 'irfft(rfft(is_prime)**2)', shape: '(2X - 1,)', meaning: 'repeated $m$ ⇒ summed: the Goldbach count as a self-convolution, done by FFT'}
+  - {symbol: '\pi_2(x)', code: 'cumsum(is_prime[:-2] & is_prime[2:])', shape: '(X,)', meaning: 'twin pairs $(p, p+2)$ with $p \le x$'}
+  - {symbol: 'g_n/\ln p_n', code: '(p[1:] - p[:-1]) / log(p[:-1])', shape: '(G,)', meaning: 'normalised gaps, compared with the $e^{-s}$ law of Cramér''s random model'}
+notes: >
+  Ulam (1963) wrote the integers on a square spiral and noticed that the primes line up along diagonals; the Sacks
+  spiral (1994) puts $n$ at radius $\sqrt n$ and angle $2\pi\sqrt n$ and shows curves instead. Every diagonal ray of
+  the Ulam spiral holds the values of a quadratic $4k^2 + bk + c$, and on the spiral started at 41 the main diagonal is
+  Euler's $k^2 + k + 41$, prime for $k = 0, \dots, 39$ (proved: Rabinowitsch showed $k^2 + k + p$ is prime for all
+  $k < p - 1$ exactly when $\mathbb Q(\sqrt{1 - 4p})$ has class number one, so $p \in \{2, 3, 5, 11, 17, 41\}$, a list
+  completed by Heegner and Stark). Some rays are dense and others empty because of the residues: $f$ has no roots
+  modulo many small primes when its discriminant is a non-residue for them. Hardy and Littlewood (1923) turned this
+  into Conjecture F, which the Bateman–Horn conjecture (1962) restates as
+  $Q_f(K) \sim C(f)\sum_{k \le K} 1/\ln f(k)$. The top-right panel tests it on several hundred quadratics at once: as
+  $K$ grows, the measured constants approach the predicted $C(f)$ (the diagonal line). No quadratic is even known to
+  take infinitely many prime values: that is Landau's fourth problem (1912) for $n^2 + 1$, still open. For Euler's
+  polynomial Hardy and Littlewood quote the odd-prime product $3.3197732$; the Bateman–Horn constant includes the
+  factor 2 from $p = 2$ (the values are always odd), so it is $6.6395$. The twin-prime conjecture with constant
+  $C_2 = 0.6601618\ldots$ and the Goldbach conjecture with its singular series are the same idea for $p$ and $p + 2$,
+  and for $p$ and $N - p$. The sieve reproduces the known counts $\pi_2(10^6) = 8169$ and $\pi_2(10^7) = 58980$, and
+  Goldbach's comet collapses onto the prediction: the bands of the comet are the singular series (green: $3 \mid N$).
+  Both conjectures are open. Goldbach is verified for all even numbers up to $4 \cdot 10^{18}$ (Oliveira e Silva,
+  Herzog and Pardi, 2014); Zhang (2014) and the Polymath and Maynard work proved infinitely many prime gaps of at most
+  246, and Chen (1973) that every large even number is a prime plus a product of at most two primes. Cramér's model
+  (1936) treats each $n$ as prime with probability $1/\ln n$; it predicts exponential gaps with mean $\ln p$, close
+  to what we see, and maximal gaps of size about $\ln^2 p$, but it gets the twin count wrong by exactly the factor
+  $2C_2 \approx 1.32$ (dotted line) because it ignores divisibility by 2, 3, 5, … Maier (1985) showed that it fails in
+  other ways too, and Granville suggested maximal gaps up to $2e^{-\gamma}\ln^2 p \approx 1.12\ln^2 p$.
+params:
+  side: {default: 201, min: 51, max: 401, step: 10, type: int, label: 'Spiral side'}
+  start: {default: 41, min: 1, max: 100, step: 1, type: int, label: 'Spiral starts at'}
+  log10_x: {default: 7, min: 5, max: 8, step: 1, type: int, label: 'Twins and gaps up to $10^n$'}
+  goldbach_max: {default: 100000, min: 10000, max: 400000, step: 10000, type: int, label: 'Goldbach up to $N$'}
+  k_poly: {default: 2000, min: 300, max: 4000, step: 100, type: int, label: 'Quadratics up to $k$'}

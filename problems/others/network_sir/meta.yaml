@@ -1,0 +1,45 @@
+title: Epidemics on a contact network
+category: others
+level: intermediate
+order: 8
+summary: >
+  SIR and SIS epidemics on a real face-to-face contact network, with hundreds of stochastic outbreaks run at once as
+  one batched tensor and the individual-based mean-field ODE beside them. An outbreak can only take off above the
+  threshold $\beta/\gamma > 1/\lambda_{\max}(A)$ set by the largest eigenvalue of the adjacency matrix, and on a
+  scale-free network vaccinating the hubs stops it with far fewer doses than vaccinating at random.
+animated: true
+vector_form: '\dot s_i = -\beta\, s_i \sum_j A_{ij} x_j,\qquad \dot x_i = \beta\, s_i \sum_j A_{ij} x_j - \gamma\, x_i,\qquad \dot r_i = \gamma\, x_i,\qquad \text{outbreak} \iff \frac{\beta}{\gamma} > \frac{1}{\lambda_{\max}(A)}'
+index_form: 'P_{bi} = 1 - e^{-\beta_b \Delta t\, A_{ij} I_{bj}} \qquad \dot x_{bi} = \beta_b\, s_{bi} A_{ij} x_{bj} - \gamma\, x_{bi} \qquad z = 1 - e^{-R_0 z}'
+translation:
+  - {symbol: 'A_{ij}', code: 'load_workplace(device)', shape: '(N, N)', meaning: '1 if people $i$ and $j$ were seen face to face, else 0 (symmetric, dense)'}
+  - {symbol: 'I_{bj}', code: 'state == I', shape: '(B, N)', meaning: 'who is infected in each of the $B$ realisations run together'}
+  - {symbol: 'A_{ij} I_{bj}', code: "einsum('ij,bj->bi', A, infected)", shape: '(B, N)', meaning: 'repeated $j$ ⇒ summed: the number of infected contacts of each person'}
+  - {symbol: 'P_{bi}', code: '1 - exp(-beta[:, None] * dt * pressure)', shape: '(B, N)', meaning: 'chance a susceptible is infected in one step $\Delta t$; infected recover with chance $1 - e^{-\gamma \Delta t}$'}
+  - {symbol: 's_{bi},\ x_{bi}', code: 'mean_field(A, beta, gamma, x0, dt, n_steps)', shape: '(T, 3, B, N)', meaning: 'probabilities that person $i$ is susceptible, infected or recovered, integrated with RK4'}
+  - {symbol: '\lambda_{\max}', code: 'eigvalsh(A)[-1]', shape: '()', meaning: 'largest eigenvalue: the linearised mean field $\dot x = (\beta A - \gamma)x$ grows only if $\beta \lambda_{\max} > \gamma$'}
+  - {symbol: 'z', code: 'final_size(r0)', shape: '(R,)', meaning: 'well-mixed final size, the root of $z = 1 - e^{-R_0 z}$ (Kermack–McKendrick)'}
+notes: >
+  Each person is S, I or R; in every step $\Delta t$ a susceptible catches the infection from each infected contact
+  at rate $\beta$ and an infected person recovers at rate $\gamma$ (in SIS they become susceptible again). The tests
+  check that people are only moved between compartments, that a $k$-regular graph has $\lambda_{\max} = k$, that below
+  the threshold outbreaks fizzle, and that on a complete graph (everybody meets everybody, $R_0 = \beta(N-1)/\gamma$)
+  the mean final size of major outbreaks matches the Kermack–McKendrick (1927) equation $z = 1 - e^{-R_0 z}$
+  ($z \approx 0.80$ for $R_0 = 2$). The threshold $1/\lambda_{\max}$ comes from linearising the individual-based mean
+  field; it is exact for that ODE, but the ODE treats neighbours as independent and lets infection echo back and
+  forth along the same edge, so on this small, dense, clustered network it overestimates how big the epidemic gets.
+  An SIR infection cannot travel straight back along the edge it came from: the message-passing threshold
+  $T = \beta/(\beta + \gamma) = 1/\lambda_{NB}$, with $\lambda_{NB}$ the leading eigenvalue of the non-backtracking
+  matrix (Karrer, Newman and Zdeborová 2014), is drawn too. The simulated curve is the mean over all runs, including
+  the many that die out by chance after the first case, so it rises gradually. On scale-free networks
+  $\lambda_{\max}$ grows with the biggest hub, so the threshold is tiny (Pastor-Satorras and Vespignani 2001), and
+  removing the hubs lowers $\lambda_{\max}$ fast: herd immunity with far fewer doses. The Erdős–Rényi network with the
+  same mean degree has no big hubs, so targeting helps much less. Data: SocioPatterns "Contacts in a workplace"
+  (office building in France, 2013; 92 people, 755 pairs seen face to face in 20-second windows, aggregated here),
+  M. Génois et al., Network Science 3, 326 (2015), released under a Creative Commons Public Domain Dedication (CC0),
+  www.sociopatterns.org. The BA and ER networks are synthetic. Simulated people and rates are illustrative, not a
+  model of any real disease.
+params:
+  beta_x_lambda: {default: 3.0, min: 0.2, max: 8.0, step: 0.1, label: '$\beta/\gamma$ in units of the threshold $1/\lambda_{\max}$'}
+  n_runs: {default: 200, min: 20, max: 1000, step: 20, type: int, label: Stochastic realisations $B$}
+  n_synthetic: {default: 500, min: 100, max: 1500, step: 100, type: int, label: People in the synthetic networks}
+  vacc_beta: {default: 0.4, min: 0.1, max: 1.0, step: 0.05, label: '$\beta/\gamma$ for the vaccination comparison'}

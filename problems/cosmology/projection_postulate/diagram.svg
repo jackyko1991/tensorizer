@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="A state Psi on a large sphere in D dimensions is projected by P onto a small d-dimensional observer plane, where its shadow P Psi, normalised, is the observed state psi; hidden directions point out of the plane">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- the big sphere of the one reality -->
+    <circle cx="120" cy="58" r="44" fill="#93c5fd" fill-opacity="0.35" stroke="#374151" stroke-width="2"/>
+    <ellipse cx="120" cy="58" rx="44" ry="12" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="176" y="26" font-style="italic">D</text>
+    <!-- the state Psi -->
+    <line x1="120" y1="58" x2="150" y2="26" stroke="#374151" stroke-width="2"/>
+    <circle cx="150" cy="26" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="156" y="44" font-style="italic">Ψ</text>
+    <!-- observer plane (d dimensions) -->
+    <path d="M40,128 L180,128 L210,146 L70,146 Z" fill="#e5e7eb" stroke="#374151" stroke-width="2"/>
+    <text x="196" y="124" font-style="italic">d</text>
+    <!-- projection -->
+    <line x1="150" y1="32" x2="150" y2="132" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+    <text x="156" y="96" font-style="italic" fill="#b91c1c">P</text>
+    <!-- the shadow and the observed state -->
+    <line x1="120" y1="137" x2="150" y2="137" stroke="#f59e0b" stroke-width="2.5"/>
+    <circle cx="150" cy="137" r="3.5" fill="#f59e0b"/>
+    <text x="92" y="141" font-style="italic" fill="#b45309">ψ</text>
+  </g>
+</svg>

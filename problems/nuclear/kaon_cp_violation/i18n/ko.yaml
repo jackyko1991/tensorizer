@@ -1,0 +1,20 @@
+source_hash: ebe74e0d5d26
+title: 중성 케이온으로 보는 시간 반전과 CPT
+summary: '중성 케이온은 진동하며 붕괴하는 2상태계($K^0$, $\bar K^0$)이므로, 비에르미트 $2\times 2$ 해밀토니언 $H = M - i\Gamma/2$ 아래에서 진화합니다. PDG 값으로 구성하고 여러 세계에 대해 모든 시각에서 한꺼번에 지수화하면, $\Delta m$으로 진동하는 기묘도, CP를 위반하는 $\pi\pi$ 간섭, 그리고 CPLEAR의 시간 반전 검증을 보여 줍니다: $K^0 \to \bar K^0$와 $\bar K^0 \to K^0$는 $A_T \approx 4\,\mathrm{Re}\,\varepsilon \approx 6.5\times 10^{-3}$만큼 다르며, CPT는 $K^0$와 $\bar K^0$의 질량과 수명을 같게 유지합니다.'
+notes: 'C(전하 켤레)는 입자와 반입자를 맞바꾸고, P(반전성)는 공간을 거울상으로 뒤집으며, T는 시간을 거꾸로 돌립니다. CPT 정리(Lüders, Pauli, Schwinger)에 따르면 모든 국소적이고 로런츠 불변인 양자장론은 이 셋을 함께 적용한 변환에 대해 대칭이므로, 입자와 반입자는 정확히 같은 질량과 수명을 가집니다. 1964년 Christenson, Cronin, Fitch, Turlay는 수명이 긴 $K_L$이 CP가 금지하는 두 파이온으로 붕괴하는 것을 관측했습니다. CP는 $|\varepsilon| \approx 2.2\times 10^{-3}$ 수준에서 위반됩니다(1980년 Cronin과 Fitch에게 노벨상). CPT가 성립한다면 CP 위반은 T 위반도 뜻하며, CERN의 CPLEAR는 1998년 이를 직접 관측했습니다. 표지된 $K^0$와 $\bar K^0$에서 출발하여 반렙톤 붕괴로 붕괴 시점의 기묘도를 표지하면, $\bar K^0 \to K^0$가 $K^0 \to \bar K^0$보다 약간 더 자주 일어나며, $\langle A_T\rangle = (6.6 \pm 1.3 \pm 1.0)\times 10^{-3}$입니다(이를 T 위반으로 해석하는 것은 $\Delta S = \Delta Q$ 규칙과 붕괴에서의 CPT 위반이 없음을 가정합니다). 여기서 $H$는 고유 상태로부터 구성되므로, CP 매개변수 $\varepsilon$와 CPT 매개변수 $\delta$는 조절 다이얼입니다. $\delta = 0$이면 $H_{11} = H_{22}$(같은 질량과 수명), $P(K^0\to K^0) = P(\bar K^0\to\bar K^0)$이고 $A_T$는 $(|p/q|^2 - |q/p|^2)/(|p/q|^2 + |q/p|^2) \approx 4\,\mathrm{Re}\,\varepsilon$에서 평평한 고원을 이룹니다. 0이 아닌 $\mathrm{Re}\,\delta$는 $A_{CPT} = [P(\bar K^0\to\bar K^0) -
+  P(K^0\to K^0)]/[\ldots]$를 몇 $\tau_S$ 뒤에 $4\,\mathrm{Re}\,\delta$까지 올라가게 합니다(CPLEAR는 $\mathrm{Re}\,\delta$가 $10^{-4}$ 수준에서 0과 일치함을 발견했습니다). 아래 패널은 $K_S$와 $K_L$ 붕괴 사이의 고전적인 $\pi^+\pi^-$ 간섭을 보여 주며, 이는 $12\,\tau_S$ 근처에서 가장 크고 이로부터 $|\eta_{+-}|$와 $\phi_{+-}$를 측정합니다. 유니터리성은 Bell–Steinberger 관계 $(i\Delta m + \bar\Gamma)\langle K_S|K_L\rangle = \sum_f A_S^* A_L$로 확인합니다. $\pi\pi$가 지배적이라면 측정된 $\eta_{+-}$는 $\mathrm{Re}\,\varepsilon$를 0.2% 정확도로 예측합니다. 값: PDG 2024 ($\tau_S = 0.8954\times10^{-10}$ s, $\tau_L = 5.116\times10^{-8}$ s, $\Delta m = 0.5293\times10^{10}\,\hbar$/s, $|\varepsilon| = 2.228\times 10^{-3}$, $\phi_\varepsilon = 43.52°$, $|\eta_{+-}| = 2.232\times10^{-3}$); CPLEAR, Phys. Lett. B 444 (1998) 43. 단순화: 직접 CP 위반($\varepsilon''$, $\varepsilon$의 $10^{-3}$)은 무시하므로 $\eta_{+-} = \varepsilon$이고, 반렙톤 표지는 완벽한 기묘도 측정으로 이상화하며, 물질 속 재생성은 없습니다.'
+meanings:
+- 열 $K_S \propto (1+\varepsilon_S, 1-\varepsilon_S)$, $K_L \propto (1+\varepsilon_L, -(1-\varepsilon_L))$, 단 $\varepsilon_{S,L} = \varepsilon \pm \delta$
+- $\hbar/\tau_S$ 단위의 $\mp\Delta m/2 - i\Gamma_{S,L}/2$ (공통 질량은 전역 위상)
+- '반복된 $i$ ⇒ 합산: 세계마다 유효 해밀토니언 하나'
+- 모든 시각에서의 $e^{-iHt}$, matrix_exp로 검증
+- $b$로 생성된 케이온이 $a$로 발견될 확률 ($0 = K^0$, $1 = \bar K^0$)
+- '에르미트이며 $\ge 0$: 유니터리성, Bell–Steinberger 관계'
+- $a\cdot K_S = 1$, $a\cdot K_L = \eta_{+-}$를 만족하는 행 벡터
+- '반복된 $x$ ⇒ 합산: $K^0$ 또는 $\bar K^0$로 생성된 빔의 $\pi^+\pi^-$ 붕괴율'
+labels:
+  eps_abs: $|\varepsilon|$
+  eps_phase: 위상 $\phi_\varepsilon$
+  re_delta: CPT 위반 $\mathrm{Re}\,\delta$
+  dm: 질량 차 $\Delta m$
+  t_max: 시간 창 $t_\mathrm{max}$

@@ -1,0 +1,54 @@
+title: Finding the Higgs boson in real diphoton data
+category: nuclear
+level: advanced
+order: 8
+tags: [nobel:physics:2013]
+summary: >
+  About 95 000 photon pairs from 10 fb$^{-1}$ of real 13 TeV ATLAS collisions (ATLAS Open Data, CC0) are binned in
+  diphoton mass $m_{\gamma\gamma}$ and fitted with autograd: a smooth falling background plus a narrow Higgs peak. The
+  profile likelihood ratio gives $m_H$, the signal strength $\mu$ and the local significance $Z = \sqrt{q_0}$, a batch
+  of background-only toy experiments shows the look-elsewhere effect, and the Mexican-hat potential
+  $V = -\mu^2|\phi|^2 + \lambda|\phi|^4$ turns the measured mass into the Higgs self-coupling $\lambda = m_H^2/2v^2$.
+animated: true
+vector_form: '\nu_n(\mu, m_H, \theta) = w_n\,e^{\theta_k x_n^k} + \mu\,N_{SM}\,S_n(m_H),\qquad q_0 = -2\ln\frac{L(0, \hat{\hat\theta})}{L(\hat\mu, \hat m_H, \hat\theta)},\qquad Z = \sqrt{q_0},\qquad m_H^2 = 2\lambda v^2'
+index_form: 'B_{bn} = w_n\exp(X_{nk}\theta_{bk}),\qquad J_{bnj} = \frac{\partial\nu_{bn}}{\partial p_j},\qquad g_{bj} = J_{bnj}\Big(1 - \frac{k_{bn}}{\nu_{bn}}\Big),\qquad I_{bjl} = \frac{J_{bnj}J_{bnl}}{\nu_{bn}},\qquad p_{bj} \leftarrow p_{bj} - [I_b^{-1}]_{jl}\,g_{bl}'
+translation:
+  - {symbol: 'k_n', code: 'load_histogram(path, m_min, m_max)', shape: '(N,)', meaning: 'real diphoton counts per 0.5 GeV bin; any CSV with m_low, m_high, events works'}
+  - {symbol: 'X_{nk} = x_n^k', code: 'design(centers, m_min, m_max, degree)', shape: '(N, K)', meaning: 'powers of the scaled mass $x \in [0, 1]$; the background is $\exp(X\theta)$'}
+  - {symbol: 'S_n(m_H)', code: 'signal_shape(edges, m_h, sigma)', shape: '(M, N)', meaning: 'Gaussian peak integrated over each bin (erf), width $\sigma$ fitted to the ATLAS simulation'}
+  - {symbol: '-\ln L', code: '(nu - counts * log(nu)).sum(-1)', shape: '(B,)', meaning: 'Poisson likelihood of each histogram, minimised by Adam + L-BFGS through autograd'}
+  - {symbol: 'g_{bj},\ I_{bjl}', code: "einsum('bnj,bnl,bn->bjl', jac, jac, 1 / nu)", shape: '(B, K+1, K+1)', meaning: 'repeated $n$ ⇒ summed: Fisher scoring fits every toy × every mass at once'}
+  - {symbol: 'q_0', code: 'q0_scan(counts, x, edges, widths, masses, sigma)', shape: '(B, M)', meaning: 'profile likelihood ratio, 0 when the fitted signal is negative'}
+  - {symbol: 'C = H^{-1}', code: 'autograd.functional.hessian(nll, p)', shape: '(K+2, K+2)', meaning: 'errors on $m_H$ and $\mu$ from the curvature of $-\ln L$'}
+  - {symbol: 'V(\phi)', code: 'mexican_hat(phi, mu2, lam)', shape: '(3, R)', meaning: 'potential along three rays $\phi = r\,e^{i\alpha}$ of the complex plane: the same curve for every phase, a ring of vacua at $|\phi| = v/\sqrt2$'}
+notes: >
+  In July 2012 ATLAS and CMS announced a new boson near 125 GeV, seen above all in two channels: two photons and four
+  leptons. The 2013 Nobel Prize in Physics went to Englert and Higgs for the mechanism it confirmed. Here the photon
+  channel is redone on real data. The Higgs cannot decay to photons directly (they are massless), only through loops
+  of W bosons and top quarks, so this is a rare decay ($\mathcal B \approx 0.23\%$) on top of a huge smooth background
+  of ordinary photon pairs. With the 10 fb$^{-1}$ in this file, the result is $m_H \approx 124.2 \pm 1.0$ GeV (PDG
+  2024: $125.20 \pm 0.11$), $\mu \approx 1.0 \pm 0.4$ (the Standard Model rate) and a local significance of about
+  $2.7\sigma$ (about $3.4\sigma$ expected). That is an excess, not a discovery: the 2012 discoveries used
+  several event categories, both channels and both experiments to pass $5\sigma$. The scan is a useful warning too:
+  in this small sample a background fluctuation near 143 GeV is almost as large ($2.6\sigma$ local) as the real Higgs
+  at 124 GeV. This is the look-elsewhere effect. A bump somewhere in a wide window is likely, so the toys estimate how
+  often background alone produces one: about 13% of background-only scans beat the 125 GeV excess somewhere, and the
+  Gross–Vitells upcrossing formula gives a global p-value near 0.1. Background-only toys at fixed mass follow
+  $\tfrac12\delta(0) + \tfrac12\chi^2_1$ (Wilks/Chernoff), which is why $Z = \sqrt{q_0}$. The Mexican hat: with
+  $v = (\sqrt2 G_F)^{-1/2} = 246.2$ GeV from the muon lifetime, the measured mass fixes $\lambda = m_H^2/2v^2 \approx
+  0.13$; the radial wiggle about the vacuum ring is the Higgs boson and the flat direction along the ring becomes the
+  longitudinal W and Z. Data: ATLAS Open Data 13 TeV, 2020 release, GamGam samples (CERN Open Data Portal record
+  15006, doi:10.7483/OPENDATA.ATLAS.B5BJ.3SGS, licence CC0; 2016 data periods A–D). Selection as in the ATLAS outreach
+  H → γγ notebook: photon trigger, two tight isolated photons with $p_T > 40$ and 30 GeV, $|\eta| < 2.37$ outside
+  1.37–1.52. The sm_signal column is the matching ATLAS simulation (ggF, VBF, WH, ZH, ttH at 125 GeV) weighted to
+  10 fb$^{-1}$, which gives $N_{SM} \approx 406$ events and the peak width. Simplifications: one inclusive category, a
+  Gaussian peak (the real one has tails, which is why the fitted width of about 2.3 GeV is larger than the core
+  resolution), no systematic uncertainties, and an exponential-polynomial background (try the degree to see the
+  spurious-signal sensitivity).
+params:
+  m_min: {default: 105.0, min: 100.0, max: 115.0, step: 0.5, label: 'Fit window start', unit: GeV}
+  m_max: {default: 160.0, min: 140.0, max: 160.0, step: 0.5, label: 'Fit window end', unit: GeV}
+  degree: {default: 3, min: 1, max: 5, step: 1, type: int, label: 'Background polynomial degree in the exponent'}
+  m_start: {default: 125.0, min: 115.0, max: 140.0, step: 0.5, label: 'Starting mass of the fit', unit: GeV}
+  scan_step: {default: 0.5, min: 0.25, max: 2.0, step: 0.25, label: 'Mass scan step', unit: GeV}
+  n_toys: {default: 300, min: 50, max: 2000, step: 50, type: int, label: 'Background-only toy experiments'}

@@ -1,0 +1,47 @@
+title: Yang–Mills on the lattice and the mass gap
+category: nuclear
+level: advanced
+order: 6
+tags: [millennium, nobel:physics:2004, status:open]
+summary: >
+  The Clay Millennium Problem asks for a rigorous quantum Yang–Mills theory in four dimensions with a mass gap $\Delta > 0$;
+  it is open. Wilson's lattice gauge theory makes the question computable: links $U_\mu(x) \in SU(2)$ (or $U(1)$) stored as
+  unit quaternions are updated by Metropolis for a whole batch of couplings $\beta$ at once. Wilson loops show the area
+  law of confinement, the plaquette matches the exact 2D Bessel ratio and the strong-coupling series, and a glueball
+  correlator gives a lattice mass estimate.
+animated: true
+vector_form: 'S[U] = \beta\sum_x\sum_{\mu<\nu}\Big(1 - \tfrac12\mathrm{Tr}\,P_{\mu\nu}(x)\Big),\qquad \langle W(R,T)\rangle \sim e^{-\sigma RT},\qquad C(\Delta) = \langle O(t)\,O(t+\Delta)\rangle_c \sim e^{-m\Delta}'
+index_form: 'P_{\mu\nu}(x) = U_\mu(x)\,U_\nu(x+\hat\mu)\,U_\mu^\dagger(x+\hat\nu)\,U_\nu^\dagger(x),\qquad (ab)_0 = a_0b_0 - a_kb_k,\quad (ab)_k = a_0b_k + b_0a_k + \varepsilon_{kij}a_ib_j,\qquad \Delta S = -\beta\,\tfrac12\mathrm{Tr}\big[(U^\prime_\mu - U_\mu)A_\mu\big]'
+translation:
+  - {symbol: 'U_\mu(x)', code: 'links[:, mu]', shape: '(B, L, …, L, 4)', meaning: 'one unit quaternion per link, for every coupling $\beta_b$ in the batch; $U(1)$ is the subgroup $(\cos\theta, 0, 0, \sin\theta)$'}
+  - {symbol: '(ab)_k = a_0b_k + b_0a_k + \varepsilon_{kij}a_ib_j', code: 'qmul(a, b)', shape: '(..., 4)', meaning: 'the group law; repeated $i, j$ ⇒ summed (cross product)'}
+  - {symbol: 'U(x+\hat\mu)', code: 'torch.roll(U, -1, dims=1 + mu)', shape: '(B, L, …, L, 4)', meaning: 'neighbour on the periodic lattice: every plaquette of every site at once'}
+  - {symbol: '\tfrac12\mathrm{Tr}\,P_{\mu\nu}', code: 'plaquettes(links)', shape: '(B, D(D-1)/2, L, …, L)', meaning: 'the smallest Wilson loop; $\frac12\mathrm{Tr}(ab) = a_0b_0 - a_kb_k$'}
+  - {symbol: 'A_\mu(x)', code: 'staple(links, mu)', shape: '(B, L, …, L, 4)', meaning: 'sum of the $2(D-1)$ staples: the part of $S$ that contains $U_\mu(x)$ is $-\beta\frac12\mathrm{Tr}(U_\mu A_\mu)$'}
+  - {symbol: 'e^{-\Delta S} > r', code: 'ok = (rnd < exp(-dS)) & (par == p)', shape: '(B, L, …, L)', meaning: 'Metropolis on all links of one direction and one checkerboard parity at once (they share no staple)'}
+  - {symbol: 'W(R,T)', code: 'wilson_loops(links, 3)', shape: '(B, R, T)', meaning: 'products of link lines around $R\times T$ rectangles, averaged over sites, planes and orientations'}
+  - {symbol: 'u(\beta)', code: 'strong_coupling_u(beta, group)', shape: '(B,)', meaning: '$I_1/I_0$ for $U(1)$, $I_2/I_1$ for $SU(2)$: exact $\langle\frac12\mathrm{Tr}P\rangle$ in 2D, leading order in any $D$'}
+  - {symbol: 'a\,m_\mathrm{eff}(\Delta)', code: 'jackknife(correlator_samples(op, 3), effective_mass)', shape: '(Δ,)', meaning: '$\ln C(\Delta)/C(\Delta+1)$ of the spatial-plaquette operator, with jackknife errors'}
+notes: >
+  Status: open. The Clay problem (Jaffe and Witten's official description) asks to construct quantum Yang–Mills theory on
+  $\mathbb R^4$ for any compact simple gauge group satisfying axioms such as those of Wightman or Osterwalder–Schrader, and
+  to prove that its spectrum has a gap $\Delta > 0$ above the vacuum. Lattice simulations of $SU(3)$ give a lightest
+  glueball near $1.7$ GeV and confinement (a linear potential, measured string tension) beyond reasonable doubt, but
+  numerical evidence at finite lattice spacing is not a proof. This page works in the same framework at toy size. In 2D
+  the theory is exactly solvable: every plaquette is independent, $\langle\frac12\mathrm{Tr}P\rangle = I_1(\beta)/I_0(\beta)$ for
+  $U(1)$ and $I_2(\beta)/I_1(\beta)$ for $SU(2)$, and $W(R,T) = u^{RT}$ exactly (a test). At strong coupling (small $\beta$) the
+  character expansion gives the same leading values in any dimension and an area law with string tension
+  $\sigma = -\ln u$: confinement is proven there (Osterwalder–Seiler 1978), and also for 3D compact $U(1)$ at every $\beta$
+  (Göpfert–Mack 1982). The hard part is continuity to weak coupling $\beta \to \infty$ in 4D, where the lattice spacing goes to
+  zero; asymptotic freedom (Gross, Wilczek and Politzer, Nobel Prize 2004) says that is where the continuum limit lies. Creutz ratios $\chi(R,R)$ estimate $\sigma$ from ratios of loops so that perimeter terms cancel. The glueball operator
+  is the sum of spatial plaquettes on a time slice; its connected correlator decays as $e^{-m\Delta}$, and at strong coupling
+  the smallest surface joining two plaquettes is a tube of $4\Delta$ faces, giving $a\,m \approx -4\ln u$. At larger $\beta$ the
+  mass in lattice units falls and needs bigger lattices, smearing and many more sweeps; 4D $U(1)$ has a deconfining transition
+  near $\beta \approx 1.01$ and no mass gap above it, which is why the problem is stated for non-abelian groups. Metropolis
+  with a step $\propto 1/\sqrt{\beta}$ keeps the acceptance near one half; errors use 20 jackknife bins.
+params:
+  group: {default: SU(2), type: choice, options: [SU(2), U(1)], label: Gauge group}
+  dim: {default: 3, min: 2, max: 4, step: 1, type: int, label: 'Dimension $D$'}
+  size: {default: 8, min: 4, max: 12, step: 2, type: int, label: 'Lattice size $L$ (sites per side)'}
+  beta: {default: 2.0, min: 0.2, max: 4.0, step: 0.1, label: 'Coupling $\beta$ for loops and glueball'}
+  sweeps: {default: 600, min: 100, max: 5000, step: 100, type: int, label: Monte Carlo sweeps}

@@ -1,0 +1,19 @@
+source_hash: e62538d06f20
+title: Las particiones de Ramanujan $p(n)$
+summary: Cuenta las formas de escribir $n$ como suma de enteros positivos con la recurrencia pentagonal de Euler, exactamente en int64 y, mucho más allá, como residuos módulo muchos primos a la vez, reunidos de nuevo con el teorema chino del resto. Después compara $p(n)$ con la fórmula de Hardy–Ramanujan, recupéralo exactamente con la serie de Rademacher y observa cómo se iluminan las congruencias de Ramanujan $p(5k+4) \equiv 0 \pmod 5$, $p(7k+5) \equiv 0 \pmod 7$, $p(11k+6) \equiv 0 \pmod{11}$. Los tres resultados son teoremas; el programa los comprueba numéricamente.
+notes: 'Una partición de $n$ es una forma de escribirlo como suma de enteros positivos, sin importar el orden: $4 = 3+1 = 2+2 = 2+1+1 = 1+1+1+1$, así que $p(4) = 5$. La función generatriz de Euler $\prod_k 1/(1-q^k)$ y su teorema de los números pentagonales convierten esto en la recurrencia $p(n) = p(n-1) + p(n-2) - p(n-5) - p(n-7) + \dots$, que solo necesita $O(\sqrt n)$ términos por paso. En int64 es exacta hasta $p(405) \approx 9.15 \cdot 10^{18}$. En float64 la suma con signos pierde dígitos rápidamente (un error relativo de $10^{-4}$ ya en $n = 1000$; el test lo muestra), así que más allá de int64 el programa ejecuta la misma recurrencia exactamente módulo un lote de primos cercanos a $2^{31}$, una columna del tensor para cada uno, y reconstruye $p(n)$ con el teorema chino del resto. Hardy y Ramanujan (1918) hallaron la asintótica $p(n) \sim e^{\pi\sqrt{2n/3}}/(4n\sqrt3)$ con su método del círculo; el panel superior izquierdo muestra cómo el cociente sube lentamente hacia 1 como $1
+  - 0.443/\sqrt n$. Rademacher (1937, publicado en 1938) convirtió su desarrollo en una serie convergente exacta: con cinco términos, el redondeo da $p(n)$ exactamente para todo $n \le 200$ (a partir de unos 240, el error de redondeo float64 de los términos grandes ya ronda $\pm 0.5$), y el primer término por sí solo acierta $p(100) = 190\,569\,292$ en seis cifras. Ramanujan demostró $p(5k+4) \equiv 0 \pmod 5$ y $p(7k+5) \equiv 0 \pmod 7$ (1919), y el caso módulo 11 se publicó a partir de sus manuscritos en 1921; Watson (1938) y Atkin (1967) demostraron las familias para potencias de 5, 7 y 11 (aquí 25, 49 y 121). Ono (2000) demostró que existen congruencias de la forma $p(Ak+B) \equiv 0 \pmod m$ para todo primo $m \ge 5$, aunque solo 5, 7 y 11 tienen congruencias tan sencillas. En las rejillas cada columna es un $k$ y cada fila un residuo $n \bmod m$; la fila roja permanece llena, mientras que las celdas azules son otros ceros, que aparecen y desaparecen. Todas las afirmaciones de aquí
+  están demostradas; el programa solo las comprueba en un rango finito. Curiosidad: Ramanujan se dio cuenta de que… («Ramanujan noticed that…») las congruencias anteriores se cumplen; de que $1729 = 1^3 + 12^3 = 9^3 + 10^3$ (el número del taxi de Hardy); y de que $e^{\pi\sqrt{163}}$ dista de un entero apenas unos $7.5\cdot10^{-13}$.'
+meanings:
+- números pentagonales generalizados $1, 2, 5, 7, 12, 15, \dots$ y los signos $+,+,-,-,\dots$ de la identidad de Euler $\prod_k (1-q^k) = \sum_k (-1)^k q^{k(3k-1)/2}$
+- '$j$ repetido ⇒ sumado: para cada $n$ solo se necesitan $O(\sqrt n)$ valores anteriores'
+- la misma recurrencia para $M$ módulos a la vez, una columna cada uno (5, 7, 11, 25, 49, 121, o primos cercanos a $2^{31}$)
+- teorema chino del resto en la forma de base mixta de Garner, para todos los $n$ a la vez
+- asintótica de Hardy–Ramanujan; el cociente es $1 - c/\sqrt n + \dots$ con $c = 1/C + C/48$, $C = \pi\sqrt{2/3}$
+- suma de Dedekind $\sum_{r<k} \frac rk\,((\frac{hr}k))$, $r$ repetido ⇒ sumado
+- $h$ repetido ⇒ sumado sobre $0 \le h < k$ con $\gcd(h,k) = 1$
+- congruencias de Ramanujan, una fila por cada $(a, b, m)$
+labels:
+  n_max: Mayor $n$
+  terms: Términos de Rademacher
+  grid_n: Rejillas de congruencias hasta $n$

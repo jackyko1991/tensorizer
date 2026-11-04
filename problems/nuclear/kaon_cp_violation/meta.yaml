@@ -1,0 +1,53 @@
+title: Time reversal and CPT with neutral kaons
+category: nuclear
+level: advanced
+order: 7
+tags: [nobel:physics:1980]
+summary: >
+  A neutral kaon is a two-state system ($K^0$, $\bar K^0$) that oscillates and decays, so it evolves under a
+  non-Hermitian $2\times 2$ Hamiltonian $H = M - i\Gamma/2$. Built from PDG values and exponentiated for a batch of
+  worlds at every time at once, it shows strangeness oscillating at $\Delta m$, the CP-violating $\pi\pi$
+  interference, and the CPLEAR test of time reversal: $K^0 \to \bar K^0$ and $\bar K^0 \to K^0$ differ by
+  $A_T \approx 4\,\mathrm{Re}\,\varepsilon \approx 6.5\times 10^{-3}$, while CPT keeps $K^0$ and $\bar K^0$ equal in mass
+  and lifetime.
+animated: true
+vector_form: 'i\frac{d}{dt}\begin{pmatrix}a\\ \bar a\end{pmatrix} = \Big(M - \tfrac{i}{2}\Gamma\Big)\begin{pmatrix}a\\ \bar a\end{pmatrix},\qquad A_T = \frac{P(\bar K^0\to K^0) - P(K^0\to\bar K^0)}{P(\bar K^0\to K^0) + P(K^0\to\bar K^0)} \approx 4\,\mathrm{Re}\,\varepsilon'
+index_form: 'H_{ab} = V_{ai}\,\lambda_i\,[V^{-1}]_{ib},\qquad U_{tab} = V_{ai}\,e^{-i\lambda_i t}\,[V^{-1}]_{ib},\qquad P_{tab} = |U_{tab}|^2,\qquad R_{tb} = \big|\,a_x U_{txb}\big|^2'
+translation:
+  - {symbol: 'V_{ai}', code: 'eigenvectors(eps, delta)', shape: '(B, 2, 2) complex', meaning: 'columns $K_S \propto (1+\varepsilon_S, 1-\varepsilon_S)$, $K_L \propto (1+\varepsilon_L, -(1-\varepsilon_L))$ with $\varepsilon_{S,L} = \varepsilon \pm \delta$'}
+  - {symbol: '\lambda_i', code: 'eigenvalues(dm, gamma_s, gamma_l)', shape: '(2,) complex', meaning: '$\mp\Delta m/2 - i\Gamma_{S,L}/2$ in units of $\hbar/\tau_S$ (the common mass is a global phase)'}
+  - {symbol: 'H_{ab}', code: "einsum('...ai,i,...ib->...ab', v, lam, inv(v))", shape: '(B, 2, 2) complex', meaning: 'repeated $i$ ⇒ summed: one effective Hamiltonian per world'}
+  - {symbol: 'U_{tab}', code: "einsum('bxi,bti,biy->btxy', v, phase, inv(v))", shape: '(B, T, 2, 2) complex', meaning: '$e^{-iHt}$ at every time, checked against matrix_exp'}
+  - {symbol: 'P_{tab}', code: 'u.abs() ** 2', shape: '(B, T, 2, 2)', meaning: 'probability that a kaon born as $b$ is found as $a$ ($0 = K^0$, $1 = \bar K^0$)'}
+  - {symbol: '\Gamma = i(H - H^\dagger)', code: 'decay_matrix(h)', shape: '(2, 2) complex', meaning: 'Hermitian and $\ge 0$: unitarity, the Bell–Steinberger relation'}
+  - {symbol: 'a_x', code: 'pipi_amplitude(v, eta)', shape: '(B, 2) complex', meaning: 'row vector with $a\cdot K_S = 1$, $a\cdot K_L = \eta_{+-}$'}
+  - {symbol: 'R_{tb}', code: "einsum('bx,btxy->bty', a, u).abs() ** 2", shape: '(B, T, 2)', meaning: 'repeated $x$ ⇒ summed: $\pi^+\pi^-$ decay rate of a beam born as $K^0$ or $\bar K^0$'}
+notes: >
+  C (charge conjugation) swaps particles and antiparticles, P (parity) mirrors space and T reverses time. The CPT
+  theorem (Lüders, Pauli, Schwinger) says any local, Lorentz-invariant quantum field theory is symmetric under the
+  three together, so a particle and its antiparticle have exactly equal masses and lifetimes. In 1964 Christenson,
+  Cronin, Fitch and Turlay saw the long-lived $K_L$ decay to two pions, which CP forbids: CP is violated, at the level
+  $|\varepsilon| \approx 2.2\times 10^{-3}$ (Nobel Prize 1980 to Cronin and Fitch). If CPT holds, CP violation means T
+  violation too, and CPLEAR at CERN saw it directly in 1998: starting from tagged $K^0$ and $\bar K^0$ and tagging the
+  strangeness at decay with semileptonic decays, $\bar K^0 \to K^0$ happens slightly more often than $K^0 \to \bar K^0$,
+  $\langle A_T\rangle = (6.6 \pm 1.3 \pm 1.0)\times 10^{-3}$ (the interpretation as T violation assumes the
+  $\Delta S = \Delta Q$ rule and no CPT violation in the decays). Here $H$ is built from its eigenstates, so the
+  CP parameter $\varepsilon$ and the CPT parameter $\delta$ are dials: with $\delta = 0$, $H_{11} = H_{22}$
+  (equal masses and lifetimes), $P(K^0\to K^0) = P(\bar K^0\to\bar K^0)$ and $A_T$ is a flat plateau at
+  $(|p/q|^2 - |q/p|^2)/(|p/q|^2 + |q/p|^2) \approx 4\,\mathrm{Re}\,\varepsilon$; a nonzero $\mathrm{Re}\,\delta$ makes
+  $A_{CPT} = [P(\bar K^0\to\bar K^0) - P(K^0\to K^0)]/[\ldots]$ climb to $4\,\mathrm{Re}\,\delta$ after a few $\tau_S$
+  (CPLEAR found $\mathrm{Re}\,\delta$ consistent with zero at the $10^{-4}$ level). The bottom panel shows the classic
+  $\pi^+\pi^-$ interference between $K_S$ and $K_L$ decays, largest near $12\,\tau_S$, from which $|\eta_{+-}|$ and
+  $\phi_{+-}$ are measured. Unitarity is checked with the Bell–Steinberger relation
+  $(i\Delta m + \bar\Gamma)\langle K_S|K_L\rangle = \sum_f A_S^* A_L$; with $\pi\pi$ dominance the measured $\eta_{+-}$
+  predicts $\mathrm{Re}\,\varepsilon$ to 0.2%. Values: PDG 2024 ($\tau_S = 0.8954\times10^{-10}$ s,
+  $\tau_L = 5.116\times10^{-8}$ s, $\Delta m = 0.5293\times10^{10}\,\hbar$/s, $|\varepsilon| = 2.228\times 10^{-3}$,
+  $\phi_\varepsilon = 43.52°$, $|\eta_{+-}| = 2.232\times10^{-3}$); CPLEAR, Phys. Lett. B 444 (1998) 43. Simplifications:
+  direct CP violation ($\varepsilon'$, $10^{-3}$ of $\varepsilon$) is neglected so $\eta_{+-} = \varepsilon$, the
+  semileptonic tagging is idealised as a perfect strangeness measurement, and no regeneration in matter.
+params:
+  eps_abs: {default: 2.228, min: 0.0, max: 10.0, step: 0.01, label: '$|\varepsilon|$', unit: '10⁻³'}
+  eps_phase: {default: 43.52, min: 0.0, max: 180.0, step: 0.5, label: 'Phase $\phi_\varepsilon$', unit: °}
+  re_delta: {default: 0.0, min: -20.0, max: 20.0, step: 0.5, label: 'CPT violation $\mathrm{Re}\,\delta$', unit: '10⁻⁴'}
+  dm: {default: 0.5293, min: 0.1, max: 2.0, step: 0.01, label: 'Mass difference $\Delta m$', unit: '10¹⁰ ħ/s'}
+  t_max: {default: 20.0, min: 5.0, max: 40.0, step: 1.0, label: 'Time window $t_\mathrm{max}$', unit: 'τ_S'}

@@ -1,0 +1,27 @@
+source_hash: 7dfc00ae0203
+title: 'Túnel de viento digital: Boltzmann en red 3D alrededor de un avión STL'
+summary: 'Un pequeño túnel de viento 3D al estilo de la biblioteca OpenLB: el archivo STL de un avión modelo se lee en un tensor de triángulos, se voxeliza por trazado de rayos en todos los nodos de la red a la vez, se inclina a un ángulo de ataque y se coloca en un flujo de Boltzmann en red D3Q19 con colisiones TRT o MRT, LES de Smagorinsky opcional y rebote (bounce-back) en el cuerpo. La resistencia y la sustentación salen del intercambio de cantidad de movimiento; líneas de corriente (RK4 por lotes) y partículas trazadoras muestran el flujo. Un caso de esfera comprueba el solucionador frente a una ejecución precalculada del propio OpenLB y muestra el residuo.'
+notes: 'Unidades de red: espaciado de nodos y paso de tiempo 1, corriente libre $U = 0.08$ (Mach 0,14), viscosidad $\nu = UL/\mathrm{Re}$ con $L$ la longitud del cuerpo en nodos, y $\tau = 3\nu + \tfrac12$. El avión vuela en una red de $80\times 36\times 26$ con $L = 32$ (longitud del fuselaje; envergadura 28 nodos), el ala NACA 0012 opcional en $72\times 24\times 24$ (cuerda 20). Ambos archivos STL se generaron para este problema (ver data/SOURCES.md): un avión modelo robusto (fuselaje de revolución, ala en flecha NACA 0018, estabilizadores horizontal y vertical) cuyas partes se solapan en las uniones, por lo que el voxelizador cuenta números de giro (cruces con signo) en lugar de la simple paridad de rayos; y un ala que abarca todo el ancho periódico, es decir, un ala infinita (compara $C_L$ con $2\pi\alpha$). Los coeficientes usan el área en planta (el cuerpo visto desde arriba). Contornos: periódico en sentido transversal (una red de aviones) y rebote a medio camino en el cuerpo voxelizado;
+  solve.simulate ofrece también un suelo móvil y un techo deslizante. En lugar de entrada y salida, los últimos 16 nodos son una zona de amortiguación (fringe) que devuelve el flujo a la corriente libre antes de que vuelva a entrar en $x = 0$; la velocidad sube en 300 pasos (el pico inicial de $C_D$ es el gradiente de presión que acelera el aire) y la animación empieza después. TRT usa el parámetro «mágico» $\Lambda = 3/16$, MRT las tasas D3Q19 de d''Humières et al. (2002), Smagorinsky $C_s = 0.17$. Con el Re = 1000 por defecto ($\tau \approx 0.508$) el TRT sin modelo diverge en esta red gruesa y la LES lo mantiene estable: prueba a desactivar la LES. Resultados a 8°: avión $C_D \approx 0.39$, $C_L \approx 0.12$; ala $C_L \approx 0.31$ frente a $2\pi\alpha = 0.88$. La sustentación es baja porque las alas solo tienen 1–3 celdas de grosor, Re es laminar y las imágenes periódicas arriba y abajo actúan como una pila de biplanos: son ilustraciones del método, no predicciones. Validación (cuerpo
+  sphere_openlb): una esfera a Re = 20 ($D = 10$, $80\times 40\times 40$, BGK, entrada en equilibrio) frente a OpenLB 1.7 en la misma red, ejecutado una vez fuera de línea (data/openlb_reference_*.csv): $C_D$ 3,360 frente a 3,378 (−0,5 %); $u_x$ en el plano medio: L2 relativa 0,8 %, L∞ 1,1 %, máx. $|\Delta u|/U$ 1,3 %. La diferencia restante viene de los esquemas de contorno (OpenLB usa contornos interpolados de velocidad y presión y sigue resonando con ondas sonoras, ±5 % en $C_D$) y del rebote completo frente al de medio camino; la colisión (BGK) y la resolución son las mismas. Ambos códigos quedan por encima del valor de Schiller–Naumann 2,61 porque esta esfera no está libre: OpenLB en una caja de $160\times 60\times 60$ da 3,04 y con $D = 20$ en las mismas proporciones 3,21. OpenLB solo sirvió como referencia precalculada; aquí no se usa nada de su código (GPL). La validación se ejecuta en vivo tras el avión, en la misma ejecución (parámetro validate, activado por defecto; 2000 pasos),
+  y llena el panel de residuo.'
+meanings:
+- 'poblaciones: fluido en el nodo $(x, y, z)$ que se mueve con la velocidad de red $i$'
+- velocidades D3Q19 (reposo, 6 caras, 12 aristas), pesos y direcciones opuestas
+- 'triángulos STL: triángulo $t$, vértice $v$, coordenada $a$'
+- dentro si los cruces con signo de un rayo a lo largo de $+x$ (número de giro) son positivos; todos los rayos × todos los triángulos, luego searchsorted
+- '$a$ repetido ⇒ sumado: velocidad a lo largo de cada dirección de la red'
+- '$i$ repetido ⇒ sumado: densidad de cantidad de movimiento'
+- 'MRT: momentos fuera del equilibrio, cada uno relajado a su propia tasa $s_k$'
+- flujo de cantidad de movimiento fuera del equilibrio; su tamaño fija la viscosidad turbulenta de Smagorinsky $\nu_t$
+- 'propagación: desplazar cada población un enlace'
+- 1 donde una población sale de un nodo fluido hacia el cuerpo (rebote como intercambio enmascarado)
+- 'intercambio de cantidad de movimiento: fuerza sobre el cuerpo, sumada sobre sus enlaces de frontera'
+labels:
+  body: Cuerpo (STL en data/; sphere_openlb = el caso de comprobación con OpenLB)
+  re: Número de Reynolds $UL/\nu$ (longitud del cuerpo $L$)
+  collision: Operador de colisión
+  les: LES de Smagorinsky
+  pitch: Ángulo de ataque (avión y ala)
+  steps: Pasos de tiempo de la red
+  validate: Ejecutar también la comprobación de la esfera con OpenLB (panel de residuo)

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Left: a gravitational wave travels from a merging pair of neutron stars to a detector at distance d, its amplitude h falling with distance. Right: a black hole with its photon sphere and a possible fold radius r_f; the shadow edge b is set by whichever is larger">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- gravitational wave from a binary to a detector -->
+    <circle cx="16" cy="58" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="28" cy="58" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <path d="M38,58 q5,-22 10,0 t10,0 t10,0 q4,-14 8,0 t8,0 t8,0 q3,-8 6,0 t6,0 t6,0" fill="none" stroke="#374151" stroke-width="2"/>
+    <path d="M104,52 l8,6 l-8,6 M112,58 l8,-6 M112,58 l8,6" fill="none" stroke="#374151" stroke-width="2"/>
+    <line x1="22" y1="84" x2="112" y2="84" stroke="#dc2626" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <text x="62" y="102" font-style="italic">d</text>
+    <text x="54" y="30" font-style="italic">h</text>
+    <!-- black hole, photon sphere and fold -->
+    <circle cx="186" cy="74" r="44" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <circle cx="186" cy="74" r="30" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <circle cx="186" cy="74" r="20" fill="#111827" stroke="#374151" stroke-width="2"/>
+    <line x1="186" y1="74" x2="216" y2="74" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="196" y="68" font-style="italic" fill="#b45309">r</text>
+    <text x="204" y="72" font-size="10" font-style="italic" fill="#b45309">f</text>
+    <line x1="142" y1="140" x2="230" y2="140" stroke="#dc2626" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <line x1="142" y1="118" x2="142" y2="140" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="146" y="134" font-style="italic">b</text>
+  </g>
+</svg>

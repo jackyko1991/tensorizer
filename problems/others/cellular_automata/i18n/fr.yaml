@@ -1,0 +1,22 @@
+source_hash: ebc73dcb492e
+title: Les 256 automates cellulaires élémentaires, et Lenia
+summary: 'Une ligne de cellules où chaque nouvelle cellule dépend d''elle-même et de ses deux voisines : les trois bits forment un code $k \in \{0, \dots, 7\}$ et le numéro de la règle écrit en binaire est la table de correspondance. Les 256 règles tournent ensemble dans un seul tenseur $(256, W)$ avancé par une seule opération gather : la règle 90 dessine le triangle de Sierpinski, la règle 30 semble aléatoire, la règle 110 construit des structures qui interagissent et la règle 184 fait circuler du trafic. Un cousin continu, Lenia, remplace la table par un noyau annulaire lisse et fait grandir une créature qui glisse.'
+notes: 'Wolfram a classé les règles élémentaires en quatre classes : (1) tout meurt ou tout se remplit, (2) motifs fixes ou périodiques, (3) chaos, comme la règle 30, dont la colonne centrale a longtemps servi de générateur de nombres aléatoires, et (4) structures complexes, durables et en interaction, comme la règle 110, dont Matthew Cook a démontré (publication en 2004) qu''elle est Turing-complète. La mosaïque colore chaque règle selon un test automatique approximatif après 600 pas sur un anneau de 151 cellules : uniforme, périodique à un décalage près, ou sans période trouvée. Ce dernier groupe mélange les classes 3 et 4, et il n''existe pas de définition exacte pour les distinguer. La règle 90 additionne les voisines modulo 2, si bien qu''à partir d''une seule cellule elle donne le triangle de Pascal modulo 2, et la règle 184 est le modèle de trafic le plus simple : une voiture avance vers la droite si la case devant elle est libre, donc le nombre de voitures est conservé. Contrairement
+  au jeu de la vie (2D, un comptage $3\times3$, une seule règle), ici toutes les règles tournent à la fois. Lenia (Bert Chan, 2019) rend l''espace, le temps et les états continus ; Orbium, son planeur classique, part de la table de cellules publiée avec Lenia (licence MIT) et conserve sa masse en se déplaçant, exemple d''un motif de type soliton qu''aucune loi de conservation n''impose.'
+meanings:
+- 'bit $k$ du numéro de règle $r$ : le nouvel état quand le code de voisinage vaut $k$'
+- cellules gauche, centrale et droite autour de la cellule $i$ sur un anneau
+- '$j$ répété ⇒ sommé : le code de voisinage sur 3 bits $4\,\text{left} + 2\,\text{centre} + \text{right}$'
+- une seule consultation de table fait avancer toutes les règles à la fois
+- miroir gauche-droite et complément 0/1 d'une règle ; les 256 règles forment 88 classes de symétrie
+- anneau lisse de rayon $R = 13$, normalisé pour que la somme vaille 1
+- convolution sur la grille périodique comme produit de transformées de Fourier
+- croissance là où $U \approx \mu$, déclin ailleurs, par pas de $1/T$
+labels:
+  rule: Votre règle $r$ (premier panneau)
+  start: Départ de votre règle
+  width: Largeur de ligne $W$
+  generations: Générations
+  density: Densité du départ aléatoire
+  lenia_size: Monde de Lenia $S$
+  lenia_steps: Pas de Lenia

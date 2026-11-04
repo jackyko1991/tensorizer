@@ -1,0 +1,23 @@
+source_hash: 1f16a1cee568
+title: Espirales de primos y las conjeturas de Hardy–Littlewood
+summary: 'Cribar los primos en un único tensor booleano y dibujarlos en las espirales de Ulam y de Sacks, donde se agolpan sobre líneas. Cada línea es un polinomio cuadrático, como el de Euler $k^2 + k + 41$, y las conjeturas de Hardy–Littlewood predicen cuántos primos contiene. La misma criba pone a prueba después sus predicciones para los primos gemelos y para Goldbach, así como el modelo aleatorio de Cramér para los huecos entre primos. Son conjeturas: el programa las comprueba numéricamente, no las demuestra.'
+notes: 'Ulam (1963) escribió los enteros sobre una espiral cuadrada y observó que los primos se alinean a lo largo de diagonales; la espiral de Sacks (1994) coloca $n$ en el radio $\sqrt n$ y el ángulo $2\pi\sqrt n$, y en su lugar muestra curvas. Cada rayo diagonal de la espiral de Ulam contiene los valores de un polinomio cuadrático $4k^2 + bk + c$, y en la espiral que empieza en 41 la diagonal principal es el polinomio de Euler $k^2 + k + 41$, primo para $k = 0, \dots, 39$ (demostrado: Rabinowitsch probó que $k^2 + k + p$ es primo para todo $k < p - 1$ exactamente cuando $\mathbb Q(\sqrt{1 - 4p})$ tiene número de clases uno, así que $p \in \{2, 3, 5, 11, 17, 41\}$, una lista que completaron Heegner y Stark). Algunos rayos son densos y otros están vacíos debido a los residuos: $f$ no tiene raíces módulo muchos primos pequeños cuando su discriminante no es un resto cuadrático para ellos. Hardy y Littlewood (1923) convirtieron esto en la conjetura F, que la conjetura de Bateman–Horn (1962)
+  reformula como $Q_f(K) \sim C(f)\sum_{k \le K} 1/\ln f(k)$. El panel superior derecho la pone a prueba con varios cientos de polinomios cuadráticos a la vez: a medida que $K$ crece, las constantes medidas se acercan a las $C(f)$ predichas (la línea diagonal). Ni siquiera se sabe de ningún polinomio cuadrático que tome infinitos valores primos: es el cuarto problema de Landau (1912) para $n^2 + 1$, todavía abierto. Para el polinomio de Euler, Hardy y Littlewood citan el producto sobre primos impares $3.3197732$; la constante de Bateman–Horn incluye el factor 2 procedente de $p = 2$ (los valores son siempre impares), así que vale $6.6395$. La conjetura de los primos gemelos, con la constante $C_2 = 0.6601618\ldots$, y la conjetura de Goldbach, con su serie singular, son la misma idea para $p$ y $p + 2$, y para $p$ y $N - p$. La criba reproduce los recuentos conocidos $\pi_2(10^6) = 8169$ y $\pi_2(10^7) = 58980$, y el cometa de Goldbach se ajusta a la predicción: las bandas del cometa son
+  la serie singular (en verde: $3 \mid N$). Ambas conjeturas están abiertas. Goldbach está verificada para todos los números pares hasta $4 \cdot 10^{18}$ (Oliveira e Silva, Herzog y Pardi, 2014); Zhang (2014) y los trabajos de Polymath y Maynard demostraron que hay infinitos huecos entre primos de como mucho 246, y Chen (1973) que todo número par grande es un primo más un producto de a lo sumo dos primos. El modelo de Cramér (1936) trata cada $n$ como primo con probabilidad $1/\ln n$; predice huecos exponenciales con media $\ln p$, cerca de lo que observamos, y huecos máximos de tamaño aproximado $\ln^2 p$, pero se equivoca en el número de gemelos exactamente por el factor $2C_2 \approx 1.32$ (línea punteada) porque ignora la divisibilidad por 2, 3, 5, … Maier (1985) demostró que también falla de otras maneras, y Granville sugirió huecos máximos de hasta $2e^{-\gamma}\ln^2 p \approx 1.12\ln^2 p$.'
+meanings:
+- 'criba de Eratóstenes: un corte con paso fijo por cada primo $p \le \sqrt{n_\text{max}}$'
+- posición en la espiral de Ulam de todos los números a la vez, a partir de su anillo $k = \lceil(\sqrt m - 1)/2\rceil$ y de su distancia a la esquina $(2k+1)^2$
+- 'espiral de Sacks: los cuadrados $k^2$ quedan sobre el semieje positivo de las $x$'
+- los valores de $F$ polinomios cuadráticos $4k^2 + bk + c$ (los rayos diagonales de la espiral de Ulam) en cada $k$
+- buscar cada valor en la criba; la suma acumulada cuenta los primos de cada rayo
+- raíces de $f_i$ módulo $p$ mediante el criterio de Euler $(D/p) \equiv D^{(p-1)/2}$, con $D = b^2 - 4ac$; probadas directamente para $p < 50$
+- '$p$ repetido ⇒ sumado: el producto de Euler como suma de logaritmos sobre los primos $p < 10^5$'
+- '$m$ repetido ⇒ sumado: el recuento de Goldbach como autoconvolución, calculada con FFT'
+- pares de gemelos $(p, p+2)$ con $p \le x$
+- huecos normalizados, comparados con la ley $e^{-s}$ del modelo aleatorio de Cramér
+labels:
+  side: Lado de la espiral
+  start: La espiral empieza en
+  log10_x: Gemelos y huecos hasta $10^n$
+  goldbach_max: Goldbach hasta $N$
+  k_poly: Polinomios cuadráticos hasta $k$

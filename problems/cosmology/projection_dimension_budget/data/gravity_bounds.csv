@@ -1,0 +1,33 @@
+# Bounds on n compact extra dimensions into which gravity spreads (ADD picture). Cited numbers, not figures.
+# Licence: numerical facts quoted from the papers (each paper's licence covers its text; ATLAS 2021 and the PDG
+# review are open access, CC-BY 4.0). The torsion and LHC rows repeat the numbers bundled in
+# cosmology/hierarchy_extra_dimensions/data, cited again here.
+# kind = lambda_max: a Yukawa term V = -(G M m / r)(1 + alpha exp(-r / lambda)) with |alpha| = 1 is excluded for
+#   lambda above value (metres, 95% CL). KK gravitons on an n-torus give alpha = 8n/3 >= 1 and lambda = R, so R >
+#   value is excluded for every n >= 1 (the measured curve falls with lambda, so this is conservative).
+#   Kapner et al., Phys. Rev. Lett. 98, 021101 (2007), doi:10.1103/PhysRevLett.98.021101, arXiv:hep-ph/0611184: 56 um.
+#   Lee et al., Phys. Rev. Lett. 124, 101101 (2020), doi:10.1103/PhysRevLett.124.101101, arXiv:2002.11761: 38.6 um.
+# kind = R_max: Tan et al., Phys. Rev. Lett. 116, 131101 (2016), as quoted in the PDG 2024 review "Extra dimensions"
+#   (Navas et al., Phys. Rev. D 110, 030001): R < 30 um for n = 2, "corresponding to M_D > 4.0 TeV".
+# kind = M_D_min: lower limit on the fundamental scale M_D (TeV, 95% CL), Giudice-Rattazzi-Wells convention
+#   M_Pl^2 = 8 pi R^n M_D^(n+2) with M_Pl = 1.22e19 GeV (the convention of the PDG review).
+#   ATLAS monojet, 139 fb^-1, 13 TeV: Phys. Rev. D 103, 112006 (2021), doi:10.1103/PhysRevD.103.112006,
+#   arXiv:2102.10874, Table 10 (open access, CC-BY 4.0).
+#   SN1987A cooling: Hanhart et al., Phys. Lett. B 509, 1 (2001), arXiv:astro-ph/0102063, as quoted by the PDG 2024
+#   review: M_D > 27 (2.4) TeV for n = 2 (3).
+#   Neutron-star heating by trapped KK gravitons: Hannestad and Raffelt, Phys. Rev. D 67, 125008 (2003),
+#   doi:10.1103/PhysRevD.67.125008, erratum D 69, 029901 (2004), arXiv:hep-ph/0304029, as quoted by the PDG 2024
+#   review: M_D > 1700 (76) TeV for n = 2 (3).
+bound,source,year,n,kind,value
+torsion,Kapner et al.,2007,any,lambda_max,56e-6
+torsion,Lee et al.,2020,any,lambda_max,38.6e-6
+torsion,Tan et al.,2016,2,R_max,30e-6
+lhc,ATLAS,2021,2,M_D_min,11.2
+lhc,ATLAS,2021,3,M_D_min,8.5
+lhc,ATLAS,2021,4,M_D_min,7.1
+lhc,ATLAS,2021,5,M_D_min,6.4
+lhc,ATLAS,2021,6,M_D_min,5.9
+sn1987a,Hanhart et al.,2001,2,M_D_min,27
+sn1987a,Hanhart et al.,2001,3,M_D_min,2.4
+neutron_star,Hannestad and Raffelt,2003,2,M_D_min,1700
+neutron_star,Hannestad and Raffelt,2003,3,M_D_min,76

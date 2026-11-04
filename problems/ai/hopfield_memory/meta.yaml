@@ -1,0 +1,42 @@
+title: 'Hopfield networks: classic and modern associative memory'
+category: ai
+level: advanced
+order: 1
+tags: [nobel:physics:2024, boltzmann:2022]  # Hopfield and Hinton, artificial neural networks
+summary: >
+  A memory that completes a picture from a corrupted or half-hidden version. The classic Hopfield network stores
+  binary patterns in Hebbian weights $W_{ij}$ and slides downhill in an energy; it holds at most about $0.138\,N$
+  random patterns, and far fewer correlated ones. The modern continuous Hopfield network of Ramsauer et al. (2020)
+  keeps the patterns and updates $\xi \leftarrow X\,\mathrm{softmax}(\beta X^\top \xi)$, the attention of
+  transformers: it retrieves cartoon faces in one step where the classic network mixes them up.
+animated: true
+vector_form: 'W = \frac1N \sum_\mu \boldsymbol\xi^\mu \boldsymbol\xi^{\mu\top} - \tfrac PN I,\quad s_i \leftarrow \operatorname{sign}(W\mathbf s)_i,\quad E = -\tfrac12\,\mathbf s^\top W \mathbf s;\qquad \boldsymbol\xi \leftarrow X\,\operatorname{softmax}(\beta X^\top \boldsymbol\xi)'
+index_form: 'W_{ij} = \frac1N\,\xi^\mu_i \xi^\mu_j\ (i \ne j),\qquad s_i \leftarrow \operatorname{sign}(W_{ij} s_j),\qquad p_\mu = \operatorname{softmax}_\mu(\beta\,\xi^\mu_n \xi_n),\qquad \xi_n \leftarrow p_\mu\,\xi^\mu_n'
+translation:
+  - {symbol: '\xi^\mu_i', code: 'faces(P, 32, seed, device)', shape: '(P, N)', meaning: 'pattern $\mu$: a procedurally drawn cartoon face, ink $+1$, paper $-1$, $N = 32 \times 32$ pixels'}
+  - {symbol: 'W_{ij}', code: "einsum('fp,pi,pj->fij', used, X, X) / N", shape: '(F, N, N)', meaning: 'Hebb''s rule, repeated $\mu$ ⇒ summed; one network $f$ per number of stored faces, diagonal set to 0'}
+  - {symbol: 'h_i = W_{ij} s_j', code: "einsum('fqj,fj->fq', s, W[:, i])", shape: '(F, Q)', meaning: 'repeated $j$ ⇒ summed: field on neuron $i$ for every network and query; $s_i$ takes its sign'}
+  - {symbol: 'E = -\tfrac12 s_i W_{ij} s_j', code: "-0.5 * einsum('fqi,fij,fqj->fq', s, W, s)", shape: '(F, Q)', meaning: 'energy; never rises under one-neuron-at-a-time updates'}
+  - {symbol: 'p_\mu', code: "softmax(beta * einsum('qn,pn->qp', q, X), -1)", shape: '(Q, P)', meaning: 'repeated $n$ ⇒ summed: similarity of the query to every stored pattern, sharpened by $\beta$'}
+  - {symbol: '\xi_n \leftarrow p_\mu \xi^\mu_n', code: "einsum('qp,pn->qn', p, X)", shape: '(Q, N)', meaning: 'repeated $\mu$ ⇒ summed: the new state is a weighted average of the patterns, one pattern when $\beta$ is large'}
+  - {symbol: 'm = \tfrac1N s_i \xi_i', code: 'overlap(s, target)', shape: '(F, Q)', meaning: 'recall quality: 1 when the face is restored exactly'}
+notes: >
+  The faces are not images of anyone: each one is drawn by the code from a few random numbers (head shape, eyes,
+  glasses, brows, nose, mouth curvature, hair, ears), so no copyrighted characters or photographs are used. Each
+  query hides the bottom 40 % of a face and flips 5 % of the other pixels. For random patterns the classic
+  network's limit $\alpha_c \approx 0.138$ was computed by Amit, Gutfreund and Sompolinsky (1985) with methods
+  from spin glasses, and the one-step bit error rate follows the Gaussian crosstalk law $\Phi(-1/\sqrt\alpha)$
+  (both checked in the tests). Faces are strongly correlated (they share an outline and a lot of empty paper), so
+  the classic network already confuses them at a load far below $0.138$: it falls into mixtures of faces. The
+  modern network's energy has a log-sum-exp term; Ramsauer et al. prove it decreases at every update, that one
+  update usually suffices and that the capacity grows exponentially with $N$ for well separated patterns. Its
+  update is exactly transformer attention with the stored patterns as keys and values. Make $\beta$ small to see
+  metastable averages of several faces instead of one. The idea follows the blog post accompanying the paper,
+  with procedural faces in place of its cartoon images.
+params:
+  n_faces: {default: 36, min: 8, max: 80, step: 4, type: int, label: 'Faces stored at most $P$'}
+  beta: {default: 0.1, min: 0.002, max: 1.0, step: 0.002, label: 'Inverse temperature $\beta$'}
+  mask: {default: 0.4, min: 0.0, max: 0.7, step: 0.05, label: Hidden fraction of each face}
+  noise: {default: 0.05, min: 0.0, max: 0.3, step: 0.01, label: Flipped pixels}
+  sweeps: {default: 5, min: 1, max: 20, step: 1, type: int, label: Classic update sweeps}
+  n_random: {default: 400, min: 100, max: 1000, step: 50, type: int, label: 'Neurons $N$ for the capacity curve'}

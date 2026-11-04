@@ -1,0 +1,19 @@
+source_hash: 278f16a6d4b6
+title: 'Einstein 1905 : corps en mouvement et $E = mc^2$'
+summary: Le chemin d'Einstein lui-même à travers ses deux articles de 1905 sur la relativité. À partir de deux postulats — les mêmes lois dans tout référentiel inertiel, la lumière toujours à $c$ — un lot d'horloges à lumière montre que le temps en mouvement ralentit d'un facteur $\gamma$, que les règles raccourcissent de $1/\gamma$, que la simultanéité dépend de l'observateur et que les vitesses ne s'additionnent jamais au-delà de $c$. L'article sur la masse et l'énergie (un corps qui émet une énergie lumineuse $L$ perd une masse $L/c^2$) est vérifié sur le défaut de masse de l'hélium 4 et sur l'annihilation $e^+e^-$, et un ajustement aux comptages de muons de Frisch et Smith (1963) au mont Washington et au niveau de la mer donne $\gamma \approx 9$.
+notes: 'Il s''agit de l''un des quatre articles de l''« année miraculeuse » 1905 d''Einstein — de deux, en fait : « Sur l''électrodynamique des corps en mouvement » (juin) et « L''inertie d''un corps dépend-elle de son contenu en énergie ? » (septembre). Les autres sont l''article sur les quanta de lumière (quantique : Effet photoélectrique et quanta de lumière) et le mouvement brownien (thermodynamique : Marche aléatoire et diffusion). Pour la relativité comme géométrie, voir Relativité restreinte : diagrammes de Minkowski (astro) ; pour le tenseur électromagnétique, le boost de Lorentz de $F^{\mu\nu}$ (em) ; et pour les collisions, Quadri-impulsion et désintégration à deux corps (nuclear). Unités $c = 1$, espacement des miroirs $D = 1$. L''argument d''Einstein sur la masse : un corps au repos émet $L/2$ vers l''avant et $L/2$ vers l''arrière ; dans un référentiel se déplaçant à $v$, la lumière emporte $\gamma L$, plus que $L$, et la conservation de l''énergie dans les deux référentiels
+  impose que l''énergie cinétique du corps diminue de $L(\gamma - 1)$, exactement ce que porterait une masse $L/c^2$ (il ne garda que le terme de basse vitesse $\tfrac12 (L/c^2)v^2$). Les masses atomiques proviennent de l''AME2020. Données réelles (data/frisch_smith_1963_muons.csv) : D. H. Frisch et J. H. Smith, Am. J. Phys. 31, 342 (1963), doi:10.1119/1.1969508 — des muons ralentis à la même énergie, $563 \pm 10$ par heure à 1917 m sur le mont Washington et $408 \pm 9$ par heure au niveau de la mer (valeurs de mesure publiées ; le résumé de Wikipédia arrondit la seconde à 412). Le trajet dure environ 6,4 μs, presque trois durées de vie du muon de 2,2 μs, de sorte que sans dilatation du temps seuls environ 30 par heure arriveraient ; les comptages donnent à l''horloge du muon 0,71 μs et $\gamma \approx 9.1 \pm 0.8$ (l''article, avec sa courbe de désintégration mesurée : $8.8 \pm 0.8$). La prédiction à partir des vitesses intègre le ralentissement de $\beta \approx 0.995$ à $\approx 0.989$
+  à travers l''air (perte par ionisation $dE/dx$, atmosphère isotherme) : environ 8,4, comme dans l''article. Rossi et Hall (1941) ont été les premiers à montrer l''effet avec des muons cosmiques à Echo Lake et à Denver.'
+meanings:
+- 'photon de l''horloge $b$ à l''instant $t$ : vitesse horizontale $\beta_b$, verticale $\sqrt{1-\beta_b^2}$, donc toujours $c$'
+- un tic dure $\gamma\cdot 2D/c$ ; tics comptés à partir du zigzag
+- un lot de boosts selon $x$, $\eta = \operatorname{diag}(-1, 1, 1, 1)$
+- '$\nu$ répété ⇒ sommé : chaque événement dans chaque référentiel ; les éclairs du train reçoivent $\Delta t'' = -\gamma\beta\Delta x$'
+- l'intervalle, inchangé par chaque boost
+- 'les deux impulsions lumineuses vues depuis le référentiel en mouvement : ensemble $\gamma L$, donc $K_0 - K_1 = (L/c^2)(\gamma - 1)c^2$'
+- 'défaut de masse × 931,494 MeV/u (He-4 : 28,30 MeV)'
+- pas de Newton avec autograd sur $\chi^2(\gamma)$ pour les deux taux de muons
+labels:
+  beta_fast: Vitesse de l'horloge la plus rapide $\beta$
+  n_clocks: Nombre d'horloges à lumière
+  dEdx: Perte d'énergie des muons dans l'air $dE/dx$

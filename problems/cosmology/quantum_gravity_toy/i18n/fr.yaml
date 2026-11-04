@@ -1,0 +1,19 @@
+source_hash: c4f16483f7b8
+title: 'Cosmologie quantique : le rebond à boucles'
+summary: 'Un modèle jouet de gravité quantique : la cosmologie quantique à boucles (LQC) d''un univers plat rempli d''un champ scalaire sans masse. Remplacer la connexion $b$ par l''holonomie $\sin(\lambda b)/\lambda$ d''une boucle d''aire de Planck transforme l''équation de Friedmann en $H^2 = \frac{8\pi G}{3}\rho(1-\rho/\rho_c)$. Une intégration RK4 sur un lot d''univers montre le Big Bang remplacé par un rebond à $\rho = \rho_c \approx 0.41\,\rho_\mathrm{P}$, tandis que le paquet d''ondes de Wheeler–DeWitt du même modèle suit l''effondrement classique vers la singularité. La gravité quantique est un problème de recherche ouvert ; ceci n''est qu''une approche simplifiée.'
+notes: 'Unités de Planck $G = \hbar = c = 1$ ; paramètre de Barbero–Immirzi $\gamma = 0.2375$. Approche retenue : les équations effectives de la cosmologie quantique à boucles avec dynamique améliorée ($\bar\mu$) (Ashtekar, Pawlowski et Singh 2006 ; Taveras 2008), pour un univers FRW spatialement plat contenant un champ scalaire sans masse qui sert aussi d''horloge. Statut : il n''existe aucune théorie acceptée de la gravité quantique. La LQC est une quantification à symétrie réduite inspirée de la gravité quantique à boucles ; son lien avec la LQG complète n''est pas établi, et les équations effectives sont une approximation qui concorde avec l''évolution numérique d''états quantiques très piqués dans ce modèle. Aucune observation n''a testé le rebond. Ce qui est montré est exact pour le modèle : la contrainte est conservée, l''équation de Friedmann effective est vérifiée, la densité de rebond $\rho_c$ est la même pour tout $p_\varphi$, et le volume suit $V(t) = \sqrt{V_B^2 + 12\pi G p_\varphi^2
+  t^2}$. Loin de $\rho_c$ (ou pour $\lambda \to 0$), la relativité générale classique est retrouvée : $H^2 = 8\pi G\rho/3$ et le volume décroît linéairement jusqu''à $V = 0$ en un temps fini (tirets rouges : la singularité). La bande grise est une solution exacte de Wheeler–DeWitt du même modèle (quantifié sans boucles, $x = \ln V$) : un paquet d''ondes libre qui glisse le long de la droite de contraction classique vers $V \to 0$, comme l''ont trouvé APS. Les courbes plus claires utilisent des boucles plus petites ($\lambda/2$, $\lambda/4$) : le rebond survient plus tard, à plus haute densité. Les images sont resserrées autour du rebond.'
+meanings:
+- volume, connexion et champ scalaire de chaque univers $b$ du lot, sur la surface de contrainte $C = 0$
+- 'taille de boucle : $\lambda^2 = 4\sqrt3\pi\gamma\,\ell_P^2$ est le gap d''aire de la LQG ; $\lambda$ plus petit ⇒ $\rho_c$ plus grand'
+- équations de Hamilton de la contrainte effective, pour tous les univers à la fois
+- trajectoire RK4 en temps propre
+- contrainte hamiltonienne, doit rester à $0$ (sa dérive RK4 est affichée dans le terminal)
+- '$3/(8\pi G\gamma^2\lambda^2)$ : la densité de rebond'
+- '$k$ répété ⇒ sommé : paquet de Wheeler–DeWitt sur la grille de l''horloge $\varphi_p$ et de $x = \ln V$'
+labels:
+  p_phi: Impulsion du champ scalaire $p_\varphi$ ($\hbar$)
+  gap_scale: Taille de boucle $\lambda$ relative au gap d'aire de la LQG
+  log10_rho_start: Densité initiale $\log_{10}(\rho/\rho_c)$
+  dt: Pas de temps RK4 $\Delta t$
+  spread: Largeur du paquet de Wheeler–DeWitt $\Delta k/k_0$

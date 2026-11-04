@@ -1,0 +1,19 @@
+source_hash: 796c13483137
+title: Optimaler Transport mit Sinkhorn
+summary: Wie verwandelt man einen ringförmigen Sandhaufen in zwei Hügel und dann in eine Spirale, mit dem geringsten Gesamtaufwand? Der optimale Transport findet den Plan $P_{ij}$, der Masse von $x_i$ nach $y_j$ zu den Kosten $|x_i - y_j|^2$ bewegt; sein Minimum ist die quadrierte Wasserstein-Distanz $W_2^2$. Ein wenig Entropie $\varepsilon$ macht das Problem durch die alternierenden Sinkhorn-Updates lösbar, hier im Log-Bereich mit logsumexp für einen ganzen Batch von $\varepsilon$-Werten auf einmal geschrieben; für $\varepsilon \to 0$ sinken die Kosten auf das exakte Optimum, das der Ungarische Algorithmus findet.
+notes: 'Monge stellte das Problem 1781, und Kantorowitsch relaxierte es 1942 auf Pläne $P$. Cuturi (2013) zeigte, dass die entropische Version durch Sinkhorns Matrixskalierung gelöst wird, mit wenigen Matrixprodukten pro Iteration, was den optimalen Transport im maschinellen Lernen praktikabel machte. Kleines $\varepsilon$ erfordert Sorgfalt: Der Code arbeitet mit den Potentialen $f, g$ und logsumexp statt mit $e^{-C/\varepsilon}$ (das unterläuft) und senkt $\varepsilon$ schrittweise von 1 auf den Zielwert ($\varepsilon$-Scaling). Die Kosten $\langle P_\varepsilon, C\rangle$ fallen auf den exakten Wert $W_2^2$, den der Ungarische Algorithmus berechnet (eine langsame exakte Referenz, geprüft per Brute Force über alle Permutationen), während der duale Wert $\mathrm{OT}_\varepsilon$ einen entropischen Bias trägt, den die Sinkhorn-Divergenz von Feydy et al. (2019) entfernt. Die Tests prüfen außerdem zwei geschlossene Formeln: In einer Dimension paart der optimale Plan die sortierten Punkte (Quantilfunktionen),
+  und zwischen Gaußverteilungen gilt $W_2^2 = |m_1 - m_2|^2 + \operatorname{tr}(S_1 + S_2 - 2(S_1^{1/2} S_2 S_1^{1/2})^{1/2})$ (die Bures-Metrik), gestützt auf den Satz von Brenier, wonach der Gradient einer konvexen Funktion die optimale Abbildung ist. Alle Formen werden vom Code erzeugt; es werden keine Bilder verwendet.'
+meanings:
+- synthetische Punktwolken aus Formeln und Zufallszahlen, jeder Punkt mit Masse $a_i = 1/N$
+- quadrierter Abstand, wiederholtes $k$ ⇒ summiert
+- ein Batch von Regularisierungsstärken, die gleichzeitig gelöst werden
+- Sinkhorn-Update im Log-Bereich, Summe über $j$ als logsumexp; läuft selbst für winziges $\varepsilon$ nie über
+- 'dasselbe über $i$: danach sind die Spaltensummen von $P$ exakt gleich $b$'
+- 'Transportplan: verschwommen für großes $\varepsilon$, fast eine Permutation für kleines $\varepsilon$'
+- 'baryzentrische Abbildung: wohin die Masse von $x_i$ geht; die Punkte bewegen sich auf Geraden $(1-t)\,x + t\,T(x)$ (McCann-Interpolation)'
+- $\mathrm{OT}_\varepsilon(\mu,\nu) - \tfrac12\mathrm{OT}_\varepsilon(\mu,\mu) - \tfrac12\mathrm{OT}_\varepsilon(\nu,\nu)$, null für $\mu = \nu$
+labels:
+  n_points: Punkte pro Form $N$
+  eps_min: Kleinste Regularisierung $\varepsilon$
+  n_eps: Werte von $\varepsilon$ im Batch
+  n_iter: Sinkhorn-Iterationen

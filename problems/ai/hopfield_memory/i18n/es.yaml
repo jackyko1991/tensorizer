@@ -1,0 +1,20 @@
+source_hash: a8220b6707c1
+title: 'Redes de Hopfield: memoria asociativa clásica y moderna'
+summary: 'Una memoria que completa una imagen a partir de una versión corrupta o medio oculta. La red de Hopfield clásica almacena patrones binarios en pesos hebbianos $W_{ij}$ y desciende por una energía; retiene como máximo unos $0.138\,N$ patrones aleatorios, y muchos menos si están correlacionados. La red de Hopfield continua moderna de Ramsauer et al. (2020) conserva los patrones y actualiza $\xi \leftarrow X\,\mathrm{softmax}(\beta X^\top \xi)$, la atención de los transformers: recupera caras de dibujos animados en un solo paso donde la red clásica las mezcla.'
+notes: 'Las caras no representan a nadie: cada una la dibuja el código a partir de unos pocos números aleatorios (forma de la cabeza, ojos, gafas, cejas, nariz, curvatura de la boca, pelo, orejas), así que no se usan personajes protegidos por derechos de autor ni fotografías. Cada consulta oculta el 40 % inferior de una cara e invierte el 5 % de los demás píxeles. Para patrones aleatorios, el límite de la red clásica $\alpha_c \approx 0.138$ lo calcularon Amit, Gutfreund y Sompolinsky (1985) con métodos de los vidrios de espín, y la tasa de error por bit tras un paso sigue la ley gaussiana de diafonía $\Phi(-1/\sqrt\alpha)$ (ambas se comprueban en los tests). Las caras están muy correlacionadas (comparten un contorno y mucho papel vacío), de modo que la red clásica ya las confunde con una carga muy inferior a $0.138$: cae en mezclas de caras. La energía de la red moderna tiene un término log-sum-exp; Ramsauer et al. demuestran que disminuye en cada actualización, que una actualización suele
+  bastar y que la capacidad crece exponencialmente con $N$ para patrones bien separados. Su actualización es exactamente la atención de los transformers, con los patrones almacenados como claves y valores. Haz $\beta$ pequeño para ver promedios metaestables de varias caras en lugar de una. La idea sigue la entrada de blog que acompaña al artículo, con caras procedurales en lugar de sus imágenes de dibujos animados.'
+meanings:
+- 'patrón $\mu$: una cara de dibujos animados dibujada de forma procedural, tinta $+1$, papel $-1$, $N = 32 \times 32$ píxeles'
+- regla de Hebb, $\mu$ repetido ⇒ sumado; una red $f$ por cada número de caras almacenadas, diagonal puesta a 0
+- '$j$ repetido ⇒ sumado: campo sobre la neurona $i$ para cada red y cada consulta; $s_i$ toma su signo'
+- energía; nunca aumenta con actualizaciones de una neurona cada vez
+- '$n$ repetido ⇒ sumado: similitud de la consulta con cada patrón almacenado, agudizada por $\beta$'
+- '$\mu$ repetido ⇒ sumado: el nuevo estado es un promedio ponderado de los patrones, un único patrón cuando $\beta$ es grande'
+- 'calidad del recuerdo: 1 cuando la cara se restaura exactamente'
+labels:
+  n_faces: Máximo de caras almacenadas $P$
+  beta: Temperatura inversa $\beta$
+  mask: Fracción oculta de cada cara
+  noise: Píxeles invertidos
+  sweeps: Barridos de actualización clásica
+  n_random: Neuronas $N$ para la curva de capacidad

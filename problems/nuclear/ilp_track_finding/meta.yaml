@@ -1,0 +1,80 @@
+title: Particle track finding as an integer program
+category: nuclear
+level: advanced
+order: 9
+tags: []
+summary: >
+  Real hits from a simulated HL-LHC collision (TrackML challenge, CC BY 4.0) are joined into tracks by an integer
+  linear program: choose hit triplets with consistent curvature and polar angle, with each hit used at most once. Our
+  tensor PDLP (restarted primal–dual hybrid gradient, the LP method inside OR-Tools and cuOpt) solves the LP
+  relaxation live on sparse tensors, then rounds and repairs it. It is compared with a hand-written Hungarian
+  (Kuhn–Munkres) baseline and with offline runs of HiGHS, Gurobi and scipy: objective gap, efficiency, fake rate,
+  the official TrackML score and the wall-time scaling $t \propto N^k$.
+animated: true
+vector_form: '\max_{x,y\in\{0,1\}}\ \mathbf s^\top\mathbf x - \lambda\,\mathbf 1^\top\mathbf y\quad\text{s.t.}\quad A\begin{pmatrix}\mathbf x\\ \mathbf y\end{pmatrix}\le\mathbf b,\qquad s_t = 1 - \Big(\frac{\Delta\kappa_t}{\sigma_\kappa}\Big)^2 - \Big(\frac{\Delta\theta_t}{\sigma_\theta}\Big)^2,\qquad \mathbf z^{k+1} = \Pi_{[0,1]}\big(\mathbf z^k - \tau(A^\top\mathbf w^k - \mathbf c)\big),\ \ \mathbf w^{k+1} = \big(\mathbf w^k + \sigma(A(2\mathbf z^{k+1} - \mathbf z^k) - \mathbf b)\big)_+'
+index_form: '\sum_{e\in\mathrm{out}(h)} y_e \le 1,\quad \sum_{e\in\mathrm{in}(h)} y_e \le 1,\quad \sum_{t:\,e_1(t)=e} x_t \le y_e,\quad \sum_{t:\,e_2(t)=e} x_t \le y_e,\qquad g_v = A_{mv}w_m - c_v,\qquad r_m = A_{mv}(2z^{k+1}_v - z^k_v) - b_m'
+translation:
+  - {symbol: '(x_h, y_h, z_h),\ l_h', code: 'load_event(); wedge(event, dphi)', shape: '(N, 3), (N,)', meaning: 'real TrackML hits on the 4 pixel-barrel layers, cut to a $\Delta\phi$ wedge: the problem size'}
+  - {symbol: 'e = (a \to b)', code: 'segments(xyz, layer, cuts)', shape: '(E, 2)', meaning: 'hit pairs on adjacent layers with $|\Delta\phi| \le \arcsin(r_b/2R) - \arcsin(r_a/2R)$ and $|z_0| \le 150$ mm, all pairs at once'}
+  - {symbol: '\kappa_e', code: '2 * cross / (|a| |b| |b - a|)', shape: '(E,)', meaning: 'curvature of the circle through the beam line and both hits'}
+  - {symbol: 't = (e_1, e_2),\ s_t', code: 'join(seg, n); triplet_score(...)', shape: '(T, 2), (T,)', meaning: 'triplets share the middle hit; a helix has the same $\kappa$ and $\theta$ on both halves, so $s_t$ drops with the mismatch'}
+  - {symbol: 'A_{mv}', code: 'torch.sparse_coo_tensor(...)', shape: '(M, T+E)', meaning: 'hit-exclusivity rows (one segment in, one out) and continuity rows; repeated $v$ ⇒ summed in every product'}
+  - {symbol: 'z^{k+1},\ w^{k+1}', code: 'pdlp(a, b, c)', shape: '(V,), (M,)', meaning: 'PDHG on the Ruiz-scaled LP with averaging, restarts and a primal weight; two sparse mat-vecs per iteration'}
+  - {symbol: 'x, y \in \{0,1\}', code: 'round_and_repair(z, seg, trip, score, n)', shape: '(T,), (E,)', meaning: 'rank segments by LP value, accept conflict-free ones in parallel rounds, trim chain ends that cost more than they score'}
+  - {symbol: '\min_\pi \sum_i C_{i\pi(i)}', code: 'hungarian(cost)', shape: '(n,)', meaning: 'Kuhn–Munkres with potentials: one exact linear assignment per layer pair, chained into tracks'}
+  - {symbol: 'S', code: 'trackml_score(label, particle, weight)', shape: '()', meaning: 'official TrackML score: summed weights of hits on tracks that hold > 50% of a particle and are > 50% that particle'}
+notes: >
+  Status: a tool comparison, not an open problem. The ILP is a set-packing problem (NP-hard in general); PDLP is a
+  first-order LP method, and rounding gives a heuristic integer solution, not a certified optimum, so the gap to the
+  exact optimum is always reported. The PDLP dual bound gives a certified upper bound even without an exact solver.
+
+  Method. Candidate segments join hits on adjacent layers that a track with $p_T \ge p_{T,\min}$ from the beam line
+  could connect. Triplets join two segments through a shared middle hit and score $s_t = 1 - (\Delta\kappa/\sigma_\kappa)^2
+  - (\Delta\theta/\sigma_\theta)^2$ (only $s_t > 0$ kept). The ILP picks triplets $x_t$ and segments $y_e$: each hit has at most
+  one chosen segment in and one out, so tracks are chains. A chosen segment continues into at most one chosen triplet on
+  each side, and every segment costs $\lambda = 0.1$. Its LP relaxation ($0 \le x, y \le 1$) is solved by our PDLP
+  (Applegate et al. 2021): PDHG with Ruiz scaling, KKT-based restarts to the average and primal-weight updates, written
+  with torch.sparse so it runs on CPU or CUDA. The Hungarian baseline solves one exact linear assignment per layer pair
+  (middle pair first, then inwards and outwards, with triplet costs given the chain so far). It is a bipartite matching
+  solved exactly in polynomial time, but it decides one layer pair at a time, while the ILP weighs whole chains
+  globally. That is why its tracks differ.
+
+  Data. TrackML Particle Tracking Challenge (CERN / Kaggle 2018), training event 1000 (200 pile-up collisions):
+  Zenodo record 4730167, doi:10.5281/zenodo.4730167, licence CC BY 4.0 (Salzburger, Innocente, Vlimant, Rousseau et
+  al.). It is cut to the pixel barrel (volume 8, 4 layers) with $|\eta| < 1$: 11 519 hits, 2 452 particles and 6% noise,
+  plus the official per-hit weights. Offline benchmark (data/solver_benchmark.csv) on an AMD Ryzen 5 5600G (1
+  thread): HiGHS through scipy 1.18.1 (milp, linprog), Gurobi 13 through gurobipy with its size-limited licence (at
+  most 2000 variables and 2000 constraints, so only $\Delta\phi \le 30°$), scipy's linear_sum_assignment, and our
+  PDLP on the CPU and on an NVIDIA GTX 1080 Ti. NVIDIA cuOpt 26.10 installed in WSL but could not run: its kernels
+  are built for compute capability 7.0 (Volta) and newer, and the 1080 Ti is 6.1 (cudaErrorNoKernelImageForDevice), so
+  it is skipped and has no numbers. The cited state of the art is in data/trackml_sota.csv.
+
+  Verdict. On all eight wedges (5° to 360°, 151 to 11 519 hits) the LP relaxation was tight: the HiGHS LP optimum
+  equals the MILP optimum to $10^{-13}$. Our PDLP plus repair reached the same optimum every time (gap below
+  $10^{-9}$), with exactly the triplets HiGHS and Gurobi chose (0 differ). That is empirical, not guaranteed: set
+  packing is NP-hard, and here the four-layer chain structure keeps the LP tight. With continuous scores exact ties
+  are unlikely, so solvers that reach the optimum agree. Mid-run, about a third of the PDLP values are fractional, many
+  near $\tfrac12$ where rival triplets almost tie (for example double hits in overlapping modules); they settle as
+  PDLP converges. The Hungarian chains are 0 to 2.2% below the optimum (5 to 651 triplets differ) and match scipy's assignment objective exactly (a check of our
+  Hungarian). Full barrel subset (360°): efficiency 93.1% and fake rate 13.0% for the ILP solvers vs 90.9% and 16.2%
+  for Hungarian, TrackML score 0.495 vs 0.482. A perfect tracker of the reconstructable particles would score 0.618
+  here; the cited full-event state of the art is 0.88 to 0.94 (Mikado 0.944 in 0.56 s). Scaling over $N \ge 1000$
+  hits: HiGHS MILP $N^{1.14}$, HiGHS LP $N^{1.01}$, our PDLP on the CPU $N^{0.92}$, on the GPU $N^{0.36}$ (launch
+  overhead still dominates at 10 000 variables, so the 1080 Ti is not faster yet), our Hungarian $N^{2.14}$ (worst case
+  $O(n^3)$; sparse, gated costs keep augmenting paths short), scipy $N^{1.57}$. Gurobi fits in its size limit only up to
+  860 hits ($N^{1.04}$ there). At these sizes HiGHS is as fast as PDLP; first-order methods pay off on
+  much larger LPs. On small wedges Hungarian finds slightly more particles (97.4% vs 94.8% at 30°): the ILP objective
+  is a proxy, not the physics metric.
+
+  Caveats. Our instances are a barrel wedge with 4 layers, so tracks have at most 4 hits and there are no endcaps:
+  easier and different from the full events of the challenge. The TrackML score comparison is indicative, not like
+  for like: about 40% of the subset's score weight sits on particles below the $p_T$ cut or with fewer than 3 layers
+  inside the cut, and our times cover one tenth of an event and exclude reading and candidate building. Real trackers
+  (ACTS, and the experiments' own) use combinatorial Kalman filters, and graph neural networks (Exa.TrkX) are the main
+  machine-learning approach; nobody runs a MILP per event.
+params:
+  dphi: {default: 30, min: 5, max: 360, step: 5, label: 'Wedge width $\Delta\phi$ (problem size)', unit: deg}
+  pt_min: {default: 0.5, min: 0.3, max: 2.0, step: 0.1, label: 'Minimum transverse momentum $p_{T,\min}$', unit: GeV}
+  max_iter: {default: 5000, min: 200, max: 50000, step: 100, type: int, label: 'Maximum PDLP iterations'}
+  digits: {default: 6, min: 2, max: 9, step: 1, type: int, label: 'PDLP target accuracy $10^{-k}$, $k$ ='}
+  check: {default: 32, min: 8, max: 256, step: 8, type: int, label: 'Iterations between restart checks (one frame each)'}

@@ -1,0 +1,20 @@
+source_hash: a8220b6707c1
+title: 'Réseaux de Hopfield : mémoire associative classique et moderne'
+summary: 'Une mémoire qui complète une image à partir d''une version corrompue ou à moitié cachée. Le réseau de Hopfield classique stocke des motifs binaires dans des poids hebbiens $W_{ij}$ et descend la pente d''une énergie ; il retient au plus environ $0.138\,N$ motifs aléatoires, et bien moins de motifs corrélés. Le réseau de Hopfield continu moderne de Ramsauer et al. (2020) garde les motifs et met à jour $\xi \leftarrow X\,\mathrm{softmax}(\beta X^\top \xi)$, l''attention des transformers : il retrouve des visages dessinés en un seul pas là où le réseau classique les mélange.'
+notes: 'Les visages ne représentent personne : chacun est dessiné par le code à partir de quelques nombres aléatoires (forme de la tête, yeux, lunettes, sourcils, nez, courbure de la bouche, cheveux, oreilles), donc aucun personnage protégé par le droit d''auteur ni aucune photographie n''est utilisé. Chaque requête cache les 40 % inférieurs d''un visage et inverse 5 % des autres pixels. Pour des motifs aléatoires, la limite du réseau classique $\alpha_c \approx 0.138$ a été calculée par Amit, Gutfreund et Sompolinsky (1985) avec des méthodes issues des verres de spin, et le taux d''erreur par bit après un pas suit la loi gaussienne de diaphonie $\Phi(-1/\sqrt\alpha)$ (les deux sont vérifiés dans les tests). Les visages sont fortement corrélés (ils partagent un contour et beaucoup de papier vide), si bien que le réseau classique les confond déjà à une charge bien inférieure à $0.138$ : il tombe dans des mélanges de visages. L''énergie du réseau moderne contient un terme log-sum-exp ; Ramsauer
+  et al. démontrent qu''elle décroît à chaque mise à jour, qu''une mise à jour suffit généralement et que la capacité croît exponentiellement avec $N$ pour des motifs bien séparés. Sa mise à jour est exactement l''attention des transformers, avec les motifs stockés comme clés et comme valeurs. Rendez $\beta$ petit pour voir des moyennes métastables de plusieurs visages au lieu d''un seul. L''idée suit le billet de blog qui accompagne l''article, avec des visages procéduraux à la place de ses images de dessin animé.'
+meanings:
+- 'motif $\mu$ : un visage dessiné de façon procédurale, encre $+1$, papier $-1$, $N = 32 \times 32$ pixels'
+- règle de Hebb, $\mu$ répété ⇒ sommé ; un réseau $f$ par nombre de visages stockés, diagonale mise à 0
+- '$j$ répété ⇒ sommé : champ sur le neurone $i$ pour chaque réseau et chaque requête ; $s_i$ prend son signe'
+- énergie ; elle n'augmente jamais lors de mises à jour d'un neurone à la fois
+- '$n$ répété ⇒ sommé : similarité de la requête avec chaque motif stocké, accentuée par $\beta$'
+- '$\mu$ répété ⇒ sommé : le nouvel état est une moyenne pondérée des motifs, un seul motif quand $\beta$ est grand'
+- 'qualité du rappel : 1 quand le visage est restauré exactement'
+labels:
+  n_faces: Nombre maximal de visages stockés $P$
+  beta: Température inverse $\beta$
+  mask: Fraction cachée de chaque visage
+  noise: Pixels inversés
+  sweeps: Balayages de mise à jour classique
+  n_random: Neurones $N$ pour la courbe de capacité

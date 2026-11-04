@@ -1,0 +1,19 @@
+source_hash: c4f16483f7b8
+title: 'Cosmología cuántica: el rebote de lazos'
+summary: 'Un modelo de juguete de gravedad cuántica: cosmología cuántica de lazos (LQC) de un universo plano lleno de un campo escalar sin masa. Sustituir la conexión $b$ por la holonomía $\sin(\lambda b)/\lambda$ de un lazo de área de Planck convierte la ecuación de Friedmann en $H^2 = \frac{8\pi G}{3}\rho(1-\rho/\rho_c)$. RK4 sobre un lote de universos muestra el Big Bang reemplazado por un rebote en $\rho = \rho_c \approx 0.41\,\rho_\mathrm{P}$, mientras que el paquete de ondas de Wheeler–DeWitt del mismo modelo sigue el colapso clásico hacia la singularidad. La gravedad cuántica es un problema de investigación abierto; este es un enfoque simplificado.'
+notes: 'Unidades de Planck $G = \hbar = c = 1$; parámetro de Barbero–Immirzi $\gamma = 0.2375$. Enfoque elegido: las ecuaciones efectivas de la cosmología cuántica de lazos con dinámica mejorada ($\bar\mu$) (Ashtekar, Pawlowski y Singh 2006; Taveras 2008), para un universo FRW espacialmente plano con un campo escalar sin masa que también sirve de reloj. Estado: no existe una teoría aceptada de la gravedad cuántica. La LQC es una cuantización con simetría reducida inspirada en la gravedad cuántica de lazos; su relación con la LQG completa no está establecida, y las ecuaciones efectivas son una aproximación que concuerda con la evolución numérica de estados cuánticos muy concentrados en este modelo. Ninguna observación ha puesto a prueba el rebote. Lo que se muestra es exacto para el modelo: la ligadura se conserva, la ecuación de Friedmann efectiva se cumple, la densidad de rebote $\rho_c$ es la misma para todo $p_\varphi$ y el volumen sigue $V(t) = \sqrt{V_B^2 + 12\pi G p_\varphi^2 t^2}$.
+  Lejos de $\rho_c$ (o para $\lambda \to 0$) se recupera la relatividad general clásica: $H^2 = 8\pi G\rho/3$ y el volumen cae linealmente hasta $V = 0$ en un tiempo finito (rojo discontinuo: la singularidad). La banda gris es una solución exacta de Wheeler–DeWitt del mismo modelo (cuantizado sin lazos, $x = \ln V$): un paquete de ondas libre que se desliza a lo largo de la línea de contracción clásica hacia $V \to 0$, como encontraron APS. Las curvas más claras usan lazos más pequeños ($\lambda/2$, $\lambda/4$): el rebote ocurre más tarde, a mayor densidad. Los fotogramas se concentran alrededor del rebote.'
+meanings:
+- volumen, conexión y campo escalar de cada universo $b$ del lote, sobre la superficie de ligadura $C = 0$
+- 'tamaño del lazo: $\lambda^2 = 4\sqrt3\pi\gamma\,\ell_P^2$ es el gap de área de la LQG; $\lambda$ menor ⇒ $\rho_c$ mayor'
+- ecuaciones de Hamilton de la ligadura efectiva, para todos los universos a la vez
+- trayectoria RK4 en tiempo propio
+- ligadura hamiltoniana, debe mantenerse en $0$ (su deriva RK4 se imprime en el terminal)
+- '$3/(8\pi G\gamma^2\lambda^2)$: la densidad de rebote'
+- '$k$ repetido ⇒ sumado: paquete de Wheeler–DeWitt en la malla del reloj $\varphi_p$ y de $x = \ln V$'
+labels:
+  p_phi: Momento del campo escalar $p_\varphi$ ($\hbar$)
+  gap_scale: Tamaño del lazo $\lambda$ relativo al gap de área de la LQG
+  log10_rho_start: Densidad inicial $\log_{10}(\rho/\rho_c)$
+  dt: Paso de tiempo RK4 $\Delta t$
+  spread: Anchura del paquete de Wheeler–DeWitt $\Delta k/k_0$

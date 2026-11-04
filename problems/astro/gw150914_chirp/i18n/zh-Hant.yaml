@@ -1,0 +1,24 @@
+source_hash: 03516f527daf
+title: GW150914：第一個重力波「啁啾」
+summary: 2015 年 9 月 14 日，LIGO 漢福德（Hanford）與利文斯頓（Livingston）兩台探測器記錄的 16 秒真實應變數據。透過 Welch PSD 估計、白化與帶通濾波，把埋在強度大百倍的雜訊之下的啁啾訊號找出來。Q 變換時頻圖顯示其頻率一路上掃至約 150 Hz；一組後牛頓旋近模板庫以單一批次進行濾波，峰值出現在啁啾質量約 $30\,M_\odot$ 處。以 autograd 按 $\dot f \propto M_c^{5/3} f^{11/3}$ 擬合時頻脊線，並發現利文斯頓的訊號比漢福德早約 7 ms。
+notes: 2015 年 9 月 14 日 09:50:45 UTC，兩台 Advanced LIGO 探測器同時記錄到約 410 Mpc 外兩個黑洞的併合（Abbott et al., PRL 116, 061102, 2016），這是人類首次直接探測到重力波。本頁以公開數據重現一個簡化版的分析。原始應變在 30 Hz 以下由地震與熱雜訊主導，因此先以 Welch 方法（4 s Hann 窗分段、50 % 重疊）估計 PSD $S_n(f)$，再把數據除以 $\sqrt{S_n}$（白化）；頁面會檢查白化後的 PSD 是否平坦、帕塞瓦爾定理是否成立，以及每個模板是否滿足 $\langle h|h\rangle = 1$。模板庫採用等質量情形下帶 2PN 相位的穩相近似旋近波形，截止於 $f_\mathrm{peak} = 0.36/(2\pi M)$，即數值相對論中等質量併合的峰值頻率（若改在 ISCO 頻率截止，則會損失大部分 SNR）。所有模板與兩台探測器的數據都在同一批 FFT 中完成濾波。在預設參數下，最佳模板為 $\mathcal M_c \approx 32\,M_\odot$，SNR 約 16（H1）與 10（L1）；兩個 SNR 峰值及 H1–(−L1) 互相關都顯示漢福德比利文斯頓晚 7–8 ms（已發表值：6.9 +0.5/−0.4 ms；L1 臂的方位使訊號符號反轉）。以牛頓近似擬合 Q 圖脊線得到較重的 $\mathcal M_c \approx 37\,M_\odot$，0PN 模板庫亦然：在相同啁啾質量下，後牛頓項會使啁啾變慢，因此牛頓模型會把它讀成較重的系統。誠實聲明：這是教學用分析，並非正式發表的分析。已發表的數值來自包含自旋的完整旋近–併合–鈴宕波形、以長得多的數據估計的 PSD 以及貝氏參數估計：探測器座標系中 $\mathcal M_c \approx 30\,M_\odot$、網路 SNR 24（Abbott et al. 2016）；GWTC-1 給出源座標系 $\mathcal M_c = 28.6^{+1.7}_{-1.5}\,M_\odot$、質量 $35.6$ 與 $30.6\,M_\odot$、距離 440 Mpc。我們的 SNR 較低，原因是模板沒有併合–鈴宕段也沒有自旋，而且 PSD 只來自包含訊號在內的 16
+  s 數據。數據：GWOSC（重力波開放科學中心），GW150914 發布版本 GWTC-1-confident v3，檔案 H-H1_GWOSC_4KHZ_R1-1126259447-32 及對應的 L1 檔案，取自 gwosc.org/eventapi/json/GWTC-1-confident/GW150914/v3/，CC BY 4.0；自 GPS 1126259455 起取 16 s，經 900 Hz 低通濾波並降採樣至 2048 Hz，以 應變 × 10⁻²¹ 儲存於 data/gw150914_strain.csv。請引用 GWOSC（Abbott et al., SoftwareX 13, 100658, 2021）及 Abbott et al. 2016。獎項：2016 年邵逸夫天文學獎（Drever、Thorne 與 Weiss，表彰構想並設計 LIGO）、2016 年基礎物理學突破獎特別獎（Drever、Thorne、Weiss 及 LIGO 貢獻者）與 2017 年諾貝爾物理學獎（Weiss、Barish 與 Thorne）。
+meanings:
+- 探測器 $d \in \{H1, L1\}$ 在第 $n$ 個取樣點的應變，16 s、2048 Hz
+- 單邊 PSD：Hann 加窗分段 $s$，做 FFT，再對 $s$ 平均 $|X|^2$
+- 白化應變：在 PSD 正確之處為單位變異數的白雜訊
+- 寬度為 $f_q/q$ 的高斯帶通濾波器能量，一批逆 FFT 完成
+- 啁啾質量 $\mathcal M_m$、$\eta = 1/4$ 時，至 2PN 的穩相旋近相位
+- 整個模板庫一次算出，截止於併合峰值頻率，並歸一化使 $\langle h|h\rangle = 1$
+- $4\,\mathrm{Re}\sum_k a_k b_k^*/S_k\,\Delta f$，對 $k$ 求和
+- 以逆 FFT 對 $k$ 求和：得到每台探測器、每個模板、每個時刻的複數 SNR
+- 牛頓軌跡 $\frac1\pi(5/256\tau)^{3/8}\mathcal M_c^{-5/8}$，以 Adam 擬合至脊線
+labels:
+  pn_order: 模板相位的後牛頓階數
+  cutoff: 模板頻率上限
+  f_low: 模板最低頻率 $f_\mathrm{low}$
+  n_templates: 模板庫中的模板數
+  mc_min: 最小啁啾質量 $\mathcal M_c$
+  mc_max: 最大啁啾質量 $\mathcal M_c$
+  q: 時頻圖的 Q 值
+  welch_segment: Welch 分段長度

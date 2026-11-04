@@ -1,0 +1,18 @@
+source_hash: 41a426132182
+title: 層級問題：重力洩漏到額外維度
+summary: 為什麼重力比弱作用力弱約 $10^{33}$ 倍（$G_F M_{Pl}^2$）？一個推測性的答案：重力擴散到 $n$ 個隱藏的緊緻維度中。在 $\mathbb R^3\times T^n$ 上，勢能以兩種方式求和：對質量的鏡像求和，以及對 Kaluza–Klein 塔求和，都寫成對晶格殼層的一個張量。它在內部按 $1/r^{1+n}$ 衰減，在外部按 $1/r$ 衰減，並帶有 Yukawa 尾巴 $\alpha = 2n$、$\lambda = R$。$n = 1..6$ 的 ADD 半徑與扭秤和 LHC 的真實限制相比較，而 Randall–Sundrum 翹曲因子 $e^{-\pi k r_c}$ 把 $M_{Pl}$ 變成 TeV。至今沒有觀測到任何額外維度。
+notes: 狀態：推測性。層級問題問的是：為什麼電弱能標（$v \approx 246$ GeV）遠低於普朗克能標（$M_{Pl} \approx 1.22\times10^{19}$ GeV），且 $G_F/G_N = G_F M_{Pl}^2 \approx 1.7\times10^{33}$。Arkani-Hamed、Dimopoulos 與 Dvali（ADD，1998）提出只有重力擴散到 $n$ 個尺度介於毫米與飛米之間的緊緻維度中，因此重力的真正能標 $M_*$ 可能只有一個 TeV。Randall 與 Sundrum（1999）則提出單一個翹曲維度。至今沒有發現任何額外維度。其他提出的答案包括超對稱、複合性、relaxion 與人擇選擇，都尚未確立。計算內容：$\mathbb R^3\times T^n$ 上的一個點質量（半徑 $R$ 的圓，單位 $R = G_D M = 1$）。由泊松求和公式，鏡像求和與 Kaluza–Klein 求和相等；兩者都按殼層 $m = |\mathbf k|^2$ 分組，個數為 $r_n(m)$。圖中內部使用鏡像求和（$r < R$，遠處鏡像以積分代替），外部使用 KK 求和。$3+n$ 維空間中的高斯定律確定 $G_4 = (n+1)|S^{n+2}|G_D/4\pi(2\pi R)^n$。最輕的 KK 能級有 $2n$ 個質量為 $1/R$ 的模，因此在緊緻空間外不遠處，重力看起來像帶 $\alpha = 2n$、$\lambda = R$ 的 Yukawa 修正（環面；其他形狀會改變 $\alpha$）。ADD 半徑使用 $M_{Pl}^2 = M_*^{n+2}R^n$；不同論文相差 $(2\pi)^n$ 與 $8\pi$ 之類的因子，所以 $R$ 只應視為數量級。數據（以引用數值存於 data/*.csv）：Eöt-Wash 扭秤排除了 $\lambda = 56\,\mu$m 以上的 $|\alpha| = 1$（Kapner 等，PRL 98, 021101, 2007, arXiv:hep-ph/0611184；一個額外維度 $R \le 44\,\mu$m），以及 $38.6\,\mu$m 以上（Lee 等，PRL 124, 101101, 2020, arXiv:2002.11761）。排除曲線本身沒有附上。由於它隨
+  $\lambda$ 遞減，任何滿足 $\alpha \ge 1$ 且 $\lambda > 38.6\,\mu$m 的點都被排除，這是保守的檢驗。ATLAS 13 TeV 單噴注搜尋（139 fb$^{-1}$；Phys. Rev. D 103, 112006, 2021, arXiv:2102.10874, CC-BY 4.0）對 $n = 2..6$ 排除了低於 11.2、8.5、7.1、6.4 和 5.9 TeV 的 $M_D$（Giudice–Rattazzi–Wells 約定，這裡直接與 $M_*$ 比較）。$n = 1$ 需要一個太陽系大小的維度，已被行星軌道排除。Randall–Sundrum：$k r_c \approx 11$–$12$ 使 $\bar M_{Pl}e^{-\pi k r_c}$ 成為一個 TeV；LHC 沒有看到它的 Kaluza–Klein 重力子。
+meanings:
+- Kaluza–Klein 模向量（繞圓的動量 $\mathbf k/R$）；用來檢查殼層個數
+- 有多少個 $\mathbf k$ 滿足 $|\mathbf k|^2 = m$：theta 級數的 $n$ 次方，用 FFT 卷積計算
+- 重複的殼層指標 $m$ ⇒ 求和：質量及其鏡像；遠處鏡像用連續尾項
+- 同一個勢寫成質量為 $\sqrt m/R$ 的 Yukawa 項之塔（泊松求和）
+- autograd 計算的場；乘以 $S^{2+n}$（近處）或 $S^2\times T^n$（遠處）的面積得到高斯通量
+- 在緊緻空間外不遠處對 $\ln(\phi/\phi_N - 1)$ 做最小二乘；預期 $2n$ 與 $R$
+- 同時計算每個 $n$ 和每個基本能標 $M_*$ 的 ADD 半徑（廣播）
+- 普朗克膜與 TeV 膜之間的 Randall–Sundrum 翹曲因子
+labels:
+  M_star: 印出表格所用的基本能標 $M_*$
+  krc: Randall–Sundrum $k r_c$
+  m_max: 求和的晶格殼層，$|\mathbf k|^2 \le m_{max}$

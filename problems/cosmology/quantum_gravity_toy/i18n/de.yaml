@@ -1,0 +1,19 @@
+source_hash: c4f16483f7b8
+title: 'Quantenkosmologie: der Schleifen-Bounce'
+summary: 'Ein Spielzeugmodell der Quantengravitation: Schleifenquantenkosmologie (LQC) eines flachen Universums, gefüllt mit einem masselosen Skalarfeld. Ersetzt man die Konnexion $b$ durch die Holonomie $\sin(\lambda b)/\lambda$ einer Schleife mit Planck-Fläche, wird aus der Friedmann-Gleichung $H^2 = \frac{8\pi G}{3}\rho(1-\rho/\rho_c)$. RK4 für einen Batch von Universen zeigt, dass der Urknall durch einen Bounce bei $\rho = \rho_c \approx 0.41\,\rho_\mathrm{P}$ ersetzt wird, während das Wheeler–DeWitt-Wellenpaket desselben Modells dem klassischen Kollaps in die Singularität folgt. Quantengravitation ist ein offenes Forschungsproblem; dies ist ein vereinfachter Ansatz.'
+notes: 'Planck-Einheiten $G = \hbar = c = 1$; Barbero–Immirzi-Parameter $\gamma = 0.2375$. Gewählter Ansatz: die effektiven Gleichungen der Schleifenquantenkosmologie mit verbesserter ($\bar\mu$-)Dynamik (Ashtekar, Pawlowski und Singh 2006; Taveras 2008) für ein räumlich flaches FRW-Universum mit einem masselosen Skalarfeld, das zugleich als Uhr dient. Status: Es gibt keine anerkannte Theorie der Quantengravitation. LQC ist eine symmetriereduzierte Quantisierung, inspiriert von der Schleifenquantengravitation; ihr Zusammenhang mit der vollen LQG ist nicht gesichert, und die effektiven Gleichungen sind eine Näherung, die in diesem Modell mit der numerischen Entwicklung scharf gepeakter Quantenzustände übereinstimmt. Keine Beobachtung hat den Bounce getestet. Was gezeigt wird, ist für das Modell exakt: Die Zwangsbedingung bleibt erhalten, die effektive Friedmann-Gleichung gilt, die Bounce-Dichte $\rho_c$ ist für jedes $p_\varphi$ dieselbe, und das Volumen folgt $V(t) = \sqrt{V_B^2 + 12\pi
+  G p_\varphi^2 t^2}$. Fern von $\rho_c$ (oder für $\lambda \to 0$) kehrt die klassische allgemeine Relativitätstheorie zurück: $H^2 = 8\pi G\rho/3$, und das Volumen fällt in endlicher Zeit linear auf $V = 0$ (rot gestrichelt: die Singularität). Das graue Band ist eine exakte Wheeler–DeWitt-Lösung desselben Modells (ohne Schleifen quantisiert, $x = \ln V$): ein freies Wellenpaket, das entlang der klassischen Kontraktionslinie nach $V \to 0$ gleitet, wie APS fanden. Die helleren Kurven verwenden kleinere Schleifen ($\lambda/2$, $\lambda/4$): Der Bounce erfolgt später, bei höherer Dichte. Die Frames liegen um den Bounce dicht beieinander.'
+meanings:
+- Volumen, Konnexion und Skalarfeld jedes Universums $b$ im Batch, auf der Zwangsfläche $C = 0$
+- 'Schleifengröße: $\lambda^2 = 4\sqrt3\pi\gamma\,\ell_P^2$ ist die Flächenlücke der LQG; kleineres $\lambda$ ⇒ größeres $\rho_c$'
+- Hamilton-Gleichungen der effektiven Zwangsbedingung, für alle Universen zugleich
+- RK4-Trajektorie in Eigenzeit
+- Hamiltonsche Zwangsbedingung, muss $0$ bleiben (ihre RK4-Drift wird im Terminal ausgegeben)
+- '$3/(8\pi G\gamma^2\lambda^2)$: die Bounce-Dichte'
+- 'wiederholtes $k$ ⇒ summiert: Wheeler–DeWitt-Paket auf dem Gitter aus Uhr $\varphi_p$ und $x = \ln V$'
+labels:
+  p_phi: Impuls des Skalarfelds $p_\varphi$ ($\hbar$)
+  gap_scale: Schleifengröße $\lambda$ relativ zur LQG-Flächenlücke
+  log10_rho_start: Anfangsdichte $\log_{10}(\rho/\rho_c)$
+  dt: RK4-Zeitschritt $\Delta t$
+  spread: Breite des Wheeler–DeWitt-Pakets $\Delta k/k_0$

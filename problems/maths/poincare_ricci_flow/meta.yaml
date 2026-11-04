@@ -1,0 +1,45 @@
+title: The Poincaré conjecture and Ricci flow
+category: maths
+level: advanced
+order: 9
+tags: [millennium, smale:2, fields:2006, status:proved]
+summary: >
+  Proven: every closed, simply connected 3-manifold is the 3-sphere (Perelman 2002–03, completing Hamilton's Ricci flow
+  programme). Ricci flow $\partial_t g = -2\,\mathrm{Ric}$ smooths a metric like heat smooths temperature. Here it rounds out
+  a batch of lumpy 2-spheres (Gauss–Bonnet $\int K\,dA = 4\pi$ holds to round-off), and pinches the neck of a dumbbell
+  3-sphere in finite time: the singularity that Perelman's surgery cuts out, after which each piece becomes round.
+animated: true
+vector_form: '\frac{\partial g}{\partial t} = -2\,\mathrm{Ric}(g),\qquad \int_{S^2} K\,dA = 4\pi,\qquad g = ds^2 + \psi(s)^2 g_{S^2}:\ \ \partial_t\psi = \psi_{ss} - \frac{1 - \psi_s^2}{\psi}'
+index_form: '\partial_t u_{bi} = \bar k_b - K_{bi},\quad K_{bi} = e^{-2u_{bi}}\big(1 - L_{ij}u_{bj}\big),\quad \bar k_b = \frac{4\pi}{2\pi\,w_i e^{2u_{bi}}},\qquad \partial_t u = -(K_\mathrm{rad} + K_\mathrm{tan}) + (u_x + \cot x)\,\xi'
+translation:
+  - {symbol: 'u_{bi}', code: 'u', shape: '(B, N)', meaning: 'conformal factor of each lumpy sphere $b$, metric $e^{2u}(dx^2 + \sin^2x\,d\theta^2)$, at cell $i$'}
+  - {symbol: 'L_{ij}u_{bj}', code: "einsum('ij,bj->bi', lap, u)", shape: '(B, N)', meaning: 'repeated $j$ ⇒ summed: the flux-form Laplacian of the round sphere; its fluxes vanish at the poles'}
+  - {symbol: 'K_{bi}', code: 'gauss_curvature(u, lap)', shape: '(B, N)', meaning: 'Gauss curvature of the conformal metric; Ricci flow on a surface is $\partial_t g = -2Kg$'}
+  - {symbol: '2\pi\,w_iK_{bi}e^{2u_{bi}}', code: "2 * pi * einsum('bi,bi,i->b', k, exp(2 * u), w)", shape: '(B,)', meaning: 'total curvature: exactly $4\pi$ for every metric (discrete Gauss–Bonnet), a check at every step'}
+  - {symbol: '\bar k_b', code: '4 * pi / area(u, w)', shape: '(B,)', meaning: 'mean curvature target of the normalised flow; it keeps each area fixed'}
+  - {symbol: 'K_\mathrm{rad},\ K_\mathrm{tan}', code: 's3_curvatures(u, grid)', shape: '(1, N)', meaning: 'sectional curvatures of the 3-sphere $g = e^{2u}(dx^2 + \sin^2x\,g_{S^2})$, $-\psi_{ss}/\psi$ and $(1-\psi_s^2)/\psi^2$ with $\psi = e^u\sin x$'}
+  - {symbol: '\xi', code: 'sin(x) * (cumsum(...) - c)', shape: '(1, N)', meaning: 'a diffeomorphism (gauge) term that keeps the metric in conformal form; it changes coordinates, not the geometry'}
+  - {symbol: '\psi_\mathrm{neck}', code: 'neck_radius(psi)', shape: '(1,)', meaning: 'radius of the smallest $S^2$ cross-section; $\psi_\mathrm{neck}^2$ falls at about the cylinder rate $2$ until the pinch'}
+  - {symbol: '\text{surgery}', code: 'surgery(u, grid)', shape: '(1, N)', meaning: 'cut off the high-curvature neck and glue in a round cap tangent to the profile (a cartoon of Perelman''s surgery)'}
+notes: >
+  Status: proven. Poincaré asked in 1904 whether a closed 3-manifold in which every loop can be shrunk to a point must be
+  the 3-sphere. Hamilton introduced Ricci flow in 1982 and proved that a 3-manifold with positive Ricci curvature flows to a
+  round metric; in two dimensions every metric on the sphere becomes round (Hamilton 1988, Chow 1991), which the lumpy
+  spheres show: the spread of $K$ decays to zero while $\int K\,dA = 4\pi$ and the area stay fixed. The $l = 1$ harmonics
+  are conformal motions of the round sphere and do not decay, but they do not change the shape. In three dimensions the flow
+  can develop singularities. For a rotationally symmetric dumbbell with a thin enough neck, Angenent and Knopf (2004)
+  proved a neckpinch: the neck shrinks like a cylinder $S^2 \times \mathbb R$, $\psi_\mathrm{neck}^2 \approx 2(T - t)$, while the
+  bulbs stay large. Perelman's papers (arXiv 2002–03) controlled all singularities in three dimensions (no local collapsing,
+  canonical neighbourhoods), defined Ricci flow with surgery that cuts necks and caps them, and showed that for a simply
+  connected manifold the flow goes extinct in finite time, every piece being a round sphere just before it vanishes, so the
+  manifold was a 3-sphere. The proof was checked in detail by Kleiner–Lott, Morgan–Tian and Cao–Zhu; Perelman declined the
+  2006 Fields Medal and the 2010 Clay Millennium Prize. Numerics here: the surfaces use a finite-volume grid in the polar
+  angle, so discrete Gauss–Bonnet is exact. The 3-sphere is written in conformal form, which is regular at the poles (the
+  arclength form divides by $\psi \to 0$ there and is unstable), with cells packed towards the poles because the bulbs are
+  squeezed there as the neck thins; the flow stops at a neck radius of $0.05$, where the bulbs are still resolved. The
+  surgery here is only a cartoon of Perelman's construction. Try a fat neck ($\varepsilon \gtrsim 0.5$): it does not pinch, and the
+  whole sphere rounds out.
+params:
+  neck: {default: 0.15, min: 0.1, max: 0.7, step: 0.05, label: 'Initial neck radius $\varepsilon$ of the dumbbell'}
+  t_surface: {default: 3.0, min: 0.5, max: 5, step: 0.5, label: 'Flow time for the surfaces'}
+  cells: {default: 80, min: 48, max: 160, step: 16, type: int, label: 'Grid cells $N$'}

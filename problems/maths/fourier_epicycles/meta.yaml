@@ -1,0 +1,39 @@
+title: Drawing with epicycles
+category: maths
+level: beginner
+order: 4
+summary: >
+  A closed curve sampled as complex numbers $z_n = x_n + i\,y_n$ has a discrete Fourier transform $c_k$, and every
+  term $c_k e^{2\pi i k t}$ is a circle of radius $|c_k|$ turning $k$ times per trip. Chain the circles tip to tail,
+  biggest first, and the pen retraces the curve. Watch the outline of the Tensorizer logo appear as circles are added,
+  while the error falls exactly as Parseval predicts.
+animated: true
+vector_form: 'c_k = \frac1N\sum_{n=0}^{N-1} z_n\, e^{-2\pi i k n/N},\qquad z(t) = \sum_k c_k\, e^{2\pi i k t},\qquad \frac1N\sum_n |z_n|^2 = \sum_k |c_k|^2'
+index_form: 'c_k = \tfrac1N\,W_{kn}\,z_n \qquad S_{mt} = K_{mk}\,c_k\,E_{tk} \qquad E_m = \tfrac1N\,|z_n - S_{mn}|^2 = \sum_{r_k \ge M_m} |c_k|^2'
+translation:
+  - {symbol: 'z_n', code: 'shape(name, n, device)', shape: '(N,)', meaning: 'the curve as complex numbers at equal time steps $t_n = n/N$; polygons are resampled by arc length'}
+  - {symbol: 'W_{kn}', code: 'exp(-2j * pi * outer(k, n) / N)', shape: '(N, N)', meaning: 'the DFT matrix, frequencies $k = -N/2 \dots N/2 - 1$'}
+  - {symbol: 'c_k', code: "einsum('kn,n->k', W, z) / N", shape: '(N,)', meaning: 'repeated $n$ ⇒ summed: circle $k$ has radius $|c_k|$ and starting angle $\arg c_k$'}
+  - {symbol: 'r_k', code: 'argsort(c.abs(), descending=True)', shape: '(N,)', meaning: 'circles ranked by radius: the chain keeps the biggest first'}
+  - {symbol: 'S_{mt}', code: "einsum('mk,k,tk->mt', keep, c, E)", shape: '(M, T)', meaning: 'repeated $k$ ⇒ summed: the curve drawn by the $M_m$ largest circles, for every $M$ at once ($K_{mk} = [r_k < M_m]$, $E_{tk} = e^{2\pi i k t}$)'}
+  - {symbol: '\text{centres}', code: 'cumsum(c[order] * exp(2j * pi * k[order] * t), 1)', shape: '(T, M + 1)', meaning: 'running sum of the terms: the centre of every circle in the chain, the last one is the pen'}
+  - {symbol: 'E_m', code: 'sample_error(z, S)', shape: '(M,)', meaning: 'mean squared error at the samples, equal to the energy of the circles left out (Parseval)'}
+notes: >
+  The DFT matrix $W$ writes the sum out in full ($N^2$ products); `torch.fft.fft` gives the same $c_k$ with the
+  Cooley–Tukey fast Fourier transform in $O(N \log N)$, and a test checks they agree. The DFT is invertible: all $N$ circles reproduce the $N$ samples exactly, and a time shift $z_{n-s}$ only multiplies
+  $c_k$ by the phase $e^{-2\pi i k s/N}$ (the radii do not change, only the starting point). A circle traced once needs
+  a single term ($k = 1$), and the heart $x = 16\sin^3 s$, $y = 13\cos s - 5\cos 2s - 2\cos 3s - \cos 4s$ is a
+  trigonometric polynomial, so exactly 8 circles ($k = \pm1 \dots \pm4$) draw it perfectly. Polygons are different:
+  at every corner the velocity jumps, so $|c_k|$ falls only like $1/k^2$ and the error with $M$ circles like $M^{-3}$;
+  with few circles the corners are rounded off and ringing wiggles run along the edges. The curve itself is
+  continuous, so (unlike the square wave of the Fourier series problem, where the function jumps) the wiggles shrink
+  to nothing; the 9 % Gibbs overshoot lives in the velocity, which does jump. Keeping the biggest circles first makes
+  the error fall monotonically, because by Parseval the error is exactly $\sum|c_k|^2$ over the dropped circles.
+  History: Ptolemy's astronomy (Almagest, 2nd century) moved planets on a circle (epicycle) whose centre rides on
+  another circle (deferent); with enough epicycles any periodic closed path can be matched, which is why the system
+  fitted observations so well for 1400 years without being the right physics. The logo path is the hexagon outline
+  of the Tensorizer cube plus its three inner edges, walked out and back. Try the star with few circles.
+params:
+  shape: {default: logo, type: choice, options: [logo, star, heart], label: Curve}
+  n_points: {default: 512, min: 64, max: 2048, step: 64, type: int, label: 'Samples $N$'}
+  max_terms: {default: 256, min: 8, max: 2048, step: 8, type: int, label: 'Largest number of circles $M$'}

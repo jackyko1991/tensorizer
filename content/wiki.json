@@ -1,4 +1,74 @@
 {
+ "ai/alphago_mini": {
+  "titles": {
+   "de": "AlphaGo",
+   "en": "AlphaGo",
+   "es": "AlphaGo",
+   "fr": "AlphaGo",
+   "hi": "अल्फागो",
+   "ja": "AlphaGo",
+   "ko": "알파고",
+   "ru": "AlphaGo",
+   "zh": "AlphaGo"
+  },
+  "wikidata": "Q22329209"
+ },
+ "ai/chain_of_thought": {
+  "titles": {
+   "en": "Prompt engineering",
+   "zh": "提示工程",
+   "fr": "Ingénierie de prompt",
+   "de": "Prompt-Engineering",
+   "es": "Ingeniería de instrucciones",
+   "ja": "プロンプトエンジニアリング",
+   "ru": "Промпт-инженерия",
+   "ko": "프롬프트 엔지니어링",
+   "hi": "प्रेरणा अभियान्त्रण"
+  },
+  "wikidata": "Q108941486"
+ },
+ "ai/hopfield_memory": {
+  "titles": {
+   "en": "Hopfield network",
+   "zh": "霍普菲尔德神经网络",
+   "fr": "Réseau de Hopfield",
+   "de": "Hopfield-Netz",
+   "es": "Hopfield (RNA)",
+   "ja": "ホップフィールド・ネットワーク",
+   "ru": "Нейронная сеть Хопфилда",
+   "ko": "홉필드 네트워크"
+  },
+  "wikidata": "Q1407668"
+ },
+ "ai/neural_operator": {
+  "titles": {
+   "en": "Neural operators"
+  },
+  "wikidata": "Q123501640"
+ },
+ "ai/pinn_oscillator": {
+  "titles": {
+   "en": "Physics-informed neural networks",
+   "fr": "Réseaux de neurones informés par la physique",
+   "ja": "物理情報ニューラルネットワーク",
+   "ko": "물리정보 신경망",
+   "zh": "物理信息神经网络"
+  },
+  "wikidata": "Q107285102"
+ },
+ "ai/tiny_transformer": {
+  "titles": {
+   "en": "Transformer (deep learning)",
+   "zh": "Transformer架构",
+   "fr": "Transformeur",
+   "de": "Transformer (Maschinelles Lernen)",
+   "es": "Transformador (modelo de aprendizaje automático)",
+   "ja": "Transformer (機械学習モデル)",
+   "ru": "Трансформер (модель машинного обучения)",
+   "ko": "트랜스포머 (기계 학습)"
+  },
+  "wikidata": "Q85810444"
+ },
  "astro/black_hole_geodesics": {
   "titles": {
    "de": "Schwarzschild-Metrik",
@@ -11,6 +81,32 @@
    "zh": "史瓦西度規"
   },
   "wikidata": "Q742969"
+ },
+ "astro/dead_star_reignition": {
+  "titles": {
+   "en": "Nova",
+   "zh": "新星",
+   "fr": "Nova",
+   "de": "Nova (Stern)",
+   "es": "Nova",
+   "ja": "新星",
+   "ru": "Новая звезда",
+   "ko": "신성 (천체)",
+   "hi": "नोवा"
+  },
+  "wikidata": "Q6458"
+ },
+ "astro/einstein_1905_relativity": {
+  "titles": {
+   "en": "Annus mirabilis papers",
+   "zh": "奇蹟年論文",
+   "fr": "Annus mirabilis d'Albert Einstein",
+   "es": "Artículos del Annus mirabilis de Einstein",
+   "ja": "アインシュタインの奇跡の年",
+   "ru": "Статьи «чудесного года»",
+   "ko": "기적의 해 논문"
+  },
+  "wikidata": "Q51497"
  },
  "astro/escape_velocity": {
   "titles": {
@@ -38,6 +134,19 @@
    "zh": "引力透镜效应"
   },
   "wikidata": "Q185243"
+ },
+ "astro/gw150914_chirp": {
+  "titles": {
+   "en": "First observation of gravitational waves",
+   "zh": "GW150914",
+   "fr": "GW150914",
+   "de": "GW150914",
+   "es": "Detección de ondas gravitatorias",
+   "ja": "重力波の初検出",
+   "ru": "Открытие гравитационных волн",
+   "ko": "중력파 관측"
+  },
+  "wikidata": "Q22683173"
  },
  "astro/hawking_radiation": {
   "titles": {
@@ -79,6 +188,17 @@
    "zh": "开普勒定律"
   },
   "wikidata": "Q83219"
+ },
+ "astro/kerr_newman_ergosphere": {
+  "titles": {
+   "en": "Kerr–Newman metric",
+   "zh": "克尔-纽曼度规",
+   "de": "Kerr-Newman-Metrik",
+   "ja": "カー・ニューマン解",
+   "ru": "Решение Керра — Ньюмена",
+   "ko": "커-뉴먼 계량"
+  },
+  "wikidata": "Q1190600"
  },
  "astro/lagrange_points": {
   "titles": {
@@ -129,6 +249,20 @@
    "ja": "パルサータイミングアレイ"
   },
   "wikidata": "Q7259618"
+ },
+ "astro/sgr_a_star_orbits": {
+  "titles": {
+   "en": "S2 (star)",
+   "zh": "S2 (恆星)",
+   "fr": "S2 (étoile)",
+   "de": "S2 (Stern)",
+   "es": "S2 (estrella)",
+   "ja": "S2 (恒星)",
+   "ru": "S2 (звезда)",
+   "ko": "S2 (항성)",
+   "hi": "ऍस२ तारा"
+  },
+  "wikidata": "Q1514814"
  },
  "astro/tidal_tensor": {
   "titles": {
@@ -437,6 +571,238 @@
   },
   "wikidata": "Q901428"
  },
+ "cosmology/axis_of_evil": {
+  "titles": {
+   "en": "Axis of evil (cosmology)",
+   "zh": "邪惡軸心 (宇宙學)",
+   "de": "Achse des Bösen (Kosmologie)",
+   "es": "Eje del mal (cosmología)",
+   "ru": "Ось зла (астрономия)",
+   "ko": "악의 축 (우주론)"
+  },
+  "wikidata": "Q25304698"
+ },
+ "cosmology/baryon_asymmetry": {
+  "titles": {
+   "en": "Baryon asymmetry",
+   "zh": "重子不對稱性",
+   "fr": "Asymétrie baryonique",
+   "de": "Baryonenasymmetrie",
+   "es": "Asimetría de bariones",
+   "ru": "Барионная асимметрия Вселенной",
+   "ko": "중입자 비대칭"
+  },
+  "wikidata": "Q809677"
+ },
+ "cosmology/big_bang_nucleosynthesis": {
+  "titles": {
+   "en": "Big Bang nucleosynthesis",
+   "zh": "太初核合成",
+   "fr": "Nucléosynthèse primordiale",
+   "de": "Primordiale Nukleosynthese",
+   "es": "Nucleosíntesis primordial",
+   "ja": "ビッグバン元素合成",
+   "ru": "Первичный нуклеосинтез",
+   "ko": "대폭발 핵합성",
+   "hi": "बिग बैंग न्यूक्लियोसिंथेसिस"
+  },
+  "wikidata": "Q837317"
+ },
+ "cosmology/cmb_blackbody": {
+  "titles": {
+   "en": "Cosmic microwave background",
+   "zh": "宇宙微波背景",
+   "fr": "Fond diffus cosmologique",
+   "de": "Hintergrundstrahlung",
+   "es": "Radiación de fondo de microondas",
+   "ja": "宇宙マイクロ波背景放射",
+   "ru": "Реликтовое излучение",
+   "ko": "우주 마이크로파 배경",
+   "hi": "खगोलीय पार्श्व सूक्ष्मतरंगी विकिरण"
+  },
+  "wikidata": "Q15605"
+ },
+ "cosmology/cosmological_constant_fit": {
+  "titles": {
+   "en": "Accelerating expansion of the universe",
+   "zh": "宇宙加速膨脹",
+   "fr": "Accélération de l'expansion de l'Univers",
+   "es": "Expansión acelerada del universo",
+   "ja": "宇宙の加速膨張",
+   "ru": "Ускоренное расширение Вселенной",
+   "ko": "우주의 가속 팽창"
+  },
+  "wikidata": "Q1049613"
+ },
+ "cosmology/dark_matter_rotation": {
+  "titles": {
+   "en": "Galaxy rotation curve",
+   "zh": "星系自轉問題",
+   "fr": "Courbe de rotation des galaxies",
+   "de": "Rotationskurve",
+   "es": "Curva de rotación galáctica",
+   "ja": "銀河の回転曲線問題",
+   "ru": "Кривая вращения галактики",
+   "ko": "은하 회전 곡선"
+  },
+  "wikidata": "Q1475614"
+ },
+ "cosmology/hierarchy_extra_dimensions": {
+  "titles": {
+   "en": "Hierarchy problem",
+   "zh": "层级问题",
+   "fr": "Problème de la hiérarchie",
+   "de": "Hierarchieproblem",
+   "es": "Problema de jerarquía",
+   "ja": "階層性問題",
+   "ru": "Проблема калибровочной иерархии",
+   "ko": "계층 문제",
+   "hi": "उत्क्रम समस्या"
+  },
+  "wikidata": "Q601556"
+ },
+ "cosmology/inflation_slow_roll": {
+  "titles": {
+   "en": "Cosmic inflation",
+   "zh": "宇宙暴脹",
+   "fr": "Inflation cosmique",
+   "de": "Inflation (Kosmologie)",
+   "es": "Inflación cósmica",
+   "ja": "宇宙のインフレーション",
+   "ru": "Инфляционная модель Вселенной",
+   "ko": "급팽창 이론",
+   "hi": "अंतरिक्ष स्फीति"
+  },
+  "wikidata": "Q273508"
+ },
+ "cosmology/projection_antimatter_universe": {
+  "titles": {
+   "en": "Baryon asymmetry",
+   "zh": "重子不對稱性",
+   "fr": "Asymétrie baryonique",
+   "de": "Baryonenasymmetrie",
+   "es": "Asimetría de bariones",
+   "ru": "Барионная асимметрия Вселенной",
+   "ko": "중입자 비대칭"
+  },
+  "wikidata": "Q809677"
+ },
+ "cosmology/projection_bell_test": {
+  "titles": {
+   "en": "Bell's theorem",
+   "zh": "贝尔定理",
+   "fr": "Inégalités de Bell",
+   "de": "Bellsche Ungleichung",
+   "es": "Teorema de Bell",
+   "ja": "ベルの不等式",
+   "ru": "Неравенства Белла",
+   "ko": "벨 부등식"
+  },
+  "wikidata": "Q388525"
+ },
+ "cosmology/projection_dimension_budget": {
+  "titles": {
+   "en": "Large extra dimensions",
+   "ru": "Большие дополнительные измерения",
+   "ko": "거대 여분 차원"
+  },
+  "wikidata": "Q6489123"
+ },
+ "cosmology/projection_one_particle": {
+  "titles": {
+   "en": "One-electron universe",
+   "zh": "单电子宇宙",
+   "fr": "Hypothèse de l'univers à un électron",
+   "es": "Universo de un único electrón",
+   "ja": "単一電子宇宙仮説",
+   "ru": "Теория одноэлектронной Вселенной",
+   "ko": "일전자 우주"
+  },
+  "wikidata": "Q4455142"
+ },
+ "cosmology/projection_postulate": {
+  "titles": {
+   "en": "Concentration of measure",
+   "fr": "Concentration de mesure",
+   "de": "Konzentration des Maßes",
+   "ru": "Концентрация меры"
+  },
+  "wikidata": "Q5158327"
+ },
+ "cosmology/projection_singularity_fold": {
+  "titles": {
+   "en": "Schwarzschild metric",
+   "zh": "史瓦西度規",
+   "fr": "Métrique de Schwarzschild",
+   "de": "Schwarzschild-Metrik",
+   "es": "Métrica de Schwarzschild",
+   "ja": "シュワルツシルト解",
+   "ru": "Метрика Шварцшильда",
+   "ko": "슈바르츠실트 계량"
+  },
+  "wikidata": "Q742969"
+ },
+ "cosmology/projection_telescope_tests": {
+  "titles": {
+   "en": "GW170817",
+   "zh": "GW170817",
+   "fr": "Fusion d'étoiles à neutrons du 17 août 2017",
+   "de": "GW170817",
+   "es": "GW170817",
+   "ja": "GW170817",
+   "ru": "GW170817",
+   "ko": "GW170817"
+  },
+  "wikidata": "Q38080891"
+ },
+ "cosmology/quantum_gravity_toy": {
+  "titles": {
+   "en": "Loop quantum cosmology",
+   "fr": "Cosmologie quantique à boucles",
+   "es": "Cosmología cuántica de bucles",
+   "ko": "루프 양자 우주론"
+  },
+  "wikidata": "Q6675857"
+ },
+ "cosmology/string_modes": {
+  "titles": {
+   "en": "String theory",
+   "zh": "弦理論",
+   "fr": "Théorie des cordes",
+   "de": "Stringtheorie",
+   "es": "Teoría de cuerdas",
+   "ja": "弦理論",
+   "ru": "Теория струн",
+   "ko": "끈 이론",
+   "hi": "स्ट्रिंग सिद्धांत"
+  },
+  "wikidata": "Q33198"
+ },
+ "cosmology/tachyons": {
+  "titles": {
+   "en": "Tachyon",
+   "zh": "快子",
+   "fr": "Tachyon",
+   "de": "Tachyon",
+   "es": "Taquión",
+   "ja": "タキオン",
+   "ru": "Тахион",
+   "ko": "타키온"
+  },
+  "wikidata": "Q41995"
+ },
+ "cosmology/variable_speed_of_light": {
+  "titles": {
+   "en": "Variable speed of light",
+   "zh": "光速可變理論",
+   "fr": "Théories d'une vitesse de lumière variable",
+   "es": "Velocidad de la luz variable",
+   "ja": "光速変動理論",
+   "ru": "Переменная скорость света",
+   "ko": "가변광속 이론"
+  },
+  "wikidata": "Q247276"
+ },
  "em/biot_savart": {
   "titles": {
    "de": "Biot-Savart-Gesetz",
@@ -580,6 +946,16 @@
   },
   "wikidata": "Q181328"
  },
+ "fluids/blowup_profile_search": {
+  "titles": {
+   "en": "Physics-informed neural networks",
+   "zh": "物理信息神经网络",
+   "fr": "Réseaux de neurones informés par la physique",
+   "ja": "物理情報ニューラルネットワーク",
+   "ko": "물리정보 신경망"
+  },
+  "wikidata": "Q107285102"
+ },
  "fluids/burgers_shock": {
   "titles": {
    "de": "Burgersgleichung",
@@ -634,6 +1010,19 @@
   },
   "wikidata": "Q6497624"
  },
+ "fluids/lbm_wind_tunnel": {
+  "titles": {
+   "en": "Lattice Boltzmann methods",
+   "zh": "格子玻尔兹曼方法",
+   "fr": "Méthode de Boltzmann sur réseau",
+   "de": "Lattice-Boltzmann-Methode",
+   "es": "Métodos de Boltzmann reticular",
+   "ja": "格子ボルツマン法",
+   "ru": "Метод решёточных уравнений Больцмана",
+   "hi": "लैटिस-बोल्ट्ज़मैन मैथड"
+  },
+  "wikidata": "Q1807064"
+ },
  "fluids/lid_driven_cavity": {
   "titles": {
    "de": "Navier-Stokes-Gleichungen",
@@ -661,6 +1050,18 @@
    "hi": "अभिकलनात्मक तरल यांत्रिकी"
   },
   "wikidata": "Q815820"
+ },
+ "fluids/navier_stokes_blowup": {
+  "titles": {
+   "en": "Navier–Stokes existence and smoothness",
+   "zh": "納維-斯托克斯存在性與光滑性",
+   "fr": "Solutions des équations de Navier-Stokes",
+   "de": "Navier-Stokes-Existenz- und Glattheitsproblem",
+   "ja": "ナビエ–ストークス方程式の解の存在と滑らかさ",
+   "ru": "Существование и гладкость решений уравнений Навье — Стокса",
+   "ko": "나비에-스토크스 존재성과 매끄러움"
+  },
+  "wikidata": "Q1098081"
  },
  "fluids/navier_stokes_pipe_flow": {
   "titles": {
@@ -762,6 +1163,15 @@
   },
   "wikidata": "Q72948"
  },
+ "graphics/point_cloud_registration": {
+  "titles": {
+   "en": "Iterative closest point",
+   "fr": "Iterative Closest Point",
+   "de": "Iterative Closest Point Algorithm",
+   "ru": "Итеративный алгоритм ближайших точек"
+  },
+  "wikidata": "Q1675268"
+ },
  "graphics/qr_code_decode": {
   "titles": {
    "en": "QR code",
@@ -802,6 +1212,31 @@
   },
   "wikidata": "Q14524612"
  },
+ "maths/birch_swinnerton_dyer": {
+  "titles": {
+   "en": "Birch and Swinnerton-Dyer conjecture",
+   "zh": "贝赫和斯维讷通-戴尔猜想",
+   "fr": "Conjecture de Birch et Swinnerton-Dyer",
+   "de": "Vermutung von Birch und Swinnerton-Dyer",
+   "es": "Conjetura de Birch y Swinnerton-Dyer",
+   "ja": "バーチ・スウィンナートン＝ダイアー予想",
+   "ru": "Гипотеза Бёрча — Свиннертон-Дайера",
+   "ko": "버치-스위너턴다이어 추측"
+  },
+  "wikidata": "Q527863"
+ },
+ "maths/fourier_epicycles": {
+  "titles": {
+   "en": "Deferent and epicycle",
+   "zh": "均輪和本輪",
+   "fr": "Épicycle",
+   "de": "Epizykeltheorie",
+   "es": "Epiciclo",
+   "ja": "従円と周転円",
+   "ru": "Эпицикл"
+  },
+  "wikidata": "Q961202"
+ },
  "maths/fourier_gibbs": {
   "titles": {
    "en": "Gibbs phenomenon",
@@ -812,6 +1247,44 @@
    "ja": "ギブズ現象"
   },
   "wikidata": "Q5374"
+ },
+ "maths/gauss_heptadecagon": {
+  "titles": {
+   "en": "Heptadecagon",
+   "zh": "十七边形",
+   "fr": "Heptadécagone",
+   "de": "Siebzehneck",
+   "es": "Heptadecágono",
+   "ja": "十七角形",
+   "ru": "Семнадцатиугольник",
+   "ko": "십칠각형"
+  },
+  "wikidata": "Q542476"
+ },
+ "maths/hodge_conjecture": {
+  "titles": {
+   "en": "Hodge conjecture",
+   "zh": "霍奇猜想",
+   "fr": "Conjecture de Hodge",
+   "de": "Vermutung von Hodge",
+   "es": "Conjetura de Hodge",
+   "ja": "ホッジ予想",
+   "ru": "Гипотеза Ходжа",
+   "ko": "호지 추측"
+  },
+  "wikidata": "Q1143138"
+ },
+ "maths/kakeya_conjecture": {
+  "titles": {
+   "en": "Kakeya set",
+   "zh": "挂谷集合",
+   "fr": "Ensemble de Besicovitch",
+   "es": "Conjunto Kakeya",
+   "ja": "掛谷集合",
+   "ru": "Задача об иголке",
+   "ko": "가케야 집합"
+  },
+  "wikidata": "Q3054869"
  },
  "maths/linear_maps_2d": {
   "titles": {
@@ -877,6 +1350,89 @@
    "hi": "संख्यात्मक समाकलन"
   },
   "wikidata": "Q753445"
+ },
+ "maths/p_vs_np_sat": {
+  "titles": {
+   "en": "P versus NP problem",
+   "zh": "P/NP问题",
+   "fr": "Problème P ≟ NP",
+   "de": "P-NP-Problem",
+   "es": "Clases de complejidad P y NP",
+   "ja": "P≠NP予想",
+   "ru": "Равенство классов P и NP",
+   "ko": "P-NP 문제"
+  },
+  "wikidata": "Q746242"
+ },
+ "maths/poincare_ricci_flow": {
+  "titles": {
+   "en": "Poincaré conjecture",
+   "zh": "庞加莱猜想",
+   "fr": "Conjecture de Poincaré",
+   "de": "Poincaré-Vermutung",
+   "es": "Conjetura de Poincaré",
+   "ja": "ポアンカレ予想",
+   "ru": "Гипотеза Пуанкаре",
+   "ko": "푸앵카레 추측"
+  },
+  "wikidata": "Q203586"
+ },
+ "maths/prime_spirals": {
+  "titles": {
+   "en": "Ulam spiral",
+   "zh": "质数螺旋",
+   "fr": "Spirale d'Ulam",
+   "de": "Ulam-Spirale",
+   "es": "Espiral de Ulam",
+   "ja": "ウラムの螺旋",
+   "ru": "Скатерть Улама",
+   "ko": "울람 나선"
+  },
+  "wikidata": "Q842172"
+ },
+ "maths/ramanujan_partitions": {
+  "titles": {
+   "en": "Partition function (number theory)",
+   "de": "Partitionsfunktion",
+   "ja": "分割数"
+  },
+  "wikidata": "Q15846551"
+ },
+ "maths/ramanujan_tau": {
+  "titles": {
+   "en": "Ramanujan tau function",
+   "fr": "Fonction tau de Ramanujan",
+   "de": "Ramanujansche tau-Funktion",
+   "es": "Función tau de Ramanujan",
+   "ja": "ラマヌジャンのタウ函数",
+   "ko": "라마누잔 타우 함수"
+  },
+  "wikidata": "Q3535240"
+ },
+ "maths/riemann_hypothesis": {
+  "titles": {
+   "en": "Riemann hypothesis",
+   "zh": "黎曼猜想",
+   "fr": "Hypothèse de Riemann",
+   "de": "Riemannsche Vermutung",
+   "es": "Hipótesis de Riemann",
+   "ja": "リーマン予想",
+   "ru": "Гипотеза Римана",
+   "ko": "리만 가설",
+   "hi": "रीमान हैपोथिसिस"
+  },
+  "wikidata": "Q205966"
+ },
+ "maths/sinkhorn_transport": {
+  "titles": {
+   "en": "Wasserstein metric",
+   "zh": "沃瑟斯坦度量",
+   "fr": "Distance de Wasserstein",
+   "de": "Wasserstein-Metrik",
+   "ja": "ワッサースタイン計量",
+   "ru": "Метрика Васерштейна"
+  },
+  "wikidata": "Q768993"
  },
  "maths/spectral_clustering": {
   "titles": {
@@ -1076,6 +1632,19 @@
   },
   "wikidata": "Q607699"
  },
+ "medical/aneurysm_cfd": {
+  "titles": {
+   "en": "Intracranial aneurysm",
+   "zh": "腦動脈瘤",
+   "fr": "Anévrisme intracrânien",
+   "de": "Zerebrales Aneurysma",
+   "es": "Aneurisma cerebral",
+   "ja": "脳動脈瘤",
+   "ru": "Аневризмы сосудов головного мозга",
+   "ko": "뇌동맥류"
+  },
+  "wikidata": "Q1198391"
+ },
  "medical/bloch_spin_echo": {
   "titles": {
    "de": "Spin-Echo",
@@ -1254,6 +1823,46 @@
   },
   "wikidata": "Q1364409"
  },
+ "nuclear/higgs_boson": {
+  "titles": {
+   "en": "Higgs boson",
+   "zh": "希格斯玻色子",
+   "fr": "Boson de Higgs",
+   "de": "Higgs-Boson",
+   "es": "Bosón de Higgs",
+   "ja": "ヒッグス粒子",
+   "ru": "Бозон Хиггса",
+   "ko": "힉스 보손",
+   "hi": "हिग्स बोसॉन"
+  },
+  "wikidata": "Q402"
+ },
+ "nuclear/ilp_track_finding": {
+  "titles": {
+   "en": "Integer programming",
+   "zh": "整数规划",
+   "fr": "Optimisation linéaire en nombres entiers",
+   "de": "Ganzzahlige lineare Optimierung",
+   "es": "Programación en enteros",
+   "ja": "整数計画問題",
+   "ru": "Целочисленное программирование",
+   "ko": "정수 계획법"
+  },
+  "wikidata": "Q6042592"
+ },
+ "nuclear/kaon_cp_violation": {
+  "titles": {
+   "en": "CP violation",
+   "zh": "CP破壞",
+   "fr": "Violation de CP",
+   "de": "CP-Verletzung",
+   "es": "Violación CP",
+   "ja": "CP対称性の破れ",
+   "ru": "Нарушение CP-инвариантности",
+   "ko": "CP 위반"
+  },
+  "wikidata": "Q12794416"
+ },
  "nuclear/neutrino_oscillations": {
   "titles": {
    "de": "Neutrinooszillation",
@@ -1319,6 +1928,16 @@
    "zh": "核殼層模型"
   },
   "wikidata": "Q600617"
+ },
+ "nuclear/yang_mills_mass_gap": {
+  "titles": {
+   "en": "Yang–Mills existence and mass gap",
+   "zh": "楊-米爾斯存在性與質量間隙",
+   "de": "Yang-Mills-Existenz- und Massenlückeproblem",
+   "ja": "ヤン–ミルズ方程式と質量ギャップ問題",
+   "ko": "양-밀스 질량 간극 가설"
+  },
+  "wikidata": "Q1078496"
  },
  "optics/diffraction_grating": {
   "titles": {
@@ -1445,19 +2064,23 @@
   },
   "wikidata": "Q283724"
  },
- "others/alphago_mini": {
+ "others/boids_flocking": {
   "titles": {
-   "de": "AlphaGo",
-   "en": "AlphaGo",
-   "es": "AlphaGo",
-   "fr": "AlphaGo",
-   "hi": "अल्फागो",
-   "ja": "AlphaGo",
-   "ko": "알파고",
-   "ru": "AlphaGo",
-   "zh": "AlphaGo"
+   "en": "Boids",
+   "zh": "Boids",
+   "fr": "Boids",
+   "de": "Boids",
+   "ja": "ボイド (人工生命)"
   },
-  "wikidata": "Q22329209"
+  "wikidata": "Q833640"
+ },
+ "others/cellular_automata": {
+  "titles": {
+   "en": "Elementary cellular automaton",
+   "es": "Autómata celular elemental",
+   "ru": "Элементарный клеточный автомат"
+  },
+  "wikidata": "Q1875447"
  },
  "others/enigma_solver": {
   "titles": {
@@ -1485,6 +2108,16 @@
    "zh": "康威生命游戏"
   },
   "wikidata": "Q244615"
+ },
+ "others/kuramoto_sync": {
+  "titles": {
+   "en": "Kuramoto model",
+   "zh": "藏本模型",
+   "fr": "Modèle de Kuramoto",
+   "es": "Modelo de Kuramoto",
+   "ja": "蔵本モデル"
+  },
+  "wikidata": "Q604374"
  },
  "others/langevin_noise": {
   "titles": {
@@ -1540,21 +2173,28 @@
   },
   "wikidata": "Q232207"
  },
- "others/neural_operator": {
+ "others/monty_hall": {
   "titles": {
-   "en": "Neural operators"
+   "en": "Monty Hall problem",
+   "zh": "蒙提霍爾問題",
+   "fr": "Problème de Monty Hall",
+   "de": "Ziegenproblem",
+   "es": "Problema de Monty Hall",
+   "ja": "モンティ・ホール問題",
+   "ru": "Парадокс Монти Холла",
+   "ko": "몬티 홀 문제",
+   "hi": "मोंटी हॉल पहेली"
   },
-  "wikidata": "Q123501640"
+  "wikidata": "Q198835"
  },
- "others/pinn_oscillator": {
+ "others/network_sir": {
   "titles": {
-   "en": "Physics-informed neural networks",
-   "fr": "Réseaux de neurones informés par la physique",
-   "ja": "物理情報ニューラルネットワーク",
-   "ko": "물리정보 신경망",
-   "zh": "物理信息神经网络"
+   "en": "Compartmental models (epidemiology)",
+   "fr": "Modèles compartimentaux en épidémiologie",
+   "es": "Modelos compartimentales en epidemiología",
+   "ja": "疫学における区画モデル"
   },
-  "wikidata": "Q107285102"
+  "wikidata": "Q2572354"
  },
  "others/turing_halting": {
   "titles": {
@@ -1762,6 +2402,20 @@
   },
   "wikidata": "Q603198"
  },
+ "quantum/photoelectric_effect": {
+  "titles": {
+   "en": "Photoelectric effect",
+   "zh": "光电效应",
+   "fr": "Effet photoélectrique",
+   "de": "Photoelektrischer Effekt",
+   "es": "Efecto fotoeléctrico",
+   "ja": "光電効果",
+   "ru": "Фотоэффект",
+   "ko": "광전 효과",
+   "hi": "प्रकाश-विद्युत प्रभाव"
+  },
+  "wikidata": "Q83213"
+ },
  "quantum/scattering_2d": {
   "titles": {
    "de": "Streuung (Physik)",
@@ -1905,6 +2559,19 @@
    "zh": "分子运动论"
   },
   "wikidata": "Q200286"
+ },
+ "thermodynamics/maxwell_demon": {
+  "titles": {
+   "en": "Maxwell's demon",
+   "zh": "麦克斯韦妖",
+   "fr": "Démon de Maxwell",
+   "de": "Maxwellscher Dämon",
+   "es": "Demonio de Maxwell",
+   "ja": "マクスウェルの悪魔",
+   "ru": "Демон Максвелла",
+   "ko": "맥스웰의 도깨비"
+  },
+  "wikidata": "Q212397"
  },
  "thermodynamics/mpemba_effect": {
   "titles": {

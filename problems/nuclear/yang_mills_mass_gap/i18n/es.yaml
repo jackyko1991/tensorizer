@@ -1,0 +1,22 @@
+source_hash: 1bffd0a0cc18
+title: Yang–Mills en la red y la brecha de masa
+summary: 'El Problema del Milenio del Instituto Clay pide una teoría cuántica de Yang–Mills rigurosa en cuatro dimensiones con una brecha de masa $\Delta > 0$; sigue abierto. La teoría gauge en la red de Wilson hace la pregunta calculable: los enlaces $U_\mu(x) \in SU(2)$ (o $U(1)$), almacenados como cuaterniones unitarios, se actualizan con Metropolis para todo un lote de acoplamientos $\beta$ a la vez. Los lazos de Wilson muestran la ley del área del confinamiento, la plaqueta coincide con el cociente de Bessel exacto en 2D y con la serie de acoplamiento fuerte, y un correlador de glueball da una estimación de la masa en la red.'
+notes: 'Estado: abierto. El problema Clay (descripción oficial de Jaffe y Witten) pide construir la teoría cuántica de Yang–Mills en $\mathbb R^4$ para cualquier grupo gauge compacto simple, satisfaciendo axiomas como los de Wightman u Osterwalder–Schrader, y demostrar que su espectro tiene una brecha $\Delta > 0$ por encima del vacío. Las simulaciones en la red de $SU(3)$ dan un glueball más ligero cerca de $1.7$ GeV y confinamiento (un potencial lineal, una tensión de cuerda medida) más allá de toda duda razonable, pero la evidencia numérica con espaciado de red finito no es una demostración. Esta página trabaja en el mismo marco a escala de juguete. En 2D la teoría es exactamente resoluble: cada plaqueta es independiente, $\langle\frac12\mathrm{Tr}P\rangle = I_1(\beta)/I_0(\beta)$ para $U(1)$ e $I_2(\beta)/I_1(\beta)$ para $SU(2)$, y $W(R,T) = u^{RT}$ exactamente (una prueba). En acoplamiento fuerte ($\beta$ pequeño), el desarrollo en caracteres da los mismos valores dominantes en cualquier
+  dimensión y una ley del área con tensión de cuerda $\sigma = -\ln u$: allí el confinamiento está demostrado (Osterwalder–Seiler 1978), y también para $U(1)$ compacto en 3D a cualquier $\beta$ (Göpfert–Mack 1982). Lo difícil es la continuidad hacia acoplamiento débil $\beta \to \infty$ en 4D, donde el espaciado de la red tiende a cero; la libertad asintótica (Gross, Wilczek y Politzer, Premio Nobel 2004) indica que ahí se encuentra el límite continuo. Los cocientes de Creutz $\chi(R,R)$ estiman $\sigma$ a partir de cocientes de lazos para que se cancelen los términos de perímetro. El operador de glueball es la suma de las plaquetas espaciales en un corte temporal; su correlador conexo decae como $e^{-m\Delta}$, y en acoplamiento fuerte la superficie más pequeña que une dos plaquetas es un tubo de $4\Delta$ caras, lo que da $a\,m \approx -4\ln u$. Para $\beta$ mayores, la masa en unidades de red disminuye y requiere redes más grandes, suavizado (smearing) y muchos más barridos; $U(1)$ en
+  4D tiene una transición de desconfinamiento cerca de $\beta \approx 1.01$ y ninguna brecha de masa por encima, por lo que el problema se plantea para grupos no abelianos. Metropolis con un paso $\propto 1/\sqrt{\beta}$ mantiene la aceptación cerca de la mitad; los errores usan 20 bloques de jackknife.'
+meanings:
+- un cuaternión unitario por enlace, para cada acoplamiento $\beta_b$ del lote; $U(1)$ es el subgrupo $(\cos\theta, 0, 0, \sin\theta)$
+- la ley de grupo; $i, j$ repetidos ⇒ sumados (producto vectorial)
+- 'vecino en la red periódica: todas las plaquetas de todos los sitios a la vez'
+- el lazo de Wilson más pequeño; $\frac12\mathrm{Tr}(ab) = a_0b_0 - a_kb_k$
+- 'suma de las $2(D-1)$ grapas (staples): la parte de $S$ que contiene $U_\mu(x)$ es $-\beta\frac12\mathrm{Tr}(U_\mu A_\mu)$'
+- Metropolis en todos los enlaces de una dirección y una paridad de tablero de ajedrez a la vez (no comparten ninguna grapa)
+- productos de líneas de enlaces alrededor de rectángulos $R\times T$, promediados sobre sitios, planos y orientaciones
+- '$I_1/I_0$ para $U(1)$, $I_2/I_1$ para $SU(2)$: $\langle\frac12\mathrm{Tr}P\rangle$ exacto en 2D, orden dominante en cualquier $D$'
+- $\ln C(\Delta)/C(\Delta+1)$ del operador de plaquetas espaciales, con errores jackknife
+labels:
+  group: Grupo gauge
+  dim: Dimensión $D$
+  size: Tamaño de la red $L$ (sitios por lado)
+  beta: Acoplamiento $\beta$ para lazos y glueball
+  sweeps: Barridos Monte Carlo

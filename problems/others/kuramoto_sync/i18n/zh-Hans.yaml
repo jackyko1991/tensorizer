@@ -1,0 +1,21 @@
+source_hash: ab1a099d3cd6
+title: Kuramoto 模型：自发同步
+summary: 萤火虫同步闪烁、放在同一块板上的节拍器、心脏起搏细胞：这些固有频率 $\omega_i$ 各不相同的振子相互牵引，当耦合强度 $K$ 超过某个阈值时便会突然锁定。复平均场 $r e^{i\psi} = \frac1N \sum_j e^{i\theta_j}$ 把全对全求和化为 $O(N)$ 的计算量，整批耦合强度同时运行，而序参量 $r$ 在 $K_c = 2/(\pi g(0))$ 处跃升，对于洛伦兹分布的频率，会沿着精确的 Ott–Antonsen 曲线 $r = \sqrt{1 - K_c/K}$ 变化。
+notes: Kuramoto（1975）用自洽方法解出该模型，并对对称单峰的频率密度 $g$ 求得 $K_c = 2/(\pi g(0))$；Strogatz（2000）讲述了这段历史。Ott 与 Antonsen（2008）证明，对于洛伦兹分布 $g(\omega) = (\gamma/\pi)/(\omega^2 + \gamma^2)$，无穷 $N$ 的动力学可约化为单个方程 $\dot r = -\gamma r + \tfrac K2 r(1 - r^2)$，其稳定态为 $r = \sqrt{1 - 2\gamma/K}$：模拟在 $N = 1200$ 时与之吻合到约 $0.01$。在 $K_c$ 以下，$r$ 只是量级为 $1/\sqrt N$ 的有限尺寸噪声。高斯分布的频率阈值较小，为 $K_c = 2\sigma\sqrt{2\pi}/\pi \approx 1.6\,\sigma$（绿色）。缓慢扫描（红色）随 $K$ 增大而沿着曲线变化；圆圈显示在平均场参考系中的振子，并按 $\omega_i$ 着色：$|\omega_i|$ 小的振子最先锁定，快的则持续漂移。第三个面板是一个小补充：环上的全同振子在非局域耦合和相位滞后 $\alpha = \pi/2 - 0.18$ 下，分裂成一个锁定区域和一个非相干区域，这就是 Kuramoto 与 Battogtokh（2002）发现、并由 Abrams 与 Strogatz（2004）命名的奇美拉态（chimera state）。由于 $\sin(\theta_j - \theta_i)$ 是反对称的，平均相位恰好以平均频率漂移。
+meanings:
+- 固有频率：把洛伦兹（或高斯）密度分成 $N$ 个等概率区间，每个区间随机抽取一个
+- 批次中每个成员一个耦合强度：所有群体并行演化
+- 复平均场，重复的 $j$ ⇒ 取平均；$r = 0$ 为非相干，$r = 1$ 为完全同步
+- 每个振子只感受到平均场：计算量为 $O(N)$ 而不是 $O(N^2)$
+- 较慢的成对求和，保留作为参考；测试检验它与平均场形式相等
+- 洛伦兹频率下 $N \to \infty$ 的精确序参量，在 $K_c = 2\gamma$ 以上为 $\sqrt{1 - 2\gamma/K}$
+- 环上的非局域耦合 $(1 + A\cos x)/2\pi$，用于奇美拉态
+labels:
+  n_oscillators: 振子数 $N$
+  width: 频率展宽 $\gamma$（洛伦兹）或 $\sigma$（高斯）
+  k_max: 最大耦合强度 $K$
+  n_couplings: 批次中的耦合强度个数
+  t_relax: 每个耦合强度的弛豫时间
+  ramp_time: $K$ 缓慢扫描的持续时间
+  distribution: 扫描中显示的频率密度
+  seed: 随机种子

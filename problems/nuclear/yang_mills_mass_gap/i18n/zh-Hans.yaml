@@ -1,0 +1,21 @@
+source_hash: 1bffd0a0cc18
+title: 格点上的 Yang–Mills 理论与质量间隙
+summary: 克雷千禧年大奖难题要求在四维中建立严格的量子 Yang–Mills 理论，并证明其具有质量间隙 $\Delta > 0$；这仍是悬而未决的问题。Wilson 的格点规范理论让这个问题可以计算：以单位四元数存储的链 $U_\mu(x) \in SU(2)$（或 $U(1)$）通过 Metropolis 算法同时对一整批耦合常数 $\beta$ 进行更新。Wilson 回路显示禁闭的面积律，小格（plaquette）与二维精确的 Bessel 比值及强耦合级数吻合，而胶球关联函数给出格点上的质量估计。
+notes: 状态：未解决。克雷难题（Jaffe 与 Witten 的官方描述）要求对任意紧致单规范群，在 $\mathbb R^4$ 上构造满足 Wightman 或 Osterwalder–Schrader 等公理的量子 Yang–Mills 理论，并证明其谱在真空之上有间隙 $\Delta > 0$。$SU(3)$ 的格点模拟给出约 $1.7$ GeV 的最轻胶球，并在合理怀疑之外确立了禁闭（线性势、测得的弦张力），但有限格距下的数值证据并不是证明。本页在同一框架下以玩具规模进行计算。在二维中理论可精确求解：每个小格彼此独立，对 $U(1)$ 有 $\langle\frac12\mathrm{Tr}P\rangle = I_1(\beta)/I_0(\beta)$，对 $SU(2)$ 则为 $I_2(\beta)/I_1(\beta)$，并且 $W(R,T) = u^{RT}$ 精确成立（一项测试）。在强耦合（小 $\beta$）下，特征标展开在任何维度给出相同的领头值，以及弦张力为 $\sigma = -\ln u$ 的面积律：禁闭在那里已被证明（Osterwalder–Seiler 1978），对三维紧致 $U(1)$ 则在所有 $\beta$ 下都已证明（Göpfert–Mack 1982）。难点在于四维中延续到弱耦合 $\beta \to \infty$，那里格距趋于零；渐近自由（Gross、Wilczek 与 Politzer，2004 年诺贝尔奖）说明连续极限正位于那里。Creutz 比值 $\chi(R,R)$ 由回路之比估计 $\sigma$，使周长项相互抵消。胶球算符是时间切片上空间小格之和；其连通关联函数按 $e^{-m\Delta}$ 衰减，而在强耦合下连接两个小格的最小曲面是一个由 $4\Delta$ 个面组成的管，从而给出 $a\,m \approx -4\ln u$。在较大的 $\beta$ 下，以格点单位表示的质量会下降，需要更大的格点、涂抹（smearing）以及多得多的扫描；四维 $U(1)$ 在 $\beta \approx 1.01$ 附近有退禁闭相变，其上没有质量间隙，这就是为什么此难题是针对非阿贝尔群提出的。步长 $\propto 1/\sqrt{\beta}$ 的 Metropolis 使接受率保持在一半左右；误差使用
+  20 个 jackknife 分箱。
+meanings:
+- 每条链一个单位四元数，对批中的每个耦合 $\beta_b$；$U(1)$ 是子群 $(\cos\theta, 0, 0, \sin\theta)$
+- 群运算律；重复的 $i, j$ ⇒ 求和（叉积）
+- 周期格点上的近邻：一次处理所有格点的所有小格
+- 最小的 Wilson 回路；$\frac12\mathrm{Tr}(ab) = a_0b_0 - a_kb_k$
+- $2(D-1)$ 个订书钉（staple）之和：$S$ 中含有 $U_\mu(x)$ 的部分为 $-\beta\frac12\mathrm{Tr}(U_\mu A_\mu)$
+- 对同一方向、同一棋盘奇偶性的所有链同时做 Metropolis 更新（它们没有共享的订书钉）
+- 沿 $R\times T$ 矩形的链线乘积，对格点、平面和取向取平均
+- 对 $U(1)$ 为 $I_1/I_0$，对 $SU(2)$ 为 $I_2/I_1$：二维中精确的 $\langle\frac12\mathrm{Tr}P\rangle$，任何 $D$ 中的领头阶
+- 空间小格算符的 $\ln C(\Delta)/C(\Delta+1)$，附 jackknife 误差
+labels:
+  group: 规范群
+  dim: 维度 $D$
+  size: 格点大小 $L$（每边格点数）
+  beta: 回路与胶球所用的耦合 $\beta$
+  sweeps: 蒙特卡罗扫描次数

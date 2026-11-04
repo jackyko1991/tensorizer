@@ -1,0 +1,20 @@
+source_hash: 51ed4214e669
+title: Die Poincaré-Vermutung und der Ricci-Fluss
+summary: 'Bewiesen: Jede geschlossene, einfach zusammenhängende 3-Mannigfaltigkeit ist die 3-Sphäre (Perelman 2002–03, als Abschluss von Hamiltons Ricci-Fluss-Programm). Der Ricci-Fluss $\partial_t g = -2\,\mathrm{Ric}$ glättet eine Metrik, wie Wärmeleitung eine Temperaturverteilung glättet. Hier rundet er einen Stapel unebener 2-Sphären (Gauss–Bonnet $\int K\,dA = 4\pi$ gilt bis auf Rundungsfehler) und schnürt den Hals einer hantelförmigen 3-Sphäre in endlicher Zeit ein: die Singularität, die Perelmans Chirurgie herausschneidet, wonach jedes Stück rund wird.'
+notes: 'Status: bewiesen. Poincaré fragte 1904, ob eine geschlossene 3-Mannigfaltigkeit, in der sich jede Schleife auf einen Punkt zusammenziehen lässt, die 3-Sphäre sein muss. Hamilton führte 1982 den Ricci-Fluss ein und bewies, dass eine 3-Mannigfaltigkeit mit positiver Ricci-Krümmung zu einer runden Metrik fließt; in zwei Dimensionen wird jede Metrik auf der Sphäre rund (Hamilton 1988, Chow 1991), was die unebenen Sphären zeigen: Die Streuung von $K$ fällt auf null, während $\int K\,dA = 4\pi$ und der Flächeninhalt fest bleiben. Die $l = 1$-Harmonischen sind konforme Bewegungen der runden Sphäre und klingen nicht ab, ändern aber die Form nicht. In drei Dimensionen kann der Fluss Singularitäten entwickeln. Für eine rotationssymmetrische Hantel mit hinreichend dünnem Hals bewiesen Angenent und Knopf (2004) eine Halseinschnürung (Neckpinch): Der Hals schrumpft wie ein Zylinder $S^2 \times \mathbb R$, $\psi_\mathrm{neck}^2 \approx 2(T - t)$, während die Kolben groß bleiben. Perelmans Arbeiten
+  (arXiv 2002–03) kontrollierten alle Singularitäten in drei Dimensionen (kein lokaler Kollaps, kanonische Umgebungen), definierten den Ricci-Fluss mit Chirurgie, der Hälse durchschneidet und mit Kappen verschließt, und zeigten, dass der Fluss für eine einfach zusammenhängende Mannigfaltigkeit in endlicher Zeit erlischt, wobei jedes Stück kurz vor dem Verschwinden eine runde Sphäre ist, sodass die Mannigfaltigkeit eine 3-Sphäre war. Der Beweis wurde von Kleiner–Lott, Morgan–Tian und Cao–Zhu im Detail geprüft; Perelman lehnte die Fields-Medaille 2006 und den Clay-Millennium-Preis 2010 ab. Zur Numerik: Die Flächen verwenden ein Finite-Volumen-Gitter im Polarwinkel, sodass der diskrete Gauss–Bonnet-Satz exakt gilt. Die 3-Sphäre wird in konformer Form geschrieben, die an den Polen regulär ist (die Bogenlängenform dividiert dort durch $\psi \to 0$ und ist instabil), mit zu den Polen hin verdichteten Zellen, weil die Kolben dort gestaucht werden, während der Hals dünner wird; der Fluss stoppt
+  bei einem Halsradius von $0.05$, wo die Kolben noch aufgelöst sind. Die Chirurgie hier ist nur eine Skizze von Perelmans Konstruktion. Probieren Sie einen dicken Hals ($\varepsilon \gtrsim 0.5$): Er schnürt sich nicht ein, und die ganze Sphäre rundet sich.'
+meanings:
+- konformer Faktor jeder unebenen Sphäre $b$, Metrik $e^{2u}(dx^2 + \sin^2x\,d\theta^2)$, in Zelle $i$
+- 'wiederholtes $j$ ⇒ summiert: der Laplace-Operator der runden Sphäre in Flussform; seine Flüsse verschwinden an den Polen'
+- Gauß-Krümmung der konformen Metrik; der Ricci-Fluss auf einer Fläche ist $\partial_t g = -2Kg$
+- 'Gesamtkrümmung: exakt $4\pi$ für jede Metrik (diskreter Gauss–Bonnet), eine Kontrolle in jedem Schritt'
+- mittlere Zielkrümmung des normierten Flusses; sie hält jeden Flächeninhalt fest
+- Schnittkrümmungen der 3-Sphäre $g = e^{2u}(dx^2 + \sin^2x\,g_{S^2})$, $-\psi_{ss}/\psi$ und $(1-\psi_s^2)/\psi^2$ mit $\psi = e^u\sin x$
+- ein Diffeomorphismus-(Eich-)Term, der die Metrik in konformer Form hält; er ändert die Koordinaten, nicht die Geometrie
+- Radius des kleinsten $S^2$-Querschnitts; $\psi_\mathrm{neck}^2$ fällt etwa mit der Zylinderrate $2$ bis zur Einschnürung
+- den stark gekrümmten Hals abschneiden und eine runde, zum Profil tangentiale Kappe einkleben (eine Skizze von Perelmans Chirurgie)
+labels:
+  neck: Anfänglicher Halsradius $\varepsilon$ der Hantel
+  t_surface: Flusszeit für die Flächen
+  cells: Gitterzellen $N$

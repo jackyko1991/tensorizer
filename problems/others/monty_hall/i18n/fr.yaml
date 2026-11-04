@@ -1,0 +1,17 @@
+source_hash: 695e730c122f
+title: Monty Hall avec $N$ portes
+summary: 'Une voiture se cache derrière l''une de $N$ portes. Vous en choisissez une ; l''animateur, qui sait où est la voiture, ouvre $N-2$ portes cachant des chèvres et vous propose la dernière porte fermée. Des millions de parties pour chaque $N$ de 3 à 1000 tournent à la fois dans un seul tenseur $(B, G)$ : changer gagne avec une probabilité $(N-1)/N$ (le fameux $2/3$ pour trois portes), garder avec $1/N$, et chaque taux de victoire cumulé reste dans sa bande d''erreur binomiale.'
+notes: 'Changer ne fait perdre que si votre premier choix était déjà la voiture, ce qui arrive avec une probabilité $1/N$ ; dans tous les autres cas, le choix de l''animateur est forcé, donc la porte qu''il laisse fermée porte l''information de toutes les portes qu''il a ouvertes. Avec 1000 portes la réponse est évidente, et c''est le même argument qu''avec trois. L''énigme est devenue célèbre grâce à la chronique de magazine de Marilyn vos Savant en 1990, lorsque de nombreux lecteurs, dont des mathématiciens, ont soutenu que la réponse était $1/2$. Cette intuition est juste pour un autre jeu : choisissez l''animateur ignorant, qui ouvre des portes au hasard et révèle parfois la voiture. En écartant ces parties (seule une fraction $2/N$ subsiste), garder et changer donnent exactement $1/2$, car une ouverture au hasard ne dit rien sur votre porte. Le terminal vérifie aussi qu''aucun premier choix n''est privilégié, et une référence lente, partie par partie, dans les tests concorde avec la
+  version tensorielle.'
+meanings:
+- les nombres de portes comparés côte à côte, de 3 à 1000
+- porte de la voiture et premier choix de la partie $g$ dans la ligne $b$, uniformes sur les $N_b$ portes ; le broadcasting donne à chaque ligne son propre $N_b$
+- 'la porte que l''animateur laisse fermée : forcément la voiture si votre choix est une chèvre, une porte au hasard si votre choix est la voiture'
+- 'les $N-2$ portes que l''animateur ouvre : toutes les portes sauf $p$ et $k$'
+- victoires en gardant et en changeant ; exactement l'une des deux est vraie dans chaque partie
+- 'victoires cumulées sur parties valides cumulées : le taux de victoire après chaque partie'
+- la bande $\pm 2\sigma$ d'une proportion binomiale, dans laquelle le taux cumulé reste environ 95 % du temps
+labels:
+  n_games: Parties par nombre de portes $G$
+  max_doors: Plus grand nombre de portes $N$
+  host: Animateur

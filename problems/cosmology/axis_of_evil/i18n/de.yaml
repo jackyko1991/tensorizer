@@ -1,0 +1,20 @@
+source_hash: 9e147d6c0987
+title: Die „Achse des Bösen“ am Mikrowellenhimmel
+summary: 'Die beiden größten Muster auf der echten WMAP-Karte des kosmischen Mikrowellenhintergrunds, der Quadrupol ($\ell = 2$) und der Oktupol ($\ell = 3$), scheinen in dieselbe Richtung zu zeigen. Ihre Koeffizienten $a_{\ell m}$ stammen aus einer einzigen Kleinste-Quadrate-Anpassung; die Achse jedes Multipols ist der führende Eigenvektor der $3\times 3$-Drehimpulsdispersion $M_{ij} = \mathrm{Re}\,a^*L_iL_ja$, und ein Stapel von $10^5$ isotropen Zufallshimmeln macht aus dem Winkel zwischen den Achsen einen $p$-Wert. Eine reale, aber umstrittene Anomalie: Zufall, Vordergrundreste oder neue Physik.'
+notes: 'In einem statistisch isotropen Universum (der Standardvorhersage der Inflation) sind die Orientierungen verschiedener Multipole unabhängig, der Winkel zwischen Quadrupol- und Oktupolachse sollte also zufällig sein: $|\cos|$ gleichverteilt auf $[0, 1]$. Tegmark, de Oliveira-Costa und Hamilton (2003) sowie de Oliveira-Costa et al. (2004) fanden in den ersten WMAP-Karten, dass beide nach $(l, b) \approx (-110^\circ, 60^\circ)$ zeigen, von Land und Magueijo (2005) „Achse des Bösen“ getauft; Copi, Huterer, Schwarz und Starkman untersuchten sie mit Multipolvektoren und fanden weitere Bezüge zur Ekliptik. Auf der mitgelieferten WMAP-9-Jahres-ILC-Karte liegen die Achsen bei $(l, b) \approx (240^\circ, 60^\circ)$ und $(238^\circ, 63^\circ)$, nur $3^\circ$ auseinander, und weniger als 2 von 1000 isotropen Himmeln sind besser ausgerichtet ($p \approx 0.0015$; für diese Statistik gilt exakt $p = 1 - |\cos|$, was die Monte-Carlo-Rechnung bestätigt). Das rechte Feld prüft die Simulation: Der Anteil
+  der Zufallshimmel, die mindestens so gut ausgerichtet sind wie $x$, folgt der Geraden $P = x$. Status: Die Ausrichtung ist in den Daten real (die Isotropie-Arbeiten von Planck 2013, 2015 und 2018 sehen sie in allen ihren Karten), ihre Signifikanz ist jedoch umstritten. Die Statistik wurde gewählt, nachdem das Muster aufgefallen war (a posteriori, Look-elsewhere-Effekt: unter vielen möglichen Anomalien wirken einige selten); die geringe Quadrupolleistung, galaktische Vordergrundreste der ILC, der kinematische Doppler-Quadrupol (hier nicht entfernt) und die Wahl der Karte verschieben $p$ um Faktoren von mehreren. Eine anerkannte physikalische Erklärung gibt es nicht; vorgeschlagen wurden eine nichttriviale Topologie, anisotrope Expansion oder lokale Vordergründe, und die meisten Kosmologen halten sie für eine statistische Fluktuation. Diese Seite gibt $p$ für eine einzige Statistik an und beansprucht keinen Nachweis. Daten: WMAP-9-Jahres-ILC-Karte (Bennett et al. 2013, ApJS 208, 20), Datei
+  wmap_ilc_9yr_v5.fits aus dem LAMBDA-Archiv der NASA (lambda.gsfc.nasa.gov; NASA-Daten, gemeinfrei), hier von HEALPix $N_\mathrm{side} = 512$ auf 16 vergröbert (Spalten glon_deg, glat_deg, T_uK). Jede Karte im gleichen lon/lat/T-CSV-Format (zum Beispiel eine Planck-Karte) kann sie ersetzen. Die Anpassung nutzt alle Multipole bis $\ell_\mathrm{fit}$ am ganzen Himmel ohne Maske; die isotropen Himmel verwenden reelle Gauß-Koeffizienten mit Varianz eins (die Leistung $C_\ell$ kürzt sich in der Achse heraus).'
+meanings:
+- Pixelrichtung, Temperatur und Raumwinkel, aus einer beliebigen lon/lat/T-CSV
+- reelle Kugelflächenfunktionen an jedem Pixel; $a$ läuft über alle $(\ell, m)$
+- 'gewichtete kleinste Quadrate: alle Multipole auf einmal, ohne Aliasing zwischen ihnen'
+- komplexe Koeffizienten mit $a_{\ell,-m} = (-1)^m a^*_{\ell m}$
+- Spin-$\ell$-Matrizen, $[L_x, L_y] = iL_z$, $L_iL_i = \ell(\ell+1)$
+- '$m, n, k$ summiert: $\hat n_iM_{ij}\hat n_j = \sum_m m^2|a_{\ell m}|^2$ im System mit $z \parallel \hat n$'
+- 'gestapeltes eigh: die Achse, um die der Multipol am flachsten ist'
+- '$i$ summiert: Ausrichtung der beiden Achsen im Himmel $s$ (Achsen ohne Richtungssinn)'
+- Monte-Carlo-$p$-Wert gegenüber isotropen Gauß-Himmeln
+labels:
+  n_skies: Isotrope Zufallshimmel $K$
+  lmax_fit: Gemeinsam angepasste Multipole $\ell_\mathrm{fit}$
+  seed: Zufallsstartwert

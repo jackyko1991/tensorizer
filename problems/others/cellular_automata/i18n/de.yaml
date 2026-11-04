@@ -1,0 +1,22 @@
+source_hash: ebc73dcb492e
+title: Alle 256 elementaren zellulären Automaten, und Lenia
+summary: 'Eine Zeile von Zellen, in der jede neue Zelle von sich selbst und ihren beiden Nachbarn abhängt: Die drei Bits bilden einen Code $k \in \{0, \dots, 7\}$, und die binär geschriebene Regelnummer ist die Nachschlagetabelle. Alle 256 Regeln laufen als ein einziger $(256, W)$-Tensor, der mit einer einzigen Gather-Operation fortgeschrieben wird: Regel 90 zeichnet das Sierpinski-Dreieck, Regel 30 wirkt zufällig, Regel 110 baut wechselwirkende Strukturen und Regel 184 bewegt Verkehr. Ein kontinuierlicher Verwandter, Lenia, ersetzt die Tabelle durch einen glatten Ringkern und lässt ein gleitendes Wesen wachsen.'
+notes: 'Wolfram teilte die elementaren Regeln in vier Klassen ein: (1) alles stirbt oder füllt sich, (2) stillstehende oder periodische Muster, (3) Chaos, etwa Regel 30, deren mittlere Spalte lange als Zufallszahlengenerator diente, und (4) komplexe, langlebige, wechselwirkende Strukturen, etwa Regel 110, von der Matthew Cook bewies (veröffentlicht 2004), dass sie Turing-vollständig ist. Das Mosaik färbt jede Regel nach einem groben automatischen Test nach 600 Schritten auf einem Ring aus 151 Zellen: einheitlich, periodisch bis auf eine Verschiebung oder keine Periode gefunden. Die letzte Gruppe mischt die Klassen 3 und 4, und für ihre Unterscheidung gibt es keine exakte Definition. Regel 90 addiert die Nachbarn modulo 2, sodass sie aus einer einzigen Zelle das Pascalsche Dreieck modulo 2 erzeugt, und Regel 184 ist das einfachste Verkehrsmodell: Ein Auto fährt nach rechts, wenn die Zelle davor frei ist, also bleibt die Zahl der Autos erhalten. Anders als beim Game of Life (2D, eine $3\times3$-Zählung,
+  eine Regel) laufen hier alle Regeln gleichzeitig. Lenia (Bert Chan, 2019) macht Raum, Zeit und Zustände kontinuierlich; Orbium, sein klassischer Gleiter, startet aus der mit Lenia veröffentlichten Zelltabelle (MIT-Lizenz) und behält seine Masse, während er sich bewegt, ein Beispiel für ein solitonartiges Muster, das kein Erhaltungssatz erzwingt.'
+meanings:
+- 'Bit $k$ der Regelnummer $r$: der neue Zustand, wenn der Nachbarschaftscode $k$ ist'
+- linke, mittlere und rechte Zelle um Zelle $i$ auf einem Ring
+- 'wiederholtes $j$ ⇒ summiert: der 3-Bit-Nachbarschaftscode $4\,\text{left} + 2\,\text{centre} + \text{right}$'
+- ein einziges Nachschlagen schreibt alle Regeln gleichzeitig fort
+- Links-rechts-Spiegelung und 0/1-Komplement einer Regel; die 256 Regeln bilden 88 Symmetrieklassen
+- glatter Ring mit Radius $R = 13$, auf Summe 1 normiert
+- Faltung auf dem periodischen Gitter als Produkt von Fourier-Transformierten
+- Wachstum, wo $U \approx \mu$, sonst Abbau, in Schritten von $1/T$
+labels:
+  rule: Deine Regel $r$ (erstes Feld)
+  start: Start deiner Regel
+  width: Zeilenbreite $W$
+  generations: Generationen
+  density: Dichte des Zufallsstarts
+  lenia_size: Lenia-Welt $S$
+  lenia_steps: Lenia-Schritte

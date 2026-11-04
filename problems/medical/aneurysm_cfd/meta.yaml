@@ -1,0 +1,67 @@
+title: 'Aneurysm CFD: the OpenFOAM + VMTK workflow, rebuilt with tensors'
+category: medical
+level: advanced
+order: 5
+summary: >
+  Pulsatile blood flow through a real intracranial aneurysm, segmented from an open (CC0) TOF-MRA scan, following the
+  standard research workflow (VMTK centrelines and flow extensions, an OpenFOAM-style incompressible solver, then wall
+  shear stress, TAWSS and OSI) with every step written as tensor operations. The solver is checked against Poiseuille
+  and Womersley flow and against OpenFOAM runs on a pipe and on the same aneurysm mesh, the centrelines against VMTK.
+  Educational only, not for clinical use.
+animated: true
+vector_form: '\partial_t\mathbf u + (\mathbf u\cdot\nabla)\mathbf u = -\tfrac{1}{\rho}\nabla p + \nu\nabla^2\mathbf u,\quad \nabla\cdot\mathbf u = 0,\qquad \boldsymbol\tau_w = \mu\,(\mathbf I - \mathbf n\mathbf n)\,\partial_n\mathbf u,\qquad |\nabla T| = 1/R^2'
+index_form: '(\nabla\!\cdot\mathbf u)_c = \tfrac1h\Big(\sum_{o(f)=c}u_f - \sum_{n(f)=c}u_f\Big),\quad A_{cd}\,p_d = -\tfrac{1}{\Delta t}(\nabla\!\cdot\mathbf u^*)_c,\quad u_f = u^*_f - \tfrac{\Delta t}{h}\big(p_{n(f)} - p_{o(f)}\big) \qquad \mathrm{OSI} = \tfrac12\Big(1 - \tfrac{|\overline{\boldsymbol\tau}|}{\overline{|\boldsymbol\tau|}}\Big),\quad T_v = \min_u\big(T_u + \ell_{uv}/R_{uv}^2\big)'
+translation:
+  - {symbol: 'o(f),\ n(f)', code: "mesh['owner'], mesh['neigh']", shape: '(F,)', meaning: 'owner and neighbour cell of each voxel face, as in OpenFOAM''s owner/neighbour lists'}
+  - {symbol: 'u_f', code: 'u', shape: '(F,)', meaning: 'face-normal velocity (OpenFOAM''s flux $\phi_f = u_f h^2$)'}
+  - {symbol: '(\nabla\!\cdot\mathbf u)_c', code: 'divergence(u, owner, neigh, N, h)', shape: '(N,)', meaning: 'two index_add calls over the faces: fvc::div(phi)'}
+  - {symbol: 'A_{cd}', code: "pressure_matrix(mesh)['A']", shape: '(M, M) sparse', meaning: '$-\nabla^2$ assembled from the faces (fvm::laplacian); walls and inlet Neumann, outlets $p = 0$'}
+  - {symbol: 'A_{cd}\,p_d', code: 'pcg(A, b, x, M, tol)', shape: '(M,)', meaning: 'conjugate gradients, Jacobi plus a coarse-aggregate correction'}
+  - {symbol: '\nu\nabla^2 u_f', code: 'face_laplacian(u, fnb, ghost, h)', shape: '(F,)', meaning: 'six same-direction neighbours; ghost values put $u = 0$ exactly on the wall'}
+  - {symbol: '(\mathbf u\cdot\nabla)\mathbf u', code: 'advect(u, mesh, dt)', shape: '(F,)', meaning: 'semi-Lagrangian: trace each face back and interpolate (grid_sample)'}
+  - {symbol: 'u_{\mathrm{in}}(r,t)', code: 'womersley_shapes(r, H, omega, R, nu)', shape: '(H+1, M)', meaning: 'Womersley profile per harmonic of $Q(t)$, Bessel $J_0, J_1$ of complex argument'}
+  - {symbol: '\boldsymbol\tau_w', code: 'wall_shear(u1, u2, m, h, mu)', shape: '(V, 3)', meaning: 'parabola through $u = 0$ at the wall and samples at $h$, $2h$ along the inward normal'}
+  - {symbol: '\overline{|\boldsymbol\tau|},\ \mathrm{OSI}', code: 'tawss(tau), osi(tau)', shape: '(V,)', meaning: 'averages over the recorded cycle, tau of shape (T, V, 3)'}
+  - {symbol: 'R(\mathbf x)', code: "grid['phi']", shape: '(nx, ny, nz)', meaning: 'distance to the wall = maximum-inscribed-sphere radius'}
+  - {symbol: '\dot{\mathbf x} = \mathbf u/|\mathbf u|', code: 'streamlines(Uc, mesh, seeds)', shape: '(S, L, 3)', meaning: 'batched RK4 streamlines through the trilinearly interpolated velocity, seeded at the inlet'}
+  - {symbol: 'T_v', code: 'relax(T, src, dst, w)', shape: '(N,)', meaning: 'min-plus (Bellman–Ford) sweep of the eikonal equation on the 26-neighbour voxel graph'}
+notes: >
+  Workflow. A typical aneurysm study segments the lumen, cleans it with VMTK (Antiga et al. 2008), solves the flow with
+  OpenFOAM (Weller et al. 1998) and post-processes the wall shear stress. Here each step is ours, written with tensors;
+  no code is copied from either GPL project. VMTK steps and their replacements: vmtksurfacesmoothing, vmtksurfaceremeshing
+  and vmtkflowextensions (-adaptivelength 1 -extensionratio 5) were run once offline to make the STL files;
+  vmtkcenterlines -seedselector profileidlist (Voronoi diagram, fast marching on $|\nabla T| = 1/R$, steepest-descent
+  backtracking) becomes solve.centrelines: the inscribed radius $R$ is the wall distance of each voxel, the eikonal equation
+  is solved by repeated min-plus sweeps over a 26-neighbour graph (a tensor stand-in for fast marching, with speed $R^2$
+  because the graph is the whole lumen rather than the already-medial Voronoi diagram), and all outlets backtrack along the
+  predecessors at once. OpenFOAM's icoFoam/pimpleFoam and our code: lduAddressing owner/neighbour → mesh['owner'],
+  mesh['neigh']; phi → u; fvc::div(phi) → divergence; fvm::laplacian(p) and its PCG solve → pressure_matrix and pcg; the PISO
+  pressure correction → project (one Chorin projection per step); fvm::laplacian(nu, U) → face_laplacian; div(phi,U) →
+  semi-Lagrangian advect; the wallShearStress function object → wss_at. Mesh: cubic voxels of the STL, with an
+  immersed-boundary ghost value at the wall. Geometry: by default an aneurysm from the Lausanne TOF-MRA Aneurysm Cohort
+  (Di Noto et al. 2022; OpenNeuro ds003949, CC0), subject 074: a 28 mm crop around the labelled aneurysm, thresholded,
+  meshed with marching cubes, smoothed and flow-extended (data/SOURCES.md); one inlet and three outlets. The choice
+  "synthetic" is our own CC0 bifurcation aneurysm. Other datasets checked: AneuriskWeb (CC BY-NC) and AneuX (CC BY-NC 4.0)
+  are non-commercial; IntrA and AnXplore state no licence; the Vascular Model Repository has its own research licence; the
+  Kiel phantom STLs (CC BY 4.0) are wall shells with very thin branches. Inflow: an analytic ICA-like waveform (mean
+  4.58 ml/s, peak/mean 1.66, Ford et al. 2005, period 1 s) scaled by Murray's law to the inlet radius, Womersley profile;
+  outlets at zero pressure. Blood: Newtonian, $\nu = 3.5\times10^{-6}$ m²/s, $\rho = 1060$ kg/m³; rigid walls. Residuals
+  (default run): pipe vs OpenFOAM v1912 pimpleFoam, axis velocity L2 1.2 %, phase −10 mrad, WSS L2 2.5 %; pipe vs
+  Womersley's exact solution, L2 0.4 %; centrelines vs VMTK 1.5.0, mean distance 0.20 mm (0.5 voxel), maximum 0.5 mm,
+  radius difference 0.12 mm on average; aneurysm vs pimpleFoam on our own voxel mesh exported as a polyMesh (same inflow and
+  outlets), |u| on the slice L2 35 %, peak-systole WSS L2 38 %, TAWSS L2 32 %. That last gap is large: a run with a four
+  times smaller time step gave the same, so it comes from the different wall treatment (our ghost values on a smooth
+  surface against OpenFOAM's staircase faces), the outlet position and the advection schemes on a coarse mesh where
+  neither code is converged. Read the aneurysm results as qualitative. The zero-pressure outlets also send too much flow
+  into the smallest branch and give an unrealistic pressure drop. Output: besides the GIF, results/aneurysm.pvd is a
+  ParaView time series of the wall (WSS, TAWSS, OSI), the streamlines and the tracers. Caveats: a coarse, educational
+  simulation of a threshold segmentation, not for clinical use. Low WSS and high OSI in the sac are associated in the
+  literature with aneurysm growth and rupture, but the evidence is conflicting and debated (Meng et al. 2014). The OpenFOAM
+  and VMTK references were produced once, offline, and are never run by the problem or its tests.
+params:
+  geometry: {default: lausanne, type: choice, options: [lausanne, synthetic], label: 'Geometry: real (Lausanne TOF-MRA, CC0) or synthetic'}
+  voxel: {default: 0.4, min: 0.3, max: 0.6, step: 0.05, label: 'Voxel size $h$', unit: mm}
+  cycles: {default: 1.5, min: 1.0, max: 4.0, step: 0.5, label: 'Cardiac cycles simulated (the last one is recorded)'}
+  dt_ms: {default: 2.0, min: 0.5, max: 2.5, step: 0.25, label: 'Time step $\Delta t$', unit: ms}
+  frames: {default: 24, min: 12, max: 100, step: 4, type: int, label: 'Animation frames per cycle'}
+tags: []

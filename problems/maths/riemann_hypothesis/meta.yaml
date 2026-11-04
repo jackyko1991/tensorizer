@@ -1,0 +1,50 @@
+title: The Riemann hypothesis in thousands of zeros
+category: maths
+level: advanced
+order: 5
+tags: [millennium, hilbert:8, smale:1, status:open]
+summary: >
+  Locate thousands of nontrivial zeros of $\zeta$ on the critical line with the Riemann–Siegel formula in tensor form,
+  count them against the Riemann–von Mangoldt law $N(T) = \theta(T)/\pi + 1 + S(T)$ and Gram's law, compare their
+  spacings and pair correlation with random Hermitian (GUE) matrices, and rebuild the prime-power staircase
+  $\psi(x)$ from them. The hypothesis itself, that every nontrivial zero has real part $\frac12$, is still open.
+animated: true
+vector_form: 'Z(t) = 2\sum_{n\le N} \frac{\cos(\theta(t) - t\ln n)}{\sqrt n} + (-1)^{N-1}\Big(\frac{t}{2\pi}\Big)^{-\frac14}\sum_{j=0}^{2} C_j(p)\Big(\frac{t}{2\pi}\Big)^{-\frac j2},\qquad N(T) = \frac{\theta(T)}{\pi} + 1 + S(T),\qquad \psi(x) = x - \sum_\rho \frac{x^\rho}{\rho} - \ln 2\pi - \tfrac12\ln(1 - x^{-2})'
+index_form: 'Z_t = 2\,C_{tn}\,w_n + (-1)^{N_t-1} a_t^{-1/2}\big(C_0 + C_1 a_t^{-1} + C_2 a_t^{-2}\big),\quad C_{tn} = [n \le N_t]\cos(\theta_t - t\ln n),\ w_n = n^{-1/2}\qquad R_2(u) = 1 - \Big(\frac{\sin \pi u}{\pi u}\Big)^2'
+translation:
+  - {symbol: 'C_{tn}\,w_n', code: "einsum('tn,n->t', terms, n.rsqrt())", shape: '(T, N) → (T,)', meaning: 'repeated $n$ ⇒ summed: the main sum for 250 000 heights at once, masked to $n \le N_t = \lfloor\sqrt{t/2\pi}\rfloor$'}
+  - {symbol: '\Psi(p) = \frac{\cos 2\pi(p^2 - p - 1/16)}{\cos 2\pi p}', code: 'chebyshev_basis(p, 26) @ psi_coefficients()', shape: '(T,)', meaning: '$\Psi$ is entire but the quotient is $0/0$ at $p = \frac14, \frac34$; a Chebyshev fit removes that'}
+  - {symbol: 'C_1 = -\frac{\Psi^{(3)}}{96\pi^2},\ C_2 = \frac{\Psi^{(2)}}{64\pi^2} + \frac{\Psi^{(6)}}{18432\pi^4}', code: "einsum('pk,jk->jp', basis, coeffs)", shape: '(7, T)', meaning: 'the Riemann–Siegel corrections: a Chebyshev series differentiates term by term, $c''_{k-1} = c''_{k+1} + 2k\,c_k$'}
+  - {symbol: '\gamma_k', code: 'find_zeros(t, z)', shape: '(K,)', meaning: 'sign changes of $Z$ on a grid with step 0.02, then 32 bisection steps on all brackets at once'}
+  - {symbol: 'S(t)', code: 'searchsorted(gammas, t) - theta(t) / pi - 1', shape: '(T,)', meaning: 'zero count minus its smooth part; stays small and averages to 0'}
+  - {symbol: 'g_n:\ \theta(g_n) = n\pi', code: 'g - (theta(g) - n * pi) / theta_prime(g)', shape: '(G,)', meaning: 'all Gram points by Newton at once; Gram''s law says $(-1)^n Z(g_n) > 0$'}
+  - {symbol: 'x_{k+j} - x_k', code: 'x[k[:, None] + j[None, :]] - x[k, None]', shape: '(K, J)', meaning: 'differences of unfolded zeros $x = \theta(\gamma)/\pi + 1$ to the next $J = 10$ neighbours, for the pair correlation'}
+  - {symbol: '\sum_{\rho} x^\rho/\rho', code: "cumsum(2 * (exp(rho[:, None] * log(x)) / rho[:, None]).real, 0)", shape: '(K, X)', meaning: 'every zero at every $x$, accumulated over the zeros: one row per height $T$'}
+notes: >
+  This page complements the problem "The Riemann zeta function and the primes" (maths/zeta_primes), which builds
+  $\zeta$ from scratch with Euler–Maclaurin, finds the first zeros and rebuilds $\pi(x)$; read it first for the basics.
+  Here the faster Riemann–Siegel formula, with its corrections $C_0, C_1, C_2$ (derivatives of $\Psi$ from a Chebyshev series),
+  evaluates $Z(t)$ at a quarter of a million heights and finds every zero on the critical line below $T$; at
+  $t \ge 100$ it agrees with a high-precision evaluation (mpmath) to better than $10^{-5}$. Below $t = 1000$ it finds
+  649 sign changes and below 5000 it finds 4520, exactly the total numbers of zeros in the strip up to those heights
+  (computed independently with mpmath), so all of them lie on the line; the counting
+  function follows $\theta(T)/\pi + 1$ with a small fluctuation $S(t)$ that averages to zero. Gram's law holds at most
+  Gram points and first fails at $g_{126} \approx 282.45$. After unfolding to mean spacing 1, the zeros repel each other
+  exactly like the eigenvalues of large random Hermitian matrices (GUE): Montgomery (1973) conjectured the pair
+  correlation $1 - (\sin \pi u / \pi u)^2$, proved it, assuming the Riemann hypothesis, for test functions with Fourier support in $(-1, 1)$, and Odlyzko's
+  computations near the $10^{20}$-th zero confirm it spectacularly; at the low heights here the agreement is already
+  close. The explicit formula (von Mangoldt 1895, proven) turns the zeros into the primes: each pair $\frac12 \pm i\gamma$
+  adds a wave $x^{1/2}\cos(\gamma\ln x)$, and with thousands of zeros $\psi(x)$ becomes a sharp staircase. The Riemann
+  hypothesis, that every nontrivial zero has real part $\frac12$, is one of the Clay Millennium Prize problems and is
+  open. It has been verified for all zeros up to height $3\times10^{12}$ (Platt and Trudgian 2021). Proven results
+  shown in the strip: no zeros on $\operatorname{Re} s = 1$ (Hadamard, de la Vallée Poussin 1896, equivalent to the
+  prime number theorem) and the zero-free region $\sigma > 1 - 1/(5.558691\ln t)$ (Mossinghoff and Trudgian 2015),
+  mirrored by the functional equation. Claimed, not established: in October 2026 OpenAI published (as reported; we have not checked the manuscripts), in its public
+  openai/math repository of AI-generated manuscripts, a claimed zero-free half-plane $\operatorname{Re} s > 7/8$ for
+  $\zeta$ and every Dirichlet $L$-function, with a companion argument for $\operatorname{Re} s > 11/12$. These
+  preprints are unrefereed and have not been independently verified; if correct, a zero-free strip of fixed width
+  would be a major advance, yet still far from the line $\frac12$. No computation can prove the hypothesis: a finite
+  search can only find zeros on the line, or a counterexample.
+params:
+  t_max: {default: 5000.0, min: 1000, max: 20000, step: 1000, label: 'Height $T$'}
+  x_max: {default: 50.0, min: 20, max: 200, step: 10, label: 'Explicit formula up to $x$'}

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Epidemic on a contact network: an infected person infects susceptible neighbours at rate beta and recovers at rate gamma">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- links -->
+    <g stroke="#374151" stroke-width="2">
+      <line x1="120" y1="80" x2="60" y2="40"/><line x1="120" y1="80" x2="62" y2="120"/>
+      <line x1="120" y1="80" x2="180" y2="44"/><line x1="120" y1="80" x2="186" y2="118"/>
+      <line x1="60" y1="40" x2="62" y2="120"/><line x1="180" y1="44" x2="186" y2="118"/>
+      <line x1="62" y1="120" x2="22" y2="140"/><line x1="180" y1="44" x2="222" y2="22"/>
+    </g>
+    <!-- hub: infected -->
+    <circle cx="120" cy="80" r="15" fill="#dc2626" stroke="#991b1b" stroke-width="1.5"/>
+    <text x="115" y="85" fill="#ffffff" font-style="italic">I</text>
+    <!-- susceptible -->
+    <g fill="#93c5fd" stroke="#1e40af" stroke-width="1.5">
+      <circle cx="60" cy="40" r="10"/><circle cx="62" cy="120" r="10"/><circle cx="186" cy="118" r="10"/>
+      <circle cx="22" cy="140" r="8"/><circle cx="222" cy="22" r="8"/>
+    </g>
+    <text x="56" y="45" font-size="12" font-style="italic">S</text>
+    <!-- recovered -->
+    <circle cx="180" cy="44" r="10" fill="#9ca3af" stroke="#374151" stroke-width="1.5"/>
+    <text x="175" y="49" font-size="12" font-style="italic" fill="#ffffff">R</text>
+    <!-- infection arrow -->
+    <path d="M108,70 Q86,46 72,44" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="80" y="66" font-style="italic" fill="#b91c1c">β</text>
+    <!-- recovery -->
+    <path d="M136,74 Q156,50 168,48" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 3"/>
+    <text x="150" y="80" font-style="italic" fill="#b45309">γ</text>
+    <text x="196" y="152" font-style="italic">A</text><text x="206" y="156" font-size="10" font-style="italic">ij</text>
+  </g>
+</svg>

@@ -1,0 +1,78 @@
+title: 'One particle seen many times: slicing a single worldline'
+category: cosmology
+level: advanced
+order: 14
+tags: [series:projection-hypothesis:2, role:theory, speculative]
+summary: >
+  A speculative hypothesis, not established physics: every electron is the same object, one worldline that
+  zig-zags back and forth in time (Wheeler's 1940 one-electron universe). A time slice cuts it many times: forward
+  crossings look like electrons, backward ones like positrons. This step slices batches of random worldlines. All
+  the electrons come out exactly identical, and pairs are created and annihilated at the turning points. But a
+  closed worldline crosses every slice as often backwards as forwards, and an open one adds at most one net
+  particle, while the universe holds about $10^{80}$ baryons and almost no antimatter. In its simplest form the
+  idea is ruled out.
+animated: true
+vector_form: 'X(s) = \big(t(s),\,x_1(s),\dots,x_{D-1}(s)\big),\qquad N_\pm(u) = \#\{s : t(s) = u,\ \pm\,t''(s) > 0\},\qquad Q(u) = N_+ - N_- = [\,t(s_1)\geq u\,] - [\,t(s_0)\geq u\,],\qquad N(u) = 2\,\#\{\text{minima} < u\} - 2\,\#\{\text{maxima} < u\},\qquad \langle N(u)\rangle = 2\sqrt{\lambda_2/\lambda_0}\;e^{-u^2/2\lambda_0},\qquad \frac{|Q|}{N} \leq \frac1N\ \ \text{vs}\ \ \eta = \frac{n_B}{n_\gamma}\approx 6.1\times10^{-10},\ \ 1 - 2f_{e^+}'
+index_form: 'X_{bsi} = \sigma_k\,a_{bikc}\,\phi_{ksc},\qquad N^+_{bu} = \sum_s [\,t_{bs} < u \leq t_{b,s+1}\,],\qquad N^-_{bu} = \sum_s [\,t_{b,s+1} < u \leq t_{bs}\,],\qquad Q_{bu} = N^+_{bu} - N^-_{bu},\qquad A_E = 1 - 2 f_E,\qquad N_B = \eta\, n_\gamma\, \tfrac43\pi R_H^3'
+translation:
+  - {symbol: 'X_{bsi}', code: "einsum('bikc,ksc->bsi', coef, basis)", shape: '(B, S, D)', meaning: 'repeated $k$ (harmonic) and $c$ (cos, sin) ⇒ summed: $B$ random worldlines in $D$ dimensions; coordinate 0 is time'}
+  - {symbol: 'N^\pm_{bu}', code: 'crossings(t, levels, closed)', shape: '(B, L)', meaning: 'forward (particle) and backward (antiparticle) crossings of every slice; the sum over segments $s$ is a scatter into a difference array plus a cumulative sum'}
+  - {symbol: 'Q_{bu}', code: 'up - down', shape: '(B, L)', meaning: 'net charge on the slice; equals the crossing number of the two ends, $0$ for a closed loop'}
+  - {symbol: 'N(u)', code: 'morse_count(t, levels)', shape: '(B, L)', meaning: 'the same count from the turning points alone: minima create pairs, maxima annihilate them'}
+  - {symbol: '\langle N(u)\rangle', code: 'rice_mean_crossings(levels, sigmas)', shape: '(L,)', meaning: 'Rice''s formula with spectral moments $\lambda_0 = \sum_k\sigma_k^2$, $\lambda_2 = \sum_k k^2\sigma_k^2$'}
+  - {symbol: 'A_E', code: '1 - 2 * fraction', shape: '(E,)', meaning: 'charge asymmetry of cosmic-ray $e^\pm$ from the AMS-02 positron fraction $f_E$ at energy $E$'}
+  - {symbol: 'N_B', code: 'baryons_in_observable_universe(eta, n_gamma, R_H)', shape: '()', meaning: 'net baryon number one worldline would have to carry ($\eta$ from Planck 2018)'}
+notes: >
+  Status: speculative; ruled out in its simplest form. Step 2 of the Projection Hypothesis (the author's own
+  speculative idea, see the series description; not established physics), for postulate P3: all particles are
+  projections of one object. Step 1 (cosmology/projection_postulate) stated the postulates; step 3
+  (cosmology/projection_dimension_budget) counts the dimensions they need. Known physics first. In a 1940 telephone
+  call John Wheeler suggested to Richard Feynman that all electrons are identical because they are one electron,
+  whose worldline runs forwards and backwards in time; a backward stretch is a positron. Feynman told the story in
+  his 1965 Nobel lecture, together with his own objection: there are not as many positrons as electrons. Wheeler
+  suggested they might be hidden in protons. The idea that a positron is an electron going backwards in time
+  survived as the Feynman–Stueckelberg picture of antiparticles (Feynman, Phys. Rev. 76, 749, 1949), but the
+  one-electron universe did not: in quantum field theory all electrons are identical because they are excitations
+  of one field. Here the worldline lives in a space of $D$ dimensions ($D$ is a parameter, never fixed to 4); only
+  its time coordinate matters for the slices, as P2 says. The hypothesis' prediction: a time slice (P2) cuts the
+  worldline at $N_+$ forward and $N_-$ backward crossings. What is computed: batches of smooth (random Fourier, $K$
+  harmonics, amplitudes $\propto k^{-\beta}$) and rough (Brownian) worldlines, closed or open, cut by $L$ slices. The
+  crossings are counted by a scatter into a difference array and checked against a brute-force table. For a closed
+  loop $N_+ = N_-$ on every slice; for an open one $Q = N_+ - N_-$ equals $[t_{end}\geq u] - [t_{start}\geq u]$, so
+  $|Q|\leq 1$ and $N\equiv Q$ (mod 2). Tilting the slice (a moving observer) does not change $Q$. The total count
+  equals $2(\#\text{minima} - \#\text{maxima})$ below the slice, so pairs are born at minima of $t(s)$ and die at
+  maxima. The mean count of random smooth loops follows Rice's formula. What it gets right for free: every crossing
+  reads the mass and charge of the same worldline, so all electrons are exactly alike, and positrons have exactly the
+  opposite charge and the same mass (PDG 2024: $|m_{e^+} - m_{e^-}|/m < 8\times10^{-9}$,
+  $|q_{e^+} + q_{e^-}|/e < 4\times10^{-8}$). The test against data (data/*.csv, cited numbers): AMS-02 measured the
+  cosmic-ray positron fraction $e^+/(e^+ + e^-)$ from 0.5 GeV to 1 TeV (Aguilar et al., PRL 110, 141102, 2013; PRL
+  122, 101101, 2019, CC-BY 4.0, 74 bins via the CRDB database): 0.13 at 0.6 GeV, a minimum of 0.053 near 8 GeV and
+  0.15 to 0.16 above 200 GeV. So the asymmetry $1 - 2f$ is between 0.67 and 0.89, against $0$ for a closed loop. On
+  cosmic scales the Planck 2018 baryon density $\Omega_b h^2 = 0.0224$ gives $\eta = n_B/n_\gamma = 6.1\times10^{-10}$
+  (see cosmology/baryon_asymmetry). With 411 photons per cm$^3$ in a sphere of radius 46.5 billion light years this
+  is $N_B\approx 9\times10^{79}$ baryons, and antimatter is absent (BESS-Polar: antihelium/helium below
+  $6.9\times10^{-8}$; Cohen, De Rújula and Glashow 1998: no antimatter domains in the visible universe). A single
+  worldline gives at most $|Q|/N = 1/N$, which is $7\times10^{-90}$ when $N\approx 1.5\times10^{89}$, against
+  $\eta = 6\times10^{-10}$; the net charge falls short by a factor of about $10^{80}$. A survey over the open parameters (smooth
+  or Brownian, closed or open, 2 to 32 harmonics, three roughnesses, about $3\times10^5$ slices with $N\geq 2$) finds
+  no configuration that reaches the AMS-02 asymmetry, and the bound shows none can: with $N\geq 2$ crossings the
+  largest possible asymmetry is $1/3$ (at $N = 3$). Verdict: ruled out in its simplest form. Extensions, each an extra
+  assumption and labelled as such: (A) an open worldline adds one net particle, no more. (B) A biased projection,
+  in which observers see antiparticles with efficiency $r$, needs $r = f/(1-f)$ between 0.056 and 0.195, varying
+  with energy, from AMS-02, but $r < 7\times10^{-8}$ from antihelium. The hidden antimatter would then weigh as
+  much as the visible baryons, about 0.19 of the dark matter. This is Wheeler's 'hidden in protons' in modern
+  form; it needs a mechanism, and none is given. (C) If time were a circle, a loop winding $w$ times would carry net
+  charge $Q = w$ on every slice (checked), but $w\approx 10^{80}$ would have to be put in by hand, and compact time
+  means closed timelike curves. None of these is a prediction. What would revive the idea is a mechanism that makes
+  the slice count of a single object asymmetric, and that is the open question this step leaves for the series.
+
+  Escape route: the simple version is ruled out, but a worldline balanced globally, with the antimatter beyond our
+  horizon or in a CPT-mirror anti-universe, is not. Step 7 (cosmology/projection_antimatter_universe) lists the
+  criteria such an antimatter universe must meet and tests each against data.
+params:
+  worldlines: {default: 1000, min: 100, max: 5000, step: 100, type: int, label: 'Worldlines in the batch $B$'}
+  samples: {default: 1024, min: 128, max: 4096, step: 64, type: int, label: 'Samples along each worldline $S$'}
+  modes: {default: 8, min: 1, max: 32, step: 1, type: int, label: 'Harmonics per coordinate $K$ (how often it can zig-zag)'}
+  roughness: {default: 1.0, min: 0.0, max: 3.0, step: 0.1, label: 'Roughness $\beta$: harmonic $k$ has amplitude $\propto k^{-\beta}$'}
+  dims: {default: 4, min: 2, max: 26, step: 1, type: int, label: 'Dimensions $D$ of the space the worldline lives in (open)'}
+  slices: {default: 81, min: 21, max: 241, step: 4, type: int, label: 'Time slices $L$'}

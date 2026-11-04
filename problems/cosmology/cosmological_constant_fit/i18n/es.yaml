@@ -1,0 +1,25 @@
+source_hash: 73d953345169
+title: Ajuste de la constante cosmológica a supernovas
+summary: '1466 supernovas reales de tipo Ia de la compilación abierta Pantheon+ se ajustan con un universo de Friedmann con materia $\Omega_m$, constante cosmológica $\Omega_\Lambda$ y curvatura. Un solo $\chi^2$ por lotes evalúa miles de universos en cada supernova a la vez y dibuja los contornos de confianza $\Omega_m$–$\Omega_\Lambda$, mientras Adam y autograd caminan desde el universo de solo materia hasta el mejor ajuste. Las supernovas lejanas son más débiles que en un universo que desacelera: $q_0 < 0$, la expansión se acelera.'
+notes: 'En 1998 dos equipos, el Supernova Cosmology Project (Perlmutter et al.) y el High-z Supernova Search Team (Riess et al.; Schmidt), hallaron que las supernovas lejanas de tipo Ia, candelas estandarizables, se ven más débiles de lo que permite un universo en desaceleración: la expansión se acelera, lo que en relatividad general requiere algo como una constante cosmológica $\Lambda$ (energía oscura). Esto recibió el Premio Nobel de Física 2011. Aquí se repite la misma prueba con los datos actuales. El panel izquierdo muestra cada módulo de distancia menos el de un universo vacío en expansión libre ($\Omega_m = \Omega_\Lambda = 0$): un universo de solo materia (rojo) haría las supernovas lejanas más brillantes (por debajo de cero), y los datos quedan por encima. El panel derecho muestra las regiones de 1, 2 y 3$\sigma$ ($\Delta\chi^2 = 2.30, 6.18, 11.83$) de la malla por lotes, con la recta plana, la recta $q_0 = 0$ que separa aceleración de desaceleración y la esquina «sin Big Bang»
+  donde $E^2$ se vuelve negativo dentro del rango de los datos. Con estos errores diagonales el ajuste da $\Omega_m \approx 0.30 \pm 0.07$, $\Omega_\Lambda \approx 0.57 \pm 0.10$ (plano: $\Omega_m \approx 0.35 \pm 0.02$), y $\Omega_\Lambda \le 0$ se rechaza a unas $5.5\sigma$ ($\sigma = \sqrt{\Delta\chi^2}$ frente al mejor modelo del lado rechazado). $H_0$ está degenerado con la magnitud absoluta de las supernovas; el valor impreso ($\approx 73$ km/s/Mpc) procede de la calibración con cefeidas de SH0ES incluida en estos $\mu$ y no es una medida independiente (la «tensión de Hubble» con el valor del CMB $\approx 67$ es una cuestión abierta). Datos: módulos de distancia de Pantheon+ (Scolnic et al. 2022, ApJ 938, 113; Brout et al. 2022, ApJ 938, 110), de github.com/PantheonPlusSH0ES/DataRelease (archivo Pantheon+SH0ES.dat; publicado para la investigación sin licencia declarada, los artículos son de acceso abierto bajo CC BY 4.0; por favor, cítelos). Se conservan: zHD, MU_SH0ES y MU_SH0ES_ERR_DIAG
+  para $z > 0.01$, sin las galaxias anfitrionas de las cefeidas de calibración, una fila por supernova. También sirve una tabla propia: cualquier CSV con las columnas z, mu, sigma_mu (véase load_distance_moduli). Simplificaciones: solo se usan los errores diagonales, no la covarianza estadística + sistemática completa de Pantheon+ ($\chi^2/\mathrm{dof} \approx 0.44$ muestra que estos errores son conservadores, mientras que ignorar las sistemáticas correlacionadas hace los contornos algo optimistas); la energía oscura es una constante pura ($w = -1$); se desprecia la radiación.'
+meanings:
+- corrimiento al rojo, módulo de distancia y error de la supernova $i$, leídos de cualquier CSV con esas columnas
+- universos candidatos; difundidos como $(A,1,1)$ y $(1,B,1)$
+- tasa de expansión en cada nodo $z_k$ para todos los universos a la vez
+- trapecios acumulados de $1/E$ a lo largo del último eje
+- interpolación cúbica de Hermite a los corrimientos de las supernovas (pendiente $1/E$ conocida)
+- $\sinh$, identidad o $\sin$ para espacio abierto, plano o cerrado
+- '$i$ sumado: el mejor $H_0$ de cada universo es una media ponderada analítica'
+- $i$ sumado con pesos $w_i = 1/\sigma_i^2$
+- autograd a través de la integral, usado por Adam y L-BFGS
+- covarianza de los parámetros ajustados a partir de la curvatura de $\chi^2$
+labels:
+  geometry: Geometría del ajuste con Adam
+  start_Om: Inicio de Adam $\Omega_m$
+  start_OL: Inicio de Adam $\Omega_\Lambda$
+  steps: Iteraciones de Adam
+  lr: Tasa de aprendizaje de Adam
+  grid: Puntos de malla por eje (contornos de $\chi^2$)
+  z_min: Corrimiento al rojo mínimo $z_\mathrm{min}$

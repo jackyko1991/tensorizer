@@ -1,0 +1,52 @@
+title: Maxwell's demon, the Szilard engine and Landauer's principle
+category: thermodynamics
+level: intermediate
+order: 4
+summary: >
+  A demon looks at which half of a box a Brownian particle is in and slides a partition to let it push, extracting
+  work from a single heat bath. Batches of overdamped Langevin engines show the bill: the work is at most
+  $kT\,I \le kT\ln 2$ per bit, with $I$ the mutual information of a noisy measurement, erasing the bit costs at least
+  $kT\ln 2$ (Landauer), and the Sagawa–Ueda equality $\langle e^{-\beta(W-\Delta F)-I}\rangle = 1$ restores the second
+  law once information is counted. Played backwards, the log ratio of path probabilities is the entropy produced.
+animated: true
+vector_form: '\gamma\,\dot x = -\partial_x V(x;p(t)) + \sqrt{2\gamma kT}\,\xi(t),\qquad W = \int \partial_p V\,\dot p\,dt,\qquad \langle W_{ext}\rangle \le kT\,I,\quad I = \ln 2 + \varepsilon\ln\varepsilon + (1-\varepsilon)\ln(1-\varepsilon),\qquad \big\langle e^{-\beta(W-\Delta F) - I}\big\rangle = 1,\qquad W_{erase} \ge kT\ln 2,\qquad \frac{P_F(W)}{P_R(-W)} = e^{\beta(W-\Delta F)}'
+index_form: 'y_b = x_b + F_b\,\Delta t + \sqrt{2\Delta t}\,\xi_b,\qquad \ln r_b = V_b(x) - V_b(y) + \ln\frac{q(x_b|y_b)}{q(y_b|x_b)},\qquad W_b \mathrel{+}= V(x_b;p_{b,k+1}) - V(x_b;p_{b,k}),\qquad I_b = \ln\frac{P(m_b|s_b)}{P(m_b)},\qquad \frac{1}{B}\textstyle\sum_b e^{-(W_b - \Delta F_{m_b}) - I_b} \to 1'
+translation:
+  - {symbol: 'V(x;p,s)', code: 'potential(x, p, side)', shape: '(B,)', meaning: 'soft box walls at $0$ and $2a$ plus the partition at $p$, felt from the side $s=\pm1$ the particle is on'}
+  - {symbol: 'x_b,\ s_b', code: 'sample_equilibrium(B, a, side, ...)', shape: '(B,)', meaning: 'every engine starts in equilibrium $e^{-V/kT}/Z$ with the partition in the middle'}
+  - {symbol: 'm_b', code: 'where(wrong, -side, side)', shape: '(B,)', meaning: 'the demon''s reading, wrong with probability $\varepsilon$'}
+  - {symbol: 'p_b(t)', code: 'ramp(t, p0, p1, tau)', shape: '(B,)', meaning: 'feedback: the partition slides to $2a(1-\varepsilon)$ on the side the demon believes in'}
+  - {symbol: 'y_b,\ r_b', code: 'mala_step(x, V, F, p, side, dt, ...)', shape: '(B,)', meaning: 'Euler–Maruyama proposal for all engines at once, accepted with Metropolis–Hastings so $e^{-V/kT}$ is exactly stationary'}
+  - {symbol: 'W_b', code: 'W += potential(x, p_new) - potential(x, p)', shape: '(B,)', meaning: 'work done on the particle when the wall moves at fixed $x$'}
+  - {symbol: 'I_b', code: 'trajectory_information(correct, eps)', shape: '(B,)', meaning: '$\ln 2(1-\varepsilon)$ if the demon was right, $\ln 2\varepsilon$ if wrong; its average is $I$'}
+  - {symbol: 'Z(p,s)', code: 'partition_function(p, side, grid)', shape: '(P,)', meaning: 'trapezoid rule over a grid for a batch of partition positions: $\Delta F = -kT\ln Z_1/Z_0$'}
+  - {symbol: '\sigma_b', code: 'log_path + ln_rho0 - ln_rhoN', shape: '(B,)', meaning: '$\ln P_F[x]/P_R[\tilde x]$ from the transition probabilities of every step plus the boundary terms'}
+notes: >
+  Units: $kT = 1$, mobility $1$ (so $D = 1$), half-box width $a = 1$, time in $a^2/D$. Maxwell (1867) imagined a being that
+  sorts molecules and beats the second law; Szilard (1929) reduced it to one particle and one bit, worth at most
+  $kT\ln 2$ of work. Landauer (1961) and Bennett (1982) settled the paradox: the demon must eventually erase its memory,
+  which costs at least $kT\ln 2$ per bit, so the cycle as a whole obeys the second law. Sagawa and Ueda (2010) made
+  this quantitative for feedback with errors: $\langle e^{-\beta(W-\Delta F)-I}\rangle = 1$, so
+  $\langle W_{ext}\rangle \le kT\langle I\rangle - \langle\Delta F\rangle$. These are proven theorems for this kind
+  of stochastic dynamics, and the simulation checks them numerically. Model: the walls are stiff springs
+  $\kappa u^2/2$ ($\kappa = 500\,kT/a^2$), so free energies are computed numerically from $Z$, not set to their
+  hard-wall values. The partition is impenetrable, so each particle keeps its side $s$. The Langevin steps are
+  Metropolis-corrected (MALA), so the Boltzmann distribution, Jarzynski, Sagawa–Ueda and Crooks hold exactly up to
+  sampling noise. The erasure starts from the partitioned box and ends with the piston at the middle, which makes
+  $\Delta F = kT\ln 2$ exact even with soft walls. The ledger counts the work of moving the partition. Pulling the
+  partition out at the end returns its small spring energy. Real data, as cited numbers only (no figures
+  reproduced): Bérut et al., Nature 483, 187 (2012) and the detailed version in J. Stat. Mech. P06015 (2015) erased a
+  bit stored in a $2\,\mu$m silica bead in an optical double well. The mean heat fell with the cycle time $\tau$ as
+  $\langle Q\rangle = kT\ln 2 + B/\tau$ with $B = 8.15\,kT\cdot$s, and a two-parameter fit gave an asymptote
+  $A = 0.72\,kT$ ($\pm 0.15\,kT$), close to $kT\ln 2 \approx 0.693\,kT$. The simulated erasure gives the same $1/\tau$
+  law in its own units. Time reversal: the last part of the movie plays the erasure backwards. For each trajectory,
+  the log ratio of its forward probability to that of the reversed path under the reversed protocol equals
+  $\beta(W - \Delta F)$, the entropy produced (Crooks 1999). Its average is positive, and $\langle e^{-\sigma}\rangle = 1$.
+  Try: a larger error rate $\varepsilon$ (less information, less work; $\varepsilon = 0.5$ gives nothing), or a
+  shorter $\tau$ (more dissipation).
+params:
+  eps: {default: 0.1, min: 0.0, max: 0.5, step: 0.05, label: 'Demon''s measurement error rate $\varepsilon$'}
+  tau: {default: 2.5, min: 0.2, max: 6.0, step: 0.2, label: 'Feedback time $\tau$ (partition move, $a^2/D$)'}
+  tau_erase: {default: 4.0, min: 2.0, max: 8.0, step: 0.5, label: 'Slowest erasure time ($a^2/D$)'}
+  n_engines: {default: 1500, min: 200, max: 4000, step: 100, type: int, label: Engines per error rate}
+  seed: {default: 1, min: 0, max: 999, step: 1, type: int, label: Random seed}

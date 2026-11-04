@@ -1,0 +1,42 @@
+title: 'Flocking: Vicsek model and boids'
+category: others
+level: beginner
+order: 4
+summary: >
+  Starlings, fish schools and locusts move together without a leader. In the Vicsek model each bird flies at
+  constant speed and copies the average heading of its neighbours, plus a random angle of size up to $\eta$; in
+  Reynolds' boids it steers by separation, alignment and cohesion. All $N^2$ bird-to-bird distances in the periodic
+  box form one tensor, and a whole batch of noise levels runs at once to show the order–disorder transition of the
+  polar order $\varphi$.
+animated: true
+vector_form: '\theta_i \leftarrow \arg\Big(\sum_{|\mathbf d_{ij}| < R} e^{i\theta_j}\Big) + \eta\,\xi_i,\qquad \mathbf x_i \leftarrow \mathbf x_i + v_0\,\hat{\mathbf e}(\theta_i),\qquad \varphi = \frac{\lvert\sum_i \mathbf v_i\rvert}{\sum_i \lvert\mathbf v_i\rvert}'
+index_form: 'd_{bijk} = x_{bjk} - x_{bik} - L\,\operatorname{round}\!\big(\tfrac{x_{bjk} - x_{bik}}{L}\big),\qquad A_{bij} = [\,d_{bijk}d_{bijk} < R^2\,],\qquad \theta_{bi} \leftarrow \arg\!\big(A_{bij}\,e^{i\theta_{bj}}\big) + \eta_b\,\xi_{bi}'
+translation:
+  - {symbol: 'x_{bik}', code: 'random_flock(B, N, L, device, seed)', shape: '(B, N, 2)', meaning: 'positions of $N$ birds in the box $[0, L)^2$, one flock per noise level $b$'}
+  - {symbol: 'd_{bijk}', code: 'minimum_image(x[:, None] - x[:, :, None], L)', shape: '(B, N, N, 2)', meaning: 'displacement from bird $i$ to the nearest periodic copy of bird $j$; antisymmetric in $i \leftrightarrow j$'}
+  - {symbol: 'A_{bij}', code: '(d.pow(2).sum(-1) < R**2).float()', shape: '(B, N, N)', meaning: 'neighbour matrix, repeated $k$ ⇒ summed; bird $i$ counts itself'}
+  - {symbol: '\arg(A_{bij} e^{i\theta_{bj}})', code: "einsum('bij,bj->bi', A, exp(1j * theta)).angle()", shape: '(B, N)', meaning: 'repeated $j$ ⇒ summed: mean heading of the neighbours'}
+  - {symbol: '\eta_b\,\xi_{bi}', code: 'eta * (torch.rand(B, N) - 0.5)', shape: '(B, N)', meaning: 'noise angle, uniform in $[-\eta/2, \eta/2]$; $\eta = 2\pi$ makes the heading completely random'}
+  - {symbol: '\mathbf a_i', code: 'reynolds_acceleration(x, v, L, R, weights)', shape: '(B, N, 2)', meaning: 'boids: separation $-\sum_j S_{ij} \mathbf d_{ij}/|\mathbf d_{ij}|^2$, alignment $\sum_j A_{ij}(\mathbf v_j - \mathbf v_i)$, cohesion $\sum_j A_{ij}\mathbf d_{ij}$'}
+  - {symbol: '\varphi_b', code: 'v.sum(1).norm(dim=-1) / v.norm(dim=-1).sum(1)', shape: '(B,)', meaning: 'polar order: 1 when the flock moves together, about $1/\sqrt N$ when headings are random'}
+notes: >
+  Vicsek et al. (1995) introduced the model as the simplest physics of collective motion: alignment plus noise.
+  At low noise the birds agree on a direction ($\varphi \to 1$), at $\eta = 2\pi$ the headings are random and
+  $\varphi$ is only finite-size noise of order $1/\sqrt N$. In two dimensions this is remarkable, because the
+  Mermin–Wagner theorem forbids long-range order in equilibrium systems with a continuous symmetry; moving birds
+  escape it because neighbourhoods keep changing (Toner and Tu 1995). For large systems the transition turns out to
+  be discontinuous, with travelling bands (Grégoire and Chaté 2004); at this small $N$ it looks smooth. Reynolds
+  (1987) wrote boids for computer animation. Here his three rules are written as pair forces that are
+  antisymmetric in $i \leftrightarrow j$, so without the speed normalisation the total momentum of the flock is
+  conserved exactly (a test checks it); the normalisation to constant speed $v_0$ then lets the flock pick a
+  direction. Strong cohesion makes the flock collapse into a rotating ball, so it is kept weak. Try a smaller box
+  (higher density) or a larger radius to make order easier.
+tags: []
+params:
+  n_birds: {default: 200, min: 50, max: 1000, step: 10, type: int, label: 'Birds $N$'}
+  box: {default: 5.8, min: 3.0, max: 20.0, step: 0.2, label: 'Box side $L$ (neighbour radius $R = 1$)'}
+  speed: {default: 0.03, min: 0.005, max: 0.3, step: 0.005, label: 'Speed $v_0$'}
+  eta: {default: 1.5, min: 0.0, max: 6.28, step: 0.05, label: 'Noise $\eta$ of the flock shown'}
+  n_noise: {default: 12, min: 4, max: 40, step: 1, type: int, label: 'Noise levels in the batch'}
+  steps: {default: 500, min: 50, max: 3000, step: 50, type: int, label: Time steps}
+  seed: {default: 0, min: 0, max: 1000, step: 1, type: int, label: Random seed}

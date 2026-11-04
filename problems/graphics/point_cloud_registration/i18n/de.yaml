@@ -1,0 +1,29 @@
+source_hash: b1a74b85fb17
+title: 'Punktwolken-Registrierung: die PCL-Pipeline (FPFH, RANSAC, ICP)'
+summary: 'Zwei partielle 3D-Scans desselben Objekts, aus zwei Blickrichtungen aufgenommen und durch eine unbekannte starre Bewegung verschoben, werden so ausgerichtet, wie es die Point Cloud Library (PCL) tut, geschrieben als gebündeltes PyTorch: Voxelgitter-Ausdünnung, statistische Ausreißerentfernung, Normalen aus Nachbarschaftskovarianzen, FPFH-Deskriptoren, RANSAC über Merkmalszuordnungen (Tausende Kabsch-Anpassungen gleichzeitig) und ICP-Verfeinerung, Punkt-zu-Punkt und Punkt-zu-Ebene, von mehreren Startwerten aus. Das Ergebnis wird mit der bekannten Bewegung verglichen: Rotationsfehler in Grad, Translationsfehler und RMSE.'
+notes: 'Das Demo-Objekt ist Keenan Cranes Kuh „Spot“ (5856 Dreiecke), die ihr Autor gemeinfrei gestellt hat (CC0 1.0; https://www.cs.cmu.edu/~kmcrane/Projects/ModelRepository/, beigelegt als data/spot_vertices.csv und data/spot_faces.csv, siehe data/SOURCES.md; Crane, Pinkall und Schröder 2013, ACM TOG 32(4)). Den Stanford-Hasen haben wir nicht verwendet: Das Stanford 3D Scanning Repository erlaubt Forschungsnutzung und freie Weitergabe, sagt aber, dass die Modelle ohne Erlaubnis nicht kommerziell genutzt oder in einem verkauften Produkt erscheinen sollen, was für ein offenes Projekt, das später ein kostenpflichtiges Angebot haben könnte, unklar ist. PCLs eigene Testdatei bunny.pcd stammt aus demselben Stanford-Scan und trägt keine eigene Datenlizenz (PCLs BSD-Lizenz deckt den Code ab). Die Scans sind synthetisch: dichte Zufallsstichproben der Netzoberfläche, nur dort behalten, wo ein Scanner sie sieht (Rückseitentest plus Z-Buffer, also Entfernung verdeckter Punkte), mit Gaußschem Rauschen
+  $\sigma$, einigen Prozent gleichverteilter Ausreißer und einer zufälligen starren Bewegung (30–60°, halbe Objektgröße) für Scan B. Die Objektgröße ist die Diagonale des Hüllquaders, auf 1 skaliert. Pipeline (PCL-Klassennamen in Klammern): VoxelGrid; StatisticalOutlierRemoval; NormalEstimation mit $k = 15$ Nachbarn und der Normalen zum jeweils eigenen Blickpunkt des Scans gedreht; FPFH mit $k = 25$; gegenseitig nächste Zuordnungen im Deskriptorraum; RANSAC mit 4000 Hypothesen, jede aus 3 Zuordnungen, deren Dreieckskantenlängen auf 10 % übereinstimmen (wie PCLs CorrespondenceRejectorPoly), per Kabsch angepasst und nach der Zahl der Inlier bewertet, dann auf den Inliern neu angepasst; ICP von 6 gestörten Kopien der RANSAC-Pose aus, gegen das mit halber Voxelgröße ausgedünnte Ziel, wobei Paare mit mehr als einem Voxel Abstand ignoriert werden. Vereinfachungen: FPFH nutzt eine feste Nachbarschaft von $k$ Punkten statt eines Radius, nimmt immer den Anfragepunkt als Ursprung des Darboux-Rahmens
+  (PCL wählt die Reihenfolge des Paars nach den Normalenwinkeln) und normiert jeden 11-Klassen-Block auf 100; das Voxelgitter mittelt nur Positionen. Was der Standardlauf zeigt: etwa 12000 sichtbare Punkte pro Scan werden nach den beiden Filtern zu etwa 1650; 365 gegenseitige FPFH-Zuordnungen, von denen RANSAC 73 behält (etwa 20 %), ergeben eine grobe Pose mit 6,4° und 0,056 Abweichung; Punkt-zu-Ebene-ICP erreicht dann 0,37° und 0,0021 (0,2 % der Objektgröße, RMSE 0,007) in etwa 5 Iterationen von jedem Start aus, während Punkt-zu-Punkt nach 25 Iterationen noch an der Oberfläche entlangkriecht (etwa 2,1°, 0,018), weil die nächsten Nachbarn auf einer partiellen, neu abgetasteten Oberfläche es seitlich ziehen. Die Tests prüfen, dass Kabsch exakt ist, eine Bewegung mit ihrer Inversen die Identität ergibt, Ebenen- und Kugelnormalen stimmen, das Voxelgitter mit einer langsamen Referenz übereinstimmt, ferne Ausreißer entfernt werden, FPFH unter starren Bewegungen invariant ist, die Z-Buffer-Sichtbarkeit
+  die Rückseite einer Kugel entfernt, RANSAC 50 % falsche Zuordnungen übersteht, ICP konvergiert, Punkt-zu-Ebene auf einer glatten Fläche schneller ist als Punkt-zu-Punkt und die ganze Pipeline unter 2° und 2 % der Objektgröße bleibt. Das sind etablierte Verfahren: ICP (Besl und McKay 1992; Punkt-zu-Ebene: Chen und Medioni 1992), FPFH (Rusu, Blodow und Beetz 2009), PCL (Rusu und Cousins 2011, BSD-Lizenz, https://pointclouds.org). Der Code ist nach den Veröffentlichungen geschrieben, nicht aus PCL übersetzt. Probieren Sie einen größeren Blickwinkel (weniger Überlappung: RANSAC findet weniger Inlier und kann scheitern), mehr Ausreißer oder ein gröberes Voxel.'
+meanings:
+- eine starre Bewegung pro Batch-Element $b$ (RANSAC-Hypothese oder ICP-Start), über $j$ summiert
+- die $k$ nächsten Nachbarn, jeweils ein Zeilenblock der Distanzmatrix
+- 'VoxelGrid: Scatter-Mittelwert der Punkte mit demselben Voxelschlüssel'
+- 'StatisticalOutlierRemoval: mittlerer Nachbarabstand gegen seinen Mittelwert und seine Standardabweichung über die Wolke'
+- Nachbarschaftskovarianz; der Eigenvektor zum kleinsten Eigenwert ist die Normale, zum Blickpunkt gedreht
+- 'Oberflächenvariation (PCL-Krümmung): 0 auf einer Ebene'
+- 'Darboux-Rahmen-Winkel eines Punktpaars: $\alpha = \mathbf v\cdot\mathbf n_q$, $\phi = \mathbf u\cdot\hat{\mathbf d}$, $\theta = \operatorname{atan2}(\mathbf w\cdot\mathbf n_q, \mathbf u\cdot\mathbf n_q)$'
+- drei Histogramme mit je 11 Klassen; das eigene Histogramm eines Punktes plus der abstandsgewichtete Mittelwert der Nachbarn
+- Kabsch-Kreuzkovarianz, eine pro Hypothese; eine gebündelte SVD liefert alle Rotationen
+- RANSAC-Bewertung aller Hypothesen auf einmal
+- Punkt-zu-Ebene-ICP-Schritt $\boldsymbol\xi = (\boldsymbol\omega, \delta\mathbf t)$, gebündelt über die Starts
+- Rotationsfehler gegenüber der bekannten Wahrheit
+labels:
+  n_points: Oberflächenstichproben pro Scan
+  view_angle: Winkel zwischen den beiden Blickpunkten
+  noise: Sensorrauschen $\sigma$ (Objektgröße 1)
+  outliers: Ausreißeranteil
+  voxel: Voxelgröße $s$
+  hypotheses: RANSAC-Hypothesen
+  icp_iterations: ICP-Iterationen
+  starts: ICP-Starts (gebündelt)

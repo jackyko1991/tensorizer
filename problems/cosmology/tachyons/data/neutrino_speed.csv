@@ -1,0 +1,10 @@
+# Neutrino speed measurements, (v - c)/c. Published numbers copied from the cited papers (facts, no licence needed).
+# OPERA 2011: arXiv:1109.4897v1 (60.7 +- 6.9 stat +- 7.4 sys ns early); withdrawn after a loose fibre-optic connector and a clock drift were found.
+# OPERA 2012: arXiv:1109.4897v4, JHEP 10 (2012) 093 (6.5 +- 7.4 stat +8.3/-8.0 sys ns).
+# ICARUS 2012: arXiv:1203.3433, Phys. Lett. B 713 (2012) 17 (dt = 0.3 +- 4.9 stat +- 9.0 sys ns over 2.44 ms).
+# SN1987A: neutrinos (~10 MeV) and light arrived within hours after 168 000 years: |v - c|/c < 2e-9 (Longo 1987, Phys. Rev. D 36, 3276).
+experiment,year,energy_gev,dv_over_c,err_minus,err_plus,kind
+OPERA (first result),2011,17.0,2.48e-5,0.41e-5,0.41e-5,measurement
+OPERA (corrected),2012,17.0,2.7e-6,4.5e-6,4.6e-6,measurement
+ICARUS,2012,17.0,1.2e-7,4.2e-6,4.2e-6,measurement
+SN1987A,1987,0.01,0.0,2e-9,2e-9,bound

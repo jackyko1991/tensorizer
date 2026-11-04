@@ -1,0 +1,21 @@
+source_hash: 6884660f84d2
+title: 麦克斯韦妖、西拉德引擎与兰道尔原理
+summary: 一个妖精查看布朗粒子在盒子的哪一半，然后滑动隔板让粒子推动它，从单一热库中取出功。一批批过阻尼 Langevin 引擎列出账单：每比特的功最多为 $kT\,I \le kT\ln 2$，其中 $I$ 是有噪声测量的互信息；擦除该比特至少花费 $kT\ln 2$（兰道尔）；而一旦把信息计入，Sagawa–Ueda 等式 $\langle e^{-\beta(W-\Delta F)-I}\rangle = 1$ 就恢复了热力学第二定律。倒着播放时，路径概率比的对数就是产生的熵。
+notes: 单位：$kT = 1$，迁移率 $1$（故 $D = 1$），半盒宽 $a = 1$，时间以 $a^2/D$ 计。麦克斯韦（1867）设想一个能分拣分子、打败第二定律的生物；西拉德（1929）把它化约为一个粒子和一个比特，最多值 $kT\ln 2$ 的功。兰道尔（1961）与贝内特（1982）解决了这个悖论：妖精最终必须擦除自己的记忆，每比特至少花费 $kT\ln 2$，因此整个循环仍遵守第二定律。Sagawa 与 Ueda（2010）把它推广到带误差的反馈并量化：$\langle e^{-\beta(W-\Delta F)-I}\rangle = 1$，因此 $\langle W_{ext}\rangle \le kT\langle I\rangle - \langle\Delta F\rangle$。这些是对此类随机动力学已证明的定理，模拟则以数值检验它们。模型：墙壁是硬弹簧 $\kappa u^2/2$（$\kappa = 500\,kT/a^2$），所以自由能由 $Z$ 数值计算，而不是取硬墙的值。隔板不可穿透，所以每个粒子保持它所在的一侧 $s$。Langevin 步骤经 Metropolis 校正（MALA），所以玻尔兹曼分布、Jarzynski、Sagawa–Ueda 与 Crooks 在采样噪声内严格成立。擦除从有隔板的盒子开始，以活塞停在中间结束，这使得即使墙是软的 $\Delta F = kT\ln 2$ 也严格成立。账本记录移动隔板的功。最后抽出隔板会返还它少量的弹簧能。真实数据（仅引用数值，未复制图表）：Bérut 等人，Nature 483, 187（2012）及其详细版本 J. Stat. Mech. P06015（2015）擦除了储存在光学双势阱中一颗 $2\,\mu$m 二氧化硅珠上的一个比特。平均热量随循环时间 $\tau$ 按 $\langle Q\rangle = kT\ln 2 + B/\tau$ 下降，其中 $B = 8.15\,kT\cdot$s；双参数拟合给出渐近值 $A = 0.72\,kT$（$\pm 0.15\,kT$），接近 $kT\ln 2 \approx 0.693\,kT$。模拟的擦除在自身单位下给出相同的 $1/\tau$ 规律。时间反演：影片最后一段把擦除倒着播放。对每条轨迹，其正向概率与反向协议下反向路径概率之比的对数等于
+  $\beta(W - \Delta F)$，即产生的熵（Crooks 1999）。它的平均为正，且 $\langle e^{-\sigma}\rangle = 1$。试试看：更大的误差率 $\varepsilon$（信息更少，功更少；$\varepsilon = 0.5$ 什么也得不到），或更短的 $\tau$（耗散更多）。
+meanings:
+- 位于 $0$ 与 $2a$ 的软盒壁，加上位于 $p$ 的隔板，从粒子所在的一侧 $s=\pm1$ 感受到
+- 每台引擎都从隔板位于中间的平衡态 $e^{-V/kT}/Z$ 开始
+- 妖精的读数，以概率 $\varepsilon$ 出错
+- 反馈：隔板滑到妖精相信的那一侧的 $2a(1-\varepsilon)$
+- 对所有引擎同时做 Euler–Maruyama 提议，以 Metropolis–Hastings 接受，使 $e^{-V/kT}$ 严格为稳态
+- 在固定 $x$ 下墙移动时对粒子做的功
+- 妖精正确时为 $\ln 2(1-\varepsilon)$，错误时为 $\ln 2\varepsilon$；其平均为 $I$
+- 在网格上用梯形法则计算一批隔板位置：$\Delta F = -kT\ln Z_1/Z_0$
+- 由每一步的转移概率加上边界项得到的 $\ln P_F[x]/P_R[\tilde x]$
+labels:
+  eps: 妖精的测量误差率 $\varepsilon$
+  tau: 反馈时间 $\tau$（移动隔板，$a^2/D$）
+  tau_erase: 最慢的擦除时间（$a^2/D$）
+  n_engines: 每个误差率的引擎数
+  seed: 随机种子

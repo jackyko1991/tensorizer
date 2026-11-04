@@ -1,0 +1,7 @@
+# Torsion-balance tests of the gravitational inverse-square law (Eot-Wash group, University of Washington).
+# Cited numbers from the paper abstracts (95% confidence): a Yukawa term V = -(GMm/r)(1 + alpha exp(-r/lambda))
+# with |alpha| = 1 is excluded for lambda above lambda_max_um. Sources: Kapner et al., Phys. Rev. Lett. 98, 021101 (2007),
+# arXiv:hep-ph/0611184; Lee et al., Phys. Rev. Lett. 124, 101101 (2020), arXiv:2002.11761. Facts, not figures.
+source,year,alpha,lambda_max_um,min_separation_um,extra_dimension_R_max_um
+Kapner et al.,2007,1,56,55,44
+Lee et al.,2020,1,38.6,52,

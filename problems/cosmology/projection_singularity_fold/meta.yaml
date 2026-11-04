@@ -1,0 +1,67 @@
+title: 'Singularities as folds of a projection'
+category: cosmology
+level: advanced
+order: 16
+tags: [series:projection-hypothesis:4, role:theory, speculative]
+summary: >
+  A speculative hypothesis, not established physics: curved spacetime is the shadow of a surface in flat
+  higher-dimensional space, and a singularity is where that shadow folds. The known geometry is checked first.
+  Flamm's paraboloid and Fronsdal's 1959 embedding of the whole Schwarzschild spacetime in six flat dimensions give
+  back the metric exactly (autograd), and the Kretschmann scalar $12r_s^2/r^6$ comes out of the same automatic
+  differentiation. Projected sheets fold with universal density exponents: $-1/2$ for a fold, $-2/3$ for a cusp. A
+  fold-shaped interior leaves the exterior exactly Schwarzschild, so it hides behind the horizon. Nothing here can
+  be observed directly.
+animated: true
+vector_form: 'g_{ij} = \eta_{AB}\,\frac{\partial z^A}{\partial x^i}\frac{\partial z^B}{\partial x^j},\qquad z_{\rm Flamm} = 2\sqrt{r_s(r-r_s)},\qquad z^{0,1}_{\rm Fronsdal} = 2r_s\sqrt{1-\tfrac{r_s}{r}}\,\big(\sinh,\cosh\big)\tfrac{t}{2r_s},\quad z^2 = \int\!\sqrt{\tfrac{r_s}{r}\big(1+\tfrac{r_s}{r}+\tfrac{r_s^2}{r^2}\big)}\,dr,\qquad K = R_{abcd}R^{abcd} = \frac{12\,r_s^2}{r^6},\qquad \rho(x) = \sum_{s:\,x(s)=x}\frac{1}{|x^\prime(s)|} \propto |x|^{1/n-1},\qquad \rho_{S^k\to\mathbb R^d}(u)\propto u^{(k-d-1)/2}'
+index_form: 'g_{bij} = J_{bAi}\,\eta_{AC}\,J_{bCj},\qquad \Gamma^a{}_{bc} = \tfrac12 g^{ad}\big(\partial_b g_{dc} + \partial_c g_{db} - \partial_d g_{bc}\big),\qquad R^a{}_{bcd} = \partial_c\Gamma^a{}_{db} - \partial_d\Gamma^a{}_{cb} + \Gamma^a{}_{ce}\Gamma^e{}_{db} - \Gamma^a{}_{de}\Gamma^e{}_{cb},\qquad K = g_{ae}R^e{}_{bcd}\,g^{bf}g^{cg}g^{dh}R^a{}_{fgh},\qquad z^2(r) = \tfrac{\ell_1-\ell_0}{2}\,w_q\sqrt{h(e^{\ell_q})}\,e^{\ell_q}'
+translation:
+  - {symbol: 'J_{bAi}', code: 'vmap(jacfwd(embed))(x)', shape: '(B, N, n)', meaning: 'Jacobian of the embedding by automatic differentiation, one per sample point $b$'}
+  - {symbol: 'g_{bij}', code: "einsum('bAi,AC,bCj->bij', J, eta, J)", shape: '(B, n, n)', meaning: 'induced metric: the repeated embedding indices $A, C$ are summed with the flat metric $\eta = $ diag$(-1, 1, 1, 1, 1, 1)$'}
+  - {symbol: 'z^2(r)', code: 'fronsdal_z2(r, rs)', shape: '(B,)', meaning: 'the extra embedding coordinate, a 64-node Gauss–Legendre sum over $q$ in $\ell = \ln s$, differentiable in $r$; it goes to $-\infty$ like $r^{-1/2}$'}
+  - {symbol: '\sigma_{min}', code: 'svdvals(J).amin(1)', shape: '(B,)', meaning: 'smallest singular value: a fold of the map is where it reaches 0 and the Jacobian drops rank'}
+  - {symbol: '\Gamma^a{}_{bc}', code: "0.5 * einsum('ad,dbc->abc', g_inv, T)", shape: '(4, 4, 4)', meaning: 'Christoffel symbols from the autograd derivative of the metric; $d$ is summed'}
+  - {symbol: 'R^a{}_{bcd}', code: 'riemann(metric, x)', shape: '(4, 4, 4, 4)', meaning: 'Riemann tensor from a second forward-mode derivative and two einsum products ($e$ summed)'}
+  - {symbol: 'K', code: "einsum('abcd,abcd->', R_low, R_up)", shape: '(B,)', meaning: 'Kretschmann scalar, all four indices summed; equals $12r_s^2/r^6$ inside and outside the horizon'}
+  - {symbol: '\rho(x)', code: 'catastrophe_density(n, samples)', shape: '(bins,)', meaning: 'shadow density of a uniform sheet under $x = s^n$ (fold $n = 2$, cusp $n = 3$), histogram on log bins'}
+  - {symbol: 'E_{ij}', code: 'fold_shell_field(r, R, rs)', shape: '(B,)', meaning: 'Newtonian tidal tensor of a mass spread as the shadow of a 3-sphere of radius $R$ (weak-field caricature)'}
+notes: >
+  Step 4 of the Projection Hypothesis (see the series description), the author's speculative hypothesis, not
+  established physics. Step 1 (cosmology/projection_postulate) states postulate P4: curved spacetime is the projected
+  shape of a flat higher-dimensional embedding, and a singularity is where the projection folds (its Jacobian drops
+  rank). Step 3 (cosmology/projection_dimension_budget) counts dimensions, step 5 (cosmology/projection_bell_test)
+  tests the measurement postulates, and step 6 (cosmology/projection_telescope_tests) looks at what telescopes can
+  test. The number of flat dimensions $D$ stays open: it is a parameter here and never enters a result. Known
+  geometry first. (a) Flamm (1916): the equatorial slice $t = $ const, $\theta = \pi/2$ of Schwarzschild drawn in flat
+  $\mathbb R^3$ is the paraboloid $z = 2\sqrt{r_s(r-r_s)}$, and its induced metric $dr^2/(1-r_s/r) + r^2d\phi^2$
+  agrees to $10^{-16}$. (b) Fronsdal (Phys. Rev. 116, 778, 1959) embeds the whole Schwarzschild spacetime, inside the
+  horizon too, in flat $\mathbb R^{1,5}$. The induced metric $\eta_{AB}\partial_iz^A\partial_jz^B$, with the
+  Jacobian taken by autograd, matches Schwarzschild to $10^{-13}$ outside and inside, and in Kruskal coordinates
+  across the horizon. Curved 4D geometry really can be seen as a surface in flat space; this is the anchor for P4.
+  Two facts matter for P4. The embedding has full rank at the horizon: the rank drop seen in $(t, r)$ coordinates
+  disappears in Kruskal coordinates. At $r\to0$ it does not fold either; it runs off to infinity, $z^2\approx-2r_s^{3/2}
+  r^{-1/2}$. The curvature, computed by the same automatic differentiation (Christoffel symbols, Riemann tensor,
+  einsum contractions), gives $K = R_{abcd}R^{abcd} = 12r_s^2/r^6$ to $10^{-15}$. The static tidal eigenvalues are
+  $+r_s/r^3$ (radial stretch) and $-r_s/2r^3$ (sideways squeeze), all diverging at $r = 0$. P4's claim, made
+  concrete: a smooth sheet in flat $\mathbb R^D$, seen through a projection, has a shadow whose density diverges at
+  fold caustics. Catastrophe theory (Thom, Arnold) says the exponent is universal. The map $x = s^n$ gives
+  $\rho\propto|x|^{1/n-1}$, measured as $-0.500$ (fold), $-0.667$ (cusp) and $-0.750$ ($n = 4$). A sphere $S^k$
+  projected onto $\mathbb R^3$ has rim density $u^{(k-3-1)/2}$, measured as $-0.51$, $0.00$, $+0.45$ for
+  $k = 3, 4, 5$ in any $D$. So a density spike needs a sheet with exactly as many dimensions as the screen; a thicker
+  sheet gives a smooth shadow. The animation tilts a wavy sheet until it folds, at $a\tan\alpha > 1$. Comparison
+  with GR: give the mass $M = r_s/2$ the density of a 3-sphere's shadow, $\rho\propto(1-r^2/R^2)^{-1/2}$, a weak-field
+  caricature, not a solution of Einstein's equations. Outside $R$ the field is exactly $r_s/r^3$ (Birkhoff's theorem,
+  the shell theorem), and the centre stays finite. The divergence moves to the fold shell and softens to
+  $(R-r)^{-1/2}$ in density and tidal field, and the curvature proxy $8\sum E^2$ to $(R-r)^{-1}$, instead of GR's
+  $r^{-3}$ and $r^{-6}$. The sheet itself keeps a finite curvature $1/R^2$. Verdict, honestly. P4 can keep the
+  tightly tested exterior Schwarzschild geometry unchanged and change only the interior, but that is exactly what
+  makes it untestable: for $R < r_s$ the fold sits behind the horizon, and no signal from it reaches us. The
+  universal exponents are new only as a description, since nothing outside the horizon depends on them. A fold
+  outside the horizon ($R > r_s$) would be a horizonless compact object with different photon rings and echoes; that
+  is what step 6 tests with black-hole shadows. Background: fluids/blowup_profile_search shows how singular profiles
+  and their exponents are studied in practice (self-similar ansatz, exponent search). Wikipedia: Schwarzschild
+  metric, Catastrophe theory.
+params:
+  fold_radius: {default: 0.5, min: 0.1, max: 3.0, step: 0.05, label: 'Radius $R$ of the fold shell', unit: '$r_s$'}
+  sheet_amplitude: {default: 2.0, min: 0.5, max: 5.0, step: 0.1, label: 'Amplitude $a$ of the wavy sheet'}
+  D: {default: 6, min: 4, max: 12, step: 1, type: int, label: 'Flat dimension $D$ holding the sphere sheets (open)'}
+  samples: {default: 400000, min: 50000, max: 2000000, step: 50000, type: int, label: 'Points sampled on each sheet'}

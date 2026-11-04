@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Gas from a companion star falls onto a stellar remnant of mass M and radius R and piles up as a shell of column depth y until it ignites; a black hole has no surface to ignite on">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- companion star -->
+    <circle cx="40" cy="58" r="26" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <!-- accretion stream -->
+    <path d="M64,50 C90,40 108,46 118,60" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="80" y="36" font-style="italic" fill="#b91c1c">Ṁ</text>
+    <!-- remnant with accreted shell -->
+    <circle cx="140" cy="80" r="24" fill="#fde7c7" stroke="#f59e0b" stroke-width="2"/>
+    <circle cx="140" cy="80" r="18" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="133" y="85" font-style="italic" fill="#ffffff">M</text>
+    <line x1="140" y1="80" x2="152.7" y2="92.7" stroke="#374151" stroke-width="1"/>
+    <text x="146" y="104" font-size="12" font-style="italic">R</text>
+    <!-- shell depth -->
+    <line x1="166" y1="70" x2="196" y2="56" stroke="#374151" stroke-width="1"/>
+    <text x="198" y="58" font-style="italic">y</text>
+    <!-- ignition spark -->
+    <path d="M140,48 l3,-8 l3,8 l8,-3 l-6,6 l6,6 l-8,-3 l-3,8 l-3,-8 l-8,3 l6,-6 l-6,-6 z" fill="#f59e0b" transform="translate(-3,-2)"/>
+    <!-- ground: black hole with disc, no surface -->
+    <ellipse cx="60" cy="130" rx="30" ry="6" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <circle cx="60" cy="130" r="9" fill="#111827"/>
+    <text x="96" y="135" font-size="12" fill="#6b7280">no surface</text>
+  </g>
+</svg>

@@ -1,0 +1,23 @@
+source_hash: 888a525ecc84
+title: Ein winziges GPT schreibt Shakespeare
+summary: 'Ein GPT auf Zeichenebene, gebaut aus rohen Tensoroperationen: Embeddings, kausale Multi-Head-Self-Attention als einsum geschrieben, LayerNorm, ein MLP und Residualverbindungen, kein nn.Transformer. Etwa eine Minute lang auf Macbeth und Romeo und Julia trainiert, fällt sein Loss von $\ln V$ (gleichverteiltes Raten unter den $V$ Zeichen), und seine Stichproben werden von Kauderwelsch zu Wörtern, Namen und versförmigen Zeilen, während die Attention-Karten streng untere Dreiecksgestalt behalten.'
+notes: 'Die Architektur ist die von Vaswani et al., "Attention is all you need" (2017), in ihrer reinen Decoder-Form als GPT mit Pre-Norm-Blöcken: $X \leftarrow X + \mathrm{Attn}(\mathrm{LN}\,X)$, dann $X \leftarrow X + \mathrm{MLP}(\mathrm{LN}\,X)$. Die Tests prüfen die Mechanik exakt: die einsum-Attention gleicht PyTorchs fusionierter `scaled_dot_product_attention` mit `is_causal=True`; Zeichen nach Position $t$ zu ändern lässt jede Ausgabe bis $t$ unverändert (die Maske); die Zeilen von $A$ summieren sich zu 1; der untrainierte Loss ist $\ln V$; das Modell kann einen Batch auswendig lernen; und die Zahl der Gewichte ist $Vd + Td + L(12d^2 + 13d) + 2d + dV + V$. Dank der Maske trainiert ein Vorwärtsdurchlauf alle $T$ Vorhersagen des nächsten Zeichens eines Fensters auf einmal, während die Generierung Zeichen für Zeichen laufen muss. Ein so kleines Modell (113 093 Gewichte, etwa eine Minute CPU) lernt Rechtschreibung, Leerzeichen, großgeschriebene Sprechernamen und Zeilenumbrüche, nicht
+  Bedeutung; der Validierungs-Loss endet bei etwa 2 nats pro Zeichen. Die Heatmaps zeigen für jede Schicht den Head, der auf der Zeile "When shall we three meet again?" am stärksten auf das vorherige Zeichen achtet. Das Protein-Sprachmodell aus der Bioinformatik nutzt dieselbe Attention ohne Maske, um verdeckte Buchstaben zu ergänzen. Text: Macbeth und Romeo und Julia aus The Complete Works of William Shakespeare, Project Gutenberg eBook #100 (gemeinfrei), ohne eBook-Kopf und Lizenz, typografische Anführungszeichen in ASCII umgewandelt; 247 kB in data/shakespeare.txt. Probiere mehr Schritte, ein breiteres Modell oder Temperatur 0.5 gegen 1.2.'
+meanings:
+- zufällige Textfenster als Zeichen-IDs; die Ziele sind dieselben Fenster, um ein Zeichen nach links verschoben
+- Token- plus gelerntes Positions-Embedding
+- jeder Token-Vektor über seine Kanäle auf Mittelwert 0 verschoben und auf Varianz 1 skaliert, dann eine gelernte Skalierung und Verschiebung
+- 'wiederholtes $c$ ⇒ summiert: die Queries jedes Heads (Keys und Values ebenso)'
+- '$0$ auf und unter der Diagonale, $-\infty$ darüber: nach dem Softmax kann eine Position keine späteren Zeichen sehen'
+- wiederholtes $k$ ⇒ summiert; jede Zeile ist eine Wahrscheinlichkeitsverteilung über die früheren Positionen $j \le i$
+- 'wiederholtes $j$, dann $h, k$ ⇒ summiert: was jede Position aus ihrer Vergangenheit sammelt, über die Residualverbindung zurückaddiert'
+- Mittelwert von $-\log p$ des wahren nächsten Zeichens in nats; er beginnt bei $\ln V$
+labels:
+  steps: Trainingsschritte
+  d_model: Modellbreite $d$
+  heads: Attention-Heads $H$
+  layers: Transformer-Blöcke
+  context: Kontextlänge $T$
+  batch: Batchgröße
+  lr: Lernrate
+  temperature: Sampling-Temperatur

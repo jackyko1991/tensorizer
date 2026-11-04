@@ -1,0 +1,27 @@
+source_hash: 7dfc00ae0203
+title: 'Digitaler Windkanal: 3D-Lattice-Boltzmann um ein STL-Flugzeug'
+summary: 'Ein kleiner 3D-Windkanal im Stil der Bibliothek OpenLB: Die STL-Datei eines Modellflugzeugs wird in einen Dreieckstensor eingelesen, per Strahlverfolgung an allen Gitterknoten zugleich voxelisiert, auf einen Anstellwinkel geneigt und in eine D3Q19-Lattice-Boltzmann-Strömung mit TRT- oder MRT-Stößen, optionaler Smagorinsky-LES und Bounce-back am Körper gesetzt. Widerstand und Auftrieb kommen aus dem Impulsaustausch; Stromlinien (gebündeltes RK4) und Tracerteilchen zeigen die Strömung. Ein Kugelfall prüft den Löser gegen einen vorab berechneten Lauf von OpenLB selbst und zeigt das Residuum.'
+notes: 'Gittereinheiten: Knotenabstand und Zeitschritt 1, Anströmung $U = 0.08$ (Mach 0,14), Viskosität $\nu = UL/\mathrm{Re}$ mit $L$ der Körperlänge in Knoten und $\tau = 3\nu + \tfrac12$. Das Flugzeug fliegt in einem $80\times 36\times 26$-Gitter mit $L = 32$ (Rumpflänge; Spannweite 28 Knoten), der optionale NACA-0012-Flügel in $72\times 24\times 24$ (Profiltiefe 20). Beide STL-Dateien wurden für dieses Problem erzeugt (siehe data/SOURCES.md): ein gedrungenes Modellflugzeug (Rotationsrumpf, gepfeilter NACA-0018-Flügel, Höhen- und Seitenleitwerk), dessen Teile sich an den Verbindungen überlappen, weshalb der Voxelisierer Umlaufzahlen (vorzeichenbehaftete Durchstöße) statt reiner Strahlparität zählt; und ein Flügel, der die ganze periodische Breite überspannt, also ein unendlicher Flügel (vergleiche $C_L$ mit $2\pi\alpha$). Die Beiwerte nutzen die Grundrissfläche (der Körper von oben). Ränder: periodisch quer zur Strömung (ein Gitter von Flugzeugen) und halbweg-Bounce-back am voxelisierten
+  Körper; solve.simulate bietet auch einen bewegten Boden und eine reibungsfreie Decke. Statt Ein- und Auslass bilden die letzten 16 Knoten eine Fringe-Zone, die die Strömung zur Anströmung zurückführt, bevor sie bei $x = 0$ wieder eintritt; die Geschwindigkeit wird über 300 Schritte hochgefahren (der frühe Buckel in $C_D$ ist der Druckgradient, der die Luft beschleunigt), und die Animation beginnt danach. TRT nutzt das „magische“ $\Lambda = 3/16$, MRT die D3Q19-Raten von d''Humières et al. (2002), Smagorinsky $C_s = 0.17$. Beim voreingestellten Re = 1000 ($\tau \approx 0.508$) explodiert reines TRT auf diesem groben Gitter, und LES hält es stabil: Schalte LES einmal aus. Ergebnisse bei 8°: Flugzeug $C_D \approx 0.39$, $C_L \approx 0.12$; Flügel $C_L \approx 0.31$ gegenüber $2\pi\alpha = 0.88$. Der Auftrieb ist klein, weil die Flügel nur 1–3 Zellen dick sind, Re laminar ist und die periodischen Bilder darüber und darunter wie ein Stapel Doppeldecker wirken: Das sind Illustrationen der Methode,
+  keine Vorhersagen. Validierung (Körper sphere_openlb): eine Kugel bei Re = 20 ($D = 10$, $80\times 40\times 40$, BGK, Gleichgewichtseinlass) gegen OpenLB 1.7 auf demselben Gitter, einmal offline gerechnet (data/openlb_reference_*.csv): $C_D$ 3,360 gegenüber 3,378 (−0,5 %); $u_x$ in der Mittelebene: relative L2 0,8 %, L∞ 1,1 %, max $|\Delta u|/U$ 1,3 %. Der verbleibende Unterschied stammt von den Randverfahren (OpenLB nutzt interpolierte Geschwindigkeits- und Druckränder und schwingt mit Schallwellen nach, ±5 % in $C_D$) und vom Voll- gegenüber Halbweg-Bounce-back; Stoßoperator (BGK) und Auflösung sind gleich. Beide Codes liegen über dem Schiller–Naumann-Wert 2,61, weil diese Kugel nicht frei ist: OpenLB in einer $160\times 60\times 60$-Box ergibt 3,04 und mit $D = 20$ in denselben Proportionen 3,21. OpenLB diente nur als vorab berechnete Referenz; kein (GPL-)Code daraus wird hier verwendet. Die Validierung läuft live nach dem Flugzeug im selben Lauf (Parameter validate, standardmäßig an;
+  2000 Schritte) und füllt das Residuen-Panel.'
+meanings:
+- 'Populationen: Fluid am Knoten $(x, y, z)$, das sich mit der Gittergeschwindigkeit $i$ bewegt'
+- D3Q19-Geschwindigkeiten (Ruhe, 6 Flächen, 12 Kanten), Gewichte und Gegenrichtungen
+- 'STL-Dreiecke: Dreieck $t$, Ecke $v$, Koordinate $a$'
+- innen, wenn die vorzeichenbehafteten Durchstöße eines Strahls entlang $+x$ (Umlaufzahl) positiv sind; alle Strahlen × alle Dreiecke, dann searchsorted
+- 'wiederholtes $a$ ⇒ summiert: Geschwindigkeit entlang jeder Gitterrichtung'
+- 'wiederholtes $i$ ⇒ summiert: Impulsdichte'
+- 'MRT: Nichtgleichgewichtsmomente, jedes mit eigener Rate $s_k$ relaxiert'
+- Nichtgleichgewichts-Impulsfluss; seine Größe bestimmt die Smagorinsky-Wirbelviskosität $\nu_t$
+- 'Streaming: jede Population um eine Verbindung verschieben'
+- 1, wo eine Population einen Fluidknoten in Richtung Körper verlässt (Bounce-back als maskierter Tausch)
+- 'Impulsaustausch: Kraft auf den Körper, summiert über seine Randverbindungen'
+labels:
+  body: Körper (STL in data/; sphere_openlb = der OpenLB-Prüffall)
+  re: Reynolds-Zahl $UL/\nu$ (Körperlänge $L$)
+  collision: Stoßoperator
+  les: Smagorinsky-LES
+  pitch: Anstellwinkel (Flugzeug und Flügel)
+  steps: Gitter-Zeitschritte
+  validate: Auch die OpenLB-Kugelprüfung rechnen (Residuen-Panel)

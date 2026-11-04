@@ -1,0 +1,17 @@
+source_hash: 786f22a93dbf
+title: Photoelektrischer Effekt und Lichtquanten
+summary: 'Einsteins Lichtquantenarbeit von 1905: Licht der Frequenz $\nu$ kommt in Paketen der Energie $h\nu$ an, und ein Paket befreit ein Elektron mit der kinetischen Energie $K = h\nu - \phi - \varepsilon$. Ein Batch Photonen × Frequenzen × Intensitäten zeigt die Grenzfrequenz $\nu_0 = \phi/h$, eine Gegenspannung $eV_s = h\nu - \phi$, die die Intensität ignoriert, und keine Zeitverzögerung — alles im Widerspruch zum klassischen Wellenbild. Ein Geradenfit an Millikans Natrium-Messungen von 1916 liefert die Plancksche Konstante zurück.'
+notes: 'Dies ist eine der vier Arbeiten aus Einsteins „Wunderjahr“ 1905: Lichtquanten und der photoelektrische Effekt (dieses Problem; Nobelpreis 1921, „insbesondere für seine Entdeckung des Gesetzes des photoelektrischen Effekts“), die Brownsche Bewegung (thermodynamics: Zufallsbewegung und Diffusion) und die spezielle Relativitätstheorie mit $E = mc^2$ (astro: Einstein 1905: bewegte Körper und $E = mc^2$). Das Wellenbild versagt auf dreifache Weise: Es liefert Emission bei jeder Frequenz, kinetische Energien, die mit der Intensität wachsen, und minutenlange Verzögerungen bei schwachem Licht (ein Atom, das $\phi$ aus $S = 10$ mW/m² sammelt) — während das Experiment eine scharfe Schwelle, ein von der Intensität unabhängiges $V_s$ und keine messbare Verzögerung zeigt (unter 3 ns, Lawrence und Beams 1928). Helleres Licht bedeutet nur mehr Photonen: Der Strom steigt, aber $V_s$ bewegt sich nicht. Die roten Quadrate sind Millikans Gegenspannungen von 1916 für eine im Vakuum geschnittene Natriumoberfläche
+  (R. A. Millikan, Phys. Rev. 7, 355 (1916), vier Quecksilberlinien, in data/millikan_1916_sodium.csv übertragen aus der Arbeit, wie sie in einer Aufgabensammlung der Universität Roskilde tabelliert ist; eine Veröffentlichung von 1916, gemeinfrei). Millikan wollte Einsteins Gleichung widerlegen und bestätigte sie; seine Steigung liefert $h$ auf etwa 0,3 % genau im Vergleich zum heutigen exakten Wert $6.62607015\times10^{-34}$ J s. Der Achsenabschnitt, etwa 1,8 eV, ist nicht die Austrittsarbeit von reinem Natrium (2,3 eV): Er enthält die Kontaktspannung der Apparatur, und die Oberfläche war vermutlich verunreinigt (D. Lloyd, Am. J. Phys. 2015). Das simulierte Metall ist idealisiert (ein flaches Band von Tiefen, keine Winkel, keine Temperatur): Die Gerade $eV_s = h\nu - \phi$ ist exakt, die Form der Stromkurven nur schematisch.'
+meanings:
+- Lichtfrequenzen in $10^{14}$ Hz
+- 'Tiefe des Elektrons, das Photon $n$ absorbiert, gleichverteilt auf $[0, 3]$ eV ($i$: Intensität)'
+- 'ein einziges Broadcasting: jedes Photon jeder Frequenz und Intensität auf einmal; $K \le 0$ ⇒ keine Emission'
+- 'Elektronen, die die Gegenspannung $V$ überwinden: der Photostrom'
+- 'Grenzspannung: das schnellste Elektron; gleich für jede Intensität $i$'
+- 'Gerade durch Millikans Punkte: Steigung $a = h/e$, Achsenabschnitt $b = -\phi/e$'
+- 'Wellenbild: Zeit, um $\phi$ über die Fläche $A$ eines Atoms aus der Bestrahlungsstärke $S$ aufzunehmen'
+labels:
+  phi: Austrittsarbeit $\phi$
+  irradiance: Bestrahlungsstärke $S$ (für die Verzögerung im Wellenbild)
+  n_photons: Photonen pro Belichtung bei Intensität 1

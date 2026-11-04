@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Epicycles: a big circle of radius |c1| carries a smaller circle of radius |c2|, whose rim carries the pen that traces a closed curve">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- traced curve -->
+    <path d="M168,38 L210,62 L210,110 L168,134 L126,110 L126,62 Z" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- deferent (big circle) -->
+    <circle cx="80" cy="86" r="46" fill="none" stroke="#374151" stroke-width="2"/>
+    <circle cx="80" cy="86" r="3" fill="#374151"/>
+    <!-- arm 1 -->
+    <line x1="80" y1="86" x2="117" y2="59" stroke="#2563eb" stroke-width="2"/>
+    <text x="84" y="64" font-style="italic" fill="#1e40af">c₁</text>
+    <!-- epicycle -->
+    <circle cx="117" cy="59" r="22" fill="#93c5fd" fill-opacity="0.35" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="117" cy="59" r="2.5" fill="#1e40af"/>
+    <line x1="117" y1="59" x2="136" y2="48" stroke="#2563eb" stroke-width="2"/>
+    <text x="114" y="31" font-style="italic" fill="#1e40af">c₂</text>
+    <!-- pen -->
+    <circle cx="136" cy="48" r="4.5" fill="#dc2626"/>
+    <path d="M136,48 Q150,40 168,38" fill="none" stroke="#dc2626" stroke-width="2"/>
+    <!-- rotation arrows -->
+    <path d="M44,58 A46,46 0 0 1 62,44" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <text x="24" y="50" font-style="italic" fill="#b45309">k₁</text>
+    <path d="M100,72 A22,22 0 0 0 98,48" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <text x="180" y="152" font-style="italic">z(t)</text>
+  </g>
+</svg>

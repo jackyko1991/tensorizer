@@ -1,0 +1,16 @@
+source_hash: 695e730c122f
+title: Monty Hall mit $N$ Türen
+summary: 'Hinter einer von $N$ Türen steht ein Auto. Du wählst eine; der Moderator, der weiß, wo das Auto ist, öffnet $N-2$ Türen mit Ziegen und bietet dir die letzte geschlossene Tür an. Millionen Spiele für jedes $N$ von 3 bis 1000 laufen gleichzeitig in einem einzigen $(B, G)$-Tensor: Wechseln gewinnt mit Wahrscheinlichkeit $(N-1)/N$ (die berühmten $2/3$ bei drei Türen), Bleiben mit $1/N$, und jede laufende Gewinnrate bleibt innerhalb ihres binomialen Fehlerbands.'
+notes: 'Wechseln verliert nur, wenn deine erste Wahl schon das Auto war, was mit Wahrscheinlichkeit $1/N$ geschieht; in allen anderen Fällen ist die Wahl des Moderators erzwungen, sodass die Tür, die er geschlossen lässt, die Information aller von ihm geöffneten Türen trägt. Bei 1000 Türen ist die Antwort offensichtlich, und es ist dasselbe Argument wie bei dreien. Berühmt wurde das Rätsel durch die Zeitschriftenkolumne von Marilyn vos Savant im Jahr 1990, als viele Leser, darunter Mathematiker, darauf bestanden, die Antwort sei $1/2$. Diese Intuition stimmt für ein anderes Spiel: Wähle den unwissenden Moderator, der Türen zufällig öffnet und manchmal das Auto zeigt. Verwirft man diese Spiele (nur ein Anteil $2/N$ bleibt übrig), liegen Bleiben und Wechseln bei genau $1/2$, weil eine zufällige Öffnung nichts über deine Tür verrät. Das Terminal prüft außerdem, dass keine erste Wahl bevorzugt ist, und eine langsame Referenz Spiel für Spiel in den Tests stimmt mit der Tensorversion überein.'
+meanings:
+- die nebeneinander verglichenen Türanzahlen, von 3 bis 1000
+- Autotür und erste Wahl von Spiel $g$ in Zeile $b$, gleichverteilt über die $N_b$ Türen; Broadcasting gibt jeder Zeile ihr eigenes $N_b$
+- 'die Tür, die der Moderator geschlossen lässt: zwingend das Auto, wenn deine Wahl eine Ziege ist, eine zufällige Tür, wenn deine Wahl das Auto ist'
+- 'die $N-2$ Türen, die der Moderator öffnet: alle Türen außer $p$ und $k$'
+- Gewinne beim Bleiben und beim Wechseln; in jedem Spiel ist genau eines davon wahr
+- 'kumulierte Gewinne durch kumulierte gültige Spiele: die Gewinnrate nach jedem Spiel'
+- das $\pm 2\sigma$-Band eines binomialen Anteils, in dem die laufende Rate etwa 95 % der Zeit bleibt
+labels:
+  n_games: Spiele pro Türanzahl $G$
+  max_doors: Größte Türanzahl $N$
+  host: Moderator

@@ -1,0 +1,17 @@
+source_hash: 786f22a93dbf
+title: Effet photoélectrique et quanta de lumière
+summary: 'L''article d''Einstein de 1905 sur les quanta de lumière : la lumière de fréquence $\nu$ arrive par paquets d''énergie $h\nu$, et un paquet libère un électron avec l''énergie cinétique $K = h\nu - \phi - \varepsilon$. Un lot photons × fréquences × intensités montre le seuil $\nu_0 = \phi/h$, un potentiel d''arrêt $eV_s = h\nu - \phi$ qui ignore l''intensité, et aucun délai — tout cela contre l''image ondulatoire classique. Un ajustement linéaire aux mesures de Millikan sur le sodium (1916) redonne la constante de Planck.'
+notes: 'Il s''agit de l''un des quatre articles de l''« année miraculeuse » 1905 d''Einstein : les quanta de lumière et l''effet photoélectrique (ce problème ; prix Nobel 1921, « en particulier pour sa découverte de la loi de l''effet photoélectrique »), le mouvement brownien (thermodynamique : Marche aléatoire et diffusion) et la relativité restreinte avec $E = mc^2$ (astro : Einstein 1905 : corps en mouvement et $E = mc^2$). L''image ondulatoire échoue de trois façons : elle prévoit une émission à toute fréquence, des énergies cinétiques qui croissent avec l''intensité et des minutes de délai pour une lumière faible (un atome qui collecte $\phi$ à partir de $S = 10$ mW/m²) — alors que l''expérience montre un seuil net, un $V_s$ indépendant de l''intensité et aucun délai mesurable (moins de 3 ns, Lawrence et Beams 1928). Une lumière plus intense signifie seulement plus de photons : le courant augmente, mais $V_s$ ne bouge pas. Les carrés rouges sont les potentiels d''arrêt mesurés par Millikan
+  en 1916 pour une surface de sodium découpée sous vide (R. A. Millikan, Phys. Rev. 7, 355 (1916), quatre raies du mercure, transcrits dans data/millikan_1916_sodium.csv à partir de l''article tel que tabulé dans une série d''exercices de l''université de Roskilde ; publication de 1916, domaine public). Millikan voulait réfuter l''équation d''Einstein et l''a confirmée ; sa pente donne $h$ à environ 0,3 % près de la valeur exacte actuelle $6.62607015\times10^{-34}$ J s. L''ordonnée à l''origine, environ 1,8 eV, n''est pas le travail de sortie du sodium propre (2,3 eV) : elle contient le potentiel de contact de l''appareil, et la surface était probablement contaminée (D. Lloyd, Am. J. Phys. 2015). Le métal simulé est idéalisé (une bande plate de profondeurs, sans angles, sans température) : la droite $eV_s = h\nu - \phi$ est exacte, la forme des courbes de courant n''est que schématique.'
+meanings:
+- fréquences de la lumière en $10^{14}$ Hz
+- 'profondeur de l''électron qui absorbe le photon $n$, uniforme sur $[0, 3]$ eV ($i$ : intensité)'
+- 'une seule diffusion (broadcast) : chaque photon de chaque fréquence et intensité à la fois ; $K \le 0$ ⇒ pas d''émission'
+- 'électrons qui franchissent la tension retardatrice $V$ : le photocourant'
+- 'potentiel d''arrêt : l''électron le plus rapide ; identique pour toute intensité $i$'
+- 'droite passant par les points de Millikan : pente $a = h/e$, ordonnée à l''origine $b = -\phi/e$'
+- 'image ondulatoire : temps nécessaire pour absorber $\phi$ sur l''aire $A$ d''un atome à partir de l''éclairement $S$'
+labels:
+  phi: Travail de sortie $\phi$
+  irradiance: Éclairement énergétique $S$ (pour le délai de l'image ondulatoire)
+  n_photons: Photons par exposition à l'intensité 1

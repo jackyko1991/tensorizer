@@ -1,0 +1,16 @@
+# Experimental tests of the Born rule through three-path (Sorkin) interference, kappa_3 = epsilon_3 / delta_3 with
+# epsilon_3 = p_ABC - p_AB - p_AC - p_BC + p_A + p_B + p_C (- p_0) and delta_3 = |I_AB| + |I_AC| + |I_BC|,
+# I_AB = p_AB - p_A - p_B. Quantum mechanics with the Born rule predicts kappa_3 = 0. Cited numbers, not figures.
+# Sinha et al., Science 329, 418-421 (2010), doi:10.1126/science.1190545, arXiv:1007.4193: abstract bounds three-path
+#   interference to less than 1e-2 of the expected two-path interference (stored as value 0 with bound 1e-2).
+# Park et al. (NMR, 2012), New J. Phys. 14, 113025: kappa_3 = 0.001 +- 0.003, as quoted by Kauten et al. 2017.
+# Kauten et al., New J. Phys. 19, 033017 (2017), doi:10.1088/1367-2630/aa5d98, arXiv:1508.03253, open access
+#   (CC-BY 3.0): 5-path interferometer, nonlinearity-corrected kappa_3 (Table 2) for classical light, attenuated
+#   (semi-classical) light and heralded single photons (quantum).
+# Columns: kappa (central value), sigma (1 standard deviation; for Sinha the quoted bound), kind (measurement|bound).
+source,year,regime,kappa,sigma,kind
+Sinha et al.,2010,single photons,0.0,1e-2,bound
+Park et al. (NMR),2012,nuclear spins,1e-3,3e-3,measurement
+Kauten et al.,2017,heralded single photons,0.0,1.6e-3,measurement
+Kauten et al.,2017,attenuated laser,1.3e-4,1.8e-4,measurement
+Kauten et al.,2017,classical light,0.0,3.1e-5,measurement

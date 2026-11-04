@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Optimal transport: mass a_i at source points x_i on a ring is moved to target points y_j in two blobs along a plan P_ij, at cost |x_i - y_j| squared">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- source: ring of points -->
+    <circle cx="62" cy="82" r="36" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <g fill="#2563eb" stroke="#1e40af" stroke-width="1.2">
+      <circle cx="98" cy="82" r="4.5"/><circle cx="87.5" cy="56.5" r="4.5"/><circle cx="62" cy="46" r="4.5"/>
+      <circle cx="36.5" cy="56.5" r="4.5"/><circle cx="26" cy="82" r="4.5"/><circle cx="36.5" cy="107.5" r="4.5"/>
+      <circle cx="62" cy="118" r="4.5"/><circle cx="87.5" cy="107.5" r="4.5"/>
+    </g>
+    <text x="52" y="88" font-style="italic">a</text><text x="60" y="92" font-size="10" font-style="italic">i</text>
+    <!-- target: two blobs -->
+    <ellipse cx="180" cy="50" rx="24" ry="18" fill="#93c5fd" fill-opacity="0.35" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <ellipse cx="184" cy="116" rx="20" ry="16" fill="#93c5fd" fill-opacity="0.35" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <g fill="#f59e0b" stroke="#b45309" stroke-width="1.2">
+      <circle cx="170" cy="44" r="4.5"/><circle cx="188" cy="40" r="4.5"/><circle cx="178" cy="58" r="4.5"/><circle cx="194" cy="56" r="4.5"/>
+      <circle cx="176" cy="112" r="4.5"/><circle cx="192" cy="110" r="4.5"/><circle cx="182" cy="124" r="4.5"/><circle cx="196" cy="124" r="4.5"/>
+    </g>
+    <text x="210" y="34" font-style="italic">y</text><text x="218" y="38" font-size="10" font-style="italic">j</text>
+    <!-- plan: arrows carrying mass -->
+    <g stroke="#dc2626" stroke-width="1.6" fill="none">
+      <path d="M92,54 Q130,40 163,44" marker-end="url(#arrow)"/>
+      <path d="M102,80 Q140,70 171,60" marker-end="url(#arrow)"/>
+      <path d="M92,110 Q130,118 169,113" marker-end="url(#arrow)"/>
+    </g>
+    <text x="118" y="34" font-style="italic" fill="#b91c1c">P</text><text x="128" y="38" font-size="10" font-style="italic" fill="#b91c1c">ij</text>
+    <text x="104" y="148" font-style="italic">C = |x − y|²</text>
+    <text x="8" y="30" font-style="italic">x</text><text x="16" y="34" font-size="10" font-style="italic">i</text>
+  </g>
+</svg>

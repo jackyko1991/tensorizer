@@ -1,0 +1,21 @@
+source_hash: ab1a099d3cd6
+title: Kuramoto 模型：自發同步
+summary: 螢火蟲同步閃爍、放在同一塊板上的節拍器、心臟節律細胞：這些自然頻率 $\omega_i$ 各不相同的振子彼此牽引，當耦合強度 $K$ 超過某個閾值時便會突然鎖定。複數平均場 $r e^{i\psi} = \frac1N \sum_j e^{i\theta_j}$ 把全對全的求和化為 $O(N)$ 的計算量，整批耦合強度同時運行，而序參數 $r$ 在 $K_c = 2/(\pi g(0))$ 處躍升，對於 Lorentz 分布的頻率，會沿著精確的 Ott–Antonsen 曲線 $r = \sqrt{1 - K_c/K}$ 變化。
+notes: Kuramoto（1975）以自洽方法解出此模型，並對對稱單峰的頻率密度 $g$ 求得 $K_c = 2/(\pi g(0))$；Strogatz（2000）講述了這段歷史。Ott 與 Antonsen（2008）證明，對於 Lorentz 分布 $g(\omega) = (\gamma/\pi)/(\omega^2 + \gamma^2)$，無限 $N$ 的動力學可約化為單一方程 $\dot r = -\gamma r + \tfrac K2 r(1 - r^2)$，其穩定態為 $r = \sqrt{1 - 2\gamma/K}$：模擬在 $N = 1200$ 時與之吻合到約 $0.01$。在 $K_c$ 以下，$r$ 只是量級為 $1/\sqrt N$ 的有限尺寸雜訊。高斯分布的頻率閾值較小，為 $K_c = 2\sigma\sqrt{2\pi}/\pi \approx 1.6\,\sigma$（綠色）。緩慢掃描（紅色）隨 $K$ 增大而沿著曲線變化；圓圈顯示在平均場參考系中的振子，並按 $\omega_i$ 著色：$|\omega_i|$ 小的振子最先鎖定，快的則持續漂移。第三個面板是一個小補充：環上的全同振子在非局域耦合和相位延遲 $\alpha = \pi/2 - 0.18$ 下，分裂成一個鎖定區域與一個不相干區域，這就是 Kuramoto 與 Battogtokh（2002）發現、並由 Abrams 與 Strogatz（2004）命名的奇美拉態（chimera state）。由於 $\sin(\theta_j - \theta_i)$ 是反對稱的，平均相位恰好以平均頻率漂移。
+meanings:
+- 自然頻率：把 Lorentz（或高斯）密度分成 $N$ 個等機率區間，每個區間隨機抽取一個
+- 批次中每個成員一個耦合強度：所有群體平行演化
+- 複數平均場，重複的 $j$ ⇒ 取平均；$r = 0$ 為不相干，$r = 1$ 為完全同步
+- 每個振子只感受到平均場：計算量為 $O(N)$ 而非 $O(N^2)$
+- 較慢的成對求和，保留作為參考；測試檢驗它與平均場形式相等
+- Lorentz 頻率下 $N \to \infty$ 的精確序參數，在 $K_c = 2\gamma$ 以上為 $\sqrt{1 - 2\gamma/K}$
+- 環上的非局域耦合 $(1 + A\cos x)/2\pi$，用於奇美拉態
+labels:
+  n_oscillators: 振子數 $N$
+  width: 頻率展寬 $\gamma$（Lorentz）或 $\sigma$（高斯）
+  k_max: 最大耦合強度 $K$
+  n_couplings: 批次中的耦合強度數目
+  t_relax: 每個耦合強度的弛豫時間
+  ramp_time: $K$ 緩慢掃描的持續時間
+  distribution: 掃描中顯示的頻率密度
+  seed: 隨機種子

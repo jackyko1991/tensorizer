@@ -1,0 +1,22 @@
+source_hash: 6884660f84d2
+title: El demonio de Maxwell, la máquina de Szilard y el principio de Landauer
+summary: 'Un demonio mira en qué mitad de una caja está una partícula browniana y desliza un tabique para que la partícula lo empuje, extrayendo trabajo de un solo baño térmico. Lotes de máquinas de Langevin sobreamortiguadas muestran la cuenta: el trabajo es como mucho $kT\,I \le kT\ln 2$ por bit, con $I$ la información mutua de una medida ruidosa, borrar el bit cuesta al menos $kT\ln 2$ (Landauer), y la igualdad de Sagawa–Ueda $\langle e^{-\beta(W-\Delta F)-I}\rangle = 1$ restablece el segundo principio en cuanto se cuenta la información. Reproducido al revés, el logaritmo del cociente de probabilidades de trayectoria es la entropía producida.'
+notes: 'Unidades: $kT = 1$, movilidad $1$ (así $D = 1$), semianchura de la caja $a = 1$, tiempo en $a^2/D$. Maxwell (1867) imaginó un ser que ordena moléculas y vence al segundo principio; Szilard (1929) lo redujo a una partícula y un bit, que vale como mucho $kT\ln 2$ de trabajo. Landauer (1961) y Bennett (1982) resolvieron la paradoja: el demonio debe borrar tarde o temprano su memoria, lo que cuesta al menos $kT\ln 2$ por bit, de modo que el ciclo completo obedece el segundo principio. Sagawa y Ueda (2010) lo hicieron cuantitativo para la retroalimentación con errores: $\langle e^{-\beta(W-\Delta F)-I}\rangle = 1$, luego $\langle W_{ext}\rangle \le kT\langle I\rangle - \langle\Delta F\rangle$. Son teoremas demostrados para este tipo de dinámica estocástica, y la simulación los comprueba numéricamente. Modelo: las paredes son muelles rígidos $\kappa u^2/2$ ($\kappa = 500\,kT/a^2$), así que las energías libres se calculan numéricamente a partir de $Z$ y no se fijan a sus valores de pared
+  dura. El tabique es impenetrable, de modo que cada partícula conserva su lado $s$. Los pasos de Langevin llevan corrección de Metropolis (MALA), así que la distribución de Boltzmann, Jarzynski, Sagawa–Ueda y Crooks se cumplen exactamente salvo ruido de muestreo. El borrado parte de la caja con tabique y termina con el pistón en el centro, lo que hace $\Delta F = kT\ln 2$ exacto incluso con paredes blandas. El libro de cuentas registra el trabajo de mover el tabique. Retirar el tabique al final devuelve su pequeña energía de muelle. Datos reales, solo como números citados (sin reproducir figuras): Bérut et al., Nature 483, 187 (2012) y la versión detallada en J. Stat. Mech. P06015 (2015) borraron un bit guardado en una esfera de sílice de $2\,\mu$m en un pozo doble óptico. El calor medio bajaba con la duración del ciclo $\tau$ como $\langle Q\rangle = kT\ln 2 + B/\tau$ con $B = 8.15\,kT\cdot$s, y un ajuste de dos parámetros dio una asíntota $A = 0.72\,kT$ ($\pm 0.15\,kT$), cercana a $kT\ln
+  2 \approx 0.693\,kT$. El borrado simulado da la misma ley $1/\tau$ en sus propias unidades. Inversión temporal: la última parte de la película reproduce el borrado al revés. Para cada trayectoria, el logaritmo del cociente entre su probabilidad hacia delante y la de la trayectoria invertida bajo el protocolo invertido es $\beta(W - \Delta F)$, la entropía producida (Crooks 1999). Su media es positiva, y $\langle e^{-\sigma}\rangle = 1$. Prueba: una tasa de error $\varepsilon$ mayor (menos información, menos trabajo; $\varepsilon = 0.5$ no da nada), o un $\tau$ más corto (más disipación).'
+meanings:
+- paredes blandas de la caja en $0$ y $2a$ más el tabique en $p$, sentido desde el lado $s=\pm1$ en que está la partícula
+- cada máquina empieza en equilibrio $e^{-V/kT}/Z$ con el tabique en el centro
+- la lectura del demonio, errónea con probabilidad $\varepsilon$
+- 'retroalimentación: el tabique se desliza hasta $2a(1-\varepsilon)$ en el lado en que cree el demonio'
+- propuesta de Euler–Maruyama para todas las máquinas a la vez, aceptada con Metropolis–Hastings para que $e^{-V/kT}$ sea exactamente estacionaria
+- trabajo hecho sobre la partícula cuando la pared se mueve con $x$ fijo
+- $\ln 2(1-\varepsilon)$ si el demonio acertó, $\ln 2\varepsilon$ si no; su media es $I$
+- 'regla del trapecio en una malla para un lote de posiciones del tabique: $\Delta F = -kT\ln Z_1/Z_0$'
+- $\ln P_F[x]/P_R[\tilde x]$ a partir de las probabilidades de transición de cada paso más los términos de borde
+labels:
+  eps: Tasa de error de medida del demonio $\varepsilon$
+  tau: Tiempo de retroalimentación $\tau$ (movimiento del tabique, $a^2/D$)
+  tau_erase: Tiempo de borrado más lento ($a^2/D$)
+  n_engines: Máquinas por tasa de error
+  seed: Semilla aleatoria

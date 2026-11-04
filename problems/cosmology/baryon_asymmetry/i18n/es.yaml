@@ -1,0 +1,24 @@
+source_hash: 4c18d665b55e
+title: ¿Por qué hay más materia que antimateria?
+summary: 'El universo contiene unos $6\times 10^{-10}$ bariones por fotón y casi nada de antimateria. Las tres condiciones de Sájarov dicen qué necesita cualquier explicación; la leptogénesis es una candidata destacada: neutrinos de Majorana pesados se desintegran un poco más a menudo en leptones que en antileptones (asimetría CP $\varepsilon$), las desintegraciones inversas borran parte de ella (intensidad $K$) y los esfalerones convierten los leptones en bariones. Las ecuaciones de Boltzmann de miles de modelos $(\varepsilon, K)$ se resuelven como una sola EDO por lotes y se comparan con el $\eta_B$ observado. Un problema abierto.'
+notes: 'Observaciones: el cociente bariones/fotones es $\eta_B = (6.12 \pm 0.04)\times 10^{-10}$ según el CMB (Planck 2018, $\Omega_bh^2 = 0.0224$), de acuerdo con la nucleosíntesis primordial, y no hay indicios de galaxias de antimateria. Partiendo de un universo simétrico, Sájarov (1967) mostró que una asimetría requiere (1) violación del número bariónico, (2) violación de C y de CP y (3) un alejamiento del equilibrio térmico. Los tests comprueban (2) y (3) directamente: $\varepsilon = 0$, o neutrinos pesados mantenidos en equilibrio, dan exactamente cero; (1) es el proceso de esfalerones del Modelo Estándar, que convierte $B - L$ en $B = \tfrac{28}{79}(B - L)$ por encima de unos 130 GeV. La violación de CP de los quarks (fase CKM) es demasiado pequeña y la transición electrodébil es un crossover, así que el Modelo Estándar por sí solo falla: hace falta física nueva. La leptogénesis (Fukugita y Yanagida 1986) usa los neutrinos dextrógiros pesados del mecanismo del balancín (seesaw), que
+  también explicaría por qué los neutrinos ligeros son tan ligeros. Este modelo de juguete conserva solo las desintegraciones y desintegraciones inversas del más ligero, $N_1$ (sin dispersiones $\Delta L = 2$, efectos de sabor ni correcciones térmicas), en la normalización de Buchmüller, Di Bari y Plümacher (2005). El lavado débil ($K \ll 1$) con inicio térmico conserva toda la asimetría ($\kappa_f \to 1$, comprobado); el lavado fuerte ($K \gg 1$) pierde la mayor parte pero olvida las condiciones iniciales (los dos inicios convergen), y el resolvedor coincide con su ajuste analítico dentro de un 10 % aproximadamente. Con $K = \tilde m_1/m_*$, $m_* \approx 1.08\times10^{-3}$ eV, las masas de neutrinos vistas en las oscilaciones ($\approx 0.009$–$0.05$ eV) apuntan a $K \approx 10$–$50$, donde se necesita $\varepsilon \approx 2\times10^{-6}$–$10^{-5}$; la cota de Davidson–Ibarra $\varepsilon \lesssim 10^{-6}\,(M_1/10^{10}\,\mathrm{GeV})$ exige entonces $M_1 \gtrsim 10^{10}$ GeV. Estado: abierto.
+  La leptogénesis es atractiva y compatible con todo lo conocido, pero no está confirmada: los neutrinos pesados quedan muy lejos del alcance de los colisionadores. Indicios indirectos serían la desintegración doble beta sin neutrinos (naturaleza de Majorana) y la violación de CP en las oscilaciones de neutrinos (T2K, NOvA y después DUNE e Hyper-Kamiokande); la bariogénesis electrodébil y otros mecanismos siguen siendo alternativas. La página explora numéricamente las ecuaciones de juguete y no afirma que la asimetría surgiera así.'
+meanings:
+- '$z = M/T$, espaciado logarítmicamente: el reloj avanza a medida que el universo se enfría'
+- 'asimetría CP como columna, parámetro de desintegración como fila: todo se difunde a $(E, K)$'
+- '$\tfrac38 z^2K_2(z)$: $3/4$ por fotón mientras es relativista, luego $e^{-z}$'
+- desintegraciones y desintegraciones inversas por tiempo de Hubble en el punto medio del paso
+- '$N_N - N_N^{eq}$: el alejamiento del equilibrio (Sájarov 3)'
+- 'factor exacto de un paso de una EDO lineal: estable incluso para $K = 1000$'
+- asimetría $B - L$ de cada modelo, avanzada con una sola actualización tensorial por paso
+- los esfalerones dejan $28/79$ de $B - L$ como bariones; los fotones crecen en un factor $f = 2387/86$
+- 'eficiencia: $1$ con lavado débil, $\approx 1/(K z_B)$ con lavado fuerte'
+labels:
+  log_eps: 'Modelo mostrado: $\log_{10}\varepsilon$'
+  log_K: 'Modelo mostrado: $\log_{10}K$'
+  initial: Abundancia inicial de neutrinos pesados
+  n_eps: Puntos de malla en $\varepsilon$
+  n_K: Puntos de malla en $K$
+  steps: Pasos de integración en $z$
+  z_max: $z = M/T$ final

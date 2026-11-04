@@ -1,0 +1,44 @@
+title: Ramanujan's $\tau(n)$ and the Sato–Tate law
+category: maths
+level: advanced
+order: 10
+tags: [status:proved]
+summary: >
+  Expand the discriminant modular form $\Delta(q) = q\prod_n (1-q^n)^{24}$ as a tensor power series to get
+  Ramanujan's $\tau(n)$, exactly to $n \sim 10^5$–$10^6$ through residues modulo a batch of primes. Check that
+  $\tau$ is multiplicative and obeys the Hecke recurrence, that $\tau(n) \equiv \sigma_{11}(n) \pmod{691}$, that
+  $|\tau(p)| \le 2p^{11/2}$ (Deligne's theorem, 1974), and watch the normalised values $\tau(p)/2p^{11/2}$ fill in the
+  Sato–Tate semicircle (a theorem for $\Delta$ since 2011). The program checks these theorems numerically.
+animated: true
+vector_form: '\Delta(q) = q\prod_{n\ge1}(1-q^n)^{24} = \sum_{n\ge1}\tau(n)\,q^n,\qquad \tau(p^{k+1}) = \tau(p)\tau(p^k) - p^{11}\tau(p^{k-1}),\qquad |\tau(p)| \le 2p^{11/2},\qquad x_p = \frac{\tau(p)}{2p^{11/2}} \sim \frac{2}{\pi}\sqrt{1-x^2}\,dx'
+index_form: 'e^{(3)}_n = \sum_k (-1)^k(2k+1)\,\delta_{n,\,k(k+1)/2},\qquad e^{(2a)}_n = \sum_j e^{(a)}_j\, e^{(a)}_{n-j},\qquad \tau_{n+1} = e^{(24)}_n,\qquad r_{mn} = \Big(\sum_j r^{(a)}_{mj}\, r^{(a)}_{m,n-j}\Big) \bmod \mu_m'
+translation:
+  - {symbol: 'e^{(3)}_n', code: 'eta_cubed(n_max, dev, dtype)', shape: '(N,)', meaning: 'Jacobi''s identity $\prod(1-q^n)^3 = \sum_k (-1)^k (2k+1) q^{k(k+1)/2}$: only $O(\sqrt N)$ nonzero coefficients'}
+  - {symbol: 'e^{(2a)}_n = \sum_j e^{(a)}_j e^{(a)}_{n-j}', code: 'toeplitz @ b', shape: '(N, N) @ (N,)', meaning: 'repeated $j$ ⇒ summed: a truncated series product as a Toeplitz matrix times a vector, exact in int64 for small $N$'}
+  - {symbol: 'e^{(3)} \to e^{(6)} \to e^{(12)} \to e^{(24)}', code: 'for _ in range(3): e = mul(e, e)', shape: '(N,)', meaning: 'three squarings give the 24th power'}
+  - {symbol: 'r_{mn}', code: 'irfft(rfft(a) * rfft(b)).round() % m', shape: '(M, N)', meaning: 'the same products by FFT for $M$ prime moduli at once, rounded to exact residues (each $m^2 N \le 2^{42}$)'}
+  - {symbol: '\tau(n)', code: 'garner_balanced(residues.T, moduli)', shape: '(N, M)', meaning: 'Chinese remainder theorem with balanced digits, so negative values come out negative'}
+  - {symbol: '\tau(mn) = \tau(m)\tau(n)', code: 'tau[m * n] == tau[m] * tau[n]', shape: '(pairs,)', meaning: 'every coprime pair $1 < m < n$ with $mn \le 600$ at once'}
+  - {symbol: '\sigma_{11}(n) \bmod 691', code: 'sigma.index_add_(0, d * j, power[d - 1])', shape: '(N + 1,)', meaning: 'every divisor pair $(d, j)$ with $dj \le N$ adds $d^{11}$ onto $n = dj$'}
+  - {symbol: 'x_p', code: 'tau[p] / (2 * p ** 5.5)', shape: '(P,)', meaning: 'normalised values at the primes, in $[-1, 1]$ by Deligne''s theorem'}
+notes: >
+  Ramanujan (1916) studied the coefficients $\tau(n)$ of $\Delta(q) = q\prod(1-q^n)^{24}$, the unique normalised cusp
+  form of weight 12, and conjectured three things: $\tau$ is multiplicative, it satisfies
+  $\tau(p^{k+1}) = \tau(p)\tau(p^k) - p^{11}\tau(p^{k-1})$, and $|\tau(p)| \le 2p^{11/2}$. Mordell proved the first
+  two in 1917, an early case of what became Hecke theory. The bound is the Ramanujan conjecture for $\Delta$
+  (Ramanujan–Petersson in general): Deligne proved it in 1974 as a consequence of his proof of the Weil conjectures,
+  so it is a theorem. Ramanujan also proved the congruence $\tau(n) \equiv \sigma_{11}(n) \pmod{691}$, which comes
+  from $691$ dividing the numerator of the Bernoulli number $B_{12}$. Writing $\tau(p) = 2p^{11/2}\cos\theta_p$, the
+  Sato–Tate conjecture says that the angles $\theta_p$ follow $\frac{2}{\pi}\sin^2\theta\,d\theta$, that is
+  $x_p = \cos\theta_p$ follows the semicircle $\frac{2}{\pi}\sqrt{1-x^2}$, with moments $1/4$, $1/8$, $5/64$ (Catalan
+  numbers over powers of 4). For $\Delta$ this was proved by Barnet-Lamb, Geraghty, Harris and Taylor (2011). The
+  histogram converges slowly, like a sample of independent draws. Lehmer's conjecture that $\tau(n)$ is never zero
+  is still open; it has been verified far beyond this range, and the program finds no zero either. Numerics: $\tau(n)$
+  grows like $n^{11/2}$, so a float64 FFT of the whole series has an absolute error of about $10^{-16}$ times the
+  largest coefficient, which swamps $\tau(2) = -24$ (a test shows it). Instead the series is computed exactly modulo
+  ten or so primes at once, one tensor row each, and rebuilt by the Chinese remainder theorem. Fun: Ramanujan noticed
+  that… $\tau(n) \equiv \sigma_{11}(n) \pmod{691}$; that $1729 = 1^3 + 12^3 = 9^3 + 10^3$; and, in a regularised
+  sense only, that $1 + 2 + 3 + \dots$ "$= -1/12$": the series diverges, and $-1/12$ is the value $\zeta(-1)$ of the
+  analytically continued zeta function.
+params:
+  n_max: {default: 200000, min: 20000, max: 1000000, step: 20000, type: int, label: 'Primes and $\tau(n)$ up to $N$'}

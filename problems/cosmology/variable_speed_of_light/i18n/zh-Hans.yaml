@@ -1,0 +1,16 @@
+source_hash: b1b7792277b6
+title: 可变光速与视界问题
+summary: 在标准 ΛCDM 中，CMB 天空约分成 $10^4$ 块从未交换过信号的区域，为何它在各方向的温度却相同？对一批宇宙积分 $\chi_p = \int c\,d\ln a/(aH)$，比较三种答案：无解（ΛCDM）、暴胀（哈勃半径收缩 $\sim 60$ 个 e-folds），以及 Moffat 与 Albrecht–Magueijo 提出的推测性可变光速（VSL）设想，即在一次相变之前光速快了约 $10^{26}$ 倍。暴胀是主流解释；VSL 是少数派的推测性替代方案。
+notes: Planck 2018 参数（$H_0 = 67.4$ km/s/Mpc、$\Omega_m = 0.315$、$\Omega_r = 9.1\times10^{-5}$、平坦），最后散射于 $a_\mathrm{rec} = 1/1090$。ΛCDM 给出今天 14.2 Gpc 的粒子视界，但在复合时仅约 0.28 Gpc，因此一个因果区域约张 1.2°，天空中约有 $10^4$ 个这样的区域。在共形图中光以 45° 传播；CMB 上两个相对点的过去光锥只有在 $\chi_p(a_\mathrm{rec}) \ge D$（到 CMB 的距离，13.9 Gpc）时才会重叠。暴胀通过在 $a_*$ 结束的 $N$ 个 e-folds 德西特膨胀做到这点（共动哈勃半径按 $\propto 1/a$ 收缩）；VSL 保留标准膨胀，但在 $a_*$ 的相变之前使 $c$ 增大 $r$ 倍，相变是宽度 $w = 0.1$ 个 e-folds 的平滑台阶。动画会逐渐开启两者。现状：VSL（Moffat 1993；Albrecht 与 Magueijo 1999）属推测性且为少数派观点；它需要一个允许有量纲常数变化的框架（只有像 $\alpha = e^2/4\pi\varepsilon_0\hbar c$ 这样的无量纲组合可被测量），其预言依赖于模型，且没有观测支持。暴胀是标准解释，同样未被直接证实（尚未发现原初 B 模），但与测得的 CMB 涨落谱相符。限制（打印在终端）：原子钟 $\dot\alpha/\alpha = (1.0\pm1.1)\times10^{-18}$/年，Oklo 反应堆在 2 Gyr 内 $|\Delta\alpha/\alpha| \lesssim 10^{-7}$，CMB 在复合时 $|\Delta\alpha/\alpha| \lesssim 4\times10^{-3}$，以及 GW170817 $-3\times10^{-15} \le (v_\mathrm{gw}-c)/c \le 7\times10^{-16}$。发生在 $a_* \sim 10^{-28}$ 的相变可避开所有这些限制，这也正是它极难检验的原因。
+meanings:
+- $\ln a$ 上的网格，从远早于 $a_*$ 一直到今天
+- 宇宙（帧）$m$ 在每个 $a$ 的光速：在 $a_*$ 之前为 $c_0$ 的 $r$ 倍
+- 膨胀率，在 $N$ 个 e-folds 的暴胀期间冻结于 $H(a_*)$
+- 共动哈勃半径：光在一个膨胀时间内能走多远
+- 沿 $a$ 的累积梯形积分：共动粒子视界
+- CMB 天空上一个因果区域的张角与区域数目
+labels:
+  log10_c_ratio: VSL：早期光速 $\log_{10}(c_\mathrm{early}/c_0)$
+  efolds: 暴胀：e-folds 数 $N$
+  log10_a_star: 相变／暴胀结束 $\log_{10} a_*$
+  n_grid: $\ln a$ 上的网格点数

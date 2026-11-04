@@ -1,0 +1,21 @@
+source_hash: ee1c00fce805
+title: 'Bandadas: modelo de Vicsek y boids'
+summary: Los estorninos, los bancos de peces y las langostas se mueven juntos sin un líder. En el modelo de Vicsek cada pájaro vuela a velocidad constante y copia la dirección media de sus vecinos, más un ángulo aleatorio de tamaño hasta $\eta$; en los boids de Reynolds se orienta mediante separación, alineación y cohesión. Todas las $N^2$ distancias entre pájaros en la caja periódica forman un único tensor, y todo un lote de niveles de ruido se ejecuta a la vez para mostrar la transición orden–desorden del orden polar $\varphi$.
+notes: 'Vicsek et al. (1995) introdujeron el modelo como la física más sencilla del movimiento colectivo: alineación más ruido. Con poco ruido los pájaros se ponen de acuerdo en una dirección ($\varphi \to 1$); con $\eta = 2\pi$ las direcciones son aleatorias y $\varphi$ es solo ruido de tamaño finito del orden de $1/\sqrt N$. En dos dimensiones esto es notable, porque el teorema de Mermin–Wagner prohíbe el orden de largo alcance en sistemas en equilibrio con una simetría continua; los pájaros en movimiento lo esquivan porque sus vecindarios cambian continuamente (Toner y Tu 1995). En sistemas grandes la transición resulta ser discontinua, con bandas que se desplazan (Grégoire y Chaté 2004); con este $N$ pequeño parece suave. Reynolds (1987) escribió los boids para animación por ordenador. Aquí sus tres reglas se escriben como fuerzas de pares antisimétricas en $i \leftrightarrow j$, de modo que sin la normalización de la velocidad el momento total de la bandada se conserva exactamente (un
+  test lo comprueba); la normalización a la velocidad constante $v_0$ permite entonces que la bandada elija una dirección. Una cohesión fuerte hace que la bandada colapse en una bola giratoria, así que se mantiene débil. Prueba una caja más pequeña (mayor densidad) o un radio mayor para facilitar el orden.'
+meanings:
+- posiciones de $N$ pájaros en la caja $[0, L)^2$, una bandada por nivel de ruido $b$
+- desplazamiento del pájaro $i$ a la copia periódica más cercana del pájaro $j$; antisimétrico en $i \leftrightarrow j$
+- matriz de vecindad, $k$ repetido ⇒ sumado; el pájaro $i$ se cuenta a sí mismo
+- '$j$ repetido ⇒ sumado: dirección media de los vecinos'
+- ángulo de ruido, uniforme en $[-\eta/2, \eta/2]$; $\eta = 2\pi$ hace la dirección completamente aleatoria
+- 'boids: separación $-\sum_j S_{ij} \mathbf d_{ij}/|\mathbf d_{ij}|^2$, alineación $\sum_j A_{ij}(\mathbf v_j - \mathbf v_i)$, cohesión $\sum_j A_{ij}\mathbf d_{ij}$'
+- 'orden polar: 1 cuando la bandada se mueve unida, alrededor de $1/\sqrt N$ cuando las direcciones son aleatorias'
+labels:
+  n_birds: Pájaros $N$
+  box: Lado de la caja $L$ (radio de vecindad $R = 1$)
+  speed: Velocidad $v_0$
+  eta: Ruido $\eta$ de la bandada mostrada
+  n_noise: Niveles de ruido en el lote
+  steps: Pasos de tiempo
+  seed: Semilla aleatoria

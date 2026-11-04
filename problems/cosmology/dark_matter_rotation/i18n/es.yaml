@@ -1,0 +1,18 @@
+source_hash: 9483d7c492cb
+title: Curvas de rotación galácticas y materia oscura
+summary: 'Las estrellas y el gas lejos del centro de una galaxia giran demasiado rápido: las curvas de rotación reales de la base SPARC siguen planas donde la masa visible predice una caída kepleriana. Un único ajuste por autograd, todas las galaxias a la vez, compara cuatro explicaciones: solo bariones (con un cociente masa-luminosidad $\Upsilon$), bariones más un halo de materia oscura NFW, bariones más un halo de Burkert con núcleo, y MOND con una sola aceleración $a_0$ (la relación de aceleración radial). La materia oscura se infiere de la gravedad, no se ha detectado directamente.'
+notes: 'Datos: seis galaxias (NGC 3198, NGC 2403, NGC 6503, DDO 154, UGC 2885, NGC 7814) de SPARC (Lelli, McGaugh y Schombert 2016, AJ 152, 157), archivo Rotmod_LTG, copiadas sin cambios en data/sparc_rotation_curves.csv. Fuente http://astroweb.cwru.edu/SPARC/, que pide citar el artículo de SPARC; una réplica en Zenodo (doi:10.5281/zenodo.16284118) está publicada bajo CC-BY-4.0. Los cocientes masa-luminosidad a 3,6 μm llevan un prior de 0,1 dex en torno a $\Upsilon_d = 0.5$, $\Upsilon_b = 0.7$ (ponga el prior a 0 para desactivarlo). Lo que muestra el ajuste: ningún $\Upsilon$ razonable deja que los bariones alcancen las velocidades planas exteriores (DDO 154 necesitaría $\Upsilon_d \approx 19$, muy por encima de cualquier población estelar), así que hace falta masa invisible o una dinámica modificada, como hallaron Rubin y Ford con espectros ópticos en los años setenta. Ambas formas de halo ajustan bien; la enana DDO 154 prefiere un núcleo (el problema cúspide–núcleo). Un único $a_0 \approx
+  1.1\times10^{-10}$ m/s² describe sorprendentemente bien todas las galaxias, como dice la relación de aceleración radial. Estado honesto: la materia oscura se infiere por su gravedad (curvas de rotación, lentes, cúmulos, fondo de microondas, formación de estructuras); no se ha detectado directamente ninguna partícula de materia oscura. MOND ajusta bien las curvas de rotación con un solo parámetro, pero tiene problemas con los cúmulos de galaxias, el Cúmulo Bala y los picos acústicos del fondo de microondas, y no tiene una versión relativista aceptada en general. Distancias e inclinaciones se fijan aquí (sus errores no se propagan) y MOND se aplica en su forma algebraica más simple.'
+meanings:
+- velocidades observadas y errores de la galaxia $g$ al radio $r$, rellenados hasta la curva más larga
+- punto de dato real (1) o relleno (0)
+- los cuadrados de las velocidades se suman; $\Upsilon$ reescala el disco y el bulbo de SPARC (calculados para $\Upsilon = 1$)
+- halo con cúspide de las simulaciones de materia oscura fría, $\rho \propto 1/(x(1+x)^2)$
+- halo con núcleo, $\rho \propto 1/((1+x)(1+x^2))$
+- una función con un solo $a_0$ para todas las galaxias; sin halo
+- $r$ repetido ⇒ sumado sobre los puntos reales de cada galaxia
+- 'un escalar para todos los modelos y galaxias: una sola pasada hacia atrás da todos los gradientes (Adam y luego L-BFGS)'
+labels:
+  iterations: Iteraciones de Adam antes de L-BFGS
+  lr: Tasa de aprendizaje de Adam
+  prior_dex: Anchura del prior de $\Upsilon$ (dex, 0 = ninguno)

@@ -1,0 +1,18 @@
+source_hash: c4f16483f7b8
+title: 量子宇宙學：迴圈反彈
+summary: 一個量子重力的玩具模型：充滿無質量純量場的平坦宇宙之迴圈量子宇宙學（LQC）。把聯絡 $b$ 換成普朗克尺度面積迴圈的和樂 $\sin(\lambda b)/\lambda$，弗里德曼方程便化為 $H^2 = \frac{8\pi G}{3}\rho(1-\rho/\rho_c)$。對一批宇宙做 RK4 積分，可見大霹靂被 $\rho = \rho_c \approx 0.41\,\rho_\mathrm{P}$ 處的反彈取代；而同一模型的 Wheeler–DeWitt 波包則沿古典塌縮掉入奇異點。量子重力仍是懸而未決的研究問題；這只是一種簡化的途徑。
+notes: 普朗克單位 $G = \hbar = c = 1$；Barbero–Immirzi 參數 $\gamma = 0.2375$。採用的途徑：迴圈量子宇宙學在改進（$\bar\mu$）動力學下的有效方程（Ashtekar、Pawlowski 與 Singh 2006；Taveras 2008），描述空間平坦、含無質量純量場（同時充當時鐘）的 FRW 宇宙。現況：目前沒有公認的量子重力理論。LQC 是受迴圈量子重力啟發的對稱約化量子化；它與完整 LQG 的關聯尚未確立，而有效方程是一種近似，在此模型中與尖峰量子態的數值演化相符。反彈尚未受任何觀測檢驗。對此模型而言，所展示的結果是精確的：約束保持不變，有效弗里德曼方程成立，反彈密度 $\rho_c$ 對每個 $p_\varphi$ 都相同，且體積遵循 $V(t) = \sqrt{V_B^2 + 12\pi G p_\varphi^2 t^2}$。遠離 $\rho_c$ 時（或 $\lambda \to 0$），古典廣義相對論重新成立：$H^2 = 8\pi G\rho/3$，體積在有限時間內線性降至 $V = 0$（紅色虛線：奇異點）。灰色帶是同一模型的精確 Wheeler–DeWitt 解（不用迴圈量子化，$x = \ln V$）：它是一個自由波包，沿古典收縮線滑向 $V \to 0$，正如 APS 所發現。較淡的曲線使用較小的迴圈（$\lambda/2$、$\lambda/4$）：反彈發生得較晚、密度較高。反彈附近的影格取得較密。
+meanings:
+- 批次中每個宇宙 $b$ 的體積、聯絡與純量場，位於約束曲面 $C = 0$ 上
+- 迴圈大小：$\lambda^2 = 4\sqrt3\pi\gamma\,\ell_P^2$ 為 LQG 面積間隙；$\lambda$ 越小 ⇒ $\rho_c$ 越大
+- 有效約束的哈密頓方程，所有宇宙同時計算
+- 以固有時表示的 RK4 軌跡
+- 哈密頓約束，必須保持為 $0$（其 RK4 漂移會印在終端機）
+- $3/(8\pi G\gamma^2\lambda^2)$：反彈密度
+- 重複的 $k$ ⇒ 求和：時鐘 $\varphi_p$ 與 $x = \ln V$ 網格上的 Wheeler–DeWitt 波包
+labels:
+  p_phi: 純量場動量 $p_\varphi$ ($\hbar$)
+  gap_scale: 迴圈大小 $\lambda$ 相對於 LQG 面積間隙
+  log10_rho_start: 初始密度 $\log_{10}(\rho/\rho_c)$
+  dt: RK4 時間步長 $\Delta t$
+  spread: Wheeler–DeWitt 波包寬度 $\Delta k/k_0$

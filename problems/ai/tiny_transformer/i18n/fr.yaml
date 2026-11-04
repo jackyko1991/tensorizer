@@ -1,0 +1,23 @@
+source_hash: 888a525ecc84
+title: Un minuscule GPT écrit du Shakespeare
+summary: 'Un GPT au niveau des caractères construit à partir d''opérations tensorielles brutes : embeddings, auto-attention causale multi-têtes écrite avec einsum, LayerNorm, un MLP et des connexions résiduelles, sans nn.Transformer. Entraîné environ une minute sur Macbeth et Roméo et Juliette, sa perte descend depuis $\ln V$ (un tirage uniforme parmi les $V$ caractères) et ses échantillons passent du charabia à des mots, des noms et des lignes en forme de vers, tandis que les cartes d''attention restent strictement triangulaires inférieures.'
+notes: 'L''architecture est celle de Vaswani et al., « Attention is all you need » (2017), dans sa forme GPT à décodeur seul avec des blocs pré-normalisés : $X \leftarrow X + \mathrm{Attn}(\mathrm{LN}\,X)$, puis $X \leftarrow X + \mathrm{MLP}(\mathrm{LN}\,X)$. Les tests vérifient exactement la mécanique : l''attention en einsum est égale à la fonction fusionnée de PyTorch `scaled_dot_product_attention` avec `is_causal=True` ; modifier des caractères après la position $t$ laisse inchangées toutes les sorties jusqu''à $t$ (le masque) ; les lignes de $A$ somment à 1 ; la perte avant entraînement vaut $\ln V$ ; le modèle peut mémoriser un lot ; et le nombre de poids est $Vd + Td + L(12d^2 + 13d) + 2d + dV + V$. Grâce au masque, une seule passe avant entraîne d''un coup les $T$ prédictions du caractère suivant d''une fenêtre, alors que la génération doit avancer caractère par caractère. Un modèle aussi petit (113 093 poids, environ une minute de CPU) apprend l''orthographe, les espaces, les noms
+  des personnages en majuscules et les retours à la ligne, pas le sens ; la perte de validation finit vers 2 nats par caractère. Les cartes de chaleur montrent, pour chaque couche, la tête qui prête le plus attention au caractère précédent sur la ligne "When shall we three meet again?". Le modèle de langage des protéines du problème de bio-informatique utilise la même attention sans masque, pour deviner des lettres cachées. Texte : Macbeth et Roméo et Juliette tirés de The Complete Works of William Shakespeare, eBook Project Gutenberg n° 100 (domaine public), sans l''en-tête ni la licence de l''eBook, guillemets courbes convertis en ASCII ; 247 kB dans data/shakespeare.txt. Essayez plus de pas, un modèle plus large, ou une température de 0.5 contre 1.2.'
+meanings:
+- fenêtres aléatoires du texte sous forme d'identifiants de caractères ; les cibles sont les mêmes fenêtres décalées d'un caractère vers la gauche
+- embedding du token plus embedding de position appris
+- chaque vecteur de token recentré à moyenne 0 et normalisé à variance 1 sur ses canaux, puis une échelle et un décalage appris
+- '$c$ répété ⇒ sommé : les requêtes de chaque tête (de même pour les clés et les valeurs)'
+- '$0$ sur et sous la diagonale, $-\infty$ au-dessus : après le softmax une position ne peut pas voir les caractères suivants'
+- $k$ répété ⇒ sommé ; chaque ligne est une distribution de probabilité sur les positions antérieures $j \le i$
+- '$j$ répété, puis $h, k$ ⇒ sommés : ce que chaque position recueille de son passé, réinjecté par la connexion résiduelle'
+- moyenne de $-\log p$ du vrai caractère suivant, en nats ; elle part de $\ln V$
+labels:
+  steps: Pas d'entraînement
+  d_model: Largeur du modèle $d$
+  heads: Têtes d'attention $H$
+  layers: Blocs Transformer
+  context: Longueur de contexte $T$
+  batch: Taille de lot
+  lr: Taux d'apprentissage
+  temperature: Température d'échantillonnage

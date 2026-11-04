@@ -1,0 +1,19 @@
+source_hash: 97673949f948
+title: Epidemias en una red de contactos
+summary: Epidemias SIR y SIS en una red real de contactos cara a cara, con cientos de brotes estocásticos simulados a la vez como un único tensor por lotes y, al lado, la EDO de campo medio basada en individuos. Un brote solo puede despegar por encima del umbral $\beta/\gamma > 1/\lambda_{\max}(A)$ fijado por el mayor autovalor de la matriz de adyacencia, y en una red libre de escala vacunar a los hubs lo detiene con muchas menos dosis que vacunar al azar.
+notes: 'Cada persona es S, I o R; en cada paso $\Delta t$ un susceptible se contagia de cada contacto infectado con tasa $\beta$ y una persona infectada se recupera con tasa $\gamma$ (en SIS vuelve a ser susceptible). Los tests comprueban que las personas solo se mueven entre compartimentos, que un grafo $k$-regular tiene $\lambda_{\max} = k$, que por debajo del umbral los brotes se apagan, y que en un grafo completo (todos se encuentran con todos, $R_0 = \beta(N-1)/\gamma$) el tamaño final medio de los brotes grandes coincide con la ecuación de Kermack–McKendrick (1927) $z = 1 - e^{-R_0 z}$ ($z \approx 0.80$ para $R_0 = 2$). El umbral $1/\lambda_{\max}$ procede de linealizar el campo medio basado en individuos; es exacto para esa EDO, pero la EDO trata a los vecinos como independientes y deja que la infección rebote de ida y vuelta por la misma arista, así que en esta red pequeña, densa y agrupada sobrestima el tamaño de la epidemia. Una infección SIR no puede volver directamente por la
+  arista por la que llegó: también se dibuja el umbral de paso de mensajes $T = \beta/(\beta + \gamma) = 1/\lambda_{NB}$, con $\lambda_{NB}$ el autovalor dominante de la matriz sin retroceso (Karrer, Newman y Zdeborová 2014). La curva simulada es la media sobre todas las realizaciones, incluidas las muchas que se extinguen por azar tras el primer caso, por eso sube de forma gradual. En las redes libres de escala $\lambda_{\max}$ crece con el hub más grande, así que el umbral es diminuto (Pastor-Satorras y Vespignani 2001), y quitar los hubs reduce $\lambda_{\max}$ rápidamente: inmunidad de grupo con muchas menos dosis. La red de Erdős–Rényi con el mismo grado medio no tiene grandes hubs, así que la vacunación dirigida ayuda mucho menos. Datos: SocioPatterns "Contacts in a workplace" (edificio de oficinas en Francia, 2013; 92 personas, 755 parejas vistas cara a cara en ventanas de 20 segundos, aquí agregadas), M. Génois et al., Network Science 3, 326 (2015), publicado bajo una dedicación
+  al dominio público Creative Commons (CC0), www.sociopatterns.org. Las redes BA y ER son sintéticas. Las personas y tasas simuladas son ilustrativas, no un modelo de ninguna enfermedad real.'
+meanings:
+- 1 si las personas $i$ y $j$ se vieron cara a cara, 0 en caso contrario (simétrica, densa)
+- quién está infectado en cada una de las $B$ realizaciones simuladas juntas
+- '$j$ repetido ⇒ sumado: el número de contactos infectados de cada persona'
+- probabilidad de que un susceptible se infecte en un paso $\Delta t$; los infectados se recuperan con probabilidad $1 - e^{-\gamma \Delta t}$
+- probabilidades de que la persona $i$ esté susceptible, infectada o recuperada, integradas con RK4
+- 'mayor autovalor: el campo medio linealizado $\dot x = (\beta A - \gamma)x$ solo crece si $\beta \lambda_{\max} > \gamma$'
+- tamaño final con mezcla homogénea, la raíz de $z = 1 - e^{-R_0 z}$ (Kermack–McKendrick)
+labels:
+  beta_x_lambda: $\beta/\gamma$ en unidades del umbral $1/\lambda_{\max}$
+  n_runs: Realizaciones estocásticas $B$
+  n_synthetic: Personas en las redes sintéticas
+  vacc_beta: $\beta/\gamma$ para la comparación de vacunación

@@ -1,0 +1,20 @@
+source_hash: 157106563a38
+title: Inflación de rodadura lenta y el plano (n_s, r)
+summary: 'Cinco potenciales del inflatón ($m^2\phi^2$, $\lambda\phi^4$, Starobinsky $R^2$, inflación natural, un hilltop cuártico) ruedan en un solo tensor por lotes a través de las ecuaciones de Friedmann y de Klein–Gordon, con el número de e-folds $N = \ln a$ como reloj. Los parámetros de rodadura lenta $\epsilon$, $\eta$ y las predicciones $n_s$ y $r$ en $N_* = 50$–$60$ se comprueban frente al fondo exacto y se comparan con Planck 2018 y BICEP/Keck 2021: $m^2\phi^2$ y $\lambda\phi^4$ quedan desfavorecidos, Starobinsky queda dentro. La inflación es la explicación principal de las condiciones iniciales, pero no está confirmada: no se han detectado modos B primordiales.'
+notes: 'Unidades: masa de Planck reducida $M_\mathrm{pl} = 1$. Escribiendo las ecuaciones con $N = \ln a$ como tiempo, $\psi = d\phi/dN$ y $\epsilon_H = \psi^2/2$, se obtiene $d\psi/dN = -(3-\epsilon_H)(\psi + V''/V)$ y $H^2 = V/(3-\epsilon_H)$, así que solo importa $V''/V$ y cada potencial se dibuja con altura 1 (la amplitud $A_s = 2.1\times10^{-9}$ fija luego la escala de energía, mostrada como $V_*^{1/4}$, unos $10^{16}$ GeV para la mayoría de los modelos). Cada campo empieza unos 68 e-folds antes de su final, en un punto dado por el recuento de rodadura lenta de los libros de texto, sobre la velocidad de rodadura lenta $\psi = -V''/V$; la prueba lanza $m^2\phi^2$ con velocidades muy distintas y las encuentra todas sobre la misma curva en pocos e-folds: la rodadura lenta es un atractor. La inflación termina donde $\epsilon_H = 1$. Las predicciones se calculan dos veces: a partir del potencial a primer orden ($n_s = 1 - 6\epsilon_V + 2\eta_V$, $r = 16\epsilon_V$, las marcas ×) y a partir
+  de los parámetros de flujo de Hubble $\epsilon_{1,2,3}$ del fondo numérico a segundo orden (Stewart y Lyth 1993; Schwarz, Terrero-Escalante y García 2001; los puntos); difieren en $O(\epsilon^2)$, unos pocos $10^{-4}$ en $n_s$. Aquí no se realiza una solución completa de Mukhanov–Sasaki modo a modo. Resultados en $N_* = 55$: $m^2\phi^2$ da $n_s \approx 1 - 2/N_*$, $r \approx 8/N_* \approx 0.14$; $\lambda\phi^4$ da $r \approx 0.29$ y un $n_s$ demasiado rojo; Starobinsky da $n_s \approx 0.965$, $r \approx 12/N_*^2 \approx 0.004$; la inflación natural ($f = 7$) da $r \approx 0.08$, por encima del límite; el hilltop cuártico ($\mu = 15$) cae dentro. La región observacional se dibuja como una caja (Planck 2018 $n_s = 0.9649 \pm 0.0042$ al 68 %, TT,TE,EE+lowE+lensing; BICEP/Keck 2021 $r_{0.05} < 0.036$ al 95 %), no como los contornos bidimensionales publicados, que están ligeramente inclinados y dependen de la combinación de datos. Estado honesto: la inflación explica la planitud, el problema
+  del horizonte y las fluctuaciones casi invariantes de escala, gaussianas y adiabáticas, y $n_s < 1$ se predijo antes de medirse; pero hay ideas rivales (modelos de rebote y ekpiróticos), el inflatón no se ha identificado y la prueba definitiva, la polarización primordial en modos B debida a ondas gravitacionales, no se ha detectado (el anuncio de BICEP2 en 2014 resultó ser polvo galáctico). Prueba $N_*$ entre 50 y 60 (depende de cómo se recalentó el universo), o cambia $f$ y $\mu$: en $N_* = 55$ la inflación natural nunca alcanza la caja, porque reducir $f$ baja $r$ pero vuelve $n_s$ demasiado rojo ($f = 5$: $n_s \approx 0.950$, $r \approx 0.04$).'
+meanings:
+- 'fila one-hot: el campo $b$ usa el potencial $p$'
+- las cinco formas de potencial evaluadas en cada campo
+- '$p$ repetido ⇒ sumado: el potencial propio de cada campo'
+- campo y $d\phi/dN$, avanzados juntos con RK4 en e-folds
+- 'lo único que necesita el fondo: la altura de $V$ se cancela'
+- $V'$ y $V''$ por autograd
+- donde $\epsilon_H$ sube por encima de 1, es decir, $\ddot a$ cambia de signo
+- parámetros de flujo de Hubble $N_*$ e-folds antes del final, con un solo gather
+- predicciones a segundo orden a partir del fondo exacto
+labels:
+  N_star: E-folds pivote antes del final $N_*$
+  f: Escala de la inflación natural $f$
+  mu: Anchura del hilltop $\mu$

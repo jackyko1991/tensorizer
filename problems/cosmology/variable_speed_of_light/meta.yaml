@@ -1,0 +1,42 @@
+title: Variable speed of light and the horizon problem
+category: cosmology
+level: advanced
+order: 3
+tags: [series:varying-light-speed:1, role:theory, speculative]
+summary: >
+  Why is the CMB the same temperature in every direction when, in standard ΛCDM, its sky splits into about $10^4$ patches
+  that never exchanged a signal? Integrating $\chi_p = \int c\,d\ln a/(aH)$ for a batch of universes compares three
+  answers: none (ΛCDM), inflation ($\sim 60$ e-folds of a shrinking Hubble radius) and the speculative variable speed of
+  light (VSL) idea of Moffat and Albrecht–Magueijo, where light was some $10^{26}$ times faster before a phase transition.
+  Inflation is the mainstream explanation; VSL is a minority, speculative alternative.
+animated: true
+vector_form: '\chi_p(a) = \int_0^{a}\frac{c(a'')\,da''}{a''^2H(a'')},\qquad H = H_0\sqrt{\Omega_r a^{-4} + \Omega_m a^{-3} + \Omega_\Lambda},\qquad c(a) = c_0\Big[1 + (r-1)\,\sigma\Big(\frac{\ln a_* - \ln a}{w}\Big)\Big],\qquad \theta = \frac{\chi_p(a_\mathrm{rec})}{D},\quad N_\mathrm{patch} = \frac{2}{1-\cos\theta}'
+index_form: 'r^H_{ma} = \frac{c_{ma}}{a_a H_{ma}},\qquad \chi_{ma} = \sum_{a''<a}\tfrac12\big(r^H_{m,a''} + r^H_{m,a''+1}\big)\,\Delta x,\qquad D = \chi_{m,\mathrm{today}} - \chi_{m,\mathrm{rec}},\qquad \text{solved} \iff \chi_{m,\mathrm{rec}} \ge D'
+translation:
+  - {symbol: 'x_a = \ln a_a', code: 'log_a_grid(a_min, n)', shape: '(A,)', meaning: 'grid in $\ln a$ from far before $a_*$ to today'}
+  - {symbol: 'c_{ma}', code: 'speed_of_light(a, c_ratio, a_star)', shape: '(M, A)', meaning: 'speed of light of universe (frame) $m$ at every $a$: $r$ times $c_0$ before $a_*$'}
+  - {symbol: 'H_{ma}', code: 'hubble_with_inflation(a, efolds, a_star)', shape: '(M, A)', meaning: 'expansion rate, frozen at $H(a_*)$ during $N$ e-folds of inflation'}
+  - {symbol: 'r^H_{ma}', code: 'c / (a * H)', shape: '(M, A)', meaning: 'comoving Hubble radius: how far light gets in one expansion time'}
+  - {symbol: '\chi_{ma}', code: 'particle_horizon(x, r_H)', shape: '(M, A)', meaning: 'cumulative trapezoid along $a$: the comoving particle horizon'}
+  - {symbol: '\theta_m,\ N_\mathrm{patch}', code: 'sky_statistics(x, h)', shape: '(M,)', meaning: 'angle of one causal patch on the CMB sky and the number of patches'}
+notes: >
+  Planck 2018 parameters ($H_0 = 67.4$ km/s/Mpc, $\Omega_m = 0.315$, $\Omega_r = 9.1\times10^{-5}$, flat), last
+  scattering at $a_\mathrm{rec} = 1/1090$. ΛCDM gives a particle horizon of 14.2 Gpc today but only about 0.28 Gpc at
+  recombination, so a causal patch spans about 1.2° and the sky holds about $10^4$ of them. Light moves at 45° in the
+  conformal diagram; the past light cones of two opposite CMB points overlap only if $\chi_p(a_\mathrm{rec}) \ge D$
+  (distance to the CMB, 13.9 Gpc). Inflation does this by $N$ e-folds of de Sitter expansion ending at $a_*$ (the
+  comoving Hubble radius shrinks $\propto 1/a$); VSL keeps the standard expansion but makes $c$ larger by $r$ before a
+  transition at $a_*$, a smooth step of width $w = 0.1$ e-folds. The animation turns both on gradually. Status: VSL
+  (Moffat 1993; Albrecht and Magueijo 1999) is speculative and a minority view; it needs a frame in which a dimensional
+  constant can vary (only dimensionless combinations such as $\alpha = e^2/4\pi\varepsilon_0\hbar c$ are measurable), its
+  predictions are model dependent, and it has no observational support. Inflation is the standard explanation, also
+  unconfirmed directly (no primordial B-modes yet) but consistent with the measured spectrum of CMB fluctuations.
+  Bounds (printed in the terminal): atomic clocks $\dot\alpha/\alpha = (1.0\pm1.1)\times10^{-18}$/yr, the Oklo
+  reactor $|\Delta\alpha/\alpha| \lesssim 10^{-7}$ over 2 Gyr, the CMB $|\Delta\alpha/\alpha| \lesssim 4\times10^{-3}$
+  at recombination, and GW170817 $-3\times10^{-15} \le (v_\mathrm{gw}-c)/c \le 7\times10^{-16}$. A transition at
+  $a_* \sim 10^{-28}$ evades all of them, which is also why it is so hard to test.
+params:
+  log10_c_ratio: {default: 30.0, min: 0, max: 36, step: 0.5, label: 'VSL: early speed of light $\log_{10}(c_\mathrm{early}/c_0)$'}
+  efolds: {default: 65.0, min: 0, max: 75, step: 1, label: 'Inflation: number of e-folds $N$'}
+  log10_a_star: {default: -28.0, min: -30, max: -12, step: 1, label: 'Transition / end of inflation $\log_{10} a_*$'}
+  n_grid: {default: 40001, min: 5001, max: 100001, step: 1000, type: int, label: 'Grid points in $\ln a$'}

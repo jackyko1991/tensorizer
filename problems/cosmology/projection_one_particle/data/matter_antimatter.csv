@@ -1,0 +1,21 @@
+# Cited numbers on matter, antimatter and electron identity (facts quoted from the papers; licence: numerical facts,
+# each paper's own licence applies to its text). Kinds: value (central +- 1 sigma) or upper (95% or 90% CL upper limit).
+# omega_b_h2: Planck 2018 VI, A&A 641, A6 (2020), doi:10.1051/0004-6361/201833910, arXiv:1807.06209 (abstract):
+#   baryon density Omega_b h^2 = 0.0224 +- 0.0001; eta = 273.9e-10 Omega_b h^2 (Steigman, Annu. Rev. Nucl. Part. Sci.
+#   56, 2006) gives eta = 6.14e-10, as in cosmology/baryon_asymmetry ((6.12 +- 0.04) x 10^-10).
+# omega_c_h2: same source, dark matter density 0.120 +- 0.001; hubble_h: H0 = 67.4 +- 0.5 km/s/Mpc.
+# antihelium_to_helium: BESS-Polar, Abe et al., PRL 108, 131301 (2012), doi:10.1103/PhysRevLett.108.131301,
+#   arXiv:1201.2967: 95% upper limit 6.9e-8 (same spectral shape as helium), 1.6-14 GV.
+# positron_electron_mass: PDG 2024 electron listing (Navas et al., PRD 110, 030001), CPT test |m(e+) - m(e-)| / m < 8e-9 (90% CL).
+# positron_electron_charge: PDG 2024, |q(e+) + q(e-)| / e < 4e-8.
+# n_gamma_cm3: CMB photon number density 410.7 cm^-3 for T = 2.7255 K (Fixsen, ApJ 707, 916 (2009)).
+# hubble_radius_gly: comoving radius of the observable universe, 46.5 billion light years (Planck 2018 cosmology).
+quantity,value,sigma,kind
+omega_b_h2,0.0224,0.0001,value
+omega_c_h2,0.120,0.001,value
+hubble_h,0.674,0.005,value
+antihelium_to_helium,6.9e-8,0,upper
+positron_electron_mass,8e-9,0,upper
+positron_electron_charge,4e-8,0,upper
+n_gamma_cm3,410.7,0,value
+hubble_radius_gly,46.5,0,value

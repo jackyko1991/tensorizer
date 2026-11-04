@@ -1,0 +1,19 @@
+source_hash: e53e4d6ab9fa
+title: 'Agujeros negros de Kerr–Newman: horizontes, ergosfera y singularidades desnudas'
+summary: El agujero negro más general de la relatividad general con electromagnetismo, con masa $M$, espín $a$ y carga $Q$. Para toda una malla por lotes de $(M, a, Q)$, el código calcula los horizontes $r_\pm$, la ergosfera, el arrastre de marcos y las ISCO y órbitas de fotones ecuatoriales (derivadas de la métrica por autograd). La animación recorre espín y carga hasta la extremalidad $a^2 + Q^2 = M^2$ y más allá, donde el horizonte desaparece y la singularidad en anillo quedaría expuesta, algo que la conjetura de censura cósmica (no demostrada) dice que la naturaleza prohíbe.
+notes: 'Unidades $G = c = 1$: longitudes en $GM/c^2$, espín $a = J/(Mc)$, carga en unidades geometrizadas. Establecido (RG clásica): la métrica de Kerr–Newman (Newman et al. 1965) resuelve las ecuaciones de Einstein–Maxwell, sus horizontes son las raíces de $\Delta$, y la ergosfera, donde ningún observador puede permanecer en reposo, se encuentra entre $r_+$ y $r_E(\theta)$, tocando el horizonte en los polos. Dentro de ella, el arrastre de marcos obliga a todo a corrotar: la curva verde cae con momento angular cero y aun así es arrastrada en rotación. Las órbitas progradas se ciñen al agujero: para Kerr la ISCO pasa de $6M$ en $a = 0$ a $M$ (prógrada) y $9M$ (retrógrada) en $a = M$, de acuerdo con Bardeen, Press y Teukolsky (1972), y la ISCO de Reissner–Nordström extremal es $4M$. Para $a^2 + Q^2 > M^2$ las fórmulas siguen dando una métrica, pero sin horizonte y con una singularidad en anillo desnuda en $r = 0$, $\theta = \pi/2$ (dibujada en rojo). La conjetura débil de censura cósmica de
+  Penrose afirma que el colapso gravitatorio nunca produce una; no está demostrada en general (los contraejemplos conocidos requieren datos iniciales ajustados finamente o dimensiones extra), y los intentos de sobregirar o sobrecargar un agujero extremal lanzándole partículas parecen fracasar una vez que se incluyen los efectos perturbativos de segundo orden (Sorce y Wald 2017). Los agujeros reales tienen $Q \approx 0$ (la carga se neutraliza rápidamente), y los espines medidos (hasta unos $0.95$–$0.99\,M$) quedan por debajo de la extremalidad. El panel ecuatorial usa la $r$ de Boyer–Lindquist como radio; allí la $\varphi$ de la curva verde que cae se enrolla sin límite en $r_+$, un efecto de coordenadas.'
+meanings:
+- todas las combinaciones de masa, espín y carga como un solo lote, $G = c = 1$
+- raíces de $\Delta = 0$; NaN cuando $a^2 + Q^2 > M^2$ (desnuda)
+- límite estático $g_{tt} = 0$, broadcasting fotogramas $\times$ ángulos polares
+- el bloque rotante $(t, \varphi)$ de la métrica de Boyer–Lindquist
+- velocidad angular de un observador de momento angular cero; $\Omega_H = a/(r_+^2 + a^2)$ en el horizonte
+- derivadas de la métrica en la malla radial por autograd
+- velocidad angular y energía de órbitas circulares; ISCO en el mínimo de $E$, órbita de fotones donde la órbita requiere velocidad $c$
+- gravedad superficial, $T_H = \kappa/2\pi$; cero para un agujero extremal
+labels:
+  angle: Ángulo de mezcla $\psi$ ($0°$ espín puro, $90°$ carga pura)
+  chi_max: Barrido hasta $\sqrt{a^2 + Q^2}/M$
+  frames: Fotogramas
+  grid: Puntos de malla por eje del barrido por lotes $(a, Q)$

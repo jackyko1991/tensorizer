@@ -1,0 +1,26 @@
+source_hash: 03516f527daf
+title: 'GW150914 : le premier « chirp » d''ondes gravitationnelles'
+summary: Seize secondes de déformation (strain) réelle mesurée par LIGO à Hanford et Livingston, le 14 septembre 2015. Une DSP de Welch, un blanchiment et un filtre passe-bande font ressortir un chirp enfoui sous un bruit cent fois plus fort. Une carte de transformée Q montre sa fréquence qui monte jusqu'à environ 150 Hz, et une banque de gabarits de spiralement post-newtoniens, filtrée en un seul lot, culmine pour une masse de chirp proche de $30\,M_\odot$. La crête est ajustée par autograd avec $\dot f \propto M_c^{5/3} f^{11/3}$, et le signal de Livingston précède celui de Hanford d'environ 7 ms.
+notes: 'Le 14 septembre 2015 à 09:50:45 UTC, les deux détecteurs Advanced LIGO ont enregistré la fusion de deux trous noirs situés à environ 410 Mpc (Abbott et al., PRL 116, 061102, 2016) : la première détection directe d''ondes gravitationnelles. Cette page reprend une version simplifiée de l''analyse sur les données ouvertes. La déformation brute est dominée par le bruit sismique et thermique en dessous de 30 Hz ; la DSP $S_n(f)$ est donc estimée par la méthode de Welch (segments de Hann de 4 s, recouvrement de 50 %) et les données sont divisées par $\sqrt{S_n}$ (blanchiment) ; la page vérifie que la DSP blanchie est plate, le théorème de Parseval, et que chaque gabarit vérifie $\langle h|h\rangle = 1$. La banque de gabarits utilise le spiralement en approximation de la phase stationnaire, avec une phase 2PN pour des masses égales, coupée à $f_\mathrm{peak} = 0.36/(2\pi M)$, la fréquence à laquelle culmine une fusion à masses égales en relativité numérique (ou à la fréquence de l''ISCO,
+  ce qui fait perdre l''essentiel du SNR). Tous les gabarits et les deux détecteurs sont filtrés en un seul lot de FFT. Avec les valeurs par défaut, le meilleur gabarit a $\mathcal M_c \approx 32\,M_\odot$, un SNR d''environ 16 (H1) et 10 (L1), et les deux pics de SNR ainsi que la corrélation croisée H1–(−L1) placent Hanford 7–8 ms après Livingston (valeur publiée : 6.9 +0.5/−0.4 ms ; l''orientation des bras de L1 inverse le signe). Un ajustement newtonien de la crête de la carte Q donne une masse plus élevée, $\mathcal M_c \approx 37\,M_\odot$, tout comme la banque 0PN : les termes post-newtoniens ralentissent le chirp à masse de chirp donnée, si bien qu''un modèle newtonien l''interprète comme plus lourd. HONNÊTETÉ / LIMITES : il s''agit d''une analyse pédagogique, pas de l''analyse publiée. Les valeurs publiées proviennent de formes d''onde complètes spiralement–fusion–désexcitation avec spins, d''une DSP estimée sur des données bien plus longues et d''une estimation bayésienne des paramètres
+  : dans le référentiel du détecteur, $\mathcal M_c \approx 30\,M_\odot$ et un SNR de réseau de 24 (Abbott et al. 2016) ; dans le référentiel de la source, $\mathcal M_c = 28.6^{+1.7}_{-1.5}\,M_\odot$, des masses de $35.6$ et $30.6\,M_\odot$ et une distance de 440 Mpc dans GWTC-1. Nos SNR sont plus faibles parce que les gabarits n''ont ni fusion–désexcitation ni spins, et parce que la DSP provient de seulement 16 s qui contiennent le signal. Données : GWOSC (Gravitational Wave Open Science Center), publication GW150914 GWTC-1-confident v3, fichiers H-H1_GWOSC_4KHZ_R1-1126259447-32 et leur équivalent L1, depuis gwosc.org/eventapi/json/GWTC-1-confident/GW150914/v3/, CC BY 4.0 ; 16 s à partir du temps GPS 1126259455, filtrées passe-bas à 900 Hz et décimées à 2048 Hz, stockées sous forme de strain × 10⁻²¹ dans data/gw150914_strain.csv. Merci de citer GWOSC (Abbott et al., SoftwareX 13, 100658, 2021) et Abbott et al. 2016. Prix : Prix Shaw d''astronomie 2016 (Drever, Thorne et Weiss, pour la
+  conception de LIGO), Special Breakthrough Prize in Fundamental Physics 2016 (Drever, Thorne, Weiss et les contributeurs de LIGO) et prix Nobel de physique 2017 (Weiss, Barish et Thorne).'
+meanings:
+- déformation du détecteur $d \in \{H1, L1\}$ à l'échantillon $n$, 16 s à 2048 Hz
+- 'DSP unilatérale : segments $s$ fenêtrés par Hann, FFT, $|X|^2$ moyenné sur $s$'
+- 'déformation blanchie : bruit blanc de variance unité là où la DSP est correcte'
+- énergie de filtres passe-bande gaussiens de largeur $f_q/q$, un seul lot de FFT inverses
+- phase du spiralement en phase stationnaire jusqu'à l'ordre 2PN pour la masse de chirp $\mathcal M_m$, $\eta = 1/4$
+- toute la banque d'un coup, coupée à la fréquence du pic de fusion, normalisée pour que $\langle h|h\rangle = 1$
+- $4\,\mathrm{Re}\sum_k a_k b_k^*/S_k\,\Delta f$, somme sur $k$
+- 'somme sur $k$ par une FFT inverse : SNR complexe pour chaque détecteur, gabarit et instant'
+- trajectoire newtonienne $\frac1\pi(5/256\tau)^{3/8}\mathcal M_c^{-5/8}$, ajustée à la crête par Adam
+labels:
+  pn_order: Ordre post-newtonien de la phase des gabarits
+  cutoff: Fréquence supérieure des gabarits
+  f_low: Fréquence minimale des gabarits $f_\mathrm{low}$
+  n_templates: Gabarits dans la banque
+  mc_min: Plus petite masse de chirp $\mathcal M_c$
+  mc_max: Plus grande masse de chirp $\mathcal M_c$
+  q: Q de la carte temps-fréquence
+  welch_segment: Longueur des segments de Welch

@@ -1,0 +1,22 @@
+source_hash: 1bffd0a0cc18
+title: Yang–Mills sur réseau et le saut de masse
+summary: 'Le problème du millénaire de l''Institut Clay demande une théorie quantique de Yang–Mills rigoureuse en quatre dimensions avec un saut de masse $\Delta > 0$ ; il reste ouvert. La théorie de jauge sur réseau de Wilson rend la question calculable : les liens $U_\mu(x) \in SU(2)$ (ou $U(1)$), stockés comme quaternions unitaires, sont mis à jour par Metropolis pour tout un lot de couplages $\beta$ à la fois. Les boucles de Wilson montrent la loi d''aire du confinement, la plaquette concorde avec le rapport de Bessel exact en 2D et avec la série de couplage fort, et un corrélateur de glueball fournit une estimation de masse sur réseau.'
+notes: 'Statut : ouvert. Le problème Clay (description officielle de Jaffe et Witten) demande de construire la théorie quantique de Yang–Mills sur $\mathbb R^4$ pour tout groupe de jauge compact simple, en satisfaisant des axiomes tels que ceux de Wightman ou d''Osterwalder–Schrader, et de prouver que son spectre présente un saut $\Delta > 0$ au-dessus du vide. Les simulations sur réseau de $SU(3)$ donnent une glueball la plus légère vers $1.7$ GeV et établissent le confinement (un potentiel linéaire, une tension de corde mesurée) au-delà de tout doute raisonnable, mais des indices numériques à pas de réseau fini ne constituent pas une preuve. Cette page travaille dans le même cadre à taille réduite. En 2D, la théorie est exactement soluble : chaque plaquette est indépendante, $\langle\frac12\mathrm{Tr}P\rangle = I_1(\beta)/I_0(\beta)$ pour $U(1)$ et $I_2(\beta)/I_1(\beta)$ pour $SU(2)$, et $W(R,T) = u^{RT}$ exactement (un test). En couplage fort (petit $\beta$), le développement en caractères
+  donne les mêmes valeurs dominantes en toute dimension et une loi d''aire avec tension de corde $\sigma = -\ln u$ : le confinement y est démontré (Osterwalder–Seiler 1978), ainsi que pour $U(1)$ compact en 3D à tout $\beta$ (Göpfert–Mack 1982). La difficulté est la continuité vers le couplage faible $\beta \to \infty$ en 4D, où le pas du réseau tend vers zéro ; la liberté asymptotique (Gross, Wilczek et Politzer, prix Nobel 2004) indique que c''est là que se trouve la limite continue. Les rapports de Creutz $\chi(R,R)$ estiment $\sigma$ à partir de rapports de boucles afin que les termes de périmètre se compensent. L''opérateur de glueball est la somme des plaquettes spatiales sur une tranche de temps ; son corrélateur connexe décroît comme $e^{-m\Delta}$, et en couplage fort la plus petite surface reliant deux plaquettes est un tube de $4\Delta$ faces, ce qui donne $a\,m \approx -4\ln u$. Pour des $\beta$ plus grands, la masse en unités de réseau diminue et exige des réseaux plus grands,
+  du lissage (smearing) et beaucoup plus de balayages ; $U(1)$ en 4D présente une transition de déconfinement vers $\beta \approx 1.01$ et aucun saut de masse au-delà, ce qui explique que le problème soit posé pour des groupes non abéliens. Metropolis avec un pas $\propto 1/\sqrt{\beta}$ maintient le taux d''acceptation proche de la moitié ; les erreurs utilisent 20 classes de jackknife.'
+meanings:
+- un quaternion unitaire par lien, pour chaque couplage $\beta_b$ du lot ; $U(1)$ est le sous-groupe $(\cos\theta, 0, 0, \sin\theta)$
+- la loi de groupe ; $i, j$ répétés ⇒ sommés (produit vectoriel)
+- 'voisin sur le réseau périodique : toutes les plaquettes de tous les sites à la fois'
+- la plus petite boucle de Wilson ; $\frac12\mathrm{Tr}(ab) = a_0b_0 - a_kb_k$
+- 'somme des $2(D-1)$ agrafes (staples) : la partie de $S$ qui contient $U_\mu(x)$ est $-\beta\frac12\mathrm{Tr}(U_\mu A_\mu)$'
+- Metropolis sur tous les liens d'une direction et d'une parité de damier à la fois (ils ne partagent aucune agrafe)
+- produits de lignes de liens autour de rectangles $R\times T$, moyennés sur les sites, les plans et les orientations
+- '$I_1/I_0$ pour $U(1)$, $I_2/I_1$ pour $SU(2)$ : $\langle\frac12\mathrm{Tr}P\rangle$ exact en 2D, ordre dominant en toute $D$'
+- $\ln C(\Delta)/C(\Delta+1)$ de l'opérateur de plaquettes spatiales, avec erreurs jackknife
+labels:
+  group: Groupe de jauge
+  dim: Dimension $D$
+  size: Taille du réseau $L$ (sites par côté)
+  beta: Couplage $\beta$ pour les boucles et la glueball
+  sweeps: Balayages Monte Carlo

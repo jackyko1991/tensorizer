@@ -1,0 +1,17 @@
+source_hash: b1b7792277b6
+title: Vitesse de la lumière variable et problème de l'horizon
+summary: 'Pourquoi le CMB a-t-il la même température dans toutes les directions alors que, dans le ΛCDM standard, son ciel se divise en environ $10^4$ régions qui n''ont jamais échangé de signal ? L''intégration de $\chi_p = \int c\,d\ln a/(aH)$ pour un lot d''univers compare trois réponses : aucune (ΛCDM), l''inflation ($\sim 60$ e-folds d''un rayon de Hubble qui rétrécit) et l''idée spéculative de vitesse de la lumière variable (VSL) de Moffat et d''Albrecht–Magueijo, où la lumière était quelque $10^{26}$ fois plus rapide avant une transition de phase. L''inflation est l''explication dominante ; la VSL est une alternative minoritaire et spéculative.'
+notes: 'Paramètres de Planck 2018 ($H_0 = 67.4$ km/s/Mpc, $\Omega_m = 0.315$, $\Omega_r = 9.1\times10^{-5}$, plat), dernière diffusion à $a_\mathrm{rec} = 1/1090$. Le ΛCDM donne un horizon des particules de 14,2 Gpc aujourd''hui mais d''environ 0,28 Gpc seulement à la recombinaison, si bien qu''une région causale couvre environ 1,2° et que le ciel en contient environ $10^4$. La lumière se propage à 45° dans le diagramme conforme ; les cônes de lumière passés de deux points opposés du CMB ne se recouvrent que si $\chi_p(a_\mathrm{rec}) \ge D$ (distance au CMB, 13,9 Gpc). L''inflation y parvient par $N$ e-folds d''expansion de de Sitter s''achevant en $a_*$ (le rayon de Hubble comobile rétrécit $\propto 1/a$) ; la VSL conserve l''expansion standard mais rend $c$ plus grande d''un facteur $r$ avant une transition en $a_*$, une marche lisse de largeur $w = 0.1$ e-fold. L''animation active progressivement les deux. Statut : la VSL (Moffat 1993 ; Albrecht et Magueijo 1999) est spéculative et minoritaire
+  ; elle exige un cadre dans lequel une constante dimensionnée peut varier (seules des combinaisons sans dimension comme $\alpha = e^2/4\pi\varepsilon_0\hbar c$ sont mesurables), ses prédictions dépendent du modèle, et elle n''a aucun soutien observationnel. L''inflation est l''explication standard, elle non plus non confirmée directement (pas encore de modes B primordiaux) mais compatible avec le spectre mesuré des fluctuations du CMB. Contraintes (affichées dans le terminal) : horloges atomiques $\dot\alpha/\alpha = (1.0\pm1.1)\times10^{-18}$/an, réacteur d''Oklo $|\Delta\alpha/\alpha| \lesssim 10^{-7}$ sur 2 milliards d''années, CMB $|\Delta\alpha/\alpha| \lesssim 4\times10^{-3}$ à la recombinaison, et GW170817 $-3\times10^{-15} \le (v_\mathrm{gw}-c)/c \le 7\times10^{-16}$. Une transition en $a_* \sim 10^{-28}$ échappe à toutes, ce qui explique aussi pourquoi elle est si difficile à tester.'
+meanings:
+- grille en $\ln a$ depuis bien avant $a_*$ jusqu'à aujourd'hui
+- 'vitesse de la lumière de l''univers (image) $m$ à chaque $a$ : $r$ fois $c_0$ avant $a_*$'
+- taux d'expansion, figé à $H(a_*)$ pendant les $N$ e-folds d'inflation
+- 'rayon de Hubble comobile : la distance parcourue par la lumière en un temps d''expansion'
+- 'trapèzes cumulés le long de $a$ : l''horizon des particules comobile'
+- angle d'une région causale sur le ciel du CMB et nombre de régions
+labels:
+  log10_c_ratio: 'VSL : vitesse initiale de la lumière $\log_{10}(c_\mathrm{early}/c_0)$'
+  efolds: 'Inflation : nombre d''e-folds $N$'
+  log10_a_star: Transition / fin de l'inflation $\log_{10} a_*$
+  n_grid: Points de grille en $\ln a$

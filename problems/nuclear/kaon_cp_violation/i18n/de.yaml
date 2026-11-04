@@ -1,0 +1,21 @@
+source_hash: ebe74e0d5d26
+title: Zeitumkehr und CPT mit neutralen Kaonen
+summary: 'Ein neutrales Kaon ist ein Zweizustandssystem ($K^0$, $\bar K^0$), das oszilliert und zerfällt; es entwickelt sich daher unter einem nicht-hermiteschen $2\times 2$-Hamiltonoperator $H = M - i\Gamma/2$. Aus PDG-Werten aufgebaut und für ein Bündel von Welten zu allen Zeiten gleichzeitig exponenziert, zeigt er die mit $\Delta m$ oszillierende Strangeness, die CP-verletzende $\pi\pi$-Interferenz und den CPLEAR-Test der Zeitumkehr: $K^0 \to \bar K^0$ und $\bar K^0 \to K^0$ unterscheiden sich um $A_T \approx 4\,\mathrm{Re}\,\varepsilon \approx 6.5\times 10^{-3}$, während CPT $K^0$ und $\bar K^0$ in Masse und Lebensdauer gleich hält.'
+notes: 'C (Ladungskonjugation) vertauscht Teilchen und Antiteilchen, P (Parität) spiegelt den Raum, und T kehrt die Zeit um. Das CPT-Theorem (Lüders, Pauli, Schwinger) besagt, dass jede lokale, Lorentz-invariante Quantenfeldtheorie unter allen dreien zusammen symmetrisch ist, sodass ein Teilchen und sein Antiteilchen exakt gleiche Massen und Lebensdauern haben. 1964 beobachteten Christenson, Cronin, Fitch und Turlay den Zerfall des langlebigen $K_L$ in zwei Pionen, den CP verbietet: CP ist verletzt, auf dem Niveau $|\varepsilon| \approx 2.2\times 10^{-3}$ (Nobelpreis 1980 an Cronin und Fitch). Gilt CPT, bedeutet CP-Verletzung auch T-Verletzung, und CPLEAR am CERN sah sie 1998 direkt: Ausgehend von markierten $K^0$ und $\bar K^0$ und mit Bestimmung der Strangeness beim Zerfall über semileptonische Zerfälle tritt $\bar K^0 \to K^0$ etwas häufiger auf als $K^0 \to \bar K^0$, $\langle A_T\rangle = (6.6 \pm 1.3 \pm 1.0)\times 10^{-3}$ (die Deutung als T-Verletzung setzt die $\Delta S = \Delta
+  Q$-Regel und keine CPT-Verletzung in den Zerfällen voraus). Hier wird $H$ aus seinen Eigenzuständen aufgebaut, sodass der CP-Parameter $\varepsilon$ und der CPT-Parameter $\delta$ Regler sind: Mit $\delta = 0$ gilt $H_{11} = H_{22}$ (gleiche Massen und Lebensdauern), $P(K^0\to K^0) = P(\bar K^0\to\bar K^0)$, und $A_T$ ist ein flaches Plateau bei $(|p/q|^2 - |q/p|^2)/(|p/q|^2 + |q/p|^2) \approx 4\,\mathrm{Re}\,\varepsilon$; ein von null verschiedenes $\mathrm{Re}\,\delta$ lässt $A_{CPT} = [P(\bar K^0\to\bar K^0) - P(K^0\to K^0)]/[\ldots]$ nach einigen $\tau_S$ auf $4\,\mathrm{Re}\,\delta$ ansteigen (CPLEAR fand $\mathrm{Re}\,\delta$ auf dem Niveau von $10^{-4}$ mit null verträglich). Das untere Panel zeigt die klassische $\pi^+\pi^-$-Interferenz zwischen $K_S$- und $K_L$-Zerfällen, am größten bei etwa $12\,\tau_S$, aus der $|\eta_{+-}|$ und $\phi_{+-}$ gemessen werden. Die Unitarität wird mit der Bell–Steinberger-Relation $(i\Delta m + \bar\Gamma)\langle K_S|K_L\rangle = \sum_f A_S^* A_L$
+  geprüft; bei $\pi\pi$-Dominanz sagt das gemessene $\eta_{+-}$ $\mathrm{Re}\,\varepsilon$ auf 0,2 % genau voraus. Werte: PDG 2024 ($\tau_S = 0.8954\times10^{-10}$ s, $\tau_L = 5.116\times10^{-8}$ s, $\Delta m = 0.5293\times10^{10}\,\hbar$/s, $|\varepsilon| = 2.228\times 10^{-3}$, $\phi_\varepsilon = 43.52°$, $|\eta_{+-}| = 2.232\times10^{-3}$); CPLEAR, Phys. Lett. B 444 (1998) 43. Vereinfachungen: Direkte CP-Verletzung ($\varepsilon''$, $10^{-3}$ von $\varepsilon$) wird vernachlässigt, sodass $\eta_{+-} = \varepsilon$; die semileptonische Markierung wird als perfekte Strangeness-Messung idealisiert; und es gibt keine Regeneration in Materie.'
+meanings:
+- Spalten $K_S \propto (1+\varepsilon_S, 1-\varepsilon_S)$, $K_L \propto (1+\varepsilon_L, -(1-\varepsilon_L))$ mit $\varepsilon_{S,L} = \varepsilon \pm \delta$
+- $\mp\Delta m/2 - i\Gamma_{S,L}/2$ in Einheiten von $\hbar/\tau_S$ (die gemeinsame Masse ist eine globale Phase)
+- 'wiederholtes $i$ ⇒ summiert: ein effektiver Hamiltonoperator pro Welt'
+- $e^{-iHt}$ zu jeder Zeit, mit matrix_exp überprüft
+- Wahrscheinlichkeit, dass ein als $b$ entstandenes Kaon als $a$ gefunden wird ($0 = K^0$, $1 = \bar K^0$)
+- 'hermitesch und $\ge 0$: Unitarität, die Bell–Steinberger-Relation'
+- Zeilenvektor mit $a\cdot K_S = 1$, $a\cdot K_L = \eta_{+-}$
+- 'wiederholtes $x$ ⇒ summiert: $\pi^+\pi^-$-Zerfallsrate eines als $K^0$ oder $\bar K^0$ entstandenen Strahls'
+labels:
+  eps_abs: $|\varepsilon|$
+  eps_phase: Phase $\phi_\varepsilon$
+  re_delta: CPT-Verletzung $\mathrm{Re}\,\delta$
+  dm: Massendifferenz $\Delta m$
+  t_max: Zeitfenster $t_\mathrm{max}$

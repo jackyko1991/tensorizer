@@ -1,0 +1,17 @@
+source_hash: 786f22a93dbf
+title: Efecto fotoeléctrico y cuantos de luz
+summary: 'El artículo de Einstein de 1905 sobre los cuantos de luz: la luz de frecuencia $\nu$ llega en paquetes de energía $h\nu$, y un paquete libera un electrón con energía cinética $K = h\nu - \phi - \varepsilon$. Un lote de fotones × frecuencias × intensidades muestra el umbral $\nu_0 = \phi/h$, un potencial de frenado $eV_s = h\nu - \phi$ que ignora la intensidad y ningún retraso temporal — todo en contra de la imagen ondulatoria clásica. Un ajuste lineal a las medidas de Millikan con sodio (1916) devuelve la constante de Planck.'
+notes: 'Este es uno de los cuatro artículos del «año milagroso» de Einstein, 1905: los cuantos de luz y el efecto fotoeléctrico (este problema; Premio Nobel de 1921, «especialmente por su descubrimiento de la ley del efecto fotoeléctrico»), el movimiento browniano (thermodynamics: Paseo aleatorio y difusión) y la relatividad especial con $E = mc^2$ (astro: Einstein 1905: cuerpos en movimiento y $E = mc^2$). La imagen ondulatoria falla de tres maneras: predice emisión a cualquier frecuencia, energías cinéticas que crecen con la intensidad y minutos de retraso para luz débil (un átomo que acumula $\phi$ a partir de $S = 10$ mW/m²) — mientras que el experimento muestra un umbral nítido, un $V_s$ independiente de la intensidad y ningún retraso medible (menos de 3 ns, Lawrence y Beams 1928). Una luz más intensa solo significa más fotones: la corriente crece, pero $V_s$ no se mueve. Los cuadrados rojos son los potenciales de frenado medidos por Millikan en 1916 para una superficie de sodio cortada
+  en vacío (R. A. Millikan, Phys. Rev. 7, 355 (1916), cuatro líneas del mercurio, transcritos en data/millikan_1916_sodium.csv a partir del artículo tal como aparece tabulado en una colección de problemas de la Universidad de Roskilde; publicación de 1916, de dominio público). Millikan se propuso refutar la ecuación de Einstein y la confirmó; su pendiente da $h$ con un error de aproximadamente el 0,3 % respecto al valor exacto actual $6.62607015\times10^{-34}$ J s. La ordenada en el origen, de unos 1,8 eV, no es la función de trabajo del sodio limpio (2,3 eV): incluye el potencial de contacto del aparato, y la superficie probablemente estaba contaminada (D. Lloyd, Am. J. Phys. 2015). El metal simulado está idealizado (una banda plana de profundidades, sin ángulos, sin temperatura): la recta $eV_s = h\nu - \phi$ es exacta, la forma de las curvas de corriente es solo esquemática.'
+meanings:
+- frecuencias de la luz en $10^{14}$ Hz
+- 'profundidad del electrón que absorbe el fotón $n$, uniforme en $[0, 3]$ eV ($i$: intensidad)'
+- 'un solo broadcast: cada fotón de cada frecuencia e intensidad a la vez; $K \le 0$ ⇒ sin emisión'
+- 'electrones que superan el voltaje de frenado $V$: la fotocorriente'
+- 'potencial de frenado: el electrón más rápido; igual para toda intensidad $i$'
+- 'recta que pasa por los puntos de Millikan: pendiente $a = h/e$, ordenada en el origen $b = -\phi/e$'
+- 'imagen ondulatoria: tiempo para absorber $\phi$ sobre el área $A$ de un átomo a partir de la irradiancia $S$'
+labels:
+  phi: Función de trabajo $\phi$
+  irradiance: Irradiancia $S$ (para el retraso de la imagen ondulatoria)
+  n_photons: Fotones por exposición con intensidad 1

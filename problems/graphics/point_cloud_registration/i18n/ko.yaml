@@ -1,0 +1,27 @@
+source_hash: b1a74b85fb17
+title: '점군 정합: PCL 파이프라인 (FPFH, RANSAC, ICP)'
+summary: '같은 물체를 두 시점에서 찍은 부분 3D 스캔 두 개를, 알 수 없는 강체 운동으로 옮긴 뒤 Point Cloud Library(PCL)의 방식대로 정렬한다. 모두 배치화한 PyTorch로 작성했다: 복셀 격자 다운샘플링, 통계적 이상점 제거, 이웃 공분산으로부터의 법선, FPFH 기술자, 특징 대응에 대한 RANSAC(수천 번의 Kabsch 맞춤을 한꺼번에), 여러 시작점에서의 ICP 정밀화(점-점과 점-면). 결과는 알려진 운동과 비교한다: 회전 오차(도), 이동 오차, RMSE.'
+notes: '데모 물체는 Keenan Crane의 소 「Spot」(삼각형 5856개)으로, 저자가 퍼블릭 도메인으로 공개했다(CC0 1.0; https://www.cs.cmu.edu/~kmcrane/Projects/ModelRepository/, data/spot_vertices.csv와 data/spot_faces.csv로 포함, data/SOURCES.md 참조; Crane, Pinkall, Schröder 2013, ACM TOG 32(4)). 스탠퍼드 토끼는 쓰지 않았다: Stanford 3D Scanning Repository는 연구 목적 사용과 무료 재배포를 허용하지만, 허가 없이 상업적 목적으로 쓰거나 판매되는 제품에 넣지 말라고 하므로, 나중에 유료 버전이 생길 수 있는 공개 프로젝트에는 불분명하다. PCL의 테스트 파일 bunny.pcd는 같은 스탠퍼드 스캔에서 나왔고 별도의 데이터 라이선스가 없다(PCL의 BSD 라이선스는 코드에 적용된다). 스캔은 합성이다: 메시 표면을 조밀하게 무작위 샘플링하고, 스캐너가 보는 점만 남기며(뒷면 검사와 z 버퍼, 즉 숨은 점 제거), 가우스 잡음 $\sigma$, 몇 퍼센트의 균일한 이상점을 더하고, 스캔 B에는 무작위 강체 운동(30–60°, 물체 크기의 절반)을 적용한다. 물체 크기는 경계 상자의 대각선이며 1로 정규화했다. 파이프라인(괄호 안은 PCL 클래스 이름): VoxelGrid; StatisticalOutlierRemoval; NormalEstimation($k = 15$ 이웃, 법선은 각 스캔 자신의 시점 쪽으로 뒤집음); FPFH($k = 25$); 기술자 공간에서의 상호 최근접 대응; RANSAC은 가설 4000개로, 각 가설은 삼각형 변의 길이가 10 % 이내로 일치하는 대응 3개(PCL의 CorrespondenceRejectorPoly처럼)를 Kabsch로 맞추고 인라이어 수로 평가한 뒤 인라이어로 다시 맞춘다; ICP는 RANSAC 자세를 흔든 6개 사본에서 시작해, 복셀 크기의 절반으로
+  다운샘플링한 대상에 대해 수행하며 한 복셀보다 먼 쌍은 무시한다. 단순화: FPFH는 반지름 대신 고정된 $k$개 이웃을 쓰고, Darboux 틀의 기준점을 항상 질의점으로 두며(PCL은 법선 각도로 쌍의 순서를 고른다), 11칸 블록마다 100으로 정규화한다; 복셀 격자는 위치만 평균한다. 기본 실행 결과: 스캔당 약 12000개의 보이는 점이 두 필터를 거쳐 약 1650개가 된다; 상호 FPFH 대응 365개 중 RANSAC이 73개(약 20 %)를 남겨 6.4°와 0.056 오차의 대략적 자세를 준다; 이어서 점-면 ICP는 모든 시작점에서 약 5번 반복으로 0.37°와 0.0021(물체 크기의 0.2 %, RMSE 0.007)에 이르지만, 점-점은 25번 반복 후에도 여전히 표면을 따라 미끄러지고 있다(약 2.1°, 0.018). 부분적이고 다시 샘플링된 표면 위의 최근접점이 옆으로 끌어당기기 때문이다. 테스트는 다음을 확인한다: Kabsch가 정확하다, 운동과 그 역의 합성은 항등이다, 평면과 구의 법선이 맞다, 복셀 격자가 느린 참조 구현과 일치한다, 먼 이상점이 제거된다, FPFH가 강체 운동에 불변이다, z 버퍼 가시성이 구의 뒷면을 제거한다, RANSAC이 50 %의 잘못된 대응을 견딘다, ICP가 수렴한다, 매끄러운 곡면에서 점-면이 점-점보다 빠르다, 전체 파이프라인이 2°와 물체 크기의 2 % 아래로 내려간다. 모두 확립된 방법이다: ICP(Besl과 McKay 1992; 점-면: Chen과 Medioni 1992), FPFH(Rusu, Blodow, Beetz 2009), PCL(Rusu와 Cousins 2011, BSD 라이선스, https://pointclouds.org). 이 코드는 논문을 보고 작성했으며 PCL을 번역한 것이 아니다. 시점 사이 각도를 키우거나(겹침이 줄어 RANSAC의 인라이어가 줄고 실패할 수 있다), 이상점을 늘리거나, 복셀을 거칠게 해 보자.'
+meanings:
+- 배치 원소 $b$(RANSAC 가설 또는 ICP 시작점)마다 강체 운동 하나, $j$에 대해 합
+- $k$개 최근접 이웃, 거리 행렬을 행 블록 단위로 계산
+- 'VoxelGrid: 같은 복셀 키를 가진 점들의 scatter 평균'
+- 'StatisticalOutlierRemoval: 이웃까지의 평균 거리를 점군 전체에서의 평균 및 표준편차와 비교'
+- 이웃 공분산; 가장 작은 고유값의 고유벡터가 법선이며 시점 쪽으로 뒤집는다
+- '표면 변동(PCL 곡률): 평면에서 0'
+- '점 쌍의 Darboux 틀 각도: $\alpha = \mathbf v\cdot\mathbf n_q$, $\phi = \mathbf u\cdot\hat{\mathbf d}$, $\theta = \operatorname{atan2}(\mathbf w\cdot\mathbf n_q, \mathbf u\cdot\mathbf n_q)$'
+- 11칸 히스토그램 세 개; 점 자신의 히스토그램에 이웃 히스토그램의 거리 가중 평균을 더함
+- Kabsch 교차 공분산, 가설마다 하나; 배치 SVD 한 번으로 모든 회전을 얻는다
+- 모든 가설의 RANSAC 점수를 한꺼번에
+- 점-면 ICP 한 단계 $\boldsymbol\xi = (\boldsymbol\omega, \delta\mathbf t)$, 시작점들에 대해 배치 처리
+- 알려진 참값에 대한 회전 오차
+labels:
+  n_points: 스캔당 표면 샘플 수
+  view_angle: 두 시점 사이의 각도
+  noise: 센서 잡음 $\sigma$ (물체 크기 1)
+  outliers: 이상점 비율
+  voxel: 복셀 크기 $s$
+  hypotheses: RANSAC 가설 수
+  icp_iterations: ICP 반복 횟수
+  starts: ICP 시작점 수 (배치)

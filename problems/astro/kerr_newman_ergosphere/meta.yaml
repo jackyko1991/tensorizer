@@ -1,0 +1,41 @@
+title: 'Kerr–Newman black holes: horizons, ergosphere and naked singularities'
+category: astro
+level: advanced
+order: 5
+tags: [nobel:physics:2020, crafoord:2016]
+summary: >
+  The most general black hole of general relativity with electromagnetism, with mass $M$, spin $a$ and charge $Q$. For a whole batched
+  grid of $(M, a, Q)$ the code computes the horizons $r_\pm$, the ergosphere, frame dragging and the equatorial ISCOs and photon orbits
+  (metric derivatives by autograd). The animation sweeps spin and charge up to and past extremality $a^2 + Q^2 = M^2$, where the horizon
+  disappears and the ring singularity would be exposed, which the cosmic censorship conjecture (unproven) says nature forbids.
+animated: true
+vector_form: 'ds^2 = -\frac{\Delta}{\Sigma}\big(dt - a\sin^2\theta\,d\varphi\big)^2 + \frac{\sin^2\theta}{\Sigma}\big((r^2 + a^2)\,d\varphi - a\,dt\big)^2 + \frac{\Sigma}{\Delta}dr^2 + \Sigma\,d\theta^2,\qquad \Sigma = r^2 + a^2\cos^2\theta,\quad \Delta = r^2 - 2Mr + a^2 + Q^2'
+index_form: 'r_{\pm,b} = M_b \pm \sqrt{M_b^2 - a_b^2 - Q_b^2}\qquad r_{E,b\theta} = M_b + \sqrt{M_b^2 - Q_b^2 - a_b^2\cos^2\theta}\qquad \omega_{br} = -\frac{g_{t\varphi}}{g_{\varphi\varphi}}\qquad \Omega_{\pm,br} = \frac{-\partial_r g_{t\varphi} \pm \sqrt{(\partial_r g_{t\varphi})^2 - \partial_r g_{tt}\,\partial_r g_{\varphi\varphi}}}{\partial_r g_{\varphi\varphi}}'
+translation:
+  - {symbol: 'M_b,\ a_b,\ Q_b', code: 'tensors.parameter_grid()', shape: '(3, n, n)', meaning: 'every combination of mass, spin and charge as one batch, $G = c = 1$'}
+  - {symbol: 'r_{\pm,b}', code: 'M + torch.sqrt(M**2 - a**2 - Q**2)', shape: '(3, n, n)', meaning: 'roots of $\Delta = 0$; NaN when $a^2 + Q^2 > M^2$ (naked)'}
+  - {symbol: 'r_{E,b\theta}', code: 'ergosphere(theta[None, :], M[:, None], a[:, None], Q[:, None])', shape: '(F, T)', meaning: 'static limit $g_{tt} = 0$, broadcast frames $\times$ polar angles'}
+  - {symbol: 'g_{tt},\ g_{t\varphi},\ g_{\varphi\varphi}', code: 'metric_t_phi(r, theta, M, a, Q)', shape: '(B, R)', meaning: 'the rotating $(t, \varphi)$ block of the Boyer–Lindquist metric'}
+  - {symbol: '\omega_{br}', code: 'frame_dragging(r, theta, M, a, Q)', shape: '(B, R)', meaning: 'angular velocity of a zero-angular-momentum observer; $\Omega_H = a/(r_+^2 + a^2)$ at the horizon'}
+  - {symbol: '\partial_r g_{\mu\nu}', code: 'torch.autograd.grad(g.sum(), r)', shape: '(B, R)', meaning: 'metric derivatives on the radius grid by autograd'}
+  - {symbol: '\Omega_{\pm,br},\ E_{\pm,br}', code: 'circular_orbits(r, M, a, Q)', shape: '(B, R)', meaning: 'circular-orbit angular velocity and energy; ISCO at the minimum of $E$, photon orbit where the orbit needs speed $c$'}
+  - {symbol: '\kappa_b', code: '(r_plus - r_minus) / (2 * (r_plus**2 + a**2))', shape: '(B,)', meaning: 'surface gravity, $T_H = \kappa/2\pi$; zero for an extremal hole'}
+notes: >
+  Units $G = c = 1$: lengths in $GM/c^2$, spin $a = J/(Mc)$, charge in geometrised units. Established (classical GR): the Kerr–Newman
+  metric (Newman et al. 1965) solves the Einstein–Maxwell equations, its horizons are the roots of $\Delta$, and the ergosphere, where no
+  observer can stay at rest, lies between $r_+$ and $r_E(\theta)$, touching the horizon at the poles. Inside it frame dragging forces
+  everything to co-rotate: the green curve falls in with zero angular momentum and is still swept around. Prograde orbits hug the hole:
+  for Kerr the ISCO moves from $6M$ at $a = 0$ to $M$ (prograde) and $9M$ (retrograde) at $a = M$, matching Bardeen, Press and Teukolsky
+  (1972), and the extremal Reissner–Nordström ISCO is $4M$. For $a^2 + Q^2 > M^2$ the formulas still give a metric, but with no horizon
+  and a naked ring singularity at $r = 0$, $\theta = \pi/2$ (drawn in red). Penrose's weak cosmic censorship conjecture says gravitational
+  collapse never produces one; it is unproven in general (known counterexamples need fine-tuned initial data or extra dimensions), and
+  attempts to overspin or overcharge an extremal hole by throwing in particles appear to fail once second-order perturbation effects are
+  included (Sorce and Wald 2017).
+  Real holes have $Q \approx 0$ (charge is quickly neutralised), and measured spins (up to about $0.95$–$0.99\,M$) stay below extremality.
+  The equatorial panel uses Boyer–Lindquist $r$ as the radius; there $\varphi$ of the infalling green curve winds up without bound at
+  $r_+$, a coordinate effect.
+params:
+  angle: {default: 30.0, min: 0, max: 90, step: 5, label: 'Mixing angle $\psi$ ($0°$ pure spin, $90°$ pure charge)', unit: deg}
+  chi_max: {default: 1.15, min: 1.02, max: 1.4, step: 0.01, label: 'Sweep up to $\sqrt{a^2 + Q^2}/M$'}
+  frames: {default: 70, min: 30, max: 100, step: 5, type: int, label: Frames}
+  grid: {default: 61, min: 11, max: 201, step: 10, type: int, label: 'Grid points per axis of the batched $(a, Q)$ survey'}

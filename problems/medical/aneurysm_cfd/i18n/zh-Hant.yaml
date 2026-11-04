@@ -1,0 +1,25 @@
+source_hash: 96c00309dd36
+title: 動脈瘤 CFD：用張量重建 OpenFOAM + VMTK 工作流程
+summary: 脈動血流流經一個真實的顱內動脈瘤，幾何從開放（CC0）的 TOF-MRA 掃描中分割而得，依照標準研究流程（VMTK 中心線與流動延伸、OpenFOAM 式不可壓縮求解器，再計算壁面剪應力、TAWSS 與 OSI）進行，每一步都寫成張量運算。求解器以 Poiseuille 流、Womersley 流以及圓管和同一動脈瘤網格上的 OpenFOAM 計算檢驗，中心線以 VMTK 檢驗。僅供教學，不可用於臨床。
+notes: 工作流程。典型的動脈瘤研究先分割管腔，用 VMTK（Antiga 等，2008）整理，再用 OpenFOAM（Weller 等，1998）求解流動，最後後處理壁面剪應力。這裡每一步都是我們自己用張量寫的，沒有從這兩個 GPL 專案複製任何程式碼。VMTK 步驟及其替代：vmtksurfacesmoothing、vmtksurfaceremeshing 和 vmtkflowextensions（-adaptivelength 1 -extensionratio 5）只離線執行一次，用來產生 STL 檔案；vmtkcenterlines -seedselector profileidlist（Voronoi 圖、在 $|\nabla T| = 1/R$ 上的快速行進、最速下降回溯）變成 solve.centrelines：內切半徑 $R$ 是每個體素到壁面的距離，程函方程以在 26 鄰域圖上反覆進行 min-plus 掃描求解（快速行進的張量替代，速度取 $R^2$，因為圖是整個管腔，而非本身已位於中軸的 Voronoi 圖），所有出口同時沿前驅回溯。OpenFOAM 的 icoFoam/pimpleFoam 與我們的程式碼：lduAddressing owner/neighbour → mesh['owner']、mesh['neigh']；phi → u；fvc::div(phi) → divergence；fvm::laplacian(p) 及其 PCG 求解 → pressure_matrix 與 pcg；PISO 壓力修正 → project（每步一次 Chorin 投影）；fvm::laplacian(nu, U) → face_laplacian；div(phi,U) → 半拉格朗日 advect；wallShearStress 函數物件 → wss_at。網格：STL 的立方體素，壁面處用浸入邊界的虛擬值。幾何：預設取自 Lausanne TOF-MRA Aneurysm Cohort（Di Noto 等，2022；OpenNeuro ds003949，CC0）的 074 號受試者：在標註的動脈瘤周圍裁出 28 mm 的區域，閾值分割，用 marching cubes 產生網格，再平滑與延伸（見 data/SOURCES.md）；一個入口、三個出口。選項「synthetic」是我們自己的分叉動脈瘤（CC0）。檢查過的其他資料集：AneuriskWeb（CC
+  BY-NC）與 AneuX（CC BY-NC 4.0）僅限非商業用途；IntrA 與 AnXplore 未註明授權；Vascular Model Repository 有自己的研究授權；基爾的假體 STL（CC BY 4.0）是帶有極細分支的壁殼。入口：解析的類內頸動脈波形（平均 4.58 ml/s，峰值/平均 1.66，Ford 等，2005，週期 1 s），依 Murray 定律縮放到入口半徑，Womersley 剖面；出口壓力為零。血液：牛頓流體，$\nu = 3.5\times10^{-6}$ m²/s，$\rho = 1060$ kg/m³；剛性壁。殘差（預設執行）：圓管對比 OpenFOAM v1912 pimpleFoam，軸線速度 L2 1.2 %，相位 −10 mrad，WSS L2 2.5 %；圓管對比 Womersley 精確解，L2 0.4 %；中心線對比 VMTK 1.5.0，平均距離 0.20 mm（0.5 個體素），最大 0.5 mm，半徑差平均 0.12 mm；動脈瘤對比在我們自己的體素網格（匯出為 polyMesh，入口與出口相同）上執行的 pimpleFoam，切片上 |u| 的 L2 為 35 %，收縮期峰值 WSS 的 L2 為 38 %，TAWSS 的 L2 為 32 %。最後這個差距很大：時間步長縮小四倍的計算得到相同結果，因此它來自不同的壁面處理（我們在光滑表面上的虛擬值對比 OpenFOAM 的階梯面）、出口位置以及粗網格上的對流格式，在這種網格上兩個程式都沒有收斂。動脈瘤結果只應定性解讀。零壓力出口還會把過多流量送入最小的分支，並給出不切實際的壓降。輸出：除 GIF 外，results/aneurysm.pvd 是壁面（WSS、TAWSS、OSI）、流線與示蹤粒子的 ParaView 時間序列。注意：這是對閾值分割結果的粗略教學模擬，不可用於臨床。文獻中瘤囊內低 WSS 與高 OSI 與動脈瘤生長和破裂相關，但證據互相矛盾、仍有爭議（Meng 等，2014）。OpenFOAM 與 VMTK 參考結果只離線產生一次，本問題及其測試從不執行它們。
+meanings:
+- 每個體素面的擁有者單元與相鄰單元，同 OpenFOAM 的 owner/neighbour 列表
+- 面法向速度（OpenFOAM 的通量 $\phi_f = u_f h^2$）
+- 在面上呼叫兩次 index_add：fvc::div(phi)
+- 由各面組裝的 $-\nabla^2$（fvm::laplacian）；壁面與入口為 Neumann 條件，出口 $p = 0$
+- 共軛梯度，Jacobi 加粗聚合塊校正
+- 六個同方向鄰居；虛擬值使壁面上恰好 $u = 0$
+- 半拉格朗日：沿流動回溯每個面並內插（grid_sample）
+- $Q(t)$ 每個諧波的 Womersley 剖面，複數引數的 Bessel 函數 $J_0, J_1$
+- 通過壁面 $u = 0$ 以及沿內法向 $h$、$2h$ 處取樣點的拋物線
+- 在記錄的週期上取平均，tau 形狀為 (T, V, 3)
+- 到壁面的距離 = 最大內切球半徑
+- 在三線性內插的速度場中批次計算 RK4 流線，從入口播種
+- 在 26 鄰域體素圖上對程函方程做 min-plus（Bellman–Ford）掃描
+labels:
+  geometry: 幾何：真實（洛桑 TOF-MRA，CC0）或合成
+  voxel: 體素大小 $h$
+  cycles: 模擬的心動週期數（記錄最後一個）
+  dt_ms: 時間步長 $\Delta t$
+  frames: 每週期動畫影格數

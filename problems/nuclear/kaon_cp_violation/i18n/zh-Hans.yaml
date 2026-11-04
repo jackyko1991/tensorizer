@@ -1,0 +1,20 @@
+source_hash: ebe74e0d5d26
+title: 中性 K 介子中的时间反演与 CPT
+summary: 中性 K 介子是一个会振荡并衰变的二态系统（$K^0$、$\bar K^0$），因此它在一个非厄米的 $2\times 2$ 哈密顿量 $H = M - i\Gamma/2$ 下演化。用 PDG 数值构建，并对一批世界在所有时刻同时取指数，它展示了以 $\Delta m$ 振荡的奇异数、破坏 CP 的 $\pi\pi$ 干涉，以及 CPLEAR 的时间反演检验：$K^0 \to \bar K^0$ 与 $\bar K^0 \to K^0$ 相差 $A_T \approx 4\,\mathrm{Re}\,\varepsilon \approx 6.5\times 10^{-3}$，而 CPT 使 $K^0$ 与 $\bar K^0$ 的质量与寿命保持相等。
+notes: C（电荷共轭）交换粒子与反粒子，P（宇称）使空间成镜像，T 使时间反向。CPT 定理（Lüders、Pauli、Schwinger）指出，任何定域、洛伦兹不变的量子场论在三者联合作用下都是对称的，因此粒子与其反粒子的质量与寿命完全相等。1964 年，Christenson、Cronin、Fitch 与 Turlay 观察到长寿命的 $K_L$ 衰变为两个 π 介子，而这是 CP 所禁止的：CP 被破坏，其程度为 $|\varepsilon| \approx 2.2\times 10^{-3}$（1980 年诺贝尔奖授予 Cronin 与 Fitch）。若 CPT 成立，CP 破坏也就意味着 T 破坏，而 CERN 的 CPLEAR 于 1998 年直接观察到了它：从已标记的 $K^0$ 与 $\bar K^0$ 出发，并用半轻子衰变标记衰变时的奇异数，发现 $\bar K^0 \to K^0$ 比 $K^0 \to \bar K^0$ 略微频繁，$\langle A_T\rangle = (6.6 \pm 1.3 \pm 1.0)\times 10^{-3}$（将其解读为 T 破坏，前提是假设 $\Delta S = \Delta Q$ 规则成立，且衰变中没有 CPT 破坏）。这里 $H$ 由其本征态构建，因此 CP 参数 $\varepsilon$ 与 CPT 参数 $\delta$ 都是可调旋钮：当 $\delta = 0$ 时，$H_{11} = H_{22}$（质量与寿命相等），$P(K^0\to K^0) = P(\bar K^0\to\bar K^0)$，且 $A_T$ 是一个位于 $(|p/q|^2 - |q/p|^2)/(|p/q|^2 + |q/p|^2) \approx 4\,\mathrm{Re}\,\varepsilon$ 的平坦平台；非零的 $\mathrm{Re}\,\delta$ 会使 $A_{CPT} = [P(\bar K^0\to\bar K^0) - P(K^0\to K^0)]/[\ldots]$ 在数个 $\tau_S$ 后攀升至 $4\,\mathrm{Re}\,\delta$（CPLEAR 发现 $\mathrm{Re}\,\delta$ 在 $10^{-4}$ 的精度上与零一致）。底部面板展示 $K_S$ 与
+  $K_L$ 衰变之间经典的 $\pi^+\pi^-$ 干涉，在 $12\,\tau_S$ 附近最大，由此可测得 $|\eta_{+-}|$ 与 $\phi_{+-}$。幺正性用 Bell–Steinberger 关系 $(i\Delta m + \bar\Gamma)\langle K_S|K_L\rangle = \sum_f A_S^* A_L$ 检验；在 $\pi\pi$ 主导下，测得的 $\eta_{+-}$ 可将 $\mathrm{Re}\,\varepsilon$ 预言到 0.2% 的精度。数值：PDG 2024（$\tau_S = 0.8954\times10^{-10}$ s、$\tau_L = 5.116\times10^{-8}$ s、$\Delta m = 0.5293\times10^{10}\,\hbar$/s、$|\varepsilon| = 2.228\times 10^{-3}$、$\phi_\varepsilon = 43.52°$、$|\eta_{+-}| = 2.232\times10^{-3}$）；CPLEAR, Phys. Lett. B 444 (1998) 43。简化之处：忽略直接 CP 破坏（$\varepsilon'$，为 $\varepsilon$ 的 $10^{-3}$），因此 $\eta_{+-} = \varepsilon$；半轻子标记被理想化为完美的奇异数测量；且不考虑物质中的再生。
+meanings:
+- 各列 $K_S \propto (1+\varepsilon_S, 1-\varepsilon_S)$、$K_L \propto (1+\varepsilon_L, -(1-\varepsilon_L))$，其中 $\varepsilon_{S,L} = \varepsilon \pm \delta$
+- $\mp\Delta m/2 - i\Gamma_{S,L}/2$，以 $\hbar/\tau_S$ 为单位（共同质量只是一个全局相位）
+- 重复的 $i$ ⇒ 求和：每个世界一个有效哈密顿量
+- 每个时刻的 $e^{-iHt}$，并用 matrix_exp 核对
+- 产生时为 $b$ 的 K 介子被观测为 $a$ 的概率（$0 = K^0$，$1 = \bar K^0$）
+- 厄米且 $\ge 0$：幺正性，即 Bell–Steinberger 关系
+- 满足 $a\cdot K_S = 1$、$a\cdot K_L = \eta_{+-}$ 的行向量
+- 重复的 $x$ ⇒ 求和：产生时为 $K^0$ 或 $\bar K^0$ 的束流的 $\pi^+\pi^-$ 衰变率
+labels:
+  eps_abs: $|\varepsilon|$
+  eps_phase: 相位 $\phi_\varepsilon$
+  re_delta: CPT 破坏 $\mathrm{Re}\,\delta$
+  dm: 质量差 $\Delta m$
+  t_max: 时间窗口 $t_\mathrm{max}$

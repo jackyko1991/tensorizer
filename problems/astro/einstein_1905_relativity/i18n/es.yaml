@@ -1,0 +1,19 @@
+source_hash: 278f16a6d4b6
+title: 'Einstein 1905: cuerpos en movimiento y $E = mc^2$'
+summary: El propio camino de Einstein a través de sus dos artículos de 1905 sobre la relatividad. A partir de dos postulados — las mismas leyes en todo sistema inercial, la luz siempre a $c$ — un lote de relojes de luz muestra que el tiempo en movimiento se ralentiza en $\gamma$, que las varillas se acortan en $1/\gamma$, que la simultaneidad depende del observador y que las velocidades nunca se suman más allá de $c$. El artículo sobre masa y energía (un cuerpo que emite una energía luminosa $L$ pierde una masa $L/c^2$) se comprueba con el defecto de masa del He-4 y la aniquilación $e^+e^-$, y un ajuste a los recuentos de muones de Frisch y Smith (1963) en el monte Washington y al nivel del mar da $\gamma \approx 9$.
+notes: 'Este es uno de los cuatro artículos del «año milagroso» de Einstein, 1905 — de hecho, dos de ellos: «Sobre la electrodinámica de los cuerpos en movimiento» (junio) y «¿Depende la inercia de un cuerpo de su contenido de energía?» (septiembre). Los otros son el artículo de los cuantos de luz (quantum: Efecto fotoeléctrico y cuantos de luz) y el movimiento browniano (thermodynamics: Paseo aleatorio y difusión). Para la relatividad como geometría, véase Relatividad especial: diagramas de Minkowski y boosts de Lorentz (astro); para el tensor de campo, el boost de Lorentz de $F^{\mu\nu}$ (em); y para las colisiones, Cuadrimomento y desintegración en dos cuerpos (nuclear). Unidades $c = 1$, separación entre espejos $D = 1$. El argumento de Einstein sobre la masa: un cuerpo en reposo emite $L/2$ hacia delante y $L/2$ hacia atrás; en un sistema que se mueve a $v$ la luz transporta $\gamma L$, más que $L$, y la conservación de la energía en ambos sistemas obliga a que la energía cinética del
+  cuerpo disminuya en $L(\gamma - 1)$, exactamente lo que transportaría una masa $L/c^2$ (él solo conservó el término de baja velocidad $\tfrac12 (L/c^2)v^2$). Las masas atómicas son de AME2020. Datos reales (data/frisch_smith_1963_muons.csv): D. H. Frisch y J. H. Smith, Am. J. Phys. 31, 342 (1963), doi:10.1119/1.1969508 — muones frenados hasta la misma energía, $563 \pm 10$ por hora a 1917 m en el monte Washington y $408 \pm 9$ por hora al nivel del mar (valores de medida publicados; el resumen de Wikipedia redondea el segundo a 412). El vuelo dura unos 6,4 μs, casi tres vidas medias del muon de 2,2 μs, de modo que sin dilatación temporal solo llegarían unos 30 por hora; los recuentos dan al reloj del muon 0,71 μs y $\gamma \approx 9.1 \pm 0.8$ (el artículo, con su curva de desintegración medida: $8.8 \pm 0.8$). La predicción a partir de las velocidades integra el frenado de $\beta \approx 0.995$ a $\approx 0.989$ a través del aire (pérdida por ionización $dE/dx$, atmósfera isoterma): unos
+  8,4, como en el artículo. Rossi y Hall (1941) mostraron por primera vez el efecto con muones de rayos cósmicos en Echo Lake y Denver.'
+meanings:
+- 'fotón del reloj $b$ en el instante $t$: velocidad horizontal $\beta_b$, vertical $\sqrt{1-\beta_b^2}$, así que siempre $c$'
+- un tic dura $\gamma\cdot 2D/c$; tics contados a partir del zigzag
+- un lote de boosts a lo largo de $x$, $\eta = \operatorname{diag}(-1, 1, 1, 1)$
+- '$\nu$ repetido ⇒ sumado: cada suceso en cada sistema; los destellos del tren reciben $\Delta t'' = -\gamma\beta\Delta x$'
+- el intervalo, invariante bajo todo boost
+- 'los dos pulsos de luz vistos desde el sistema en movimiento: juntos $\gamma L$, así que $K_0 - K_1 = (L/c^2)(\gamma - 1)c^2$'
+- 'defecto de masa × 931,494 MeV/u (He-4: 28,30 MeV)'
+- pasos de Newton con autograd sobre $\chi^2(\gamma)$ para las dos tasas de muones
+labels:
+  beta_fast: Velocidad del reloj más rápido $\beta$
+  n_clocks: Número de relojes de luz
+  dEdx: Pérdida de energía de los muones en el aire $dE/dx$

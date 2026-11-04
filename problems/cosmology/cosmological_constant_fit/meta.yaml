@@ -1,0 +1,55 @@
+title: Fitting the cosmological constant to supernovae
+category: cosmology
+level: advanced
+order: 4
+tags: [nobel:physics:2011, shaw:2006]
+summary: >
+  1466 real Type Ia supernovae from the open Pantheon+ compilation are fitted with a Friedmann universe of matter
+  $\Omega_m$, cosmological constant $\Omega_\Lambda$ and curvature. One batched $\chi^2$ evaluates thousands of
+  universes at every supernova at once and draws the $\Omega_m$–$\Omega_\Lambda$ confidence contours, while Adam
+  and autograd walk from the matter-only universe to the best fit. Distant supernovae are fainter than in a
+  decelerating universe: $q_0 < 0$, the expansion is accelerating.
+animated: true
+vector_form: 'E(z)^2 = \Omega_m(1+z)^3 + \Omega_k(1+z)^2 + \Omega_\Lambda,\qquad d_L = (1+z)\,\frac{c}{H_0}\,S_k\!\Big(\int_0^z\frac{dz''}{E(z'')}\Big),\qquad \mu = 5\log_{10}\frac{d_L}{\mathrm{Mpc}} + 25,\qquad q_0 = \frac{\Omega_m}{2} - \Omega_\Lambda'
+index_form: '\chi_{abk} = \sum_{k''<k}\tfrac{h}{2}\big(E^{-1}_{abk''} + E^{-1}_{ab,k''+1}\big),\qquad \mu_{abi} = 5\log_{10}\!\big[(1+z_i)\,S_k(\chi_{ab}(z_i))\big] + 25 - 5\log_{10}H_0,\qquad \chi^2_{ab} = w_i\,(\mu_i - \mu_{abi})(\mu_i - \mu_{abi})'
+translation:
+  - {symbol: 'z_i,\ \mu_i,\ \sigma_i', code: 'load_distance_moduli(path)', shape: '(N,)', meaning: 'redshift, distance modulus and error of supernova $i$, read from any CSV with those columns'}
+  - {symbol: '\Omega_{m,a},\ \Omega_{\Lambda,b}', code: 'parameter_grid(A, B, ...)', shape: '(A,), (B,)', meaning: 'candidate universes; broadcast as $(A,1,1)$ and $(1,B,1)$'}
+  - {symbol: 'E^2_{abk}', code: 'e_squared(nodes, Om, OL)', shape: '(A, B, Z)', meaning: 'expansion rate at each node $z_k$ for every universe at once'}
+  - {symbol: '\chi_{abk}', code: 'comoving_integral(nodes, Om, OL)', shape: '(A, B, Z)', meaning: 'cumulative trapezoid of $1/E$ along the last axis'}
+  - {symbol: '\chi_{ab}(z_i)', code: 'interpolate(nodes, chi, f, z)', shape: '(A, B, N)', meaning: 'cubic Hermite interpolation to the supernova redshifts (slope $1/E$ known)'}
+  - {symbol: 'S_k(\chi)', code: 'transverse(chi, Ok)', shape: '(A, B, N)', meaning: '$\sinh$, identity or $\sin$ for open, flat or closed space'}
+  - {symbol: '-5\log_{10}H_0', code: "einsum('abi,i->ab', r, w) / w.sum()", shape: '(A, B)', meaning: '$i$ summed: the best $H_0$ of each universe is an analytic weighted mean'}
+  - {symbol: '\chi^2_{ab}', code: "einsum('abi,abi,i->ab', r, r, w)", shape: '(A, B)', meaning: '$i$ summed with weights $w_i = 1/\sigma_i^2$'}
+  - {symbol: '\partial\chi^2/\partial(H_0, \Omega_m, \Omega_\Lambda)', code: 'loss.backward()', shape: '(3,)', meaning: 'autograd through the integral, used by Adam and L-BFGS'}
+  - {symbol: 'C = 2\,H^{-1}', code: 'autograd.functional.hessian(chi2, p)', shape: '(3, 3)', meaning: 'covariance of the fitted parameters from the curvature of $\chi^2$'}
+notes: >
+  In 1998 two teams, the Supernova Cosmology Project (Perlmutter et al.) and the High-z Supernova Search Team (Riess
+  et al.; Schmidt), found that distant Type Ia supernovae, which are standardisable candles, look fainter than a
+  decelerating universe allows: the expansion is accelerating, which in general relativity requires something like a
+  cosmological constant $\Lambda$ (dark energy). This won the 2011 Nobel Prize in Physics. Here the same test runs on
+  today's data. The left panel plots each distance modulus minus that of an empty, coasting universe ($\Omega_m =
+  \Omega_\Lambda = 0$): a matter-only universe (red) would make distant supernovae brighter (below zero), the data sit
+  above. The right panel shows the 1, 2 and 3$\sigma$ regions ($\Delta\chi^2 = 2.30, 6.18, 11.83$) from the batched grid,
+  with the flat line, the line $q_0 = 0$ separating acceleration from deceleration, and the "no Big Bang" corner where
+  $E^2$ turns negative within the data. With these diagonal errors the fit gives $\Omega_m \approx 0.30 \pm 0.07$,
+  $\Omega_\Lambda \approx 0.57 \pm 0.10$ (flat: $\Omega_m \approx 0.35 \pm 0.02$), and $\Omega_\Lambda \le 0$ is rejected
+  at about $5.5\sigma$ ($\sigma = \sqrt{\Delta\chi^2}$ against the best model on the rejected side). $H_0$ is degenerate
+  with the supernova absolute magnitude; the value printed ($\approx 73$ km/s/Mpc) comes from the SH0ES Cepheid
+  calibration built into these $\mu$ and is not an independent measurement (the "Hubble tension" with the CMB value
+  $\approx 67$ is an open question). Data: Pantheon+ distance moduli (Scolnic et al. 2022, ApJ 938, 113; Brout et al.
+  2022, ApJ 938, 110), from github.com/PantheonPlusSH0ES/DataRelease (file Pantheon+SH0ES.dat; publicly released for
+  research use without a stated licence, the papers are open access under CC BY 4.0; please cite them). Kept:
+  zHD, MU_SH0ES and MU_SH0ES_ERR_DIAG for $z > 0.01$, Cepheid-calibrator hosts removed, one row per supernova. Your own
+  table works too: any CSV with columns z, mu, sigma_mu (see load_distance_moduli). Simplifications: only the diagonal
+  errors are used, not the full statistical + systematic covariance of Pantheon+ ($\chi^2/\mathrm{dof} \approx 0.44$ shows
+  these errors are conservative, while ignoring correlated systematics makes the contours somewhat optimistic); dark
+  energy is a pure constant ($w = -1$); radiation is neglected.
+params:
+  geometry: {default: free curvature, type: choice, options: [free curvature, flat], label: Geometry of the Adam fit}
+  start_Om: {default: 1.0, min: 0.0, max: 1.2, step: 0.05, label: 'Adam start $\Omega_m$'}
+  start_OL: {default: 0.0, min: -0.4, max: 1.4, step: 0.05, label: 'Adam start $\Omega_\Lambda$'}
+  steps: {default: 400, min: 50, max: 2000, step: 50, type: int, label: Adam iterations}
+  lr: {default: 0.02, min: 0.002, max: 0.1, step: 0.002, label: Adam learning rate}
+  grid: {default: 121, min: 31, max: 241, step: 10, type: int, label: 'Grid points per axis ($\chi^2$ contours)'}
+  z_min: {default: 0.01, min: 0.0, max: 0.1, step: 0.005, label: 'Minimum redshift $z_\mathrm{min}$'}

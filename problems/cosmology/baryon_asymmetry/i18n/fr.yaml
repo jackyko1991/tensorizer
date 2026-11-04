@@ -1,0 +1,24 @@
+source_hash: 4c18d665b55e
+title: Pourquoi y a-t-il plus de matière que d'antimatière ?
+summary: 'L''univers contient environ $6\times 10^{-10}$ baryon par photon et presque pas d''antimatière. Les trois conditions de Sakharov disent ce dont toute explication a besoin ; la leptogenèse est une candidate de premier plan : des neutrinos de Majorana lourds se désintègrent un peu plus souvent en leptons qu''en antileptons (asymétrie CP $\varepsilon$), les désintégrations inverses en effacent une partie (intensité $K$), et les sphalérons changent les leptons en baryons. Les équations de Boltzmann de milliers de modèles $(\varepsilon, K)$ sont résolues comme une seule EDO par lot et comparées au $\eta_B$ observé. Un problème ouvert.'
+notes: 'Observations : le rapport baryons/photons vaut $\eta_B = (6.12 \pm 0.04)\times 10^{-10}$ d''après le CMB (Planck 2018, $\Omega_bh^2 = 0.0224$), en accord avec la nucléosynthèse primordiale, et rien n''indique des galaxies d''antimatière. Partant d''un univers symétrique, Sakharov (1967) a montré qu''une asymétrie exige (1) la violation du nombre baryonique, (2) la violation de C et de CP et (3) un écart à l''équilibre thermique. Les tests vérifient directement (2) et (3) : $\varepsilon = 0$, ou des neutrinos lourds maintenus à l''équilibre, donnent exactement zéro ; (1) est le processus des sphalérons du Modèle standard, qui convertit $B - L$ en $B = \tfrac{28}{79}(B - L)$ au-dessus d''environ 130 GeV. La violation de CP des quarks (phase CKM) est bien trop faible et la transition électrofaible est un crossover, donc le Modèle standard seul échoue : il faut une physique nouvelle. La leptogenèse (Fukugita et Yanagida 1986) utilise les neutrinos droits lourds du mécanisme de bascule
+  (seesaw), qui expliquerait aussi pourquoi les neutrinos légers sont si légers. Ce modèle jouet ne garde que les désintégrations et désintégrations inverses du plus léger, $N_1$ (sans diffusions $\Delta L = 2$, effets de saveur ni corrections thermiques), dans la normalisation de Buchmüller, Di Bari et Plümacher (2005). Le lessivage faible ($K \ll 1$) avec un départ thermique garde toute l''asymétrie ($\kappa_f \to 1$, vérifié) ; le lessivage fort ($K \gg 1$) en perd la plus grande partie mais oublie les conditions initiales (les deux départs se rejoignent), et le solveur s''accorde avec leur ajustement analytique à environ 10 % près. Avec $K = \tilde m_1/m_*$, $m_* \approx 1.08\times10^{-3}$ eV, les masses de neutrinos vues dans les oscillations ($\approx 0.009$–$0.05$ eV) indiquent $K \approx 10$–$50$, où il faut $\varepsilon \approx 2\times10^{-6}$–$10^{-5}$ ; la borne de Davidson–Ibarra $\varepsilon \lesssim 10^{-6}\,(M_1/10^{10}\,\mathrm{GeV})$ exige alors $M_1 \gtrsim 10^{10}$ GeV.
+  Statut : ouvert. La leptogenèse est séduisante et compatible avec tout ce que l''on sait, mais elle n''est pas confirmée : les neutrinos lourds sont bien au-delà des collisionneurs. Des indices indirects seraient la double désintégration bêta sans neutrino (nature de Majorana) et la violation de CP dans les oscillations de neutrinos (T2K, NOvA, puis DUNE et Hyper-Kamiokande) ; la baryogenèse électrofaible et d''autres mécanismes restent des alternatives. La page explore numériquement les équations jouets et ne prétend pas que l''asymétrie est née ainsi.'
+meanings:
+- '$z = M/T$, espacé logarithmiquement : l''horloge avance à mesure que l''univers refroidit'
+- 'asymétrie CP en colonne, paramètre de désintégration en ligne : tout se diffuse sur $(E, K)$'
+- '$\tfrac38 z^2K_2(z)$ : $3/4$ par photon tant que relativiste, puis $e^{-z}$'
+- désintégrations et désintégrations inverses par temps de Hubble au milieu du pas
+- '$N_N - N_N^{eq}$ : l''écart à l''équilibre (Sakharov 3)'
+- 'facteur exact sur un pas d''une EDO linéaire : stable même pour $K = 1000$'
+- asymétrie $B - L$ de chaque modèle, avancée par une seule mise à jour tensorielle par pas
+- les sphalérons gardent $28/79$ de $B - L$ en baryons ; les photons augmentent d'un facteur $f = 2387/86$
+- 'efficacité : $1$ pour un lessivage faible, $\approx 1/(K z_B)$ pour un lessivage fort'
+labels:
+  log_eps: 'Modèle affiché : $\log_{10}\varepsilon$'
+  log_K: 'Modèle affiché : $\log_{10}K$'
+  initial: Abondance initiale de neutrinos lourds
+  n_eps: Points de grille en $\varepsilon$
+  n_K: Points de grille en $K$
+  steps: Pas d'intégration en $z$
+  z_max: $z = M/T$ final

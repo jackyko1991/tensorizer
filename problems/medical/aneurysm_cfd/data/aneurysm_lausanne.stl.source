@@ -1,0 +1,3 @@
+aneurysm_lausanne.stl: aneurysm lumen derived from the Lausanne TOF-MRA Aneurysm Cohort (OpenNeuro ds003949, sub-074).
+Source: https://openneuro.org/datasets/ds003949 (doi:10.18112/openneuro.ds003949.v1.0.1). Licence: CC0.
+Citation: Di Noto et al., Neuroinformatics 2022, doi:10.1007/s12021-022-09597-0. Processing: see SOURCES.md.

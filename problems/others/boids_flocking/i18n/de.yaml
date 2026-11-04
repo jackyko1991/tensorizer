@@ -1,0 +1,21 @@
+source_hash: ee1c00fce805
+title: 'Schwarmverhalten: Vicsek-Modell und Boids'
+summary: Stare, Fischschwärme und Heuschrecken bewegen sich gemeinsam ohne Anführer. Im Vicsek-Modell fliegt jeder Vogel mit konstanter Geschwindigkeit und übernimmt die mittlere Flugrichtung seiner Nachbarn, plus einen Zufallswinkel der Größe bis zu $\eta$; in Reynolds' Boids steuert er durch Separation, Ausrichtung und Kohäsion. Alle $N^2$ Abstände zwischen den Vögeln in der periodischen Box bilden einen einzigen Tensor, und ein ganzer Batch von Rauschstärken läuft gleichzeitig, um den Ordnung-Unordnung-Übergang der polaren Ordnung $\varphi$ zu zeigen.
+notes: 'Vicsek et al. (1995) führten das Modell als einfachste Physik kollektiver Bewegung ein: Ausrichtung plus Rauschen. Bei schwachem Rauschen einigen sich die Vögel auf eine Richtung ($\varphi \to 1$), bei $\eta = 2\pi$ sind die Richtungen zufällig und $\varphi$ ist nur Finite-Size-Rauschen der Ordnung $1/\sqrt N$. In zwei Dimensionen ist das bemerkenswert, denn das Mermin-Wagner-Theorem verbietet langreichweitige Ordnung in Gleichgewichtssystemen mit kontinuierlicher Symmetrie; bewegte Vögel entkommen ihm, weil sich ihre Nachbarschaften ständig ändern (Toner und Tu 1995). Für große Systeme erweist sich der Übergang als unstetig, mit wandernden Bändern (Grégoire und Chaté 2004); bei diesem kleinen $N$ wirkt er glatt. Reynolds (1987) schrieb die Boids für Computeranimation. Hier sind seine drei Regeln als Paarkräfte geschrieben, die antisymmetrisch in $i \leftrightarrow j$ sind, sodass ohne die Geschwindigkeitsnormierung der Gesamtimpuls des Schwarms exakt erhalten bleibt (ein Test prüft
+  das); die Normierung auf die konstante Geschwindigkeit $v_0$ lässt den Schwarm dann eine Richtung wählen. Starke Kohäsion lässt den Schwarm zu einer rotierenden Kugel kollabieren, daher wird sie schwach gehalten. Probieren Sie eine kleinere Box (höhere Dichte) oder einen größeren Radius, um Ordnung zu erleichtern.'
+meanings:
+- Positionen von $N$ Vögeln in der Box $[0, L)^2$, ein Schwarm pro Rauschstärke $b$
+- Verschiebung von Vogel $i$ zur nächsten periodischen Kopie von Vogel $j$; antisymmetrisch in $i \leftrightarrow j$
+- Nachbarschaftsmatrix, wiederholtes $k$ ⇒ summiert; Vogel $i$ zählt sich selbst mit
+- 'wiederholtes $j$ ⇒ summiert: mittlere Flugrichtung der Nachbarn'
+- Rauschwinkel, gleichverteilt in $[-\eta/2, \eta/2]$; $\eta = 2\pi$ macht die Richtung völlig zufällig
+- 'Boids: Separation $-\sum_j S_{ij} \mathbf d_{ij}/|\mathbf d_{ij}|^2$, Ausrichtung $\sum_j A_{ij}(\mathbf v_j - \mathbf v_i)$, Kohäsion $\sum_j A_{ij}\mathbf d_{ij}$'
+- 'polare Ordnung: 1, wenn sich der Schwarm gemeinsam bewegt, etwa $1/\sqrt N$, wenn die Richtungen zufällig sind'
+labels:
+  n_birds: Vögel $N$
+  box: Boxseite $L$ (Nachbarschaftsradius $R = 1$)
+  speed: Geschwindigkeit $v_0$
+  eta: Rauschen $\eta$ des gezeigten Schwarms
+  n_noise: Rauschstärken im Batch
+  steps: Zeitschritte
+  seed: Zufallsstartwert

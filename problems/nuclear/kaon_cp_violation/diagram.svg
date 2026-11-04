@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Neutral kaons: a tagged K0 and anti-K0 fly from the production point, oscillate into each other and decay to two pions or to a lepton that tags their strangeness">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- production point -->
+    <circle cx="26" cy="80" r="7" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <!-- two kaon tracks, oscillating -->
+    <path d="M33,76 C55,50 75,40 100,40 C115,30 125,30 140,40 C155,50 165,50 180,40" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <path d="M33,84 C55,110 75,120 100,120 C115,130 125,130 140,120 C155,110 165,110 180,120" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <circle cx="70" cy="45" r="6" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="70" cy="115" r="6" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="58" y="30" font-style="italic">K⁰</text>
+    <text x="58" y="146" font-style="italic">K̄⁰</text>
+    <!-- decays -->
+    <line x1="180" y1="40" x2="222" y2="22" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="180" y1="40" x2="222" y2="54" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="200" y="76" font-style="italic">ππ</text>
+    <line x1="180" y1="120" x2="222" y2="104" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="200" y="146" font-style="italic">e±</text>
+    <!-- time axis -->
+    <line x1="26" y1="80" x2="214" y2="80" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="118" y="96" font-style="italic">t</text>
+  </g>
+</svg>

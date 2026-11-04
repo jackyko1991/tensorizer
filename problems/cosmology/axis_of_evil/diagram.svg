@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="The celestial sphere with the CMB quadrupole and octopole patterns; their preferred axes n2 and n3 point in almost the same direction">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- sky sphere -->
+    <circle cx="110" cy="84" r="58" fill="none" stroke="#374151" stroke-width="2"/>
+    <ellipse cx="110" cy="84" rx="58" ry="16" fill="none" stroke="#9ca3af" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <!-- multipole lobes (hot and cold patches) -->
+    <g stroke="#1e40af" stroke-width="1">
+      <ellipse cx="80" cy="70" rx="14" ry="9" fill="#93c5fd" transform="rotate(-30 80 70)"/>
+      <ellipse cx="138" cy="98" rx="14" ry="9" fill="#93c5fd" transform="rotate(-30 138 98)"/>
+      <ellipse cx="128" cy="58" rx="12" ry="8" fill="#fca5a5" stroke="#b91c1c" transform="rotate(-30 128 58)"/>
+      <ellipse cx="92" cy="110" rx="12" ry="8" fill="#fca5a5" stroke="#b91c1c" transform="rotate(-30 92 110)"/>
+    </g>
+    <!-- two nearly aligned axes -->
+    <line x1="80" y1="138" x2="146" y2="22" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="88" y1="140" x2="160" y2="26" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="128" y="20" font-style="italic" fill="#b91c1c">n</text><text x="137" y="24" font-size="10" fill="#b91c1c">2</text>
+    <text x="164" y="30" font-style="italic" fill="#b45309">n</text><text x="173" y="34" font-size="10" fill="#b45309">3</text>
+    <path d="M152,40 A 12 12 0 0 1 160,44" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="178" y="62" font-size="13">ℓ = 2, 3</text>
+    <text x="178" y="80" font-size="13">T(n̂)</text>
+  </g>
+</svg>

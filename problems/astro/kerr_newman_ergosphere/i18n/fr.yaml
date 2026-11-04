@@ -1,0 +1,19 @@
+source_hash: e53e4d6ab9fa
+title: 'Trous noirs de Kerr–Newman : horizons, ergosphère et singularités nues'
+summary: Le trou noir le plus général de la relativité générale avec électromagnétisme, de masse $M$, spin $a$ et charge $Q$. Pour toute une grille vectorisée de $(M, a, Q)$, le code calcule les horizons $r_\pm$, l'ergosphère, l'entraînement des référentiels ainsi que les ISCO et orbites de photons équatoriales (dérivées de la métrique par autograd). L'animation fait varier le spin et la charge jusqu'à l'extrémalité $a^2 + Q^2 = M^2$ et au-delà, là où l'horizon disparaît et où la singularité annulaire serait exposée, ce que la conjecture de censure cosmique (non démontrée) dit interdit par la nature.
+notes: 'Unités $G = c = 1$ : longueurs en $GM/c^2$, spin $a = J/(Mc)$, charge en unités géométrisées. Établi (RG classique) : la métrique de Kerr–Newman (Newman et al. 1965) résout les équations d''Einstein–Maxwell, ses horizons sont les racines de $\Delta$, et l''ergosphère, où aucun observateur ne peut rester immobile, s''étend entre $r_+$ et $r_E(\theta)$, touchant l''horizon aux pôles. À l''intérieur, l''entraînement des référentiels force tout à co-tourner : la courbe verte tombe avec un moment cinétique nul et est pourtant entraînée en rotation. Les orbites progrades serrent le trou : pour Kerr, l''ISCO passe de $6M$ à $a = 0$ à $M$ (prograde) et $9M$ (rétrograde) à $a = M$, en accord avec Bardeen, Press et Teukolsky (1972), et l''ISCO de Reissner–Nordström extrémal vaut $4M$. Pour $a^2 + Q^2 > M^2$, les formules donnent encore une métrique, mais sans horizon et avec une singularité annulaire nue en $r = 0$, $\theta = \pi/2$ (tracée en rouge). La conjecture faible de censure cosmique
+  de Penrose affirme que l''effondrement gravitationnel n''en produit jamais ; elle n''est pas démontrée en général (les contre-exemples connus exigent des données initiales finement ajustées ou des dimensions supplémentaires), et les tentatives de faire dépasser le spin ou la charge d''un trou extrémal en y jetant des particules semblent échouer dès que les effets de perturbation du second ordre sont inclus (Sorce et Wald 2017). Les trous réels ont $Q \approx 0$ (la charge est vite neutralisée), et les spins mesurés (jusqu''à environ $0.95$–$0.99\,M$) restent sous l''extrémalité. Le panneau équatorial utilise le $r$ de Boyer–Lindquist comme rayon ; là, le $\varphi$ de la courbe verte en chute s''enroule sans limite en $r_+$, un effet de coordonnées.'
+meanings:
+- toutes les combinaisons de masse, spin et charge en un seul lot, $G = c = 1$
+- racines de $\Delta = 0$ ; NaN quand $a^2 + Q^2 > M^2$ (nue)
+- limite statique $g_{tt} = 0$, diffusion images $\times$ angles polaires
+- le bloc en rotation $(t, \varphi)$ de la métrique de Boyer–Lindquist
+- vitesse angulaire d'un observateur à moment cinétique nul ; $\Omega_H = a/(r_+^2 + a^2)$ à l'horizon
+- dérivées de la métrique sur la grille radiale par autograd
+- vitesse angulaire et énergie des orbites circulaires ; ISCO au minimum de $E$, orbite de photons là où l'orbite exige la vitesse $c$
+- gravité de surface, $T_H = \kappa/2\pi$ ; nulle pour un trou extrémal
+labels:
+  angle: Angle de mélange $\psi$ ($0°$ spin pur, $90°$ charge pure)
+  chi_max: Balayage jusqu'à $\sqrt{a^2 + Q^2}/M$
+  frames: Images
+  grid: Points de grille par axe du relevé vectorisé $(a, Q)$

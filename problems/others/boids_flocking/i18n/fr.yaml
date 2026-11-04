@@ -1,0 +1,21 @@
+source_hash: ee1c00fce805
+title: 'Vol en nuée : modèle de Vicsek et boids'
+summary: Les étourneaux, les bancs de poissons et les criquets se déplacent ensemble sans chef. Dans le modèle de Vicsek, chaque oiseau vole à vitesse constante et copie la direction moyenne de ses voisins, plus un angle aléatoire d'amplitude jusqu'à $\eta$ ; dans les boids de Reynolds, il se dirige par séparation, alignement et cohésion. Les $N^2$ distances entre oiseaux dans la boîte périodique forment un seul tenseur, et tout un lot de niveaux de bruit tourne à la fois pour montrer la transition ordre–désordre de l'ordre polaire $\varphi$.
+notes: 'Vicsek et al. (1995) ont introduit le modèle comme la physique la plus simple du mouvement collectif : alignement plus bruit. À faible bruit, les oiseaux s''accordent sur une direction ($\varphi \to 1$) ; à $\eta = 2\pi$, les directions sont aléatoires et $\varphi$ n''est qu''un bruit de taille finie d''ordre $1/\sqrt N$. En deux dimensions c''est remarquable, car le théorème de Mermin–Wagner interdit l''ordre à longue portée dans les systèmes à l''équilibre dotés d''une symétrie continue ; les oiseaux en mouvement y échappent parce que leurs voisinages changent sans cesse (Toner et Tu 1995). Pour de grands systèmes, la transition s''avère discontinue, avec des bandes qui se propagent (Grégoire et Chaté 2004) ; pour ce petit $N$, elle paraît continue. Reynolds (1987) a écrit les boids pour l''animation par ordinateur. Ici, ses trois règles sont écrites comme des forces de paire antisymétriques en $i \leftrightarrow j$, de sorte que sans la normalisation de la vitesse, la quantité
+  de mouvement totale de la nuée est exactement conservée (un test le vérifie) ; la normalisation à la vitesse constante $v_0$ permet ensuite à la nuée de choisir une direction. Une forte cohésion fait s''effondrer la nuée en une boule tournante, elle est donc maintenue faible. Essayez une boîte plus petite (densité plus élevée) ou un rayon plus grand pour faciliter l''ordre.'
+meanings:
+- positions des $N$ oiseaux dans la boîte $[0, L)^2$, une nuée par niveau de bruit $b$
+- déplacement de l'oiseau $i$ vers la copie périodique la plus proche de l'oiseau $j$ ; antisymétrique en $i \leftrightarrow j$
+- matrice de voisinage, $k$ répété ⇒ sommé ; l'oiseau $i$ se compte lui-même
+- '$j$ répété ⇒ sommé : direction moyenne des voisins'
+- angle de bruit, uniforme dans $[-\eta/2, \eta/2]$ ; $\eta = 2\pi$ rend la direction complètement aléatoire
+- 'boids : séparation $-\sum_j S_{ij} \mathbf d_{ij}/|\mathbf d_{ij}|^2$, alignement $\sum_j A_{ij}(\mathbf v_j - \mathbf v_i)$, cohésion $\sum_j A_{ij}\mathbf d_{ij}$'
+- 'ordre polaire : 1 quand la nuée se déplace ensemble, environ $1/\sqrt N$ quand les directions sont aléatoires'
+labels:
+  n_birds: Oiseaux $N$
+  box: Côté de la boîte $L$ (rayon de voisinage $R = 1$)
+  speed: Vitesse $v_0$
+  eta: Bruit $\eta$ de la nuée affichée
+  n_noise: Niveaux de bruit dans le lot
+  steps: Pas de temps
+  seed: Graine aléatoire

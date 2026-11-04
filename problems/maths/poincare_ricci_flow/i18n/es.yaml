@@ -1,0 +1,20 @@
+source_hash: 51ed4214e669
+title: La conjetura de Poincaré y el flujo de Ricci
+summary: 'Demostrada: toda 3-variedad cerrada y simplemente conexa es la 3-esfera (Perelman 2002–03, culminando el programa del flujo de Ricci de Hamilton). El flujo de Ricci $\partial_t g = -2\,\mathrm{Ric}$ suaviza una métrica como el calor suaviza la temperatura. Aquí redondea un lote de 2-esferas abolladas (Gauss–Bonnet $\int K\,dA = 4\pi$ se cumple hasta el redondeo) y estrangula el cuello de una 3-esfera en forma de pesa en tiempo finito: la singularidad que la cirugía de Perelman extirpa, tras lo cual cada pieza se vuelve redonda.'
+notes: 'Estado: demostrada. Poincaré preguntó en 1904 si una 3-variedad cerrada en la que todo lazo puede contraerse a un punto debe ser la 3-esfera. Hamilton introdujo el flujo de Ricci en 1982 y demostró que una 3-variedad con curvatura de Ricci positiva fluye hacia una métrica redonda; en dos dimensiones toda métrica en la esfera se vuelve redonda (Hamilton 1988, Chow 1991), como muestran las esferas abolladas: la dispersión de $K$ decae a cero mientras $\int K\,dA = 4\pi$ y el área permanecen fijas. Los armónicos $l = 1$ son movimientos conformes de la esfera redonda y no decaen, pero no cambian la forma. En tres dimensiones el flujo puede desarrollar singularidades. Para una pesa con simetría de rotación y un cuello suficientemente delgado, Angenent y Knopf (2004) demostraron un estrangulamiento del cuello: el cuello se contrae como un cilindro $S^2 \times \mathbb R$, $\psi_\mathrm{neck}^2 \approx 2(T - t)$, mientras los bulbos siguen siendo grandes. Los artículos de Perelman (arXiv
+  2002–03) controlaron todas las singularidades en tres dimensiones (ausencia de colapso local, entornos canónicos), definieron el flujo de Ricci con cirugía, que corta los cuellos y los tapa con casquetes, y mostraron que para una variedad simplemente conexa el flujo se extingue en tiempo finito, siendo cada pieza una esfera redonda justo antes de desaparecer, de modo que la variedad era una 3-esfera. La demostración fue verificada en detalle por Kleiner–Lott, Morgan–Tian y Cao–Zhu; Perelman rechazó la Medalla Fields en 2006 y el Premio del Milenio Clay en 2010. Aspectos numéricos: las superficies usan una malla de volúmenes finitos en el ángulo polar, de modo que el Gauss–Bonnet discreto es exacto. La 3-esfera se escribe en forma conforme, que es regular en los polos (la forma en longitud de arco divide allí por $\psi \to 0$ y es inestable), con celdas concentradas hacia los polos porque los bulbos se comprimen allí a medida que el cuello se adelgaza; el flujo se detiene en un radio de
+  cuello de $0.05$, donde los bulbos aún están resueltos. La cirugía aquí es solo un esbozo de la construcción de Perelman. Pruebe un cuello grueso ($\varepsilon \gtrsim 0.5$): no se estrangula, y toda la esfera se redondea.'
+meanings:
+- factor conforme de cada esfera abollada $b$, métrica $e^{2u}(dx^2 + \sin^2x\,d\theta^2)$, en la celda $i$
+- '$j$ repetido ⇒ sumado: el laplaciano en forma de flujos de la esfera redonda; sus flujos se anulan en los polos'
+- curvatura de Gauss de la métrica conforme; el flujo de Ricci en una superficie es $\partial_t g = -2Kg$
+- 'curvatura total: exactamente $4\pi$ para toda métrica (Gauss–Bonnet discreto), una comprobación en cada paso'
+- curvatura media objetivo del flujo normalizado; mantiene fija cada área
+- curvaturas seccionales de la 3-esfera $g = e^{2u}(dx^2 + \sin^2x\,g_{S^2})$, $-\psi_{ss}/\psi$ y $(1-\psi_s^2)/\psi^2$ con $\psi = e^u\sin x$
+- un término de difeomorfismo (gauge) que mantiene la métrica en forma conforme; cambia las coordenadas, no la geometría
+- radio de la sección transversal $S^2$ más pequeña; $\psi_\mathrm{neck}^2$ cae aproximadamente a la tasa del cilindro $2$ hasta el estrangulamiento
+- cortar el cuello de alta curvatura y pegar un casquete redondo tangente al perfil (un esbozo de la cirugía de Perelman)
+labels:
+  neck: Radio inicial del cuello $\varepsilon$ de la pesa
+  t_surface: Tiempo de flujo para las superficies
+  cells: Celdas de la malla $N$

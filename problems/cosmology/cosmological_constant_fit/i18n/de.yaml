@@ -1,0 +1,25 @@
+source_hash: 73d953345169
+title: Die kosmologische Konstante an Supernovae anpassen
+summary: '1466 echte Supernovae vom Typ Ia aus der offenen Pantheon+-Kompilation werden mit einem Friedmann-Universum aus Materie $\Omega_m$, kosmologischer Konstante $\Omega_\Lambda$ und Krümmung angepasst. Ein einziges gestapeltes $\chi^2$ wertet Tausende von Universen an jeder Supernova gleichzeitig aus und zeichnet die $\Omega_m$–$\Omega_\Lambda$-Konfidenzkonturen, während Adam und Autograd vom reinen Materie-Universum zur besten Anpassung laufen. Ferne Supernovae sind lichtschwächer als in einem abbremsenden Universum: $q_0 < 0$, die Expansion beschleunigt sich.'
+notes: '1998 fanden zwei Teams, das Supernova Cosmology Project (Perlmutter et al.) und das High-z Supernova Search Team (Riess et al.; Schmidt), dass ferne Supernovae vom Typ Ia, standardisierbare Kerzen, lichtschwächer erscheinen, als ein abbremsendes Universum erlaubt: Die Expansion beschleunigt sich, was in der allgemeinen Relativitätstheorie etwas wie eine kosmologische Konstante $\Lambda$ (dunkle Energie) erfordert. Dafür gab es den Physik-Nobelpreis 2011. Hier läuft derselbe Test mit heutigen Daten. Das linke Feld zeigt jeden Entfernungsmodul minus dem eines leeren, frei expandierenden Universums ($\Omega_m = \Omega_\Lambda = 0$): Ein reines Materie-Universum (rot) würde ferne Supernovae heller machen (unter null), die Daten liegen darüber. Das rechte Feld zeigt die 1-, 2- und 3$\sigma$-Bereiche ($\Delta\chi^2 = 2.30, 6.18, 11.83$) aus dem gestapelten Gitter, mit der Linie flacher Geometrie, der Linie $q_0 = 0$ zwischen Beschleunigung und Abbremsung und der Ecke „ohne Urknall“, in
+  der $E^2$ innerhalb des Datenbereichs negativ wird. Mit diesen diagonalen Fehlern ergibt die Anpassung $\Omega_m \approx 0.30 \pm 0.07$, $\Omega_\Lambda \approx 0.57 \pm 0.10$ (flach: $\Omega_m \approx 0.35 \pm 0.02$), und $\Omega_\Lambda \le 0$ wird mit etwa $5.5\sigma$ verworfen ($\sigma = \sqrt{\Delta\chi^2}$ gegenüber dem besten Modell auf der verworfenen Seite). $H_0$ ist mit der absoluten Helligkeit der Supernovae entartet; der ausgegebene Wert ($\approx 73$ km/s/Mpc) stammt aus der in diese $\mu$ eingebauten Cepheiden-Kalibrierung von SH0ES und ist keine unabhängige Messung (die „Hubble-Spannung“ zum CMB-Wert $\approx 67$ ist eine offene Frage). Daten: Pantheon+-Entfernungsmoduln (Scolnic et al. 2022, ApJ 938, 113; Brout et al. 2022, ApJ 938, 110), von github.com/PantheonPlusSH0ES/DataRelease (Datei Pantheon+SH0ES.dat; für die Forschung ohne angegebene Lizenz veröffentlicht, die Arbeiten sind Open Access unter CC BY 4.0; bitte zitieren). Übernommen: zHD, MU_SH0ES und MU_SH0ES_ERR_DIAG
+  für $z > 0.01$, Wirtsgalaxien der Kalibrier-Cepheiden entfernt, eine Zeile pro Supernova. Eine eigene Tabelle funktioniert ebenfalls: jede CSV mit den Spalten z, mu, sigma_mu (siehe load_distance_moduli). Vereinfachungen: Nur die diagonalen Fehler werden verwendet, nicht die volle statistische + systematische Kovarianz von Pantheon+ ($\chi^2/\mathrm{dof} \approx 0.44$ zeigt, dass diese Fehler konservativ sind, während das Weglassen korrelierter Systematiken die Konturen etwas zu optimistisch macht); dunkle Energie ist eine reine Konstante ($w = -1$); Strahlung wird vernachlässigt.'
+meanings:
+- Rotverschiebung, Entfernungsmodul und Fehler der Supernova $i$, aus jeder CSV mit diesen Spalten
+- Kandidaten-Universen; gebroadcastet als $(A,1,1)$ und $(1,B,1)$
+- Expansionsrate an jedem Knoten $z_k$ für alle Universen zugleich
+- kumulative Trapezregel für $1/E$ entlang der letzten Achse
+- kubische Hermite-Interpolation auf die Rotverschiebungen der Supernovae (Steigung $1/E$ bekannt)
+- $\sinh$, Identität oder $\sin$ für offenen, flachen oder geschlossenen Raum
+- '$i$ summiert: das beste $H_0$ jedes Universums ist ein analytischer gewichteter Mittelwert'
+- $i$ summiert mit Gewichten $w_i = 1/\sigma_i^2$
+- Autograd durch das Integral, genutzt von Adam und L-BFGS
+- Kovarianz der angepassten Parameter aus der Krümmung von $\chi^2$
+labels:
+  geometry: Geometrie der Adam-Anpassung
+  start_Om: Adam-Start $\Omega_m$
+  start_OL: Adam-Start $\Omega_\Lambda$
+  steps: Adam-Iterationen
+  lr: Adam-Lernrate
+  grid: Gitterpunkte pro Achse ($\chi^2$-Konturen)
+  z_min: Minimale Rotverschiebung $z_\mathrm{min}$

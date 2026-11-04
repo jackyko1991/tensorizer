@@ -55,7 +55,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 ## Problem library
 
 <!-- library:start -->
-172 problems in 17 topics by difficulty level. Click a topic to expand it.
+227 problems in 19 topics by difficulty level. Click a topic to expand it.
 
 <details>
 <summary><b>Mechanics</b> (13 problems)</summary>
@@ -178,7 +178,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary><b>Thermodynamics</b> (10 problems)</summary>
+<summary><b>Thermodynamics</b> (11 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -192,13 +192,14 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🟠 Intermediate (3)</summary>
+<summary>🟠 Intermediate (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Heat diffusion on a plate](problems/thermodynamics/heat_diffusion) | $\partial_t T = \alpha\,\partial_i\partial_i T$ |
 | [Random walk and diffusion](problems/thermodynamics/random_walk_diffusion) | $\langle x_i x_i\rangle = 2dDt$ |
 | [Black-body radiation](problems/thermodynamics/blackbody_radiation) | $u_{ab} = \frac{8\pi h c}{\lambda_b^5}\,\frac{1}{\exp\!\big(hc / \lambda_b k T_a\big) - 1}$ |
+| [Maxwell's demon, the Szilard engine and Landauer's principle](problems/thermodynamics/maxwell_demon) | $y_b = x_b + F_b\,\Delta t + \sqrt{2\Delta t}\,\xi_b$ |
 
 </details>
 
@@ -256,7 +257,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary><b>Fluids & Continuum</b> (10 problems)</summary>
+<summary><b>Fluids & Continuum</b> (13 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -281,7 +282,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (4)</summary>
+<summary>🔴 Advanced (7)</summary>
 
 | Problem | Key equation |
 |---|---|
@@ -289,13 +290,16 @@ The interface and all problem text are available in 10 languages: English, 繁�
 | [Flow past a cylinder: drag and vortex shedding](problems/fluids/cylinder_drag) | $f_i(\mathbf x + \mathbf e_i, t + 1) = f_i - \tfrac1\tau\big(f_i - f_i^\text{eq}\big)$ |
 | [Elastic P and S waves](problems/fluids/elastic_waves) | $\rho\,\ddot u_i = (\lambda + \mu)\,\partial_i\partial_j u_j + \mu\,\partial_j\partial_j u_i + f_i$ |
 | [Machine-learning–accelerated CFD](problems/fluids/ml_accelerated_cfd) | $\dot u_{bi} = -\frac{F_{b,i+\frac12} - F_{b,i-\frac12}}{\Delta x}$ |
+| [Navier–Stokes regularity and blowup candidates](problems/fluids/navier_stokes_blowup) | $\partial_t\hat u_{bi} = P_{ij}\,\widehat{(\mathbf u\times\boldsymbol\omega)}_{bj} - \nu_b\,k_lk_l\,\hat u_{bi}$ |
+| [Searching for self-similar blow-up profiles](problems/fluids/blowup_profile_search) | $R_{bn} = -\lambda_b U_{bn} + \big((1+\lambda_b)\,y_{bn} + U_{bn}\big)\,U'_{bn}$ |
+| [Digital wind tunnel: 3D lattice Boltzmann around an STL airplane](problems/fluids/lbm_wind_tunnel) | $f_i(\mathbf x + \mathbf e_i, t + 1) = f_i - \omega^+\Delta_i^+ - \omega^-\Delta_i^-$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Quantum</b> (12 problems)</summary>
+<summary><b>Quantum</b> (13 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -309,7 +313,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🟠 Intermediate (5)</summary>
+<summary>🟠 Intermediate (6)</summary>
 
 | Problem | Key equation |
 |---|---|
@@ -318,6 +322,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 | [Tunnelling in a double well](problems/quantum/double_well) | $H_{xy}\,\varphi_{yn} = E_n\,\varphi_{xn}$ |
 | [Schrödinger equation: Crank–Nicolson time stepping](problems/quantum/schrodinger_crank_nicolson) | $H_{xy} = -\tfrac12\,D2_{xy} + V_x\,\delta_{xy}$ |
 | [Matrix mechanics: Heisenberg's oscillator from ladder operators](problems/quantum/matrix_mechanics) | $a_{mn} = \sqrt n\,\delta_{m,n-1}$ |
+| [Photoelectric effect and light quanta](problems/quantum/photoelectric_effect) | $K_{ifn} = h\,\nu_f - \phi - \varepsilon_{ifn}$ |
 
 </details>
 
@@ -336,7 +341,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary><b>Astrophysics & Relativity</b> (11 problems)</summary>
+<summary><b>Astrophysics & Relativity</b> (16 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -350,7 +355,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🟠 Intermediate (4)</summary>
+<summary>🟠 Intermediate (6)</summary>
 
 | Problem | Key equation |
 |---|---|
@@ -358,11 +363,13 @@ The interface and all problem text are available in 10 languages: English, 繁�
 | [Lagrange points of the restricted three-body problem](problems/astro/lagrange_points) | $\ddot x_i = -m_s\,\frac{(x - x_s)_i}{\lvert x - x_s\rvert^3} - 2\,\varepsilon_{ijk}\Omega_j\dot x_k - \varepsilon_{ijk}\Omega_j\,\varepsilon_{klm}\Omega_l x_m$ |
 | [Spaghettification near a black hole](problems/astro/tidal_tensor) | $\ddot\xi_{bi} = T_{ij}\,\xi_{bj}$ |
 | [Hohmann and bi-elliptic orbit transfers](problems/astro/orbit_transfer) | $\ddot x_{bi} = -\mu\,x_{bi}\,(x_{bj}x_{bj})^{-3/2}$ |
+| [Einstein 1905: moving bodies and $E = mc^2$](problems/astro/einstein_1905_relativity) | $x'^\mu = \Lambda^\mu{}_\nu\,x^\nu$ |
+| [Weighing Sgr A*: the orbit of the star S2](problems/astro/sgr_a_star_orbits) | $E_{bt} \leftarrow E_{bt} - \frac{E_{bt} - e_b\sin E_{bt} - M_{bt}}{1 - e_b\cos E_{bt}}$ |
 
 </details>
 
 <details>
-<summary>🔴 Advanced (4)</summary>
+<summary>🔴 Advanced (7)</summary>
 
 | Problem | Key equation |
 |---|---|
@@ -370,13 +377,56 @@ The interface and all problem text are available in 10 languages: English, 繁�
 | [Hawking radiation and black-hole evaporation](problems/astro/hawking_radiation) | $T_m = \frac{\hbar c^3}{8\pi G k_B}\,M_m^{-1}$ |
 | [Gravitational lensing by a black hole](problems/astro/gravitational_lensing) | $u_b'' = -u_b + 3M\,u_b^2$ |
 | [Pulsar timing array and the Hellings–Downs curve](problems/astro/pulsar_timing_hellings_downs) | $e^{+}_{mij} = m_im_j - n_in_j$ |
+| [Kerr–Newman black holes: horizons, ergosphere and naked singularities](problems/astro/kerr_newman_ergosphere) | $r_{\pm,b} = M_b \pm \sqrt{M_b^2 - a_b^2 - Q_b^2}$ |
+| [Re-igniting dead stars: brown dwarfs, novae, X-ray bursts and black holes](problems/astro/dead_star_reignition) | $T_{by}^4 = T_{{\rm floor},b}^4 + \frac{3\kappa_{by}\,y_y\,F_{by}}{a c}$ |
+| [GW150914: the first gravitational-wave chirp](problems/astro/gw150914_chirp) | $S_{dk} = \frac{2}{f_s\,w_nw_n}\,\big\langle \vert X_{dsk}\vert ^2\big\rangle_s$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Nuclear & Particle</b> (11 problems)</summary>
+<summary><b>Cosmology & New Physics</b> (19 problems)</summary>
+
+<details>
+<summary>🟠 Intermediate (3)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [The CMB as a perfect blackbody (COBE FIRAS)](problems/cosmology/cmb_blackbody) | $I_{bf} = 2hc\,\tilde\nu_f^3\big[(e^{x_{bf}+\mu_b}-1)^{-1} + y_b\,Y(x_{bf})\big]$ |
+| [Galaxy rotation curves and dark matter](problems/cosmology/dark_matter_rotation) | $V^2_{gr} = V^2_{\mathrm{gas},gr} + \Upsilon_{d,g} V^2_{\mathrm{disk},gr} + \Upsilon_{b,g} V^2_{\mathrm{bul},gr} + V^2_{\mathrm{halo}}(r_{gr};\,V_{s,g}, r_{s,g})$ |
+| [Tachyons and the antitelephone](problems/cosmology/tachyons) | $x'^a_{Bn} = \Lambda^a{}_b(\beta_B)\,x^b_n$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (16)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Relativistic string modes and T-duality](problems/cosmology/string_modes) | $X_{tsi} = \sqrt{2\alpha'}\,\mathrm{Re}\Big[E^{(R)}_{tsn}\,\tfrac{i}{n}\,\alpha_{ni} + E^{(L)}_{tsn}\,\tfrac{i}{n}\,\tilde\alpha_{ni}\Big]$ |
+| [Quantum cosmology: the loop bounce](problems/cosmology/quantum_gravity_toy) | $\dot y_{bk} = f_k(y_b;\,p_b,\lambda_b)$ |
+| [Variable speed of light and the horizon problem](problems/cosmology/variable_speed_of_light) | $r^H_{ma} = \frac{c_{ma}}{a_a H_{ma}}$ |
+| [Fitting the cosmological constant to supernovae](problems/cosmology/cosmological_constant_fit) | $\chi_{abk} = \sum_{k'<k}\tfrac{h}{2}\big(E^{-1}_{abk'} + E^{-1}_{ab,k'+1}\big)$ |
+| [The axis of evil in the microwave sky](problems/cosmology/axis_of_evil) | $r = \arg\min\ w_p\big(T_p - Y_{pa}\,r_a\big)^2$ |
+| [Why is there more matter than antimatter?](problems/cosmology/baryon_asymmetry) | $\Delta_{k,n+1} = \Delta_{kn}\,e^{-D_kh} - \frac{dN^{eq}}{dz}\,h\,\varphi(D_kh)$ |
+| [The hierarchy problem and gravity leaking into extra dimensions](problems/cosmology/hierarchy_extra_dimensions) | $r_n(m) = \big[\vartheta(q)^n\big]_m$ |
+| [Slow-roll inflation and the (n_s, r) plane](problems/cosmology/inflation_slow_roll) | $\frac{d\phi_b}{dN} = \psi_b$ |
+| [Big Bang nucleosynthesis](problems/cosmology/big_bang_nucleosynthesis) | $\frac{dY_{bi}}{du} = \frac{dt}{du}\,S_{ri}\big(\lambda^+_{br} M^+_{br} - \lambda^-_{br} M^-_{br}\big)$ |
+| [The projection postulate: one high-dimensional state, many shadows](problems/cosmology/projection_postulate) | $q_{tD} = \frac{\sum_{i\leq d}\vert z_{ti}\vert ^2}{\sum_{i\leq D}\vert z_{ti}\vert ^2}$ |
+| [One particle seen many times: slicing a single worldline](problems/cosmology/projection_one_particle) | $X_{bsi} = \sigma_k\,a_{bikc}\,\phi_{ksc}$ |
+| [How many dimensions? The budget of the projection hypothesis](problems/cosmology/projection_dimension_budget) | $F_r = \vert S^{n+2}\vert \,r^{n+2}\,\langle \partial_i\phi\,u_{pi}\rangle_p$ |
+| [Singularities as folds of a projection](problems/cosmology/projection_singularity_fold) | $g_{bij} = J_{bAi}\,\eta_{AC}\,J_{bCj}$ |
+| [Bell tests of the projection race](problems/cosmology/projection_bell_test) | $w_{bij} = \bar\psi_{xy}\,(P^a)_{bixu}\,(P^b)_{bjyv}\,\psi_{uv}$ |
+| [Telescope tests of the projection: gravitational waves, black-hole shadows and supernovae](problems/cosmology/projection_telescope_tests) | $\mathcal L(x) = \frac{\sum_i w_i\,K_h(x - d_i)}{\sum_i w_i}$ |
+| [Where could the antimatter be? Criteria for an antimatter universe](problems/cosmology/projection_antimatter_universe) | $J_{de} = \frac{c}{4\pi}\sum_z R_{dz}\,H_z^{-1}\,\Delta z_z\,S_{ez}$ |
+
+</details>
+
+</details>
+
+<details>
+<summary><b>Nuclear & Particle</b> (15 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -401,7 +451,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (5)</summary>
+<summary>🔴 Advanced (9)</summary>
 
 | Problem | Key equation |
 |---|---|
@@ -410,6 +460,10 @@ The interface and all problem text are available in 10 languages: English, 繁�
 | [Electromagnetic shower](problems/nuclear/em_shower) | $(E_p, s_p) \to \big(\tfrac{E_p}{2}, 1\big),\ \big(\tfrac{E_p}{2}, 1 - s_p\big)\ \text{ if } \tfrac{E_p}{2} \ge E_c$ |
 | [Feynman diagram: $e^+e^- \to \mu^+\mu^-$ from Dirac traces](problems/nuclear/feynman_ee_mumu) | $\overline{\vert \mathcal M\vert ^2} = \frac{e^4}{4s^2}\,L^{\mu\nu}M_{\mu\nu}$ |
 | [Inertial-fusion ignition of a DT hot spot](problems/nuclear/fusion_ignition) | $P^{\alpha}_b = \tfrac14 n^2(1-\varphi_b)^2\langle\sigma v\rangle(T_b)\,E_\alpha$ |
+| [Yang–Mills on the lattice and the mass gap](problems/nuclear/yang_mills_mass_gap) | $P_{\mu\nu}(x) = U_\mu(x)\,U_\nu(x+\hat\mu)\,U_\mu^\dagger(x+\hat\nu)\,U_\nu^\dagger(x)$ |
+| [Time reversal and CPT with neutral kaons](problems/nuclear/kaon_cp_violation) | $H_{ab} = V_{ai}\,\lambda_i\,[V^{-1}]_{ib}$ |
+| [Finding the Higgs boson in real diphoton data](problems/nuclear/higgs_boson) | $B_{bn} = w_n\exp(X_{nk}\theta_{bk})$ |
+| [Particle track finding as an integer program](problems/nuclear/ilp_track_finding) | $\sum_{e\in\mathrm{out}(h)} y_e \le 1$ |
 
 </details>
 
@@ -492,7 +546,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary><b>Medical Physics</b> (10 problems)</summary>
+<summary><b>Medical Physics</b> (11 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -517,7 +571,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (4)</summary>
+<summary>🔴 Advanced (5)</summary>
 
 | Problem | Key equation |
 |---|---|
@@ -525,6 +579,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 | [MRI k-space: imaging with gradients and Fourier transforms](problems/medical/mri_kspace) | $s_{uv} = E_{up}\,E_{vr}\,\rho_{pr}$ |
 | [Diffusion tensor imaging: mapping nerve fibres](problems/medical/diffusion_tensor_imaging) | $S_{vg} = S_{0v}\,e^{-b\,\hat g_{gi}\,D_{vij}\,\hat g_{gj}}$ |
 | [Photon-counting CT and material decomposition](problems/medical/photon_counting_ct) | $A_{rm} = \textstyle\int a_m\,dl$ |
+| [Aneurysm CFD: the OpenFOAM + VMTK workflow, rebuilt with tensors](problems/medical/aneurysm_cfd) | $(\nabla\!\cdot\mathbf u)_c = \tfrac1h\Big(\sum_{o(f)=c}u_f - \sum_{n(f)=c}u_f\Big)$ |
 
 </details>
 
@@ -607,45 +662,57 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary><b>Mathematics</b> (9 problems)</summary>
+<summary><b>Mathematics</b> (21 problems)</summary>
 
 <details>
-<summary>🟢 Beginner (3)</summary>
+<summary>🟢 Beginner (4)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Fourier series and the Gibbs phenomenon](problems/maths/fourier_gibbs) | $B_{jn} = \sin(n\,x_j)$ |
 | [Numerical integration and convergence order](problems/maths/numerical_integration) | $I_f = w_k\,F_{fk}$ |
 | [Linear maps of the plane](problems/maths/linear_maps_2d) | $Y_{tki} = M_{tij}\,P_{kj}$ |
+| [Drawing with epicycles](problems/maths/fourier_epicycles) | $c_k = \tfrac1N\,W_{kn}\,z_n$ |
 
 </details>
 
 <details>
-<summary>🟠 Intermediate (3)</summary>
+<summary>🟠 Intermediate (6)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [Newton fractal](problems/maths/newton_fractal) | $p_p = c_k\,V_{pk}$ |
 | [Image compression with the SVD](problems/maths/svd_compression) | $A_{cij} = U_{cir}\,\sigma_{cr}\,V_{cjr}$ |
 | [Markov chains and PageRank](problems/maths/markov_pagerank) | $d_j = \sum_i L_{ij}$ |
+| [Prime spirals and the Hardy–Littlewood conjectures](problems/maths/prime_spirals) | $F_{ik} = a_i k^2 + b_i k + c_i$ |
+| [Ramanujan's partitions $p(n)$](problems/maths/ramanujan_partitions) | $p_{n} = \sum_j s_j\, p_{n-g_j}$ |
+| [Gauss's 17-gon with ruler and compass](problems/maths/gauss_heptadecagon) | $\eta_{mi} = M_{mij}\,\zeta_{e_j}$ |
 
 </details>
 
 <details>
-<summary>🔴 Advanced (3)</summary>
+<summary>🔴 Advanced (11)</summary>
 
 | Problem | Key equation |
 |---|---|
 | [The Mandelbrot set and Julia sets](problems/maths/mandelbrot_julia) | $z_{p}\leftarrow z_{p}\,z_{p} + c_{p}$ |
 | [Spectral clustering and the graph Laplacian](problems/maths/spectral_clustering) | $W_{ij} = e^{-(x_{ia}-x_{ja})(x_{ia}-x_{ja})/2\sigma^2}\,[ij \in \text{kNN}]$ |
 | [The Riemann zeta function and the primes](problems/maths/zeta_primes) | $\zeta_t = E_{tn}1_n + \frac{N^{1-s_t}}{s_t - 1} + \frac{N^{-s_t}}{2} + \sum_{k} \frac{B_{2k}}{(2k)!}\,(s_t)_{2k-1}\,N^{-s_t-2k+1}$ |
+| [P vs NP and the 3-SAT phase transition](problems/maths/p_vs_np_sat) | $\ell_{bmk} = x_{b\,v_{bmk}} \oplus s_{bmk}$ |
+| [The Riemann hypothesis in thousands of zeros](problems/maths/riemann_hypothesis) | $Z_t = 2\,C_{tn}\,w_n + (-1)^{N_t-1} a_t^{-1/2}\big(C_0 + C_1 a_t^{-1} + C_2 a_t^{-2}\big)$ |
+| [Birch and Swinnerton-Dyer, counting points mod p](problems/maths/birch_swinnerton_dyer) | $a_{cp} = -\sum_x \chi_{p}\big(f_c(x) \bmod p\big)$ |
+| [The Hodge conjecture](problems/maths/hodge_conjecture) | $h^{n-q,q}_{\text{prim}} = \big[t^{(q+1)d-(n+2)}\big]\Big(\sum_{b=0}^{d-2} t^b\Big)^{n+2}$ |
+| [The Kakeya conjecture](problems/maths/kakeya_conjecture) | $\ell_{yi} = b_i(1 - y) + s_i$ |
+| [The Poincaré conjecture and Ricci flow](problems/maths/poincare_ricci_flow) | $\partial_t u_{bi} = \bar k_b - K_{bi}$ |
+| [Ramanujan's $\tau(n)$ and the Sato–Tate law](problems/maths/ramanujan_tau) | $e^{(3)}_n = \sum_k (-1)^k(2k+1)\,\delta_{n,\,k(k+1)/2}$ |
+| [Optimal transport with Sinkhorn](problems/maths/sinkhorn_transport) | $C_{ij} = (x_{ik} - y_{jk})(x_{ik} - y_{jk})$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Gaming & Computer Vision</b> (10 problems)</summary>
+<summary><b>Gaming & Computer Vision</b> (11 problems)</summary>
 
 <details>
 <summary>🟢 Beginner (3)</summary>
@@ -670,7 +737,7 @@ The interface and all problem text are available in 10 languages: English, 繁�
 </details>
 
 <details>
-<summary>🔴 Advanced (4)</summary>
+<summary>🔴 Advanced (5)</summary>
 
 | Problem | Key equation |
 |---|---|
@@ -678,33 +745,22 @@ The interface and all problem text are available in 10 languages: English, 繁�
 | [NeRF: volume rendering a neural radiance field](problems/graphics/nerf_volume_rendering) | $x_{rsi} = o_{ri} + t_{rs}\,d_{ri}$ |
 | [Bundle adjustment: structure from motion by Levenberg–Marquardt](problems/graphics/bundle_adjustment) | $x_{cpi} = R_{cij}X_{pj} + t_{ci}$ |
 | [Reading a QR code from a photo](problems/graphics/qr_code_decode) | $R_{bxy} = \min\!\Big(\max_s \sum_t K^{s}_t D^{\pm}_{b,x,y+t},\ \max_s \sum_t K^{s}_t D^{\pm}_{b,x+t,y}\Big)$ |
+| [Point cloud registration: the PCL pipeline (FPFH, RANSAC, ICP)](problems/graphics/point_cloud_registration) | $H_{bij} = w_{bn}\,\bar p_{bni}\,\bar q_{bnj}$ |
 
 </details>
 
 </details>
 
 <details>
-<summary><b>Others</b> (10 problems)</summary>
+<summary><b>AI & Machine Learning</b> (6 problems)</summary>
 
 <details>
-<summary>🟢 Beginner (2)</summary>
+<summary>🟠 Intermediate (2)</summary>
 
 | Problem | Key equation |
 |---|---|
-| [Conway's Game of Life as a convolution](problems/others/game_of_life) | $N_{bp} = K_k\,P_{bkp}$ |
-| [Monte Carlo: estimating $\pi$ with random darts](problems/others/monte_carlo_pi) | $h_{bn} = [x_{bni}\,x_{bni} \le 1]$ |
-
-</details>
-
-<details>
-<summary>🟠 Intermediate (4)</summary>
-
-| Problem | Key equation |
-|---|---|
-| [Lorenz attractor and the butterfly effect](problems/others/lorenz_attractor) | $\dot x_{bi} = A_{ij}\,x_{bj} + Q_{ijk}\,x_{bj}\,x_{bk}$ |
-| [Noise and the Langevin equation](problems/others/langevin_noise) | $v_{b,n+1} = v_{bn} + \frac{-\gamma\,v_{bn} - k\,x_{bn}}{m}\,\Delta t + \frac{\sqrt{2\gamma k_BT\,\Delta t}}{m}\,\xi_{nb}$ |
-| [Fitting experimental measurements with tensors](problems/others/measurement_fitting) | $r_i = \frac{x_i - f(t_i;\theta)}{\sigma_{tot,i}},\ \ \sigma_{tot,i}^2 = \sigma_i^2 + s^2$ |
-| [Breaking the Enigma with permutation tensors](problems/others/enigma_solver) | $R^{(k)}_{ij} = \rho^{-o_k}_{ia} W^{(k)}_{ab}\, \rho^{o_k}_{bj}$ |
+| [A tiny GPT writes Shakespeare](problems/ai/tiny_transformer) | $Q_{nhik} = \hat X_{nic}W^Q_{hck}$ |
+| [Why chain of thought helps a transformer](problems/ai/chain_of_thought) | $s_{nk} = \Big(\sum_{l \le k} b_{nl}\Big) \bmod 2$ |
 
 </details>
 
@@ -713,9 +769,50 @@ The interface and all problem text are available in 10 languages: English, 繁�
 
 | Problem | Key equation |
 |---|---|
-| [Physics-informed neural network (PINN): damped oscillator](problems/others/pinn_oscillator) | $h^{(l+1)}_{ni} = \tanh\!\big(W^{(l)}_{ij}\,h^{(l)}_{nj} + b^{(l)}_i\big)$ |
-| [Fourier neural operator: learning the Burgers solution operator](problems/others/neural_operator) | $\hat w_{bok} = R_{iok}\,\hat v_{bik}$ |
-| [AlphaGo in miniature: tree search on a $5\times5$ Go board](problems/others/alphago_mini) | $r_{bp} \leftarrow r_{bp} \lor \big(s_{bp} \land [A_{pq}\,r_{bq} > 0]\big)$ |
+| [Hopfield networks: classic and modern associative memory](problems/ai/hopfield_memory) | $W_{ij} = \frac1N\,\xi^\mu_i \xi^\mu_j\ (i \ne j)$ |
+| [AlphaGo in miniature: tree search on a $5\times5$ Go board](problems/ai/alphago_mini) | $r_{bp} \leftarrow r_{bp} \lor \big(s_{bp} \land [A_{pq}\,r_{bq} > 0]\big)$ |
+| [Fourier neural operator: learning the Burgers solution operator](problems/ai/neural_operator) | $\hat w_{bok} = R_{iok}\,\hat v_{bik}$ |
+| [Physics-informed neural network (PINN): damped oscillator](problems/ai/pinn_oscillator) | $h^{(l+1)}_{ni} = \tanh\!\big(W^{(l)}_{ij}\,h^{(l)}_{nj} + b^{(l)}_i\big)$ |
+
+</details>
+
+</details>
+
+<details>
+<summary><b>Others</b> (12 problems)</summary>
+
+<details>
+<summary>🟢 Beginner (4)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Conway's Game of Life as a convolution](problems/others/game_of_life) | $N_{bp} = K_k\,P_{bkp}$ |
+| [Monte Carlo: estimating $\pi$ with random darts](problems/others/monte_carlo_pi) | $h_{bn} = [x_{bni}\,x_{bni} \le 1]$ |
+| [Monty Hall with $N$ doors](problems/others/monty_hall) | $k_{bg} = \begin{cases} c_{bg} & p_{bg} \ne c_{bg} \\ \text{random door} \ne p_{bg} & p_{bg} = c_{bg} \end{cases}$ |
+| [Flocking: Vicsek model and boids](problems/others/boids_flocking) | $d_{bijk} = x_{bjk} - x_{bik} - L\,\operatorname{round}\!\big(\tfrac{x_{bjk} - x_{bik}}{L}\big)$ |
+
+</details>
+
+<details>
+<summary>🟠 Intermediate (7)</summary>
+
+| Problem | Key equation |
+|---|---|
+| [Lorenz attractor and the butterfly effect](problems/others/lorenz_attractor) | $\dot x_{bi} = A_{ij}\,x_{bj} + Q_{ijk}\,x_{bj}\,x_{bk}$ |
+| [Noise and the Langevin equation](problems/others/langevin_noise) | $v_{b,n+1} = v_{bn} + \frac{-\gamma\,v_{bn} - k\,x_{bn}}{m}\,\Delta t + \frac{\sqrt{2\gamma k_BT\,\Delta t}}{m}\,\xi_{nb}$ |
+| [Fitting experimental measurements with tensors](problems/others/measurement_fitting) | $r_i = \frac{x_i - f(t_i;\theta)}{\sigma_{tot,i}},\ \ \sigma_{tot,i}^2 = \sigma_i^2 + s^2$ |
+| [Breaking the Enigma with permutation tensors](problems/others/enigma_solver) | $R^{(k)}_{ij} = \rho^{-o_k}_{ia} W^{(k)}_{ab}\, \rho^{o_k}_{bj}$ |
+| [All 256 elementary cellular automata, and Lenia](problems/others/cellular_automata) | $k_{ri} = P_{rij}\,w_j$ |
+| [Kuramoto model: spontaneous synchronisation](problems/others/kuramoto_sync) | $z_b = \tfrac1N\, e^{i\theta_{bj}}\,\mathbb 1_j$ |
+| [Epidemics on a contact network](problems/others/network_sir) | $P_{bi} = 1 - e^{-\beta_b \Delta t\, A_{ij} I_{bj}}$ |
+
+</details>
+
+<details>
+<summary>🔴 Advanced (1)</summary>
+
+| Problem | Key equation |
+|---|---|
 | [The halting problem with a batch of Turing machines](problems/others/turing_halting) | $r_b = T_{b,h_b}$ |
 
 </details>

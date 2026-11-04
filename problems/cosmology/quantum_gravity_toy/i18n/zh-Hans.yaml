@@ -1,0 +1,18 @@
+source_hash: c4f16483f7b8
+title: 量子宇宙学：圈反弹
+summary: 一个量子引力的玩具模型：充满无质量标量场的平坦宇宙的圈量子宇宙学（LQC）。把联络 $b$ 换成普朗克尺度面积圈的和乐 $\sin(\lambda b)/\lambda$，弗里德曼方程便化为 $H^2 = \frac{8\pi G}{3}\rho(1-\rho/\rho_c)$。对一批宇宙做 RK4 积分，可见大爆炸被 $\rho = \rho_c \approx 0.41\,\rho_\mathrm{P}$ 处的反弹取代；而同一模型的 Wheeler–DeWitt 波包则沿经典坍缩落入奇点。量子引力仍是悬而未决的研究问题；这只是一种简化的途径。
+notes: 普朗克单位 $G = \hbar = c = 1$；Barbero–Immirzi 参数 $\gamma = 0.2375$。采用的途径：圈量子宇宙学在改进（$\bar\mu$）动力学下的有效方程（Ashtekar、Pawlowski 与 Singh 2006；Taveras 2008），描述空间平坦、含无质量标量场（同时充当时钟）的 FRW 宇宙。现状：目前没有公认的量子引力理论。LQC 是受圈量子引力启发的对称约化量子化；它与完整 LQG 的联系尚未确立，而有效方程是一种近似，在此模型中与尖峰量子态的数值演化相符。反弹尚未受任何观测检验。对此模型而言，所展示的结果是精确的：约束保持不变，有效弗里德曼方程成立，反弹密度 $\rho_c$ 对每个 $p_\varphi$ 都相同，且体积遵循 $V(t) = \sqrt{V_B^2 + 12\pi G p_\varphi^2 t^2}$。远离 $\rho_c$ 时（或 $\lambda \to 0$），经典广义相对论重新成立：$H^2 = 8\pi G\rho/3$，体积在有限时间内线性降至 $V = 0$（红色虚线：奇点）。灰色带是同一模型的精确 Wheeler–DeWitt 解（不用圈量子化，$x = \ln V$）：它是一个自由波包，沿经典收缩线滑向 $V \to 0$，正如 APS 所发现。较淡的曲线使用较小的圈（$\lambda/2$、$\lambda/4$）：反弹发生得较晚、密度较高。反弹附近的帧取得较密。
+meanings:
+- 批次中每个宇宙 $b$ 的体积、联络与标量场，位于约束曲面 $C = 0$ 上
+- 圈的大小：$\lambda^2 = 4\sqrt3\pi\gamma\,\ell_P^2$ 为 LQG 面积间隙；$\lambda$ 越小 ⇒ $\rho_c$ 越大
+- 有效约束的哈密顿方程，所有宇宙同时计算
+- 以固有时表示的 RK4 轨迹
+- 哈密顿约束，必须保持为 $0$（其 RK4 漂移会打印在终端）
+- $3/(8\pi G\gamma^2\lambda^2)$：反弹密度
+- 重复的 $k$ ⇒ 求和：时钟 $\varphi_p$ 与 $x = \ln V$ 网格上的 Wheeler–DeWitt 波包
+labels:
+  p_phi: 标量场动量 $p_\varphi$ ($\hbar$)
+  gap_scale: 圈的大小 $\lambda$ 相对于 LQG 面积间隙
+  log10_rho_start: 初始密度 $\log_{10}(\rho/\rho_c)$
+  dt: RK4 时间步长 $\Delta t$
+  spread: Wheeler–DeWitt 波包宽度 $\Delta k/k_0$

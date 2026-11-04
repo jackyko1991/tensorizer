@@ -1,0 +1,15 @@
+# Event Horizon Telescope ring sizes and independent mass-to-distance ratios (cited published numbers; licence: cited facts,
+# no data file copied). theta_g = G M / (c^2 D) in micro-arcseconds.
+# M87*: EHT Collaboration 2019, ApJL 875, L1 (Paper I, doi:10.3847/2041-8213/ab0ec7) and L6 (Paper VI, arXiv:1906.11243):
+#   ring diameter 42 +- 3 uas, theta_g(EHT) = 3.8 +- 0.4 uas. Stellar dynamics: Gebhardt et al. 2011, ApJ 729, 119
+#   (arXiv:1101.1954), M = (6.6 +- 0.4) x 1e9 Msun at D = 17.9 Mpc, so theta_g(dyn) = 3.64 +- 0.22 uas (M/D fixed by
+#   the dynamics). delta for M87* is computed here as theta_g(EHT) / theta_g(dyn) - 1 (not a published number).
+# Sgr A*: EHT Collaboration 2022, ApJL 930, L12 (Paper I, doi:10.3847/2041-8213/ac6674): ring diameter 51.8 +- 2.3 uas;
+#   Paper VI (ApJL 930, L17, doi:10.3847/2041-8213/ac6756, arXiv:2311.09484), Table 2 (eht-imaging, GRMHD calibration):
+#   delta = -0.04 (-0.10, +0.09) with the Keck prior, theta_g = 4.92 +- 0.03 uas (Do et al. 2019, M = 3.975e6 Msun,
+#   D = 7959 pc), and delta = -0.08 (-0.09, +0.09) with the VLTI (GRAVITY 2022) prior, theta_g = 5.125 +- 0.022 uas
+#   (M = 4.297e6 Msun, D = 8277 pc). delta = (shadow diameter) / (2 sqrt(27) theta_g) - 1.
+key,object,ring_uas,ring_err,thetag_eht,thetag_eht_err,thetag_dyn,thetag_dyn_err,delta,delta_lo,delta_hi,prior
+m87,M87*,42.0,3.0,3.8,0.4,3.64,0.22,,,,Gebhardt 2011 stellar dynamics
+sgra_keck,Sgr A*,51.8,2.3,,,4.92,0.03,-0.04,0.10,0.09,Keck (Do et al. 2019)
+sgra_vlti,Sgr A*,51.8,2.3,,,5.125,0.022,-0.08,0.09,0.09,VLTI (GRAVITY 2022)

@@ -1,4 +1,66 @@
 {
+ "ai/alphago_mini": [
+  {
+   "label": "Silver et al., 2016, Nature",
+   "title": "Mastering the game of Go with deep neural networks and tree search",
+   "url": "https://doi.org/10.1038/nature16961"
+  }
+ ],
+ "ai/chain_of_thought": [
+  {
+   "label": "Wei et al., 2022 (arXiv)",
+   "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+   "url": "https://arxiv.org/abs/2201.11903"
+  },
+  {
+   "label": "Nye et al., 2021 (arXiv)",
+   "title": "Show Your Work: Scratchpads for Intermediate Computation with Language Models",
+   "url": "https://arxiv.org/abs/2112.00114"
+  },
+  {
+   "label": "Li et al., 2024 (arXiv)",
+   "title": "Chain of Thought Empowers Transformers to Solve Inherently Serial Problems",
+   "url": "https://arxiv.org/abs/2402.12875"
+  }
+ ],
+ "ai/hopfield_memory": [
+  {
+   "label": "Hopfield, 1982, Proc. Natl. Acad. Sci. U.S.A.",
+   "title": "Neural networks and physical systems with emergent collective computational abilities.",
+   "url": "https://doi.org/10.1073/pnas.79.8.2554"
+  },
+  {
+   "label": "Amit et al., 1985, Phys. Rev. Lett.",
+   "title": "Storing Infinite Numbers of Patterns in a Spin-Glass Model of Neural Networks",
+   "url": "https://doi.org/10.1103/PhysRevLett.55.1530"
+  },
+  {
+   "label": "Ramsauer et al., 2020 (arXiv)",
+   "title": "Hopfield Networks is All You Need",
+   "url": "https://arxiv.org/abs/2008.02217"
+  }
+ ],
+ "ai/neural_operator": [
+  {
+   "label": "Li et al., 2020 (arXiv)",
+   "title": "Fourier Neural Operator for Parametric Partial Differential Equations",
+   "url": "https://arxiv.org/abs/2010.08895"
+  }
+ ],
+ "ai/pinn_oscillator": [
+  {
+   "label": "Raissi et al., 2019, Journal of Computational Physics",
+   "title": "Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations",
+   "url": "https://doi.org/10.1016/j.jcp.2018.10.045"
+  }
+ ],
+ "ai/tiny_transformer": [
+  {
+   "label": "Vaswani et al., 2017 (arXiv)",
+   "title": "Attention Is All You Need",
+   "url": "https://arxiv.org/abs/1706.03762"
+  }
+ ],
  "astro/black_hole_geodesics": [
   {
    "label": "Schwarzschild, 1916, Sitzungsber. Preuss. Akad. Wiss. Berlin, 189",
@@ -9,6 +71,40 @@
    "label": "Einstein, 1916, Annalen der Physik",
    "title": "Die Grundlage der allgemeinen Relativitätstheorie",
    "url": "https://doi.org/10.1002/andp.19163540702"
+  }
+ ],
+ "astro/dead_star_reignition": [
+  {
+   "label": "Burrows et al., 2001, Rev. Mod. Phys.",
+   "title": "The theory of brown dwarfs and extrasolar giant planets",
+   "url": "https://doi.org/10.1103/RevModPhys.73.719"
+  },
+  {
+   "label": "Yaron et al., 2005, ApJ",
+   "title": "An Extended Grid of Nova Models. II. The Parameter Space of Nova Outbursts",
+   "url": "https://doi.org/10.1086/428435"
+  },
+  {
+   "label": "Galloway et al., 2017 (arXiv)",
+   "title": "Thermonuclear X-ray bursts",
+   "url": "https://arxiv.org/abs/1712.06227"
+  }
+ ],
+ "astro/einstein_1905_relativity": [
+  {
+   "label": "Einstein, 1905, Annalen der Physik",
+   "title": "Zur Elektrodynamik bewegter Körper",
+   "url": "https://doi.org/10.1002/andp.19053221004"
+  },
+  {
+   "label": "Einstein, 1905, Annalen der Physik",
+   "title": "Ist die Trägheit eines Körpers von seinem Energieinhalt abhängig?",
+   "url": "https://doi.org/10.1002/andp.19053231314"
+  },
+  {
+   "label": "Frisch et al., 1963, American Journal of Physics",
+   "title": "Measurement of the Relativistic Time Dilation Using μ-Mesons",
+   "url": "https://doi.org/10.1119/1.1969508"
   }
  ],
  "astro/escape_velocity": [
@@ -28,6 +124,23 @@
    "label": "Dyson et al., 1920, Philosophical Transactions of the Royal Society of London. Series A, Containing Papers of a Mathematical or Physical Character",
    "title": "IX. A determination of the deflection of light by the sun's gravitational field, from observations made at the total eclipse of May 29, 1919",
    "url": "https://doi.org/10.1098/rsta.1920.0009"
+  }
+ ],
+ "astro/gw150914_chirp": [
+  {
+   "label": "Abbott et al., 2016, Phys. Rev. Lett.",
+   "title": "Observation of Gravitational Waves from a Binary Black Hole Merger",
+   "url": "https://doi.org/10.1103/PhysRevLett.116.061102"
+  },
+  {
+   "label": "LIGO Scientific and Virgo Collaborations (Abbott et al.), 2021, SoftwareX",
+   "title": "Open data from the first and second observing runs of Advanced LIGO and Advanced Virgo",
+   "url": "https://arxiv.org/abs/1912.11716"
+  },
+  {
+   "label": "LIGO Scientific and Virgo Collaborations (Abbott et al.), 2017, Ann. Phys.",
+   "title": "The basic physics of the binary black hole merger GW150914",
+   "url": "https://arxiv.org/abs/1608.01940"
   }
  ],
  "astro/hawking_radiation": [
@@ -54,6 +167,18 @@
    "label": "Kepler, 1609, Astronomia Nova",
    "title": "Astronomia Nova (first and second laws of planetary motion)",
    "url": null
+  }
+ ],
+ "astro/kerr_newman_ergosphere": [
+  {
+   "label": "Newman et al., 1965, Journal of Mathematical Physics",
+   "title": "Metric of a Rotating, Charged Mass",
+   "url": "https://doi.org/10.1063/1.1704351"
+  },
+  {
+   "label": "Bardeen et al., 1972, ApJ",
+   "title": "Rotating Black Holes: Locally Nonrotating Frames, Energy Extraction, and Scalar Synchrotron Radiation",
+   "url": "https://doi.org/10.1086/151796"
   }
  ],
  "astro/lagrange_points": [
@@ -87,6 +212,23 @@
    "label": "Agazie et al., 2023, ApJL",
    "title": "The NANOGrav 15 yr Data Set: Evidence for a Gravitational-wave Background",
    "url": "https://doi.org/10.3847/2041-8213/acdac6"
+  }
+ ],
+ "astro/sgr_a_star_orbits": [
+  {
+   "label": "Gillessen et al., 2017, ApJ",
+   "title": "An Update on Monitoring Stellar Orbits in the Galactic Center",
+   "url": "https://arxiv.org/abs/1611.09144"
+  },
+  {
+   "label": "GRAVITY Collaboration, 2018, A&A",
+   "title": "Detection of the gravitational redshift in the orbit of the star S2 near the Galactic centre massive black hole",
+   "url": "https://arxiv.org/abs/1807.09409"
+  },
+  {
+   "label": "GRAVITY Collaboration, 2020, A&A",
+   "title": "Detection of the Schwarzschild precession in the orbit of the star S2 near the Galactic centre massive black hole",
+   "url": "https://arxiv.org/abs/2004.07187"
   }
  ],
  "astro/tidal_tensor": [
@@ -340,6 +482,344 @@
    "url": "https://doi.org/10.1039/TF9363200039"
   }
  ],
+ "cosmology/axis_of_evil": [
+  {
+   "label": "de Oliveira-Costa et al., 2004, Phys. Rev. D",
+   "title": "Significance of the largest scale CMB fluctuations in WMAP",
+   "url": "https://doi.org/10.1103/PhysRevD.69.063516"
+  },
+  {
+   "label": "Bennett et al., 2013, ApJS 208, 20",
+   "title": "Nine-Year Wilkinson Microwave Anisotropy Probe (WMAP) Observations: Final Maps and Results",
+   "url": "https://arxiv.org/abs/1212.5225"
+  },
+  {
+   "label": "Planck Collaboration (Akrami et al.), 2020, A&A 641, A7",
+   "title": "Planck 2018 results. VII. Isotropy and Statistics of the CMB",
+   "url": "https://arxiv.org/abs/1906.02552"
+  }
+ ],
+ "cosmology/baryon_asymmetry": [
+  {
+   "label": "Fukugita et al., 1986, Physics Letters B",
+   "title": "Barygenesis without grand unification",
+   "url": "https://doi.org/10.1016/0370-2693(86)91126-3"
+  },
+  {
+   "label": "Buchmüller et al., 2005, Annals of Physics",
+   "title": "Leptogenesis for pedestrians",
+   "url": "https://doi.org/10.1016/j.aop.2004.02.003"
+  },
+  {
+   "label": "Sakharov, 1967 (reprinted 1991), JETP Lett. 5, 24 / Sov. Phys. Usp.",
+   "title": "Violation of CP in variance, C asymmetry, and baryon asymmetry of the universe",
+   "url": "https://doi.org/10.1070/PU1991v034n05ABEH002497"
+  }
+ ],
+ "cosmology/big_bang_nucleosynthesis": [
+  {
+   "label": "Wagoner et al., 1967, ApJ",
+   "title": "On the Synthesis of Elements at Very High Temperatures",
+   "url": "https://doi.org/10.1086/149126"
+  },
+  {
+   "label": "Cooke et al., 2017 (arXiv)",
+   "title": "One percent determination of the primordial deuterium abundance",
+   "url": "https://arxiv.org/abs/1710.11129"
+  },
+  {
+   "label": "Cyburt et al., 2010, ApJS",
+   "title": "THE JINA REACLIB DATABASE: ITS RECENT UPDATES AND IMPACT ON TYPE-I X-RAY BURSTS",
+   "url": "https://doi.org/10.1088/0067-0049/189/1/240"
+  }
+ ],
+ "cosmology/cmb_blackbody": [
+  {
+   "label": "Fixsen et al., 1996, ApJ",
+   "title": "The Cosmic Microwave Background Spectrum from the FullCOBEFIRAS Data Set",
+   "url": "https://doi.org/10.1086/178173"
+  },
+  {
+   "label": "Mather et al., 1994, ApJ",
+   "title": "Measurement of the cosmic microwave background spectrum by the COBE FIRAS instrument",
+   "url": "https://doi.org/10.1086/173574"
+  }
+ ],
+ "cosmology/cosmological_constant_fit": [
+  {
+   "label": "Riess et al., 1998, The Astronomical Journal",
+   "title": "Observational Evidence from Supernovae for an Accelerating Universe and a Cosmological Constant",
+   "url": "https://doi.org/10.1086/300499"
+  },
+  {
+   "label": "Perlmutter et al., 1999, ApJ",
+   "title": "Measurements of Ω and Λ from 42 High‐Redshift Supernovae",
+   "url": "https://doi.org/10.1086/307221"
+  },
+  {
+   "label": "Scolnic et al., 2022, ApJ 938, 113",
+   "title": "The Pantheon+ Analysis: The Full Dataset and Light-Curve Release",
+   "url": "https://arxiv.org/abs/2112.03863"
+  }
+ ],
+ "cosmology/dark_matter_rotation": [
+  {
+   "label": "Lelli et al., 2016 (arXiv)",
+   "title": "SPARC: Mass Models for 175 Disk Galaxies with Spitzer Photometry and Accurate Rotation Curves",
+   "url": "https://arxiv.org/abs/1606.09251"
+  },
+  {
+   "label": "Rubin et al., 1970, ApJ",
+   "title": "Rotation of the Andromeda Nebula from a Spectroscopic Survey of Emission Regions",
+   "url": "https://doi.org/10.1086/150317"
+  },
+  {
+   "label": "McGaugh et al., 2016 (arXiv)",
+   "title": "The Radial Acceleration Relation in Rotationally Supported Galaxies",
+   "url": "https://arxiv.org/abs/1609.05917"
+  }
+ ],
+ "cosmology/hierarchy_extra_dimensions": [
+  {
+   "label": "Arkani–Hamed et al., 1998, Physics Letters B",
+   "title": "The hierarchy problem and new dimensions at a millimeter",
+   "url": "https://doi.org/10.1016/S0370-2693(98)00466-3"
+  },
+  {
+   "label": "Randall et al., 1999, Phys. Rev. Lett.",
+   "title": "Large Mass Hierarchy from a Small Extra Dimension",
+   "url": "https://doi.org/10.1103/PhysRevLett.83.3370"
+  },
+  {
+   "label": "Kapner et al., 2007, Phys. Rev. Lett.",
+   "title": "Tests of the Gravitational Inverse-Square Law below the Dark-Energy Length Scale",
+   "url": "https://doi.org/10.1103/PhysRevLett.98.021101"
+  },
+  {
+   "label": "Lee et al., 2020, Phys. Rev. Lett.",
+   "title": "New Test of the Gravitational 1/r² Law at Separations down to 52 μm",
+   "url": "https://doi.org/10.1103/PhysRevLett.124.101101"
+  }
+ ],
+ "cosmology/inflation_slow_roll": [
+  {
+   "label": "Planck Collaboration, 2020, A&A 641, A10",
+   "title": "Planck 2018 results. X. Constraints on inflation",
+   "url": "https://arxiv.org/abs/1807.06211"
+  },
+  {
+   "label": "BICEP/Keck Collaboration, 2021, Phys. Rev. Lett. 127, 151301",
+   "title": "BICEP / Keck XIII: Improved Constraints on Primordial Gravitational Waves using Planck, WMAP, and BICEP/Keck Observations through the 2018 Observing Season",
+   "url": "https://arxiv.org/abs/2110.00483"
+  }
+ ],
+ "cosmology/projection_antimatter_universe": [
+  {
+   "label": "Cohen et al., 1998, ApJ",
+   "title": "A Matter‐Antimatter Universe?",
+   "url": "https://doi.org/10.1086/305328"
+  },
+  {
+   "label": "Boyle et al., 2018, Phys. Rev. Lett.",
+   "title": "CPT -Symmetric Universe",
+   "url": "https://doi.org/10.1103/PhysRevLett.121.251301"
+  },
+  {
+   "label": "Aker et al. (KATRIN), 2022, Nat. Phys.",
+   "title": "Direct neutrino-mass measurement with sub-electronvolt sensitivity",
+   "url": "https://doi.org/10.1038/s41567-021-01463-1"
+  },
+  {
+   "label": "Abe et al., 2012, Phys. Rev. Lett.",
+   "title": "Search for Antihelium with the BESS-Polar Spectrometer",
+   "url": "https://doi.org/10.1103/PhysRevLett.108.131301"
+  }
+ ],
+ "cosmology/projection_bell_test": [
+  {
+   "label": "Bell, 1964, Physics Physique Fizika",
+   "title": "On the Einstein Podolsky Rosen paradox",
+   "url": "https://doi.org/10.1103/PhysicsPhysiqueFizika.1.195"
+  },
+  {
+   "label": "Clauser et al., 1969, Phys. Rev. Lett.",
+   "title": "Proposed Experiment to Test Local Hidden-Variable Theories",
+   "url": "https://doi.org/10.1103/PhysRevLett.23.880"
+  },
+  {
+   "label": "Hensen et al., 2015, Nature",
+   "title": "Loophole-free Bell inequality violation using electron spins separated by 1.3 kilometres",
+   "url": "https://doi.org/10.1038/nature15759"
+  },
+  {
+   "label": "Storz et al., 2023, Nature",
+   "title": "Loophole-free Bell inequality violation with superconducting circuits",
+   "url": "https://doi.org/10.1038/s41586-023-05885-0"
+  }
+ ],
+ "cosmology/projection_dimension_budget": [
+  {
+   "label": "Arkani-Hamed et al., 1998, Phys. Lett. B",
+   "title": "The hierarchy problem and new dimensions at a millimeter",
+   "url": "https://doi.org/10.1016/S0370-2693(98)00466-3"
+  },
+  {
+   "label": "Lee et al., 2020, Phys. Rev. Lett.",
+   "title": "New Test of the Gravitational 1/r² Law at Separations down to 52 μm",
+   "url": "https://doi.org/10.1103/PhysRevLett.124.101101"
+  },
+  {
+   "label": "ATLAS Collaboration (Aad et al.), 2021, Phys. Rev. D",
+   "title": "Search for new phenomena in events with an energetic jet and missing transverse momentum in pp collisions at s=13 TeV with the ATLAS detector",
+   "url": "https://doi.org/10.1103/PhysRevD.103.112006"
+  },
+  {
+   "label": "Hannestad & Raffelt, 2003, Phys. Rev. D",
+   "title": "Supernova and neutron-star limits on large extra dimensions reexamined",
+   "url": "https://doi.org/10.1103/PhysRevD.67.125008"
+  }
+ ],
+ "cosmology/projection_one_particle": [
+  {
+   "label": "R. P. Feynman, The Development of the Space-Time View of Quantum Electrodynamics, Nobel Lecture, 11 December 1965",
+   "title": "The Development of the Space-Time View of Quantum Electrodynamics (Nobel Lecture)",
+   "url": null
+  },
+  {
+   "label": "Feynman, 1949, Phys. Rev.",
+   "title": "The Theory of Positrons",
+   "url": "https://doi.org/10.1103/PhysRev.76.749"
+  },
+  {
+   "label": "Aguilar et al., 2013, Phys. Rev. Lett.",
+   "title": "First Result from the Alpha Magnetic Spectrometer on the International Space Station: Precision Measurement of the Positron Fraction in Primary Cosmic Rays of 0.5–350 GeV",
+   "url": "https://doi.org/10.1103/PhysRevLett.110.141102"
+  },
+  {
+   "label": "Aguilar et al., 2019, Phys. Rev. Lett.",
+   "title": "Towards Understanding the Origin of Cosmic-Ray Electrons",
+   "url": "https://doi.org/10.1103/PhysRevLett.122.101101"
+  }
+ ],
+ "cosmology/projection_postulate": [
+  {
+   "label": "Born, 1926, Z. Physik",
+   "title": "Zur Quantenmechanik der Stoßvorgänge",
+   "url": "https://doi.org/10.1007/BF01397477"
+  },
+  {
+   "label": "Sinha et al., 2010, Science",
+   "title": "Ruling Out Multi-Order Interference in Quantum Mechanics",
+   "url": "https://doi.org/10.1126/science.1190545"
+  },
+  {
+   "label": "Gleason, 1957, Indiana Univ. Math. J.",
+   "title": "Measures on the Closed Subspaces of a Hilbert Space",
+   "url": "https://doi.org/10.1512/iumj.1957.6.56050"
+  },
+  {
+   "label": "Kauten et al., 2017, New J. Phys.",
+   "title": "Obtaining tight bounds on higher-order interferences with a 5-path interferometer",
+   "url": "https://doi.org/10.1088/1367-2630/aa5d98"
+  }
+ ],
+ "cosmology/projection_singularity_fold": [
+  {
+   "label": "Fronsdal, 1959, Phys. Rev.",
+   "title": "Completion and Embedding of the Schwarzschild Solution",
+   "url": "https://doi.org/10.1103/PhysRev.116.778"
+  },
+  {
+   "label": "Flamm, 1916, Physikalische Zeitschrift 17, 448",
+   "title": "Beiträge zur Einsteinschen Gravitationstheorie",
+   "url": null
+  },
+  {
+   "label": "Arnold, 1984, Catastrophe Theory (Springer)",
+   "title": "Catastrophe Theory",
+   "url": null
+  }
+ ],
+ "cosmology/projection_telescope_tests": [
+  {
+   "label": "Abbott et al., 2017, Phys. Rev. Lett.",
+   "title": "GW170817: Observation of Gravitational Waves from a Binary Neutron Star Inspiral",
+   "url": "https://doi.org/10.1103/PhysRevLett.119.161101"
+  },
+  {
+   "label": "Pardo et al., 2018 (arXiv)",
+   "title": "Limits on the number of spacetime dimensions from GW170817",
+   "url": "https://arxiv.org/abs/1801.08160"
+  },
+  {
+   "label": "The Event Horizon Telescope Collaboration et al., 2019, ApJL",
+   "title": "First M87 Event Horizon Telescope Results. I. The Shadow of the Supermassive Black Hole",
+   "url": "https://doi.org/10.3847/2041-8213/ab0ec7"
+  },
+  {
+   "label": "Event Horizon Telescope Collaboration et al., 2022, ApJL",
+   "title": "First Sagittarius A* Event Horizon Telescope Results. I. The Shadow of the Supermassive Black Hole in the Center of the Milky Way",
+   "url": "https://doi.org/10.3847/2041-8213/ac6674"
+  }
+ ],
+ "cosmology/quantum_gravity_toy": [
+  {
+   "label": "Ashtekar et al., 2006, Phys. Rev. D",
+   "title": "Quantum nature of the big bang: Improved dynamics",
+   "url": "https://doi.org/10.1103/PhysRevD.74.084003"
+  },
+  {
+   "label": "Ashtekar et al., 2011, Class. Quantum Grav.",
+   "title": "Loop quantum cosmology: a status report",
+   "url": "https://doi.org/10.1088/0264-9381/28/21/213001"
+  }
+ ],
+ "cosmology/string_modes": [
+  {
+   "label": "Goddard et al., 1973, Nuclear Physics B",
+   "title": "Quantum dynamics of a massless relativistic string",
+   "url": "https://doi.org/10.1016/0550-3213(73)90223-X"
+  },
+  {
+   "label": "Buscher, 1987, Physics Letters B",
+   "title": "A symmetry of the string background field equations",
+   "url": "https://doi.org/10.1016/0370-2693(87)90769-6"
+  }
+ ],
+ "cosmology/tachyons": [
+  {
+   "label": "Feinberg, 1967, Phys. Rev.",
+   "title": "Possibility of Faster-Than-Light Particles",
+   "url": "https://doi.org/10.1103/PhysRev.159.1089"
+  },
+  {
+   "label": "OPERA Collaboration, 2011–2012, JHEP",
+   "title": "Measurement of the neutrino velocity with the OPERA detector in the CNGS beam",
+   "url": "https://arxiv.org/abs/1109.4897"
+  },
+  {
+   "label": "Antonello et al., 2012 (arXiv)",
+   "title": "Measurement of the neutrino velocity with the ICARUS detector at the CNGS beam",
+   "url": "https://arxiv.org/abs/1203.3433"
+  }
+ ],
+ "cosmology/variable_speed_of_light": [
+  {
+   "label": "Albrecht et al., 1999, Phys. Rev. D",
+   "title": "Time varying speed of light as a solution to cosmological puzzles",
+   "url": "https://doi.org/10.1103/PhysRevD.59.043516"
+  },
+  {
+   "label": "Moffat, 1993, Int. J. Mod. Phys. D",
+   "title": "SUPERLUMINARY UNIVERSE: A POSSIBLE SOLUTION TO THE INITIAL VALUE PROBLEM IN COSMOLOGY",
+   "url": "https://doi.org/10.1142/S0218271893000246"
+  },
+  {
+   "label": "Abbott et al., 2017, ApJL",
+   "title": "Gravitational Waves and Gamma-Rays from a Binary Neutron Star Merger: GW170817 and GRB 170817A",
+   "url": "https://doi.org/10.3847/2041-8213/aa920c"
+  }
+ ],
  "em/biot_savart": [
   {
    "label": "Griffiths, 2017, Cambridge University Press",
@@ -427,6 +907,33 @@
    "url": null
   }
  ],
+ "fluids/blowup_profile_search": [
+  {
+   "label": "Wang et al., 2022 (arXiv)",
+   "title": "Asymptotic self-similar blow-up profile for three-dimensional axisymmetric Euler equations using neural networks",
+   "url": "https://arxiv.org/abs/2201.06780"
+  },
+  {
+   "label": "Wang et al., 2025 (arXiv)",
+   "title": "Discovery of Unstable Singularities",
+   "url": "https://arxiv.org/abs/2509.14185"
+  },
+  {
+   "label": "Chen et al., 2022 (arXiv)",
+   "title": "Stable nearly self-similar blowup of the 2D Boussinesq and 3D Euler equations with smooth data I: Analysis",
+   "url": "https://arxiv.org/abs/2210.07191"
+  },
+  {
+   "label": "Córdoba Barba et al., 2005, Ann. Math.",
+   "title": "Formation of singularities for a transport equation with nonlocal velocity",
+   "url": "https://doi.org/10.4007/annals.2005.162.1377"
+  },
+  {
+   "label": "Eggers et al., 2020, Nonlinearity",
+   "title": "Selection of singular solutions in non-local transport equations",
+   "url": "https://doi.org/10.1088/1361-6544/ab4e0b"
+  }
+ ],
  "fluids/burgers_shock": [
   {
    "label": "Burgers, 1948, Advances in Applied Mechanics",
@@ -460,6 +967,18 @@
    "url": null
   }
  ],
+ "fluids/lbm_wind_tunnel": [
+  {
+   "label": "Krause et al., 2021, Computers & Mathematics with Applications",
+   "title": "OpenLB—Open source lattice Boltzmann code",
+   "url": "https://doi.org/10.1016/j.camwa.2020.04.033"
+  },
+  {
+   "label": "Lallemand et al., 2000, Phys. Rev. E",
+   "title": "Theory of the lattice Boltzmann method: Dispersion, dissipation, isotropy, Galilean invariance, and stability",
+   "url": "https://doi.org/10.1103/PhysRevE.61.6546"
+  }
+ ],
  "fluids/lid_driven_cavity": [
   {
    "label": "Ghia et al., 1982, Journal of Computational Physics",
@@ -472,6 +991,28 @@
    "label": "Kochkov et al., 2021, Proc. Natl. Acad. Sci. U.S.A.",
    "title": "Machine learning–accelerated computational fluid dynamics",
    "url": "https://doi.org/10.1073/pnas.2101784118"
+  }
+ ],
+ "fluids/navier_stokes_blowup": [
+  {
+   "label": "Beale et al., 1984, Commun.Math. Phys.",
+   "title": "Remarks on the breakdown of smooth solutions for the 3-D Euler equations",
+   "url": "https://doi.org/10.1007/BF01212349"
+  },
+  {
+   "label": "Brachet et al., 1983, J. Fluid Mech.",
+   "title": "Small-scale structure of the Taylor–Green vortex",
+   "url": "https://doi.org/10.1017/S0022112083001159"
+  },
+  {
+   "label": "Luo et al., 2014, Proc. Natl. Acad. Sci. U.S.A.",
+   "title": "Potentially singular solutions of the 3D axisymmetric Euler equations",
+   "url": "https://doi.org/10.1073/pnas.1405238111"
+  },
+  {
+   "label": "OpenAI, NavierStokesAndEuler (GitHub), claimed Lean 4 formal proofs, awaiting assessment",
+   "title": "Finite time blowup for forced Navier–Stokes on R³ and T³ and for the Euler equation",
+   "url": null
   }
  ],
  "fluids/navier_stokes_pipe_flow": [
@@ -569,6 +1110,23 @@
    "url": "https://doi.org/10.1145/15886.15902"
   }
  ],
+ "graphics/point_cloud_registration": [
+  {
+   "label": "Besl et al., 1992, IEEE Trans. Pattern Anal. Mach. Intell.",
+   "title": "A method for registration of 3-D shapes",
+   "url": "https://doi.org/10.1109/34.121791"
+  },
+  {
+   "label": "Rusu et al., 2009, 2009 IEEE International Conference on Robotics and Automation",
+   "title": "Fast Point Feature Histograms (FPFH) for 3D registration",
+   "url": "https://doi.org/10.1109/ROBOT.2009.5152473"
+  },
+  {
+   "label": "Rusu et al., 2011, 2011 IEEE International Conference on Robotics and Automation",
+   "title": "3D is here: Point Cloud Library (PCL)",
+   "url": "https://doi.org/10.1109/ICRA.2011.5980567"
+  }
+ ],
  "graphics/qr_code_decode": [
   {
    "label": "Reed et al., 1960, Journal of the Society for Industrial and Applied Mathematics",
@@ -605,6 +1163,35 @@
    "url": "https://doi.org/10.1145/378456.378457"
   }
  ],
+ "maths/birch_swinnerton_dyer": [
+  {
+   "label": "Birch et al., 1965, crll",
+   "title": "Notes on elliptic curves. II.",
+   "url": "https://doi.org/10.1515/crll.1965.218.79"
+  },
+  {
+   "label": "Gross et al., 1986, Invent Math",
+   "title": "Heegner points and derivatives ofL-series",
+   "url": "https://doi.org/10.1007/BF01388809"
+  },
+  {
+   "label": "Cremona, 1997, Algorithms for Modular Elliptic Curves (2nd ed.), Cambridge University Press",
+   "title": "",
+   "url": null
+  }
+ ],
+ "maths/fourier_epicycles": [
+  {
+   "label": "Cooley et al., 1965, Math. Comp.",
+   "title": "An algorithm for the machine calculation of complex Fourier series",
+   "url": "https://doi.org/10.1090/S0025-5718-1965-0178586-1"
+  },
+  {
+   "label": "Ptolemy, Almagest (c. 150 AD); English translation by G. J. Toomer, Duckworth, 1984",
+   "title": "Ptolemy's Almagest",
+   "url": null
+  }
+ ],
  "maths/fourier_gibbs": [
   {
    "label": "Gibbs, 1899, Nature",
@@ -615,6 +1202,52 @@
    "label": "Hewitt & Hewitt, 1979, Arch. Hist. Exact Sci.",
    "title": "The Gibbs-Wilbraham phenomenon: An episode in fourier analysis",
    "url": "https://doi.org/10.1007/BF00330404"
+  }
+ ],
+ "maths/gauss_heptadecagon": [
+  {
+   "label": "Gauss, C. F. (1801). Disquisitiones Arithmeticae, section VII. Leipzig: Fleischer.",
+   "title": "Disquisitiones Arithmeticae",
+   "url": null
+  },
+  {
+   "label": "Richmond, H. W. (1893). Quarterly Journal of Pure and Applied Mathematics 26, 206–207.",
+   "title": "A construction for a regular polygon of seventeen sides",
+   "url": null
+  },
+  {
+   "label": "Wantzel, P. L. (1837). Journal de Mathématiques Pures et Appliquées 2, 366–372.",
+   "title": "Recherches sur les moyens de reconnaître si un problème de géométrie peut se résoudre avec la règle et le compas",
+   "url": null
+  }
+ ],
+ "maths/hodge_conjecture": [
+  {
+   "label": "Shioda, 1979, Math. Ann.",
+   "title": "The hodge conjecture for Fermat varieties",
+   "url": "https://doi.org/10.1007/bf01428804"
+  },
+  {
+   "label": "Schütt et al., 2010, Journal of Number Theory",
+   "title": "Lines on Fermat surfaces",
+   "url": "https://doi.org/10.1016/j.jnt.2010.01.008"
+  }
+ ],
+ "maths/kakeya_conjecture": [
+  {
+   "label": "Wang et al., 2025 (arXiv)",
+   "title": "Volume estimates for unions of convex sets, and the Kakeya set conjecture in three dimensions",
+   "url": "https://arxiv.org/abs/2502.17655"
+  },
+  {
+   "label": "Davies, 1971, Math. Proc. Camb. Phil. Soc.",
+   "title": "Some remarks on the Kakeya problem",
+   "url": "https://doi.org/10.1017/s0305004100046867"
+  },
+  {
+   "label": "Cordoba, 1977, American Journal of Mathematics",
+   "title": "The Kakeya Maximal Function and the Spherical Summation Multipliers",
+   "url": "https://doi.org/10.2307/2374006"
   }
  ],
  "maths/linear_maps_2d": [
@@ -655,6 +1288,125 @@
    "label": "Golub & Welsch, 1969, Math. Comp.",
    "title": "Calculation of Gauss quadrature rules",
    "url": "https://doi.org/10.1090/S0025-5718-69-99647-1"
+  }
+ ],
+ "maths/p_vs_np_sat": [
+  {
+   "label": "Cook, 1971, Proceedings of the third annual ACM symposium on Theory of computing  - STOC '71",
+   "title": "The complexity of theorem-proving procedures",
+   "url": "https://doi.org/10.1145/800157.805047"
+  },
+  {
+   "label": "Mézard et al., 2002, Science",
+   "title": "Analytic and Algorithmic Solution of Random Satisfiability Problems",
+   "url": "https://doi.org/10.1126/science.1073287"
+  },
+  {
+   "label": "Ding et al., 2014 (arXiv)",
+   "title": "Proof of the satisfiability conjecture for large k",
+   "url": "https://arxiv.org/abs/1411.0650"
+  }
+ ],
+ "maths/poincare_ricci_flow": [
+  {
+   "label": "Hamilton, 1982, J. Differential Geom.",
+   "title": "Three-manifolds with positive Ricci curvature",
+   "url": "https://doi.org/10.4310/jdg/1214436922"
+  },
+  {
+   "label": "Kleiner et al., 2008, Geom. Topol.",
+   "title": "Notes on Perelman’s papers",
+   "url": "https://doi.org/10.2140/gt.2008.12.2587"
+  },
+  {
+   "label": "Angenent et al., 2004, Mathematical Research Letters",
+   "title": "An example of neckpinching for Ricci flow on $S^{n+1}$",
+   "url": "https://doi.org/10.4310/mrl.2004.v11.n4.a8"
+  },
+  {
+   "label": "Perelman, 2002–03, arXiv math/0211159, math/0303109, math/0307245",
+   "title": "The entropy formula for the Ricci flow and its geometric applications; Ricci flow with surgery on three-manifolds; Finite extinction time for the solutions to the Ricci flow on certain three-manifolds",
+   "url": null
+  }
+ ],
+ "maths/prime_spirals": [
+  {
+   "label": "Hardy et al., 1923, Acta Math.",
+   "title": "Some problems of ‘Partitio numerorum’; III: On the expression of a number as a sum of primes",
+   "url": "https://doi.org/10.1007/bf02403921"
+  },
+  {
+   "label": "Bateman et al., 1962, Math. Comp.",
+   "title": "A heuristic asymptotic formula concerning the distribution of prime numbers",
+   "url": "https://doi.org/10.1090/s0025-5718-1962-0148632-7"
+  }
+ ],
+ "maths/ramanujan_partitions": [
+  {
+   "label": "Hardy et al., 1918, Proceedings of the London Mathematical Society",
+   "title": "Asymptotic Formulaae in Combinatory Analysis",
+   "url": "https://doi.org/10.1112/plms/s2-17.1.75"
+  },
+  {
+   "label": "Rademacher, 1938, Proceedings of the London Mathematical Society",
+   "title": "On the Partition Function p ( n )",
+   "url": "https://doi.org/10.1112/plms/s2-43.4.241"
+  },
+  {
+   "label": "Ono, 2000, The Annals of Mathematics",
+   "title": "Distribution of the Partition Function Modulo m",
+   "url": "https://doi.org/10.2307/121118"
+  }
+ ],
+ "maths/ramanujan_tau": [
+  {
+   "label": "Deligne, 1974, Publications Mathématiques de l'IHÉS",
+   "title": "La conjecture de Weil : I",
+   "url": "https://doi.org/10.1007/BF02684373"
+  },
+  {
+   "label": "Barnet-Lamb et al., 2011, Publ. Res. Inst. Math. Sci.",
+   "title": "A Family of Calabi–Yau Varieties and Potential Automorphy II",
+   "url": "https://doi.org/10.2977/PRIMS/31"
+  },
+  {
+   "label": "Ramanujan, 1916, Transactions of the Cambridge Philosophical Society 22, 159–184",
+   "title": "On certain arithmetical functions",
+   "url": null
+  }
+ ],
+ "maths/riemann_hypothesis": [
+  {
+   "label": "Odlyzko, 1987, Math. Comp.",
+   "title": "On the distribution of spacings between zeros of the zeta function",
+   "url": "https://doi.org/10.1090/S0025-5718-1987-0866115-0"
+  },
+  {
+   "label": "Platt et al., 2021, Bulletin of London Math Soc",
+   "title": "The Riemann hypothesis is true up to 3·1012",
+   "url": "https://doi.org/10.1112/blms.12460"
+  },
+  {
+   "label": "Montgomery, 1973, Proc. Symp. Pure Math. 24",
+   "title": "The pair correlation of zeros of the zeta function",
+   "url": null
+  },
+  {
+   "label": "OpenAI, 2026, openai/math repository (GitHub), AI-generated, unrefereed",
+   "title": "Claimed zero-free half-plane Re s > 7/8 for Dirichlet L-functions (unverified claim)",
+   "url": null
+  }
+ ],
+ "maths/sinkhorn_transport": [
+  {
+   "label": "Cuturi, 2013 (NeurIPS)",
+   "title": "Sinkhorn Distances: Lightspeed Computation of Optimal Transportation Distances",
+   "url": "https://arxiv.org/abs/1306.0895"
+  },
+  {
+   "label": "Feydy et al., 2018 (arXiv)",
+   "title": "Interpolating between Optimal Transport and MMD using Sinkhorn Divergences",
+   "url": "https://arxiv.org/abs/1810.08278"
   }
  ],
  "maths/spectral_clustering": [
@@ -787,6 +1539,33 @@
    "label": "Szebehely et al., 1967, The Astronomical Journal",
    "title": "Complete solution of a general problem of three bodies",
    "url": "https://doi.org/10.1086/110355"
+  }
+ ],
+ "medical/aneurysm_cfd": [
+  {
+   "label": "Antiga et al., 2008, Med Biol Eng Comput",
+   "title": "An image-based modeling framework for patient-specific computational hemodynamics",
+   "url": "https://doi.org/10.1007/s11517-008-0420-1"
+  },
+  {
+   "label": "Weller et al., 1998, Computers in Physics",
+   "title": "A tensorial approach to computational continuum mechanics using object-oriented techniques",
+   "url": "https://doi.org/10.1063/1.168744"
+  },
+  {
+   "label": "Meng et al., 2014, AJNR Am J Neuroradiol",
+   "title": "High WSS or Low WSS? Complex Interactions of Hemodynamics with Intracranial Aneurysm Initiation, Growth, and Rupture: Toward a Unifying Hypothesis",
+   "url": "https://doi.org/10.3174/ajnr.A3558"
+  },
+  {
+   "label": "Ford et al., 2005, Physiol. Meas.",
+   "title": "Characterization of volumetric flow rate waveforms in the normal internal carotid and vertebral arteries",
+   "url": "https://doi.org/10.1088/0967-3334/26/4/013"
+  },
+  {
+   "label": "Di Noto et al., 2023, Neuroinform",
+   "title": "Towards Automated Brain Aneurysm Detection in TOF-MRA: Open Data, Weak Labels, and Anatomical Knowledge",
+   "url": "https://doi.org/10.1007/s12021-022-09597-0"
   }
  ],
  "medical/bloch_spin_echo": [
@@ -931,6 +1710,62 @@
    "url": "https://doi.org/10.1088/0029-5515/32/4/I07"
   }
  ],
+ "nuclear/higgs_boson": [
+  {
+   "label": "ATLAS Collaboration, 2012, Phys. Lett. B",
+   "title": "Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC",
+   "url": "https://arxiv.org/abs/1207.7214"
+  },
+  {
+   "label": "CMS Collaboration, 2012, Phys. Lett. B",
+   "title": "Observation of a new boson at a mass of 125 GeV with the CMS experiment at the LHC",
+   "url": "https://arxiv.org/abs/1207.7235"
+  },
+  {
+   "label": "ATLAS Collaboration, 2020, CERN Open Data Portal, doi:10.7483/OPENDATA.ATLAS.B5BJ.3SGS (CC0)",
+   "title": "ATLAS 13 TeV samples collection Gamma-Gamma, for 2020 Open Data release",
+   "url": null
+  }
+ ],
+ "nuclear/ilp_track_finding": [
+  {
+   "label": "Amrouche et al., 2019 (arXiv)",
+   "title": "The Tracking Machine Learning challenge : Accuracy phase",
+   "url": "https://arxiv.org/abs/1904.06778"
+  },
+  {
+   "label": "Applegate et al., 2021 (arXiv)",
+   "title": "Practical Large-Scale Linear Programming using Primal-Dual Hybrid Gradient",
+   "url": "https://arxiv.org/abs/2106.04756"
+  },
+  {
+   "label": "Huangfu et al., 2018, Math. Prog. Comp.",
+   "title": "Parallelizing the dual revised simplex method",
+   "url": "https://doi.org/10.1007/s12532-017-0130-5"
+  },
+  {
+   "label": "NVIDIA cuOpt, open-source GPU optimization engine (Apache-2.0), github.com/NVIDIA/cuopt (2025)",
+   "title": "NVIDIA cuOpt documentation and repository",
+   "url": null
+  }
+ ],
+ "nuclear/kaon_cp_violation": [
+  {
+   "label": "Christenson et al., 1964, Phys. Rev. Lett.",
+   "title": "Evidence for the 2 π Decay of the K 2 0 Meson",
+   "url": "https://doi.org/10.1103/PhysRevLett.13.138"
+  },
+  {
+   "label": "Angelopoulos et al., 1998, Physics Letters B",
+   "title": "First direct observation of time-reversal non-invariance in the neutral-kaon system",
+   "url": "https://doi.org/10.1016/S0370-2693(98)01356-2"
+  },
+  {
+   "label": "Particle Data Group (Navas et al.), 2024, Phys. Rev. D 110, 030001",
+   "title": "Review of Particle Physics: neutral kaon parameters",
+   "url": null
+  }
+ ],
  "nuclear/neutrino_oscillations": [
   {
    "label": "Fukuda et al., 1998, Phys. Rev. Lett.",
@@ -974,6 +1809,28 @@
    "label": "Haxel et al., 1949, Phys. Rev.",
    "title": "On the \"Magic Numbers\" in Nuclear Structure",
    "url": "https://doi.org/10.1103/PhysRev.75.1766.2"
+  }
+ ],
+ "nuclear/yang_mills_mass_gap": [
+  {
+   "label": "Wilson, 1974, Phys. Rev. D",
+   "title": "Confinement of quarks",
+   "url": "https://doi.org/10.1103/PhysRevD.10.2445"
+  },
+  {
+   "label": "Creutz, 1980, Phys. Rev. D",
+   "title": "Monte Carlo study of quantized SU(2) gauge theory",
+   "url": "https://doi.org/10.1103/PhysRevD.21.2308"
+  },
+  {
+   "label": "Morningstar et al., 1999, Phys. Rev. D",
+   "title": "Glueball spectrum from an anisotropic lattice study",
+   "url": "https://doi.org/10.1103/PhysRevD.60.034509"
+  },
+  {
+   "label": "Jaffe & Witten, 2000, Clay Mathematics Institute",
+   "title": "Quantum Yang–Mills theory (official problem description)",
+   "url": null
   }
  ],
  "optics/diffraction_grating": [
@@ -1051,11 +1908,33 @@
    "url": null
   }
  ],
- "others/alphago_mini": [
+ "others/boids_flocking": [
   {
-   "label": "Silver et al., 2016, Nature",
-   "title": "Mastering the game of Go with deep neural networks and tree search",
-   "url": "https://doi.org/10.1038/nature16961"
+   "label": "Vicsek et al., 1995, Phys. Rev. Lett.",
+   "title": "Novel Type of Phase Transition in a System of Self-Driven Particles",
+   "url": "https://doi.org/10.1103/PhysRevLett.75.1226"
+  },
+  {
+   "label": "Reynolds, 1987, SIGGRAPH Comput. Graph.",
+   "title": "Flocks, herds and schools: A distributed behavioral model",
+   "url": "https://doi.org/10.1145/37402.37406"
+  }
+ ],
+ "others/cellular_automata": [
+  {
+   "label": "Wolfram, 1983, Rev. Mod. Phys.",
+   "title": "Statistical mechanics of cellular automata",
+   "url": "https://doi.org/10.1103/RevModPhys.55.601"
+  },
+  {
+   "label": "Chan, 2018 (arXiv)",
+   "title": "Lenia - Biology of Artificial Life",
+   "url": "https://arxiv.org/abs/1812.05433"
+  },
+  {
+   "label": "Cook, 2004, Complex Systems 15, 1",
+   "title": "Universality in Elementary Cellular Automata",
+   "url": null
   }
  ],
  "others/enigma_solver": [
@@ -1070,6 +1949,23 @@
    "label": "Gardner, 1970, Sci Am",
    "title": "Mathematical Games",
    "url": "https://doi.org/10.1038/scientificamerican1070-120"
+  }
+ ],
+ "others/kuramoto_sync": [
+  {
+   "label": "Strogatz, 2000, Physica D: Nonlinear Phenomena",
+   "title": "From Kuramoto to Crawford: exploring the onset of synchronization in populations of coupled oscillators",
+   "url": "https://doi.org/10.1016/S0167-2789(00)00094-4"
+  },
+  {
+   "label": "Ott et al., 2008 (arXiv)",
+   "title": "Low Dimensional Behavior of Large Systems of Globally Coupled Oscillators",
+   "url": "https://arxiv.org/abs/0806.0004"
+  },
+  {
+   "label": "Kuramoto, Y. (1975). Self-entrainment of a population of coupled non-linear oscillators. In: International Symposium on Mathematical Problems in Theoretical Physics, Lecture Notes in Physics 39, Springer",
+   "title": "",
+   "url": null
   }
  ],
  "others/langevin_noise": [
@@ -1105,18 +2001,33 @@
    "url": "https://doi.org/10.1063/1.1699114"
   }
  ],
- "others/neural_operator": [
+ "others/monty_hall": [
   {
-   "label": "Li et al., 2020 (arXiv)",
-   "title": "Fourier Neural Operator for Parametric Partial Differential Equations",
-   "url": "https://arxiv.org/abs/2010.08895"
+   "label": "Selvin, 1975, The American Statistician",
+   "title": "Letters to the Editor",
+   "url": "https://doi.org/10.1080/00031305.1975.10479121"
   }
  ],
- "others/pinn_oscillator": [
+ "others/network_sir": [
   {
-   "label": "Raissi et al., 2019, Journal of Computational Physics",
-   "title": "Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations",
-   "url": "https://doi.org/10.1016/j.jcp.2018.10.045"
+   "label": "Pastor-Satorras et al., 2001, Phys. Rev. Lett.",
+   "title": "Epidemic Spreading in Scale-Free Networks",
+   "url": "https://doi.org/10.1103/PhysRevLett.86.3200"
+  },
+  {
+   "label": "Kermack et al., 1927, Proceedings of the Royal Society of London. Series A, Containing Papers of a Mathematical and Physical Character",
+   "title": "A contribution to the mathematical theory of epidemics",
+   "url": "https://doi.org/10.1098/rspa.1927.0118"
+  },
+  {
+   "label": "Karrer et al., 2014, Phys. Rev. Lett.",
+   "title": "Percolation on Sparse Networks",
+   "url": "https://doi.org/10.1103/PhysRevLett.113.208702"
+  },
+  {
+   "label": "Génois et al., 2015, Net Sci",
+   "title": "Data on face-to-face contacts in an office building suggest a low-cost vaccination strategy based on community linkers",
+   "url": "https://doi.org/10.1017/nws.2015.10"
   }
  ],
  "others/turing_halting": [
@@ -1283,10 +2194,22 @@
    "url": "https://doi.org/10.1007/BF01328531"
   }
  ],
+ "quantum/photoelectric_effect": [
+  {
+   "label": "Einstein, 1905, Annalen der Physik",
+   "title": "Über einen die Erzeugung und Verwandlung des Lichtes betreffenden heuristischen Gesichtspunkt",
+   "url": "https://doi.org/10.1002/andp.19053220607"
+  },
+  {
+   "label": "Millikan, 1916, Phys. Rev.",
+   "title": "A Direct Photoelectric Determination of Planck's \"h\"",
+   "url": "https://doi.org/10.1103/PhysRev.7.355"
+  }
+ ],
  "quantum/scattering_2d": [
   {
    "label": "Born, 1926, Z. Physik",
-   "title": "Zur Quantenmechanik der Sto�vorg�nge",
+   "title": "Zur Quantenmechanik der Stoßvorgänge",
    "url": "https://doi.org/10.1007/BF01397477"
   }
  ],
@@ -1373,6 +2296,23 @@
    "label": "Maxwell, 1860, The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science",
    "title": "V. Illustrations of the dynamical theory of gases.—Part I. On the motions and collisions of perfectly elastic spheres",
    "url": "https://doi.org/10.1080/14786446008642818"
+  }
+ ],
+ "thermodynamics/maxwell_demon": [
+  {
+   "label": "Landauer, 1961, IBM J. Res. &amp; Dev.",
+   "title": "Irreversibility and Heat Generation in the Computing Process",
+   "url": "https://doi.org/10.1147/rd.53.0183"
+  },
+  {
+   "label": "Bérut et al., 2012, Nature",
+   "title": "Experimental verification of Landauer’s principle linking information and thermodynamics",
+   "url": "https://doi.org/10.1038/nature10872"
+  },
+  {
+   "label": "Sagawa et al., 2010, Phys. Rev. Lett.",
+   "title": "Generalized Jarzynski Equality under Nonequilibrium Feedback Control",
+   "url": "https://doi.org/10.1103/PhysRevLett.104.090602"
   }
  ],
  "thermodynamics/mpemba_effect": [

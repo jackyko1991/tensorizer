@@ -1,0 +1,22 @@
+source_hash: ab1a099d3cd6
+title: 'Modelo de Kuramoto: sincronización espontánea'
+summary: 'Luciérnagas que destellan al unísono, metrónomos sobre una misma tabla, células marcapasos: osciladores con frecuencias naturales $\omega_i$ distintas, cada uno atraído por los demás, se enganchan de repente cuando el acoplamiento $K$ supera un umbral. El campo medio complejo $r e^{i\psi} = \frac1N \sum_j e^{i\theta_j}$ convierte la suma de todos con todos en un trabajo $O(N)$, todo un lote de acoplamientos se ejecuta a la vez, y el parámetro de orden $r$ salta en $K_c = 2/(\pi g(0))$, siguiendo la curva exacta de Ott–Antonsen $r = \sqrt{1 - K_c/K}$ para frecuencias lorentzianas.'
+notes: 'Kuramoto (1975) resolvió el modelo de forma autoconsistente y encontró $K_c = 2/(\pi g(0))$ para una densidad de frecuencias $g$ simétrica y unimodal; Strogatz (2000) cuenta la historia. Ott y Antonsen (2008) demostraron que para una lorentziana $g(\omega) = (\gamma/\pi)/(\omega^2 + \gamma^2)$ la dinámica con $N$ infinito se reduce a una sola ecuación, $\dot r = -\gamma r + \tfrac K2 r(1 - r^2)$, cuyo estado estable es $r = \sqrt{1 - 2\gamma/K}$: la simulación lo reproduce con un error de unos $0.01$ con $N = 1200$. Por debajo de $K_c$, $r$ es solo ruido de tamaño finito del orden de $1/\sqrt N$. Las frecuencias gaussianas tienen el umbral menor $K_c = 2\sigma\sqrt{2\pi}/\pi \approx 1.6\,\sigma$ (verde). La rampa lenta (rojo) sigue la curva a medida que crece $K$; el círculo muestra los osciladores en el sistema de referencia del campo medio, coloreados según $\omega_i$: los de $|\omega_i|$ pequeño se enganchan primero y los rápidos siguen derivando. El tercer panel es un pequeño
+  extra: osciladores idénticos en un anillo con acoplamiento no local y un desfase $\alpha = \pi/2 - 0.18$ se dividen en un dominio sincronizado y otro incoherente, el estado quimera descubierto por Kuramoto y Battogtokh (2002) y bautizado por Abrams y Strogatz (2004). La fase media deriva exactamente a la frecuencia media porque $\sin(\theta_j - \theta_i)$ es antisimétrico.'
+meanings:
+- frecuencias naturales, un sorteo aleatorio en cada uno de los $N$ intervalos equiprobables de la densidad lorentziana (o gaussiana)
+- 'un acoplamiento por miembro del lote: cada población evoluciona en paralelo'
+- campo medio complejo, $j$ repetido ⇒ promediado; $r = 0$ incoherente, $r = 1$ sincronía perfecta
+- 'cada oscilador solo siente el campo medio: $O(N)$ en lugar de $O(N^2)$'
+- la suma lenta por pares, conservada como referencia; los tests comprueban que coincide con la forma de campo medio
+- parámetro de orden exacto para $N \to \infty$ con frecuencias lorentzianas, $\sqrt{1 - 2\gamma/K}$ por encima de $K_c = 2\gamma$
+- acoplamiento no local $(1 + A\cos x)/2\pi$ en un anillo, para el estado quimera
+labels:
+  n_oscillators: Osciladores $N$
+  width: Dispersión de frecuencias $\gamma$ (lorentziana) o $\sigma$ (gaussiana)
+  k_max: Acoplamiento máximo $K$
+  n_couplings: Acoplamientos en el lote
+  t_relax: Tiempo de relajación por acoplamiento
+  ramp_time: Duración de la rampa lenta de $K$
+  distribution: Densidad de frecuencias mostrada en la rampa
+  seed: Semilla aleatoria

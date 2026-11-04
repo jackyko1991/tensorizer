@@ -1,0 +1,50 @@
+title: The Kakeya conjecture
+category: maths
+level: advanced
+order: 8
+tags: [fields:2026, status:partial]  # Hong Wang, Kakeya in three dimensions
+summary: >
+  A needle can be turned through every direction inside a set of arbitrarily small area. This problem builds such a set
+  (Perron's tree of $2^k$ thin triangles, shifted sideways) and measures its area exactly, row by row. It then covers
+  unions of $\delta$-tubes in $\mathbb R^2$, $\mathbb R^3$ and $\mathbb R^4$ with $\delta$-cubes to estimate their
+  dimension. The Kakeya conjecture says such sets still have full dimension $n$. That is proven for $n = 2$ and,
+  since 2025, $n = 3$; for $n \ge 4$ the only proofs so far are unverified, AI-generated claims.
+animated: true
+vector_form: '|T_1 \cup \dots \cup T_N| \le \big(\alpha^{2k} + 2(1-\alpha)\big)\,|T| \xrightarrow[k\to\infty]{} 0,\qquad \dim_M K = \lim_{\delta\to0}\frac{\log N_\delta(K)}{\log(1/\delta)} \overset{?}{=} n \;\text{ for every Kakeya set } K\subset\mathbb R^n'
+index_form: '\ell_{yi} = b_i(1 - y) + s_i,\quad r_{yi} = \ell_{yi} + w_0(1-y),\qquad |\textstyle\bigcup T| = \frac1Y\sum_y \sum_i \big(r_{y(i)} - \max(\ell_{y(i)}, \max_{j<i} r_{y(j)})\big)_+,\qquad N_\delta = \#\big\{\lfloor (c_{j} + t\,u_{j})/\delta \rfloor\big\}'
+translation:
+  - {symbol: 'b_i,\ w_0', code: 'triangle_bases(k, device)', shape: '(N,), float', meaning: 'the $N = 2^k$ thin triangles with apex $(0, 1)$ and bases $[b_i, b_i + w_0]$ splitting $[-1/\sqrt3, 1/\sqrt3]$: a 60° cone of directions, every side $\ge 1$'}
+  - {symbol: 's_i', code: 'perron_shifts(k, alphas, h)', shape: '(A, N)', meaning: 'horizontal shifts after $k$ Perron rounds, for $A$ values of $\alpha$ at once; each round makes neighbouring hearts touch and pushes the right one left by $(1-\alpha)(c - a)$'}
+  - {symbol: '\ell_{yi},\ r_{yi}', code: 'intervals(y, base, w0, shift)', shape: '(A, Y, N)', meaning: 'where triangle $i$ cuts the horizontal line at height $y$'}
+  - {symbol: '\max_{j<i} r_{y(j)}', code: 'cummax(gather(hi, -1, argsort(lo)), dim=-1)', shape: '(A, Y, N)', meaning: 'sort the intervals of each row by their left end; the running maximum of the right ends gives what is already covered'}
+  - {symbol: '|\bigcup T|', code: 'union_area(base, w0, shift, n_rows)', shape: '(A,)', meaning: 'repeated $i$ and $y$ ⇒ summed: the exact union length of every row, averaged over rows (midpoint rule)'}
+  - {symbol: 'u_j', code: 'directions(n, delta, device)', shape: '(D, n)', meaning: 'a $\delta$-grid on the faces of the cube $[-1,1]^n$, pushed to the sphere: about $\delta$-separated line directions'}
+  - {symbol: '\lfloor (c_j + t u_j)/\delta\rfloor', code: 'floor(pts / delta).long()', shape: '(D·S, n)', meaning: 'the cubes of side $\delta$ met by every tube, sampled every $\delta/2$ along it'}
+  - {symbol: 'N_\delta', code: "unique(einsum('mi,i->m', cells - low, radix))", shape: 'int', meaning: 'repeated $i$ ⇒ summed: one integer key per cube, so counting distinct cubes is one sort'}
+  - {symbol: 'R_c u', code: "einsum('cij,nvj->cnvi', rot, poly)", shape: '(3, N, 3, 2)', meaning: 'repeated $j$ ⇒ summed: three copies of the tree turned by 0°, 60°, 120° cover every direction'}
+notes: >
+  Kakeya asked in 1917 for the smallest area in which a unit needle can be turned around. Besicovitch (1919, 1928)
+  found that a set containing a unit segment in every direction can have measure zero, and Perron (1928) simplified
+  the construction into the tree drawn here. Cut a triangle into $2^k$ slivers and slide them sideways. Every sliver
+  keeps its directions, and after each round of Perron's step the overlap grows. The area obeys
+  $|\bigcup T_i| \le (\alpha^{2k} + 2(1-\alpha))|T|$ (checked), and the best $\alpha$, found by trying 24 values at once,
+  makes it fall like $\ln k / k$. Córdoba (1977) proved that the $\delta$-neighbourhood of a Kakeya set in the plane has
+  area at least $c / \log(1/\delta)$, so this slow decay is unavoidable, and Davies (1971) proved that every planar
+  Kakeya set has Hausdorff and Minkowski dimension 2. Three trees turned by 60° contain a unit needle in every direction (the
+  red needle sweeps 180°); joining the positions with Pál's trick lets the needle actually rotate inside a set of
+  area as small as you like. In $\mathbb R^n$ the Kakeya set conjecture says every such set has dimension $n$: tubes of
+  radius $\delta$ in $\delta$-separated directions cannot overlap much, so their union has volume
+  $\gtrsim_\varepsilon \delta^{\varepsilon}$. The right panels count $\delta$-cubes for two arrangements (all tubes
+  through the origin, and random centres). The slope of $\log N$ against $\log(1/\delta)$ approaches $n$ in each case,
+  as it must if the conjecture is true. A computer can only test particular arrangements, never all of them. Status
+  (November 2026): $n = 2$ proved (Davies 1971). $n = 3$ proved by Hong Wang and Joshua Zahl (preprint 2025), after
+  Wolff's bound $(n+2)/2$ (1995) and Katz–Łaba–Tao. For $n \ge 4$ the problem is open in the peer-reviewed literature.
+  The AI-generated manuscript collection published by OpenAI (github.com/openai/math, families 074 and 079) claims
+  the four-dimensional case and, through Sogge's local smoothing conjecture, every dimension. The repository says
+  that some of its statements have been formalised in Lean, but these are unrefereed, machine-produced claims still
+  awaiting checking by the mathematical community, so this page treats them as claimed, not proven. The conjecture
+  matters well beyond geometry: it follows from the Fourier restriction and Bochner–Riesz conjectures of harmonic
+  analysis.
+params:
+  k_max: {default: 9, min: 4, max: 12, step: 1, type: int, label: 'Perron rounds $k$ ($2^k$ triangles)'}
+  n_max: {default: 4, min: 2, max: 4, step: 1, type: int, label: 'Tubes up to dimension $n$'}

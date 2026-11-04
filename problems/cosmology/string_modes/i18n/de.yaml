@@ -1,0 +1,20 @@
+source_hash: 49928f544229
+title: Moden des relativistischen Strings und T-Dualität
+summary: 'Der Nambu–Goto-String in Lichtkegeleichung besteht aus 24 freien transversalen Wellen. Eine einzige gebatchte Modensumme zeichnet einen schwingenden geschlossenen oder offenen String; die Energie in seinen Moden ist das Level $N$, quantisiert als $\alpha'' M^2 = N - 1$ (offen) bzw. $4(N-1)$ (geschlossen), mit $1, 24, 324, 3200, \dots$ Zuständen, abgelesen aus der Potenzreihe $\prod (1-q^n)^{-24}$. Auf einem Kreis vom Radius $R$ bleibt das Spektrum des geschlossenen Strings unter $R \leftrightarrow \alpha''/R$ unverändert: T-Dualität. Die Stringtheorie ist ein Rahmenwerk ohne direkte experimentelle Bestätigung.'
+notes: 'Einheiten $\alpha'' = 1$. Status: Die Stringtheorie ist ein mathematisch konsistenter Kandidatenrahmen für die Quantengravitation, doch es gibt keine direkte experimentelle Evidenz für sie; nichts hier ist eine getestete Vorhersage. Gezeigt wird Standard-Lehrbuchmathematik des bosonischen Strings (Goddard–Goldstone–Rebbi–Thorn 1973; Polchinski, String Theory Bd. 1): Die Lichtkegelquantisierung ist nur in $D = 26$ konsistent, mit Achsenabschnitt $a = 1$; das hinterlässt ein Tachyon bei $N = 0$ ($M^2 < 0$, rot), ein masseloses Vektorteilchen bei $N = 1$ für offene Strings sowie Graviton, B-Feld und Dilaton bei $N = \tilde N = 1$ für geschlossene Strings. Superstrings (D = 10) beseitigen das Tachyon. Der gezeichnete String ist eine klassische Konfiguration, deren Oszillatorenergie gleich dem Level $N$ ist (jedes Quant der Mode $n$ trägt $n$ Einheiten); bei geschlossenen Strings werden Rechts- und Linksläufer mit $N = \tilde N$ gewählt (Level-Matching, $\int \dot X\cdot X''\,d\sigma
+  = 0$), und der String befindet sich in seinem Ruhesystem, daher wird die Lichtkegelkoordinate $X^-$ nicht gezeichnet. Das T-Dualitäts-Panel verfolgt die Massen einiger Zustände bei sich änderndem Radius: Impulszustände ($n/R$) und Windungszustände ($wR/\alpha''$) tauschen unter $R \to \alpha''/R$ die Rollen, und beim selbstdualen Radius $R = \sqrt{\alpha''}$ werden zusätzliche Zustände masselos. Der Titel prüft, dass das gesamte abgeschnittene Spektrum samt Multiplizitäten bei $R$ und $\alpha''/R$ identisch ist.'
+meanings:
+- komplexe Amplituden der rechts- und linkslaufenden Moden $n$ in 3 der 24 transversalen Richtungen $i$
+- Phase $e^{-in(\tau-\sigma)}$ jeder Mode an jedem Punkt der Weltfläche (Broadcast)
+- 'wiederholter Modenindex $n$ ⇒ summiert: die Form des Strings zu jedem $\tau$ und $\sigma$'
+- Energiedichte; über $\sigma$ integriert ergibt sie das Level $N$ (Parseval)
+- 'Teilersummen aus einer per Broadcast erzeugten Teilbarkeitsmaske: $\log\prod(1-q^n)^{-1} = \sum_m \sigma_1(m) q^m/m$'
+- abgeschnittene Potenzreihen multiplizieren sich wie untere Dreiecks-Toeplitz-Matrizen, also ist das $\exp$ der Reihe eine Matrixexponentialfunktion
+- Massen aller level-gematchten Zustände $N-\tilde N = nw$ für jeden Radius $R_b$ zugleich
+labels:
+  string: String-Typ
+  mode_a: 'Mode $n$ der Rechtsläufer (offen: erste Mode)'
+  mode_b: 'Mode $\tilde n$ der Linksläufer (offen: zweite Mode)'
+  n_points: Punkte entlang des Strings $\sigma$
+  n_levels: Angezeigte Massenlevels
+  R_max: Größter Kreisradius $R/\sqrt{\alpha'}$ im Durchlauf

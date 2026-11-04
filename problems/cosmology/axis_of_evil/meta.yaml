@@ -1,0 +1,49 @@
+title: The axis of evil in the microwave sky
+category: cosmology
+level: advanced
+order: 5
+tags: [series:early-universe:3, role:observation, speculative]
+summary: >
+  The two largest patterns on the real WMAP map of the cosmic microwave background, the quadrupole ($\ell = 2$) and
+  octopole ($\ell = 3$), seem to point the same way. Their coefficients $a_{\ell m}$ come from one least-squares fit;
+  each multipole's axis is the top eigenvector of the $3\times 3$ angular-momentum dispersion
+  $M_{ij} = \mathrm{Re}\,a^*L_iL_ja$, and a batch of $10^5$ isotropic random skies turns the angle between the axes
+  into a $p$-value. A real but debated anomaly: chance, foreground residue or new physics.
+animated: true
+vector_form: 'T(\hat n) = \sum_{\ell m} a_{\ell m}\,Y_{\ell m}(\hat n),\qquad \hat n_\ell = \arg\max_{\hat n}\ \langle a_\ell|(\hat n\cdot\mathbf L)^2|a_\ell\rangle,\qquad S = |\hat n_2\cdot\hat n_3|,\qquad p = P_{\mathrm{iso}}(S \ge S_{\mathrm{obs}})'
+index_form: 'r = \arg\min\ w_p\big(T_p - Y_{pa}\,r_a\big)^2,\qquad M^{(\ell)}_{ij} = \mathrm{Re}\;a^*_{\ell m}\,(L_i)_{mn}(L_j)_{nk}\,a_{\ell k},\qquad M_{ij}\hat n_j = \lambda_{\max}\hat n_i,\qquad S_s = |\hat n_{2,si}\,\hat n_{3,si}|'
+translation:
+  - {symbol: '\hat n_p,\ T_p,\ w_p', code: 'load_sky_map(path)', shape: '(P, 3), (P,), (P,)', meaning: 'pixel direction, temperature and solid angle, from any lon/lat/T CSV'}
+  - {symbol: 'Y_{pa}', code: 'real_harmonics(dirs, lmax)', shape: '(P, (\ell_\mathrm{fit}+1)^2)', meaning: 'real harmonics at every pixel; $a$ runs over all $(\ell, m)$'}
+  - {symbol: 'r_a', code: 'lstsq(Y * sqrt(w), T * sqrt(w))', shape: '((\ell_\mathrm{fit}+1)^2,)', meaning: 'weighted least squares: all multipoles at once, no aliasing between them'}
+  - {symbol: 'a_{\ell m}', code: 'real_to_complex(r, ell)', shape: '(2\ell+1,)', meaning: 'complex coefficients with $a_{\ell,-m} = (-1)^m a^*_{\ell m}$'}
+  - {symbol: '(L_i)_{mn}', code: 'angular_momentum(ell)', shape: '(3, 2\ell+1, 2\ell+1)', meaning: 'spin-$\ell$ matrices, $[L_x, L_y] = iL_z$, $L_iL_i = \ell(\ell+1)$'}
+  - {symbol: 'M_{ij}', code: "einsum('...m,imn,jnk,...k->...ij', a.conj(), L, L, a).real", shape: '(K, 3, 3)', meaning: '$m, n, k$ summed: $\hat n_iM_{ij}\hat n_j = \sum_m m^2|a_{\ell m}|^2$ in the frame with $z \parallel \hat n$'}
+  - {symbol: '\hat n_\ell', code: 'eigh(M).eigenvectors[..., -1]', shape: '(K, 3)', meaning: 'batched eigh: the axis around which the multipole is most planar'}
+  - {symbol: 'S_s', code: "einsum('si,si->s', n2, n3).abs()", shape: '(K,)', meaning: '$i$ summed: alignment of the two axes in sky $s$ (axes are headless)'}
+  - {symbol: 'p', code: '(S_sims >= S_obs).mean()', shape: '()', meaning: 'Monte Carlo $p$-value against isotropic Gaussian skies'}
+notes: >
+  In a statistically isotropic universe (the standard inflationary prediction) the orientations of different
+  multipoles are independent, so the angle between the quadrupole and octopole axes should be random: $|\cos|$ uniform
+  on $[0, 1]$. Tegmark, de Oliveira-Costa and Hamilton (2003) and de Oliveira-Costa et al. (2004) found in the first
+  WMAP maps that both point to $(l, b) \approx (-110^\circ, 60^\circ)$, nicknamed the "axis of evil" by Land and
+  Magueijo (2005); Copi, Huterer, Schwarz and Starkman studied it with multipole vectors and found further links to the
+  ecliptic. On the bundled WMAP 9-year ILC map the axes come out at $(l, b) \approx (240^\circ, 60^\circ)$ and
+  $(238^\circ, 63^\circ)$, only $3^\circ$ apart, and fewer than 2 in 1000 isotropic skies do better ($p \approx 0.0015$; for
+  this statistic $p = 1 - |\cos|$ exactly, which the Monte Carlo confirms). The right panel checks the simulation: the
+  share of random skies at least as aligned as $x$ follows the line $P = x$. Status: the alignment is real in the
+  data (Planck 2013, 2015 and 2018 isotropy papers see it in all their maps), but its significance is debated. The
+  statistic was chosen after the pattern was noticed (a posteriori, look-elsewhere effect: among many possible
+  anomalies some will look rare); the low quadrupole power and the ILC's residual Galactic foregrounds, the kinematic
+  Doppler quadrupole (not removed here) and the choice of map shift $p$ by factors of several. No accepted physical
+  explanation exists; proposals include a non-trivial topology, anisotropic expansion or local foregrounds, and most
+  cosmologists treat it as a statistical fluke. This page reports $p$ for one statistic and does not claim a
+  detection. Data: WMAP 9-year ILC map (Bennett et al. 2013, ApJS 208, 20), file wmap_ilc_9yr_v5.fits from NASA's
+  LAMBDA archive (lambda.gsfc.nasa.gov; NASA data, public domain), degraded here from HEALPix $N_\mathrm{side} = 512$ to
+  16 (columns glon_deg, glat_deg, T_uK). Any map in the same lon/lat/T CSV form (for example a Planck map) can replace
+  it. The fit uses all multipoles up to $\ell_\mathrm{fit}$ on the full sky without a mask; isotropic skies use unit
+  Gaussian real coefficients (the power $C_\ell$ cancels in the axis).
+params:
+  n_skies: {default: 100000, min: 1000, max: 400000, step: 1000, type: int, label: 'Isotropic random skies $K$'}
+  lmax_fit: {default: 10, min: 3, max: 20, step: 1, type: int, label: 'Multipoles fitted together $\ell_\mathrm{fit}$'}
+  seed: {default: 0, min: 0, max: 1000, step: 1, type: int, label: Random seed}

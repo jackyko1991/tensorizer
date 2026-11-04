@@ -1,0 +1,18 @@
+source_hash: 9483d7c492cb
+title: Rotationskurven von Galaxien und Dunkle Materie
+summary: 'Sterne und Gas weit vom Zentrum einer Galaxie kreisen zu schnell: echte Rotationskurven aus der SPARC-Datenbank bleiben flach, wo die sichtbare Masse einen Kepler-Abfall vorhersagt. Ein einziger gestapelter Autograd-Fit, alle Galaxien zugleich, vergleicht vier Erklärungen: nur Baryonen (mit einem Masse-Leuchtkraft-Verhältnis $\Upsilon$), Baryonen plus NFW-Halo aus Dunkler Materie, Baryonen plus Burkert-Halo mit Kern und MOND mit einer einzigen Beschleunigung $a_0$ (die radiale Beschleunigungsrelation). Dunkle Materie wird aus der Gravitation erschlossen, nicht direkt nachgewiesen.'
+notes: 'Daten: sechs Galaxien (NGC 3198, NGC 2403, NGC 6503, DDO 154, UGC 2885, NGC 7814) aus SPARC (Lelli, McGaugh und Schombert 2016, AJ 152, 157), Datei Rotmod_LTG, unverändert in data/sparc_rotation_curves.csv übernommen. Quelle http://astroweb.cwru.edu/SPARC/, die um Zitat des SPARC-Artikels bittet; ein Spiegel auf Zenodo (doi:10.5281/zenodo.16284118) steht unter CC-BY-4.0. Die Masse-Leuchtkraft-Verhältnisse bei 3,6 μm tragen einen Prior von 0,1 dex um $\Upsilon_d = 0.5$, $\Upsilon_b = 0.7$ (Prior auf 0 setzen, um ihn abzuschalten). Was der Fit zeigt: kein vernünftiges $\Upsilon$ lässt die Baryonen die flachen äußeren Geschwindigkeiten erreichen (DDO 154 bräuchte $\Upsilon_d \approx 19$, weit jenseits jeder Sternpopulation); nötig ist also unsichtbare Masse oder veränderte Dynamik, wie Rubin und Ford in den 1970er-Jahren mit optischen Spektren fanden. Beide Haloformen passen gut; die Zwerggalaxie DDO 154 bevorzugt einen Kern (das Cusp-Core-Problem). Ein einziges $a_0 \approx 1.1\times10^{-10}$
+  m/s² beschreibt alle Galaxien erstaunlich gut, wie die radiale Beschleunigungsrelation sagt. Ehrlicher Stand: Dunkle Materie wird aus ihrer Gravitation erschlossen (Rotationskurven, Gravitationslinsen, Haufen, CMB, Strukturbildung); kein Dunkle-Materie-Teilchen wurde direkt nachgewiesen. MOND passt Rotationskurven mit einem Parameter gut an, hat aber Probleme mit Galaxienhaufen, dem Bullet-Cluster und den akustischen Peaks des CMB und keine allgemein akzeptierte relativistische Fassung. Entfernungen und Inklinationen sind hier fest (ihre Fehler werden nicht fortgepflanzt), und MOND wird in seiner einfachsten algebraischen Form verwendet.'
+meanings:
+- beobachtete Geschwindigkeiten und Fehler der Galaxie $g$ beim Radius $r$, auf die längste Kurve aufgefüllt
+- echter Messpunkt (1) oder Auffüllung (0)
+- Geschwindigkeitsquadrate addieren sich; $\Upsilon$ skaliert SPARC-Scheibe und -Bulge (berechnet für $\Upsilon = 1$)
+- spitzer Halo aus Simulationen kalter Dunkler Materie, $\rho \propto 1/(x(1+x)^2)$
+- Halo mit Kern, $\rho \propto 1/((1+x)(1+x^2))$
+- eine Funktion mit einem $a_0$ für alle Galaxien; kein Halo
+- wiederholtes $r$ ⇒ über die echten Punkte jeder Galaxie summiert
+- 'ein Skalar für alle Modelle und Galaxien: ein Rückwärtsdurchlauf liefert alle Gradienten (Adam, dann L-BFGS)'
+labels:
+  iterations: Adam-Iterationen vor L-BFGS
+  lr: Adam-Lernrate
+  prior_dex: Breite des $\Upsilon$-Priors (dex, 0 = keiner)

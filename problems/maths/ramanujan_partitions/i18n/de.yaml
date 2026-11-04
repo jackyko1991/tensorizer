@@ -1,0 +1,19 @@
+source_hash: e62538d06f20
+title: Ramanujans Partitionen $p(n)$
+summary: 'Zähle die Möglichkeiten, $n$ als Summe positiver ganzer Zahlen zu schreiben, mit Eulers Pentagonalzahl-Rekursion: exakt in int64 und weit darüber hinaus als Reste modulo vieler Primzahlen gleichzeitig, die mit dem chinesischen Restsatz wieder zusammengesetzt werden. Vergleiche dann $p(n)$ mit der Hardy–Ramanujan-Formel, gewinne es exakt aus der Rademacher-Reihe zurück und sieh zu, wie Ramanujans Kongruenzen $p(5k+4) \equiv 0 \pmod 5$, $p(7k+5) \equiv 0 \pmod 7$, $p(11k+6) \equiv 0 \pmod{11}$ aufleuchten. Alle drei Ergebnisse sind Sätze; das Programm überprüft sie numerisch.'
+notes: 'Eine Partition von $n$ ist eine Darstellung als Summe positiver ganzer Zahlen ohne Beachtung der Reihenfolge: $4 = 3+1 = 2+2 = 2+1+1 = 1+1+1+1$, also $p(4) = 5$. Eulers erzeugende Funktion $\prod_k 1/(1-q^k)$ und sein Pentagonalzahlensatz machen daraus die Rekursion $p(n) = p(n-1) + p(n-2) - p(n-5) - p(n-7) + \dots$, die pro Schritt nur $O(\sqrt n)$ Terme braucht. In int64 ist sie exakt bis $p(405) \approx 9.15 \cdot 10^{18}$. In float64 verliert die alternierende Summe schnell Stellen (ein relativer Fehler von $10^{-4}$ schon bei $n = 1000$; der Test zeigt es), deshalb führt das Programm jenseits von int64 dieselbe Rekursion exakt modulo einer Reihe von Primzahlen nahe $2^{31}$ aus, je eine Tensorspalte, und setzt $p(n)$ mit dem chinesischen Restsatz wieder zusammen. Hardy und Ramanujan (1918) fanden mit ihrer Kreismethode die Asymptotik $p(n) \sim e^{\pi\sqrt{2n/3}}/(4n\sqrt3)$; das Feld oben links zeigt, wie das Verhältnis langsam wie $1 - 0.443/\sqrt n$ gegen 1 steigt. Rademacher
+  (1937, veröffentlicht 1938) machte aus ihrer Entwicklung eine exakte konvergente Reihe: Mit fünf Termen liefert Runden $p(n)$ exakt für jedes $n \le 200$ (ab etwa 240 liegt der float64-Rundungsfehler der großen Terme selbst nahe $\pm 0.5$), und schon der erste Term allein trifft $p(100) = 190\,569\,292$ auf sechs Stellen. Ramanujan bewies $p(5k+4) \equiv 0 \pmod 5$ und $p(7k+5) \equiv 0 \pmod 7$ (1919), und der Fall modulo 11 wurde 1921 aus seinen Manuskripten veröffentlicht; Watson (1938) und Atkin (1967) bewiesen die Familien für Potenzen von 5, 7 und 11 (hier 25, 49 und 121). Ono (2000) zeigte, dass Kongruenzen der Form $p(Ak+B) \equiv 0 \pmod m$ für jede Primzahl $m \ge 5$ existieren, auch wenn nur 5, 7 und 11 so einfache haben. In den Gittern ist jede Spalte ein $k$ und jede Zeile ein Rest $n \bmod m$; die rote Zeile bleibt durchgehend gefüllt, während die blauen Zellen andere Nullen sind, die kommen und gehen. Jede Aussage hier ist bewiesen; das Programm prüft sie nur auf einem endlichen
+  Bereich. Zum Schmunzeln: Ramanujan bemerkte, dass… („Ramanujan noticed that…“) die obigen Kongruenzen gelten; dass $1729 = 1^3 + 12^3 = 9^3 + 10^3$ (Hardys Taxizahl); und dass $e^{\pi\sqrt{163}}$ nur etwa $7.5\cdot10^{-13}$ von einer ganzen Zahl entfernt ist.'
+meanings:
+- verallgemeinerte Pentagonalzahlen $1, 2, 5, 7, 12, 15, \dots$ und die Vorzeichen $+,+,-,-,\dots$ von Eulers $\prod_k (1-q^k) = \sum_k (-1)^k q^{k(3k-1)/2}$
+- 'wiederholtes $j$ ⇒ summiert: für jedes $n$ werden nur $O(\sqrt n)$ frühere Werte gebraucht'
+- dieselbe Rekursion für $M$ Moduln gleichzeitig, je eine Spalte (5, 7, 11, 25, 49, 121 oder Primzahlen nahe $2^{31}$)
+- chinesischer Restsatz in Garners Mixed-Radix-Form, für alle $n$ gleichzeitig
+- Hardy–Ramanujan-Asymptotik; das Verhältnis ist $1 - c/\sqrt n + \dots$ mit $c = 1/C + C/48$, $C = \pi\sqrt{2/3}$
+- Dedekind-Summe $\sum_{r<k} \frac rk\,((\frac{hr}k))$, wiederholtes $r$ ⇒ summiert
+- wiederholtes $h$ ⇒ summiert über $0 \le h < k$ mit $\gcd(h,k) = 1$
+- Ramanujans Kongruenzen, eine Zeile pro $(a, b, m)$
+labels:
+  n_max: Größtes $n$
+  terms: Rademacher-Terme
+  grid_n: Kongruenzgitter bis $n$

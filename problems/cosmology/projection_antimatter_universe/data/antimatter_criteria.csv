@@ -1,0 +1,80 @@
+# Cited numbers for the antimatter-universe criteria (facts quoted from the papers; licence: cited numerical facts,
+# no data file copied; each paper's own licence applies to its text). kind: value (central value), upper (upper limit),
+# fit (parameter of a published fit), goal (forecast), prediction (a model's published prediction), assumed (modelling
+# choice of this problem, not a measurement).
+# --- criterion 1: no antimatter mixed in nearby ---
+# antihelium_to_helium: BESS-Polar, Abe et al., PRL 108, 131301 (2012), doi:10.1103/PhysRevLett.108.131301,
+#   arXiv:1201.2967 (abstract): 95% CL upper limit 6.9e-8 on antihelium/helium in cosmic rays assuming the helium
+#   spectrum (1.0-14 GV), 1.0e-7 without a spectral assumption. AMS-02 has published no antihelium detection.
+# coma_*: Coma cluster gas, beta model n_e(r) = n0 (1 + (r/rc)^2)^(-3 beta/2) with n0 = 3.36e-3 cm^-3, rc = 291 kpc,
+#   beta = 0.75 (Briel, Henry & Boehringer 1992, A&A 259, L31, rescaled to h = 0.7 as in Planck Intermediate
+#   Results X, A&A 554, A140, 2013); distance from z = 0.0231. coma_flux_ul: Fermi-LAT, Ackermann et al., ApJ 819,
+#   149 (2016), observed 95% upper limit on the gamma-ray flux above 100 MeV, 5.2e-9 ph cm^-2 s^-1.
+# pbar_p_sigma_v: low-energy proton-antiproton annihilation <sigma v> ~ 1e-15 cm^3/s (sigma ~ 1/v at low speed); an
+#   order-of-magnitude modelling choice, as in the classic estimates reviewed by Steigman, ARA&A 14, 339 (1976).
+# --- criterion 2: domains (Cohen, De Rujula & Glashow 1998, ApJ 495, 539, arXiv:astro-ph/9707087) ---
+# comptel_*: COMPTEL cosmic diffuse gamma-ray background, dJ/dE = 6.4e-3 (E / 1 MeV)^-2.38 ph cm^-2 s^-1 sr^-1 MeV^-1
+#   for 0.8-30 MeV (Kappadath et al. 1996, A&AS 120, 619; preliminary fit as quoted in the literature; Kappadath's
+#   1998 thesis gives (1.05 +- 0.2)e-4 at 5 MeV, index 2.4 +- 0.2, consistent).
+# fermi_*: Fermi-LAT isotropic gamma-ray background, Ackermann et al., ApJ 799, 86 (2015), arXiv:1410.3696:
+#   intensity above 100 MeV (7.2 +- 0.6)e-6 ph cm^-2 s^-1 sr^-1, power law of index 2.32 +- 0.02 with an exponential
+#   cutoff at 279 +- 52 GeV, measured 100 MeV - 820 GeV.
+# planck_*: Planck 2018 VI, A&A 641, A6 (2020): Omega_b h^2 = 0.0224, h = 0.674, Omega_m = 0.315, reionization
+#   z_re = 7.7; CMB T0 = 2.7255 K and n_gamma = 410.7 cm^-3 (Fixsen 2009, ApJ 707, 916). eta = 273.9e-10 Omega_b h^2.
+#   horizon_gpc: comoving radius of the observable universe, 46.5 Gly = 14.3 Gpc.
+# z_dec: redshift below which the gas temperature decouples from the CMB and cools adiabatically (about 150).
+# --- criterion 4: CPT-symmetric universe (Boyle, Finn & Turok, PRL 121, 251301, 2018, arXiv:1803.08928) ---
+# bft_*: published predictions (abstract): stable right-handed neutrino dark matter of mass 4.8e8 GeV, lightest
+#   neutrino massless, no primordial long-wavelength gravitational waves (r = 0).
+# dm21, dm31_no, dm32_io: NuFIT 6.0, Esteban et al., JHEP 12 (2024) 216, arXiv:2410.05380, Table 1 (IC24 with SK-atm):
+#   7.49e-5 eV^2; +2.513e-3 eV^2 (normal ordering, Delta m^2_31); -2.484e-3 eV^2 (inverted, Delta m^2_32).
+# s12sq, s13sq: PDG 2024 (Navas et al., PRD 110, 030001): sin^2 theta_12 = 0.307, sin^2 theta_13 = 0.0219.
+# katrin_2022: KATRIN, Aker et al., Nature Physics 18, 160 (2022), arXiv:2105.08533: m_beta < 0.8 eV (90% CL).
+# katrin_2025: KATRIN, Aker et al., Science 388, 180 (2025), doi:10.1126/science.adq9592: m_beta < 0.45 eV (90% CL).
+# planck_sum_mnu: Planck 2018 VI, sum m_nu < 0.12 eV (95%, TT,TE,EE+lowE+lensing+BAO).
+# desi_2024_sum_mnu: DESI 2024 VI, JCAP 02 (2025) 021, arXiv:2404.03002: sum m_nu < 0.072 eV (95%, DESI+CMB, LCDM).
+# desi_dr2_sum_mnu: DESI DR2 Results II, arXiv:2503.14738: sum m_nu < 0.064 eV (95%, DESI+CMB, LCDM; 0.16 eV in w0wa).
+# bicep_keck_r: BICEP/Keck XIII, PRL 127, 151301 (2021), arXiv:2110.00483: r_0.05 < 0.036 (95%).
+# future_sigma_r: CMB-S4 design goal sigma(r) ~ 1e-3 (the project was stopped by DOE/NSF in July 2025); LiteBIRD aims
+#   at a similar sensitivity (r < 0.001 goal).
+quantity,value,kind
+antihelium_to_helium,6.9e-8,upper
+antihelium_no_spectrum,1.0e-7,upper
+coma_n0_cm3,3.36e-3,value
+coma_rc_kpc,291,value
+coma_beta,0.75,value
+coma_z,0.0231,value
+coma_flux_ul,5.2e-9,upper
+pbar_p_sigma_v,1.0e-15,assumed
+comptel_norm,6.4e-3,fit
+comptel_index,2.38,fit
+comptel_emin_mev,0.8,fit
+comptel_emax_mev,30,fit
+fermi_intensity_100mev,7.2e-6,fit
+fermi_index,2.32,fit
+fermi_cutoff_gev,279,fit
+fermi_emin_mev,100,fit
+fermi_emax_mev,820000,fit
+planck_omega_b_h2,0.0224,value
+planck_h,0.674,value
+planck_omega_m,0.315,value
+planck_z_re,7.7,value
+cmb_t0_k,2.7255,value
+n_gamma_cm3,410.7,value
+horizon_gpc,14.3,value
+z_dec,150,assumed
+bft_dm_mass_gev,4.8e8,prediction
+bft_lightest_mass_ev,0,prediction
+bft_r,0,prediction
+dm21,7.49e-5,value
+dm31_no,2.513e-3,value
+dm32_io,-2.484e-3,value
+s12sq,0.307,value
+s13sq,0.0219,value
+katrin_2022,0.8,upper
+katrin_2025,0.45,upper
+planck_sum_mnu,0.12,upper
+desi_2024_sum_mnu,0.072,upper
+desi_dr2_sum_mnu,0.064,upper
+bicep_keck_r,0.036,upper
+future_sigma_r,1e-3,goal

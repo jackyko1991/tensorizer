@@ -1,0 +1,46 @@
+title: Navier–Stokes regularity and blowup candidates
+category: fluids
+level: advanced
+order: 5
+tags: [millennium, smale:15, status:open, status:claimed]
+summary: >
+  The Clay Millennium Problem asks whether smooth 3D incompressible flows stay smooth forever. A pseudo-spectral solver
+  on the torus runs the Taylor–Green vortex for Euler ($\nu = 0$) and two viscosities as one batch of FFTs, tracking the
+  maximum vorticity, the enstrophy and the Beale–Kato–Majda integral $\int\|\omega\|_\infty dt$ that must diverge at
+  any blowup. Vortex stretching makes the Euler vorticity grow until the grid can no longer resolve it; viscosity caps it.
+  This is an illustration, not a proof.
+animated: true
+vector_form: '\partial_t\mathbf u + (\mathbf u\cdot\nabla)\mathbf u = -\nabla p + \nu\nabla^2\mathbf u,\qquad \nabla\cdot\mathbf u = 0,\qquad \frac{dE}{dt} = -2\nu\,\Omega,\qquad T^* < \infty \iff \int_0^{T^*}\!\|\boldsymbol\omega\|_\infty\,dt = \infty'
+index_form: '\partial_t\hat u_{bi} = P_{ij}\,\widehat{(\mathbf u\times\boldsymbol\omega)}_{bj} - \nu_b\,k_lk_l\,\hat u_{bi},\qquad P_{ij} = \delta_{ij} - \frac{k_ik_j}{k_lk_l},\qquad \hat\omega_{bi} = i\,\varepsilon_{ijl}\,k_j\,\hat u_{bl}'
+translation:
+  - {symbol: '\hat u_{bi}(\mathbf k)', code: 'rfftn(u0, dim=(-3, -2, -1)) * mask', shape: '(B, 3, N, N, N/2+1) complex', meaning: 'velocity Fourier coefficients of every run $b$ (one viscosity each) on the torus $[0, 2\pi)^3$'}
+  - {symbol: '\hat\omega_{bi} = i\varepsilon_{ijl}k_j\hat u_{bl}', code: "1j * einsum('ijl,jxyz,blxyz->bixyz', EPS, k, u_hat)", shape: '(B, 3, N, N, M)', meaning: 'curl with the Levi-Civita tensor; repeated $j, l$ ⇒ summed'}
+  - {symbol: '(\mathbf u\times\boldsymbol\omega)_i', code: "einsum('ijl,bjxyz,blxyz->bixyz', EPS, u, w)", shape: '(B, 3, N, N, N)', meaning: 'the nonlinear term in rotational form, evaluated in real space (pseudo-spectral)'}
+  - {symbol: 'P_{ij}\hat f_j', code: 'f_hat - k * (k_dot_f / k2)', shape: '(B, 3, N, N, M)', meaning: 'Leray projection: removes the gradient part, so the pressure is never computed and $k_i\hat u_i = 0$'}
+  - {symbol: '\text{2/3 rule}', code: 'mask = |k_i| < N/3', shape: '(N, N, M) bool', meaning: 'drops the modes that the quadratic term would alias; $k_\max = N/3$'}
+  - {symbol: 'E,\ \Omega', code: "0.5 * einsum('bixyz,bixyz->b', u, u) / N**3", shape: '(B,)', meaning: 'kinetic energy $\frac12\langle|\mathbf u|^2\rangle$ and enstrophy $\frac12\langle|\boldsymbol\omega|^2\rangle$'}
+  - {symbol: '\int_0^t\|\omega\|_\infty dt', code: 'bkm_integral(t, wmax)', shape: '(T, B)', meaning: 'Beale–Kato–Majda criterion: a smooth solution can only break down at $T^*$ if this diverges there'}
+  - {symbol: '\delta(t)', code: 'analyticity_strip(spec, 3, k_max - 1)', shape: '(B,)', meaning: 'fit $E(k) \propto k^{-3}e^{-2\delta k}$; a real singularity needs $\delta \to 0$, and the grid resolves the flow only while $\delta\,k_\max \gtrsim 1$'}
+notes: >
+  The Clay problem (Fefferman's official description) asks for one of four statements: global smooth solutions on
+  $\mathbb R^3$ (A) or on the torus $\mathbb T^3$ (B), or breakdown on $\mathbb R^3$ (C) or on $\mathbb T^3$ (D), for $\nu > 0$.
+  The repository openai/NavierStokesAndEuler on GitHub states that it contains Lean 4 machine-checked proofs, with
+  accompanying papers, of breakdown for forced Navier–Stokes on $\mathbb R^3$ and $\mathbb T^3$ (alternatives C and D) and
+  of finite-time blowup for the unforced Euler equation from smooth, compactly supported data. These are recent claims
+  that still await assessment by the mathematical community and the Clay Institute; this page does not treat the prize
+  problem as settled. For Euler, finite-time singularity of smooth solutions was supported by the Luo–Hou (2014)
+  axisymmetric computation with a boundary and later by computer-assisted proofs (Chen–Hou), and Elgindi (2021) proved
+  blowup for $C^{1,\alpha}$ data. The simulation here only illustrates the quantities those works control. The Taylor–Green
+  vortex $\mathbf u_0 = (\sin x\cos y\cos z, -\cos x\sin y\cos z, 0)$ is the classic test (Brachet et al. 1983): vortex
+  stretching steepens it into thin sheets, the enstrophy rises, and the energy spectrum flattens. The tail of the spectrum
+  decays like $e^{-2\delta k}$; a blowup would need the analyticity strip $\delta(t)$ to reach zero in finite time, while
+  Brachet found it shrinking only exponentially. Once $\delta\,k_\max < 1$ the Euler run is under-resolved (shaded): the
+  truncated system still conserves energy exactly, but its further growth of $\|\omega\|_\infty$ is a grid artefact, not
+  evidence of a singularity. With viscosity the energy obeys $dE/dt = -2\nu\Omega$ (checked to round-off) and enstrophy
+  peaks and decays. The 2D Taylor–Green vortex is an exact solution $e^{-2\nu t}$ and the 3D one has a known initial
+  acceleration from $p_0 = \frac1{16}(\cos 2x + \cos 2y)(\cos 2z + 2)$: both are tests. Try a larger $N$ to push the
+  resolved time later.
+params:
+  n: {default: 32, min: 16, max: 64, step: 16, type: int, label: 'Grid $N^3$'}
+  nu: {default: 0.015, min: 0.002, max: 0.05, step: 0.001, label: 'Viscosity $\nu$ (runs $0$, $\nu$, $2\nu$)'}
+  t_max: {default: 6.0, min: 1, max: 9, step: 0.5, label: Simulated time}

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Ulam spiral: the integers 1 to 49 written on a square spiral; primes are dots, and the diagonal through the centre carries the values of the quadratic k squared plus k plus 1">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <line x1="13.2" y1="144.8" x2="142.8" y2="15.2" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 3"/>
+    <polyline points="78,80 96,80 96,62 78,62 60,62 60,80 60,98 78,98 96,98 114,98 114,80 114,62 114,44 96,44 78,44 60,44 42,44 42,62 42,80 42,98 42,116 60,116 78,116 96,116 114,116 132,116 132,98 132,80 132,62 132,44 132,26 114,26 96,26 78,26 60,26 42,26 24,26 24,44 24,62 24,80 24,98 24,116 24,134 42,134 60,134 78,134 96,134 114,134 132,134" fill="none" stroke="#374151" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="78" cy="80" r="2" fill="#9ca3af"/>
+    <circle cx="96" cy="80" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1"/>
+    <circle cx="96" cy="62" r="5" fill="#dc2626" stroke="#b91c1c" stroke-width="1"/>
+    <circle cx="78" cy="62" r="2" fill="#9ca3af"/>
+    <circle cx="60" cy="62" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1"/>
+    <circle cx="60" cy="80" r="2" fill="#9ca3af"/>
+    <circle cx="60" cy="98" r="5" fill="#dc2626" stroke="#b91c1c" stroke-width="1"/>
+    <circle cx="78" cy="98" r="2" fill="#9ca3af"/>
+    <circle cx="96" cy="98" r="2" fill="#9ca3af"/>
+    <circle cx="114" cy="98" r="2" fill="#9ca3af"/>
+    <circle cx="114" cy="80" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1"/>
+    <circle cx="114" cy="62" r="2" fill="#9ca3af"/>
+    <circle cx="114" cy="44" r="5" fill="#dc2626" stroke="#b91c1c" stroke-width="1"/>
+    <circle cx="96" cy="44" r="2" fill="#9ca3af"/>
+    <circle cx="78" cy="44" r="2" fill="#9ca3af"/>
+    <circle cx="60" cy="44" r="2" fill="#9ca3af"/>
+    <circle cx="42" cy="44" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1"/>
+    <circle cx="42" cy="62" r="2" fill="#9ca3af"/>
+    <circle cx="42" cy="80" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1"/>
+    <circle cx="42" cy="98" r="2" fill="#9ca3af"/>
+    <circle cx="42" cy="116" r="2" fill="#9ca3af"/>
+    <circle cx="60" cy="116" r="2" fill="#9ca3af"/>
+    <circle cx="78" cy="116" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1"/>
+    <circle cx="96" cy="116" r="2" fill="#9ca3af"/>
+    <circle cx="114" cy="116" r="2" fill="#9ca3af"/>
+    <circle cx="132" cy="116" r="2" fill="#9ca3af"/>
+    <circle cx="132" cy="98" r="2" fill="#9ca3af"/>
+    <circle cx="132" cy="80" r="2" fill="#9ca3af"/>
+    <circle cx="132" cy="62" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1"/>
+    <circle cx="132" cy="44" r="2" fill="#9ca3af"/>
+    <circle cx="132" cy="26" r="5" fill="#dc2626" stroke="#b91c1c" stroke-width="1"/>
+    <circle cx="114" cy="26" r="2" fill="#9ca3af"/>
+    <circle cx="96" cy="26" r="2" fill="#9ca3af"/>
+    <circle cx="78" cy="26" r="2" fill="#9ca3af"/>
+    <circle cx="60" cy="26" r="2" fill="#9ca3af"/>
+    <circle cx="42" cy="26" r="2" fill="#9ca3af"/>
+    <circle cx="24" cy="26" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1"/>
+    <circle cx="24" cy="44" r="2" fill="#9ca3af"/>
+    <circle cx="24" cy="62" r="2" fill="#9ca3af"/>
+    <circle cx="24" cy="80" r="2" fill="#9ca3af"/>
+    <circle cx="24" cy="98" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1"/>
+    <circle cx="24" cy="116" r="2" fill="#9ca3af"/>
+    <circle cx="24" cy="134" r="5" fill="#dc2626" stroke="#b91c1c" stroke-width="1"/>
+    <circle cx="42" cy="134" r="2" fill="#9ca3af"/>
+    <circle cx="60" cy="134" r="2" fill="#9ca3af"/>
+    <circle cx="78" cy="134" r="2" fill="#9ca3af"/>
+    <circle cx="96" cy="134" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1"/>
+    <circle cx="114" cy="134" r="2" fill="#9ca3af"/>
+    <circle cx="132" cy="134" r="2" fill="#9ca3af"/>
+    <text x="64" y="96" font-size="12" fill="#374151">1</text>
+    <text x="150" y="30" font-size="13" font-style="italic" fill="#b45309">k² + k + 1</text>
+    <line x1="150" y1="34" x2="138" y2="24" stroke="#9ca3af" stroke-width="1"/>
+    <circle cx="156" cy="70" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1"/>
+    <text x="166" y="75" font-size="13">prime</text>
+    <circle cx="156" cy="92" r="2" fill="#9ca3af"/>
+    <text x="166" y="97" font-size="13">composite</text>
+    <text x="150" y="130" font-size="13" font-style="italic">n → (x, y)</text>
+  </g>
+</svg>

@@ -1,0 +1,33 @@
+title: 'Monty Hall with $N$ doors'
+category: others
+level: beginner
+order: 3
+summary: >
+  A car hides behind one of $N$ doors. You pick one; the host, who knows where the car is, opens $N-2$ doors with
+  goats and offers you the last closed door. Millions of games for every $N$ from 3 to 1000 run at once in one
+  $(B, G)$ tensor: switching wins with probability $(N-1)/N$ (the famous $2/3$ for three doors), staying with
+  $1/N$, and every running win rate stays inside its binomial error band.
+animated: true
+vector_form: 'P(\text{stay}) = P(p = c) = \frac1N,\qquad P(\text{switch}) = P(k = c) = P(p \ne c) = \frac{N-1}{N}'
+index_form: 'k_{bg} = \begin{cases} c_{bg} & p_{bg} \ne c_{bg} \\ \text{random door} \ne p_{bg} & p_{bg} = c_{bg} \end{cases},\qquad \hat p_{bn} = \frac1n\sum_{g \le n} [k_{bg} = c_{bg}],\qquad \lvert \hat p_{bn} - p_b\rvert \lesssim 2\sqrt{\frac{p_b(1-p_b)}{n}}'
+translation:
+  - {symbol: 'N_b', code: 'door_counts(max_doors)', shape: '(B,)', meaning: 'the numbers of doors compared side by side, from 3 to 1000'}
+  - {symbol: 'c_{bg},\ p_{bg}', code: '(torch.rand(B, G) * N[:, None]).long()', shape: '(B, G)', meaning: 'car door and first pick of game $g$ in row $b$, uniform over the $N_b$ doors; broadcasting gives every row its own $N_b$'}
+  - {symbol: 'k_{bg}', code: 'torch.where(pick != car, car, other)', shape: '(B, G)', meaning: 'the door the host leaves shut: forced to be the car when your pick is a goat, a random door when your pick is the car'}
+  - {symbol: 'O_{bgd}', code: 'opened_doors(pick, kept, N)', shape: '(B, G, N)', meaning: 'the $N-2$ doors the host opens: every door except $p$ and $k$'}
+  - {symbol: '[p = c],\ [k = c]', code: 'outcomes(car, pick, kept, host)', shape: '(B, G)', meaning: 'stay wins and switch wins; exactly one of them is true in every game'}
+  - {symbol: '\hat p_{bn}', code: 'running_rate(wins, valid)', shape: '(B, G)', meaning: 'cumulative wins over cumulative valid games: the win rate after every game'}
+  - {symbol: '2\sqrt{p(1-p)/n}', code: 'binomial_band(p, n)', shape: '(G,)', meaning: 'the $\pm 2\sigma$ band of a binomial proportion, which the running rate stays inside about 95 % of the time'}
+notes: >
+  Switching loses only if your first pick was already the car, which happens with probability $1/N$; every other
+  time the host's choice is forced, so the door he leaves shut carries the information of all the doors he opened.
+  With 1000 doors the answer is obvious, and it is the same argument as with three. The puzzle became famous
+  through Marilyn vos Savant's 1990 magazine column, when many readers, mathematicians among them, insisted that
+  the answer was $1/2$. That intuition is right for a different game: choose the ignorant host, who opens doors at
+  random and sometimes reveals the car. Throwing those games away (only a fraction $2/N$ survives) leaves stay and
+  switch at exactly $1/2$, because a random opening says nothing about your door. The terminal also checks that
+  no first pick is special, and a slow game-by-game reference in the tests agrees with the tensor version.
+params:
+  n_games: {default: 500000, min: 10000, max: 4000000, step: 10000, type: int, label: 'Games per door count $G$'}
+  max_doors: {default: 1000, min: 5, max: 1000, step: 5, type: int, label: 'Largest number of doors $N$'}
+  host: {default: knowing, type: choice, options: [knowing, ignorant], label: Host}

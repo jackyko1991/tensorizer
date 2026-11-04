@@ -1,0 +1,19 @@
+source_hash: 97673949f948
+title: Épidémies sur un réseau de contacts
+summary: Épidémies SIR et SIS sur un vrai réseau de contacts en face à face, avec des centaines de flambées stochastiques simulées à la fois sous forme d'un seul tenseur par lots, et à côté l'EDO de champ moyen individuelle. Une flambée ne peut démarrer qu'au-dessus du seuil $\beta/\gamma > 1/\lambda_{\max}(A)$ fixé par la plus grande valeur propre de la matrice d'adjacence, et sur un réseau sans échelle, vacciner les hubs l'arrête avec bien moins de doses que vacciner au hasard.
+notes: 'Chaque personne est S, I ou R ; à chaque pas $\Delta t$ un susceptible est infecté par chaque contact infecté au taux $\beta$ et une personne infectée guérit au taux $\gamma$ (en SIS elle redevient susceptible). Les tests vérifient que les personnes ne font que passer d''un compartiment à l''autre, qu''un graphe $k$-régulier a $\lambda_{\max} = k$, que sous le seuil les flambées s''éteignent, et que sur un graphe complet (tout le monde rencontre tout le monde, $R_0 = \beta(N-1)/\gamma$) la taille finale moyenne des grandes flambées suit l''équation de Kermack–McKendrick (1927) $z = 1 - e^{-R_0 z}$ ($z \approx 0.80$ pour $R_0 = 2$). Le seuil $1/\lambda_{\max}$ vient de la linéarisation du champ moyen individuel ; il est exact pour cette EDO, mais l''EDO traite les voisins comme indépendants et laisse l''infection faire des allers-retours sur la même arête, donc sur ce petit réseau dense et regroupé elle surestime l''ampleur de l''épidémie. Une infection SIR ne peut pas revenir directement
+  par l''arête d''où elle vient : le seuil de passage de messages $T = \beta/(\beta + \gamma) = 1/\lambda_{NB}$, où $\lambda_{NB}$ est la valeur propre dominante de la matrice sans retour en arrière (Karrer, Newman et Zdeborová 2014), est aussi tracé. La courbe simulée est la moyenne sur toutes les réalisations, y compris les nombreuses qui s''éteignent par hasard après le premier cas, d''où sa montée progressive. Sur les réseaux sans échelle $\lambda_{\max}$ croît avec le plus grand hub, donc le seuil est minuscule (Pastor-Satorras et Vespignani 2001), et retirer les hubs fait baisser $\lambda_{\max}$ rapidement : immunité collective avec bien moins de doses. Le réseau d''Erdős–Rényi de même degré moyen n''a pas de gros hubs, donc le ciblage aide beaucoup moins. Données : SocioPatterns « Contacts in a workplace » (immeuble de bureaux en France, 2013 ; 92 personnes, 755 paires vues en face à face dans des fenêtres de 20 secondes, agrégées ici), M. Génois et al., Network Science 3, 326 (2015),
+  publié sous dédicace au domaine public Creative Commons (CC0), www.sociopatterns.org. Les réseaux BA et ER sont synthétiques. Les personnes et les taux simulés sont illustratifs et ne modélisent aucune maladie réelle.'
+meanings:
+- 1 si les personnes $i$ et $j$ ont été vues en face à face, 0 sinon (symétrique, dense)
+- qui est infecté dans chacune des $B$ réalisations simulées ensemble
+- '$j$ répété ⇒ sommé : le nombre de contacts infectés de chaque personne'
+- probabilité qu'un susceptible soit infecté en un pas $\Delta t$ ; les infectés guérissent avec probabilité $1 - e^{-\gamma \Delta t}$
+- probabilités que la personne $i$ soit susceptible, infectée ou guérie, intégrées par RK4
+- 'plus grande valeur propre : le champ moyen linéarisé $\dot x = (\beta A - \gamma)x$ ne croît que si $\beta \lambda_{\max} > \gamma$'
+- taille finale en mélange homogène, racine de $z = 1 - e^{-R_0 z}$ (Kermack–McKendrick)
+labels:
+  beta_x_lambda: $\beta/\gamma$ en unités du seuil $1/\lambda_{\max}$
+  n_runs: Réalisations stochastiques $B$
+  n_synthetic: Personnes dans les réseaux synthétiques
+  vacc_beta: $\beta/\gamma$ pour la comparaison des vaccinations

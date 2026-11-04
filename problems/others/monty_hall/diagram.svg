@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Five doors: the contestant's pick p is outlined, the host has opened three goat doors, and one other door k stays shut; an arrow asks whether to switch from p to k">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- floor -->
+    <line x1="12" y1="112" x2="228" y2="112" stroke="#374151" stroke-width="2"/>
+    <!-- door 1: the pick p, shut -->
+    <rect x="20" y="52" width="32" height="60" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <rect x="16" y="48" width="40" height="68" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+    <circle cx="46" cy="84" r="2" fill="#ffffff"/>
+    <text x="36" y="38" text-anchor="middle" font-style="italic" fill="#b45309">p</text>
+    <!-- doors 2, 3, 5: opened, goats -->
+    <g stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3" fill="none">
+      <rect x="64" y="52" width="32" height="60"/>
+      <rect x="108" y="52" width="32" height="60"/>
+      <rect x="196" y="52" width="32" height="60" transform="translate(-4 0)"/>
+    </g>
+    <g fill="#93c5fd" stroke="#374151" stroke-width="1">
+      <path d="M65,52 L72,57 L72,107 L65,112 z"/>
+      <path d="M109,52 L116,57 L116,107 L109,112 z"/>
+      <path d="M193,52 L200,57 L200,107 L193,112 z"/>
+    </g>
+    <g font-size="9" fill="#6b7280" text-anchor="middle">
+      <text x="84" y="88">goat</text><text x="128" y="88">goat</text><text x="211" y="88">goat</text>
+    </g>
+    <!-- door 4: the other door k, shut -->
+    <rect x="152" y="52" width="32" height="60" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <circle cx="178" cy="84" r="2" fill="#ffffff"/>
+    <text x="168" y="38" text-anchor="middle" font-style="italic">k</text>
+    <!-- switch? -->
+    <path d="M40,124 C70,150 140,150 164,124" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="102" y="156" text-anchor="middle" font-size="12" fill="#b91c1c">switch?</text>
+    <text x="130" y="22" text-anchor="middle" font-size="12" fill="#374151">host opens <tspan font-style="italic">N</tspan> − 2 goat doors</text>
+  </g>
+</svg>

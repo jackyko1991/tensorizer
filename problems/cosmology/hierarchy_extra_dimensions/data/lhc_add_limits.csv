@@ -1,0 +1,10 @@
+# ATLAS monojet search, 139 fb^-1 at sqrt(s) = 13 TeV: observed 95% CL lower limits on the fundamental Planck scale M_D
+# of the ADD model (LO signal cross sections), Table 10 of ATLAS Collaboration, Phys. Rev. D 103, 112006 (2021),
+# arXiv:2102.10874 (open access, CC-BY 4.0). M_D follows the Giudice-Rattazzi-Wells convention, which differs from
+# M_Pl^2 = M*^(n+2) R^n by factors of order (2 pi)^n / 8 pi.
+n,M_D_min_TeV
+2,11.2
+3,8.5
+4,7.1
+5,6.4
+6,5.9

@@ -1,0 +1,16 @@
+source_hash: 52a00886e77c
+title: Birch 與 Swinnerton-Dyer：模 p 數點
+summary: 對秩 0 到 4 的五條橢圓曲線，一次過計算它們在 $\mathbb F_p$ 上、對每個不超過 $X$ 的質數的點數，觀察乘積 $\prod_{p\le X} N_p/p$ 如 Birch 與 Swinnerton-Dyer 最初發現的那樣以 $(\log X)^r$ 的速度增長，並計算 $L(E, s)$ 在 $s = 1$ 處的值：它在該處的零點階數等於秩。「這總是成立」這個猜想仍未解決；目前只在解析秩為 0 和 1 時得到證明。
+notes: '$\mathbb Q$ 上的橢圓曲線 $E: y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6$ 的有理點群是有限生成的：$E(\mathbb Q) \cong \mathbb Z^r \oplus T$（Mordell 1922）；秩 $r$ 很難計算。1960 年代初，Birch 與 Swinnerton-Dyer 在 EDSAC 電腦上計算曲線模質數的點數，發現 $\prod_{p \le X} N_p/p$ 以 $(\log X)^r$ 的速度增長：有理點越多，模 $p$ 的點也必然越多。他們猜想由 $a_p$ 構造的 $L(E, s)$ 在 $s = 1$ 處的零點階數恰好是 $r$，且首項係數為 $\frac{L^{(r)}(E,1)}{r!} = \frac{\Omega\, R\, \#\text{Ш}\, \prod_p c_p}{\#T^2}$。這是克雷千禧年大獎難題之一，至今未解決。已證明的部分：若解析秩為 0 或 1，則秩等於解析秩且 Ш 有限（Gross 與 Zagier 1986、Kolyvagin 1989），其證明用到模性（Wiles、Taylor–Wiles 1995、Breuil–Conrad–Diamond–Taylor 2001）——正是模性使 $L(E, s)$ 能夠延拓到 $s = 1$。對於解析秩 $\ge 2$，目前沒有任何一般性結果。這五條曲線是秩 0 到 4 中導子最小的曲線（Cremona 表中的 11a1、37a1、389a1、5077a1 和 234446a1）。本程式驗證：跡滿足 Hasse 界 $|a_p| \le 2\sqrt p$；對 11a1，它們等於模形式 $\eta(q)^2\eta(q^{11})^2$ 的係數（已測試）；根數為 $\varepsilon = (-1)^r$；每條曲線在 $s = 1$ 處第一個不為零的導數都是第 $r$ 階，且 $L(E,1) = 0.2538418608\ldots$、$L''(E,1) = 0.3059997738\ldots$、$L''''(E,1)/2 = 0.7593165\ldots$ 和 $L''''''(E,1)/6 = 1.7318499\ldots$ 與 LMFDB 吻合。對 11a1，完整公式也成立：$L(E,1)/\Omega
+  = 1/5 = \#\text{Ш}\cdot c_{11}/\#T^2 = 1 \cdot 5 / 5^2$。某個導數在數值上為零只是證據，並不能證明它真的為零。部分乘積是最初的啟發式依據：Goldfeld（1982）證明，若它們真的表現得像 $C(\log X)^r$，則 $r$ 就是解析秩，且黎曼猜想對 $L(E, s)$ 成立；因此它們的收斂本身就是猜想性的，而且很慢。到 $X = 2\times 10^4$ 時，斜率已能正確排列秩 0 到 3，但在 $X = 3\times 10^4$ 時，秩 4 的曲線仍落後於其秩。$a_p/2\sqrt p$ 的 Sato–Tate 分佈，即半圓分佈 $\frac{2}{\pi}\sqrt{1-x^2}$，對沒有複乘的曲線是已證明的定理（Taylor 及其合作者，2008–2011）。'
+meanings:
+- 所有曲線、一個區塊中的所有質數以及所有 $x \in \mathbb F_p$ 一次過處理（Horner 法，每一步都模 $p$ 約化）
+- 由平方表 $y^2 \bmod p$ 得到 Legendre 符號；$v = 0$ 時 $\chi = 0$
+- Frobenius 跡；Hasse：$|a_p| \le 2\sqrt p$
+- 一次過得到所有 $X$ 的部分乘積（只用好質數）
+- 在 $\sqrt{X} \le p \le X$ 上的斜率；收斂非常慢
+- 利用積性得到 Dirichlet 係數，每個質數冪 $q = p^k$ 對應一個跨步切片
+- 重複的 $n$ ⇒ 求和：在 Gauss–Legendre 節點 $t = e^{u_m}$ 處的 $F(t)$
+- 一次過得到 $s = 1$ 處的所有導數；第一個非零者給出解析秩
+labels:
+  x_max: 質數上限 $X$

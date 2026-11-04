@@ -1,0 +1,21 @@
+source_hash: fcafdb67dc0d
+title: Primordiale Nukleosynthese
+summary: 'Die ersten drei Minuten als steifes Reaktionsnetz: Neutronen und Protonen frieren aus dem schwachen Gleichgewicht aus, der Deuterium-Engpass öffnet sich bei $T \approx 80$ keV, und fast jedes Neutron landet in $^4$He. Zwölf Reaktionen verbinden n, p, d, t, $^3$He, $^4$He, $^7$Li und $^7$Be; ein ganzer Stapel von Baryon-zu-Photon-Verhältnissen $\eta$ wird auf einmal mit einem impliziten BDF2-Verfahren integriert, das ergibt den Schramm-Plot. Beim Planck-Wert $\eta \approx 6.1\times10^{-10}$ stimmen Helium und Deuterium mit den Beobachtungen überein, Lithium dagegen kommt etwa 3× zu hoch heraus: das kosmologische Lithiumproblem, bis heute ungelöst.'
+notes: 'Status: Die Standard-Nukleosynthese ist etablierte Physik. Ihre Vorhersagen für $^4$He und D stimmen bei der unabhängig aus dem kosmischen Mikrowellenhintergrund gemessenen Baryonendichte mit den Beobachtungen überein, eine der Säulen des heißen Urknallmodells (Alpher, Bethe und Gamow 1948; Wagoner, Fowler und Hoyle 1967). Das kosmologische Lithiumproblem ist offen: das vorhergesagte $^7$Li/H beträgt etwa das 3-Fache des Spite-Plateaus alter Halosterne ($(1.6\pm0.3)\times10^{-10}$), und weder Kernphysik noch stellarer Abbau noch neue Teilchen konnten es bisher erklären. Beobachtete Werte (zitierte Konstanten): $Y_p = 0.245\pm0.003$ (PDG-Übersicht zur BBN), D/H $= (2.527\pm0.030)\times10^{-5}$ (Cooke, Pettini und Steidel 2018). Modell: die 12 Reaktionen von Smith, Kawano und Malaney (1993) mit thermonuklearen Raten aus der JINA-REACLIB-Datenbank (Cyburt et al. 2010; Sätze an06, de04, gi17, go17, cd08, db18) und Rückraten aus dem detaillierten Gleichgewicht. Genannte Näherungen: schwache
+  Raten in Born-Näherung (ohne Strahlungs-, Massen- und Temperaturkorrekturen), instantane Neutrino-Entkopplung ($N_\mathrm{eff} = N_\nu$ statt 3,044), $^7$Be als $^7$Li und t als $^3$He gezählt (spätere Zerfälle), T9-Fits oberhalb $T_9 = 10$ konstant gehalten. Dadurch liegt $Y_p$ etwa 2 % unter Präzisionscodes wie PRIMAT oder PArthENoPE ($0.2470$); D/H stimmt auf wenige Prozent. Probieren Sie $N_\nu = 4$: schnellere Expansion friert mehr Neutronen ein und erhöht $Y_p$ um etwa 0,013 – so zählt die BBN Neutrinoarten.'
+meanings:
+- wie viele Kerne $i$ Reaktion $r$ verbraucht und erzeugt (12 Reaktionen, 8 Teilchenarten)
+- Nettoänderung; $\sum_i A_i S_{ri} = 0$ für jedes $r$ (Baryonenzahl)
+- 'REACLIB-Fits: wiederholtes $k$ (7 Basisfunktionen von $T_9$) ⇒ summiert, dann die Sätze einer Reaktion addiert'
+- Hinraten ($\propto n_b \propto \eta$) und Rückraten (detailliertes Gleichgewicht) für jedes $\eta_b$
+- $\prod_j Y_j^{R_{rj}}$, z. B. $Y_d^2$ für d + d
+- wiederholtes $r$ ⇒ über die Reaktionen summiert
+- exakte Jacobi-Matrix für das Newton-Verfahren
+- ein Newton-Schritt des impliziten BDF2-Schritts für den ganzen $\eta$-Stapel
+- schwache Raten in Born-Näherung, normiert auf die Neutronenlebensdauer $\tau_n$
+labels:
+  n_eta: Anzahl der $\eta$-Werte im Stapel
+  eta10: Markiertes $\eta \times 10^{10}$ (linkes Bild)
+  tau_n: Neutronenlebensdauer $\tau_n$
+  n_nu: Neutrinoarten $N_\nu$
+  n_steps: BDF2-Schritte in $\ln T$

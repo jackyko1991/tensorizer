@@ -1,0 +1,44 @@
+title: 'Kuramoto model: spontaneous synchronisation'
+category: others
+level: intermediate
+order: 6
+summary: >
+  Fireflies flashing together, metronomes on a shared board, pacemaker cells: oscillators with different natural
+  frequencies $\omega_i$, each pulled towards the others, suddenly lock when the coupling $K$ passes a threshold.
+  The complex mean field $r e^{i\psi} = \frac1N \sum_j e^{i\theta_j}$ turns the all-to-all sum into $O(N)$ work,
+  a whole batch of couplings runs at once, and the order parameter $r$ jumps up at $K_c = 2/(\pi g(0))$, following
+  the exact Ott–Antonsen curve $r = \sqrt{1 - K_c/K}$ for Lorentzian frequencies.
+animated: true
+vector_form: '\dot\theta_i = \omega_i + \frac KN \sum_{j=1}^N \sin(\theta_j - \theta_i) = \omega_i + K\,r\,\sin(\psi - \theta_i),\qquad r e^{i\psi} = \frac1N\sum_j e^{i\theta_j}'
+index_form: 'z_b = \tfrac1N\, e^{i\theta_{bj}}\,\mathbb 1_j,\qquad \dot\theta_{bi} = \omega_i + K_b\,\operatorname{Im}\!\big(z_b\,e^{-i\theta_{bi}}\big),\qquad K_c = \frac{2}{\pi g(0)},\qquad r_\infty = \sqrt{1 - K_c/K}'
+translation:
+  - {symbol: '\omega_i', code: "frequencies('lorentzian', N, gamma, device, seed)", shape: '(N,)', meaning: 'natural frequencies, one random draw in each of $N$ equal-probability bins of the Lorentzian (or Gaussian) density'}
+  - {symbol: 'K_b', code: 'torch.linspace(0, k_max, B)[:, None]', shape: '(B, 1)', meaning: 'one coupling per batch member: every population evolves in parallel'}
+  - {symbol: 'z_b = r_b e^{i\psi_b}', code: 'torch.exp(1j * theta).mean(-1, keepdim=True)', shape: '(B, 1)', meaning: 'complex mean field, repeated $j$ ⇒ averaged; $r = 0$ incoherent, $r = 1$ perfect synchrony'}
+  - {symbol: '\dot\theta_{bi}', code: 'omega + k * (z * torch.exp(-1j * theta)).imag', shape: '(B, N)', meaning: 'each oscillator only feels the mean field: $O(N)$ instead of $O(N^2)$'}
+  - {symbol: '\sin(\theta_j - \theta_i)', code: "einsum('bij->bi', sin(theta[:, None] - theta[:, :, None]))", shape: '(B, N, N)', meaning: 'the slow pairwise sum, kept as a reference; the tests check it equals the mean-field form'}
+  - {symbol: 'r_\infty', code: 'ott_antonsen_r(K, gamma)', shape: '(B,)', meaning: 'exact $N \to \infty$ order parameter for Lorentzian frequencies, $\sqrt{1 - 2\gamma/K}$ above $K_c = 2\gamma$'}
+  - {symbol: 'G(x_i - x_j)', code: 'ring_kernel(x, A)', shape: '(N, N)', meaning: 'nonlocal coupling $(1 + A\cos x)/2\pi$ on a ring, for the chimera state'}
+notes: >
+  Kuramoto (1975) solved the model self-consistently and found $K_c = 2/(\pi g(0))$ for a symmetric unimodal
+  frequency density $g$; Strogatz (2000) tells the story. Ott and Antonsen (2008) proved that for Lorentzian
+  $g(\omega) = (\gamma/\pi)/(\omega^2 + \gamma^2)$ the infinite-$N$ dynamics collapses onto one equation,
+  $\dot r = -\gamma r + \tfrac K2 r(1 - r^2)$, whose stable state is $r = \sqrt{1 - 2\gamma/K}$: the simulation
+  matches it to about $0.01$ with $N = 1200$. Below $K_c$, $r$ is only finite-size noise of order $1/\sqrt N$.
+  Gaussian frequencies have the smaller threshold $K_c = 2\sigma\sqrt{2\pi}/\pi \approx 1.6\,\sigma$ (green). The
+  slow ramp (red) follows the curve as $K$ grows; the circle shows the oscillators in the frame of the mean field,
+  coloured by $\omega_i$: the ones with small $|\omega_i|$ lock first, the fast ones keep drifting. The third panel
+  is a short extra: identical oscillators on a ring with nonlocal coupling and a phase lag
+  $\alpha = \pi/2 - 0.18$ split into a locked and an incoherent domain, the chimera state found by Kuramoto and
+  Battogtokh (2002) and named by Abrams and Strogatz (2004). The mean phase drifts exactly at the mean frequency
+  because $\sin(\theta_j - \theta_i)$ is antisymmetric.
+tags: []
+params:
+  n_oscillators: {default: 1200, min: 200, max: 5000, step: 100, type: int, label: 'Oscillators $N$'}
+  width: {default: 0.5, min: 0.1, max: 2.0, step: 0.05, label: 'Frequency spread $\gamma$ (Lorentzian) or $\sigma$ (Gaussian)'}
+  k_max: {default: 3.0, min: 0.5, max: 8.0, step: 0.1, label: 'Largest coupling $K$'}
+  n_couplings: {default: 24, min: 4, max: 64, step: 1, type: int, label: 'Couplings in the batch'}
+  t_relax: {default: 60.0, min: 10, max: 300, step: 10, label: 'Relaxation time per coupling'}
+  ramp_time: {default: 200.0, min: 50, max: 1000, step: 10, label: 'Duration of the slow ramp of $K$'}
+  distribution: {default: lorentzian, type: choice, options: [lorentzian, gaussian], label: Frequency density shown in the ramp}
+  seed: {default: 0, min: 0, max: 1000, step: 1, type: int, label: Random seed}

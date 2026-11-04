@@ -1,0 +1,67 @@
+title: 'Point cloud registration: the PCL pipeline (FPFH, RANSAC, ICP)'
+category: graphics
+level: advanced
+order: 5
+summary: >
+  Two partial 3D scans of the same object, taken from two viewpoints and moved by an unknown rigid motion, are
+  aligned the way the Point Cloud Library (PCL) does it, written as batched PyTorch: voxel-grid downsampling,
+  statistical outlier removal, normals from neighbourhood covariances, FPFH descriptors, RANSAC over feature matches
+  (thousands of Kabsch fits at once) and ICP refinement, point-to-point and point-to-plane, from several starts.
+  The result is checked against the known motion: rotation error in degrees, translation error and RMSE.
+animated: true
+vector_form: 'R^\ast, \mathbf t^\ast = \arg\min_{R \in SO(3),\,\mathbf t}\ \sum_n w_n \big\lVert R\,\mathbf p_n + \mathbf t - \mathbf q_n \big\rVert^2 \quad\text{(Kabsch)},\qquad \min_{\boldsymbol\omega,\,\delta\mathbf t}\ \sum_n w_n\big[(\mathbf p_n - \mathbf q_n)\cdot\mathbf n_n + (\mathbf p_n\times\mathbf n_n)\cdot\boldsymbol\omega + \mathbf n_n\cdot\delta\mathbf t\big]^2 \quad\text{(point-to-plane)}'
+index_form: 'H_{bij} = w_{bn}\,\bar p_{bni}\,\bar q_{bnj},\qquad H_b = U_b S_b V_b^{\mathsf T},\qquad R_b = V_b\,\mathrm{diag}(1, 1, \det V_bU_b^{\mathsf T})\,U_b^{\mathsf T},\qquad C_{nij} = \tfrac1K\,\bar x_{nki}\,\bar x_{nkj},\qquad A_{bn\cdot} = [\,\mathbf x_{bn}\times\mathbf n_{bn},\ \mathbf n_{bn}\,]'
+translation:
+  - {symbol: 'y_{bni} = R_{bij}x_{bnj} + t_{bi}', code: "einsum('...ij,...nj->...ni', R, X) + t[..., None, :]", shape: '(B, N, 3)', meaning: 'one rigid motion per batch member $b$ (RANSAC hypothesis or ICP start), $j$ summed'}
+  - {symbol: 'd_{nm} = \lVert\mathbf x_n - \mathbf y_m\rVert', code: 'torch.cdist(X[chunk], Y).topk(k, largest=False)', shape: '(N, k)', meaning: '$k$ nearest neighbours, one chunk of rows of the distance matrix at a time'}
+  - {symbol: '\lfloor \mathbf x_n / s\rfloor', code: 'unique(floor(X / s), return_inverse=True); index_add_', shape: '(V, 3)', meaning: 'VoxelGrid: scatter-mean of the points that share a voxel key'}
+  - {symbol: 'm_n \le \mu + \alpha\sigma', code: 'statistical_outlier_mask(X, k, alpha)', shape: '(N,)', meaning: 'StatisticalOutlierRemoval: mean neighbour distance against its mean and standard deviation over the cloud'}
+  - {symbol: 'C_{nij}', code: "einsum('nki,nkj->nij', d, d) / k; torch.linalg.eigh(C)", shape: '(N, 3, 3)', meaning: 'neighbourhood covariance; the eigenvector of the smallest eigenvalue is the normal, flipped toward the viewpoint'}
+  - {symbol: '\lambda_0 / (\lambda_0 + \lambda_1 + \lambda_2)', code: 'lam[:, 0] / lam.sum(1)', shape: '(N,)', meaning: 'surface variation (PCL curvature): 0 on a plane'}
+  - {symbol: '(\alpha, \phi, \theta)', code: 'pair_features(p, n_p, q, n_q)', shape: '(N, K) each', meaning: 'Darboux-frame angles of a point pair: $\alpha = \mathbf v\cdot\mathbf n_q$, $\phi = \mathbf u\cdot\hat{\mathbf d}$, $\theta = \operatorname{atan2}(\mathbf w\cdot\mathbf n_q, \mathbf u\cdot\mathbf n_q)$'}
+  - {symbol: '\mathrm{FPFH}_n', code: "spfh + einsum('nk,nkh->nh', 1 / dist, spfh[idx]) / k", shape: '(N, 33)', meaning: 'three 11-bin histograms; a point''s own histogram plus the distance-weighted mean of its neighbours'}
+  - {symbol: 'H_{bij}', code: "einsum('...n,...ni,...nj->...ij', w, P - p_bar, Q - q_bar)", shape: '(B, 3, 3)', meaning: 'Kabsch cross-covariance, one per hypothesis; one batched SVD gives all rotations'}
+  - {symbol: 's_b = \#\{m : \lVert R_b\mathbf p_m + \mathbf t_b - \mathbf q_m\rVert < \varepsilon\}', code: '(resid < eps).sum(1)', shape: '(B,)', meaning: 'RANSAC score of every hypothesis at once'}
+  - {symbol: 'A^{\mathsf T}WA\,\boldsymbol\xi = -A^{\mathsf T}W\mathbf r', code: 'torch.linalg.solve(H, -g)', shape: '(B, 6)', meaning: 'point-to-plane ICP step $\boldsymbol\xi = (\boldsymbol\omega, \delta\mathbf t)$, batched over the starts'}
+  - {symbol: '\cos\Delta\theta = \tfrac12(\operatorname{tr}R^{\mathsf T}R_{\rm true} - 1)', code: 'rotation_error_deg(R, R_true)', shape: '(B,)', meaning: 'rotation error against the known ground truth'}
+notes: >
+  The demo object is Keenan Crane's "Spot" cow (5856 triangles), which its author released into the public domain
+  (CC0 1.0; https://www.cs.cmu.edu/~kmcrane/Projects/ModelRepository/, bundled as data/spot_vertices.csv and
+  data/spot_faces.csv, see data/SOURCES.md; Crane, Pinkall and Schröder 2013, ACM TOG 32(4)). We did not use the
+  Stanford bunny: the Stanford 3D Scanning Repository allows research use and free redistribution, but says the
+  models are not to be used for commercial purposes or appear in a product for sale without permission, which is
+  unclear for an open project that may later have a paid tier. PCL's own test file bunny.pcd is derived from the same
+  Stanford scan and carries no separate data licence (PCL's BSD licence covers its code). The scans are synthetic:
+  dense random samples of the mesh surface, kept only where a scanner sees them (back-face test plus a z-buffer,
+  i.e. hidden-point removal), with Gaussian noise $\sigma$, a few percent uniform outliers, and a random rigid motion
+  (30–60°, half the object size) applied to scan B. The object size is the bounding-box diagonal, scaled to 1.
+  Pipeline (PCL class names in brackets): VoxelGrid; StatisticalOutlierRemoval; NormalEstimation with $k = 15$
+  neighbours and the normal flipped toward each scan's own viewpoint; FPFH with $k = 25$; mutual nearest matches in
+  descriptor space; RANSAC with 4000 hypotheses, each 3 matches whose triangle edge lengths agree within 10 %
+  (as in PCL's CorrespondenceRejectorPoly), fitted by Kabsch and scored by the inlier count, then refitted on the
+  inliers; ICP from 6 perturbed copies of the RANSAC pose, against the target downsampled at half the voxel size,
+  ignoring pairs further than one voxel. Simplifications: FPFH uses a fixed $k$ neighbourhood instead of a radius,
+  always takes the query point as the source of the Darboux frame (PCL picks the pair order by the normal angles),
+  and normalises each 11-bin block to 100; the voxel grid averages positions only. What the default run shows: about
+  12000 visible points per scan become about 1650 after the two filters; 365 mutual FPFH matches, of which RANSAC
+  keeps 73 (about 20 %), give a rough pose 6.4° and 0.056 off; point-to-plane ICP then reaches 0.37° and 0.0021
+  (0.2 % of the object size, RMSE 0.007) within about 5 iterations from every start, while point-to-point is still
+  creeping along the surface after 25 iterations (about 2.1°, 0.018), because nearest neighbours on a partial,
+  resampled surface pull it sideways. The tests check that
+  Kabsch is exact, a motion composed with its inverse is the identity, plane and sphere normals are right, the voxel
+  grid matches a slow reference, far outliers are removed, FPFH is invariant under rigid motion, z-buffer visibility
+  removes the far side of a sphere, RANSAC survives 50 % wrong matches, ICP converges, point-to-plane is faster than
+  point-to-point on a smooth surface, and the full pipeline gets below 2° and 2 % of the object size. These are
+  established methods: ICP (Besl and McKay 1992; point-to-plane: Chen and Medioni 1992), FPFH (Rusu, Blodow and Beetz
+  2009), PCL (Rusu and Cousins 2011, BSD licence, https://pointclouds.org). The code here is written from the
+  papers, not translated from PCL. Try a larger view angle (less overlap: RANSAC finds fewer inliers and can fail),
+  more outliers, or a coarser voxel.
+params:
+  n_points: {default: 30000, min: 10000, max: 60000, step: 5000, type: int, label: 'Surface samples per scan'}
+  view_angle: {default: 70.0, min: 20.0, max: 120.0, step: 5.0, label: 'Angle between the two viewpoints', unit: deg}
+  noise: {default: 0.003, min: 0.0, max: 0.01, step: 0.001, label: 'Sensor noise $\sigma$ (object size 1)'}
+  outliers: {default: 0.03, min: 0.0, max: 0.1, step: 0.01, label: 'Outlier fraction'}
+  voxel: {default: 0.02, min: 0.012, max: 0.04, step: 0.002, label: 'Voxel size $s$'}
+  hypotheses: {default: 4000, min: 500, max: 20000, step: 500, type: int, label: 'RANSAC hypotheses'}
+  icp_iterations: {default: 25, min: 5, max: 60, step: 5, type: int, label: 'ICP iterations'}
+  starts: {default: 6, min: 1, max: 12, step: 1, type: int, label: 'ICP starts (batched)'}

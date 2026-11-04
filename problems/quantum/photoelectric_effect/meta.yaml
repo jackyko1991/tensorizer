@@ -1,0 +1,39 @@
+title: Photoelectric effect and light quanta
+category: quantum
+level: intermediate
+order: 6
+tags: [annus-mirabilis:1905, nobel:physics:1921, nobel:physics:1923, series:einstein-1905:1]
+summary: >
+  Einstein's 1905 light-quantum paper: light of frequency $\nu$ arrives in packets of energy $h\nu$, and one packet frees one
+  electron with kinetic energy $K = h\nu - \phi - \varepsilon$. A batch of photons × frequencies × intensities shows the threshold
+  $\nu_0 = \phi/h$, a stopping potential $eV_s = h\nu - \phi$ that ignores the intensity, and no time delay — all against the classical wave
+  picture. A straight-line fit to Millikan's 1916 sodium measurements gives back Planck's constant.
+animated: true
+vector_form: 'K = h\nu - \phi - \varepsilon,\qquad eV_s = h\nu - \phi,\qquad \nu_0 = \phi/h,\qquad I(V) = \Phi\,P(K > eV)'
+index_form: 'K_{ifn} = h\,\nu_f - \phi - \varepsilon_{ifn},\qquad V_{s,if} = \max_n K_{ifn}/e,\qquad \min_{a,b}\sum_m \big(V_m - a\,\nu_m - b\big)^2'
+translation:
+  - {symbol: '\nu_f', code: 'frequencies(3.5, 13.5, 91)', shape: '(F,)', meaning: 'light frequencies in $10^{14}$ Hz'}
+  - {symbol: '\varepsilon_{ifn}', code: 'electron_depths(F, N, n_int=I)', shape: '(I, F, N)', meaning: 'depth of the electron that absorbs photon $n$, uniform on $[0, 3]$ eV ($i$: intensity)'}
+  - {symbol: 'h\nu_f - \phi - \varepsilon_{ifn}', code: 'photon_energy(nu)[:, None] - phi - depth', shape: '(I, F, N)', meaning: 'one broadcast: every photon of every frequency and intensity at once; $K \le 0$ ⇒ no emission'}
+  - {symbol: 'P(K > eV)', code: 'n_max - searchsorted(K_sorted, V)', shape: '(I, F, V)', meaning: 'electrons that climb the retarding voltage $V$: the photocurrent'}
+  - {symbol: 'V_{s,if}', code: 'K.max(dim=-1).values', shape: '(I, F)', meaning: 'stopping potential: the fastest electron; equal for every intensity $i$'}
+  - {symbol: 'a, b', code: 'torch.linalg.lstsq(A, y)', shape: '(2,)', meaning: 'straight line through Millikan''s points: slope $a = h/e$, intercept $b = -\phi/e$'}
+  - {symbol: 't_{\text{wave}} = \phi/(S A)', code: 'classical_delay(S, phi, area)', shape: '()', meaning: 'wave picture: time to soak up $\phi$ over one atom''s area $A$ from irradiance $S$'}
+notes: >
+  This is one of Einstein's four 1905 "miracle year" papers: light quanta and the photoelectric effect (this problem; Nobel Prize 1921,
+  "especially for his discovery of the law of the photoelectric effect"), Brownian motion (thermodynamics: Random walk and diffusion),
+  and special relativity with $E = mc^2$ (astro: Einstein 1905: moving bodies and $E = mc^2$). The wave picture fails three ways: it gives
+  emission at any frequency, kinetic energies that grow with the intensity, and minutes of delay for dim light (an atom collecting
+  $\phi$ from $S = 10$ mW/m²) — while experiment shows a sharp threshold, $V_s$ independent of intensity and no measurable delay
+  (below 3 ns, Lawrence and Beams 1928). Brighter light only means more photons, so the current grows but $V_s$ does not move.
+  The red squares are Millikan's 1916 stopping potentials for a sodium surface cut in vacuum (R. A. Millikan, Phys. Rev. 7, 355 (1916),
+  four mercury lines, transcribed in data/millikan_1916_sodium.csv from the paper as tabulated in a Roskilde University problem set;
+  a 1916 publication, public domain). Millikan set out to refute Einstein's equation and confirmed it; his slope gives $h$ within
+  about 0.3 % of today's exact value $6.62607015\times10^{-34}$ J s. The intercept,
+  about 1.8 eV, is not the clean-sodium work function (2.3 eV): it contains the contact potential of the apparatus, and the surface
+  was probably contaminated (D. Lloyd, Am. J. Phys. 2015). The simulated metal is idealised (a flat band of depths, no angles, no
+  temperature): the straight line $eV_s = h\nu - \phi$ is exact, the shape of the current curves is only schematic.
+params:
+  phi: {default: 2.28, min: 1.5, max: 5.0, step: 0.02, label: 'Work function $\phi$', unit: eV}
+  irradiance: {default: 0.01, min: 0.0001, max: 10, step: 0.0001, label: 'Irradiance $S$ (for the wave-picture delay)', unit: W/m²}
+  n_photons: {default: 3000, min: 500, max: 20000, step: 500, type: int, label: 'Photons per exposure at intensity 1'}

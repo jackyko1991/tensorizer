@@ -1,0 +1,24 @@
+source_hash: d29dc3e384c1
+title: 'Rallumer des étoiles mortes : naines brunes, novae, sursauts X et trous noirs'
+summary: Que se passe-t-il quand un résidu stellaire reçoit du gaz frais ? Une naine brune poussée au-delà d'environ $0.075\,M_\odot$ peut brûler l'hydrogène et devenir une étoile ; une naine blanche allume sa couche d'hydrogène accrétée en nova classique ; une étoile à neutrons fait flamber son H/He accrété en sursaut X de type I toutes les quelques heures ; un trou noir n'a pas de surface, donc rien ne s'allume et il ne fait que briller, jusqu'à la limite d'Eddington. Un seul modèle tensoriel vectorisé (polytropes de Lane–Emden, équation d'état dégénérée et allumage d'une couche à une zone avec autograd) donne d'un coup la masse accrétée critique pour chaque résidu et chaque masse.
+notes: 'Résultats exacts : les constantes de Lane–Emden, la masse de Chandrasekhar ($1.456\,M_\odot$ pour $\mu_e = 2$), la luminosité d''Eddington ($1.26\times10^{38}$ erg/s par $M_\odot$) et le rendement à l''ISCO ($5.7\%$ à $42\%$). Tout le reste est un modèle d''ordre de grandeur : (1) Naines brunes : la température maximale jamais atteinte par un polytrope $n = 3/2$ en contraction, $T_{\max} \propto M^{4/3}$, comparée à $3\times10^5$ K (combustion lente du deutérium sur des Ga) et $3\times10^6$ K (hydrogène) ; le modèle donne environ $14\,M_J$ et $0.074\,M_\odot$, proches des limites des modèles d''évolution d''environ $13\,M_J$ (Spiegel et al. 2011) et $0.07$–$0.08\,M_\odot$ (Burrows et al. 2001). C''est une condition nécessaire : une naine brune vieille et froide poussée au-delà de la limite doit aussi être chauffée par l''accrétion (compression) avant de s''allumer. (2) Novae : masses d''allumage de $10^{-7}$ à $10^{-3}\,M_\odot$, plus petites pour les naines blanches plus lourdes
+  et l''accrétion plus rapide, comme dans les grilles de novae de Yaron et al. (2005), mais seulement à un facteur de quelques unités près (conduction, mélange et écrantage sont négligés). Les novae éjectent probablement au moins ce qui a été accrété, si bien que la possibilité qu''une naine blanche grossisse jusqu''à $M_{\rm Ch}$ et explose en supernova de type Ia (canal simple dégénéré) est débattue. (3) Sursauts X : colonnes d''allumage proches de $10^8$ g/cm² et temps de récurrence de quelques heures, comme observé (Galloway et Keek 2021) ; l''énergie gravitationnelle par gramme vaut environ 40 fois l''énergie nucléaire ($\alpha$). La même accrétion qui déclenche les sursauts accélère la rotation de l''étoile à neutrons : environ $0.04\,M_\odot$ recycle un vieux pulsar en pulsar milliseconde. (4) Trous noirs : pas de surface, pas d''éclair.'
+meanings:
+- 'un résidu en accrétion par entrée : naines blanches (masse $\times$ taux) et étoiles à neutrons (combustible $\times$ taux)'
+- profondeur de colonne de la couche accrétée, g/cm² ; pression $P = g y$
+- inverser ions parfaits + électrons partiellement dégénérés par bissection vectorisée
+- température radiative à la base, itération de point fixe ($\kappa$, $\rho$ dépendent de $T$)
+- 'instabilité de couche mince : le chauffage croît plus vite avec $T$ que le refroidissement ⇒ emballement'
+- 'masse accrétée critique : nova ou sursaut X'
+- polytrope $n = 3/2$ se contractant à travers tous les rayons ; max sur $r$ ⇒ limites des naines brunes
+- 'Lane–Emden pour $n = 1, 3/2, 3$ simultanément : constantes $\omega_3$, $\rho_c/\bar\rho$, $P_c$'
+- 'trou noir : seulement la lumière d''accrétion, $\eta = 1 - E_{\rm ISCO}$'
+labels:
+  bd_mass: Masse initiale de la naine brune
+  bd_rate: Taux d'accrétion de la naine brune $\log_{10}\dot M$
+  wd_mass: Masse de la naine blanche
+  wd_rate: Taux d'accrétion de la naine blanche $\log_{10}\dot M$
+  core_temp: Température du cœur de la naine blanche
+  ns_rate: Taux d'accrétion de l'étoile à neutrons $\log_{10}\dot M$
+  ns_fuel: Combustible de l'étoile à neutrons
+  bh_spin: Spin du trou noir $a/M$

@@ -1,0 +1,19 @@
+source_hash: 796c13483137
+title: Transport optimal avec Sinkhorn
+summary: Comment transformer un tas de sable en forme d'anneau en deux monticules, puis en spirale, avec le moindre effort total ? Le transport optimal trouve le plan $P_{ij}$ qui déplace la masse de $x_i$ vers $y_j$ au coût $|x_i - y_j|^2$ ; son minimum est la distance de Wasserstein au carré $W_2^2$. Ajouter un peu d'entropie $\varepsilon$ rend le problème soluble par les mises à jour alternées de Sinkhorn, écrites ici dans le domaine logarithmique avec logsumexp pour tout un lot de valeurs de $\varepsilon$ à la fois ; lorsque $\varepsilon \to 0$, le coût descend jusqu'à l'optimum exact trouvé par l'algorithme hongrois.
+notes: 'Monge a posé le problème en 1781 et Kantorovitch l''a relâché aux plans $P$ en 1942. Cuturi (2013) a montré que la version entropique se résout par la mise à l''échelle matricielle de Sinkhorn, quelques produits matriciels par itération, ce qui a rendu le transport optimal utilisable en apprentissage automatique. Un petit $\varepsilon$ demande des précautions : le code travaille avec les potentiels $f, g$ et logsumexp au lieu de $e^{-C/\varepsilon}$ (qui sous-déborde), et fait décroître $\varepsilon$ de 1 jusqu''à sa valeur cible ($\varepsilon$-scaling). Le coût $\langle P_\varepsilon, C\rangle$ décroît vers la valeur exacte $W_2^2$ calculée par l''algorithme hongrois (une référence exacte mais lente, vérifiée par force brute sur toutes les permutations), tandis que la valeur duale $\mathrm{OT}_\varepsilon$ porte un biais entropique que la divergence de Sinkhorn de Feydy et al. (2019) supprime. Les tests vérifient aussi deux formules fermées : en dimension un, le plan optimal apparie
+  les points triés (fonctions quantiles), et entre gaussiennes $W_2^2 = |m_1 - m_2|^2 + \operatorname{tr}(S_1 + S_2 - 2(S_1^{1/2} S_2 S_1^{1/2})^{1/2})$ (la métrique de Bures), grâce au théorème de Brenier selon lequel le gradient d''une fonction convexe est l''application optimale. Toutes les formes sont générées par le code ; aucune image n''est utilisée.'
+meanings:
+- nuages de points synthétiques générés à partir de formules et de nombres aléatoires, chaque point ayant la masse $a_i = 1/N$
+- distance au carré, $k$ répété ⇒ sommé
+- un lot d'intensités de régularisation résolues simultanément
+- mise à jour de Sinkhorn dans le domaine logarithmique, somme sur $j$ sous forme de logsumexp ; ne déborde jamais, même pour un $\varepsilon$ minuscule
+- 'la même sur $i$ : ensuite, les sommes des colonnes de $P$ valent exactement $b$'
+- 'plan de transport : flou pour un grand $\varepsilon$, presque une permutation pour un petit $\varepsilon$'
+- 'application barycentrique : où va la masse de $x_i$ ; les points se déplacent en ligne droite $(1-t)\,x + t\,T(x)$ (interpolation de McCann)'
+- $\mathrm{OT}_\varepsilon(\mu,\nu) - \tfrac12\mathrm{OT}_\varepsilon(\mu,\mu) - \tfrac12\mathrm{OT}_\varepsilon(\nu,\nu)$, nulle lorsque $\mu = \nu$
+labels:
+  n_points: Points par forme $N$
+  eps_min: Plus petite régularisation $\varepsilon$
+  n_eps: Valeurs de $\varepsilon$ dans le lot
+  n_iter: Itérations de Sinkhorn

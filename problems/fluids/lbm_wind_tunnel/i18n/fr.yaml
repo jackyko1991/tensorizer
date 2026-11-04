@@ -1,0 +1,27 @@
+source_hash: 7dfc00ae0203
+title: 'Soufflerie numérique : Boltzmann sur réseau 3D autour d''un avion STL'
+summary: 'Une petite soufflerie 3D dans l''esprit de la bibliothèque OpenLB : le fichier STL d''un avion modèle est lu dans un tenseur de triangles, voxélisé par lancer de rayons sur tous les nœuds du réseau à la fois, incliné d''un angle d''attaque et placé dans un écoulement de Boltzmann sur réseau D3Q19 avec collisions TRT ou MRT, LES de Smagorinsky optionnelle et rebond (bounce-back) sur le corps. La traînée et la portance viennent de l''échange de quantité de mouvement ; des lignes de courant (RK4 par lots) et des particules traceuses montrent l''écoulement. Un cas de sphère vérifie le solveur face à un calcul précalculé d''OpenLB lui-même et affiche le résidu.'
+notes: 'Unités du réseau : espacement des nœuds et pas de temps 1, écoulement amont $U = 0.08$ (Mach 0,14), viscosité $\nu = UL/\mathrm{Re}$ avec $L$ la longueur du corps en nœuds, et $\tau = 3\nu + \tfrac12$. L''avion vole dans un réseau $80\times 36\times 26$ avec $L = 32$ (longueur du fuselage ; envergure 28 nœuds), l''aile NACA 0012 optionnelle dans $72\times 24\times 24$ (corde 20). Les deux fichiers STL ont été générés pour ce problème (voir data/SOURCES.md) : un avion modèle trapu (fuselage de révolution, aile en flèche NACA 0018, empennages horizontal et vertical) dont les parties se chevauchent aux jonctions, si bien que le voxéliseur compte des nombres d''enroulement (croisements signés) au lieu de la simple parité des rayons ; et une aile qui couvre toute la largeur périodique, donc une aile infinie (comparer $C_L$ à $2\pi\alpha$). Les coefficients utilisent la surface en plan (le corps vu de dessus). Conditions aux limites : périodique transversalement (un réseau d''avions) et
+  rebond à mi-chemin sur le corps voxélisé ; solve.simulate propose aussi un sol mobile et un plafond glissant. Au lieu d''une entrée et d''une sortie, les 16 derniers nœuds forment une zone tampon (fringe) qui ramène l''écoulement à l''écoulement amont avant qu''il ne rentre en $x = 0$ ; la vitesse monte en 300 pas (la bosse initiale de $C_D$ est le gradient de pression qui accélère l''air) et l''animation commence après. TRT utilise le paramètre « magique » $\Lambda = 3/16$, MRT les taux D3Q19 de d''Humières et al. (2002), Smagorinsky $C_s = 0.17$. Au Re = 1000 par défaut ($\tau \approx 0.508$), le TRT seul diverge sur ce réseau grossier et la LES le stabilise : essayez de couper la LES. Résultats à 8° : avion $C_D \approx 0.39$, $C_L \approx 0.12$ ; aile $C_L \approx 0.31$ contre $2\pi\alpha = 0.88$. La portance est faible car les ailes n''ont que 1 à 3 cellules d''épaisseur, Re est laminaire et les images périodiques au-dessus et en dessous agissent comme une pile de biplans : ce sont
+  des illustrations de la méthode, pas des prédictions. Validation (corps sphere_openlb) : une sphère à Re = 20 ($D = 10$, $80\times 40\times 40$, BGK, entrée à l''équilibre) face à OpenLB 1.7 sur le même réseau, exécuté une fois hors ligne (data/openlb_reference_*.csv) : $C_D$ 3,360 contre 3,378 (−0,5 %) ; $u_x$ du plan médian : L2 relative 0,8 %, L∞ 1,1 %, max $|\Delta u|/U$ 1,3 %. La différence restante vient des schémas aux limites (OpenLB utilise des conditions interpolées en vitesse et en pression et continue de résonner avec des ondes sonores, ±5 % sur $C_D$) et du rebond complet contre rebond à mi-chemin ; la collision (BGK) et la résolution sont les mêmes. Les deux codes sont au-dessus de la valeur de Schiller–Naumann 2,61 car cette sphère n''est pas libre : OpenLB dans une boîte $160\times 60\times 60$ donne 3,04 et avec $D = 20$ dans les mêmes proportions 3,21. OpenLB n''a servi que de référence précalculée ; aucun de ses codes (GPL) n''est utilisé ici. La validation tourne en
+  direct après l''avion, dans la même exécution (paramètre validate, activé par défaut ; 2000 pas), et remplit le panneau de résidu.'
+meanings:
+- 'populations : fluide au nœud $(x, y, z)$ se déplaçant avec la vitesse du réseau $i$'
+- vitesses D3Q19 (repos, 6 faces, 12 arêtes), poids et directions opposées
+- 'triangles STL : triangle $t$, sommet $v$, coordonnée $a$'
+- intérieur si les croisements signés d'un rayon selon $+x$ (nombre d'enroulement) sont positifs ; tous les rayons × tous les triangles, puis searchsorted
+- '$a$ répété ⇒ sommé : vitesse le long de chaque direction du réseau'
+- '$i$ répété ⇒ sommé : densité de quantité de mouvement'
+- 'MRT : moments hors équilibre, chacun relaxé à son propre taux $s_k$'
+- flux de quantité de mouvement hors équilibre ; sa norme fixe la viscosité turbulente de Smagorinsky $\nu_t$
+- 'propagation : décalage de chaque population d''un lien'
+- 1 là où une population quitte un nœud fluide vers le corps (rebond comme échange masqué)
+- 'échange de quantité de mouvement : force sur le corps, sommée sur ses liens de bord'
+labels:
+  body: Corps (STL dans data/ ; sphere_openlb = le cas de vérification OpenLB)
+  re: Nombre de Reynolds $UL/\nu$ (longueur du corps $L$)
+  collision: Opérateur de collision
+  les: LES de Smagorinsky
+  pitch: Angle d'attaque (avion et aile)
+  steps: Pas de temps du réseau
+  validate: Lancer aussi la vérification OpenLB de la sphère (panneau de résidu)

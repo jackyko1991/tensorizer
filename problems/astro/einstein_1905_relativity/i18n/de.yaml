@@ -1,0 +1,19 @@
+source_hash: 278f16a6d4b6
+title: 'Einstein 1905: bewegte Körper und $E = mc^2$'
+summary: Einsteins eigener Weg durch seine beiden Relativitätsarbeiten von 1905. Aus zwei Postulaten — dieselben Gesetze in jedem Inertialsystem, Licht stets mit $c$ — zeigt ein Batch von Lichtuhren, dass bewegte Zeit um $\gamma$ verlangsamt wird, Maßstäbe um $1/\gamma$ verkürzt werden, Gleichzeitigkeit vom Beobachter abhängt und Geschwindigkeiten sich nie über $c$ hinaus addieren. Die Arbeit über Masse und Energie (ein Körper, der die Lichtenergie $L$ abstrahlt, verliert die Masse $L/c^2$) wird am Massendefekt von He-4 und an der $e^+e^-$-Annihilation geprüft, und ein Fit an die Myonenzählungen von Frisch und Smith (1963) auf dem Mount Washington und auf Meereshöhe ergibt $\gamma \approx 9$.
+notes: 'Dies ist eine der vier Arbeiten aus Einsteins „Wunderjahr“ 1905 — genauer gesagt zwei davon: „Zur Elektrodynamik bewegter Körper“ (Juni) und „Ist die Trägheit eines Körpers von seinem Energieinhalt abhängig?“ (September). Die anderen sind die Lichtquantenarbeit (quantum: Photoelektrischer Effekt und Lichtquanten) und die Brownsche Bewegung (thermodynamics: Zufallsbewegung und Diffusion). Für Relativität als Geometrie siehe Spezielle Relativität: Minkowski-Diagramme und Lorentz-Boosts (astro), für den Feldstärketensor den Lorentz-Boost von $F^{\mu\nu}$ (em) und für Stöße Viererimpuls und Zweikörperzerfall (nuclear). Einheiten $c = 1$, Spiegelabstand $D = 1$. Einsteins Massenargument: Ein ruhender Körper strahlt $L/2$ nach vorn und $L/2$ nach hinten ab; in einem mit $v$ bewegten System trägt das Licht $\gamma L$, mehr als $L$, und die Energieerhaltung in beiden Systemen erzwingt, dass die kinetische Energie des Körpers um $L(\gamma - 1)$ sinkt — genau das, was eine Masse $L/c^2$ tragen
+  würde (er behielt nur den Term für kleine Geschwindigkeiten $\tfrac12 (L/c^2)v^2$). Die Atommassen stammen aus AME2020. Echte Daten (data/frisch_smith_1963_muons.csv): D. H. Frisch und J. H. Smith, Am. J. Phys. 31, 342 (1963), doi:10.1119/1.1969508 — auf dieselbe Energie abgebremste Myonen, $563 \pm 10$ pro Stunde in 1917 m Höhe auf dem Mount Washington und $408 \pm 9$ pro Stunde auf Meereshöhe (veröffentlichte Messwerte; die Zusammenfassung in Wikipedia rundet Letzteren auf 412). Der Flug dauert etwa 6,4 μs, fast drei Myonlebensdauern von 2,2 μs, sodass ohne Zeitdilatation nur etwa 30 pro Stunde ankämen; die Zählungen ergeben für die Myonuhr 0,71 μs und $\gamma \approx 9.1 \pm 0.8$ (die Arbeit, mit ihrer gemessenen Zerfallskurve: $8.8 \pm 0.8$). Die Vorhersage aus den Geschwindigkeiten integriert die Abbremsung von $\beta \approx 0.995$ auf $\approx 0.989$ in der Luft (Ionisationsverlust $dE/dx$, isotherme Atmosphäre): etwa 8,4, wie in der Arbeit. Rossi und Hall (1941) wiesen den Effekt
+  als Erste mit Myonen aus der kosmischen Strahlung am Echo Lake und in Denver nach.'
+meanings:
+- 'Photon der Uhr $b$ zur Zeit $t$: horizontale Geschwindigkeit $\beta_b$, vertikale $\sqrt{1-\beta_b^2}$, also stets $c$'
+- ein Tick dauert $\gamma\cdot 2D/c$; Ticks aus dem Zickzack gezählt
+- ein Batch von Boosts entlang $x$, $\eta = \operatorname{diag}(-1, 1, 1, 1)$
+- 'wiederholtes $\nu$ ⇒ summiert: jedes Ereignis in jedem System; die Blitze des Zuges erhalten $\Delta t'' = -\gamma\beta\Delta x$'
+- das Intervall, unverändert unter jedem Boost
+- 'die beiden Lichtpulse vom bewegten System aus gesehen: zusammen $\gamma L$, also $K_0 - K_1 = (L/c^2)(\gamma - 1)c^2$'
+- 'Massendefekt × 931,494 MeV/u (He-4: 28,30 MeV)'
+- Newton-Schritte mit Autograd auf $\chi^2(\gamma)$ für die beiden Myonraten
+labels:
+  beta_fast: Geschwindigkeit der schnellsten Uhr $\beta$
+  n_clocks: Anzahl der Lichtuhren
+  dEdx: Energieverlust der Myonen in Luft $dE/dx$

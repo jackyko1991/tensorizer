@@ -1,0 +1,41 @@
+title: 'Einstein 1905: moving bodies and $E = mc^2$'
+category: astro
+level: intermediate
+order: 7
+tags: [annus-mirabilis:1905, series:einstein-1905:3]
+summary: >
+  Einstein's own route through his two 1905 relativity papers. From two postulates — the same laws in every inertial frame, light always at $c$ —
+  a batch of light clocks shows moving time slowed by $\gamma$, rods shortened by $1/\gamma$, simultaneity that depends on the observer and
+  speeds that never add beyond $c$. The mass–energy paper (a body emitting light energy $L$ loses mass $L/c^2$) is checked on the He-4 mass
+  defect and $e^+e^-$ annihilation, and a fit to Frisch and Smith's 1963 muon counts on Mt Washington and at sea level gives $\gamma \approx 9$.
+animated: true
+vector_form: '\Delta t = \gamma\,\Delta\tau,\quad L = L_0/\gamma,\quad \gamma = \frac{1}{\sqrt{1 - v^2/c^2}},\qquad w = \frac{u + v}{1 + uv/c^2},\qquad \Delta m = \frac{L}{c^2},\quad E^2 = (pc)^2 + (mc^2)^2'
+index_form: 'x''^\mu = \Lambda^\mu{}_\nu\,x^\nu,\qquad \eta_{\mu\nu}\Delta x''^\mu\Delta x''^\nu = \eta_{\mu\nu}\Delta x^\mu\Delta x^\nu,\qquad \eta_{\mu\nu}\,p^\mu p^\nu = -m^2c^2,\qquad N_{\text{sea}} = N_{\text{top}}\,e^{-t_{\text{lab}}/(\gamma\tau_\mu)}'
+translation:
+  - {symbol: 'x_{bt},\ y_{bt}', code: 'light_clocks(beta, D, t_max, n)', shape: '(B, T)', meaning: 'photon of clock $b$ at time $t$: horizontal speed $\beta_b$, vertical $\sqrt{1-\beta_b^2}$, so always $c$'}
+  - {symbol: '\gamma(\beta_b)', code: '1 / torch.sqrt(1 - beta**2)', shape: '(B,)', meaning: 'one tick takes $\gamma\cdot 2D/c$; ticks counted from the zigzag'}
+  - {symbol: '\Lambda^\mu{}_\nu(\beta_b)', code: 'boost(beta)', shape: '(B, 4, 4)', meaning: 'a batch of boosts along $x$, $\eta = \operatorname{diag}(-1, 1, 1, 1)$'}
+  - {symbol: '\Lambda^\mu{}_\nu\,x^\nu', code: "einsum('...mn,kn->...km', Lam, x)", shape: '(B, K, 4)', meaning: 'repeated $\nu$ ⇒ summed: every event in every frame; the train''s flashes get $\Delta t'' = -\gamma\beta\Delta x$'}
+  - {symbol: '\eta_{\mu\nu}\Delta x^\mu\Delta x^\nu', code: "einsum('mn,...m,...n->...', eta, dx, dx)", shape: '(…)', meaning: 'the interval, unchanged by every boost'}
+  - {symbol: '\tfrac{L}{2}\gamma(1\mp\beta\cos\theta)', code: 'pulse_energies(L, beta, theta)', shape: '(B, Θ, 2)', meaning: 'the two light pulses seen from the moving frame: together $\gamma L$, so $K_0 - K_1 = (L/c^2)(\gamma - 1)c^2$'}
+  - {symbol: 'B = Zm_H + Nm_n - M', code: 'binding_energy(Z, N, M)', shape: '(K,)', meaning: 'mass defect × 931.494 MeV/u (He-4: 28.30 MeV)'}
+  - {symbol: '\gamma_{\text{fit}}', code: 'muon_gamma(data, dEdx)', shape: '()', meaning: 'Newton steps with autograd on $\chi^2(\gamma)$ for the two muon rates'}
+notes: >
+  This is one of Einstein's four 1905 "miracle year" papers — two of them, in fact: "On the electrodynamics of moving bodies" (June) and
+  "Does the inertia of a body depend upon its energy content?" (September). The others are the light-quantum paper (quantum: Photoelectric effect
+  and light quanta) and Brownian motion (thermodynamics: Random walk and diffusion). For relativity as geometry see Special relativity:
+  Minkowski diagrams (astro), for the field tensor the Lorentz boost of $F^{\mu\nu}$ (em), and for collisions Four-momentum and two-body
+  decay (nuclear). Units $c = 1$, mirror spacing $D = 1$. Einstein's mass argument: a body at rest emits $L/2$ forwards and $L/2$ backwards;
+  in a frame moving at $v$ the light carries $\gamma L$, more than $L$, and energy conservation in both frames forces the body's kinetic
+  energy to drop by $L(\gamma - 1)$, exactly what a mass $L/c^2$ would carry (he kept only the low-speed term $\tfrac12 (L/c^2)v^2$).
+  Atomic masses are AME2020. Real data (data/frisch_smith_1963_muons.csv): D. H. Frisch and J. H. Smith, Am. J. Phys. 31, 342 (1963),
+  doi:10.1119/1.1969508 — muons slowed to the same energy, $563 \pm 10$ per hour at 1917 m on Mt Washington and $408 \pm 9$ per hour at
+  sea level (published measurement values; Wikipedia's summary rounds the latter to 412). The flight takes about 6.4 μs, almost three
+  muon lifetimes of 2.2 μs, so without time dilation only about 30 per hour would arrive; the counts give the muon clock 0.71 μs and
+  $\gamma \approx 9.1 \pm 0.8$ (the paper, with its measured decay curve: $8.8 \pm 0.8$). The prediction from the speeds integrates the
+  slowdown from $\beta \approx 0.995$ to $\approx 0.989$ through the air (ionisation loss $dE/dx$, isothermal atmosphere): about 8.4,
+  as in the paper. Rossi and Hall (1941) first showed the effect with cosmic-ray muons at Echo Lake and Denver.
+params:
+  beta_fast: {default: 0.95, min: 0.3, max: 0.995, step: 0.005, label: 'Speed of the fastest clock $\beta$'}
+  n_clocks: {default: 4, min: 2, max: 6, step: 1, type: int, label: 'Number of light clocks'}
+  dEdx: {default: 1.82, min: 0.0, max: 3.0, step: 0.02, label: 'Muon energy loss in air $dE/dx$', unit: MeV cm²/g}

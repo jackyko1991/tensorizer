@@ -2,6 +2,7 @@ title: The halting problem with a batch of Turing machines
 category: others
 level: advanced
 order: 4
+tags: [status:undecidable]
 summary: >
   Not physics, just for fun: run hundreds of thousands of Turing machines at once as tensors. One step of every
   machine is a gather (read the tape under each head), an advanced-indexing look-up of its rule and a scatter (write).

@@ -1,0 +1,19 @@
+source_hash: b740fafad36e
+title: Regularidad de Navier–Stokes y candidatos a explosión
+summary: El Problema del Milenio del Instituto Clay pregunta si los flujos incompresibles 3D suaves siguen siéndolo para siempre. Un resolvedor pseudoespectral en el toro simula el vórtice de Taylor–Green para Euler ($\nu = 0$) y dos viscosidades como un único lote de FFT, siguiendo la vorticidad máxima, la enstrofía y la integral de Beale–Kato–Majda $\int\|\omega\|_\infty dt$, que debe divergir en cualquier explosión. El estiramiento de vórtices hace crecer la vorticidad de Euler hasta que la malla ya no puede resolverla; la viscosidad la limita. Esto es una ilustración, no una demostración.
+notes: 'El problema Clay (descripción oficial de Fefferman) pide uno de cuatro enunciados: soluciones suaves globales en $\mathbb R^3$ (A) o en el toro $\mathbb T^3$ (B), o ruptura en $\mathbb R^3$ (C) o en $\mathbb T^3$ (D), para $\nu > 0$. El repositorio openai/NavierStokesAndEuler en GitHub afirma contener demostraciones verificadas por máquina en Lean 4, con artículos que las acompañan, de la ruptura para Navier–Stokes forzado en $\mathbb R^3$ y $\mathbb T^3$ (alternativas C y D) y de la explosión en tiempo finito para la ecuación de Euler no forzada a partir de datos suaves de soporte compacto. Son afirmaciones recientes que aún esperan la evaluación de la comunidad matemática y del Instituto Clay; esta página no considera resuelto el problema del premio. Para Euler, la singularidad en tiempo finito de soluciones suaves fue respaldada por el cálculo axisimétrico con frontera de Luo–Hou (2014) y después por demostraciones asistidas por ordenador (Chen–Hou), y Elgindi (2021) demostró
+  la explosión para datos $C^{1,\alpha}$. La simulación aquí solo ilustra las cantidades que esos trabajos controlan. El vórtice de Taylor–Green $\mathbf u_0 = (\sin x\cos y\cos z, -\cos x\sin y\cos z, 0)$ es la prueba clásica (Brachet et al. 1983): el estiramiento de vórtices lo afila en láminas delgadas, la enstrofía aumenta y el espectro de energía se aplana. La cola del espectro decae como $e^{-2\delta k}$; una explosión requeriría que la banda de analiticidad $\delta(t)$ llegara a cero en tiempo finito, mientras que Brachet encontró que solo se estrecha exponencialmente. En cuanto $\delta\,k_\max < 1$, la simulación de Euler queda subresuelta (zona sombreada): el sistema truncado sigue conservando exactamente la energía, pero el crecimiento posterior de $\|\omega\|_\infty$ es un artefacto de la malla, no una prueba de singularidad. Con viscosidad, la energía obedece $dE/dt = -2\nu\Omega$ (comprobado hasta el redondeo) y la enstrofía alcanza un máximo y decae. El vórtice de Taylor–Green
+  2D es una solución exacta $e^{-2\nu t}$ y el 3D tiene una aceleración inicial conocida a partir de $p_0 = \frac1{16}(\cos 2x + \cos 2y)(\cos 2z + 2)$: ambos sirven de pruebas. Pruebe un $N$ mayor para retrasar el tiempo resuelto.'
+meanings:
+- coeficientes de Fourier de la velocidad de cada simulación $b$ (una viscosidad cada una) en el toro $[0, 2\pi)^3$
+- rotacional con el tensor de Levi-Civita; $j, l$ repetidos ⇒ sumados
+- el término no lineal en forma rotacional, evaluado en el espacio real (pseudoespectral)
+- 'proyección de Leray: elimina la parte de gradiente, de modo que la presión nunca se calcula y $k_i\hat u_i = 0$'
+- descarta los modos que el término cuadrático solaparía (aliasing); $k_\max = N/3$
+- energía cinética $\frac12\langle|\mathbf u|^2\rangle$ y enstrofía $\frac12\langle|\boldsymbol\omega|^2\rangle$
+- 'criterio de Beale–Kato–Majda: una solución suave solo puede romperse en $T^*$ si esta cantidad diverge allí'
+- ajuste $E(k) \propto k^{-3}e^{-2\delta k}$; una singularidad real requiere $\delta \to 0$, y la malla resuelve el flujo solo mientras $\delta\,k_\max \gtrsim 1$
+labels:
+  n: Malla $N^3$
+  nu: Viscosidad $\nu$ (simulaciones $0$, $\nu$, $2\nu$)
+  t_max: Tiempo simulado

@@ -1,0 +1,20 @@
+source_hash: 9e147d6c0987
+title: El eje del mal en el cielo de microondas
+summary: 'Los dos patrones más grandes del mapa real de WMAP del fondo cósmico de microondas, el cuadrupolo ($\ell = 2$) y el octupolo ($\ell = 3$), parecen apuntar en la misma dirección. Sus coeficientes $a_{\ell m}$ salen de un solo ajuste por mínimos cuadrados; el eje de cada multipolo es el autovector dominante de la dispersión de momento angular $3\times 3$ $M_{ij} = \mathrm{Re}\,a^*L_iL_ja$, y un lote de $10^5$ cielos aleatorios isótropos convierte el ángulo entre los ejes en un valor $p$. Una anomalía real pero debatida: azar, restos de primeros planos o física nueva.'
+notes: 'En un universo estadísticamente isótropo (la predicción estándar de la inflación), las orientaciones de los distintos multipolos son independientes, así que el ángulo entre los ejes del cuadrupolo y del octupolo debería ser aleatorio: $|\cos|$ uniforme en $[0, 1]$. Tegmark, de Oliveira-Costa y Hamilton (2003) y de Oliveira-Costa et al. (2004) encontraron en los primeros mapas de WMAP que ambos apuntan hacia $(l, b) \approx (-110^\circ, 60^\circ)$, apodado «eje del mal» por Land y Magueijo (2005); Copi, Huterer, Schwarz y Starkman lo estudiaron con vectores multipolares y hallaron más vínculos con la eclíptica. En el mapa ILC de WMAP de 9 años incluido, los ejes salen en $(l, b) \approx (240^\circ, 60^\circ)$ y $(238^\circ, 63^\circ)$, separados solo $3^\circ$, y menos de 2 de cada 1000 cielos isótropos lo superan ($p \approx 0.0015$; para esta estadística $p = 1 - |\cos|$ exactamente, lo que confirma el Monte Carlo). El panel derecho comprueba la simulación: la fracción de cielos
+  aleatorios al menos tan alineados como $x$ sigue la recta $P = x$. Estado: el alineamiento existe en los datos (los artículos de isotropía de Planck 2013, 2015 y 2018 lo ven en todos sus mapas), pero su significancia se debate. La estadística se eligió después de notar el patrón (a posteriori, efecto de «mirar en otra parte»: entre muchas anomalías posibles, algunas parecerán raras); la baja potencia del cuadrupolo, los primeros planos galácticos residuales del ILC, el cuadrupolo Doppler cinemático (no eliminado aquí) y la elección del mapa cambian $p$ en factores de varias veces. No hay ninguna explicación física aceptada; las propuestas incluyen una topología no trivial, una expansión anisótropa o primeros planos locales, y la mayoría de los cosmólogos lo consideran una fluctuación estadística. Esta página da $p$ para una sola estadística y no afirma ninguna detección. Datos: mapa ILC de WMAP de 9 años (Bennett et al. 2013, ApJS 208, 20), archivo wmap_ilc_9yr_v5.fits del archivo LAMBDA
+  de la NASA (lambda.gsfc.nasa.gov; datos de la NASA, dominio público), degradado aquí de HEALPix $N_\mathrm{side} = 512$ a 16 (columnas glon_deg, glat_deg, T_uK). Cualquier mapa con el mismo formato CSV lon/lat/T (por ejemplo un mapa de Planck) puede sustituirlo. El ajuste usa todos los multipolos hasta $\ell_\mathrm{fit}$ en el cielo completo sin máscara; los cielos isótropos usan coeficientes reales gaussianos unitarios (la potencia $C_\ell$ se cancela en el eje).'
+meanings:
+- dirección del píxel, temperatura y ángulo sólido, desde cualquier CSV lon/lat/T
+- armónicos reales en cada píxel; $a$ recorre todos los $(\ell, m)$
+- 'mínimos cuadrados ponderados: todos los multipolos a la vez, sin aliasing entre ellos'
+- coeficientes complejos con $a_{\ell,-m} = (-1)^m a^*_{\ell m}$
+- matrices de espín $\ell$, $[L_x, L_y] = iL_z$, $L_iL_i = \ell(\ell+1)$
+- '$m, n, k$ sumados: $\hat n_iM_{ij}\hat n_j = \sum_m m^2|a_{\ell m}|^2$ en el sistema con $z \parallel \hat n$'
+- 'eigh por lotes: el eje alrededor del cual el multipolo es más plano'
+- '$i$ sumado: alineamiento de los dos ejes en el cielo $s$ (los ejes no tienen sentido)'
+- valor $p$ de Monte Carlo frente a cielos gaussianos isótropos
+labels:
+  n_skies: Cielos aleatorios isótropos $K$
+  lmax_fit: Multipolos ajustados juntos $\ell_\mathrm{fit}$
+  seed: Semilla aleatoria

@@ -1,0 +1,56 @@
+title: Gauss's 17-gon with ruler and compass
+category: maths
+level: intermediate
+order: 6
+tags: [status:proved]
+summary: >
+  In 1796, a month before turning 19, Gauss found that the regular 17-gon can be drawn with ruler and compass, the first new
+  constructible polygon since the Greeks. The 17th roots of unity, grouped into Gauss periods, solve a chain of
+  quadratics. That chain writes $\cos(2\pi/17)$ with square roots only. Richmond's 1893 construction then draws the
+  polygon step by step, using line and circle intersections written as tensor operations. A grid shows which
+  $n$-gons are constructible (the Gauss–Wantzel theorem). Everything here is proven classical mathematics.
+animated: true
+vector_form: '\eta_{m,i} = \sum_{j \equiv i \ (2^m)} \zeta^{g^j},\quad \eta_{m+1,i} + \eta_{m+1,i+2^m} = \eta_{m,i},\quad \eta_{m+1,i}\,\eta_{m+1,i+2^m} = c_i + \sum_k C_{ik}\,\eta_{m,k},\qquad 16\cos\tfrac{2\pi}{17} = -1+\sqrt{17}+\sqrt{34-2\sqrt{17}}+2\sqrt{17+3\sqrt{17}-\sqrt{34-2\sqrt{17}}-2\sqrt{34+2\sqrt{17}}}'
+index_form: '\eta_{mi} = M_{mij}\,\zeta_{e_j},\quad M_{mij} = [\,j \equiv i \bmod 2^m\,],\qquad p_i = c_i + C_{ik}\,\eta_{mk},\quad \eta_{m+1,i} = \tfrac12\big(\eta_{mi} \pm \sqrt{\eta_{mi}^2 - 4p_i}\big),\qquad n \text{ constructible} \Leftrightarrow \varphi(n) = 2^r'
+translation:
+  - {symbol: '\zeta_k = e^{2\pi i k/17}', code: 'polar(ones, 2 * pi * k / 17)', shape: '(17,) complex', meaning: 'the 17th roots of unity, the vertices of the 17-gon in the complex plane'}
+  - {symbol: 'e_j = g^j \bmod 17', code: 'cyclic_order(g)', shape: '(16,)', meaning: 'the exponents in the order of powers of a primitive root, $g = 3$: 1, 3, 9, 10, 13, …'}
+  - {symbol: 'M_{mij}', code: '(j % 2**m == i) & (i < 2**m)', shape: '(5, 16, 16)', meaning: 'which positions of the cyclic order make up period $i$ at level $m$: every $2^m$-th one'}
+  - {symbol: '\eta_{mi}', code: "einsum('mij,j->mi', M, zeta[order])", shape: '(5, 16)', meaning: 'repeated $j$ ⇒ summed: all Gauss periods of all five levels (lengths 16, 8, 4, 2, 1) in one go'}
+  - {symbol: 'c_i,\ C_{ik}', code: 'one_hot((a + b) % 17).sum()', shape: '(2^m,), (2^m, 2^m)', meaning: 'the product of two sibling periods is a sum of $\zeta^{a+b}$; counting the exponents gives integers that are constant on the parent level''s periods'}
+  - {symbol: 'p_i', code: 'const + coef @ tower[m, :n]', shape: '(2^m,)', meaning: 'repeated $k$ ⇒ summed: the constant term of each quadratic from the level above'}
+  - {symbol: '\eta_{m+1,i}', code: '(s + sqrt(s * s - 4 * p)) / 2', shape: '(2^m,)', meaning: 'one square root per level: $16 \to 8 \to 4 \to 2 \to 1$; level 3 holds $2\cos(2\pi k/17)$'}
+  - {symbol: 'P = A + t(B - A)', code: 'line_line, line_circle, circle_circle', shape: '(2,), (2, 2)', meaning: 'the three ruler-and-compass moves as tensor formulas: a $2\times 2$ cross-product solve, a quadratic in $t$, and the radical line of two circles'}
+  - {symbol: '\varphi(n)', code: 'phi[p::p] -= phi[p::p] // p', shape: '(N + 1,)', meaning: 'Euler''s totient by a sieve; constructible exactly when $\varphi(n)$ is a power of 2, tested as $x \,\&\, (x-1) = 0$'}
+  - {symbol: 'n = 2^k \cdot \text{odd}', code: '(2**32 - 1) % (n // (n & -n)) == 0', shape: '(N,)', meaning: 'the odd part must divide $3\cdot5\cdot17\cdot257\cdot65537 = 2^{32}-1$: a product of distinct Fermat primes'}
+notes: >
+  Gauss found the 17-gon on 30 March 1796, just before his 19th birthday, and it reportedly made him choose
+  mathematics over philology. He published the theory in the last section of the Disquisitiones Arithmeticae (1801).
+  The idea: the 16 nontrivial roots $\zeta^k$ are permuted cyclically by $k \mapsto 3k \bmod 17$, because 3 is a
+  primitive root. Summing every second root in this cyclic order gives two periods of 8 terms with
+  $\eta_0 + \eta_1 = -1$ and $\eta_0\eta_1 = -4$, so $\eta_{0,1} = (-1 \pm \sqrt{17})/2$. Halving again gives periods of
+  4, 2 and 1 terms. Each pair is the root pair of a quadratic whose coefficients are periods one level up, because
+  the subgroups have order $16 \to 8 \to 4 \to 2 \to 1$, all powers of 2. The 2-term periods are
+  $\zeta^k + \zeta^{-k} = 2\cos(2\pi k/17)$, so four square roots give Gauss's formula. The program checks every
+  quadratic relation with exact integer coefficients, rebuilds every period from square roots alone, and compares the
+  closed formula with `torch.cos` (and with 60-digit sympy when it is installed). Any primitive root (3, 5, 6, 7,
+  10, 11, 12, 14) gives the same tree in a different order. A square root is a ruler-and-compass operation, so the
+  polygon is constructible. H. W. Richmond (1893) gave a short recipe on the unit circle. Take $OJ = OB/4$ on the
+  vertical radius. Put $E$ on the diameter with $\angle OJE = \tfrac14\angle OJP_0$ (two angle bisections), and $F$
+  with $\angle EJF = 45°$. The circle on the diameter $FP_0$ meets $OB$ at $K$. The circle about $E$ through $K$ cuts
+  the diameter at $N_3 = \cos(6\pi/17)$ and $N_5 = \cos(10\pi/17)$, and perpendiculars there give $P_3$ and $P_5$.
+  Here every step really draws a line through two points or a circle about a point through another. Each new point
+  is a line–line, line–circle or circle–circle intersection, and the remaining vertices are stepped off with
+  circles: about $P_k$ through $P_{k-1}$, and about $P_0$ through $P_k$ for the mirror image. The 55 steps put all 17
+  vertices within about $10^{-15}$ of $e^{2\pi i k/17}$ in float64; switch to float32 to see the rounding grow to about
+  $10^{-6}$. Gauss stated that the $n$-gon is constructible when $n = 2^k p_1 \cdots p_r$ with distinct Fermat primes
+  $p_i = 2^{2^j} + 1$. Wantzel (1837) proved that no other $n$ works, which also settled angle trisection and cube
+  doubling. This is equivalent to Euler's $\varphi(n)$ being a power of 2, and the grid checks both tests up to $n$.
+  The only known Fermat primes are 3, 5, 17, 257 and 65537. Richelot published the 257-gon in 1832, and J. G. Hermes
+  spent about ten years on the 65537-gon, finished in 1894 and kept in Göttingen. Gauss reportedly asked for a 17-gon
+  on his tombstone; the stonemason is said to have refused because it would look like a circle. The Gauss monument
+  in Braunschweig carries a 17-pointed star instead.
+params:
+  generator: {default: '3', type: choice, options: ['3', '5', '6', '7', '10', '11', '12', '14'], label: 'Primitive root $g$ for the cyclic order'}
+  precision: {default: float64, type: choice, options: [float64, float32], label: 'Construction precision'}
+  n_max: {default: 100, min: 30, max: 300, step: 10, type: int, label: 'Constructibility grid up to $n$'}

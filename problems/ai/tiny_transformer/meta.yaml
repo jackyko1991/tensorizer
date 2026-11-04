@@ -1,0 +1,45 @@
+title: A tiny GPT writes Shakespeare
+category: ai
+level: intermediate
+order: 1
+summary: >
+  A character-level GPT built from raw tensor ops: embeddings, causal multi-head self-attention written as einsum,
+  LayerNorm, an MLP and residual connections, no nn.Transformer. Trained for about a minute on Macbeth and Romeo and
+  Juliet, its loss falls from $\ln V$ (a uniform guess over the $V$ characters) and its samples turn from gibberish
+  into words, names and verse-shaped lines, while the attention maps stay strictly lower-triangular.
+animated: true
+vector_form: '\mathbf A^{(h)} = \operatorname{softmax}\!\Big(\frac{\mathbf Q^{(h)}\mathbf K^{(h)\mathsf T}}{\sqrt{d_k}} + \mathbf M\Big),\qquad M_{ij} = \begin{cases}0 & j \le i\ -\infty & j > i\end{cases},\qquad \mathcal L = -\frac1{NT}\sum_{n,i}\log p_\theta(t_{n,i+1}\mid t_{n,\le i})'
+index_form: 'Q_{nhik} = \hat X_{nic}W^Q_{hck} \qquad A_{nhij} = \mathrm{softmax}_j\big(Q_{nhik}K_{nhjk}/\sqrt{d_k} + M_{ij}\big) \qquad X_{nic} \mathrel{+}= A_{nhij}V_{nhjk}W^O_{hkc}'
+translation:
+  - {symbol: 't_{ni}', code: 'batch(data, n, ctx, gen)', shape: '(N, T)', meaning: 'random windows of the text as character ids; the targets are the same windows shifted one character left'}
+  - {symbol: 'X_{nic}', code: "w['tok'][tokens] + w['pos'][:T]", shape: '(N, T, d)', meaning: 'token plus learned position embedding'}
+  - {symbol: '\hat X', code: 'layer_norm(X, g, b)', shape: '(N, T, d)', meaning: 'every token vector shifted to mean 0 and scaled to variance 1 over its channels, then a learned scale and shift'}
+  - {symbol: 'Q_{nhik}', code: "einsum('nic,hck->nhik', X, Wq)", shape: '(N, H, T, d_k)', meaning: 'repeated $c$ ⇒ summed: the queries of every head (keys and values alike)'}
+  - {symbol: 'M_{ij}', code: 'causal_mask(T, device)', shape: '(T, T)', meaning: '$0$ on and below the diagonal, $-\infty$ above it: after the softmax a position cannot see later characters'}
+  - {symbol: 'A_{nhij}', code: "softmax(einsum('nhik,nhjk->nhij', Q, K) / sqrt(dk) + M, -1)", shape: '(N, H, T, T)', meaning: 'repeated $k$ ⇒ summed; each row is a probability distribution over the earlier positions $j \le i$'}
+  - {symbol: 'A_{nhij}V_{nhjk}W^O_{hkc}', code: "einsum('nhik,hkc->nic', A @ V, Wo)", shape: '(N, T, d)', meaning: 'repeated $j$, then $h, k$ ⇒ summed: what each position gathers from its past, added back through the residual'}
+  - {symbol: '\mathcal L', code: 'cross_entropy(logits, targets)', shape: '()', meaning: 'mean $-\log p$ of the true next character in nats; it starts at $\ln V$'}
+notes: >
+  The architecture is that of Vaswani et al., "Attention is all you need" (2017), in its decoder-only GPT form with
+  pre-norm blocks: $X \leftarrow X + \mathrm{Attn}(\mathrm{LN}\,X)$, then $X \leftarrow X + \mathrm{MLP}(\mathrm{LN}\,X)$.
+  The tests check the mechanics exactly: the einsum attention equals PyTorch's fused
+  `scaled_dot_product_attention` with `is_causal=True`; changing characters after position $t$ leaves every output up
+  to $t$ unchanged (the mask); rows of $A$ sum to 1; the untrained loss is $\ln V$; the model can memorise one batch;
+  and the weight count is $Vd + Td + L(12d^2 + 13d) + 2d + dV + V$. Because of the mask, one forward pass trains all
+  $T$ next-character predictions of a window at once, while generation must run one character at a time.
+  A model this small (113 093 weights, about a minute of CPU) learns spelling, spacing, capitalised speaker names and
+  line breaks, not meaning; the validation loss ends near 2 nats per character. The heatmaps show, for each layer,
+  the head that attends most to the previous character on the line "When shall we three meet again?". The bioinformatics
+  protein language model uses the same attention without a mask, to fill in hidden letters. Text: Macbeth and Romeo
+  and Juliet from The Complete Works of William Shakespeare, Project Gutenberg eBook #100 (public domain), with the
+  eBook header and licence removed, curly quotes made ASCII; 247 kB in data/shakespeare.txt. Try more steps, a wider
+  model, or temperature 0.5 versus 1.2.
+params:
+  steps: {default: 600, min: 100, max: 3000, step: 100, type: int, label: Training steps}
+  d_model: {default: 64, min: 32, max: 128, step: 16, type: int, label: 'Model width $d$'}
+  heads: {default: 4, min: 1, max: 8, step: 1, type: int, label: 'Attention heads $H$'}
+  layers: {default: 2, min: 1, max: 4, step: 1, type: int, label: Transformer blocks}
+  context: {default: 64, min: 16, max: 128, step: 16, type: int, label: 'Context length $T$'}
+  batch: {default: 32, min: 8, max: 128, step: 8, type: int, label: Batch size}
+  lr: {default: 0.003, min: 0.0005, max: 0.01, step: 0.0005, label: Learning rate}
+  temperature: {default: 0.8, min: 0.3, max: 1.5, step: 0.1, label: Sampling temperature}

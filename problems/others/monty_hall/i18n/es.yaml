@@ -1,0 +1,16 @@
+source_hash: 695e730c122f
+title: Monty Hall con $N$ puertas
+summary: 'Un coche se esconde detrás de una de $N$ puertas. Eliges una; el presentador, que sabe dónde está el coche, abre $N-2$ puertas con cabras y te ofrece la última puerta cerrada. Millones de partidas para cada $N$ de 3 a 1000 se juegan a la vez en un único tensor $(B, G)$: cambiar gana con probabilidad $(N-1)/N$ (el famoso $2/3$ con tres puertas), quedarse con $1/N$, y cada tasa de victorias acumulada se mantiene dentro de su banda de error binomial.'
+notes: 'Cambiar solo pierde si tu primera elección ya era el coche, lo que ocurre con probabilidad $1/N$; en todos los demás casos la elección del presentador es forzada, así que la puerta que deja cerrada contiene la información de todas las puertas que abrió. Con 1000 puertas la respuesta es evidente, y es el mismo argumento que con tres. El acertijo se hizo famoso gracias a la columna de revista de Marilyn vos Savant en 1990, cuando muchos lectores, entre ellos matemáticos, insistieron en que la respuesta era $1/2$. Esa intuición es correcta para otro juego: elige el presentador ignorante, que abre puertas al azar y a veces revela el coche. Descartando esas partidas (solo sobrevive una fracción $2/N$), quedarse y cambiar quedan exactamente en $1/2$, porque una apertura al azar no dice nada sobre tu puerta. El terminal comprueba también que ninguna primera elección es especial, y una referencia lenta, partida a partida, en los tests coincide con la versión tensorial.'
+meanings:
+- los números de puertas comparados uno junto a otro, de 3 a 1000
+- puerta del coche y primera elección de la partida $g$ en la fila $b$, uniformes sobre las $N_b$ puertas; el broadcasting da a cada fila su propio $N_b$
+- 'la puerta que el presentador deja cerrada: forzosamente el coche si tu elección es una cabra, una puerta al azar si tu elección es el coche'
+- 'las $N-2$ puertas que abre el presentador: todas excepto $p$ y $k$'
+- victorias al quedarse y al cambiar; exactamente una de ellas es cierta en cada partida
+- 'victorias acumuladas entre partidas válidas acumuladas: la tasa de victorias tras cada partida'
+- la banda $\pm 2\sigma$ de una proporción binomial, dentro de la cual la tasa acumulada permanece alrededor del 95 % del tiempo
+labels:
+  n_games: Partidas por número de puertas $G$
+  max_doors: Mayor número de puertas $N$
+  host: Presentador

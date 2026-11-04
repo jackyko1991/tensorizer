@@ -1,0 +1,17 @@
+source_hash: e9d43436470c
+title: Dessiner avec des épicycles
+summary: Une courbe fermée échantillonnée sous forme de nombres complexes $z_n = x_n + i\,y_n$ possède une transformée de Fourier discrète $c_k$, et chaque terme $c_k e^{2\pi i k t}$ est un cercle de rayon $|c_k|$ qui fait $k$ tours par parcours. Enchaînez les cercles bout à bout, du plus grand au plus petit, et le stylo retrace la courbe. Regardez le contour du logo Tensorizer apparaître à mesure que l'on ajoute des cercles, tandis que l'erreur diminue exactement comme le prédit Parseval.
+notes: 'La matrice de la DFT $W$ écrit la somme en entier ($N^2$ produits) ; `torch.fft.fft` donne les mêmes $c_k$ grâce à la transformée de Fourier rapide de Cooley–Tukey en $O(N \log N)$, et un test vérifie qu''ils concordent. La DFT est inversible : les $N$ cercles reproduisent exactement les $N$ échantillons, et un décalage temporel $z_{n-s}$ ne fait que multiplier $c_k$ par la phase $e^{-2\pi i k s/N}$ (les rayons ne changent pas, seul le point de départ change). Un cercle parcouru une fois ne demande qu''un seul terme ($k = 1$), et le cœur $x = 16\sin^3 s$, $y = 13\cos s - 5\cos 2s - 2\cos 3s - \cos 4s$ est un polynôme trigonométrique, donc exactement 8 cercles ($k = \pm1 \dots \pm4$) le dessinent parfaitement. Les polygones sont différents : à chaque coin la vitesse saute, donc $|c_k|$ ne décroît que comme $1/k^2$ et l''erreur avec $M$ cercles comme $M^{-3}$ ; avec peu de cercles les coins sont arrondis et des oscillations parasites courent le long des côtés. La courbe elle-même est
+  continue, donc (contrairement à l''onde carrée du problème sur les séries de Fourier, où la fonction saute) les oscillations s''évanouissent ; le dépassement de Gibbs de 9 % se trouve dans la vitesse, qui, elle, saute. Garder d''abord les plus grands cercles fait décroître l''erreur de façon monotone, car d''après Parseval l''erreur vaut exactement $\sum|c_k|^2$ sur les cercles écartés. Histoire : l''astronomie de Ptolémée (Almageste, IIe siècle) faisait se déplacer les planètes sur un cercle (épicycle) dont le centre se déplace sur un autre cercle (déférent) ; avec suffisamment d''épicycles on peut reproduire n''importe quelle trajectoire fermée périodique, ce qui explique pourquoi le système a si bien collé aux observations pendant 1400 ans sans être la bonne physique. Le tracé du logo est le contour hexagonal du cube Tensorizer plus ses trois arêtes intérieures, parcourues à l''aller et au retour. Essayez l''étoile avec peu de cercles.'
+meanings:
+- la courbe sous forme de nombres complexes à pas de temps égaux $t_n = n/N$ ; les polygones sont rééchantillonnés selon l'abscisse curviligne
+- la matrice de la DFT, fréquences $k = -N/2 \dots N/2 - 1$
+- '$n$ répété ⇒ sommé : le cercle $k$ a pour rayon $|c_k|$ et pour angle de départ $\arg c_k$'
+- 'cercles classés par rayon : la chaîne garde les plus grands en premier'
+- '$k$ répété ⇒ sommé : la courbe dessinée par les $M_m$ plus grands cercles, pour tous les $M$ à la fois ($K_{mk} = [r_k < M_m]$, $E_{tk} = e^{2\pi i k t}$)'
+- 'somme cumulée des termes : le centre de chaque cercle de la chaîne, le dernier est le stylo'
+- erreur quadratique moyenne aux échantillons, égale à l'énergie des cercles laissés de côté (Parseval)
+labels:
+  shape: Courbe
+  n_points: Échantillons $N$
+  max_terms: Nombre maximal de cercles $M$

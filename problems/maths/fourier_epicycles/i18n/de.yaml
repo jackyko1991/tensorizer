@@ -1,0 +1,17 @@
+source_hash: e9d43436470c
+title: Zeichnen mit Epizykeln
+summary: Eine geschlossene Kurve, abgetastet als komplexe Zahlen $z_n = x_n + i\,y_n$, hat eine diskrete Fourier-Transformierte $c_k$, und jeder Term $c_k e^{2\pi i k t}$ ist ein Kreis mit Radius $|c_k|$, der sich pro Umlauf $k$-mal dreht. Hängt man die Kreise aneinander, den größten zuerst, zeichnet der Stift die Kurve nach. Sieh zu, wie der Umriss des Tensorizer-Logos erscheint, während Kreise hinzukommen, und der Fehler genau so fällt, wie Parseval es vorhersagt.
+notes: 'Die DFT-Matrix $W$ schreibt die Summe vollständig aus ($N^2$ Produkte); `torch.fft.fft` liefert dieselben $c_k$ mit der schnellen Fourier-Transformation von Cooley–Tukey in $O(N \log N)$, und ein Test prüft, dass beide übereinstimmen. Die DFT ist invertierbar: alle $N$ Kreise reproduzieren die $N$ Abtastwerte exakt, und eine Zeitverschiebung $z_{n-s}$ multipliziert $c_k$ nur mit der Phase $e^{-2\pi i k s/N}$ (die Radien ändern sich nicht, nur der Startpunkt). Ein einmal durchlaufener Kreis braucht einen einzigen Term ($k = 1$), und das Herz $x = 16\sin^3 s$, $y = 13\cos s - 5\cos 2s - 2\cos 3s - \cos 4s$ ist ein trigonometrisches Polynom, daher zeichnen genau 8 Kreise ($k = \pm1 \dots \pm4$) es perfekt. Polygone sind anders: an jeder Ecke springt die Geschwindigkeit, daher fällt $|c_k|$ nur wie $1/k^2$ und der Fehler mit $M$ Kreisen wie $M^{-3}$; mit wenigen Kreisen werden die Ecken abgerundet und Überschwinger laufen an den Kanten entlang. Die Kurve selbst ist stetig, daher schrumpfen
+  die Überschwinger (anders als bei der Rechteckschwingung im Problem zur Fourier-Reihe, wo die Funktion springt) auf null; das Gibbs-Überschwingen von 9 % steckt in der Geschwindigkeit, die tatsächlich springt. Behält man die größten Kreise zuerst, fällt der Fehler monoton, denn nach Parseval ist der Fehler genau $\sum|c_k|^2$ über die weggelassenen Kreise. Geschichte: In der Astronomie des Ptolemäus (Almagest, 2. Jahrhundert) bewegten sich die Planeten auf einem Kreis (Epizykel), dessen Mittelpunkt auf einem anderen Kreis (Deferent) läuft; mit genügend Epizykeln lässt sich jede periodische geschlossene Bahn nachbilden, weshalb das System 1400 Jahre lang so gut zu den Beobachtungen passte, ohne die richtige Physik zu sein. Der Logo-Pfad ist der sechseckige Umriss des Tensorizer-Würfels plus seine drei inneren Kanten, hin und zurück abgelaufen. Probiere den Stern mit wenigen Kreisen.'
+meanings:
+- die Kurve als komplexe Zahlen zu gleichen Zeitschritten $t_n = n/N$; Polygone werden nach Bogenlänge neu abgetastet
+- die DFT-Matrix, Frequenzen $k = -N/2 \dots N/2 - 1$
+- 'wiederholtes $n$ ⇒ summiert: Kreis $k$ hat Radius $|c_k|$ und Startwinkel $\arg c_k$'
+- 'Kreise nach Radius geordnet: die Kette behält die größten zuerst'
+- 'wiederholtes $k$ ⇒ summiert: die Kurve, die die $M_m$ größten Kreise zeichnen, für alle $M$ gleichzeitig ($K_{mk} = [r_k < M_m]$, $E_{tk} = e^{2\pi i k t}$)'
+- 'laufende Summe der Terme: der Mittelpunkt jedes Kreises der Kette, der letzte ist der Stift'
+- mittlerer quadratischer Fehler an den Abtastpunkten, gleich der Energie der weggelassenen Kreise (Parseval)
+labels:
+  shape: Kurve
+  n_points: Abtastwerte $N$
+  max_terms: Größte Anzahl Kreise $M$

@@ -1,0 +1,45 @@
+title: Birch and Swinnerton-Dyer, counting points mod p
+category: maths
+level: advanced
+order: 6
+tags: [millennium, status:open]
+summary: >
+  Count the points of five elliptic curves of rank 0 to 4 over $\mathbb F_p$ for every prime up to $X$ at once,
+  watch the products $\prod_{p\le X} N_p/p$ grow like $(\log X)^r$ as Birch and Swinnerton-Dyer first observed, and
+  compute $L(E, s)$ at $s = 1$, where it vanishes to an order equal to the rank. The conjecture that this always
+  happens is open; it is proven only for analytic rank 0 and 1.
+animated: true
+vector_form: 'a_p = p + 1 - \#E(\mathbb F_p) = -\sum_{x \in \mathbb F_p} \Big(\frac{4x^3 + b_2x^2 + 2b_4x + b_6}{p}\Big),\qquad \prod_{p \le X} \frac{N_p}{p} \approx C\,(\log X)^{r},\qquad \operatorname{ord}_{s=1} L(E, s) = r = \operatorname{rank} E(\mathbb Q)'
+index_form: 'a_{cp} = -\sum_x \chi_{p}\big(f_c(x) \bmod p\big),\qquad L^{(r)}_c(1) = \frac{4\pi}{\sqrt{N_c}} \sum_m \sum_n a_{cn}\, e^{-2\pi n e^{u_m}/\sqrt{N_c}}\, u_m^{r}\, e^{u_m} w_m \quad (\varepsilon_c = (-1)^r)'
+translation:
+  - {symbol: 'f_c(x) \bmod p', code: '(((4 * x + b2) % p * x + 2 * b4) % p * x + b6) % p', shape: '(C, P_b, X)', meaning: 'every curve, every prime of a block and every $x \in \mathbb F_p$ at once (Horner, reduced mod $p$ at each step)'}
+  - {symbol: '\chi_p(v)', code: 'is_square.scatter_(1, x * x % p, True)', shape: '(P_b, X) bool', meaning: 'Legendre symbol from a table of squares $y^2 \bmod p$; $\chi = 0$ for $v = 0$'}
+  - {symbol: 'a_{cp}', code: '-chi.sum(dim=-1)', shape: '(C, P)', meaning: 'the Frobenius trace; Hasse: $|a_p| \le 2\sqrt p$'}
+  - {symbol: '\log\prod_{p\le X} N_p/p', code: 'torch.cumsum(log((p + 1 - a_p) / p), dim=1)', shape: '(C, P)', meaning: 'the partial products for every $X$ at once (good primes only)'}
+  - {symbol: 'r_{\mathrm{est}}', code: 'least-squares slope against log(log(p))', shape: '(C,)', meaning: 'slope over $\sqrt{X} \le p \le X$; converges very slowly'}
+  - {symbol: 'a_{cn}', code: "new[:, q::q] += a_q[:, None] * a[:, 1 : n // q + 1]", shape: '(C, n_{\max})', meaning: 'Dirichlet coefficients by multiplicativity, one strided slice per prime power $q = p^k$'}
+  - {symbol: '\sum_n a_{cn} e^{-2\pi n e^{u_m}/\sqrt{N}}', code: "einsum('n,nu->u', a, kernel)", shape: '(U,)', meaning: 'repeated $n$ ⇒ summed: $F(t)$ at the Gauss–Legendre nodes $t = e^{u_m}$'}
+  - {symbol: 'L^{(r)}(1)', code: "2 * scale * einsum('ru,u->r', u**r, weight)", shape: '(R,)', meaning: 'all derivatives at $s = 1$ at once; the first nonzero one gives the analytic rank'}
+notes: >
+  An elliptic curve $E: y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6$ over $\mathbb Q$ has a finitely generated group of
+  rational points $E(\mathbb Q) \cong \mathbb Z^r \oplus T$ (Mordell 1922); the rank $r$ is hard to compute. In the early
+  1960s Birch and Swinnerton-Dyer counted points modulo primes on the EDSAC computer and noticed that
+  $\prod_{p \le X} N_p/p$ grows like $(\log X)^r$: more rational points force more points mod $p$. They conjectured that
+  $L(E, s)$, built from the $a_p$, vanishes at $s = 1$ to order exactly $r$, with leading coefficient
+  $\frac{L^{(r)}(E,1)}{r!} = \frac{\Omega\, R\, \#\text{Ш}\, \prod_p c_p}{\#T^2}$. It is a Clay Millennium Prize
+  problem and open. Proven: if the analytic rank is 0 or 1, the rank equals it and Ш is finite (Gross and Zagier 1986,
+  Kolyvagin 1989), using modularity (Wiles, Taylor–Wiles 1995, Breuil–Conrad–Diamond–Taylor 2001), which is what
+  makes $L(E, s)$ continue to $s = 1$ at all. For analytic rank $\ge 2$ nothing general is known. The five curves are
+  the smallest-conductor curves of ranks 0 to 4 (11a1, 37a1, 389a1, 5077a1 and 234446a1 in Cremona's tables). Here: the traces obey Hasse's bound $|a_p| \le 2\sqrt p$; for
+  11a1 they equal the coefficients of the modular form $\eta(q)^2\eta(q^{11})^2$ (tested); the root numbers are
+  $\varepsilon = (-1)^r$; the first nonvanishing derivative at $s = 1$ is the $r$-th for every curve, and
+  $L(E,1) = 0.2538418608\ldots$, $L'(E,1) = 0.3059997738\ldots$, $L''(E,1)/2 = 0.7593165\ldots$ and
+  $L'''(E,1)/6 = 1.7318499\ldots$ match the LMFDB. For 11a1 the full formula checks out: $L(E,1)/\Omega = 1/5 = \#\text{Ш}\cdot
+  c_{11}/\#T^2 = 1 \cdot 5 / 5^2$. A numerical zero of a derivative is evidence, not a proof that it vanishes. The
+  partial products are the original heuristic: Goldfeld (1982) showed that if they really behave like $C(\log X)^r$
+  then $r$ is the analytic rank and the Riemann hypothesis holds for $L(E, s)$, so their convergence is itself
+  conjectural and slow. The slopes order ranks 0 to 3 correctly by $X = 2\times 10^4$, but the rank-4 curve still
+  lags behind its rank at $X = 3\times 10^4$. The Sato–Tate distribution of $a_p/2\sqrt p$, the semicircle
+  $\frac{2}{\pi}\sqrt{1-x^2}$, is a theorem for curves without complex multiplication (Taylor and collaborators, 2008–2011).
+params:
+  x_max: {default: 30000, min: 5000, max: 100000, step: 5000, type: int, label: 'Primes up to $X$'}

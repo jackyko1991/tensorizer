@@ -1,0 +1,26 @@
+source_hash: 03516f527daf
+title: 'GW150914: der erste Gravitationswellen-Chirp'
+summary: Sechzehn Sekunden echter LIGO-Strain-Daten aus Hanford und Livingston vom 14. September 2015. Eine Welch-PSD, Whitening und ein Bandpass holen einen Chirp hervor, der unter hundertmal lauterem Rauschen begraben ist. Eine Q-Transformations-Karte zeigt, wie seine Frequenz bis auf etwa 150 Hz ansteigt, und eine Template-Bank post-Newtonscher Inspirals, in einem einzigen Batch gefiltert, erreicht ihr Maximum bei einer Chirp-Masse nahe $30\,M_\odot$. Der Kamm wird per Autograd mit $\dot f \propto M_c^{5/3} f^{11/3}$ angepasst, und das Signal in Livingston kommt etwa 7 ms vor dem in Hanford an.
+notes: 'Am 14. September 2015 um 09:50:45 UTC registrierten beide Advanced-LIGO-Detektoren die Verschmelzung zweier Schwarzer Löcher in etwa 410 Mpc Entfernung (Abbott et al., PRL 116, 061102, 2016), der erste direkte Nachweis von Gravitationswellen. Diese Seite wiederholt eine vereinfachte Version der Analyse mit den offenen Daten. Der Roh-Strain wird unterhalb von 30 Hz von seismischem und thermischem Rauschen dominiert; daher wird die PSD $S_n(f)$ mit der Welch-Methode geschätzt (Hann-Segmente von 4 s, 50 % Überlappung) und die Daten werden durch $\sqrt{S_n}$ geteilt (Whitening); die Seite prüft, dass die geweißte PSD flach ist, das Parseval-Theorem und dass jedes Template $\langle h|h\rangle = 1$ erfüllt. Die Template-Bank verwendet den Inspiral in der Näherung der stationären Phase mit einer 2PN-Phase für gleiche Massen, abgeschnitten bei $f_\mathrm{peak} = 0.36/(2\pi M)$, der Frequenz, bei der eine Verschmelzung gleicher Massen in der numerischen Relativität ihr Maximum erreicht (oder
+  bei der ISCO-Frequenz, wodurch der Großteil des SNR verloren geht). Alle Templates und beide Detektoren werden in einem einzigen Batch von FFTs gefiltert. Mit den Standardwerten hat das beste Template $\mathcal M_c \approx 32\,M_\odot$, ein SNR von etwa 16 (H1) und 10 (L1), und die beiden SNR-Maxima sowie die Kreuzkorrelation H1–(−L1) setzen Hanford 7–8 ms nach Livingston (veröffentlicht: 6.9 +0.5/−0.4 ms; die Ausrichtung der L1-Arme kehrt das Vorzeichen um). Eine Newtonsche Anpassung an den Kamm der Q-Karte ergibt ein schwereres $\mathcal M_c \approx 37\,M_\odot$, ebenso die 0PN-Bank: Post-Newtonsche Terme verlangsamen den Chirp bei gegebener Chirp-Masse, sodass ein Newtonsches Modell ihn als schwerer interpretiert. EHRLICHKEIT / EINSCHRÄNKUNGEN: Dies ist eine Lehranalyse, nicht die veröffentlichte. Die veröffentlichten Werte stammen aus vollständigen Inspiral-Merger-Ringdown-Wellenformen mit Spins, einer PSD aus viel längeren Daten und bayesscher Parameterschätzung: im Detektorsystem
+  $\mathcal M_c \approx 30\,M_\odot$ und ein Netzwerk-SNR von 24 (Abbott et al. 2016), im Quellsystem $\mathcal M_c = 28.6^{+1.7}_{-1.5}\,M_\odot$, Massen von $35.6$ und $30.6\,M_\odot$ und eine Entfernung von 440 Mpc in GWTC-1. Unsere SNR-Werte sind niedriger, weil die Templates weder Merger–Ringdown noch Spins enthalten und weil die PSD aus nur 16 s stammt, die das Signal enthalten. Daten: GWOSC (Gravitational Wave Open Science Center), GW150914-Release GWTC-1-confident v3, Dateien H-H1_GWOSC_4KHZ_R1-1126259447-32 und das L1-Gegenstück, von gwosc.org/eventapi/json/GWTC-1-confident/GW150914/v3/, CC BY 4.0; 16 s ab GPS 1126259455, tiefpassgefiltert bei 900 Hz und auf 2048 Hz dezimiert, gespeichert als Strain × 10⁻²¹ in data/gw150914_strain.csv. Bitte zitieren Sie GWOSC (Abbott et al., SoftwareX 13, 100658, 2021) und Abbott et al. 2016. Preise: Shaw-Preis für Astronomie 2016 (Drever, Thorne und Weiss, für Konzeption und Entwurf von LIGO), Special Breakthrough Prize in Fundamental Physics
+  2016 (Drever, Thorne, Weiss und die LIGO-Beteiligten) und Nobelpreis für Physik 2017 (Weiss, Barish und Thorne).'
+meanings:
+- Strain des Detektors $d \in \{H1, L1\}$ bei Abtastwert $n$, 16 s bei 2048 Hz
+- 'einseitige PSD: Hann-gefensterte Segmente $s$, FFT, $|X|^2$ gemittelt über $s$'
+- 'geweißter Strain: weißes Rauschen mit Einheitsvarianz, wo die PSD stimmt'
+- Energie gaußscher Bandpassfilter der Breite $f_q/q$, ein Batch inverser FFTs
+- Inspiral-Phase in stationärer Phasennäherung bis 2PN für die Chirp-Masse $\mathcal M_m$, $\eta = 1/4$
+- die ganze Bank auf einmal, abgeschnitten bei der Frequenz des Merger-Maximums, normiert auf $\langle h|h\rangle = 1$
+- $4\,\mathrm{Re}\sum_k a_k b_k^*/S_k\,\Delta f$, Summe über $k$
+- 'Summe über $k$ per inverser FFT: komplexes SNR für jeden Detektor, jedes Template und jeden Zeitpunkt'
+- Newtonsche Bahn $\frac1\pi(5/256\tau)^{3/8}\mathcal M_c^{-5/8}$, mit Adam an den Kamm angepasst
+labels:
+  pn_order: Post-Newtonsche Ordnung der Template-Phase
+  cutoff: Obere Frequenz der Templates
+  f_low: Niedrigste Template-Frequenz $f_\mathrm{low}$
+  n_templates: Templates in der Bank
+  mc_min: Kleinste Chirp-Masse $\mathcal M_c$
+  mc_max: Größte Chirp-Masse $\mathcal M_c$
+  q: Q der Zeit-Frequenz-Karte
+  welch_segment: Welch-Segmentlänge

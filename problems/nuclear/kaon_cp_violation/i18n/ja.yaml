@@ -1,0 +1,20 @@
+source_hash: ebe74e0d5d26
+title: 中性 K 中間子による時間反転と CPT
+summary: 中性 K 中間子は振動しながら崩壊する二準位系（$K^0$、$\bar K^0$）なので、非エルミートな $2\times 2$ ハミルトニアン $H = M - i\Gamma/2$ のもとで時間発展します。PDG の値から組み立て、世界のバッチについてすべての時刻で一度に指数関数をとると、$\Delta m$ で振動するストレンジネス、CP を破る $\pi\pi$ 干渉、そして CPLEAR による時間反転の検証が見えてきます：$K^0 \to \bar K^0$ と $\bar K^0 \to K^0$ は $A_T \approx 4\,\mathrm{Re}\,\varepsilon \approx 6.5\times 10^{-3}$ だけ異なり、一方で CPT により $K^0$ と $\bar K^0$ の質量と寿命は等しく保たれます。
+notes: C（荷電共役）は粒子と反粒子を入れ替え、P（パリティ）は空間を鏡映し、T は時間を反転します。CPT 定理（Lüders、Pauli、Schwinger）によれば、局所的でローレンツ不変な場の量子論はすべて、この三つを同時に施す変換について対称です。そのため粒子とその反粒子の質量と寿命は厳密に等しくなります。1964 年、Christenson、Cronin、Fitch、Turlay は長寿命の $K_L$ が二つのパイ中間子に崩壊するのを観測しました。これは CP が禁じる崩壊です：CP は $|\varepsilon| \approx 2.2\times 10^{-3}$ の程度で破れています（1980 年ノーベル賞、Cronin と Fitch）。CPT が成り立つなら、CP の破れは T の破れも意味します。CERN の CPLEAR は 1998 年にこれを直接観測しました：タグ付けされた $K^0$ と $\bar K^0$ から出発し、崩壊時のストレンジネスをセミレプトニック崩壊でタグ付けすると、$\bar K^0 \to K^0$ が $K^0 \to \bar K^0$ よりわずかに多く起こり、$\langle A_T\rangle = (6.6 \pm 1.3 \pm 1.0)\times 10^{-3}$ でした（これを T の破れと解釈するには、$\Delta S = \Delta Q$ 則と崩壊における CPT の破れがないことを仮定します）。ここでは $H$ をその固有状態から組み立てるので、CP パラメータ $\varepsilon$ と CPT パラメータ $\delta$ はダイヤルとして調整できます：$\delta = 0$ のとき、$H_{11} = H_{22}$（質量と寿命が等しい）、$P(K^0\to K^0) = P(\bar K^0\to\bar K^0)$ となり、$A_T$ は $(|p/q|^2 - |q/p|^2)/(|p/q|^2 + |q/p|^2) \approx 4\,\mathrm{Re}\,\varepsilon$ の平らなプラトーになります。ゼロでない $\mathrm{Re}\,\delta$ があると、$A_{CPT} = [P(\bar K^0\to\bar K^0) - P(K^0\to
+  K^0)]/[\ldots]$ が数 $\tau_S$ 後に $4\,\mathrm{Re}\,\delta$ まで上昇します（CPLEAR は $10^{-4}$ のレベルで $\mathrm{Re}\,\delta$ がゼロと矛盾しないことを見出しました）。下のパネルは $K_S$ と $K_L$ の崩壊の間の古典的な $\pi^+\pi^-$ 干渉を示しており、$12\,\tau_S$ 付近で最大となり、そこから $|\eta_{+-}|$ と $\phi_{+-}$ が測定されます。ユニタリー性は Bell–Steinberger 関係式 $(i\Delta m + \bar\Gamma)\langle K_S|K_L\rangle = \sum_f A_S^* A_L$ で検証します。$\pi\pi$ が支配的な場合、測定された $\eta_{+-}$ は $\mathrm{Re}\,\varepsilon$ を 0.2% の精度で予言します。数値：PDG 2024（$\tau_S = 0.8954\times10^{-10}$ s、$\tau_L = 5.116\times10^{-8}$ s、$\Delta m = 0.5293\times10^{10}\,\hbar$/s、$|\varepsilon| = 2.228\times 10^{-3}$、$\phi_\varepsilon = 43.52°$、$|\eta_{+-}| = 2.232\times10^{-3}$）；CPLEAR, Phys. Lett. B 444 (1998) 43。簡略化：直接的 CP の破れ（$\varepsilon'$、$\varepsilon$ の $10^{-3}$ 程度）は無視するので $\eta_{+-} = \varepsilon$ となり、セミレプトニックなタグ付けは完全なストレンジネス測定として理想化し、物質中での再生成は考えません。
+meanings:
+- 列ベクトル $K_S \propto (1+\varepsilon_S, 1-\varepsilon_S)$、$K_L \propto (1+\varepsilon_L, -(1-\varepsilon_L))$、ただし $\varepsilon_{S,L} = \varepsilon \pm \delta$
+- $\mp\Delta m/2 - i\Gamma_{S,L}/2$、単位は $\hbar/\tau_S$（共通の質量は全体の位相にすぎない）
+- 繰り返される $i$ ⇒ 和をとる：世界ごとに一つの有効ハミルトニアン
+- すべての時刻での $e^{-iHt}$、matrix_exp と照合
+- $b$ として生まれた K 中間子が $a$ として見つかる確率（$0 = K^0$、$1 = \bar K^0$）
+- エルミートかつ $\ge 0$：ユニタリー性、すなわち Bell–Steinberger 関係式
+- $a\cdot K_S = 1$、$a\cdot K_L = \eta_{+-}$ を満たす行ベクトル
+- 繰り返される $x$ ⇒ 和をとる：$K^0$ または $\bar K^0$ として生まれたビームの $\pi^+\pi^-$ 崩壊率
+labels:
+  eps_abs: $|\varepsilon|$
+  eps_phase: 位相 $\phi_\varepsilon$
+  re_delta: CPT の破れ $\mathrm{Re}\,\delta$
+  dm: 質量差 $\Delta m$
+  t_max: 時間窓 $t_\mathrm{max}$

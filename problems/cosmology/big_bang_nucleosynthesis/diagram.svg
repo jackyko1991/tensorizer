@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Reaction chain of Big Bang nucleosynthesis: neutron and proton fuse to deuterium, then helium-3 or tritium, then helium-4, with a small branch to lithium-7 and beryllium-7, while photons break deuterium apart">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#111827">
+    <!-- n and p -->
+    <circle cx="22" cy="58" r="11" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="18" y="62" font-style="italic">n</text>
+    <circle cx="22" cy="102" r="11" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="18" y="106" fill="#ffffff" font-style="italic">p</text>
+    <line x1="34" y1="62" x2="60" y2="76" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="34" y1="98" x2="60" y2="84" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- deuterium -->
+    <circle cx="76" cy="80" r="13" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="71" y="85" fill="#ffffff" font-style="italic">d</text>
+    <!-- photon breaking d: the bottleneck -->
+    <path d="M64,30 q4,-6 8,0 t8,0 t8,0" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <line x1="84" y1="34" x2="80" y2="62" stroke="#dc2626" stroke-width="2" marker-end="url(#red)"/>
+    <text x="94" y="30" font-style="italic" fill="#b45309">γ</text>
+    <!-- to He3 and t -->
+    <line x1="90" y1="74" x2="118" y2="56" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="90" y1="86" x2="118" y2="104" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <circle cx="132" cy="48" r="13" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="121" y="53" font-size="11">³He</text>
+    <circle cx="132" cy="112" r="13" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="128" y="117" font-style="italic">t</text>
+    <!-- to He4 -->
+    <line x1="146" y1="54" x2="174" y2="74" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="146" y1="106" x2="174" y2="86" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+    <circle cx="192" cy="80" r="17" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="180" y="85" fill="#ffffff">⁴He</text>
+    <!-- small Li/Be branch -->
+    <line x1="192" y1="98" x2="192" y2="126" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+    <text x="172" y="146" font-size="12" fill="#374151">⁷Li, ⁷Be</text>
+  </g>
+</svg>

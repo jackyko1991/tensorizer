@@ -83,5 +83,19 @@
    "zh-Hant": "主流但未經證實的想法：以 Planck 與 BICEP/Keck 檢驗暴脹，以及解釋物質過剩的輕子生成。",
    "zh-Hans": "主流但未经证实的想法：以 Planck 与 BICEP/Keck 检验暴胀，以及解释物质过剩的轻子生成。"
   }
+ },
+ "projection-hypothesis": {
+  "group": "hypothesis-lab",
+  "author": "Jacky Ka Long Ko",
+  "title": {
+   "en": "The Projection Hypothesis",
+   "zh-Hant": "投影假說",
+   "zh-Hans": "投影假说"
+  },
+  "summary": {
+   "en": "A speculative hypothesis by Jacky Ka Long Ko: the universe is one state in a space of very many (possibly infinitely many) dimensions, and what we observe as wavefunctions, particles and curved spacetime are its lower-dimensional projections. The series states the postulates, works out their consequences with the number of dimensions left open, and tests them against data.",
+   "zh-Hant": "Jacky Ka Long Ko 提出的推測性假說：宇宙是一個存在於極高（甚至無限）維空間中的單一狀態，我們觀察到的波函數、粒子與彎曲時空，都是它在低維的投影。本系列先寫出假設，再在維數不預設的情況下推導其後果，最後以數據檢驗。",
+   "zh-Hans": "Jacky Ka Long Ko 提出的推测性假说：宇宙是一个存在于极高（甚至无限）维空间中的单一状态，我们观察到的波函数、粒子与弯曲时空，都是它在低维的投影。本系列先写出假设，再在维数不预设的情况下推导其后果，最后以数据检验。"
+  }
  }
 }

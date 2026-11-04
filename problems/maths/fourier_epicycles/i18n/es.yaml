@@ -1,0 +1,17 @@
+source_hash: e9d43436470c
+title: Dibujar con epiciclos
+summary: Una curva cerrada muestreada como números complejos $z_n = x_n + i\,y_n$ tiene una transformada de Fourier discreta $c_k$, y cada término $c_k e^{2\pi i k t}$ es un círculo de radio $|c_k|$ que gira $k$ veces por recorrido. Encadena los círculos uno tras otro, el más grande primero, y el lápiz vuelve a trazar la curva. Observa cómo aparece el contorno del logo de Tensorizer a medida que se añaden círculos, mientras el error baja exactamente como predice Parseval.
+notes: 'La matriz de la DFT $W$ escribe la suma completa ($N^2$ productos); `torch.fft.fft` da los mismos $c_k$ con la transformada rápida de Fourier de Cooley–Tukey en $O(N \log N)$, y un test comprueba que coinciden. La DFT es invertible: los $N$ círculos reproducen exactamente las $N$ muestras, y un desplazamiento temporal $z_{n-s}$ solo multiplica $c_k$ por la fase $e^{-2\pi i k s/N}$ (los radios no cambian, solo el punto de partida). Un círculo recorrido una vez necesita un único término ($k = 1$), y el corazón $x = 16\sin^3 s$, $y = 13\cos s - 5\cos 2s - 2\cos 3s - \cos 4s$ es un polinomio trigonométrico, así que exactamente 8 círculos ($k = \pm1 \dots \pm4$) lo dibujan a la perfección. Los polígonos son distintos: en cada esquina la velocidad salta, así que $|c_k|$ decrece solo como $1/k^2$ y el error con $M$ círculos como $M^{-3}$; con pocos círculos las esquinas se redondean y aparecen ondulaciones a lo largo de los lados. La curva en sí es continua, así que (a diferencia de la
+  onda cuadrada del problema de series de Fourier, donde la función salta) las ondulaciones se reducen a nada; el sobreimpulso de Gibbs del 9 % está en la velocidad, que sí salta. Conservar primero los círculos más grandes hace que el error baje de forma monótona, porque por Parseval el error es exactamente $\sum|c_k|^2$ sobre los círculos descartados. Historia: la astronomía de Ptolomeo (Almagesto, siglo II) movía los planetas sobre un círculo (epiciclo) cuyo centro recorre otro círculo (deferente); con suficientes epiciclos se puede reproducir cualquier trayectoria cerrada periódica, por eso el sistema encajó tan bien con las observaciones durante 1400 años sin ser la física correcta. El trazado del logo es el contorno hexagonal del cubo de Tensorizer más sus tres aristas interiores, recorridas de ida y vuelta. Prueba la estrella con pocos círculos.'
+meanings:
+- la curva como números complejos a pasos de tiempo iguales $t_n = n/N$; los polígonos se remuestrean por longitud de arco
+- la matriz de la DFT, frecuencias $k = -N/2 \dots N/2 - 1$
+- '$n$ repetido ⇒ sumado: el círculo $k$ tiene radio $|c_k|$ y ángulo inicial $\arg c_k$'
+- 'círculos ordenados por radio: la cadena conserva primero los más grandes'
+- '$k$ repetido ⇒ sumado: la curva dibujada por los $M_m$ círculos más grandes, para todos los $M$ a la vez ($K_{mk} = [r_k < M_m]$, $E_{tk} = e^{2\pi i k t}$)'
+- 'suma acumulada de los términos: el centro de cada círculo de la cadena, el último es el lápiz'
+- error cuadrático medio en las muestras, igual a la energía de los círculos omitidos (Parseval)
+labels:
+  shape: Curva
+  n_points: Muestras $N$
+  max_terms: Número máximo de círculos $M$

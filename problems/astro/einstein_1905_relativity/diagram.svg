@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Light clock: two mirrors a distance D apart move sideways at speed v; the photon between them runs along a diagonal at speed c, so each tick takes longer in the lab">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- the clock at three moments: start, half tick, full tick -->
+    <g stroke="#9ca3af" stroke-width="2" stroke-dasharray="4 3">
+      <line x1="22" y1="40" x2="58" y2="40"/><line x1="22" y1="120" x2="58" y2="120"/>
+      <line x1="102" y1="40" x2="138" y2="40"/><line x1="102" y1="120" x2="138" y2="120"/>
+    </g>
+    <line x1="182" y1="40" x2="218" y2="40" stroke="#374151" stroke-width="3"/>
+    <line x1="182" y1="120" x2="218" y2="120" stroke="#374151" stroke-width="3"/>
+    <!-- mirror spacing -->
+    <line x1="14" y1="44" x2="14" y2="116" stroke="#9ca3af" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <text x="2" y="86" font-style="italic">D</text>
+    <!-- photon zigzag at speed c -->
+    <polyline points="40,120 120,40 200,120" fill="none" stroke="#f59e0b" stroke-width="2" marker-end="url(#amber)"/>
+    <circle cx="200" cy="120" r="5" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="68" y="74" font-style="italic" fill="#b45309">ct</text>
+    <!-- velocity of the clock -->
+    <line x1="150" y1="22" x2="214" y2="22" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="176" y="16" font-style="italic" fill="#b91c1c">v</text>
+    <!-- distance moved -->
+    <line x1="40" y1="140" x2="196" y2="140" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="108" y="156" font-style="italic">vt</text>
+  </g>
+</svg>

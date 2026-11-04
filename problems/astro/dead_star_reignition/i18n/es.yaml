@@ -1,0 +1,24 @@
+source_hash: d29dc3e384c1
+title: 'Reencender estrellas muertas: enanas marrones, novas, estallidos de rayos X y agujeros negros'
+summary: ¿Qué ocurre cuando un remanente estelar recibe gas fresco? Una enana marrón que supera unas $0.075\,M_\odot$ puede quemar hidrógeno y convertirse en estrella; una enana blanca enciende su capa de hidrógeno acretada como nova clásica; una estrella de neutrones hace estallar su H/He acretado como estallido de rayos X de tipo I cada pocas horas; un agujero negro no tiene superficie, así que nada se enciende y solo brilla, hasta el límite de Eddington. Un único modelo tensorial por lotes (politropos de Lane–Emden, una ecuación de estado degenerada e ignición de capa de una zona con autograd) da de una vez la masa acretada crítica para cada remanente y cada masa.
+notes: 'Resultados exactos: las constantes de Lane–Emden, la masa de Chandrasekhar ($1.456\,M_\odot$ para $\mu_e = 2$), la luminosidad de Eddington ($1.26\times10^{38}$ erg/s por $M_\odot$) y la eficiencia en la ISCO ($5.7\%$ a $42\%$). Todo lo demás es un modelo de orden de magnitud: (1) Enanas marrones: la temperatura máxima que alcanza un politropo $n = 3/2$ en contracción, $T_{\max} \propto M^{4/3}$, comparada con $3\times10^5$ K (combustión lenta de deuterio durante Ga) y $3\times10^6$ K (hidrógeno); el modelo da unas $14\,M_J$ y $0.074\,M_\odot$, cerca de los límites de los modelos evolutivos de unas $13\,M_J$ (Spiegel et al. 2011) y $0.07$–$0.08\,M_\odot$ (Burrows et al. 2001). Es una condición necesaria: una enana marrón vieja y fría empujada por encima del límite también debe calentarse por la acreción (compresión) antes de encenderse. (2) Novas: masas de ignición de $10^{-7}$ a $10^{-3}\,M_\odot$, menores para enanas blancas más pesadas y acreción más rápida, como en las mallas
+  de novas de Yaron et al. (2005), pero solo dentro de un factor de unas pocas veces (se omiten conducción, mezcla y apantallamiento). Las novas probablemente expulsan al menos lo acretado, por lo que se debate si una enana blanca puede crecer hasta $M_{\rm Ch}$ y explotar como supernova de tipo Ia (canal simplemente degenerado). (3) Estallidos de rayos X: columnas de ignición cercanas a $10^8$ g/cm² y tiempos de recurrencia de horas, como se observa (Galloway y Keek 2021); la energía gravitatoria por gramo es unas 40 veces la nuclear ($\alpha$). La misma acreción que dispara los estallidos acelera el giro de la estrella de neutrones: unas $0.04\,M_\odot$ reciclan un púlsar viejo en un púlsar de milisegundos. (4) Agujeros negros: sin superficie, sin destello.'
+meanings:
+- 'un remanente en acreción por entrada: enanas blancas (masa $\times$ tasa) y estrellas de neutrones (combustible $\times$ tasa)'
+- profundidad de columna de la capa acretada, g/cm²; presión $P = g y$
+- invertir iones ideales + electrones parcialmente degenerados por bisección por lotes
+- temperatura radiativa de la base, iteración de punto fijo ($\kappa$, $\rho$ dependen de $T$)
+- 'inestabilidad de capa delgada: el calentamiento crece con $T$ más rápido que el enfriamiento ⇒ desbocamiento'
+- 'masa acretada crítica: nova o estallido de rayos X'
+- politropo $n = 3/2$ que se contrae a través de todos los radios; máximo sobre $r$ ⇒ límites de enanas marrones
+- 'Lane–Emden para $n = 1, 3/2, 3$ a la vez: constantes $\omega_3$, $\rho_c/\bar\rho$, $P_c$'
+- 'agujero negro: solo luz de acreción, $\eta = 1 - E_{\rm ISCO}$'
+labels:
+  bd_mass: Masa inicial de la enana marrón
+  bd_rate: Tasa de acreción de la enana marrón $\log_{10}\dot M$
+  wd_mass: Masa de la enana blanca
+  wd_rate: Tasa de acreción de la enana blanca $\log_{10}\dot M$
+  core_temp: Temperatura del núcleo de la enana blanca
+  ns_rate: Tasa de acreción de la estrella de neutrones $\log_{10}\dot M$
+  ns_fuel: Combustible de la estrella de neutrones
+  bh_spin: Espín del agujero negro $a/M$

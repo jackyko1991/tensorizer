@@ -1,0 +1,22 @@
+source_hash: 2633dfd2d254
+title: Das Higgs-Boson in echten Diphoton-Daten finden
+summary: 'Rund 95 000 Photonpaare aus 10 fb$^{-1}$ echter ATLAS-Kollisionen bei 13 TeV (ATLAS Open Data, CC0) werden in der Diphoton-Masse $m_{\gamma\gamma}$ gebinnt und mit autograd angepasst: ein glatter, abfallender Untergrund plus ein schmaler Higgs-Peak. Das Profile-Likelihood-Verhältnis liefert $m_H$, die Signalstärke $\mu$ und die lokale Signifikanz $Z = \sqrt{q_0}$, ein Bündel von Toy-Experimenten mit reinem Untergrund zeigt den Look-Elsewhere-Effekt, und das Mexikanerhut-Potential $V = -\mu^2|\phi|^2 + \lambda|\phi|^4$ macht aus der gemessenen Masse die Higgs-Selbstkopplung $\lambda = m_H^2/2v^2$.'
+notes: 'Im Juli 2012 verkündeten ATLAS und CMS ein neues Boson bei etwa 125 GeV, vor allem in zwei Kanälen gesehen: zwei Photonen und vier Leptonen. Der Physik-Nobelpreis 2013 ging an Englert und Higgs für den Mechanismus, den es bestätigte. Hier wird der Photonenkanal mit echten Daten nachvollzogen. Das Higgs kann nicht direkt in Photonen zerfallen (sie sind masselos), sondern nur über Schleifen aus W-Bosonen und Top-Quarks; es handelt sich also um einen seltenen Zerfall ($\mathcal B \approx 0.23\%$) auf einem riesigen glatten Untergrund gewöhnlicher Photonpaare. Mit den 10 fb$^{-1}$ in dieser Datei ergibt sich $m_H \approx 124.2 \pm 1.0$ GeV (PDG 2024: $125.20 \pm 0.11$), $\mu \approx 1.0 \pm 0.4$ (die Rate des Standardmodells) und eine lokale Signifikanz von etwa $2.7\sigma$ (erwartet etwa $3.4\sigma$). Das ist ein Überschuss, keine Entdeckung: Die Entdeckungen von 2012 nutzten mehrere Ereigniskategorien, beide Kanäle und beide Experimente, um $5\sigma$ zu überschreiten. Der Scan ist
+  auch eine nützliche Warnung: In dieser kleinen Stichprobe ist eine Untergrundfluktuation bei etwa 143 GeV fast so groß ($2.6\sigma$ lokal) wie das echte Higgs bei 124 GeV. Das ist der Look-Elsewhere-Effekt. Irgendwo in einem breiten Fenster ist ein Buckel wahrscheinlich, daher schätzen die Toys ab, wie oft reiner Untergrund einen erzeugt: Etwa 13 % der Scans mit reinem Untergrund übertreffen irgendwo den Überschuss bei 125 GeV, und die Upcrossing-Formel von Gross–Vitells liefert einen globalen p-Wert nahe 0,1. Toys mit reinem Untergrund bei fester Masse folgen $\tfrac12\delta(0) + \tfrac12\chi^2_1$ (Wilks/Chernoff), weshalb $Z = \sqrt{q_0}$ gilt. Der Mexikanerhut: Mit $v = (\sqrt2 G_F)^{-1/2} = 246.2$ GeV aus der Myon-Lebensdauer legt die gemessene Masse $\lambda = m_H^2/2v^2 \approx 0.13$ fest; die radiale Schwingung um den Vakuumring ist das Higgs-Boson, und die flache Richtung entlang des Rings wird zur longitudinalen Komponente von W und Z. Daten: ATLAS Open Data 13 TeV, Release 2020,
+  GamGam-Samples (CERN Open Data Portal, Eintrag 15006, doi:10.7483/OPENDATA.ATLAS.B5BJ.3SGS, Lizenz CC0; Datenperioden 2016 A–D). Selektion wie im ATLAS-Outreach-Notebook H → γγ: Photon-Trigger, zwei „tight“ isolierte Photonen mit $p_T > 40$ und 30 GeV, $|\eta| < 2.37$ außerhalb von 1,37–1,52. Die Spalte sm_signal ist die passende ATLAS-Simulation (ggF, VBF, WH, ZH, ttH bei 125 GeV), gewichtet auf 10 fb$^{-1}$, was $N_{SM} \approx 406$ Ereignisse und die Peakbreite liefert. Vereinfachungen: eine einzige inklusive Kategorie, ein Gauß-Peak (der echte hat Ausläufer, weshalb die angepasste Breite von etwa 2,3 GeV größer ist als die Kernauflösung), keine systematischen Unsicherheiten und ein Exponential-Polynom-Untergrund (probieren Sie den Grad aus, um die Empfindlichkeit für Scheinsignale zu sehen).'
+meanings:
+- echte Diphoton-Zählraten pro 0,5-GeV-Bin; jede CSV mit m_low, m_high, events funktioniert
+- Potenzen der skalierten Masse $x \in [0, 1]$; der Untergrund ist $\exp(X\theta)$
+- über jedes Bin integrierter Gauß-Peak (erf), Breite $\sigma$ an die ATLAS-Simulation angepasst
+- Poisson-Likelihood jedes Histogramms, minimiert mit Adam + L-BFGS über autograd
+- 'wiederholtes $n$ ⇒ summiert: Fisher-Scoring passt jedes Toy × jede Masse auf einmal an'
+- Profile-Likelihood-Verhältnis, 0 wenn das angepasste Signal negativ ist
+- Fehler auf $m_H$ und $\mu$ aus der Krümmung von $-\ln L$
+- 'Potential entlang dreier Strahlen $\phi = r\,e^{i\alpha}$ der komplexen Ebene: dieselbe Kurve für jede Phase, ein Ring von Vakua bei $|\phi| = v/\sqrt2$'
+labels:
+  m_min: Beginn des Fitfensters
+  m_max: Ende des Fitfensters
+  degree: Grad des Untergrundpolynoms im Exponenten
+  m_start: Startmasse des Fits
+  scan_step: Schrittweite des Massenscans
+  n_toys: Toy-Experimente mit reinem Untergrund

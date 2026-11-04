@@ -1,0 +1,25 @@
+source_hash: 73d953345169
+title: Ajuster la constante cosmologique aux supernovae
+summary: '1466 vraies supernovae de type Ia de la compilation ouverte Pantheon+ sont ajustées par un univers de Friedmann avec matière $\Omega_m$, constante cosmologique $\Omega_\Lambda$ et courbure. Un seul $\chi^2$ par lot évalue des milliers d''univers sur chaque supernova à la fois et trace les contours de confiance $\Omega_m$–$\Omega_\Lambda$, tandis qu''Adam et l''autograd vont de l''univers de matière seule au meilleur ajustement. Les supernovae lointaines sont plus faibles que dans un univers qui décélère : $q_0 < 0$, l''expansion accélère.'
+notes: 'En 1998, deux équipes, le Supernova Cosmology Project (Perlmutter et al.) et la High-z Supernova Search Team (Riess et al. ; Schmidt), ont trouvé que les supernovae de type Ia lointaines, des chandelles standardisables, paraissent plus faibles que ne le permet un univers en décélération : l''expansion accélère, ce qui en relativité générale exige quelque chose comme une constante cosmologique $\Lambda$ (énergie sombre). Cela a valu le prix Nobel de physique 2011. Ici, le même test tourne sur les données actuelles. Le panneau de gauche trace chaque module de distance moins celui d''un univers vide en expansion libre ($\Omega_m = \Omega_\Lambda = 0$) : un univers de matière seule (rouge) rendrait les supernovae lointaines plus brillantes (sous zéro), les données sont au-dessus. Le panneau de droite montre les régions à 1, 2 et 3$\sigma$ ($\Delta\chi^2 = 2.30, 6.18, 11.83$) issues de la grille par lot, avec la droite plate, la droite $q_0 = 0$ qui sépare accélération et décélération,
+  et le coin « sans Big Bang » où $E^2$ devient négatif dans la plage des données. Avec ces erreurs diagonales, l''ajustement donne $\Omega_m \approx 0.30 \pm 0.07$, $\Omega_\Lambda \approx 0.57 \pm 0.10$ (plat : $\Omega_m \approx 0.35 \pm 0.02$), et $\Omega_\Lambda \le 0$ est rejeté à environ $5.5\sigma$ ($\sigma = \sqrt{\Delta\chi^2}$ par rapport au meilleur modèle du côté rejeté). $H_0$ est dégénéré avec la magnitude absolue des supernovae ; la valeur affichée ($\approx 73$ km/s/Mpc) vient de l''étalonnage par Céphéides de SH0ES intégré à ces $\mu$ et n''est pas une mesure indépendante (la « tension de Hubble » avec la valeur du CMB $\approx 67$ est une question ouverte). Données : modules de distance Pantheon+ (Scolnic et al. 2022, ApJ 938, 113 ; Brout et al. 2022, ApJ 938, 110), depuis github.com/PantheonPlusSH0ES/DataRelease (fichier Pantheon+SH0ES.dat ; publié pour la recherche sans licence déclarée, les articles sont en libre accès sous CC BY 4.0 ; merci de les citer). Conservés
+  : zHD, MU_SH0ES et MU_SH0ES_ERR_DIAG pour $z > 0.01$, hôtes des Céphéides d''étalonnage retirés, une ligne par supernova. Votre propre tableau fonctionne aussi : tout CSV avec les colonnes z, mu, sigma_mu (voir load_distance_moduli). Simplifications : seules les erreurs diagonales sont utilisées, pas la covariance statistique + systématique complète de Pantheon+ ($\chi^2/\mathrm{dof} \approx 0.44$ montre que ces erreurs sont prudentes, tandis qu''ignorer les systématiques corrélées rend les contours un peu optimistes) ; l''énergie sombre est une pure constante ($w = -1$) ; le rayonnement est négligé.'
+meanings:
+- décalage vers le rouge, module de distance et erreur de la supernova $i$, lus dans tout CSV avec ces colonnes
+- univers candidats ; diffusés comme $(A,1,1)$ et $(1,B,1)$
+- taux d'expansion en chaque nœud $z_k$ pour tous les univers à la fois
+- trapèzes cumulés de $1/E$ le long du dernier axe
+- interpolation d'Hermite cubique aux décalages des supernovae (pente $1/E$ connue)
+- $\sinh$, identité ou $\sin$ pour un espace ouvert, plat ou fermé
+- '$i$ sommé : le meilleur $H_0$ de chaque univers est une moyenne pondérée analytique'
+- $i$ sommé avec les poids $w_i = 1/\sigma_i^2$
+- autograd à travers l'intégrale, utilisé par Adam et L-BFGS
+- covariance des paramètres ajustés à partir de la courbure de $\chi^2$
+labels:
+  geometry: Géométrie de l'ajustement Adam
+  start_Om: Départ d'Adam $\Omega_m$
+  start_OL: Départ d'Adam $\Omega_\Lambda$
+  steps: Itérations d'Adam
+  lr: Taux d'apprentissage d'Adam
+  grid: Points de grille par axe (contours de $\chi^2$)
+  z_min: Décalage minimal $z_\mathrm{min}$

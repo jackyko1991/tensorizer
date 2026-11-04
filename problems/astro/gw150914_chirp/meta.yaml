@@ -1,0 +1,58 @@
+title: 'GW150914: the first gravitational-wave chirp'
+category: astro
+level: advanced
+order: 7
+tags: [shaw:2016, nobel:physics:2017, breakthrough:physics:2016]
+summary: >
+  Sixteen seconds of real LIGO strain from Hanford and Livingston, 14 September 2015. A Welch PSD, whitening and a
+  band-pass bring out a chirp buried under noise a hundred times louder. A Q-transform map shows its frequency
+  sweeping up to about 150 Hz, and a template bank of post-Newtonian inspirals, filtered in one batch, peaks at a
+  chirp mass near $30\,M_\odot$. The ridge is fitted by autograd with $\dot f \propto M_c^{5/3} f^{11/3}$, and the
+  Livingston signal leads Hanford's by about 7 ms.
+animated: true
+vector_form: '\frac{df}{dt} = \frac{96}{5}\,\pi^{8/3}\Big(\frac{G\mathcal M_c}{c^3}\Big)^{5/3} f^{11/3},\qquad \rho(t) = \Big|\,4\int_0^\infty \frac{\tilde d(f)\,\tilde h^*(f)}{S_n(f)}\,e^{2\pi i f t}\,df\,\Big|,\qquad \langle h|h\rangle = 1'
+index_form: 'S_{dk} = \frac{2}{f_s\,w_nw_n}\,\big\langle |X_{dsk}|^2\big\rangle_s,\qquad \tilde h_{mk} = f_k^{-7/6}\,e^{-i(\Psi_{mk} - \pi/4)},\qquad z_{dmt} = 4\,\Delta f\sum_k \frac{\tilde d_{dk}\,\tilde h^*_{mk}}{S_{dk}}\,e^{2\pi i f_k t},\qquad \rho_{dm} = \max_t |z_{dmt}|'
+translation:
+  - {symbol: 'x_{dn}', code: "load_strain()['x']", shape: '(2, N)', meaning: 'strain of detector $d \in \{H1, L1\}$ at sample $n$, 16 s at 2048 Hz'}
+  - {symbol: 'S_{dk}', code: 'welch_psd(x, fs, L)', shape: '(2, F)', meaning: 'one-sided PSD: Hann-windowed segments $s$, FFT, $|X|^2$ averaged over $s$'}
+  - {symbol: '\tilde x_{dk}/\sqrt{S_{dk} f_s/2}', code: 'whiten(x, psd, fs)', shape: '(2, N)', meaning: 'whitened strain: unit-variance white noise where the PSD is right'}
+  - {symbol: 'E_{qt}', code: 'qtransform(white, fs, freqs, q)', shape: '(Q, N)', meaning: 'energy of Gaussian band-pass filters of width $f_q/q$, one batch of inverse FFTs'}
+  - {symbol: '\Psi_{mk}', code: 'spa_phase(f, mc, pn_order=2)', shape: '(M, F)', meaning: 'stationary-phase inspiral phase up to 2PN for chirp mass $\mathcal M_m$, $\eta = 1/4$'}
+  - {symbol: '\tilde h_{mk}', code: 'template_bank(f, mc, psd)', shape: '(M, F)', meaning: 'the whole bank at once, cut at the merger peak frequency, normalised so $\langle h|h\rangle = 1$'}
+  - {symbol: '\langle a|b\rangle', code: 'inner(a, b, psd, df)', shape: '(…,)', meaning: '$4\,\mathrm{Re}\sum_k a_k b_k^*/S_k\,\Delta f$, $k$ summed'}
+  - {symbol: 'z_{dmt}', code: 'snr_series(d, h, psd, df, N)', shape: '(2, M, N)', meaning: '$k$ summed by an inverse FFT: complex SNR for every detector, template and time'}
+  - {symbol: 'f(\tau)', code: 'chirp_frequency(tau, mc)', shape: '(T,)', meaning: 'Newtonian track $\frac1\pi(5/256\tau)^{3/8}\mathcal M_c^{-5/8}$, fitted to the ridge by Adam'}
+notes: >
+  On 14 September 2015 at 09:50:45 UTC both Advanced LIGO detectors recorded the merger of two black holes about
+  410 Mpc away (Abbott et al., PRL 116, 061102, 2016), the first direct detection of gravitational waves. This page
+  repeats a simplified version of the analysis on the open data. Raw strain is dominated by seismic and thermal
+  noise below 30 Hz, so the PSD $S_n(f)$ is estimated with Welch's method (4 s Hann segments, 50 % overlap) and the
+  data are divided by $\sqrt{S_n}$ (whitening); the page checks that the whitened PSD is flat, Parseval's theorem
+  and that every template has $\langle h|h\rangle = 1$. The template bank uses the stationary-phase inspiral with a
+  2PN phase for equal masses, cut at $f_\mathrm{peak} = 0.36/(2\pi M)$, the frequency where an equal-mass merger
+  peaks in numerical relativity (or at the ISCO frequency, which loses most of the SNR). All templates and both
+  detectors are filtered in one batch of FFTs. With the defaults the best template has $\mathcal M_c \approx 32\,M_\odot$,
+  SNR about 16 (H1) and 10 (L1), and the two SNR peaks and the H1–(−L1) cross-correlation put Hanford 7–8 ms after
+  Livingston (published: 6.9 +0.5/−0.4 ms; the L1 arm orientation flips the sign). A Newtonian fit to the Q-map
+  ridge gives a heavier $\mathcal M_c \approx 37\,M_\odot$, and so does the 0PN bank: post-Newtonian terms slow the
+  chirp at a given chirp mass, so a Newtonian model reads it as heavier. HONESTY: this is a teaching analysis, not
+  the published one. The published values come from full inspiral–merger–ringdown waveforms with spins, a PSD from
+  much longer data and Bayesian parameter estimation: detector-frame $\mathcal M_c \approx 30\,M_\odot$ and network
+  SNR 24 (Abbott et al. 2016), source-frame $\mathcal M_c = 28.6^{+1.7}_{-1.5}\,M_\odot$, masses $35.6$ and $30.6\,M_\odot$,
+  distance 440 Mpc in GWTC-1. Our SNRs are lower because the templates have no merger–ringdown and no spins, and
+  because the PSD comes from only 16 s that include the signal. Data: GWOSC (Gravitational Wave Open Science
+  Center), GW150914 release GWTC-1-confident v3, files H-H1_GWOSC_4KHZ_R1-1126259447-32 and the L1 equivalent, from
+  gwosc.org/eventapi/json/GWTC-1-confident/GW150914/v3/, CC BY 4.0; 16 s from GPS 1126259455, low-passed at 900 Hz and
+  decimated to 2048 Hz, stored as strain × 10⁻²¹ in data/gw150914_strain.csv. Please cite GWOSC (Abbott et al.,
+  SoftwareX 13, 100658, 2021) and Abbott et al. 2016. Prizes: Shaw Prize in Astronomy 2016 (Drever, Thorne and
+  Weiss, for conceiving and designing LIGO), Special Breakthrough Prize in Fundamental Physics 2016 (Drever, Thorne,
+  Weiss and the LIGO contributors) and Nobel Prize in Physics 2017 (Weiss, Barish and Thorne).
+params:
+  pn_order: {default: 2, min: 0, max: 2, step: 1, type: int, label: 'Post-Newtonian order of the template phase'}
+  cutoff: {default: peak, type: choice, options: [peak, isco], label: 'Template upper frequency'}
+  f_low: {default: 20.0, min: 15.0, max: 40.0, step: 1.0, label: 'Lowest template frequency $f_\mathrm{low}$', unit: Hz}
+  n_templates: {default: 81, min: 21, max: 161, step: 4, type: int, label: 'Templates in the bank'}
+  mc_min: {default: 15.0, min: 5.0, max: 25.0, step: 1.0, label: 'Smallest chirp mass $\mathcal M_c$', unit: 'M☉'}
+  mc_max: {default: 55.0, min: 35.0, max: 80.0, step: 1.0, label: 'Largest chirp mass $\mathcal M_c$', unit: 'M☉'}
+  q: {default: 5.66, min: 3.0, max: 12.0, step: 0.1, label: 'Q of the time-frequency map'}
+  welch_segment: {default: 4.0, min: 1.0, max: 8.0, step: 0.5, label: 'Welch segment length', unit: s}

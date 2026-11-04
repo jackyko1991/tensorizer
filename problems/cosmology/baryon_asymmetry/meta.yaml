@@ -1,0 +1,53 @@
+title: Why is there more matter than antimatter?
+category: cosmology
+level: advanced
+order: 6
+tags: [series:early-universe:2, role:theory, speculative]
+summary: >
+  The universe holds about $6\times 10^{-10}$ baryons per photon and almost no antimatter. Sakharov's three
+  conditions say what any explanation needs; leptogenesis is a leading candidate: heavy Majorana neutrinos decay
+  slightly more often into leptons than antileptons (CP asymmetry $\varepsilon$), inverse decays wash part of it out
+  (strength $K$), and sphalerons turn the leptons into baryons. The Boltzmann equations for thousands of
+  $(\varepsilon, K)$ models are solved as one batched ODE and compared with the observed $\eta_B$. An open problem.
+animated: true
+vector_form: '\frac{dN_N}{dz} = -D\,(N_N - N_N^{eq}),\qquad \frac{dN_{B-L}}{dz} = \varepsilon\,D\,(N_N - N_N^{eq}) - W\,N_{B-L},\qquad D = Kz\frac{K_1(z)}{K_2(z)},\quad W = \frac{K}{4}z^3K_1(z),\qquad \eta_B = \frac{a_{sph}}{f}\,N_{B-L}^f'
+index_form: '\Delta_{k,n+1} = \Delta_{kn}\,e^{-D_kh} - \frac{dN^{eq}}{dz}\,h\,\varphi(D_kh),\qquad N_{ek,n+1} = N_{ekn}\,e^{-W_kh} + \varepsilon_e D_k\,\bar\Delta_k\,h\,\varphi(W_kh),\qquad \varphi(x) = \frac{1 - e^{-x}}{x}'
+translation:
+  - {symbol: 'z_n', code: 'z_grid(z_max, n)', shape: '(T,)', meaning: '$z = M/T$, log-spaced: the clock runs as the universe cools'}
+  - {symbol: '\varepsilon_e,\ K_k', code: 'parameter_grid(...)', shape: '(E, 1), (1, K)', meaning: 'CP asymmetry as a column, decay parameter as a row: everything broadcasts to $(E, K)$'}
+  - {symbol: 'N_N^{eq}', code: 'n_eq(z)', shape: '(T,)', meaning: '$\tfrac38 z^2K_2(z)$: $3/4$ per photon while relativistic, then $e^{-z}$'}
+  - {symbol: 'D_k,\ W_k', code: 'decay_rate(z, K), washout(z, K)', shape: '(1, K)', meaning: 'decays and inverse decays per Hubble time at the step midpoint'}
+  - {symbol: '\Delta_k', code: 'delta', shape: '(1, K)', meaning: '$N_N - N_N^{eq}$: the departure from equilibrium (Sakharov 3)'}
+  - {symbol: '\varphi(x)', code: '-expm1(-x) / x', shape: '(1, K)', meaning: 'exact one-step factor of a linear ODE: stable even for $K = 1000$'}
+  - {symbol: 'N_{ek}', code: 'n_bl', shape: '(E, K)', meaning: '$B - L$ asymmetry of every model, advanced in one tensor update per step'}
+  - {symbol: '\eta_B', code: 'A_SPH / DILUTION * n_bl', shape: '(E, K)', meaning: 'sphalerons keep $28/79$ of $B - L$ as baryons; photons grow by $f = 2387/86$'}
+  - {symbol: '\kappa_f', code: 'n_bl / (0.75 * eps)', shape: '(K,)', meaning: 'efficiency: $1$ for weak washout, $\approx 1/(K z_B)$ for strong washout'}
+notes: >
+  Observations: the baryon-to-photon ratio is $\eta_B = (6.12 \pm 0.04)\times 10^{-10}$ from the CMB (Planck 2018,
+  $\Omega_bh^2 = 0.0224$), in agreement with Big Bang nucleosynthesis, and there is no sign of antimatter galaxies. Starting
+  from a symmetric universe, Sakharov (1967) showed that an asymmetry needs (1) baryon-number violation, (2) C and CP
+  violation and (3) a departure from thermal equilibrium. The tests check (2) and (3) directly: $\varepsilon = 0$, or
+  heavy neutrinos held at equilibrium, give exactly zero; (1) is the Standard Model's sphaleron process, which converts
+  $B - L$ into $B = \tfrac{28}{79}(B - L)$ above about 130 GeV. The CP violation of the quarks (CKM phase) is far too small,
+  and the electroweak transition is a crossover, so the Standard Model alone fails: new physics is needed. Leptogenesis
+  (Fukugita and Yanagida 1986) uses the heavy right-handed neutrinos of the seesaw mechanism, which would also explain
+  why light neutrinos are so light. This toy keeps only decays and inverse decays of the lightest one, $N_1$ (no
+  $\Delta L = 2$ scatterings, flavour effects or thermal corrections), in the normalisation of Buchmüller, Di Bari and
+  Plümacher (2005). Weak washout ($K \ll 1$) with a thermal start keeps the full asymmetry ($\kappa_f \to 1$, checked);
+  strong washout ($K \gg 1$) loses most of it but forgets the initial conditions (the two starts merge), and the solver
+  agrees with their analytic fit to within about 10%. With $K = \tilde m_1/m_*$, $m_* \approx 1.08\times10^{-3}$ eV, the
+  neutrino masses seen in oscillations ($\approx 0.009$–$0.05$ eV) point to $K \approx 10$–$50$, where $\varepsilon \approx 2\times10^{-6}$–$10^{-5}$ is
+  needed; the Davidson–Ibarra bound $\varepsilon \lesssim 10^{-6}\,(M_1/10^{10}\,\mathrm{GeV})$ then requires $M_1 \gtrsim 10^{10}$ GeV.
+  Status: open. Leptogenesis is attractive and consistent with everything known, but it is unconfirmed: the heavy
+  neutrinos are far beyond colliders. Indirect hints would be neutrinoless double-beta decay (Majorana nature) and CP
+  violation in neutrino oscillations (T2K, NOvA, and next DUNE and Hyper-Kamiokande); electroweak baryogenesis and
+  other mechanisms remain alternatives. The page explores the toy equations numerically and does not claim this is
+  how the asymmetry arose.
+params:
+  log_eps: {default: -5.7, min: -8.0, max: -4.0, step: 0.1, label: 'Model shown: $\log_{10}\varepsilon$'}
+  log_K: {default: 1.0, min: -2.0, max: 3.0, step: 0.1, label: 'Model shown: $\log_{10}K$'}
+  initial: {default: thermal, type: choice, options: [thermal, zero], label: Initial heavy-neutrino abundance}
+  n_eps: {default: 41, min: 5, max: 81, step: 4, type: int, label: 'Grid points in $\varepsilon$'}
+  n_K: {default: 61, min: 5, max: 121, step: 4, type: int, label: 'Grid points in $K$'}
+  steps: {default: 3000, min: 500, max: 10000, step: 500, type: int, label: Integration steps in $z$}
+  z_max: {default: 100.0, min: 20.0, max: 200.0, step: 10.0, label: 'Final $z = M/T$'}

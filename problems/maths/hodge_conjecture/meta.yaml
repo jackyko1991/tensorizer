@@ -1,0 +1,49 @@
+title: The Hodge conjecture
+category: maths
+level: advanced
+order: 7
+tags: [millennium, status:open]
+summary: >
+  Compute Hodge diamonds by counting: for Fermat hypersurfaces $x_0^d + \dots + x_{n+1}^d = 0$ the Hodge numbers are
+  coefficients of a polynomial power, and for complex tori and products they are outer products and convolutions.
+  Shioda's character count then gives the rational Hodge classes, the classes the Hodge conjecture says should come
+  from subvarieties. For surfaces this is the proven Lefschetz $(1,1)$ theorem, and the lines on the surface show it.
+  In higher dimension the conjecture is open; this page only counts the classes.
+animated: true
+vector_form: 'H^k(X,\mathbb C) = \bigoplus_{p+q=k} H^{p,q},\quad h^{p,q} = h^{q,p} = h^{n-p,n-q},\qquad \text{Hodge: } H^{2p}(X,\mathbb Q)\cap H^{p,p} = \operatorname{span}_{\mathbb Q}\{[Z] : Z \subset X,\ \operatorname{codim} Z = p\}\ ?'
+index_form: 'h^{n-q,q}_{\text{prim}} = \big[t^{(q+1)d-(n+2)}\big]\Big(\sum_{b=0}^{d-2} t^b\Big)^{n+2},\qquad h^{T}_{pq} = \binom{g}{p}\binom{g}{q},\qquad h^{X\times Y}_{pq} = \sum_{ab} h^X_{ab}\,h^Y_{p-a,q-b},\qquad \rho = 1 + \#\Big\{a : \sum_i \Big\langle \frac{t a_i}{d}\Big\rangle = \frac n2 + 1\ \forall t\in(\mathbb Z/d)^\times\Big\}'
+translation:
+  - {symbol: '\big(\sum_b t^b\big)^{n+2}', code: 'conv1d(poly, digit.flip(0), padding=d - 2)', shape: '(L,)', meaning: 'multiplying polynomials is convolving coefficient vectors, repeated $n+2$ times: the monomial basis $x^b$, $0 \le b_i \le d-2$, of the Jacobian ring of the Fermat polynomial'}
+  - {symbol: 'h^{n-q,q}_{\text{prim}}', code: 'poly[(q + 1) * d - (n + 2)]', shape: '(n + 1,)', meaning: 'Griffiths: the primitive middle Hodge numbers are the Jacobian ring in degree $(q+1)d - (n+2)$'}
+  - {symbol: 'h^{T}_{pq}', code: "einsum('p,q->pq', binom, binom)", shape: '(g + 1, g + 1)', meaning: 'a complex torus: $\wedge^p$ of the $dz$ times $\wedge^q$ of the $d\bar z$'}
+  - {symbol: 'h^{X\times Y}_{pq}', code: "einsum('ab,cd->abcd', h1, h2) + index_put_(accumulate=True)", shape: '(m + k + 1, m + k + 1)', meaning: 'Künneth: every pair of classes, summed into the cell $(a + c, b + d)$'}
+  - {symbol: 'a = (a_0, \dots, a_{n+1})', code: 'characters(n, d)', shape: '(A, n + 2)', meaning: 'Shioda''s characters: $1 \le a_i \le d-1$, $\sum a_i \equiv 0 \bmod d$; each labels a line $V(a)$ of primitive cohomology'}
+  - {symbol: '\sum_i \langle t a_i/d\rangle', code: '((t[:, None, None] * chars) % d).sum(dim=2)', shape: '(T, A)', meaning: 'repeated $i$ ⇒ summed: the Hodge type of every Galois conjugate $t\cdot a$ at once'}
+  - {symbol: '\forall t', code: '(conj_sum == d * (n // 2 + 1)).all(dim=0)', shape: '(A,) bool', meaning: 'a rational Hodge class: type $(\frac n2, \frac n2)$ for every conjugate'}
+  - {symbol: 'L_i \cdot L_j', code: 'det(cat([lines_i, lines_j])).abs() < 1e-9', shape: '(L, L)', meaning: 'two lines meet iff their four spanning vectors in $\mathbb C^4$ are dependent; $L^2 = 2-d$ by adjunction'}
+  - {symbol: '\operatorname{rank},\ (1, \rho - 1)', code: 'eigvalsh(gram)', shape: '(L,)', meaning: 'rank of the lattice spanned by the lines, and its signature (Hodge index theorem: exactly one positive eigenvalue)'}
+notes: >
+  On a compact Kähler manifold every cohomology class splits into pieces of type $(p, q)$: $p$ holomorphic and $q$
+  antiholomorphic directions (Hodge, 1941). The numbers $h^{p,q}$ satisfy Hodge symmetry $h^{p,q} = h^{q,p}$ and Serre
+  duality $h^{p,q} = h^{n-p,n-q}$, and every diamond on the left passes both checks. Their alternating sum is the Euler
+  characteristic, which for a degree-$d$ hypersurface equals $((1-d)^{n+2} - 1)/d + n + 2$. The diamond reproduces it,
+  along with $h^{1,1} = 20$ for the K3 quartic, $h^{2,1} = 101$ for the quintic threefold and $h^{3,1} = 1$ for the cubic
+  fourfold. A subvariety $Z$ of codimension $p$ defines a rational class of type $(p, p)$. The Hodge conjecture (Hodge
+  1950; one of the Clay Millennium Prize problems) says that every rational $(p, p)$ class is a rational combination of
+  such classes. What is proven: $p = 1$ by the Lefschetz $(1,1)$ theorem (1924), hence $p = n-1$ by hard Lefschetz.
+  It also holds for abelian varieties of dimension at most 3, for uniruled fourfolds and cubic fourfolds (Conte–Murre,
+  Zucker), and in many special cases, including Fermat varieties of many degrees (Shioda 1979, Ran 1980). The integral
+  version is false (Atiyah–Hirzebruch, 1962). For Fermat varieties Shioda's characters make the rational Hodge classes
+  countable, with one condition per Galois conjugate. For surfaces the count is the Picard number: $7, 20, 37, 86$ for
+  $d = 3, 4, 5, 6$, and $3(d-1)(d-2) + 1$ when $\gcd(d, 6) = 1$. The $3d^2$ lines on the surface give explicit
+  algebraic classes, and their intersection matrix (rank and Hodge-index signature $(1, \rho - 1)$, computed here)
+  spans all of them over $\mathbb Q$ exactly when $d \le 4$ or $\gcd(d, 6) = 1$. For $d = 6, 8, 9, 10$ other curves are
+  needed, which exist by Lefschetz. For Fermat fourfolds the program counts the Hodge classes, but whether each one is
+  algebraic is the conjecture itself. Status (November 2026): open. The AI-generated manuscript collection published
+  by OpenAI (github.com/openai/math, family 032) claims the rational Hodge conjecture for every CM abelian variety and
+  reports a Lean formalisation of that statement. It is an unrefereed, machine-produced claim awaiting verification by
+  the mathematical community, and even if correct it covers a special class, not the general conjecture.
+params:
+  d_max: {default: 8, min: 4, max: 10, step: 1, type: int, label: 'Largest degree $d$'}
+  n_max: {default: 5, min: 1, max: 6, step: 1, type: int, label: 'Euler check up to dimension $n$'}
+  g_max: {default: 4, min: 1, max: 5, step: 1, type: int, label: 'Tori up to dimension $g$'}

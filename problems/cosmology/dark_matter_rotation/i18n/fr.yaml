@@ -1,0 +1,18 @@
+source_hash: 9483d7c492cb
+title: Courbes de rotation des galaxies et matière noire
+summary: 'Loin du centre d''une galaxie, étoiles et gaz tournent trop vite : les vraies courbes de rotation de la base SPARC restent plates là où la masse visible prédit une chute képlérienne. Un seul ajustement par autograd, toutes les galaxies à la fois, compare quatre explications : les baryons seuls (avec un rapport masse/luminosité $\Upsilon$), les baryons plus un halo de matière noire NFW, les baryons plus un halo de Burkert à cœur, et MOND avec une seule accélération $a_0$ (la relation d''accélération radiale). La matière noire est déduite de la gravité, pas détectée directement.'
+notes: 'Données : six galaxies (NGC 3198, NGC 2403, NGC 6503, DDO 154, UGC 2885, NGC 7814) de SPARC (Lelli, McGaugh et Schombert 2016, AJ 152, 157), fichier Rotmod_LTG, copiées sans modification dans data/sparc_rotation_curves.csv. Source http://astroweb.cwru.edu/SPARC/, qui demande de citer l''article SPARC ; un miroir sur Zenodo (doi:10.5281/zenodo.16284118) est publié sous CC-BY-4.0. Les rapports masse/luminosité à 3,6 μm portent un a priori de 0,1 dex autour de $\Upsilon_d = 0.5$, $\Upsilon_b = 0.7$ (mettez l''a priori à 0 pour le désactiver). Ce que montre l''ajustement : aucun $\Upsilon$ raisonnable ne permet aux baryons d''atteindre les vitesses plates extérieures (DDO 154 exigerait $\Upsilon_d \approx 19$, bien au-delà de toute population stellaire) ; il faut donc une masse invisible ou une dynamique modifiée, comme Rubin et Ford l''ont trouvé avec des spectres optiques dans les années 1970. Les deux formes de halo ajustent bien ; la naine DDO 154 préfère un cœur (le problème cusp–cœur).
+  Une seule valeur $a_0 \approx 1.1\times10^{-10}$ m/s² décrit étonnamment bien toutes les galaxies, comme le dit la relation d''accélération radiale. Statut honnête : la matière noire est déduite de sa gravité (courbes de rotation, lentilles, amas, fond diffus, formation des structures) ; aucune particule de matière noire n''a été détectée directement. MOND ajuste bien les courbes de rotation avec un seul paramètre mais a du mal avec les amas de galaxies, l''amas de la Balle et les pics acoustiques du fond diffus, et n''a pas de version relativiste généralement acceptée. Distances et inclinaisons sont fixées ici (leurs erreurs ne sont pas propagées), et MOND est appliquée sous sa forme algébrique la plus simple.'
+meanings:
+- vitesses observées et erreurs de la galaxie $g$ au rayon $r$, complétées jusqu'à la plus longue courbe
+- vrai point de mesure (1) ou remplissage (0)
+- les carrés des vitesses s'additionnent ; $\Upsilon$ remet à l'échelle le disque et le bulbe SPARC (calculés pour $\Upsilon = 1$)
+- halo à pointe des simulations de matière noire froide, $\rho \propto 1/(x(1+x)^2)$
+- halo à cœur, $\rho \propto 1/((1+x)(1+x^2))$
+- une fonction avec un seul $a_0$ pour toutes les galaxies ; pas de halo
+- $r$ répété ⇒ sommé sur les vrais points de chaque galaxie
+- 'un seul scalaire pour tous les modèles et galaxies : une rétropropagation donne tous les gradients (Adam, puis L-BFGS)'
+labels:
+  iterations: Itérations d'Adam avant L-BFGS
+  lr: Taux d'apprentissage d'Adam
+  prior_dex: Largeur de l'a priori sur $\Upsilon$ (dex, 0 = aucun)

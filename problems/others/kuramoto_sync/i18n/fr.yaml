@@ -1,0 +1,22 @@
+source_hash: ab1a099d3cd6
+title: 'Modèle de Kuramoto : synchronisation spontanée'
+summary: 'Des lucioles qui clignotent ensemble, des métronomes sur une même planche, des cellules cardiaques pacemaker : des oscillateurs aux fréquences propres $\omega_i$ différentes, chacun attiré par les autres, se verrouillent soudain quand le couplage $K$ dépasse un seuil. Le champ moyen complexe $r e^{i\psi} = \frac1N \sum_j e^{i\theta_j}$ ramène la somme de tous contre tous à un travail en $O(N)$, tout un lot de couplages tourne à la fois, et le paramètre d''ordre $r$ bondit à $K_c = 2/(\pi g(0))$, en suivant la courbe exacte d''Ott–Antonsen $r = \sqrt{1 - K_c/K}$ pour des fréquences lorentziennes.'
+notes: 'Kuramoto (1975) a résolu le modèle de façon autocohérente et trouvé $K_c = 2/(\pi g(0))$ pour une densité de fréquences $g$ symétrique et unimodale ; Strogatz (2000) en raconte l''histoire. Ott et Antonsen (2008) ont démontré que pour une lorentzienne $g(\omega) = (\gamma/\pi)/(\omega^2 + \gamma^2)$ la dynamique à $N$ infini se réduit à une seule équation, $\dot r = -\gamma r + \tfrac K2 r(1 - r^2)$, dont l''état stable est $r = \sqrt{1 - 2\gamma/K}$ : la simulation la reproduit à environ $0.01$ près avec $N = 1200$. En dessous de $K_c$, $r$ n''est qu''un bruit de taille finie d''ordre $1/\sqrt N$. Des fréquences gaussiennes ont un seuil plus petit $K_c = 2\sigma\sqrt{2\pi}/\pi \approx 1.6\,\sigma$ (vert). La rampe lente (rouge) suit la courbe quand $K$ augmente ; le cercle montre les oscillateurs dans le référentiel du champ moyen, colorés selon $\omega_i$ : ceux de petit $|\omega_i|$ se verrouillent en premier, les rapides continuent de dériver. Le troisième panneau est un petit
+  bonus : des oscillateurs identiques sur un anneau, avec un couplage non local et un déphasage $\alpha = \pi/2 - 0.18$, se séparent en un domaine verrouillé et un domaine incohérent, l''état chimère découvert par Kuramoto et Battogtokh (2002) et nommé par Abrams et Strogatz (2004). La phase moyenne dérive exactement à la fréquence moyenne car $\sin(\theta_j - \theta_i)$ est antisymétrique.'
+meanings:
+- fréquences propres, un tirage aléatoire dans chacun des $N$ intervalles équiprobables de la densité lorentzienne (ou gaussienne)
+- 'un couplage par membre du lot : chaque population évolue en parallèle'
+- champ moyen complexe, $j$ répété ⇒ moyenné ; $r = 0$ incohérent, $r = 1$ synchronie parfaite
+- 'chaque oscillateur ne ressent que le champ moyen : $O(N)$ au lieu de $O(N^2)$'
+- la somme lente sur les paires, conservée comme référence ; les tests vérifient qu'elle égale la forme en champ moyen
+- paramètre d'ordre exact pour $N \to \infty$ et des fréquences lorentziennes, $\sqrt{1 - 2\gamma/K}$ au-dessus de $K_c = 2\gamma$
+- couplage non local $(1 + A\cos x)/2\pi$ sur un anneau, pour l'état chimère
+labels:
+  n_oscillators: Oscillateurs $N$
+  width: Dispersion des fréquences $\gamma$ (lorentzienne) ou $\sigma$ (gaussienne)
+  k_max: Plus grand couplage $K$
+  n_couplings: Couplages dans le lot
+  t_relax: Temps de relaxation par couplage
+  ramp_time: Durée de la rampe lente de $K$
+  distribution: Densité de fréquences affichée dans la rampe
+  seed: Graine aléatoire

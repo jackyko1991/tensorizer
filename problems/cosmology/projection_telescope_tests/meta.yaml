@@ -1,0 +1,90 @@
+title: 'Telescope tests of the projection: gravitational waves, black-hole shadows and supernovae'
+category: cosmology
+level: advanced
+order: 18
+tags: [series:projection-hypothesis:6, role:observation, speculative]
+summary: >
+  A speculative hypothesis, not established physics, confronted with open astronomical data. If gravity sees
+  more than $3+1$ dimensions, gravitational waves weaken faster than $1/d$; if curved spacetime is the shadow of a
+  folded projection, a fold outside the photon sphere would enlarge a black hole's shadow. GW170817 with its host
+  galaxy's distance gives $D = 4.00^{+0.07}_{-0.25}$, the EHT shadows of M87* and Sgr A* allow a fold only within
+  about $2.3$ Schwarzschild radii, and Pantheon+ supernovae cannot tell a leaking (DGP) universe from $\Lambda$CDM.
+  Everything agrees with general relativity in $3+1$: any extra dimensions must be ones gravity does not feel at
+  these scales.
+animated: true
+vector_form: 'h \propto d^{-(D-2)/2},\qquad d_{GW} = d_*\Big(\frac{d_{EM}}{d_*}\Big)^{\frac{D-2}{2}},\qquad d_{GW} = d_{EM}\Big[1 + \Big(\frac{d_{EM}}{R_c}\Big)^{\frac{n(D-4)}{2}}\Big]^{1/n},\qquad p(D) \propto \int \mathcal L\big(d_{GW}(d, D)\big)\,\mathcal N(d;\, d_{EM}, \sigma)\,dd,\qquad b_c = \min_r \frac{r}{\sqrt{f(r)}} = \sqrt{27}\,\frac{GM}{c^2},\qquad b_{edge} = \max\Big(b_c,\ \frac{r_f}{\sqrt{1 - r_s/r_f}}\Big),\qquad E^2 = \Omega_m(1+z)^3 + (1-\Omega_m)E^{\alpha}'
+index_form: '\mathcal L(x) = \frac{\sum_i w_i\,K_h(x - d_i)}{\sum_i w_i},\quad w_i = d_i^{-2},\qquad p_a = \frac{\sum_j \mathcal L\big(d_{GW}(d_j, D_a)\big)\,g_j\,\Delta d}{\sum_{a} (\cdots)\,\Delta D},\qquad \frac{d^2u_{fb}}{d\varphi^2} = -u_{fb} + \tfrac32\,u_{fb}^2,\qquad \delta = \frac{\theta_{sh}}{2\sqrt{27}\,\theta_g} - 1,\qquad \chi^2 = \sum_i w_i r_i^2 - \frac{(\sum_i w_i r_i)^2}{\sum_i w_i}'
+translation:
+  - {symbol: 'd_i,\ w_i', code: 'load_gw_samples()', shape: '(S,)', meaning: '8078 GW170817 distance samples (GWTC-1); $w_i = d_i^{-2}$ divides out the uniform-in-volume prior'}
+  - {symbol: '\mathcal L(x)', code: "einsum('xs,s->x', exp(-z**2/2), p)", shape: '(X,)', meaning: 'repeated $i$ (samples) ⇒ summed: kernel density of $d_{GW}$, a normalised likelihood'}
+  - {symbol: 'd_{GW}(d_j, D_a)', code: 'gw_distance(d[None, :], Ds[:, None])', shape: '(n_D, n_d)', meaning: 'distance a detector infers when gravity spreads into $D_a$ dimensions, for every EM distance $d_j$'}
+  - {symbol: 'p_a', code: 'posterior_D(Ds, gw, em)', shape: '(n_D,)', meaning: 'posterior of $D$, the EM distance marginalised ($j$ summed, trapezoid)'}
+  - {symbol: '\hat D', code: 'fit_D(gw, em)', shape: '()', meaning: 'autograd fit: Newton steps on $\log p(D)$, error from the second derivative (Laplace)'}
+  - {symbol: 'u_{fb}', code: 'trace(b, r_cap)', shape: '(F, B)', meaning: 'photon orbits $u = r_s/r$ for $B$ impact parameters and $F$ fold radii at once (RK4 in $\varphi$)'}
+  - {symbol: '\delta(r_f)', code: 'fold_delta(r_f)', shape: '(R,)', meaning: 'fractional shadow growth from a fold at $r_f$ (zero inside the photon sphere)'}
+  - {symbol: '\delta_{Kerr}', code: 'kerr_delta(a, inc)', shape: '(A, I)', meaning: 'Kerr shadow shrinkage (Bardeen curve, area-equivalent radius) for spins $a$ and inclinations'}
+  - {symbol: '\chi^2_{am}', code: 'chi2_offset_marginal(mu_shape, mu, sigma)', shape: '(A, M)', meaning: 'supernova $\chi^2$ for every leakage index $\alpha_a$ and $\Omega_{m}$, the offset ($H_0$, $M$) removed; $i$ summed'}
+notes: >
+  Status: speculative. This is the author's own hypothesis (see the series description), not established physics.
+  Step 6 of the Projection Hypothesis, the observation step. Step 1 (cosmology/projection_postulate) stated the
+  postulates and found that the Born rule survives only in the case indistinguishable from standard quantum
+  mechanics; steps 2 to 5 (projection_one_particle, projection_dimension_budget, projection_singularity_fold,
+  projection_bell_test) work out P3, P5, P4 and P1-P2. This step fits the open parameters of P4 (geometry as a
+  projection that can fold) and P5 (gravity needs some $d_G$, fitted, not assumed) to open data, and shows the verdict
+  whichever way it goes. Known physics first. In general relativity in $3+1$ dimensions a gravitational wave's
+  strain falls as $1/d$; in $D$ spacetime dimensions its energy spreads over a $(D-2)$-sphere and $h\propto
+  d^{-(D-2)/2}$. A detector that assumes $1/d$ infers $d_{GW} = d_*(d_{EM}/d_*)^{(D-2)/2}$ ($d_* = 1$ Mpc, as in
+  Pardo, Fishbach, Holz and Spergel 2018) or, if the leakage only starts beyond a screening scale $R_c$,
+  $d_{GW} = d_{EM}[1 + (d_{EM}/R_c)^{n(D-4)/2}]^{1/n}$ (their screened form, meaningful for $D > 4$). The hypothesis'
+  prediction: if gravity spreads into extra dimensions at large distances, $d_{GW} > d_{EM}$ and $D > 4$. The test
+  (a): GW170817, a neutron-star merger with an optical counterpart in NGC 4993. Data: 8078 posterior samples of the
+  GW luminosity distance from the GWTC-1 release (data/gw170817_distance.csv; LIGO Scientific and Virgo
+  Collaborations, low-spin prior, sky position free; GWOSC, licence CC BY 4.0; Abbott et al. 2019, PRX 9, 031040).
+  The analysis prior is $\propto d^2$, so each sample is weighted by $d^{-2}$ and a kernel density gives the
+  likelihood of $d_{GW}$ (the published value is $40^{+8}_{-14}$ Mpc, Abbott et al. 2017). EM distances
+  (data/em_distances.csv, cited numbers): surface brightness fluctuations $40.7\pm1.4\pm1.9$ Mpc (Cantiello et al.
+  2018, ApJL 854, L31, the default) and the Hubble-flow distances Pardo et al. used, $v_H = 3017\pm250$ km/s divided by
+  $H_0 = 73.24\pm1.74$ (SH0ES) or $67.74\pm0.46$ km/s/Mpc (Planck). Result: $D = 4.00^{+0.07}_{-0.25}$ (68%, SBF; the
+  autograd fit gives $4.00\pm0.11$), $3.98^{+0.09}_{-0.24}$ (SH0ES) and $3.94^{+0.08}_{-0.24}$ (Planck). Pardo et al.
+  found $4.02^{+0.07}_{-0.10}$ (SH0ES) and $3.98^{+0.07}_{-0.09}$ (Planck); their lower error is smaller because
+  they fixed the sky position to the counterpart and used the LVC $H_0$ posterior, while the samples bundled here
+  have a free sky position, so the distance-inclination degeneracy leaves a longer tail to small distances. For
+  screened leakage, $-2\ln[\mathcal L(R_c)/\mathcal L_{GR}] > 2.71$ excludes $R_c$ below a few hundred Mpc for
+  $D = 5$, $n = 1$ and below about 50-80 Mpc for $n = 2$ to 5; gradual transitions ($n(D-4)/2$ small) are excluded up
+  to the $10^4$ Mpc edge of the grid. Pardo et al. quote $R_c\gtrsim 20$ Mpc for any steepness, from a posterior
+  rather than a likelihood ratio. Verdict (a): gravity behaves as $D = 4.0$ to about $\pm0.1$ out to 40 Mpc; any extra
+  dimensions gravity sees are compact or screened beyond these distances. The test (b): black-hole shadows. In
+  Schwarzschild the photon sphere is at $r = 3GM/c^2$ and the shadow radius is $b_c = \sqrt{27}\,GM/c^2$; here it is
+  computed both as $\min_r r/\sqrt{f}$ and by ray tracing $u'' = -u + \tfrac32 u^2$ for a batch of impact parameters.
+  Spin shrinks the shadow's area-equivalent radius by at most 7% (Bardeen's curve; $2(1+\sqrt2)\,GM/c^2$ for an
+  extremal hole seen from the pole). The fold, a modelling choice of the author made precise here: P4 says a
+  singularity is where the projection folds; suppose the projected geometry is Schwarzschild down to a fold at radius
+  $r_f$ and light that reaches the fold never comes back. A fold inside the photon sphere ($r_f\leq 1.5\,r_s$) leaves
+  the shadow unchanged; one outside makes the shadow edge the ray that grazes it, $b = r_f/\sqrt{1 - r_s/r_f}$, so
+  $\delta = b/b_c - 1 > 0$. Data (data/eht_shadows.csv, cited numbers): M87* ring $42\pm3$ $\mu$as and
+  $GM/(Dc^2) = 3.8\pm0.4$ $\mu$as (EHT 2019, Papers I and VI), against $3.64\pm0.22$ $\mu$as from stellar dynamics
+  (Gebhardt et al. 2011, $6.6\pm0.4\times10^9\,M_\odot$ at 17.9 Mpc), so $\delta = +0.04\pm0.13$ (computed here, not a
+  published value); Sgr A* ring $51.8\pm2.3$ $\mu$as (EHT 2022, Paper I) and $\delta = -0.04^{+0.09}_{-0.10}$ (Keck
+  prior) and $-0.08\pm0.09$ (VLTI prior) from Paper VI, Table 2. Taking $\delta + 2\sigma$ and letting spin hide up to
+  7%, a fold may grow the shadow by at most 0.37 (M87*), 0.21 (Keck) and 0.17 (VLTI), so $r_f\leq 2.86$, $2.40$ and
+  $2.28\,r_s$. Verdict (b): the shadows match Schwarzschild/Kerr; a fold outside about $2.3\,r_s$ is excluded, but a
+  fold inside the photon sphere, where P4 would naturally put it (at the horizon or the central singularity), is
+  invisible to shadow images. The test (c, optional): supernovae. In a DGP brane world gravity leaks into a fifth
+  dimension beyond $r_c$ and the expansion obeys $H^2 - H/r_c\propto\rho$; Dvali and Turner's index $\alpha$
+  interpolates ($E^2 = \Omega_m(1+z)^3 + (1-\Omega_m)E^\alpha$, $\alpha = 0$ is $\Lambda$CDM, $\alpha = 1$ DGP).
+  Data: the Pantheon+ table of cosmology/cosmological_constant_fit, copied to data/pantheon_plus.csv (1466
+  supernovae, $z > 0.01$, diagonal errors; Scolnic et al. 2022, Brout et al. 2022; the Pantheon+ data files carry no
+  stated licence, the papers are CC BY 4.0). Result (uniform priors, $-1\leq\alpha\leq 1.8$): $\alpha = 0.44\pm0.71$; $\chi^2 = 639.5$ for $\Lambda$CDM and
+  $638.9$ for DGP (both well below the number of supernovae because the diagonal errors include the covariance
+  diagonal). Verdict (c): supernovae alone cannot tell a leaking universe from $\Lambda$CDM; the combination with the
+  CMB and baryon acoustic oscillations is what rules out the self-accelerating DGP branch (e.g. Fang et al. 2008, Phys. Rev. D 78, 103509),
+  which is not refitted here. Overall verdict for P4 and P5: every test is consistent with general relativity in
+  $3+1$ dimensions. The hypothesis survives only if the dimensions beyond $3+1$ are ones gravity does not feel at
+  these scales (compact, screened, or present only in the quantum sector of steps 1 and 5), and if any fold lies
+  inside the photon sphere. That is a constraint, not support: so far the series has not found a prediction that
+  differs from standard physics and agrees with the data.
+params:
+  em_distance: {default: sbf, type: choice, options: [sbf, shoes, planck], label: 'Electromagnetic distance to NGC 4993 used for the verdict'}
+  D_screen: {default: 5.0, min: 4.25, max: 10.0, step: 0.25, label: 'Dimension $D$ beyond the screening scale (screened leakage)'}
+  n_screen: {default: 1.0, min: 0.5, max: 10.0, step: 0.5, label: 'Steepness $n$ of the screening transition'}
+  inc_max_sgra: {default: 90.0, min: 5.0, max: 90.0, step: 5.0, label: 'Largest Sgr A* inclination for the spin band', unit: deg}

@@ -1,0 +1,41 @@
+title: Galaxy rotation curves and dark matter
+category: cosmology
+level: intermediate
+order: 11
+summary: >
+  Stars and gas far from a galaxy's centre orbit too fast: real rotation curves from the SPARC database stay flat
+  where the visible mass predicts a Keplerian fall. One batched autograd fit, all galaxies at once, compares four
+  explanations: baryons alone (with a mass-to-light ratio $\Upsilon$), baryons plus an NFW dark-matter halo, baryons
+  plus a cored Burkert halo, and MOND with a single acceleration $a_0$ (the radial acceleration relation). Dark matter is
+  inferred from gravity, not directly detected.
+animated: true
+vector_form: 'V^2(r) = V_\mathrm{gas}^2 + \Upsilon_d V_\mathrm{disk}^2 + \Upsilon_b V_\mathrm{bul}^2 + V_\mathrm{halo}^2,\qquad V^2_\mathrm{NFW} = V_s^2\,\frac{\ln(1+x) - \frac{x}{1+x}}{x},\qquad g_\mathrm{obs} = \frac{g_\mathrm{bar}}{1 - e^{-\sqrt{g_\mathrm{bar}/a_0}}},\qquad \chi^2 = \sum_r \Big(\frac{V_r - V(r)}{\sigma_r}\Big)^2'
+index_form: 'V^2_{gr} = V^2_{\mathrm{gas},gr} + \Upsilon_{d,g} V^2_{\mathrm{disk},gr} + \Upsilon_{b,g} V^2_{\mathrm{bul},gr} + V^2_{\mathrm{halo}}(r_{gr};\,V_{s,g}, r_{s,g}),\qquad \chi^2_{mg} = \sum_r w_{gr}\Big(\frac{V_{gr} - V_{mgr}}{\sigma_{gr}}\Big)^2,\qquad L = \sum_{m,g}\chi^2_{mg} + \text{prior}'
+translation:
+  - {symbol: 'V_{gr},\ \sigma_{gr}', code: 'load_sparc(device)', shape: '(G, R)', meaning: 'observed speeds and errors of galaxy $g$ at radius $r$, padded to the longest curve'}
+  - {symbol: 'w_{gr}', code: "data['mask']", shape: '(G, R)', meaning: 'real data point (1) or padding (0)'}
+  - {symbol: 'V^2_{\mathrm{bar},gr}', code: 'baryonic_v2(gas, disk, bul, ups_d, ups_b)', shape: '(G, R)', meaning: 'squared speeds add; $\Upsilon$ rescales the SPARC disk and bulge (computed for $\Upsilon = 1$)'}
+  - {symbol: 'V^2_\mathrm{NFW}', code: 'nfw_velocity(R, V_s, r_s) ** 2', shape: '(G, R)', meaning: 'cuspy halo from cold-dark-matter simulations, $\rho \propto 1/(x(1+x)^2)$'}
+  - {symbol: 'V^2_\mathrm{Bur}', code: 'burkert_velocity(R, V_0, r_0) ** 2', shape: '(G, R)', meaning: 'cored halo, $\rho \propto 1/((1+x)(1+x^2))$'}
+  - {symbol: 'g_\mathrm{obs}(g_\mathrm{bar})', code: 'mond_acceleration(V2_bar / R, a0)', shape: '(G, R)', meaning: 'one function with one $a_0$ for all galaxies; no halo'}
+  - {symbol: '\chi^2_{mg}', code: 'chi2(model_v2(m, p, data), data)', shape: '(G,)', meaning: 'repeated $r$ ⇒ summed over the real points of each galaxy'}
+  - {symbol: 'L', code: 'sum(... for m in MODELS)', shape: '()', meaning: 'one scalar for all models and galaxies: one backward pass gives every gradient (Adam, then L-BFGS)'}
+notes: >
+  Data: six galaxies (NGC 3198, NGC 2403, NGC 6503, DDO 154, UGC 2885, NGC 7814) from SPARC (Lelli, McGaugh and
+  Schombert 2016, AJ 152, 157), file Rotmod_LTG, copied unchanged into data/sparc_rotation_curves.csv. Source
+  http://astroweb.cwru.edu/SPARC/, which asks users to cite the SPARC paper; a mirror on Zenodo
+  (doi:10.5281/zenodo.16284118) is released under CC-BY-4.0. Mass-to-light ratios at 3.6 μm carry a 0.1 dex prior around
+  $\Upsilon_d = 0.5$, $\Upsilon_b = 0.7$ (set the prior to 0 to switch it off). What the fit shows: no sensible $\Upsilon$
+  lets the baryons reach the flat outer speeds (DDO 154 would need $\Upsilon_d \approx 19$, far beyond any stellar
+  population), so either unseen mass or modified dynamics is needed, as Rubin and Ford found from optical spectra in
+  the 1970s. Both halo shapes fit well; the dwarf DDO 154 prefers a core (the cusp–core problem). A single
+  $a_0 \approx 1.1\times10^{-10}$ m/s² describes all galaxies surprisingly well, as the radial acceleration relation
+  says. Honest status: dark matter is inferred from its gravity (rotation curves, lensing, clusters, the CMB, structure
+  formation); no dark-matter particle has been detected directly. MOND fits galaxy rotation curves well with one
+  parameter but has trouble with galaxy clusters, the Bullet Cluster and the CMB acoustic peaks, and has no generally
+  accepted relativistic version. Distances and inclinations are fixed here (their errors are not propagated), and
+  MOND is applied in its simplest algebraic form.
+params:
+  iterations: {default: 500, min: 100, max: 3000, step: 100, type: int, label: Adam iterations before L-BFGS}
+  lr: {default: 0.05, min: 0.005, max: 0.2, step: 0.005, label: Adam learning rate}
+  prior_dex: {default: 0.1, min: 0.0, max: 0.5, step: 0.05, label: 'Width of the $\Upsilon$ prior (dex, 0 = none)'}

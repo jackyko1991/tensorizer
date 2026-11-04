@@ -1,0 +1,20 @@
+source_hash: e3fd71733e91
+title: Taquiones y el antiteléfono
+summary: '¿Y si una partícula tuviera masa imaginaria, $m^2 < 0$? Con tensores complejos, $E^2 = p^2 + m^2$ sigue dando energías reales, pero la partícula siempre es más rápida que la luz y se acelera a medida que pierde energía. Transformaciones de Lorentz en lote aplicadas a líneas de universo superlumínicas encuentran sistemas de referencia en los que la señal llega antes de ser enviada, y cierran el bucle del antiteléfono de Tolman. En teoría de campos, $m^2 < 0$ significa en cambio un vacío inestable que se condensa, como hace el campo de Higgs. Especulativo: nunca se ha observado un taquión, y los «neutrinos más rápidos que la luz» de OPERA en 2011 se debieron a un cable suelto.'
+notes: 'Física especulativa: los taquiones son hipotéticos. Ninguna partícula del Modelo Estándar es taquiónica y ningún experimento ha detectado jamás una. La relatividad especial prohíbe acelerar un cuerpo masivo más allá de $c$, pero por sí sola no prohíbe partículas que siempre sean más rápidas que la luz (Bilaniuk, Deshpande y Sudarshan 1962; Feinberg 1967, quien acuñó el nombre). El precio es la causalidad. Dos sucesos unidos por una señal de velocidad $u > c$ están separados de tipo espacio, de modo que su orden temporal depende del observador: en cualquier sistema que se mueva más rápido que $c^2/u$, la señal llega antes de ser enviada y transporta energía negativa. La reinterpretación de Feinberg la lee como un antitaquión de energía positiva que viaja en sentido contrario, lo que salva la positividad de la energía pero deja «quién la envió» dependiente del sistema de referencia. Con dos sistemas se obtiene el antiteléfono de Tolman (1917): Alice envía una señal a Bob, que se aleja
+  a $\beta$, y Bob responde a la misma velocidad en su propio sistema. La respuesta llega a Alice antes de que ella enviara el mensaje en cuanto $\beta > 2u/(1+u^2)$, lo que cierra un bucle causal. En teoría cuántica de campos, un $m^2$ negativo no es una partícula rápida sino una inestabilidad. El campo rueda desde la cima $\phi = 0$ de $V = \tfrac12 m^2\phi^2 + \tfrac14\lambda\phi^4$ hasta $\phi = \pm\sqrt{-m^2/\lambda}$ («condensación taquiónica», que reduce la energía en $m^4/4\lambda$), donde viven partículas ordinarias de masa$^2 = 2|m^2|$. Esto es exactamente lo que hace el campo de Higgs, y el panel lo muestra en una red con fricción de tipo Hubble. Datos reales: en 2011, OPERA informó de neutrinos muónicos que llegaban $60.7 \pm 6.9 \pm 7.4$ ns antes a lo largo de 730 km, $(v-c)/c = (2.48 \pm 0.28 \pm 0.30)\times10^{-5}$ (arXiv:1109.4897v1). La causa resultó ser un cable de fibra óptica mal conectado y una deriva del reloj. El resultado corregido es $(2.7 \pm 3.1\,^{+3.4}_{-3.3})\times
+  10^{-6}$ (v4, JHEP 10 (2012) 093), e ICARUS midió $\delta t = 0.3 \pm 4.9 \pm 9.0$ ns (Phys. Lett. B 713 (2012) 17): ambos compatibles con $c$. Interpretado como un taquión, el valor de 2011 requeriría $|m| \approx 120$ MeV, y entonces los neutrinos de 10 MeV de la supernova SN1987A habrían adelantado a la luz por un factor de aproximadamente 12, en lugar de llegar a pocas horas de ella tras 168 000 años ($|v-c|/c \lesssim 2\times10^{-9}$, Longo 1987). Unidades: $c = 1$, masa del taquión $\mu = 1$ para el abanico de señales.'
+meanings:
+- 'raíz cuadrada compleja: real cuando $p > \mu$, aunque $m$ y $\gamma$ sean ambos imaginarios'
+- una transformación de Lorentz por cada sistema de referencia de observador ($c = 1$)
+- '$b$ repetido ⇒ sumado: cada señal vista desde cada sistema a la vez'
+- el invariante $m^2 = -\mu^2$, igual en todos los sistemas
+- 'las rapideces se restan: $\tanh$ por debajo de $c$, $\coth$ por encima'
+- cuándo llega la respuesta a Alice; $< t_{\mathrm{send}}$ cierra un bucle causal
+- campo en red que rueda desde el falso vacío $\phi = 0$ (laplaciano con torch.roll, Verlet de velocidades)
+labels:
+  u: Velocidad de la señal taquiónica $u$
+  beta_max: Sistema de observador más rápido $\beta_\mathrm{max}$
+  m2: Masa$^2$ taquiónica del campo $m^2$
+  lam: Autoacoplamiento $\lambda$
+  friction: Fricción de Hubble $\gamma$

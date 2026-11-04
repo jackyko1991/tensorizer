@@ -1,0 +1,73 @@
+title: 'The projection postulate: one high-dimensional state, many shadows'
+category: cosmology
+level: advanced
+order: 13
+tags: [series:projection-hypothesis:1, role:postulate, speculative]
+summary: >
+  A speculative hypothesis, not established physics: the universe is one state $\Psi$ in a space of very many
+  dimensions $D$, and what an observer measures is its projection onto a few. This step states the postulates and
+  checks their mathematics. The visible fraction $\|P\Psi\|^2$ follows Beta$(d, D-d)$, and a measurement is modelled
+  as a race between hidden blocks. One hidden complex dimension per outcome gives exactly the Born rule; more give a
+  deviation that triple-slit experiments rule out. So far the idea reproduces quantum mechanics rather than going
+  beyond it.
+animated: true
+vector_form: '\psi = \frac{P\Psi}{\|P\Psi\|},\qquad \|P\Psi\|^2 \sim \mathrm{Beta}(d,\,D-d),\qquad k^* = \arg\max_k \frac{|c_k|^2}{E_k},\quad E_k = \|h_k\|^2 \sim \Gamma(m),\qquad P(k) = \int_0^\infty f_m(t;|c_k|^2)\prod_{j\neq k} Q\big(m, |c_j|^2 t\big)\,dt \;\overset{m=1}{=}\; |c_k|^2,\qquad D \geq 2^N,\qquad \kappa = \frac{\varepsilon_{ABC}}{|I_{AB}|+|I_{AC}|+|I_{BC}|}'
+index_form: 'q_{tD} = \frac{\sum_{i\leq d}|z_{ti}|^2}{\sum_{i\leq D}|z_{ti}|^2},\qquad E_{tkm} = \sum_{l\leq m}|h_{tkl}|^2,\qquad P_{mk} = \int ds\; e^{\,m\ln(w_k t) - w_k t - \ln\Gamma(m) + \sum_{j} \ln Q(m, w_j t) - \ln Q(m, w_k t)},\qquad \psi_{Sx} = O_{Ss}\,\phi_{sx},\qquad \kappa = \frac{\varepsilon}{\delta}'
+translation:
+  - {symbol: 'q_{tD}', code: 'cumsum(z.abs()**2, 1)[:, D - 1]', shape: '(T, n_D)', meaning: 'fraction of the norm of $\Psi$ the observer sees, for every $D$ at once (nested states)'}
+  - {symbol: '\psi', code: 'z[:, :d] / z[:, :d].norm(dim=1)', shape: '(T, d)', meaning: 'the observed state, uniform on the unit sphere of $\mathbb C^d$ for any $D$'}
+  - {symbol: '\mathrm{KS}', code: 'ks_distance(q, a, b)', shape: '(n_D,)', meaning: 'Kolmogorov–Smirnov distance to Beta$(d, D-d)$ (incomplete beta by quadrature)'}
+  - {symbol: 'E_{tkm}', code: 'cumsum(h.abs()**2, -1)', shape: '(T, K, M)', meaning: 'energy of hidden block $k$ with $m = 1..M$ dimensions: Gamma$(m)$ (complex) or $2\,$Gamma$(m/2)$ (real)'}
+  - {symbol: 'k^*', code: '(w[:, None] / E).argmax(1)', shape: '(T, M)', meaning: 'the projection race: the outcome with the largest $|c_k|^2/E_k$ happens'}
+  - {symbol: 'P_{mk}', code: 'race_probabilities(w, a)', shape: '(M, K)', meaning: 'closed form of the race; the sum over $j$ (minus $j = k$) is the product over the other outcomes'}
+  - {symbol: '\psi_{Sx}', code: "einsum('Ss,sx->Sx', SUBSETS, amps)", shape: '(7, X)', meaning: 'repeated slit index $s$ ⇒ summed: the amplitude for each set $S$ of open slits'}
+  - {symbol: '\kappa', code: 'sorkin_kappa(P, pixel)', shape: '(A,)', meaning: 'Sorkin three-path parameter of the race model; $0$ for the Born rule'}
+notes: >
+  Status: speculative. This is the author's own hypothesis (see the series description), not established physics,
+  and no experiment supports it over standard quantum mechanics. This first step writes the postulates precisely and
+  checks the mathematics they rest on. The postulates. P0 (one reality): the universe is a single state $\Psi$ in a
+  space of dimension $D$, possibly $D\to\infty$. P1 (projection): an observer sees only a projection
+  $P:\mathbb C^D\to\mathbb C^d$ onto a $d$-dimensional subspace; the measured quantum state is
+  $\psi = P\Psi/\|P\Psi\|$, so the wavefunction is a projection of $\Psi$, not $\Psi$ itself. P2 (event): a measurement
+  is a projection onto one definite time slice that picks one outcome $k$; outcome weights come from $\|P_k\Psi\|^2$,
+  and the Born rule is to be tested, not assumed. P3 (one particle): all particles are projections of the same object.
+  P4 (geometry): curved spacetime is the projected shape of a flat higher-dimensional embedding, and a singularity is
+  where the projection folds (its Jacobian drops rank). P5 (open dimension): quantum effects need some minimal
+  $d_Q$ and gravity some $d_G$ inside $D$; these are estimated or fitted, never set to $3+1$ by hand. What is
+  computed. (1) Concentration of measure: for $\Psi$ uniform on the sphere of $\mathbb C^D$, $\|P\Psi\|^2\sim$
+  Beta$(d, D-d)$ with mean $d/D$, checked by mean, variance and a Kolmogorov–Smirnov test for $D$ from 4 to
+  $D_{max}$; the normalised $\psi$ is uniform on the small sphere whatever $D$ is. A typical observer sees a fraction
+  $d/D$ of the norm, which vanishes as $D\to\infty$. (2) P2 made concrete as a projection race (the author's model,
+  formalised here): each outcome $k$ couples to its own block of $m$ hidden complex dimensions with energy
+  $E_k = \|h_k\|^2$, and the outcome with the largest $|c_k|^2/E_k$ happens. For $m = 1$, $E_k\sim$ Exp(1) and the
+  exponential race gives $P(k) = |c_k|^2$ exactly: the Born rule. For $m > 1$, $E_k\sim$ Gamma$(m)$ and the most
+  likely outcome wins too often; for two outcomes $P_1 = I_{|c_1|^2}(m, m)$, and the deviation grows with $m$.
+  Real hidden dimensions give Gamma$(m/2)$: one real dimension gives the arcsine law $\tfrac2\pi\arcsin|c_1|$, two give
+  Born. (3) Dimension count (P5): the race needs $D\geq d + K$ for $K$ outcomes; $N$ entangled two-level systems need
+  $D\geq 2^N$, so about $10^{3\times10^{79}}$ for the $\sim10^{80}$ particles of the observable universe, consistent with
+  P0's $D\to\infty$. Honesty: standard quantum mechanics already uses exactly this Hilbert space, and taking partial
+  traces and projections is standard. So far the hypothesis is a reinterpretation; any testable novelty must come
+  from where the race with $m > 1$, or a later step, predicts something different. Gleason's theorem (1957) already
+  shows that for $d\geq 3$ any non-contextual probability assignment on a Hilbert space is the Born rule. (4) Data:
+  in a three-slit setup (41 screen bins plus a 'blocked' outcome, each with its own hidden block) the race gives a
+  Sorkin parameter $\kappa\approx s\,(a-1)$, with $s$ between 0.56 and 0.74 over 9 binnings, where the hidden shape
+  is $a = m$ (complex) or $m/2$ (real). Measured values (data/born_rule_tests.csv, cited numbers): Sinha et al.
+  (Science 329, 418, 2010) bound $|\kappa|$ below $10^{-2}$; Park et al. (NMR, New J. Phys. 14, 113025, 2012)
+  $\kappa = 0.001\pm0.003$; Kauten et al. (New J. Phys. 19, 033017, 2017, open access, CC-BY 3.0) $0.0\pm1.6\times10^{-3}$
+  with heralded single photons, $(1.3\pm1.8)\times10^{-4}$ with attenuated laser light and $0.0\pm3.1\times10^{-5}$
+  with classical light. With $|\kappa|\leq|\kappa_{meas}| + 2\sigma$ and the smallest slope, the single-photon data
+  allow $|a-1|\leq 6\times10^{-3}$, and the classical-light data, if every photon detection is one race,
+  $|a-1|\leq 1.1\times10^{-4}$. The race with $m = 2$
+  gives $\kappa\approx 1$ and one real hidden dimension $\kappa\approx 0.1$, both excluded; only one complex (two real)
+  hidden dimension per outcome survives. This is a constraint on the model, not support for it: $m = 1$ is exactly
+  the case that cannot be told apart from standard quantum mechanics. The mapping to $\kappa$ depends on how outcomes
+  are binned, which is why the most conservative slope is used. Next steps in the series (not built here): P3 (all
+  particles as projections of one object), P4 (curved spacetime as the shadow of a flat embedding: an analytic 4D metric
+  embeds locally in 10 flat dimensions by the Janet–Cartan theorem, and Schwarzschild in 6), fitting $d_G$ for gravity, and a search for a
+  prediction that differs from standard physics.
+params:
+  D_max: {default: 4096, min: 16, max: 16384, step: 16, type: int, label: 'Largest total dimension $D$ (example; the run uses a ladder up to it)'}
+  d: {default: 3, min: 1, max: 12, step: 1, type: int, label: 'Observer subspace dimension $d$ (example)'}
+  m_max: {default: 8, min: 2, max: 16, step: 1, type: int, label: 'Largest number of hidden dimensions per outcome $m$'}
+  outcomes: {default: 4, min: 2, max: 8, step: 1, type: int, label: 'Number of outcomes $K$'}
+  trials: {default: 20000, min: 2000, max: 100000, step: 1000, type: int, label: 'Random states and events per case'}

@@ -1,0 +1,22 @@
+source_hash: ab1a099d3cd6
+title: 'Kuramoto-Modell: spontane Synchronisation'
+summary: 'Glühwürmchen, die gemeinsam blinken, Metronome auf einem gemeinsamen Brett, Schrittmacherzellen: Oszillatoren mit verschiedenen Eigenfrequenzen $\omega_i$, die sich gegenseitig anziehen, rasten plötzlich ein, wenn die Kopplung $K$ eine Schwelle überschreitet. Das komplexe mittlere Feld $r e^{i\psi} = \frac1N \sum_j e^{i\theta_j}$ macht aus der Alle-mit-allen-Summe einen Aufwand von $O(N)$, ein ganzer Batch von Kopplungen läuft gleichzeitig, und der Ordnungsparameter $r$ springt bei $K_c = 2/(\pi g(0))$ nach oben, entlang der exakten Ott-Antonsen-Kurve $r = \sqrt{1 - K_c/K}$ für Lorentz-verteilte Frequenzen.'
+notes: 'Kuramoto (1975) löste das Modell selbstkonsistent und fand $K_c = 2/(\pi g(0))$ für eine symmetrische unimodale Frequenzdichte $g$; Strogatz (2000) erzählt die Geschichte. Ott und Antonsen (2008) bewiesen, dass für eine Lorentz-Verteilung $g(\omega) = (\gamma/\pi)/(\omega^2 + \gamma^2)$ die Dynamik bei unendlichem $N$ auf eine einzige Gleichung zusammenfällt, $\dot r = -\gamma r + \tfrac K2 r(1 - r^2)$, deren stabiler Zustand $r = \sqrt{1 - 2\gamma/K}$ ist: Die Simulation trifft ihn bis auf etwa $0.01$ mit $N = 1200$. Unterhalb von $K_c$ ist $r$ nur Finite-Size-Rauschen der Ordnung $1/\sqrt N$. Gaußverteilte Frequenzen haben die kleinere Schwelle $K_c = 2\sigma\sqrt{2\pi}/\pi \approx 1.6\,\sigma$ (grün). Die langsame Rampe (rot) folgt der Kurve, während $K$ wächst; der Kreis zeigt die Oszillatoren im System des mittleren Feldes, gefärbt nach $\omega_i$: Die mit kleinem $|\omega_i|$ rasten zuerst ein, die schnellen driften weiter. Das dritte Feld ist eine kleine Zugabe: Identische
+  Oszillatoren auf einem Ring mit nichtlokaler Kopplung und einer Phasenverschiebung $\alpha = \pi/2 - 0.18$ zerfallen in einen eingerasteten und einen inkohärenten Bereich, den Chimärenzustand, entdeckt von Kuramoto und Battogtokh (2002) und benannt von Abrams und Strogatz (2004). Die mittlere Phase driftet genau mit der mittleren Frequenz, weil $\sin(\theta_j - \theta_i)$ antisymmetrisch ist.'
+meanings:
+- Eigenfrequenzen, je eine Zufallsziehung in jedem von $N$ gleich wahrscheinlichen Intervallen der Lorentz- (oder Gauß-)Dichte
+- 'eine Kopplung pro Batch-Element: jede Population entwickelt sich parallel'
+- komplexes mittleres Feld, wiederholtes $j$ ⇒ gemittelt; $r = 0$ inkohärent, $r = 1$ perfekte Synchronie
+- 'jeder Oszillator spürt nur das mittlere Feld: $O(N)$ statt $O(N^2)$'
+- die langsame Paarsumme, als Referenz beibehalten; die Tests prüfen, dass sie der Form mit mittlerem Feld entspricht
+- exakter Ordnungsparameter für $N \to \infty$ bei Lorentz-Frequenzen, $\sqrt{1 - 2\gamma/K}$ oberhalb von $K_c = 2\gamma$
+- nichtlokale Kopplung $(1 + A\cos x)/2\pi$ auf einem Ring, für den Chimärenzustand
+labels:
+  n_oscillators: Oszillatoren $N$
+  width: Frequenzbreite $\gamma$ (Lorentz) oder $\sigma$ (Gauß)
+  k_max: Größte Kopplung $K$
+  n_couplings: Kopplungen im Batch
+  t_relax: Relaxationszeit pro Kopplung
+  ramp_time: Dauer der langsamen Rampe von $K$
+  distribution: In der Rampe gezeigte Frequenzdichte
+  seed: Zufallsstartwert

@@ -1,0 +1,11 @@
+# Electromagnetic distances to NGC 4993, the host galaxy of GW170817 (cited published numbers).
+# Cantiello et al. 2018, ApJL 854, L31, arXiv:1801.06080, doi:10.3847/2041-8213/aaad64: surface brightness fluctuations
+#   (HST WFC3/IR F110W), 40.7 +- 1.4 (random) +- 1.9 (systematic) Mpc; sigma below is the two added in quadrature.
+# Hubble flow, as in Pardo et al. 2018 (JCAP 07, 048, arXiv:1801.08160): d = v_H / H0 with v_H = 3017 +- 250 km/s
+#   (group velocity corrected for a 310 km/s peculiar velocity), H0 = 73.24 +- 1.74 km/s/Mpc (SH0ES, Riess et al. 2016)
+#   or 67.74 +- 0.46 km/s/Mpc (Planck 2015 results XIII). Columns v_kms, H0 hold these inputs; d_Mpc, sigma_Mpc are
+#   computed from them (linear error propagation). Licence: cited facts (numbers from the papers), no data file copied.
+key,method,d_Mpc,sigma_Mpc,v_kms,v_err,H0,H0_err
+sbf,surface brightness fluctuations (Cantiello 2018),40.7,2.356,,,,
+shoes,Hubble flow with SH0ES H0 (Pardo 2018 inputs),41.19,3.55,3017,250,73.24,1.74
+planck,Hubble flow with Planck H0 (Pardo 2018 inputs),44.54,3.70,3017,250,67.74,0.46

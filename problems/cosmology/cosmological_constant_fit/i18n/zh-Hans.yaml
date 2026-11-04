@@ -1,0 +1,24 @@
+source_hash: 73d953345169
+title: 用超新星拟合宇宙学常数
+summary: 来自开放 Pantheon+ 汇编的 1466 颗真实 Ia 型超新星，被拟合到含物质 $\Omega_m$、宇宙学常数 $\Omega_\Lambda$ 和曲率的弗里德曼宇宙。一次批量 $\chi^2$ 同时在每颗超新星上评估上千个宇宙，画出 $\Omega_m$–$\Omega_\Lambda$ 置信轮廓，而 Adam 和自动微分则从纯物质宇宙一路走到最佳拟合。遥远超新星比在减速宇宙中更暗：$q_0 < 0$，膨胀正在加速。
+notes: 1998 年，两个团队——超新星宇宙学计划（Perlmutter 等人）和高红移超新星搜寻小组（Riess 等人；Schmidt）——发现遥远的 Ia 型超新星（可标准化的烛光）比减速宇宙所允许的更暗：膨胀正在加速，这在广义相对论中需要类似宇宙学常数 $\Lambda$（暗能量）的东西。这项发现获得 2011 年诺贝尔物理学奖。这里用今天的数据重做同样的检验。左图画出每个距离模数减去一个空的、匀速膨胀宇宙（$\Omega_m = \Omega_\Lambda = 0$）的值：纯物质宇宙（红线）会让遥远超新星更亮（在零以下），而数据位于零之上。右图显示批量网格得到的 1、2、3$\sigma$ 区域（$\Delta\chi^2 = 2.30, 6.18, 11.83$），以及平坦线、分隔加速与减速的直线 $q_0 = 0$，还有 $E^2$ 在数据范围内变为负值的“无大爆炸”角落。用这些对角误差，拟合得到 $\Omega_m \approx 0.30 \pm 0.07$、$\Omega_\Lambda \approx 0.57 \pm 0.10$（平坦时：$\Omega_m \approx 0.35 \pm 0.02$），并以约 $5.5\sigma$ 排除 $\Omega_\Lambda \le 0$（$\sigma = \sqrt{\Delta\chi^2}$，相对于被排除一侧的最佳模型）。$H_0$ 与超新星的绝对星等简并；打印出的值（$\approx 73$ km/s/Mpc）来自内置于这些 $\mu$ 的 SH0ES 造父变星校准，并非独立测量（与 CMB 值 $\approx 67$ 之间的“哈勃张力”是未解问题）。数据：Pantheon+ 距离模数（Scolnic et al. 2022, ApJ 938, 113；Brout et al. 2022, ApJ 938, 110），取自 github.com/PantheonPlusSH0ES/DataRelease（文件 Pantheon+SH0ES.dat；为研究公开发布但未注明许可，论文以 CC BY 4.0 开放获取；请引用）。保留：$z > 0.01$ 的 zHD、MU_SH0ES 和 MU_SH0ES_ERR_DIAG，移除造父变星校准宿主星系，每颗超新星一行。你自己的表格也能用：任何含
+  z、mu、sigma_mu 列的 CSV（见 load_distance_moduli）。简化：只用对角误差，而非 Pantheon+ 完整的统计 + 系统协方差（$\chi^2/\mathrm{dof} \approx 0.44$ 表明这些误差偏保守，而忽略相关的系统误差会让轮廓略显乐观）；暗能量是纯常数（$w = -1$）；忽略辐射。
+meanings:
+- 超新星 $i$ 的红移、距离模数和误差，可从任何含这些列的 CSV 读入
+- 候选宇宙；以 $(A,1,1)$ 和 $(1,B,1)$ 广播
+- 所有宇宙在每个节点 $z_k$ 的膨胀率，一次算完
+- 沿最后一轴对 $1/E$ 做累积梯形积分
+- 三次 Hermite 插值到超新星红移（已知斜率 $1/E$）
+- 开放、平坦或封闭空间分别用 $\sinh$、恒等或 $\sin$
+- 对 $i$ 求和：每个宇宙的最佳 $H_0$ 是解析的加权平均
+- 以权重 $w_i = 1/\sigma_i^2$ 对 $i$ 求和
+- 通过积分的自动微分，供 Adam 和 L-BFGS 使用
+- 由 $\chi^2$ 的曲率得到拟合参数的协方差
+labels:
+  geometry: Adam 拟合的几何
+  start_Om: Adam 起点 $\Omega_m$
+  start_OL: Adam 起点 $\Omega_\Lambda$
+  steps: Adam 迭代次数
+  lr: Adam 学习率
+  grid: 每轴网格点数（$\chi^2$ 轮廓）
+  z_min: 最小红移 $z_\mathrm{min}$

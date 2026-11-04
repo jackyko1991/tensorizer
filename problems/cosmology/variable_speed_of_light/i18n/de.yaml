@@ -1,0 +1,17 @@
+source_hash: b1b7792277b6
+title: Variable Lichtgeschwindigkeit und das Horizontproblem
+summary: 'Warum hat der CMB in jeder Richtung dieselbe Temperatur, obwohl sein Himmel im Standard-ΛCDM in etwa $10^4$ Bereiche zerfällt, die nie ein Signal ausgetauscht haben? Die Integration von $\chi_p = \int c\,d\ln a/(aH)$ für einen Batch von Universen vergleicht drei Antworten: keine (ΛCDM), Inflation ($\sim 60$ e-Folds eines schrumpfenden Hubble-Radius) und die spekulative Idee einer variablen Lichtgeschwindigkeit (VSL) von Moffat und Albrecht–Magueijo, bei der das Licht vor einem Phasenübergang etwa $10^{26}$-mal schneller war. Inflation ist die vorherrschende Erklärung; VSL ist eine spekulative Minderheitsalternative.'
+notes: 'Planck-2018-Parameter ($H_0 = 67.4$ km/s/Mpc, $\Omega_m = 0.315$, $\Omega_r = 9.1\times10^{-5}$, flach), letzte Streuung bei $a_\mathrm{rec} = 1/1090$. ΛCDM ergibt heute einen Teilchenhorizont von 14,2 Gpc, bei der Rekombination aber nur etwa 0,28 Gpc, sodass ein kausaler Bereich etwa 1,2° überspannt und der Himmel etwa $10^4$ davon enthält. Licht läuft im konformen Diagramm unter 45°; die vergangenen Lichtkegel zweier gegenüberliegender CMB-Punkte überlappen nur, wenn $\chi_p(a_\mathrm{rec}) \ge D$ (Entfernung zum CMB, 13,9 Gpc). Inflation erreicht dies durch $N$ e-Folds de-Sitter-Expansion, die bei $a_*$ enden (der mitbewegte Hubble-Radius schrumpft $\propto 1/a$); VSL behält die Standardexpansion bei, macht $c$ aber vor einem Übergang bei $a_*$ um den Faktor $r$ größer, eine glatte Stufe der Breite $w = 0.1$ e-Folds. Die Animation schaltet beides allmählich ein. Status: VSL (Moffat 1993; Albrecht und Magueijo 1999) ist spekulativ und eine Minderheitsmeinung; sie benötigt einen
+  Rahmen, in dem eine dimensionsbehaftete Konstante variieren kann (messbar sind nur dimensionslose Kombinationen wie $\alpha = e^2/4\pi\varepsilon_0\hbar c$), ihre Vorhersagen sind modellabhängig, und sie hat keine Stütze durch Beobachtungen. Inflation ist die Standarderklärung, ebenfalls nicht direkt bestätigt (bisher keine primordialen B-Moden), aber im Einklang mit dem gemessenen Spektrum der CMB-Fluktuationen. Schranken (im Terminal ausgegeben): Atomuhren $\dot\alpha/\alpha = (1.0\pm1.1)\times10^{-18}$/Jahr, der Oklo-Reaktor $|\Delta\alpha/\alpha| \lesssim 10^{-7}$ über 2 Mrd. Jahre, der CMB $|\Delta\alpha/\alpha| \lesssim 4\times10^{-3}$ bei der Rekombination und GW170817 $-3\times10^{-15} \le (v_\mathrm{gw}-c)/c \le 7\times10^{-16}$. Ein Übergang bei $a_* \sim 10^{-28}$ entgeht allen, und genau deshalb ist er so schwer zu testen.'
+meanings:
+- Gitter in $\ln a$ von weit vor $a_*$ bis heute
+- 'Lichtgeschwindigkeit von Universum (Frame) $m$ bei jedem $a$: das $r$-Fache von $c_0$ vor $a_*$'
+- Expansionsrate, eingefroren bei $H(a_*)$ während $N$ e-Folds Inflation
+- 'mitbewegter Hubble-Radius: wie weit Licht in einer Expansionszeit kommt'
+- 'kumulative Trapezregel entlang $a$: der mitbewegte Teilchenhorizont'
+- Winkel eines kausalen Bereichs am CMB-Himmel und Anzahl der Bereiche
+labels:
+  log10_c_ratio: 'VSL: frühe Lichtgeschwindigkeit $\log_{10}(c_\mathrm{early}/c_0)$'
+  efolds: 'Inflation: Anzahl der e-Folds $N$'
+  log10_a_star: Übergang / Ende der Inflation $\log_{10} a_*$
+  n_grid: Gitterpunkte in $\ln a$

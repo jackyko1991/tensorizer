@@ -1,0 +1,25 @@
+# Loophole-free Bell tests (detection and locality loopholes closed together). Cited numbers from the abstracts,
+# checked against arXiv and Crossref records (Nov 2026); no figures or raw data are copied. Facts, not licensed works.
+# CHSH: local hidden variables give S <= 2, quantum mechanics S <= 2 sqrt 2 = 2.828 (Tsirelson).
+# Hensen et al., Nature 526, 682-686 (2015), doi:10.1038/nature15759, arXiv:1508.05949: NV electron spins 1.3 km
+#   apart, 245 trials, S = 2.42 +- 0.20, p = 0.039.
+# Hensen et al., Sci. Rep. 6, 30289 (2016), doi:10.1038/srep30289, arXiv:1603.05705 (open access, CC-BY 4.0): second
+#   run on the same setup, S = 2.35 +- 0.18 (combined with the first run S = 2.38 +- 0.14).
+# Giustina et al., Phys. Rev. Lett. 115, 250401 (2015), doi:10.1103/PhysRevLett.115.250401, arXiv:1511.03190:
+#   entangled photons, Clauser-Horne/Eberhard inequality (no S value), p <= 3.74e-31 (11.5 sigma).
+# Shalm et al., Phys. Rev. Lett. 115, 250402 (2015), doi:10.1103/PhysRevLett.115.250402, arXiv:1511.03189:
+#   entangled photons, Clauser-Horne/Eberhard inequality (no S value), p = 5.9e-9, 2.3e-7 after accounting for
+#   setting predictability (stored).
+# Rosenfeld et al., Phys. Rev. Lett. 119, 010402 (2017), doi:10.1103/PhysRevLett.119.010402, arXiv:1611.04604:
+#   trapped atoms 398 m apart, S = 2.221 +- 0.033, p < 2.57e-9.
+# Storz et al., Nature 617, 265-270 (2023), doi:10.1038/s41586-023-05885-0: superconducting qubits 30 m apart,
+#   more than 1 million trials, S = 2.0747 +- 0.0033, p < 1e-108.
+# Columns: S and sigma (1 standard deviation) empty when the experiment used a different inequality; p_value is the
+# quoted probability that local realism produces the data (an upper bound where the paper says so).
+experiment,year,platform,inequality,S,sigma,p_value,separation_m,doi
+Hensen et al.,2015,NV electron spins,CHSH,2.42,0.20,0.039,1300,10.1038/nature15759
+Hensen et al. (second run),2016,NV electron spins,CHSH,2.35,0.18,,1300,10.1038/srep30289
+Giustina et al.,2015,entangled photons,CH-Eberhard,,,3.74e-31,,10.1103/PhysRevLett.115.250401
+Shalm et al.,2015,entangled photons,CH-Eberhard,,,2.3e-7,,10.1103/PhysRevLett.115.250402
+Rosenfeld et al.,2017,trapped atoms,CHSH,2.221,0.033,2.57e-9,398,10.1103/PhysRevLett.119.010402
+Storz et al.,2023,superconducting qubits,CHSH,2.0747,0.0033,1e-108,30,10.1038/s41586-023-05885-0

@@ -1,0 +1,42 @@
+title: Relativistic string modes and T-duality
+category: cosmology
+level: advanced
+order: 1
+tags: [series:quantum-gravity:1, role:theory, speculative]
+summary: >
+  The Nambu–Goto string in light-cone gauge is 24 free transverse waves. One batched mode sum draws a vibrating closed
+  or open string; the energy in its modes is the level $N$, quantised as $\alpha' M^2 = N - 1$ (open) or $4(N-1)$
+  (closed), with $1, 24, 324, 3200, \dots$ states read off the power series $\prod (1-q^n)^{-24}$. On a circle of radius
+  $R$ the closed-string spectrum is unchanged by $R \leftrightarrow \alpha'/R$: T-duality. String theory is a framework
+  with no direct experimental confirmation.
+animated: true
+vector_form: '(\partial_\tau^2 - \partial_\sigma^2)\,X^i = 0,\qquad X^i = \sqrt{2\alpha''}\sum_{n>0}\frac{1}{n}\,\mathrm{Re}\big[i\alpha_n^i e^{-in(\tau-\sigma)} + i\tilde\alpha_n^i e^{-in(\tau+\sigma)}\big],\qquad \alpha'' M^2 = 2(N + \tilde N - 2),\qquad \sum_N d_N q^N = \prod_{n\ge1}(1-q^n)^{-24},\qquad M^2 = \frac{n^2}{R^2} + \frac{w^2R^2}{\alpha''^2} + \frac{2}{\alpha''}(N + \tilde N - 2)'
+index_form: 'X_{tsi} = \sqrt{2\alpha''}\,\mathrm{Re}\Big[E^{(R)}_{tsn}\,\tfrac{i}{n}\,\alpha_{ni} + E^{(L)}_{tsn}\,\tfrac{i}{n}\,\tilde\alpha_{ni}\Big],\qquad N + \tilde N = \frac{1}{4\pi\alpha''}\int\!\big(\dot X_{si}\dot X_{si} + X''_{si}X''_{si}\big)\,d\sigma,\qquad d_N = \big[e^{\,24\,T}\big]_{N0},\quad T_{ij} = \tfrac{\sigma_1(i-j)}{i-j}'
+translation:
+  - {symbol: '\alpha_{ni},\ \tilde\alpha_{ni}', code: 'oscillators(n_a, n_b, kind)', shape: '(N_modes, 3)', meaning: 'complex amplitudes of the right- and left-moving modes $n$ in 3 of the 24 transverse directions $i$'}
+  - {symbol: 'E^{(R)}_{tsn}', code: 'torch.polar(1, -n*(tau - sigma))', shape: '(T, S, N_modes)', meaning: 'phase $e^{-in(\tau-\sigma)}$ of every mode at every worldsheet point (broadcast)'}
+  - {symbol: 'X_{tsi}', code: "einsum('tsn,nd->tsd', 1j*E/n, alpha)", shape: '(T, S, 3)', meaning: 'repeated mode index $n$ ⇒ summed: the string shape at every $\tau$ and $\sigma$'}
+  - {symbol: '\dot X_{si}\dot X_{si}', code: "einsum('tsi,tsi->ts', X_dot, X_dot)", shape: '(T, S)', meaning: 'energy density; integrated over $\sigma$ it gives the level $N$ (Parseval)'}
+  - {symbol: '\sigma_1(m)', code: '(m[:, None] % m == 0) @ m', shape: '(M,)', meaning: 'divisor sums from a broadcast divisibility mask: $\log\prod(1-q^n)^{-1} = \sum_m \sigma_1(m) q^m/m$'}
+  - {symbol: 'd_N', code: 'matrix_exp(toeplitz)[:, 0]', shape: '(N_max+1,)', meaning: 'truncated power series multiply like lower-triangular Toeplitz matrices, so $\exp$ of the series is a matrix exponential'}
+  - {symbol: 'M^2_{bs}', code: 'circle_mass_squared(R[:, None], n, w, N, N_t)', shape: '(B, S)', meaning: 'masses of all level-matched states $N-\tilde N = nw$ on every radius $R_b$ at once'}
+notes: >
+  Units $\alpha' = 1$. Status: string theory is a mathematically consistent candidate framework for quantum gravity, but
+  there is no direct experimental evidence for it; nothing here is a prediction that has been tested. What is shown is
+  standard textbook mathematics of the bosonic string (Goddard–Goldstone–Rebbi–Thorn 1973; Polchinski, String Theory
+  vol. 1): the light-cone quantisation is consistent only in $D = 26$, with intercept $a = 1$, which leaves a tachyon at
+  $N = 0$ ($M^2 < 0$, red), a massless vector at $N = 1$ for open strings and the graviton, B-field and dilaton at
+  $N = \tilde N = 1$ for closed strings. Superstrings (D = 10) remove the tachyon. The drawn string is a classical
+  configuration whose oscillator energy equals the level $N$ (each quantum of mode $n$ carries $n$ units); for closed
+  strings the right and left movers are chosen with $N = \tilde N$ (level matching, $\int \dot X\cdot X'\,d\sigma = 0$),
+  and the string is in its rest frame, so the light-cone coordinate $X^-$ is not drawn. The T-duality panel follows the
+  masses of a few states as the radius changes: momentum states ($n/R$) and winding states ($wR/\alpha'$) swap
+  under $R \to \alpha'/R$, and at the self-dual radius $R = \sqrt{\alpha'}$ extra states become massless. The title
+  checks that the whole truncated spectrum, with multiplicities, is identical at $R$ and $\alpha'/R$.
+params:
+  string: {default: closed, type: choice, options: [closed, open], label: String type}
+  mode_a: {default: 2, min: 1, max: 5, step: 1, type: int, label: 'Mode $n$ of the right movers (open: first mode)'}
+  mode_b: {default: 1, min: 1, max: 5, step: 1, type: int, label: 'Mode $\tilde n$ of the left movers (open: second mode)'}
+  n_points: {default: 240, min: 60, max: 600, step: 20, type: int, label: 'Points along the string $\sigma$'}
+  n_levels: {default: 6, min: 3, max: 10, step: 1, type: int, label: Mass levels shown}
+  R_max: {default: 3.0, min: 1.5, max: 6.0, step: 0.5, label: 'Largest circle radius $R/\sqrt{\alpha''}$ in the sweep'}

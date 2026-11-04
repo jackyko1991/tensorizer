@@ -1,0 +1,26 @@
+source_hash: 03516f527daf
+title: 'GW150914: el primer «chirp» de ondas gravitacionales'
+summary: Dieciséis segundos de deformación (strain) real de LIGO en Hanford y Livingston, del 14 de septiembre de 2015. Una DEP de Welch, un blanqueado y un filtro pasabanda hacen aflorar un chirp enterrado bajo un ruido cien veces más intenso. Un mapa de transformada Q muestra cómo su frecuencia sube hasta unos 150 Hz, y un banco de plantillas de espiralamientos post-newtonianos, filtrado en un solo lote, alcanza su máximo para una masa de chirp cercana a $30\,M_\odot$. La cresta se ajusta con autograd mediante $\dot f \propto M_c^{5/3} f^{11/3}$, y la señal de Livingston adelanta a la de Hanford en unos 7 ms.
+notes: 'El 14 de septiembre de 2015 a las 09:50:45 UTC, los dos detectores Advanced LIGO registraron la fusión de dos agujeros negros situados a unos 410 Mpc (Abbott et al., PRL 116, 061102, 2016), la primera detección directa de ondas gravitacionales. Esta página repite una versión simplificada del análisis con los datos abiertos. La deformación bruta está dominada por ruido sísmico y térmico por debajo de 30 Hz, así que la DEP $S_n(f)$ se estima con el método de Welch (segmentos de Hann de 4 s, solapamiento del 50 %) y los datos se dividen por $\sqrt{S_n}$ (blanqueado); la página comprueba que la DEP blanqueada es plana, el teorema de Parseval y que cada plantilla cumple $\langle h|h\rangle = 1$. El banco de plantillas usa el espiralamiento en la aproximación de fase estacionaria con una fase 2PN para masas iguales, cortada en $f_\mathrm{peak} = 0.36/(2\pi M)$, la frecuencia a la que alcanza su máximo una fusión de masas iguales en relatividad numérica (o en la frecuencia de la ISCO, lo
+  que hace perder la mayor parte de la SNR). Todas las plantillas y ambos detectores se filtran en un solo lote de FFT. Con los valores por defecto, la mejor plantilla tiene $\mathcal M_c \approx 32\,M_\odot$, una SNR de unos 16 (H1) y 10 (L1), y los dos picos de SNR y la correlación cruzada H1–(−L1) sitúan a Hanford 7–8 ms después de Livingston (valor publicado: 6.9 +0.5/−0.4 ms; la orientación de los brazos de L1 invierte el signo). Un ajuste newtoniano a la cresta del mapa Q da una masa mayor, $\mathcal M_c \approx 37\,M_\odot$, igual que el banco 0PN: los términos post-newtonianos frenan el chirp para una masa de chirp dada, de modo que un modelo newtoniano lo interpreta como más pesado. HONESTIDAD / LIMITACIONES: este es un análisis didáctico, no el publicado. Los valores publicados proceden de formas de onda completas de espiralamiento–fusión–relajación (ringdown) con espines, de una DEP estimada con datos mucho más largos y de una estimación bayesiana de parámetros: en el sistema
+  del detector, $\mathcal M_c \approx 30\,M_\odot$ y una SNR de red de 24 (Abbott et al. 2016); en el sistema de la fuente, $\mathcal M_c = 28.6^{+1.7}_{-1.5}\,M_\odot$, masas de $35.6$ y $30.6\,M_\odot$ y una distancia de 440 Mpc en GWTC-1. Nuestras SNR son menores porque las plantillas no incluyen fusión–relajación ni espines, y porque la DEP sale de solo 16 s que contienen la señal. Datos: GWOSC (Gravitational Wave Open Science Center), publicación de GW150914 GWTC-1-confident v3, archivos H-H1_GWOSC_4KHZ_R1-1126259447-32 y su equivalente L1, de gwosc.org/eventapi/json/GWTC-1-confident/GW150914/v3/, CC BY 4.0; 16 s a partir del tiempo GPS 1126259455, con filtro pasabajos a 900 Hz y diezmados a 2048 Hz, guardados como strain × 10⁻²¹ en data/gw150914_strain.csv. Por favor, cite GWOSC (Abbott et al., SoftwareX 13, 100658, 2021) y Abbott et al. 2016. Premios: Premio Shaw de Astronomía 2016 (Drever, Thorne y Weiss, por concebir y diseñar LIGO), Special Breakthrough Prize in Fundamental Physics
+  2016 (Drever, Thorne, Weiss y los colaboradores de LIGO) y Premio Nobel de Física 2017 (Weiss, Barish y Thorne).'
+meanings:
+- deformación del detector $d \in \{H1, L1\}$ en la muestra $n$, 16 s a 2048 Hz
+- 'DEP unilateral: segmentos $s$ con ventana de Hann, FFT, $|X|^2$ promediado sobre $s$'
+- 'deformación blanqueada: ruido blanco de varianza unidad allí donde la DEP es correcta'
+- energía de filtros pasabanda gaussianos de anchura $f_q/q$, un solo lote de FFT inversas
+- fase del espiralamiento en fase estacionaria hasta orden 2PN para la masa de chirp $\mathcal M_m$, $\eta = 1/4$
+- todo el banco a la vez, cortado en la frecuencia del pico de fusión, normalizado para que $\langle h|h\rangle = 1$
+- $4\,\mathrm{Re}\sum_k a_k b_k^*/S_k\,\Delta f$, suma sobre $k$
+- 'suma sobre $k$ mediante una FFT inversa: SNR compleja para cada detector, plantilla e instante'
+- trayectoria newtoniana $\frac1\pi(5/256\tau)^{3/8}\mathcal M_c^{-5/8}$, ajustada a la cresta con Adam
+labels:
+  pn_order: Orden post-newtoniano de la fase de las plantillas
+  cutoff: Frecuencia superior de las plantillas
+  f_low: Frecuencia mínima de las plantillas $f_\mathrm{low}$
+  n_templates: Plantillas en el banco
+  mc_min: Masa de chirp mínima $\mathcal M_c$
+  mc_max: Masa de chirp máxima $\mathcal M_c$
+  q: Q del mapa tiempo-frecuencia
+  welch_segment: Longitud de segmento de Welch

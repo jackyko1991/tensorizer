@@ -1,0 +1,20 @@
+source_hash: 9e147d6c0987
+title: L'axe du mal dans le ciel micro-onde
+summary: 'Les deux plus grands motifs de la vraie carte WMAP du fond diffus cosmologique, le quadrupôle ($\ell = 2$) et l''octupôle ($\ell = 3$), semblent pointer dans la même direction. Leurs coefficients $a_{\ell m}$ proviennent d''un seul ajustement par moindres carrés ; l''axe de chaque multipôle est le vecteur propre dominant de la dispersion de moment cinétique $3\times 3$ $M_{ij} = \mathrm{Re}\,a^*L_iL_ja$, et un lot de $10^5$ ciels aléatoires isotropes transforme l''angle entre les axes en une valeur $p$. Une anomalie réelle mais débattue : hasard, résidu d''avant-plans ou physique nouvelle.'
+notes: 'Dans un univers statistiquement isotrope (la prédiction standard de l''inflation), les orientations des différents multipôles sont indépendantes, donc l''angle entre les axes du quadrupôle et de l''octupôle devrait être aléatoire : $|\cos|$ uniforme sur $[0, 1]$. Tegmark, de Oliveira-Costa et Hamilton (2003) puis de Oliveira-Costa et al. (2004) ont trouvé dans les premières cartes WMAP que les deux pointent vers $(l, b) \approx (-110^\circ, 60^\circ)$, surnommé « axe du mal » par Land et Magueijo (2005) ; Copi, Huterer, Schwarz et Starkman l''ont étudié avec des vecteurs multipolaires et ont trouvé d''autres liens avec l''écliptique. Sur la carte ILC de WMAP 9 ans fournie, les axes sortent à $(l, b) \approx (240^\circ, 60^\circ)$ et $(238^\circ, 63^\circ)$, à seulement $3^\circ$ l''un de l''autre, et moins de 2 ciels isotropes sur 1000 font mieux ($p \approx 0.0015$ ; pour cette statistique $p = 1 - |\cos|$ exactement, ce que confirme le Monte-Carlo). Le panneau de droite vérifie
+  la simulation : la fraction de ciels aléatoires au moins aussi alignés que $x$ suit la droite $P = x$. Statut : l''alignement est bien présent dans les données (les articles d''isotropie de Planck 2013, 2015 et 2018 le voient dans toutes leurs cartes), mais sa significativité est débattue. La statistique a été choisie après avoir remarqué le motif (a posteriori, effet « look-elsewhere » : parmi de nombreuses anomalies possibles, certaines paraîtront rares) ; la faible puissance du quadrupôle, les avant-plans galactiques résiduels de l''ILC, le quadrupôle Doppler cinématique (non retiré ici) et le choix de la carte changent $p$ d''un facteur de plusieurs. Aucune explication physique n''est acceptée ; les propositions incluent une topologie non triviale, une expansion anisotrope ou des avant-plans locaux, et la plupart des cosmologistes y voient une fluctuation statistique. Cette page donne $p$ pour une seule statistique et ne revendique aucune détection. Données : carte ILC de WMAP 9 ans
+  (Bennett et al. 2013, ApJS 208, 20), fichier wmap_ilc_9yr_v5.fits de l''archive LAMBDA de la NASA (lambda.gsfc.nasa.gov ; données de la NASA, domaine public), dégradée ici de HEALPix $N_\mathrm{side} = 512$ à 16 (colonnes glon_deg, glat_deg, T_uK). Toute carte au même format CSV lon/lat/T (par exemple une carte Planck) peut la remplacer. L''ajustement utilise tous les multipôles jusqu''à $\ell_\mathrm{fit}$ sur le ciel entier sans masque ; les ciels isotropes utilisent des coefficients réels gaussiens unitaires (la puissance $C_\ell$ s''annule dans l''axe).'
+meanings:
+- direction du pixel, température et angle solide, depuis n'importe quel CSV lon/lat/T
+- harmoniques réelles en chaque pixel ; $a$ parcourt tous les $(\ell, m)$
+- 'moindres carrés pondérés : tous les multipôles à la fois, sans repliement entre eux'
+- coefficients complexes avec $a_{\ell,-m} = (-1)^m a^*_{\ell m}$
+- matrices de spin $\ell$, $[L_x, L_y] = iL_z$, $L_iL_i = \ell(\ell+1)$
+- '$m, n, k$ sommés : $\hat n_iM_{ij}\hat n_j = \sum_m m^2|a_{\ell m}|^2$ dans le repère où $z \parallel \hat n$'
+- 'eigh par lot : l''axe autour duquel le multipôle est le plus plan'
+- '$i$ sommé : alignement des deux axes dans le ciel $s$ (les axes n''ont pas de sens)'
+- valeur $p$ Monte-Carlo face à des ciels gaussiens isotropes
+labels:
+  n_skies: Ciels aléatoires isotropes $K$
+  lmax_fit: Multipôles ajustés ensemble $\ell_\mathrm{fit}$
+  seed: Graine aléatoire

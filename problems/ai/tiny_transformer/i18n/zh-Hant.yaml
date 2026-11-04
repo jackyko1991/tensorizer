@@ -1,0 +1,22 @@
+source_hash: 888a525ecc84
+title: 小小的 GPT 寫莎士比亞
+summary: 一個用原始張量運算搭建的字元級 GPT：嵌入、以 einsum 寫成的因果多頭自注意力、LayerNorm、MLP 和殘差連接，不用 nn.Transformer。在《馬克白》和《羅密歐與茱麗葉》上訓練約一分鐘後，它的損失從 $\ln V$（對 $V$ 個字元的均勻猜測）開始下降，生成的樣本從亂碼變成單字、人名和具有詩行形狀的句子，而注意力圖始終保持嚴格的下三角形。
+notes: '架構來自 Vaswani 等人的〈Attention is all you need〉（2017），採用僅解碼器的 GPT 形式與 pre-norm 區塊：$X \leftarrow X + \mathrm{Attn}(\mathrm{LN}\,X)$，然後 $X \leftarrow X + \mathrm{MLP}(\mathrm{LN}\,X)$。測試精確檢查各項機制：einsum 注意力與 PyTorch 融合版的 `scaled_dot_product_attention` 加上 `is_causal=True` 的結果相同；改變位置 $t$ 之後的字元不會影響到 $t$ 為止的任何輸出（遮罩）；$A$ 的每一列總和為 1；未訓練時的損失為 $\ln V$；模型能記住一個批次；權重數為 $Vd + Td + L(12d^2 + 13d) + 2d + dV + V$。由於有遮罩，一次前向傳播就能同時訓練一個窗口內全部 $T$ 個下一字元預測，而生成時則必須一次一個字元地進行。這麼小的模型（113 093 個權重，CPU 約一分鐘）學到的是拼寫、空格、大寫的說話者名字和換行，而不是意義；驗證損失最後約為每字元 2 nats。熱圖顯示每一層中，在句子「When shall we three meet again?」上最關注前一個字元的那個注意力頭。生物資訊學中的蛋白質語言模型使用同樣的注意力但不加遮罩，用來填補被隱藏的字母。文本：取自 Project Gutenberg 電子書 #100《The Complete Works of William Shakespeare》（公有領域）中的《馬克白》和《羅密歐與茱麗葉》，已去除電子書的標頭與授權聲明，彎引號改為 ASCII；共 247 kB，存於 data/shakespeare.txt。試試更多步數、更寬的模型，或比較溫度 0.5 與 1.2。'
+meanings:
+- 文本中隨機窗口的字元 id；目標是同樣的窗口向左平移一個字元
+- 詞元嵌入加上學習得到的位置嵌入
+- 每個詞元向量在其通道上平移到平均值 0、縮放到變異數 1，再乘上學習得到的縮放並加上平移
+- 重複的 $c$ ⇒ 求和：每個頭的查詢（鍵和值同理）
+- 對角線及以下為 $0$，以上為 $-\infty$：經過 softmax 後，一個位置看不到後面的字元
+- 重複的 $k$ ⇒ 求和；每一列都是對較早位置 $j \le i$ 的機率分佈
+- 重複的 $j$，再對 $h, k$ ⇒ 求和：每個位置從過去收集到的資訊，經殘差連接加回去
+- 真實下一字元的平均 $-\log p$，單位為 nats；起始值為 $\ln V$
+labels:
+  steps: 訓練步數
+  d_model: 模型寬度 $d$
+  heads: 注意力頭數 $H$
+  layers: Transformer 區塊數
+  context: 上下文長度 $T$
+  batch: 批次大小
+  lr: 學習率
+  temperature: 取樣溫度

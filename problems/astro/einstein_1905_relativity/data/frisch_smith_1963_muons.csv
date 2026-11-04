@@ -1,0 +1,9 @@
+# D. H. Frisch and J. H. Smith, "Measurement of the Relativistic Time Dilation Using mu-Mesons",
+# Am. J. Phys. 31, 342-355 (1963), doi:10.1119/1.1969508 (also the 1962 EDC film "Time Dilation: An Experiment
+# with Mu-Mesons"). Muons stopping in the same scintillator, selected by an iron absorber so that they arrive at
+# sea level with the same energy they had on the summit; rates per hour averaged over the runs, speed bands as
+# published. Factual measurement values quoted from the paper (and its summary in Wikipedia, "Experimental testing
+# of time dilation", CC BY-SA, which gives ~412/h at sea level).
+station,altitude_m,rate_per_hour,rate_err_per_hour,beta_min,beta_max
+Mt Washington,1917,563,10,0.9950,0.9954
+Cambridge MA (sea level),10,408,9,0.9881,0.9897

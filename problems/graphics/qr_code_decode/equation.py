@@ -233,7 +233,7 @@ def dlt(src: torch.Tensor, dst: torch.Tensor) -> torch.Tensor:
 
 
 def box_mean(img: torch.Tensor, k: int) -> torch.Tensor:
-    r"""Local mean ar I_{bxy} = (1/k²) Σ_{|u|,|v| ≤ k/2} I_{b,x+u,y+v}: a k × k box filter, done as two 1D
+    r"""Local mean \bar I_{bxy} = (1/k²) Σ_{|u|,|v| ≤ k/2} I_{b,x+u,y+v}: a k × k box filter, done as two 1D
     conv2d passes (a row box, then a column box).  (B, H, W) → same"""
     kernel = torch.full((1, 1, 1, k), 1.0 / k, device=img.device)
     x = F.conv2d(F.pad(img[:, None], (k // 2, k // 2, 0, 0), mode="replicate"), kernel)

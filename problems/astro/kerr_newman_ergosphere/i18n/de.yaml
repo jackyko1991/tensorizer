@@ -1,0 +1,19 @@
+source_hash: e53e4d6ab9fa
+title: 'Kerr–Newman-Schwarze Löcher: Horizonte, Ergosphäre und nackte Singularitäten'
+summary: Das allgemeinste Schwarze Loch der Allgemeinen Relativitätstheorie mit Elektromagnetismus, mit Masse $M$, Spin $a$ und Ladung $Q$. Für ein ganzes gebatchtes Gitter von $(M, a, Q)$ berechnet der Code die Horizonte $r_\pm$, die Ergosphäre, das Frame-Dragging sowie die äquatorialen ISCOs und Photonenorbits (Ableitungen der Metrik per Autograd). Die Animation fährt Spin und Ladung bis zur Extremalität $a^2 + Q^2 = M^2$ und darüber hinaus, wo der Horizont verschwindet und die Ringsingularität freiläge, was laut der (unbewiesenen) Hypothese der kosmischen Zensur in der Natur verboten ist.
+notes: 'Einheiten $G = c = 1$: Längen in $GM/c^2$, Spin $a = J/(Mc)$, Ladung in geometrisierten Einheiten. Gesichert (klassische ART): Die Kerr–Newman-Metrik (Newman et al. 1965) löst die Einstein–Maxwell-Gleichungen, ihre Horizonte sind die Nullstellen von $\Delta$, und die Ergosphäre, in der kein Beobachter ruhen kann, liegt zwischen $r_+$ und $r_E(\theta)$ und berührt den Horizont an den Polen. In ihr zwingt das Frame-Dragging alles zur Mitrotation: Die grüne Kurve fällt mit Drehimpuls null hinein und wird dennoch herumgerissen. Prograde Orbits schmiegen sich an das Loch: Für Kerr wandert der ISCO von $6M$ bei $a = 0$ zu $M$ (prograd) und $9M$ (retrograd) bei $a = M$, in Übereinstimmung mit Bardeen, Press und Teukolsky (1972), und der ISCO des extremalen Reissner–Nordström-Lochs liegt bei $4M$. Für $a^2 + Q^2 > M^2$ liefern die Formeln weiterhin eine Metrik, aber ohne Horizont und mit einer nackten Ringsingularität bei $r = 0$, $\theta = \pi/2$ (rot gezeichnet). Penroses schwache Hypothese
+  der kosmischen Zensur besagt, dass Gravitationskollaps nie eine solche erzeugt; sie ist allgemein unbewiesen (bekannte Gegenbeispiele erfordern fein abgestimmte Anfangsdaten oder zusätzliche Dimensionen), und Versuche, ein extremales Loch durch hineingeworfene Teilchen zu überdrehen oder zu überladen, scheinen zu scheitern, sobald Störungseffekte zweiter Ordnung berücksichtigt werden (Sorce und Wald 2017). Reale Löcher haben $Q \approx 0$ (Ladung wird schnell neutralisiert), und gemessene Spins (bis etwa $0.95$–$0.99\,M$) bleiben unter der Extremalität. Das äquatoriale Panel nutzt das Boyer–Lindquist-$r$ als Radius; dort windet sich $\varphi$ der einfallenden grünen Kurve bei $r_+$ unbegrenzt auf, ein Koordinateneffekt.'
+meanings:
+- jede Kombination aus Masse, Spin und Ladung als ein Batch, $G = c = 1$
+- Nullstellen von $\Delta = 0$; NaN, wenn $a^2 + Q^2 > M^2$ (nackt)
+- statische Grenze $g_{tt} = 0$, Broadcasting Frames $\times$ Polarwinkel
+- der rotierende $(t, \varphi)$-Block der Boyer–Lindquist-Metrik
+- Winkelgeschwindigkeit eines Beobachters mit Drehimpuls null; $\Omega_H = a/(r_+^2 + a^2)$ am Horizont
+- Ableitungen der Metrik auf dem Radiusgitter per Autograd
+- Winkelgeschwindigkeit und Energie von Kreisbahnen; ISCO im Minimum von $E$, Photonenorbit dort, wo die Bahn Geschwindigkeit $c$ braucht
+- Oberflächengravitation, $T_H = \kappa/2\pi$; null für ein extremales Loch
+labels:
+  angle: Mischungswinkel $\psi$ ($0°$ reiner Spin, $90°$ reine Ladung)
+  chi_max: Durchlauf bis $\sqrt{a^2 + Q^2}/M$
+  frames: Frames
+  grid: Gitterpunkte pro Achse des gebatchten $(a, Q)$-Scans

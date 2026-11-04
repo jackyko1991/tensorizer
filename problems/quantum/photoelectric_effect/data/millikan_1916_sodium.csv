@@ -1,0 +1,10 @@
+# R. A. Millikan, "A Direct Photoelectric Determination of Planck's h", Phys. Rev. 7, 355-388 (1916),
+# doi:10.1103/PhysRev.7.355. Sodium surface cut in vacuo, mercury-arc lines; stopping potentials (volts) for the
+# lines Millikan used in his h determination, as tabulated from the paper in the Roskilde University problem set
+# "Quantum Chemistry & Spectroscopy, Problem 1" (2006), https://thiele.ruc.dk/kurser/KemFys2/Problems/Problem1.doc
+# Historical measurement published in 1916 (public domain in the US). Quoted precision about 0.5 %.
+wavelength_nm,stopping_potential_V
+312.5,2.128
+365.0,1.595
+404.7,1.215
+433.9,1.025

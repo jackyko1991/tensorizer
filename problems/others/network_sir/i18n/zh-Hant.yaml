@@ -1,0 +1,17 @@
+source_hash: 97673949f948
+title: 接觸網絡上的傳染病
+summary: 在真實的面對面接觸網絡上模擬 SIR 與 SIS 傳染病：數百次隨機爆發以一個批次張量同時運行，旁邊並列基於個體的平均場 ODE。只有超過由鄰接矩陣最大特徵值決定的閾值 $\beta/\gamma > 1/\lambda_{\max}(A)$，爆發才能擴散開來；而在無尺度網絡上，為樞紐節點接種疫苗所需的劑量遠少於隨機接種就能阻止疫情。
+notes: 每個人處於 S、I 或 R 狀態；在每個時間步 $\Delta t$ 中，易感者會以速率 $\beta$ 從每個受感染的接觸者那裡被傳染，受感染者則以速率 $\gamma$ 康復（在 SIS 中會重新變回易感）。測試檢查：人只會在各分室之間移動；$k$-正則圖有 $\lambda_{\max} = k$；低於閾值時爆發會自行熄滅；在完全圖上（每個人都和每個人接觸，$R_0 = \beta(N-1)/\gamma$），大規模爆發的平均最終規模符合 Kermack–McKendrick（1927）方程 $z = 1 - e^{-R_0 z}$（$R_0 = 2$ 時 $z \approx 0.80$）。閾值 $1/\lambda_{\max}$ 來自把基於個體的平均場線性化；對該 ODE 而言它是精確的，但這個 ODE 把鄰居當成彼此獨立，並讓感染沿同一條邊來回反彈，因此在這個小而稠密、聚集度高的網絡上，它會高估疫情的規模。SIR 感染無法沿著它剛走過的那條邊直接傳回去：圖中也畫出了訊息傳遞閾值 $T = \beta/(\beta + \gamma) = 1/\lambda_{NB}$，其中 $\lambda_{NB}$ 是非回溯矩陣的最大特徵值（Karrer、Newman 與 Zdeborová 2014）。模擬曲線是所有運行的平均值，包括許多在第一個病例之後就偶然消亡的運行，所以它是逐漸上升的。在無尺度網絡上，$\lambda_{\max}$ 隨最大的樞紐增長，因此閾值極小（Pastor-Satorras 與 Vespignani 2001），而移除樞紐能讓 $\lambda_{\max}$ 迅速下降：用少得多的劑量就達到群體免疫。平均度相同的 Erdős–Rényi 網絡沒有大樞紐，所以針對性接種的幫助小得多。數據：SocioPatterns「Contacts in a workplace」（法國一棟辦公大樓，2013 年；92 人，在 20 秒時間窗內觀察到 755 對面對面接觸，此處已彙總），M. Génois et al., Network Science 3, 326 (2015)，以 Creative Commons 公眾領域貢獻宣告（CC0）發布，www.sociopatterns.org。BA 與 ER 網絡是合成的。模擬中的人和速率僅作示意，並非任何真實疾病的模型。
+meanings:
+- 若觀察到人 $i$ 與 $j$ 面對面接觸則為 1，否則為 0（對稱、稠密）
+- 在同時運行的 $B$ 次實現中，各自有誰受感染
+- 重複的 $j$ ⇒ 求和：每個人受感染的接觸者數目
+- 易感者在一個時間步 $\Delta t$ 內被感染的機率；受感染者以機率 $1 - e^{-\gamma \Delta t}$ 康復
+- 人 $i$ 處於易感、受感染或康復狀態的機率，用 RK4 積分
+- 最大特徵值：線性化平均場 $\dot x = (\beta A - \gamma)x$ 只有在 $\beta \lambda_{\max} > \gamma$ 時才會增長
+- 充分混合下的最終規模，即 $z = 1 - e^{-R_0 z}$ 的根（Kermack–McKendrick）
+labels:
+  beta_x_lambda: 以閾值 $1/\lambda_{\max}$ 為單位的 $\beta/\gamma$
+  n_runs: 隨機實現次數 $B$
+  n_synthetic: 合成網絡中的人數
+  vacc_beta: 接種比較所用的 $\beta/\gamma$

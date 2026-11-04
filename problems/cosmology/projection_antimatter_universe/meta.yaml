@@ -1,0 +1,129 @@
+title: 'Where could the antimatter be? Criteria for an antimatter universe'
+category: cosmology
+level: advanced
+order: 19
+tags: [series:projection-hypothesis:7, role:theory, speculative]
+summary: >
+  A speculative hypothesis, not established physics. Step 2 found that one worldline crossing every time slice
+  gives equal matter and antimatter, while we see about $10^{80}$ baryons and no antimatter. The escape route is a
+  worldline balanced globally, with the antimatter far away or in a mirror universe. This step lists what such an
+  antimatter universe must satisfy and tests each criterion against data. There are no antinuclei in cosmic rays and
+  no annihilation gamma rays from clusters. Domains must be at least as large as the horizon, about 16 Gpc. A random
+  worldline is fantastically unlikely. That leaves the CPT-symmetric universe of Boyle, Finn and Turok, whose
+  predictions (a massless lightest neutrino, $r = 0$) agree with data so far and could fail.
+animated: true
+vector_form: '\frac{A}{V} = \frac{n}{d},\qquad \dot{\mathcal N}(z) = \frac{3}{d}\,n_{b0}\,(1+z)\,\kappa\,c_s(z),\qquad \frac{dJ}{dE} = \frac{c}{4\pi}\int_{20}^{z_{max}}\frac{dz}{H(z)}\,\dot{\mathcal N}(z)\,S\big(E(1+z)\big),\qquad d_{min} = d\,\max_E\frac{J_{pred}}{J_{obs}},\qquad \log_{10}P \approx -\frac{M}{\ln 10}\,\mathrm{KL}\Big(\tfrac{1+Q/M}{2}\,\Big\|\,\tfrac12\Big),\qquad Q_{ours} = w = -Q_{mirror},\qquad \Sigma m_\nu = m_l + \sqrt{m_l^2+\Delta m^2_{21}} + \sqrt{m_l^2+\Delta m^2_{31}}'
+index_form: 'J_{de} = \frac{c}{4\pi}\sum_z R_{dz}\,H_z^{-1}\,\Delta z_z\,S_{ez},\qquad R_{dz} = \frac{3}{d_d}\,n_{b0}\,(1+z_z)\,v_z,\qquad S_{ez} = N_\gamma\sum_j \frac{w_j}{p_j}\,\big[\ell_j\leq E_e(1+z_z)\leq h_j\big],\qquad F = \frac{N_\gamma^{>100}\,f\,\langle\sigma v\rangle}{4\pi D^2}\sum_r 4\pi r^2 n_r^2\,\Delta r,\qquad Q_{bu} = \sum_s\big([\eta_{bs}<u\leq\eta_{b,s+1}] - [\eta_{b,s+1}<u\leq\eta_{bs}]\big)'
+translation:
+  - {symbol: 'J_{de}', code: "einsum('...z,ez->...e', rate / H * dz, S)", shape: '(D, E)', meaning: 'repeated $z$ ⇒ summed: diffuse gamma-ray intensity today for every domain size $d$ and photon energy $E$'}
+  - {symbol: 'R_{dz}', code: 'annihilation_rate(z, d, c, kappa)', shape: '(D, Z)', meaning: 'annihilations per comoving cm$^3$ per second at the walls: wall area per volume $3/d$ times the inflow $n_b v$'}
+  - {symbol: 'S_{ez}', code: 'pion_decay_spectrum(E[:, None] * (1 + z))', shape: '(E, Z)', meaning: 'photons per MeV from one annihilation at the emitted energy; repeated $j$ (pion energy) ⇒ summed'}
+  - {symbol: 'd_{min}', code: 'minimum_domain_size(c, kappa, z_max)', shape: '()', meaning: 'smallest domain size the COMPTEL and Fermi-LAT backgrounds allow (the flux is exactly $\propto 1/d$)'}
+  - {symbol: 'f_{max}', code: 'cluster_antimatter_limit(c)', shape: '()', meaning: 'largest antiproton fraction in the gas of the Coma cluster, from the Fermi-LAT flux limit'}
+  - {symbol: 'Q_{mb}', code: 'random_net_charge(M, B, g)', shape: '(M, B)', meaning: 'net charge of $M$ crossings with random signs; its variance is $M$'}
+  - {symbol: '\log_{10}P', code: 'log10_tail(Q, M)', shape: '()', meaning: 'chance that a random worldline gives our patch a net charge $Q$ out of $M$ crossings (Cramér rate function)'}
+  - {symbol: 'Q_{bu}', code: 'charges_across_mirror(eta, u, 2.0)', shape: '(W, L)', meaning: 'net charge on our slices and on their CPT images, each read with its own arrow of time; repeated $s$ (segment) ⇒ summed'}
+  - {symbol: '\Sigma m_\nu', code: 'sum_mnu(m_light, ordering, c)', shape: '(M,)', meaning: 'sum of the neutrino masses from the lightest mass $m_l$ and the NuFIT splittings'}
+notes: >
+  Status: speculative. This is the author's own hypothesis (see the series description), not established physics.
+  Step 7 of the Projection Hypothesis, a theory step for postulate P3 (all particles are projections of one object).
+  Step 1 (cosmology/projection_postulate) stated the postulates. Step 2 (cosmology/projection_one_particle) ruled out
+  the simplest form of P3: a closed worldline crosses every time slice as often forwards (matter) as backwards
+  (antimatter), an open one adds at most one net particle, and the universe holds about $9\times10^{79}$ baryons
+  and no antimatter. Steps 3 to 6 (projection_dimension_budget, projection_singularity_fold, projection_bell_test,
+  projection_telescope_tests) tested P5, P4 and P1-P2. This step takes step 2's escape route. The worldline
+  is balanced globally, and the antimatter sits beyond our horizon or in an anti-universe. The question is what
+  such an antimatter universe must satisfy to agree with the postulates, and whether it does.
+
+  Known physics first. The Sakharov conditions (1967) explain a matter excess by baryon-number violation, C and CP
+  violation and departure from equilibrium. They predict a universe made of matter everywhere, with
+  $\eta = n_B/n_\gamma = 6.1\times10^{-10}$ (Planck 2018, $\Omega_b h^2 = 0.0224$). The alternative, a symmetric
+  universe with separate matter and antimatter regions, was studied from the 1960s (Alfvén and Klein, Omnès). Steigman
+  (ARA&A 14, 339, 1976) reviewed the tests, and Cohen, De Rújula and Glashow (ApJ 495, 539, 1998) closed the case for
+  domains inside the visible universe. All data come from data/antimatter_criteria.csv, which holds cited numbers
+  with their sources. The number of dimensions $D$ the worldline lives in is a parameter. Only its time coordinate
+  enters, so no result depends on $D$.
+
+  Criterion 1: no antimatter mixed in nearby. BESS-Polar found no antihelium among about 48 million helium nuclei.
+  The 95% limit is antihelium/helium $< 6.9\times10^{-8}$ for a helium-like spectrum and $1.0\times10^{-7}$
+  without that assumption (Abe et al., PRL 108, 131301, 2012). AMS-02 has published no antinucleus detection.
+  Gamma rays: in the hot gas of a cluster, an antiproton fraction $f$ annihilates at the rate
+  $f\,n_p^2\langle\sigma v\rangle$, with $\langle\sigma v\rangle\approx10^{-15}$ cm$^3$/s (an order-of-magnitude
+  choice). Each annihilation gives 2.1 photons above 100 MeV in the pion-decay spectrum used here. For the Coma cluster
+  (beta model, $n_0 = 3.4\times10^{-3}$ cm$^{-3}$, $r_c = 291$ kpc, $\beta = 0.75$) and the Fermi-LAT limit
+  $F(>100\ \mathrm{MeV}) < 5.2\times10^{-9}$ cm$^{-2}$ s$^{-1}$ (Ackermann et al., ApJ 819, 149, 2016), this gives
+  $f < 9\times10^{-8}$. Satisfied: any antimatter must be outside clusters and beyond the reach of cosmic rays, which
+  are confined to tens of Mpc.
+
+  Criterion 2: no domains inside our horizon. If matter and antimatter domains of comoving size $d$ touched,
+  annihilation at their walls would be unavoidable after recombination. The model here is the simple version of
+  Cohen, De Rújula and Glashow's argument. The wall area per volume is $3/d$ for cubes of side $d$ ($n/d$ in $n$
+  dimensions, tested), and baryons flow into the walls at $\kappa$ times the gas sound speed. The gas tracks the CMB
+  temperature down to $z\approx150$ and then cools adiabatically. Each annihilation gives 3 photons from neutral-pion
+  decay. The photons redshift to today, $dJ/dE = (c/4\pi)\int dz\,\dot{\mathcal N}\,S(E(1+z))/H$, and that integral is
+  checked against a closed form. Annihilation is counted from recombination ($z_{max} = 1000$) down to $z = 20$. As in
+  CDG, later epochs are left out because they depend on structure formation; including them would only raise the
+  flux. The flux is exactly $\propto 1/d$ (tested). It is compared with the COMPTEL background,
+  $dJ/dE = 6.4\times10^{-3}(E/\mathrm{MeV})^{-2.38}$ cm$^{-2}$ s$^{-1}$ sr$^{-1}$ MeV$^{-1}$ from 0.8 to 30 MeV
+  (Kappadath et al. 1996), and the Fermi-LAT isotropic background ($7.2\times10^{-6}$ cm$^{-2}$ s$^{-1}$ sr$^{-1}$
+  above 100 MeV, index 2.32, cutoff 279 GeV; Ackermann et al., ApJ 799, 86, 2015). The photons from $z\sim20$-$300$
+  arrive at 1 to 10 MeV, where COMPTEL sets the limit. Result: the prediction exceeds the data by a factor 160 for
+  $d = 100$ Mpc, 16 for 1 Gpc and 1.6 for 10 Gpc. The minimum domain size is $d_{min}\approx16$ Gpc (at 8.5 MeV,
+  $\kappa = 1$), larger than the 14.3 Gpc radius of the observable universe. CDG reached the same conclusion: the
+  matter domain must be nearly the whole visible universe. This is a toy model, and $d_{min}$ scales with $\kappa$.
+  CDG argue that annihilation heating speeds up the inflow, which strengthens the bound. Constrained: any antimatter
+  must be beyond our horizon, where no telescope can test it.
+
+  Criterion 3: fine-tuning. Suppose the antimatter is beyond the horizon on the same slice and nothing arranges it. A
+  balanced random worldline then gives our patch a net charge of order $\sqrt M$ for $M$ crossings. The net-charge
+  variance equals $M$, or $M(T-M)/(T-1)$ when the total of $T$ crossings is balanced (both tested). The chance of a
+  large excess follows Cramér's rate function, $\log_{10}P\approx -M\,\mathrm{KL}/\ln10$, checked against the exact
+  binomial tail. Today we see $N_B\approx9\times10^{79}$ baryons and no antimatter, so every crossing must have the
+  same sign: $P = 2^{-N_B}$, $\log_{10}P\approx-2.7\times10^{79}$. Read instead as the early-universe excess of
+  $9\times10^{79}$ among about $1.5\times10^{89}$ pairs (one per photon), it is $\log_{10}P\approx-1.2\times10^{70}$.
+  Without a mechanism the balanced worldline fails. The mechanism would have to be a boundary condition that
+  correlates the signs of all crossings in our patch: a symmetry, not a fluctuation.
+
+  Criterion 4: the CPT-symmetric universe. Boyle, Finn and Turok (PRL 121, 251301, 2018) propose that the universe
+  after the Big Bang is the CPT mirror image of a universe before it, so the pair as a whole does not violate CPT. The
+  author's alignment of P3 with this model follows. A worldline that crosses $t = 0$ is matter on our side. Observers
+  in the mirror have the opposite arrow of time, so they see the same stretch as antimatter. The caveat proved in step
+  2 still applies: on any complete slice one continuous worldline has $|Q|\leq1$, so the mirror alone does not help.
+  The alignment works if the worldline winds through the Big Bang and through the future boundary, with the two
+  ends of conformal time glued together. That is an extra assumption beyond the published model and the step-2
+  extension C in a new place. A loop that winds $w$ times reads $+w$ on every slice of our side and $-w$ on every
+  mirror slice, read with the mirror's own arrow. The total is zero (tested). The excess is now a topological
+  integer, not a fluctuation, though $w\approx10^{80}$ is still put in by hand.
+
+  The model's published predictions (from the abstract of Boyle, Finn and Turok), tested against cited numbers:
+  (a) The lightest neutrino is massless. With the NuFIT 6.0 splittings ($\Delta m^2_{21} = 7.49\times10^{-5}$ eV$^2$,
+  $\Delta m^2_{31} = 2.513\times10^{-3}$ eV$^2$ normal, $\Delta m^2_{32} = -2.484\times10^{-3}$ eV$^2$ inverted)
+  this fixes $\Sigma m_\nu = 0.0588$ eV (normal ordering) or $0.0989$ eV (inverted), and $m_\beta = 0.009$ or
+  $0.049$ eV. KATRIN bounds $m_\beta$ below 0.8 eV (Nature Physics 18, 160, 2022) and 0.45 eV (Science 388, 180,
+  2025), far above both values. Planck 2018 gives $\Sigma m_\nu < 0.12$ eV, which allows both. DESI 2024 ($< 0.072$ eV)
+  and DESI DR2 ($< 0.064$ eV, $\Lambda$CDM) exclude the inverted case and allow the normal one. DESI DR2 also notes a
+  tension with the oscillation floor, and a massless lightest neutrino is the case least in tension. (b) Dark matter
+  is a stable right-handed neutrino of mass $4.8\times10^8$ GeV. That is far beyond any collider and gives no
+  direct-detection signal, so it cannot be tested now. (c) There are no primordial gravitational waves, so $r = 0$.
+  BICEP/Keck gives $r < 0.036$ (95%, PRL 127, 151301, 2021), which is consistent. The real test is
+  $\sigma(r)\sim10^{-3}$: CMB-S4's goal (the project was stopped in July 2025), and LiteBIRD and the Simons
+  Observatory now.
+
+  Verdict table. (1) Nothing mixed in nearby: required; satisfied. A single antihelium nucleus or annihilation gamma
+  rays from a cluster would falsify it. (2) No domains inside the horizon: required; constrained ($d\gtrsim16$ Gpc).
+  An MeV-background excess or CMB distortion from nearer walls would falsify it; beyond the horizon it is
+  untestable. (3) Not fine-tuned: required; it fails for a random worldline ($\log_{10}P\sim-10^{70}$ to
+  $-10^{79}$), and only a mechanism removes the problem. (4a) Lightest neutrino massless: constrained, consistent so
+  far. A measured lightest mass above zero falsifies it, for example $\Sigma m_\nu$ clearly above 0.0588 eV in normal
+  ordering. (4b) Heavy right-handed-neutrino dark matter: untestable now. Dark matter identified as something else
+  would falsify it. (4c) $r = 0$: consistent. Primordial B-modes with $r\gg10^{-3}$ would falsify it.
+
+  Bottom line: the extended P3 survives only as one worldline balanced across a CPT mirror universe, winding through
+  the Big Bang. In that form it inherits falsifiable predictions. A nonzero lightest neutrino mass, or primordial
+  B-modes with $r\gg0$, would falsify the CPT-mirror alignment. Earlier steps either reproduced standard physics or
+  met data the hypothesis could absorb. This is the first step in the series with a test that could fail.
+params:
+  dims: {default: 4, min: 2, max: 26, step: 1, type: int, label: 'Dimensions $D$ of the space the worldline lives in (open)'}
+  speed_factor: {default: 1.0, min: 0.3, max: 10.0, step: 0.1, label: 'Inflow speed into the walls $\kappa$, in units of the gas sound speed'}
+  z_max: {default: 1000, min: 100, max: 1100, step: 50, label: 'Redshift $z_{max}$ at which wall annihilation starts (recombination)'}
+  winding: {default: 3, min: 0, max: 8, step: 1, type: int, label: 'Winding number $w$ of the worldline through the Big Bang'}

@@ -1,0 +1,22 @@
+source_hash: 1bffd0a0cc18
+title: Yang–Mills auf dem Gitter und die Massenlücke
+summary: 'Das Millennium-Problem des Clay-Instituts verlangt eine mathematisch strenge Quanten-Yang–Mills-Theorie in vier Dimensionen mit einer Massenlücke $\Delta > 0$; es ist offen. Wilsons Gittereichtheorie macht die Frage berechenbar: Links $U_\mu(x) \in SU(2)$ (oder $U(1)$), gespeichert als Einheitsquaternionen, werden per Metropolis für einen ganzen Stapel von Kopplungen $\beta$ gleichzeitig aktualisiert. Wilson-Schleifen zeigen das Flächengesetz des Confinements, die Plakette stimmt mit dem exakten Bessel-Verhältnis in 2D und mit der Starkkopplungsreihe überein, und ein Glueball-Korrelator liefert eine Massenabschätzung auf dem Gitter.'
+notes: 'Status: offen. Das Clay-Problem (offizielle Beschreibung von Jaffe und Witten) verlangt, die Quanten-Yang–Mills-Theorie auf $\mathbb R^4$ für jede kompakte einfache Eichgruppe so zu konstruieren, dass sie Axiome wie die von Wightman oder Osterwalder–Schrader erfüllt, und zu beweisen, dass ihr Spektrum eine Lücke $\Delta > 0$ oberhalb des Vakuums hat. Gittersimulationen von $SU(3)$ ergeben einen leichtesten Glueball bei etwa $1.7$ GeV und Confinement (ein lineares Potential, eine gemessene Stringspannung) jenseits vernünftiger Zweifel, aber numerische Evidenz bei endlichem Gitterabstand ist kein Beweis. Diese Seite arbeitet im selben Rahmen in Spielzeuggröße. In 2D ist die Theorie exakt lösbar: Jede Plakette ist unabhängig, $\langle\frac12\mathrm{Tr}P\rangle = I_1(\beta)/I_0(\beta)$ für $U(1)$ und $I_2(\beta)/I_1(\beta)$ für $SU(2)$, und $W(R,T) = u^{RT}$ exakt (ein Test). Bei starker Kopplung (kleines $\beta$) liefert die Charakterentwicklung in jeder Dimension dieselben führenden
+  Werte und ein Flächengesetz mit Stringspannung $\sigma = -\ln u$: Confinement ist dort bewiesen (Osterwalder–Seiler 1978), ebenso für kompaktes $U(1)$ in 3D bei jedem $\beta$ (Göpfert–Mack 1982). Schwierig ist die Fortsetzung zu schwacher Kopplung $\beta \to \infty$ in 4D, wo der Gitterabstand gegen null geht; die asymptotische Freiheit (Gross, Wilczek und Politzer, Nobelpreis 2004) besagt, dass dort der Kontinuumslimes liegt. Creutz-Verhältnisse $\chi(R,R)$ schätzen $\sigma$ aus Verhältnissen von Schleifen, sodass sich Umfangsterme aufheben. Der Glueball-Operator ist die Summe der räumlichen Plaketten auf einer Zeitscheibe; sein verbundener Korrelator fällt wie $e^{-m\Delta}$ ab, und bei starker Kopplung ist die kleinste Fläche, die zwei Plaketten verbindet, eine Röhre aus $4\Delta$ Flächen, was $a\,m \approx -4\ln u$ ergibt. Bei größerem $\beta$ fällt die Masse in Gittereinheiten und erfordert größere Gitter, Smearing und viel mehr Sweeps; $U(1)$ in 4D hat einen Deconfinement-Übergang
+  bei $\beta \approx 1.01$ und oberhalb davon keine Massenlücke, weshalb das Problem für nichtabelsche Gruppen formuliert ist. Metropolis mit einer Schrittweite $\propto 1/\sqrt{\beta}$ hält die Akzeptanzrate nahe der Hälfte; die Fehler verwenden 20 Jackknife-Blöcke.'
+meanings:
+- ein Einheitsquaternion pro Link, für jede Kopplung $\beta_b$ im Stapel; $U(1)$ ist die Untergruppe $(\cos\theta, 0, 0, \sin\theta)$
+- das Gruppengesetz; wiederholte $i, j$ ⇒ summiert (Kreuzprodukt)
+- 'Nachbar auf dem periodischen Gitter: alle Plaketten aller Gitterplätze auf einmal'
+- die kleinste Wilson-Schleife; $\frac12\mathrm{Tr}(ab) = a_0b_0 - a_kb_k$
+- 'Summe der $2(D-1)$ Staples: Der Teil von $S$, der $U_\mu(x)$ enthält, ist $-\beta\frac12\mathrm{Tr}(U_\mu A_\mu)$'
+- Metropolis auf allen Links einer Richtung und einer Schachbrettparität auf einmal (sie teilen keinen Staple)
+- Produkte von Linklinien um $R\times T$-Rechtecke, gemittelt über Gitterplätze, Ebenen und Orientierungen
+- '$I_1/I_0$ für $U(1)$, $I_2/I_1$ für $SU(2)$: exaktes $\langle\frac12\mathrm{Tr}P\rangle$ in 2D, führende Ordnung in jedem $D$'
+- $\ln C(\Delta)/C(\Delta+1)$ des Operators der räumlichen Plaketten, mit Jackknife-Fehlern
+labels:
+  group: Eichgruppe
+  dim: Dimension $D$
+  size: Gittergröße $L$ (Plätze pro Seite)
+  beta: Kopplung $\beta$ für Schleifen und Glueball
+  sweeps: Monte-Carlo-Sweeps

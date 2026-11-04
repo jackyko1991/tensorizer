@@ -1,0 +1,47 @@
+title: Ramanujan's partitions $p(n)$
+category: maths
+level: intermediate
+order: 5
+tags: [status:proved]
+summary: >
+  Count the ways to write $n$ as a sum of positive integers with Euler's pentagonal recurrence, exactly in int64 and,
+  far beyond it, as residues modulo many primes at once glued back by the Chinese remainder theorem. Then compare
+  $p(n)$ with the Hardy–Ramanujan formula, recover it exactly from Rademacher's series, and watch Ramanujan's
+  congruences $p(5k+4) \equiv 0 \pmod 5$, $p(7k+5) \equiv 0 \pmod 7$, $p(11k+6) \equiv 0 \pmod{11}$ light up. All
+  three results are theorems; the program checks them numerically.
+animated: true
+vector_form: '\sum_{n\ge 0} p(n)\,q^n = \prod_{k\ge 1}\frac{1}{1-q^k},\qquad p(n) \sim \frac{e^{\pi\sqrt{2n/3}}}{4n\sqrt3},\qquad p(n) = \frac{1}{\pi\sqrt2}\sum_{k\ge1} A_k(n)\sqrt k\,\frac{d}{dn}\!\left(\frac{\sinh\!\big(\tfrac{\pi}{k}\sqrt{\tfrac23(n-\tfrac1{24})}\big)}{\sqrt{n-\tfrac1{24}}}\right)'
+index_form: 'p_{n} = \sum_j s_j\, p_{n-g_j},\quad g_j = \tfrac{k(3k\mp1)}{2},\ s_j = (-1)^{k+1},\qquad r_{nm} = \Big(\sum_j s_j\, r_{n-g_j,\,m}\Big) \bmod \mu_m,\qquad A_{nk} = \sum_h \cos\!\big(\pi s(h,k) - 2\pi n h/k\big)'
+translation:
+  - {symbol: 'g_j,\ s_j', code: 'pentagonal(n_max, dev)', shape: '(G,), (G,)', meaning: 'generalised pentagonal numbers $1, 2, 5, 7, 12, 15, \dots$ and the signs $+,+,-,-,\dots$ of Euler''s $\prod_k (1-q^k) = \sum_k (-1)^k q^{k(3k-1)/2}$'}
+  - {symbol: 'p_n = \sum_j s_j p_{n-g_j}', code: '(sign * p[n - g]).sum(dim=0)', shape: '(G,) → ()', meaning: 'repeated $j$ ⇒ summed: only $O(\sqrt n)$ earlier values are needed for each $n$'}
+  - {symbol: 'r_{nm}', code: 'p = zeros(N + 1, M); ... % moduli', shape: '(N + 1, M)', meaning: 'the same recurrence for $M$ moduli at once, one column each (5, 7, 11, 25, 49, 121, or primes near $2^{31}$)'}
+  - {symbol: 'p(n) \bmod \mu_0\mu_1\cdots', code: 'garner_digits(residues, primes)', shape: '(N + 1, M)', meaning: 'Chinese remainder theorem in Garner''s mixed-radix form, for every $n$ at once'}
+  - {symbol: 'e^{\pi\sqrt{2n/3}}/(4n\sqrt3)', code: 'hardy_ramanujan(n)', shape: '(N,)', meaning: 'Hardy–Ramanujan asymptotic; the ratio is $1 - c/\sqrt n + \dots$ with $c = 1/C + C/48$, $C = \pi\sqrt{2/3}$'}
+  - {symbol: 's(h,k)', code: 'dedekind_sum(h, k)', shape: '(K, H)', meaning: 'Dedekind sum $\sum_{r<k} \frac rk\,((\frac{hr}k))$, repeated $r$ ⇒ summed'}
+  - {symbol: 'A_{nk}', code: 'kloosterman_a(n, K)', shape: '(N, K)', meaning: 'repeated $h$ ⇒ summed over $0 \le h < k$ with $\gcd(h,k) = 1$'}
+  - {symbol: 'p(a k + b) \bmod m', code: 'p_mod[a * k + b, i] == 0', shape: '(M, K)', meaning: 'Ramanujan''s congruences, one row per $(a, b, m)$'}
+notes: >
+  A partition of $n$ is a way to write it as a sum of positive integers, order ignored: $4 = 3+1 = 2+2 = 2+1+1 =
+  1+1+1+1$, so $p(4) = 5$. Euler's generating function $\prod_k 1/(1-q^k)$ and his pentagonal number theorem turn
+  this into the recurrence $p(n) = p(n-1) + p(n-2) - p(n-5) - p(n-7) + \dots$, which needs only $O(\sqrt n)$ terms
+  per step. In int64 it is exact up to $p(405) \approx 9.15 \cdot 10^{18}$. In float64 the signed sum loses digits
+  quickly (a relative error of $10^{-4}$ by $n = 1000$; the test shows it), so beyond int64 the program runs the same
+  recurrence exactly modulo a batch of primes near $2^{31}$, one tensor column each, and rebuilds $p(n)$ by the
+  Chinese remainder theorem. Hardy and Ramanujan (1918) found the asymptotic $p(n) \sim e^{\pi\sqrt{2n/3}}/(4n\sqrt3)$
+  with their circle method; the top-left panel shows the ratio creeping up to 1 like $1 - 0.443/\sqrt n$. Rademacher
+  (1937, published 1938) turned their expansion into an exact convergent series: with five terms, rounding gives $p(n)$ exactly
+  for every $n \le 200$ (beyond about 240, float64 rounding of the large
+  terms is itself near $\pm 0.5$), and the first term alone gets $p(100) = 190\,569\,292$ to six digits. Ramanujan proved
+  $p(5k+4) \equiv 0 \pmod 5$ and $p(7k+5) \equiv 0 \pmod 7$ (1919), and the mod 11 case was published from his
+  manuscripts in 1921; Watson (1938) and Atkin (1967) proved the families for powers of 5, 7 and 11 (here 25, 49 and
+  121). Ono (2000) showed that congruences of the form $p(Ak+B) \equiv 0 \pmod m$ exist for every prime $m \ge 5$,
+  although only 5, 7 and 11 have such simple ones. In the grids each column is one $k$ and each row a residue
+  $n \bmod m$; the red row stays solid, while the blue cells are other zeros, which come and go. Every
+  statement here is proven; the program only checks them on a finite range. Fun: Ramanujan noticed that… the
+  congruences above hold; that $1729 = 1^3 + 12^3 = 9^3 + 10^3$ (Hardy's taxi number); and that $e^{\pi\sqrt{163}}$
+  is within about $7.5\cdot10^{-13}$ of an integer.
+params:
+  n_max: {default: 5000, min: 1000, max: 20000, step: 1000, type: int, label: 'Largest $n$'}
+  terms: {default: 6, min: 1, max: 20, step: 1, type: int, label: 'Rademacher terms'}
+  grid_n: {default: 400, min: 100, max: 1000, step: 50, type: int, label: 'Congruence grids up to $n$'}

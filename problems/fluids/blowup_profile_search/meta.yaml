@@ -1,0 +1,61 @@
+title: Searching for self-similar blow-up profiles
+category: fluids
+level: advanced
+order: 6
+tags: []
+summary: >
+  How singularities are hunted today: write $u = (T-t)^\lambda U\big(x/(T-t)^{1+\lambda}\big)$, turn the PDE into an
+  equation for the profile $U$ with unknown exponent $\lambda$, and train a batch of candidate profiles, one per trial
+  $\lambda$, as one tensor with Gauss–Newton. For inviscid Burgers the residual funnels collapse only at the exact
+  $\lambda = 1/(2i+2)$, and the learned profiles match the classical $y = -U - U^{2i+3}$. The same search on the
+  nonlocal Córdoba–Córdoba–Fontelos equation finds its stable exponent $\lambda \approx 1.18$.
+animated: true
+vector_form: 'u_t + u\,u_x = 0,\qquad u = \tau^{\lambda}\,U(y),\ \ y = \frac{x}{\tau^{1+\lambda}},\ \ \tau = T - t\ \ \Longrightarrow\ \ -\lambda U + \big((1+\lambda)y + U\big)U'' = 0,\qquad \theta_t - (H\theta)\,\theta_x = 0\ \Longrightarrow\ \Omega + \big((1+\lambda)y - V\big)\Omega'' - \Omega\,H\Omega = 0,\ \ V = \textstyle\int_0^y H\Omega'
+index_form: 'R_{bn} = -\lambda_b U_{bn} + \big((1+\lambda_b)\,y_{bn} + U_{bn}\big)\,U''_{bn},\qquad U_{bn} = y_{bn}\big(-r_n + \phi_{nk}\,c_{bk}\big),\qquad c_b \leftarrow c_b - \big(J_b^{\mathsf T}J_b + \mu_b D_b\big)^{-1}J_b^{\mathsf T}R_b'
+translation:
+  - {symbol: '\lambda_b', code: 'lams = linspace(0.1, 0.7, n_lambda)', shape: '(B,)', meaning: 'the batch: one trial exponent per candidate profile, all trained at once'}
+  - {symbol: 'r_n', code: 'chebyshev_points(N_COL)', shape: '(N,)', meaning: 'compactified coordinate $r = (1 + y^2/L^2)^{-1/(2(1+\lambda))}$: $r = 1$ at $y = 0$, $r \to 0$ at $|y| \to \infty$'}
+  - {symbol: 'U = y\,P(r)', code: 'burgers_profile(c, lam, y)', shape: '(N,)', meaning: 'odd, $U''(0) = -1$ and $U \sim y^{\lambda/(1+\lambda)}$ far away are built in; $P$ is a Chebyshev series in $r$'}
+  - {symbol: 'R_{bn}', code: 'burgers_batch(C, lam, r, level)', shape: '(B, M)', meaning: 'profile-equation residual at the collocation points, plus $U(2) = -1$ and the smoothness constraints'}
+  - {symbol: 'J_{bmk} = \partial R_{bm}/\partial c_{bk}', code: "einsum('bnk,bk->bn', phi, C)", shape: '(B, M, K)', meaning: '$R$ is quadratic in $c$, so the Jacobian is exact (checked against autograd in the tests)'}
+  - {symbol: '(J^{\mathsf T}J + \mu D)^{-1}J^{\mathsf T}R', code: 'linalg.lstsq(cat([J, sqrt(mu*D)]), -R)', shape: '(B, K)', meaning: 'Levenberg–Marquardt (damped Gauss–Newton) step for every member of the batch in one batched solve'}
+  - {symbol: 'c_3 = 0,\ c_5 = 0', code: 'taylor_at_origin(c, lam)', shape: '(2,)', meaning: 'Taylor coefficients of $U = -y + c_3y^3 + c_5y^5 + \dots$; forcing them to zero removes the funnels at $\lambda = 1/2$ and $1/4$'}
+  - {symbol: 'H\big[\operatorname{Im}(1-iy)^{-s}\big]', code: '-((1 - 1j*y)**(-s)).real', shape: '(N, K)', meaning: 'exact Hilbert transform of the CCF basis: $(1-iy)^{-s}$ is analytic in the upper half plane'}
+  - {symbol: '\lambda^\ast', code: 'golden_section(fit, lo, hi, C, n_iter, n_fit)', shape: '(B,)', meaning: 'pins down the bottom of each funnel; the profile is retrained at every trial $\lambda$'}
+notes: >
+  Companion to fluids/navier_stokes_blowup, which shows the 1983 picture: run the Taylor–Green vortex forward and watch the
+  vorticity grow until the grid gives out. The modern route skips the time evolution. It assumes the singularity is
+  self-similar and searches for the profile directly. Plugging $u = \tau^\lambda U(y)$ into $u_t + uu_x = 0$ gives
+  $-\lambda U + ((1+\lambda)y + U)U' = 0$. Solved as a linear ODE for $y(U)$ this is $y = -U - C\,U^{1+1/\lambda}$, which is
+  smooth only when $1 + 1/\lambda$ is an odd integer. So $\lambda = 1/(2i+2)$, with exact profiles $y = -U - U^{2i+3}$
+  (normalised by $U'(0) = -1$ and $U(-2) = 1$). These are classical results (Eggers & Fontelos, Singularities, 2015).
+  $\lambda = 1/2$ is the stable, generic blow-up; $1/4, 1/6, \dots$ need fine-tuned data. Here 61 candidate profiles are
+  trained at once at fixed $\lambda$. The best residual against $\lambda$ (the funnel) falls to round-off ($\sim10^{-15}$)
+  at $\lambda = 1/2$ and to $\sim10^{-11}$ at $1/4$. In between it is far larger ($\sim10^{7}$ times larger at
+  $\lambda = 0.37$), because there only profiles with a non-smooth $|y|^{1+1/\lambda}$ term exist. Imposing $U'''(0) = 0$
+  removes the $1/2$ funnel, and the search then finds $1/4$. Imposing $U^{(5)}(0) = 0$ as well should single out $1/6$.
+  At this resolution, though, the funnel near $1/6$ is too flat to pin it down: the competing profiles differ only at
+  order $y^{7}$, and the shallow minimum lands near $\lambda \approx 0.19$. Note that the residual cannot tell stable from
+  unstable. That is a property of the time evolution, and the unstable profiles are reached here only through the extra
+  constraints. The profile is a spectral expansion with the inductive biases the research uses, a compactified coordinate
+  and output shaping. Research papers use physics-informed neural networks (PINNs) with the same biases. Gauss–Newton is
+  the optimiser of Wang et al. (2025). Gradient steps on $\lambda$ stall at the cusp of each funnel, so a batched
+  golden-section search pins $\lambda$ down. The CCF equation $\theta_t - (H\theta)\theta_x = 0$ (a 1D model of the
+  surface quasi-geostrophic equation; $H$ is the Hilbert transform) is solved in vorticity form,
+  $\omega = \theta_x = \Omega(y)/\tau$. $\Omega$ is expanded in $\operatorname{Im}(1-iy)^{-s}$, $s = j/(1+\lambda) + m$,
+  whose Hilbert transforms are exact. The default run finds $\lambda \approx 1.18$ (residual $\sim10^{-4}$); longer runs
+  with a larger basis settle at $1.1808$ (residual $2\times10^{-6}$). This agrees with the ground-state exponent
+  $\approx 1.18$ of Eggers & Fontelos (Nonlinearity, 2020). Wang, Lai, Gómez-Serrano & Buckmaster (PRL, 2023) found the
+  first unstable CCF profile with PINNs, $\lambda_1 \approx 0.6057$. Wang et al. (2025, arXiv 2509.14185) found a second,
+  $\lambda_2 \approx 0.4713$, and reached residuals near $10^{-13}$, close to double precision. They also found new
+  unstable families for the porous-media and Boussinesq equations, which are numerical candidates. The unstable profiles
+  have sharp gradients that this one-minute CPU search does not resolve; it shows only the stable funnel. Status: the
+  Burgers profiles are exact theorems. CCF blow-up was proved by Córdoba, Córdoba & Fontelos (Annals, 2005). Profiles
+  found by neural search are numerical candidates until a computer-assisted proof turns them into theorems, as Chen & Hou
+  (2022) did for the Hou–Luo axisymmetric Euler scenario with a boundary. The 3D incompressible Navier–Stokes Millennium
+  Problem remains open, and nothing here bears on it directly. Try a coarser $\lambda$ grid or fewer Gauss–Newton steps,
+  and watch the funnels blur.
+params:
+  n_lambda: {default: 61, min: 21, max: 121, step: 10, type: int, label: 'Batch size: trial exponents $\lambda$'}
+  gn_steps: {default: 40, min: 10, max: 80, step: 5, type: int, label: Gauss–Newton steps per profile}
+  ccf_lambda0: {default: 1.2, min: 1.05, max: 1.35, step: 0.05, label: 'CCF starting exponent $\lambda_0$'}

@@ -1,0 +1,50 @@
+title: The hierarchy problem and gravity leaking into extra dimensions
+category: cosmology
+level: advanced
+order: 7
+tags: [series:extra-dimensions:1, role:theory, speculative]
+summary: >
+  Why is gravity about $10^{33}$ times weaker than the weak force ($G_F M_{Pl}^2$)? One speculative answer: gravity
+  spreads into $n$ hidden compact dimensions. On $\mathbb R^3\times T^n$ the potential is summed two ways, over images
+  of the mass and over the Kaluza–Klein tower, as one tensor over lattice shells. It falls like $1/r^{1+n}$ inside and
+  $1/r$ outside, with a Yukawa tail $\alpha = 2n$, $\lambda = R$. ADD radii for $n = 1..6$ are set against real
+  torsion-balance and LHC limits, and the Randall–Sundrum warp factor $e^{-\pi k r_c}$ turns $M_{Pl}$ into TeV. No
+  extra dimension has been observed.
+animated: true
+vector_form: '\nabla^2_{3+n}\phi = (n+1)\,|S^{n+2}|\,G_D M\,\delta^{3+n},\qquad \phi = -\sum_{\mathbf k\in\mathbb Z^n}\frac{G_D M}{(r^2 + |2\pi R\,\mathbf k|^2)^{(n+1)/2}} = -\frac{G_4 M}{r}\sum_{\mathbf k} e^{-|\mathbf k| r/R},\qquad G_4 = \frac{(n+1)|S^{n+2}|\,G_D}{4\pi(2\pi R)^n},\qquad M_{Pl}^2 \sim M_*^{n+2}R^n,\qquad V = -\frac{GMm}{r}\big(1 + \alpha e^{-r/\lambda}\big),\qquad M_{TeV} = M_{Pl}\,e^{-\pi k r_c}'
+index_form: 'r_n(m) = \big[\vartheta(q)^n\big]_m,\quad \vartheta = \textstyle\sum_j q^{j^2},\qquad \phi^{img}_{a} = -\,r_n(m)\,\big(r_a^2 + m L^2\big)^{-\frac{n+1}{2}} - \text{tail}_a,\qquad \phi^{KK}_{a} = -\frac{G_4}{r_a}\,r_n(m)\,e^{-\sqrt m\,r_a},\qquad \ln(\phi/\phi_N - 1)_a = \ln\alpha - r_a/\lambda,\qquad R_{ns} = \big(M_{Pl}^2/M_{*s}^{n+2}\big)^{1/n}'
+translation:
+  - {symbol: '\mathbf k', code: 'mode_vectors(n, K)', shape: '((2K+1)^n, n)', meaning: 'Kaluza–Klein mode vectors (momenta $\mathbf k/R$ around the circles); used to check the shell counts'}
+  - {symbol: 'r_n(m)', code: 'shell_counts(n, m_max)', shape: '(M,)', meaning: 'how many $\mathbf k$ have $|\mathbf k|^2 = m$: the theta series to the power $n$, by FFT convolution'}
+  - {symbol: '\phi^{img}_a', code: "einsum('m,rm->r', counts, (r**2 + m*L**2)**(-(n+1)/2))", shape: '(R,)', meaning: 'repeated shell index $m$ ⇒ summed: the mass and its images; far images by a continuum tail'}
+  - {symbol: '\phi^{KK}_a', code: "einsum('m,rm->r', counts, exp(-sqrt(m)*r))", shape: '(R,)', meaning: 'the same potential as a tower of Yukawa terms of mass $\sqrt m/R$ (Poisson summation)'}
+  - {symbol: '\partial_r\phi', code: 'radial_field(phi, r)', shape: '(R,)', meaning: 'autograd field; times the area of $S^{2+n}$ (near) or $S^2\times T^n$ (far) gives the Gauss flux'}
+  - {symbol: '\alpha,\ \lambda', code: 'fit_yukawa(r, deviation)', shape: '()', meaning: 'least squares on $\ln(\phi/\phi_N - 1)$ just outside the compact space; expect $2n$ and $R$'}
+  - {symbol: 'R_{ns}', code: 'add_radius_m(n[:, None], M_star[None, :])', shape: '(6, S)', meaning: 'ADD radius for every $n$ and fundamental scale $M_*$ at once (broadcast)'}
+  - {symbol: 'e^{-\pi k r_c}', code: 'rs_warp(krc)', shape: '(K,)', meaning: 'Randall–Sundrum warp factor between the Planck brane and the TeV brane'}
+notes: >
+  Status: speculative. The hierarchy problem asks why the electroweak scale ($v \approx 246$ GeV) sits so far below
+  the Planck scale ($M_{Pl} \approx 1.22\times10^{19}$ GeV), with $G_F/G_N = G_F M_{Pl}^2 \approx 1.7\times10^{33}$. Arkani-Hamed,
+  Dimopoulos and Dvali (ADD, 1998) proposed that gravity alone spreads into $n$ millimetre-to-femtometre compact
+  dimensions, so the true scale of gravity $M_*$ could be a TeV. Randall and Sundrum (1999) proposed one warped
+  dimension instead. No extra dimension has been found. Other proposed answers include supersymmetry, compositeness,
+  the relaxion and anthropic selection. None is established. What is computed: a point mass on
+  $\mathbb R^3\times T^n$ (circles of radius $R$, units $R = G_D M = 1$). The image sum and the Kaluza–Klein sum are
+  equal by Poisson summation; both are grouped by shells $m = |\mathbf k|^2$ with counts $r_n(m)$. The plot uses the
+  image sum inside ($r < R$, far images replaced by an integral) and the KK sum outside. Gauss's law in $3+n$ space
+  dimensions fixes $G_4 = (n+1)|S^{n+2}|G_D/4\pi(2\pi R)^n$. The lightest KK level has $2n$ modes of mass $1/R$, so
+  just outside the compact space gravity looks like a Yukawa correction with $\alpha = 2n$, $\lambda = R$ (torus; other
+  shapes change $\alpha$). ADD radii use $M_{Pl}^2 = M_*^{n+2}R^n$; papers differ by factors like $(2\pi)^n$ and
+  $8\pi$, so treat $R$ as an order of magnitude. Data, as cited numbers in data/*.csv: Eöt-Wash torsion balances
+  exclude $|\alpha| = 1$ above $\lambda = 56\,\mu$m (Kapner et al., PRL 98, 021101, 2007, arXiv:hep-ph/0611184; one
+  extra dimension $R \le 44\,\mu$m) and above $38.6\,\mu$m (Lee et al., PRL 124, 101101, 2020, arXiv:2002.11761). The
+  exclusion curve itself is not bundled. Because it falls with $\lambda$, every point with $\alpha \ge 1$ and
+  $\lambda > 38.6\,\mu$m is excluded, a conservative test. The ATLAS 13 TeV monojet search (139 fb$^{-1}$; Phys. Rev.
+  D 103, 112006, 2021, arXiv:2102.10874, CC-BY 4.0) excludes $M_D$ below 11.2, 8.5, 7.1, 6.4 and 5.9 TeV for
+  $n = 2..6$ (Giudice–Rattazzi–Wells convention, compared here directly with $M_*$). $n = 1$ would need a dimension the
+  size of the Solar System and is excluded by planetary orbits. Randall–Sundrum: $k r_c \approx 11$–$12$ makes
+  $\bar M_{Pl}e^{-\pi k r_c}$ a TeV; the LHC has not seen its Kaluza–Klein gravitons.
+params:
+  M_star: {default: 1.0, min: 0.5, max: 20.0, step: 0.5, label: 'Fundamental scale $M_*$ for the printed table', unit: TeV}
+  krc: {default: 11.27, min: 9.0, max: 14.0, step: 0.01, label: 'Randall–Sundrum $k r_c$'}
+  m_max: {default: 2000, min: 200, max: 6000, step: 100, type: int, label: 'Lattice shells summed, $|\mathbf k|^2 \le m_{max}$'}

@@ -1,0 +1,46 @@
+title: 'Re-igniting dead stars: brown dwarfs, novae, X-ray bursts and black holes'
+category: astro
+level: advanced
+order: 6
+tags: [nobel:physics:1983]
+summary: >
+  What happens when a stellar remnant is fed fresh gas? A brown dwarf pushed past about $0.075\,M_\odot$ can burn hydrogen and become a
+  star; a white dwarf ignites its accreted hydrogen shell as a classical nova; a neutron star flashes its accreted H/He as a type I
+  X-ray burst every few hours; a black hole has no surface, so nothing ignites and it only shines, up to the Eddington limit. One
+  batched tensor model (Lane–Emden polytropes, a degenerate equation of state and one-zone shell ignition with autograd) gives the
+  critical accreted mass for every remnant and mass at once.
+animated: true
+vector_form: '\frac{\partial \varepsilon_{\rm nuc}}{\partial T} > \frac{\partial \varepsilon_{\rm cool}}{\partial T},\quad \varepsilon_{\rm cool} = \frac{a c T^4}{3\kappa y^2},\quad P = g\,y,\quad \Delta M_{\rm ign} = 4\pi R^2 y_{\rm ign}\qquad M_{\rm Ch} = \frac{\sqrt{3\pi}}{2}\,\omega_3\Big(\frac{\hbar c}{G}\Big)^{3/2}\frac{1}{(\mu_e m_u)^2}\qquad L_{\rm Edd} = \frac{4\pi G M c\, m_p}{\sigma_T}'
+index_form: 'T_{by}^4 = T_{{\rm floor},b}^4 + \frac{3\kappa_{by}\,y_y\,F_{by}}{a c}\qquad u_{by} = \frac{\partial}{\partial T}\big(\varepsilon_{\rm nuc} - \varepsilon_{\rm cool}\big)(\rho_{by}, T_{by}, y_y)\qquad y_{{\rm ign},b} = \min\{y_y : u_{by} > 0\}\qquad T_{{\rm max},m} = \max_r T_c(M_m, R_r)'
+translation:
+  - {symbol: 'b', code: 'tensors.shell_cases(...)', shape: '(B,)', meaning: 'one accreting remnant per entry: white dwarfs (mass $\times$ rate) and neutron stars (fuel $\times$ rate)'}
+  - {symbol: 'y_y', code: 'tensors.column_grid()', shape: '(Y,)', meaning: 'column depth of the accreted layer, g/cm²; pressure $P = g y$'}
+  - {symbol: '\rho_{by}', code: 'density(P, T, X, Y, Z)', shape: '(B, Y)', meaning: 'invert ideal ions + partly degenerate electrons by batched bisection'}
+  - {symbol: 'T_{by}', code: 'solve.base_temperature(c, y, P)', shape: '(B, Y)', meaning: 'radiative base temperature, fixed-point iteration ($\kappa$, $\rho$ depend on $T$)'}
+  - {symbol: 'u_{by}', code: 'torch.autograd.grad(net.sum(), T)', shape: '(B, Y)', meaning: 'thin-shell instability: heating grows faster with $T$ than cooling ⇒ runaway'}
+  - {symbol: '\Delta M_{{\rm ign},b}', code: '4 * math.pi * R**2 * y[k]', shape: '(B,)', meaning: 'critical accreted mass: nova or X-ray burst'}
+  - {symbol: 'T_c(M_m, R_r)', code: 'central_temperature(M[:, None], R[None, :], ...)', shape: '(M, R)', meaning: '$n = 3/2$ polytrope contracting through every radius; max over $r$ ⇒ brown-dwarf limits'}
+  - {symbol: '\theta(\xi)', code: 'integrate(lane_emden_rhs, ...)', shape: '(T, 3, 2)', meaning: 'Lane–Emden for $n = 1, 3/2, 3$ at once: $\omega_3$, $\rho_c/\bar\rho$, $P_c$ constants'}
+  - {symbol: 'L', code: 'torch.minimum(eta * mdot * C**2, L_edd)', shape: '(N,)', meaning: 'black hole: accretion light only, $\eta = 1 - E_{\rm ISCO}$'}
+notes: >
+  Exact results: the Lane–Emden constants, the Chandrasekhar mass ($1.456\,M_\odot$ for $\mu_e = 2$), the Eddington luminosity
+  ($1.26\times10^{38}$ erg/s per $M_\odot$) and the ISCO efficiency ($5.7\%$ to $42\%$). Everything else is an order-of-magnitude model:
+  (1) Brown dwarfs: the hottest a contracting $n = 3/2$ polytrope ever gets, $T_{\max} \propto M^{4/3}$, compared with $3\times10^5$ K
+  (slow deuterium burning over Gyr) and $3\times10^6$ K (hydrogen); the model gives about $14\,M_J$ and $0.074\,M_\odot$, close to the
+  evolution-model limits of about $13\,M_J$ (Spiegel et al. 2011) and $0.07$–$0.08\,M_\odot$ (Burrows et al. 2001). It is a necessary
+  condition: an old, cold brown dwarf pushed over the limit must also be heated by the accretion (compression) before it ignites.
+  (2) Novae: ignition masses from $10^{-7}$ to $10^{-3}\,M_\odot$, smaller for heavier white dwarfs and faster accretion, as in the nova
+  grids of Yaron et al. (2005), but only to a factor of a few (conduction, mixing and screening are left out). Novae probably eject at
+  least what was accreted, so whether a white dwarf can grow to $M_{\rm Ch}$ and explode as a type Ia supernova (single-degenerate
+  channel) is debated. (3) X-ray bursts: ignition columns near $10^8$ g/cm² and recurrence times of hours, as observed (Galloway and Keek
+  2021); the gravitational energy per gram is about 40 times the nuclear one ($\alpha$). The same accretion that triggers bursts spins
+  the neutron star up: about $0.04\,M_\odot$ recycles an old pulsar into a millisecond pulsar. (4) Black holes: no surface, no flash.
+params:
+  bd_mass: {default: 0.04, min: 0.01, max: 0.07, step: 0.005, label: Starting brown-dwarf mass, unit: M☉}
+  bd_rate: {default: -10.0, min: -12, max: -8, step: 0.5, label: 'Brown-dwarf accretion rate $\log_{10}\dot M$', unit: M☉/yr}
+  wd_mass: {default: 1.0, min: 0.5, max: 1.4, step: 0.05, label: White-dwarf mass, unit: M☉}
+  wd_rate: {default: -9.0, min: -11, max: -7, step: 0.5, label: 'White-dwarf accretion rate $\log_{10}\dot M$', unit: M☉/yr}
+  core_temp: {default: 10.0, min: 5, max: 50, step: 5, label: White-dwarf core temperature, unit: MK}
+  ns_rate: {default: -9.0, min: -11, max: -7.5, step: 0.5, label: 'Neutron-star accretion rate $\log_{10}\dot M$', unit: M☉/yr}
+  ns_fuel: {default: solar, type: choice, options: [solar, helium], label: Neutron-star fuel}
+  bh_spin: {default: 0.0, min: 0.0, max: 0.998, step: 0.1, label: 'Black-hole spin $a/M$'}

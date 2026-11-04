@@ -1,0 +1,49 @@
+title: P vs NP and the 3-SAT phase transition
+category: maths
+level: advanced
+order: 4
+tags: [millennium, smale:3, status:open]
+summary: >
+  Is every problem whose solutions are easy to check also easy to solve? That is the P vs NP question, open since
+  1971. Random 3-SAT makes the asymmetry concrete: checking a proposed assignment is one gather and two reductions,
+  while exhaustive search evaluates all $2^n$ assignments at once as one packed bit tensor, whose size doubles with
+  every variable. Sweeping the clause/variable ratio $\alpha$ shows the satisfiability phase transition near
+  $\alpha_c \approx 4.27$ and the search cost peaking inside the transition window.
+animated: true
+vector_form: 'F(\mathbf x) = \bigwedge_{m=1}^{M} \big(\ell_{m1} \lor \ell_{m2} \lor \ell_{m3}\big),\quad \ell_{mk} = x_{v_{mk}} \oplus s_{mk},\qquad \mathbb E\,\#\{\mathbf x : F(\mathbf x) = 1\} = 2^n \left(\tfrac78\right)^{M}'
+index_form: '\ell_{bmk} = x_{b\,v_{bmk}} \oplus s_{bmk},\quad F_b = \bigwedge_m \bigvee_k \ell_{bmk}\qquad T^{F}_{ba} = \bigwedge_m \bigvee_k \big(T_{v_{bmk}\,a} \oplus s_{bmk}\big),\quad a = 0,\dots,2^n-1'
+translation:
+  - {symbol: 'v_{bmk},\ s_{bmk}', code: 'random_3sat(n, M, B, gen, dev)', shape: '(B, M, 3)', meaning: '$B$ formulas with $M$ clauses of 3 distinct variables, each negated with probability $\frac12$'}
+  - {symbol: '\ell_{bmk} = x_{b\,v_{bmk}} \oplus s_{bmk}', code: 'torch.gather(x, -1, var.flatten(-2)) ^ neg', shape: '(B, M, 3) bool', meaning: 'every literal of every formula in one gather'}
+  - {symbol: '\bigwedge_m \bigvee_k', code: 'lit.any(dim=-1).all(dim=-1)', shape: '(B,) bool', meaning: 'the verifier: $3M$ lookups, polynomial in $n$'}
+  - {symbol: 'T_{ja}', code: 'pack(all_assignments(n).T)', shape: '(n, 2^n/32) int64', meaning: 'truth table of $x_j$ over all $2^n$ assignments, 32 assignments per integer'}
+  - {symbol: 'T_{v_1 a}\oplus s_1 \lor T_{v_2 a}\oplus s_2 \lor T_{v_3 a}\oplus s_3', code: 'lit[:, 0] | lit[:, 1] | lit[:, 2]', shape: '(B, 2^n/32)', meaning: 'one clause evaluated at all $2^n$ assignments with bitwise OR (XOR with all ones negates)'}
+  - {symbol: 'T^F_{ba}', code: 'levels & clause[:, None]', shape: '(B, n+1, 2^n/32)', meaning: 'AND in the clauses one by one; level $d$ only collects clauses whose variables are among the first $d$, which gives the backtracking tree'}
+  - {symbol: 'P_{\mathrm{sat}}(\alpha)', code: "res['sat'].double().mean(dim=0)", shape: '(8n+1,)', meaning: 'nested formulas (prefixes of one clause list) give every $\alpha = M/n$ in one pass and make $P_{\mathrm{sat}}$ non-increasing'}
+notes: >
+  P vs NP asks whether every decision problem whose yes-answers have certificates that can be checked in polynomial
+  time (the class NP) can also be solved in polynomial time (the class P). Cook (1971) and Levin (1973) proved that
+  satisfiability is NP-complete: a polynomial-time algorithm for 3-SAT would give one for every problem in NP. It is
+  unknown whether one exists. Most researchers expect P $\ne$ NP, but there is no proof, and known barriers
+  (relativisation, natural proofs, algebrisation) rule out whole families of proof strategies. The question is one of
+  the seven Clay Millennium Prize problems and is open. This program proves nothing about it: exhaustive search is
+  merely the obvious algorithm, and the best known 3-SAT algorithms are still exponential (about $1.307^n$ for PPSZ).
+  What it shows is the asymmetry. The verifier is one gather plus an OR and an AND, $O(M)$ work. The search builds the
+  full truth table, one bit per assignment packed 32 per integer, so the tensor has $2^n$ bits and its time doubles
+  with each variable (bottom right; at small $n$ fixed overheads dominate). Random 3-SAT with $M = \alpha n$ clauses
+  has a sharp threshold: Friedgut (1999) proved that the transition becomes sharp as $n \to \infty$, statistical
+  physics (Mézard, Parisi and Zecchina 2002) predicts $\alpha_c \approx 4.267$, and Ding, Sly and Sun (2015) proved the
+  predicted threshold for $k$-SAT with large $k$. For $k = 3$ the value 4.267 is still a conjecture; what is proven is
+  that random formulas are satisfiable with high probability below $\alpha = 3.52$ and unsatisfiable above 4.49. At small $n$ the 50% crossing lies above 4.27 and drifts down as $n$ grows
+  (finite-size scaling). Tests check that the verifier agrees with brute force on every assignment, that one clause
+  removes exactly $1/8$ of all assignments, that the mean number of solutions equals the first moment $2^n (7/8)^M$,
+  that $P_{\mathrm{sat}}$ is monotone and collapses near the threshold, and that the window narrows with $n$. The
+  search-cost panel counts the nodes of a depth-first backtracking search that fixes $x_0, x_1, \ldots$ in turn and
+  backs up as soon as a fully assigned clause is false. Below the threshold it finds a solution quickly, far above it
+  short contradictions prune the tree early, and the hardest formulas sit in the transition window (for this simple
+  search at $n = 16$ near $\alpha \approx 5$; solvers with unit propagation peak near 4.3). Try more variables to watch
+  the curves sharpen, or more formulas for smoother curves.
+params:
+  n_max: {default: 16, min: 12, max: 18, step: 1, type: int, label: 'Variables $n$ (largest size)'}
+  instances: {default: 200, min: 50, max: 500, step: 50, type: int, label: Formulas per size}
+  seed: {default: 1, min: 0, max: 99, step: 1, type: int, label: Random seed}

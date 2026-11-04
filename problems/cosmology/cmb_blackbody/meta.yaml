@@ -1,0 +1,47 @@
+title: The CMB as a perfect blackbody (COBE FIRAS)
+category: cosmology
+level: intermediate
+order: 8
+tags: [nobel:physics:2006]
+summary: >
+  COBE's FIRAS instrument measured the cosmic microwave background at 43 frequencies and found the most perfect blackbody
+  ever seen. A batch of four models (Planck law alone, with a Bose–Einstein chemical potential $\mu$, with a Compton
+  $y$-distortion, with both) is fitted to the real FIRAS table in one tensor, with the Jacobian from autograd. The fit gives
+  $T \approx 2.725$ K with $\chi^2 \approx 45$ for 42 degrees of freedom, residuals below $10^{-4}$ of the peak, distortions
+  consistent with zero ($|\mu| \lesssim 10^{-4}$, $|y| \lesssim 10^{-5}$), and from $T$ about 411 photons per cm³.
+animated: true
+vector_form: 'I_\nu = \frac{2h\nu^3}{c^2}\left[\frac{1}{e^{x+\mu}-1} + y\,\frac{x e^x}{(e^x-1)^2}\Big(x\coth\frac{x}{2} - 4\Big)\right],\qquad x = \frac{h\nu}{kT},\qquad \chi^2 = \sum_f \Big(\frac{d_f - I_f}{\sigma_f}\Big)^2,\qquad n_\gamma = \frac{2\zeta(3)}{\pi^2}\Big(\frac{kT}{\hbar c}\Big)^3'
+index_form: 'I_{bf} = 2hc\,\tilde\nu_f^3\big[(e^{x_{bf}+\mu_b}-1)^{-1} + y_b\,Y(x_{bf})\big],\qquad J_{bfk} = \frac{\partial I_{bf}}{\partial\theta_{bk}},\qquad (J_{bfi}J_{bfj}/\sigma_f^2)\,\delta\theta_{bj} = J_{bfi}\,r_{bf}/\sigma_f^2'
+translation:
+  - {symbol: '\tilde\nu_f,\ d_f,\ \sigma_f', code: 'load_firas(device)', shape: '(F,)', meaning: 'the 43 FIRAS wavenumbers (cm$^{-1}$), intensities and $1\sigma$ errors (MJy/sr)'}
+  - {symbol: '\theta_{bk}', code: 'initial_params(T_init, device)', shape: '(B, 3)', meaning: 'one row $(T, \mu, y)$ per model $b$ of the batch'}
+  - {symbol: 'x_{bf}', code: 'C2 * nu / T', shape: '(B, F)', meaning: '$h\nu/kT$ by broadcasting $(B,1)$ against $(F,)$'}
+  - {symbol: 'I_{bf}', code: 'spectrum(nu, theta)', shape: '(B, F)', meaning: 'Bose–Einstein occupation plus the Kompaneets $y$ term, times $2hc\tilde\nu^3$'}
+  - {symbol: 'J_{bfk}', code: 'jacobian(nu, theta)', shape: '(B, F, 3)', meaning: 'autograd of $\sum_b I_{bf}$: the rows are independent, so one call gives every model''s Jacobian'}
+  - {symbol: 'J_{bfi}J_{bfj}/\sigma_f^2', code: "einsum('bfi,bfj->bij', A, A)", shape: '(B, 3, 3)', meaning: 'repeated $f$ ⇒ summed: the Fisher matrix; its inverse is the covariance'}
+  - {symbol: '\delta\theta_{bj}', code: 'linalg.solve(damped, grad)', shape: '(B, 3)', meaning: 'one Levenberg–Marquardt step for every model at once'}
+  - {symbol: '\chi^2_b', code: "einsum('bf,bf->b', r, r)", shape: '(B,)', meaning: 'goodness of fit per model'}
+notes: >
+  In 1990 FIRAS (the Far-Infrared Absolute Spectrophotometer on NASA's COBE) compared the sky with an external blackbody
+  calibrator and found no difference; the final spectrum (Fixsen et al. 1996) deviates from a Planck curve by less than
+  50 parts per million of the peak. John Mather and George Smoot shared the 2006 Nobel Prize in Physics "for their discovery
+  of the blackbody form and anisotropy of the cosmic microwave background radiation". A blackbody this perfect means the
+  early universe was hot, dense and in thermal equilibrium: energy released after redshift $z \sim 2\times10^6$ would have
+  left a chemical potential $\mu$ (Bose–Einstein spectrum, $z \gtrsim 2\times10^5$) or a Compton $y$-distortion (hot electrons
+  boosting photons, $z \lesssim 5\times10^4$; the same shape as the Sunyaev–Zel'dovich effect, with its null at $x = 3.83$
+  or 217 GHz, and it conserves photon number). Our fit, with only the diagonal errors, gives 95 % limits of about
+  $|\mu| < 7\times10^{-5}$ and $|y| < 6\times10^{-6}$; the published FIRAS limits, $|\mu| < 9\times10^{-5}$ and
+  $|y| < 1.5\times10^{-5}$, are wider because they use the full correlated covariance and include systematic (calibration
+  and Galactic) uncertainties. Read the temperature with care: the fit pins $T$ to about $10^{-5}$ K statistically, but the
+  absolute scale comes from the thermometry of the calibrator, and the LAMBDA table writes the spectrum as a 2.725 K
+  blackbody plus the published residuals, so $T = 2.725$ K is built in; the best absolute value today is
+  $2.72548 \pm 0.00057$ K (Fixsen 2009). From $T$ follow $n_\gamma \approx 411$ cm$^{-3}$ and $u_\gamma = aT^4 \approx 0.26$
+  eV cm$^{-3}$. In the animation the left panel shows the fit converging from the starting guess (error bars magnified 400
+  times, as in the famous plot, otherwise invisible); the right panel then zooms into the residuals in units of $10^{-4}$ of
+  the peak, with the shapes a $\mu$ or $y$ at our 95 % limit would leave after re-fitting $T$. Data: Table 4 of D. J. Fixsen
+  et al., ApJ 473, 576 (1996), from NASA's LAMBDA archive
+  (https://lambda.gsfc.nasa.gov/data/cobe/firas/monopole_spec/firas_monopole_spec_v1.txt), public domain, bundled as
+  data/firas_monopole.csv.
+params:
+  T_init: {default: 2.5, min: 1.5, max: 4.0, step: 0.05, label: 'Starting guess for $T$', unit: K}
+  steps: {default: 30, min: 5, max: 80, step: 1, type: int, label: Levenberg–Marquardt steps}

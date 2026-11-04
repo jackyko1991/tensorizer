@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Young diagram of the partition 8 = 4 + 3 + 1: rows of 4, 3 and 1 boxes, with its conjugate 3 + 2 + 2 + 1 read down the columns, and the generating function product of 1 over 1 minus q to the k">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#111827">
+    <!-- row of 4 -->
+    <g fill="#93c5fd" stroke="#1e40af" stroke-width="1.5">
+      <rect x="24" y="30" width="24" height="24"/><rect x="48" y="30" width="24" height="24"/>
+      <rect x="72" y="30" width="24" height="24"/><rect x="96" y="30" width="24" height="24"/>
+      <rect x="24" y="54" width="24" height="24"/><rect x="48" y="54" width="24" height="24"/>
+      <rect x="72" y="54" width="24" height="24"/>
+      <rect x="24" y="78" width="24" height="24"/>
+    </g>
+    <!-- the first column, read downwards (the conjugate partition) -->
+    <rect x="24" y="30" width="24" height="72" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+    <!-- row lengths -->
+    <text x="128" y="47">4</text>
+    <text x="104" y="71">3</text>
+    <text x="56" y="95">1</text>
+    <!-- column direction -->
+    <line x1="36" y1="108" x2="36" y2="124" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="22" y="140" font-size="13" fill="#b45309">3 + 2 + 2 + 1</text>
+    <text x="146" y="60" font-size="14" font-style="italic">8 = 4 + 3 + 1</text>
+    <text x="146" y="100" font-size="13" font-style="italic">∏ 1/(1 − qᵏ)</text>
+    <text x="146" y="122" font-size="13" font-style="italic">p(8) = 22</text>
+  </g>
+</svg>

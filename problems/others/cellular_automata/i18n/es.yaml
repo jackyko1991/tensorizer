@@ -1,0 +1,22 @@
+source_hash: ebc73dcb492e
+title: Los 256 autómatas celulares elementales, y Lenia
+summary: 'Una fila de celdas en la que cada nueva celda depende de sí misma y de sus dos vecinas: los tres bits forman un código $k \in \{0, \dots, 7\}$ y el número de la regla escrito en binario es la tabla de consulta. Las 256 reglas avanzan juntas como un único tensor $(256, W)$ mediante una sola operación gather: la regla 90 dibuja el triángulo de Sierpinski, la regla 30 parece aleatoria, la regla 110 construye estructuras que interactúan y la regla 184 mueve tráfico. Un pariente continuo, Lenia, sustituye la tabla por un núcleo anular suave y hace crecer una criatura que se desliza.'
+notes: 'Wolfram clasificó las reglas elementales en cuatro clases: (1) todo muere o se llena, (2) patrones fijos o periódicos, (3) caos, como la regla 30, cuya columna central se usó durante mucho tiempo como generador de números aleatorios, y (4) estructuras complejas, duraderas y que interactúan, como la regla 110, que Matthew Cook demostró (publicado en 2004) que es Turing completa. El mosaico colorea cada regla según una prueba automática aproximada tras 600 pasos en un anillo de 151 celdas: uniforme, periódica salvo un desplazamiento, o sin periodo encontrado. El último grupo mezcla las clases 3 y 4, y no existe una definición exacta para distinguirlas. La regla 90 suma las vecinas módulo 2, de modo que a partir de una sola celda da el triángulo de Pascal módulo 2, y la regla 184 es el modelo de tráfico más sencillo: un coche avanza a la derecha si la celda de delante está libre, así que el número de coches se conserva. A diferencia del Juego de la vida (2D, un recuento $3\times3$,
+  una sola regla), aquí todas las reglas avanzan a la vez. Lenia (Bert Chan, 2019) hace continuos el espacio, el tiempo y los estados; Orbium, su planeador clásico, parte de la tabla de celdas publicada con Lenia (licencia MIT) y conserva su masa mientras se mueve, un ejemplo de patrón tipo solitón que ninguna ley de conservación impone.'
+meanings:
+- 'bit $k$ del número de regla $r$: el nuevo estado cuando el código de vecindad es $k$'
+- celdas izquierda, central y derecha alrededor de la celda $i$ en un anillo
+- '$j$ repetido ⇒ sumado: el código de vecindad de 3 bits $4\,\text{left} + 2\,\text{centre} + \text{right}$'
+- una sola consulta hace avanzar todas las reglas a la vez
+- espejo izquierda-derecha y complemento 0/1 de una regla; las 256 reglas forman 88 clases de simetría
+- anillo suave de radio $R = 13$, normalizado para sumar 1
+- convolución en la malla periódica como producto de transformadas de Fourier
+- crecer donde $U \approx \mu$, decaer en el resto, en pasos de $1/T$
+labels:
+  rule: Tu regla $r$ (primer panel)
+  start: Inicio de tu regla
+  width: Ancho de la fila $W$
+  generations: Generaciones
+  density: Densidad del inicio aleatorio
+  lenia_size: Mundo de Lenia $S$
+  lenia_steps: Pasos de Lenia

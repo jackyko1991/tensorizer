@@ -1,0 +1,18 @@
+source_hash: 796c13483137
+title: Sinkhorn 法による最適輸送
+summary: リング状に積まれた砂を二つの山へ、さらに渦巻きへと移すとき、総労力を最小にするにはどうすればよいでしょうか。最適輸送は、質量を $x_i$ から $y_j$ へコスト $|x_i - y_j|^2$ で運ぶ輸送計画 $P_{ij}$ を求めます。その最小値が Wasserstein 距離の二乗 $W_2^2$ です。少しのエントロピー正則化 $\varepsilon$ を加えると、問題は Sinkhorn の交互更新で解けるようになります。ここでは対数領域で logsumexp を使い、$\varepsilon$ のバッチ全体を一度に計算します。$\varepsilon \to 0$ でコストはハンガリー法で求めた厳密な最適値まで下がります。
+notes: Monge は 1781 年にこの問題を提起し、Kantorovich は 1942 年にそれを輸送計画 $P$ の問題へと緩和しました。Cuturi（2013）は、エントロピー正則化版が Sinkhorn の行列スケーリング（1 反復あたり数回の行列積）で解けることを示し、最適輸送を機械学習で実用的なものにしました。$\varepsilon$ が小さいときは注意が必要です。コードは $e^{-C/\varepsilon}$（アンダーフローする）の代わりにポテンシャル $f, g$ と logsumexp を用い、$\varepsilon$ を 1 から目標値まで徐々に下げていきます（$\varepsilon$-スケーリング）。コスト $\langle P_\varepsilon, C\rangle$ はハンガリー法で計算した厳密な $W_2^2$ まで減少します（ハンガリー法は遅いが厳密な参照解で、全順列の総当たりと照合済み）。一方、双対値 $\mathrm{OT}_\varepsilon$ にはエントロピーによるバイアスがあり、Feydy ら（2019）の Sinkhorn ダイバージェンスがこれを取り除きます。テストでは二つの閉じた形も確認します。一次元では最適計画はソートした点どうしを対応させるもの（分位関数）であり、ガウス分布どうしでは $W_2^2 = |m_1 - m_2|^2 + \operatorname{tr}(S_1 + S_2 - 2(S_1^{1/2} S_2 S_1^{1/2})^{1/2})$（Bures 計量）となります。これは凸関数の勾配が最適写像であるという Brenier の定理によります。すべての形状はコードで生成しており、画像は使っていません。
+meanings:
+- 式と乱数から生成した合成点群。各点の質量は $a_i = 1/N$
+- 距離の二乗。繰り返される $k$ ⇒ 和をとる
+- 同時に解く正則化の強さのバッチ
+- 対数領域での Sinkhorn 更新。$j$ についての和を logsumexp で計算し、$\varepsilon$ がごく小さくてもオーバーフローしない
+- 同じ更新を $i$ について行う。これにより $P$ の列和はちょうど $b$ に等しくなる
+- 輸送計画：$\varepsilon$ が大きいとぼやけ、$\varepsilon$ が小さいとほぼ置換になる
+- 重心写像：$x_i$ の質量の行き先。点は直線 $(1-t)\,x + t\,T(x)$ 上を動く（McCann 補間）
+- $\mathrm{OT}_\varepsilon(\mu,\nu) - \tfrac12\mathrm{OT}_\varepsilon(\mu,\mu) - \tfrac12\mathrm{OT}_\varepsilon(\nu,\nu)$。$\mu = \nu$ のときゼロ
+labels:
+  n_points: 形状あたりの点数 $N$
+  eps_min: 最小の正則化 $\varepsilon$
+  n_eps: バッチ内の $\varepsilon$ の個数
+  n_iter: Sinkhorn の反復回数
