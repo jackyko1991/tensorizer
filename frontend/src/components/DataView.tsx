@@ -80,7 +80,8 @@ export default function DataView({
   comments?: boolean;
 }) {
   const { t } = useLang();
-  const url = /^(\/|https?:|data:|blob:)/.test(dataset.url) ? dataset.url : assetUrl(dataset.url);
+  // already resolved ("/…" in dev, "./generated/…" in the built site whose base is "./"), or a path in generated/
+  const url = /^(\/|\.\/|https?:|data:|blob:)/.test(dataset.url) ? dataset.url : assetUrl(dataset.url);
   const [text, setText] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
   // ⤢ any file to the whole page (an overlay); Esc or ⤡ brings it back
