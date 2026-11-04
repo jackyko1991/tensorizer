@@ -2,7 +2,15 @@
  *  (a scrollable table for csv/tsv, plain text for txt/json; other kinds get the card and a download for now).
  *  Shown in the Data tab of the lower panel, next to the formulation. The file is fetched only when
  *  shown, and kept for the session. */
-import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { assetUrl } from "../api";
 import { useLang } from "../i18n";
 import type { Dataset } from "../types";
@@ -17,7 +25,9 @@ const cache = new Map<string, Promise<string>>();
 
 function load(url: string): Promise<string> {
   if (!cache.has(url)) {
-    const p = fetch(url).then((r) => (r.ok ? r.text() : Promise.reject(new Error(String(r.status)))));
+    const p = fetch(url).then((r) =>
+      r.ok ? r.text() : Promise.reject(new Error(String(r.status))),
+    );
     p.catch(() => cache.delete(url)); // retry next time
     cache.set(url, p);
   }
@@ -50,9 +60,17 @@ function linkify(text: string): ReactNode[] {
   for (const m of text.matchAll(re)) {
     const i = m.index ?? 0;
     parts.push(text.slice(last, i));
-    const href = m[1] ?? (m[2] ? `https://doi.org/${m[2]}` : `https://arxiv.org/abs/${m[3]}`);
+    const href =
+      m[1] ??
+      (m[2] ? `https://doi.org/${m[2]}` : `https://arxiv.org/abs/${m[3]}`);
     parts.push(
-      <a key={i} href={href} target="_blank" rel="noreferrer" className="text-blue-700 hover:underline">
+      <a
+        key={i}
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        className="text-blue-700 hover:underline"
+      >
         {m[0]}
       </a>,
     );
@@ -79,7 +97,9 @@ export default function DataView({
   comments?: boolean;
 }) {
   const { t } = useLang();
-  const url = /^(\/|https?:|data:|blob:)/.test(dataset.url) ? dataset.url : assetUrl(dataset.url);
+  const url = /^(\/|https?:|data:|blob:)/.test(dataset.url)
+    ? dataset.url
+    : assetUrl(dataset.url);
   const [text, setText] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
   // ⤢ any file to the whole page (an overlay); Esc or ⤡ brings it back
@@ -108,10 +128,15 @@ export default function DataView({
 
   const table = dataset.kind === "table";
   const sep = dataset.name.endsWith(".tsv") ? "\t" : ",";
-  const body = text?.split(/\r?\n/).filter((l) => l.trim() && !l.startsWith("#")) ?? [];
-  const rows = table ? body.slice(1, PREVIEW_ROWS + 1).map((l) => cells(l, sep)) : [];
+  const body =
+    text?.split(/\r?\n/).filter((l) => l.trim() && !l.startsWith("#")) ?? [];
+  const rows = table
+    ? body.slice(1, PREVIEW_ROWS + 1).map((l) => cells(l, sep))
+    : [];
   const shape = table
-    ? t("dataset.shape").replace("{rows}", String(dataset.rows)).replace("{cols}", String(dataset.columns.length))
+    ? t("dataset.shape")
+        .replace("{rows}", String(dataset.rows))
+        .replace("{cols}", String(dataset.columns.length))
     : dataset.kind === "text"
       ? t("dataset.lines").replace("{n}", String(dataset.rows))
       : dataset.kind;
@@ -152,11 +177,15 @@ export default function DataView({
           {big ? "⤡" : "⤢"}
         </button>
       </div>
-      {(dataset.kind === "table" || dataset.kind === "text") && dataset.comments.length === 0 && (
-        <p className="border-b border-amber-200 bg-amber-50 px-3 py-1.5 text-xs text-amber-800" data-testid="no-source">
-          ⚠ {t("dataset.noSource")}
-        </p>
-      )}
+      {(dataset.kind === "table" || dataset.kind === "text") &&
+        dataset.comments.length === 0 && (
+          <p
+            className="border-b border-amber-200 bg-amber-50 px-3 py-1.5 text-xs text-amber-800"
+            data-testid="no-source"
+          >
+            ⚠ {t("dataset.noSource")}
+          </p>
+        )}
       {comments && dataset.comments.length > 0 && (
         <ul className="space-y-0.5 border-b border-gray-100 bg-gray-50/70 px-3 py-2 text-xs break-words text-gray-600">
           {dataset.comments.map((c, i) => (
@@ -182,7 +211,7 @@ export default function DataView({
           <img
             src={url}
             alt={dataset.name}
-            className={`mx-auto max-w-full object-contain ${fit ? "h-full" : "max-h-[70vh]"}`}
+            className={`m-auto max-w-full object-contain ${big ? "max-h-full" : fill ? "h-full" : "max-h-[70vh]"}`}
           />
         ) : dataset.kind === "mesh" ? (
           <Suspense
@@ -192,7 +221,12 @@ export default function DataView({
               </div>
             }
           >
-            <MeshView url={url} tall={tall} fill={fit} legend={dataset.legend} />
+            <MeshView
+              url={url}
+              tall={tall}
+              fill={fit}
+              legend={dataset.legend}
+            />
           </Suspense>
         ) : !readable ? (
           <p className="p-3 text-xs text-gray-500">{t("dataset.noPreview")}</p>
@@ -205,7 +239,10 @@ export default function DataView({
             <thead className="sticky top-0 bg-gray-100 text-gray-700">
               <tr>
                 {dataset.columns.map((c) => (
-                  <th key={c} className="border-b border-gray-200 px-2 py-1 text-left font-semibold whitespace-nowrap">
+                  <th
+                    key={c}
+                    className="border-b border-gray-200 px-2 py-1 text-left font-semibold whitespace-nowrap"
+                  >
                     {c}
                   </th>
                 ))}
@@ -215,7 +252,10 @@ export default function DataView({
               {rows.map((r, i) => (
                 <tr key={i} className="odd:bg-white even:bg-gray-50/60">
                   {dataset.columns.map((_, j) => (
-                    <td key={j} className="px-2 py-0.5 whitespace-nowrap text-gray-800">
+                    <td
+                      key={j}
+                      className="px-2 py-0.5 whitespace-nowrap text-gray-800"
+                    >
                       {linkify(r[j] ?? "")}
                     </td>
                   ))}
@@ -233,11 +273,12 @@ export default function DataView({
             ))}
           </pre>
         )}
-        {(table ? dataset.rows : body.length) > PREVIEW_ROWS && text !== null && (
-          <p className="px-3 py-1.5 text-[11px] text-gray-400">
-            {t("dataset.more").replace("{n}", String(PREVIEW_ROWS))}
-          </p>
-        )}
+        {(table ? dataset.rows : body.length) > PREVIEW_ROWS &&
+          text !== null && (
+            <p className="px-3 py-1.5 text-[11px] text-gray-400">
+              {t("dataset.more").replace("{n}", String(PREVIEW_ROWS))}
+            </p>
+          )}
       </div>
     </div>
   );
@@ -265,7 +306,8 @@ function buildTree(datasets: Dataset[]): Folder {
     const parts = d.name.replace(/^data\//, "").split("/");
     let node = root;
     for (const dir of parts.slice(0, -1)) {
-      if (!node.folders.has(dir)) node.folders.set(dir, { folders: new Map(), files: [] });
+      if (!node.folders.has(dir))
+        node.folders.set(dir, { folders: new Map(), files: [] });
       node = node.folders.get(dir)!;
     }
     node.files.push(d);
@@ -307,9 +349,18 @@ function Tree({
               style={pad}
               className="flex w-full items-center gap-1 py-1 pr-2 text-left text-xs text-gray-700 hover:bg-gray-100"
             >
-              <span className="w-3 text-gray-400">{open ? "▾" : "▸"}</span>📁 {name}
+              <span className="w-3 text-gray-400">{open ? "▾" : "▸"}</span>📁{" "}
+              {name}
             </button>
-            {open && <Tree node={sub} path={key} depth={depth + 1} selected={selected} onSelect={onSelect} />}
+            {open && (
+              <Tree
+                node={sub}
+                path={key}
+                depth={depth + 1}
+                selected={selected}
+                onSelect={onSelect}
+              />
+            )}
           </li>
         );
       })}
@@ -321,10 +372,13 @@ function Tree({
             title={d.name}
             data-testid="data-file"
             className={`flex w-full items-center gap-1 truncate py-1 pr-2 text-left font-mono text-xs ${
-              d.name === selected ? "bg-blue-50 font-medium text-blue-700" : "text-gray-600 hover:bg-gray-100"
+              d.name === selected
+                ? "bg-blue-50 font-medium text-blue-700"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
           >
-            {KIND_ICON[d.kind]} <span className="truncate">{d.name.split("/").pop()}</span>
+            {KIND_ICON[d.kind]}{" "}
+            <span className="truncate">{d.name.split("/").pop()}</span>
           </button>
         </li>
       ))}
@@ -336,7 +390,9 @@ function Tree({
  *  to the chosen file, or a note that the problem has none. */
 /** Thin line icons for the rail (stroke = current colour). */
 const RAIL_ICON = {
-  files: <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5M9 13h6M9 17h6" />,
+  files: (
+    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5M9 13h6M9 17h6" />
+  ),
   source: (
     <>
       <circle cx="12" cy="12" r="9" />
@@ -383,7 +439,10 @@ export function DataSources({
     );
   const current = datasets.find((d) => d.name === selected) ?? datasets[0];
   const rail = [
-    { id: "files" as const, label: `${t("dataset.files")} (${datasets.length})` },
+    {
+      id: "files" as const,
+      label: `${t("dataset.files")} (${datasets.length})`,
+    },
     { id: "source" as const, label: t("dataset.source") },
   ].filter((r) => railIds.includes(r.id));
   return (
@@ -403,7 +462,9 @@ export function DataSources({
               aria-pressed={panel === r.id}
               data-testid={`data-rail-${r.id}`}
               className={`relative flex h-8 w-8 items-center justify-center rounded-md ${
-                panel === r.id ? "bg-white text-blue-700 shadow-sm" : "text-gray-500 hover:bg-white hover:text-gray-800"
+                panel === r.id
+                  ? "bg-white text-blue-700 shadow-sm"
+                  : "text-gray-500 hover:bg-white hover:text-gray-800"
               }`}
             >
               <svg
@@ -432,11 +493,19 @@ export function DataSources({
             className="absolute top-0 bottom-0 left-10 z-10 w-56 overflow-y-auto border-r border-gray-200 bg-white shadow-lg @2xl:static @2xl:shadow-none"
           >
             <p className="border-b border-gray-100 px-2 py-1.5 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
-              {panel === "files" ? `${listTitle} (${datasets.length})` : t("dataset.source")}
+              {panel === "files"
+                ? `${listTitle} (${datasets.length})`
+                : t("dataset.source")}
             </p>
             {panel === "files" ? (
               <div className="py-1">
-                <Tree node={tree} path="" depth={0} selected={current.name} onSelect={choose} />
+                <Tree
+                  node={tree}
+                  path=""
+                  depth={0}
+                  selected={current.name}
+                  onSelect={choose}
+                />
               </div>
             ) : current.comments.length ? (
               <ul
@@ -449,7 +518,9 @@ export function DataSources({
                 ))}
               </ul>
             ) : (
-              <p className="px-2 py-2 text-[11px] text-gray-400">{t("dataset.noSource")}</p>
+              <p className="px-2 py-2 text-[11px] text-gray-400">
+                {t("dataset.noSource")}
+              </p>
             )}
           </aside>
         )}
