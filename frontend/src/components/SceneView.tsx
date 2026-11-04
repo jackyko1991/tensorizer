@@ -100,6 +100,8 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
               units.set(key, a.unit);
             }
           }
+        // an array that is empty in every step (a layer that only appears later) has no range yet
+        for (const [k, [lo, hi]] of ranges) if (!(lo <= hi)) ranges.set(k, [0, 1]);
         if (!live) return;
         const loaded: Loaded = {
           times: [...new Set(entries.map((e) => e.time))].sort((a, b) => a - b),
@@ -212,10 +214,9 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
       const position = new THREE.BufferAttribute(d.points, 3);
       const arr = d.pointData.find((a) => a.name === colorBy[L.name]);
       const colors = new Float32Array(d.points.length);
-      if (arr) {
-        const [lo, hi] = scene.ranges.get(`${L.name}/${arr.name}`) ?? [0, 1];
-        colorize(scalar(arr), lo, hi, CMAP_FOR(arr.name), colors);
-      } else colors.fill(0.6);
+      const range = arr ? scene.ranges.get(`${L.name}/${arr.name}`) : undefined;
+      if (arr && range && range[1] > range[0]) colorize(scalar(arr), range[0], range[1], CMAP_FOR(arr.name), colors);
+      else colors.fill(0.6); // nothing to colour by, or a constant array: a plain neutral grey
       const color = new THREE.BufferAttribute(colors, 3);
       if (d.polys.offsets.length) {
         const idx: number[] = [];
@@ -292,7 +293,10 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
   const legends = useMemo(() => {
     if (!scene) return [];
     return scene.layers
-      .filter((L) => visible[L.name] && colorBy[L.name])
+      .filter((L) => {
+        const r = scene.ranges.get(`${L.name}/${colorBy[L.name]}`);
+        return visible[L.name] && colorBy[L.name] && r && r[1] > r[0]; // no colour bar for a constant array
+      })
       .map((L) => {
         const key = `${L.name}/${colorBy[L.name]}`;
         const [lo, hi] = scene.ranges.get(key) ?? [0, 1];
