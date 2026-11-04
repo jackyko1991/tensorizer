@@ -1164,7 +1164,7 @@ function ProblemView({ problem, backend, categoryTitle, paramsOpen, onTogglePara
           problem={problem.id}
           className={`xl:min-h-0 xl:flex-[1.7] ${onPhone("code", "xl:flex")}`}
           files={problem.files}
-          datasets={ws ? [] : problem.datasets}
+          datasets={ws ? undefined : (problem.datasets ?? [])}
           edits={edits}
           editable={editable}
           onEdit={edit}

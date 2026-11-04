@@ -19,7 +19,8 @@ interface Props {
   /** Problem id, so a code selection can be sent to the Ask AI panel. */
   problem: string;
   files: CodeFile[];
-  /** Library problems: bundled data files, shown as read-only tabs after the code. */
+  /** Library problems: bundled data files, shown as read-only tabs after the code (an empty list still shows
+   *  one "data" tab saying there is none). Leave undefined for no data tab (Workspace has its own Data panel). */
   datasets?: Dataset[];
   edits: Record<string, string>;
   editable: boolean;
@@ -34,10 +35,13 @@ interface Props {
   className?: string;
 }
 
+/** Tab id of the empty data tab (a problem without bundled data). */
+const NO_DATA = "\u0000data";
+
 export default function CodePanel({
   problem,
   files,
-  datasets = [],
+  datasets,
   edits,
   editable,
   onEdit,
@@ -49,7 +53,8 @@ export default function CodePanel({
 }: Props) {
   const { t } = useLang();
   const [active, setActive] = useState(files[0]?.name);
-  const dataset = datasets.find((d) => d.name === active);
+  const dataset = datasets?.find((d) => d.name === active);
+  const noData = active === NO_DATA && datasets?.length === 0;
   const file = files.find((f) => f.name === active) ?? files[0];
   const edited = Object.keys(edits).length > 0;
   const selection = useRef<CodeSelection | null>(null);
@@ -111,7 +116,21 @@ export default function CodePanel({
               {edits[f.name] !== undefined && <span className="ml-1 text-amber-600">●</span>}
             </button>
           ))}
-          {datasets.map((d) => (
+          {datasets?.length === 0 && (
+            <button
+              onClick={() => setActive(NO_DATA)}
+              title={t("dataset.role")}
+              data-testid="data-tab"
+              className={`shrink-0 rounded-t-md border border-b-0 px-3 py-1.5 font-mono text-xs ${
+                noData
+                  ? "border-emerald-200 bg-emerald-50 font-medium text-emerald-700"
+                  : "border-transparent text-gray-400 hover:text-gray-800"
+              }`}
+            >
+              📊 data
+            </button>
+          )}
+          {datasets?.map((d) => (
             <button
               key={d.name}
               onClick={() => setActive(d.name)}
@@ -130,8 +149,8 @@ export default function CodePanel({
 
         <div className="flex h-7 shrink-0 items-center justify-between gap-3 border-b border-gray-100 px-3 text-xs text-gray-500">
           <span className="truncate">
-            {dataset ? t("dataset.role") : t(ROLE[file.name])} (
-            {t(editable && !dataset ? "code.editable" : "code.readonly")})
+            {dataset || noData ? t("dataset.role") : t(ROLE[file.name])} (
+            {t(editable && !dataset && !noData ? "code.editable" : "code.readonly")})
             {edited && (
               <button onClick={onReset} className="ml-3 text-blue-600 hover:underline">
                 {t("code.reset")}
@@ -150,7 +169,11 @@ export default function CodePanel({
             setMenu({ x: e.clientX, y: e.clientY });
           }}
         >
-          {dataset ? (
+          {noData ? (
+            <p className="p-6 text-center text-sm text-gray-400" data-testid="no-data">
+              {t("dataset.none")}
+            </p>
+          ) : dataset ? (
             <div className="flex h-full flex-col p-2">
               <DataView dataset={dataset} tall />
             </div>
