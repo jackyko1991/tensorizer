@@ -4,7 +4,9 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader.js";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
+import type { Dataset } from "../types";
 import { useLang } from "../i18n";
 
 interface Options {
@@ -54,7 +56,29 @@ interface Scene {
   home: () => void;
 }
 
-export default function MeshView({ url, tall = false }: { url: string; tall?: boolean }) {
+/** Colour stops of the common colormaps, for the legend bar (vertex colours come baked into the PLY). */
+const CMAPS: Record<string, string[]> = {
+  viridis: ["#440154", "#3b528b", "#21918c", "#5ec962", "#fde725"],
+  magma: ["#000004", "#51127c", "#b73779", "#fc8961", "#fcfdbf"],
+  inferno: ["#000004", "#56106e", "#bb3754", "#f98e09", "#fcffa4"],
+  plasma: ["#0d0887", "#7e03a8", "#cc4778", "#f89540", "#f0f921"],
+  cividis: ["#00224e", "#35456c", "#666970", "#a59c74", "#fee838"],
+  coolwarm: ["#3b4cc0", "#8db0fe", "#dddddd", "#f49a7b", "#b40426"],
+  rdbu: ["#67001f", "#d6604d", "#f7f7f7", "#4393c3", "#053061"],
+};
+
+export default function MeshView({
+  url,
+  tall = false,
+  fill = false,
+  legend,
+}: {
+  url: string;
+  tall?: boolean;
+  /** Take the full height of the parent (a flex panel) instead of a fixed height. */
+  fill?: boolean;
+  legend?: Dataset["legend"];
+}) {
   const { t } = useLang();
   const host = useRef<HTMLDivElement>(null);
   const [info, setInfo] = useState<string>("…");
@@ -105,14 +129,22 @@ export default function MeshView({ url, tall = false }: { url: string; tall?: bo
       .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(String(r.status)))))
       .then((buf) => {
         if (stop) return;
-        const geometry = new STLLoader().parse(buf);
+        const ply = /\.ply(\?|$)/i.test(url);
+        const geometry = ply ? new PLYLoader().parse(buf) : new STLLoader().parse(buf);
+        const coloured = !!geometry.getAttribute("color"); // result meshes carry per-vertex colours
         geometry.computeVertexNormals();
         geometry.computeBoundingBox();
         const box = geometry.boundingBox!;
         const size = box.getSize(new THREE.Vector3());
         const centre = box.getCenter(new THREE.Vector3());
         geometry.translate(-centre.x, -centre.y, -box.min.z); // centred, resting on the floor (z up)
-        const material = new THREE.MeshStandardMaterial({ metalness: 0.1, roughness: 0.55, side: THREE.DoubleSide });
+        const material = new THREE.MeshStandardMaterial({
+          metalness: 0.1,
+          roughness: 0.55,
+          side: THREE.DoubleSide,
+          vertexColors: coloured,
+        });
+        material.userData.coloured = coloured;
         const mesh = new THREE.Mesh(geometry, material);
         mesh.rotation.x = -Math.PI / 2; // STL z-up → three.js y-up
         world.add(mesh);
@@ -131,14 +163,15 @@ export default function MeshView({ url, tall = false }: { url: string; tall?: bo
         camera.far = span * 50;
         camera.updateProjectionMatrix();
         const home = () => {
-          camera.position.set(-span * 1.4, span * 0.9, span * 1.4); // the front (−x) towards the lower left
+          const back = 1 / Math.min(1, camera.aspect); // step back in tall, narrow panels so the model fits across
+          camera.position.set(-span * 1.4 * back, span * 0.9 * back, span * 1.4 * back); // the front (−x) towards the lower left
           controls.target.set(0, size.z / 2, 0);
           controls.update();
         };
         home();
         scene.current = { material, grid, axes, edges, controls, renderer, home };
         apply(scene.current, optsRef.current);
-        const triangles = geometry.attributes.position.count / 3;
+        const triangles = (geometry.index?.count ?? geometry.attributes.position.count) / 3; // PLY is indexed, STL not
         setInfo(
           `${triangles.toLocaleString()} triangles · ${size.x.toPrecision(3)} × ${size.y.toPrecision(3)} × ${size.z.toPrecision(3)}`,
         );
@@ -196,17 +229,17 @@ export default function MeshView({ url, tall = false }: { url: string; tall?: bo
   return (
     <div
       className={`rounded ${opts.dark ? "bg-gray-900" : expanded ? "bg-white" : ""} ${
-        expanded ? "fixed inset-3 z-50 border border-gray-200 shadow-2xl" : "relative"
+        expanded ? "fixed inset-3 z-50 border border-gray-200 shadow-2xl" : fill ? "relative h-full" : "relative"
       }`}
       data-testid="mesh-frame"
     >
       <div
         ref={host}
-        className={`w-full ${expanded ? "h-full" : tall ? "h-[60vh]" : "h-72"}`}
+        className={`w-full ${expanded || fill ? "h-full" : tall ? "h-[60vh]" : "h-72"}`}
         data-testid="mesh-view"
       />
       <div
-        className="absolute top-1 right-1 flex items-center gap-0.5 rounded-md border border-gray-200 bg-white/90 p-0.5 text-xs shadow-sm"
+        className="absolute top-1 right-1 left-1 ml-auto flex w-fit max-w-full flex-wrap items-center justify-end gap-0.5 rounded-md border border-gray-200 bg-white/90 p-0.5 text-xs shadow-sm"
         data-testid="mesh-tools"
       >
         <label
@@ -265,6 +298,27 @@ export default function MeshView({ url, tall = false }: { url: string; tall?: bo
           {expanded ? "⤡" : "⤢"}
         </button>
       </div>
+      {legend && (
+        <div
+          className="absolute bottom-6 left-2 rounded border border-gray-200 bg-white/90 px-2 py-1 text-[10px] text-gray-700"
+          data-testid="mesh-legend"
+        >
+          <p className="font-medium">
+            {legend.label}
+            {legend.unit ? ` (${legend.unit})` : ""}
+          </p>
+          <div
+            className="my-0.5 h-2 w-32 rounded-sm"
+            style={{
+              background: `linear-gradient(to right, ${(CMAPS[(legend.cmap ?? "viridis").toLowerCase()] ?? CMAPS.viridis).join(",")})`,
+            }}
+          />
+          <p className="flex justify-between tabular-nums">
+            <span>{legend.min.toPrecision(3)}</span>
+            <span>{legend.max.toPrecision(3)}</span>
+          </p>
+        </div>
+      )}
       {info === "…" && (
         <div className="absolute inset-0 flex items-center justify-center" data-testid="mesh-loading">
           <span className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600" />
@@ -278,7 +332,7 @@ export default function MeshView({ url, tall = false }: { url: string; tall?: bo
 }
 
 function apply(s: Scene, o: Options) {
-  s.material.color.set(o.color);
+  s.material.color.set(s.material.userData.coloured ? "#ffffff" : o.color); // keep baked colours true
   s.material.wireframe = o.wireframe;
   s.material.visible = o.surface || o.wireframe;
   s.material.flatShading = o.flat;

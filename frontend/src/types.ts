@@ -59,6 +59,8 @@ export interface Problem {
   meta_extra?: Record<string, unknown>;
   /** Workspace problems only: uploaded data files (the bytes are in the browser's IndexedDB, synced to data/). */
   data?: DataFile[];
+  /** Extra outputs of the prebuilt run: more plots, 3D result meshes (PLY/STL), tables. */
+  results?: Dataset[];
   /** Library problems: the bundled real data (data/*.csv), served next to the output. */
   datasets?: Dataset[];
   /** Wikipedia article titles by wiki language code (en, zh, fr, …), from content/wiki.json. */
@@ -83,6 +85,8 @@ export interface Dataset {
   comments: string[];
   columns: string[];
   rows: number;
+  /** Result meshes: what the vertex colours mean (from <stem>.json next to the mesh). */
+  legend?: { label: string; unit?: string; min: number; max: number; cmap?: string };
 }
 
 export interface DataFile {

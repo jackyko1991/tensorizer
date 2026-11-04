@@ -156,9 +156,9 @@ def copy_diagram(problem: Path, target: Path) -> str | None:
 DATA_KINDS = {
     **dict.fromkeys([".csv", ".tsv"], "table"),
     **dict.fromkeys([".txt", ".dat", ".json", ".md"], "text"),
-    **dict.fromkeys([".png", ".jpg", ".jpeg", ".tif", ".tiff", ".svg"], "image"),
+    **dict.fromkeys([".png", ".jpg", ".jpeg", ".gif", ".tif", ".tiff", ".svg"], "image"),
     **dict.fromkeys([".npy", ".npz", ".pt", ".h5", ".hdf5", ".nc", ".fits"], "array"),
-    **dict.fromkeys([".stl"], "mesh"),
+    **dict.fromkeys([".stl", ".ply"], "mesh"),
 }
 
 
@@ -175,26 +175,53 @@ def copy_datasets(problem: Path, target: Path) -> list[dict]:
         dst.parent.mkdir(parents=True, exist_ok=True)
         if not dst.is_file() or dst.read_bytes() != src.read_bytes():
             shutil.copyfile(src, dst)
-        kind = DATA_KINDS.get(src.suffix.lower(), "other")
-        entry = {
-            "name": f"data/{rel}",
-            "kind": kind,
-            "url": f"{problem.parent.name}/{problem.name}/data/{rel}?v={int(src.stat().st_mtime)}",
-            "size": src.stat().st_size,
-            "comments": [],
-            "columns": [],
-            "rows": 0,
-        }
-        if kind in ("table", "text"):
-            lines = src.read_text(encoding="utf-8", errors="replace").splitlines()
-            body = [line for line in lines if line.strip() and not line.startswith("#")]
-            entry["comments"] = [line.lstrip("#").strip() for line in lines if line.startswith("#")]
-            if kind == "table":
-                sep = "\t" if src.suffix.lower() == ".tsv" else ","
-                entry["columns"] = [c.strip() for c in body[0].split(sep)] if body else []
-                entry["rows"] = max(0, len(body) - 1)
-            else:
-                entry["rows"] = len(lines)
+        out.append(describe(src, f"data/{rel}", f"{problem.parent.name}/{problem.name}/data/{rel}"))
+    return out
+
+
+def describe(src: Path, name: str, url: str) -> dict:
+    """One file for the page: name, kind, url (cache-busted), size, and for text files the leading # comment lines,
+    the column names and the row count."""
+    kind = DATA_KINDS.get(src.suffix.lower(), "other")
+    entry = {
+        "name": name,
+        "kind": kind,
+        "url": f"{url}?v={int(src.stat().st_mtime)}",
+        "size": src.stat().st_size,
+        "comments": [],
+        "columns": [],
+        "rows": 0,
+    }
+    if kind in ("table", "text"):
+        lines = src.read_text(encoding="utf-8", errors="replace").splitlines()
+        body = [line for line in lines if line.strip() and not line.startswith("#")]
+        entry["comments"] = [line.lstrip("#").strip() for line in lines if line.startswith("#")]
+        if kind == "table":
+            sep = "\t" if src.suffix.lower() == ".tsv" else ","
+            entry["columns"] = [c.strip() for c in body[0].split(sep)] if body else []
+            entry["rows"] = max(0, len(body) - 1)
+        else:
+            entry["rows"] = len(lines)
+    return entry
+
+
+RESULT_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".ply", ".stl", ".csv"}
+
+
+def describe_results(target: Path, main: Path | None) -> list[dict]:
+    """Extra files a run wrote next to its main GIF/PNG (more plots, PLY/STL result meshes, CSV tables), for the
+    result tabs. A mesh may have a <stem>.json beside it with its colour legend {label, unit, min, max, cmap}."""
+    out = []
+    for f in sorted(target.iterdir()):
+        if not f.is_file() or f.name.startswith(".") or f == main or f.suffix.lower() not in RESULT_SUFFIXES:
+            continue
+        entry = describe(f, f.name, f"{target.parent.name}/{target.name}/{f.name}")
+        legend = f.with_suffix(".json")
+        if entry["kind"] == "mesh" and legend.is_file():
+            try:
+                entry["legend"] = json.loads(legend.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                pass
         out.append(entry)
     return out
 
@@ -266,6 +293,8 @@ def main() -> None:
         target = out / cat / slug
 
         existing = sorted(p for p in target.iterdir() if p.suffix in {".gif", ".png"} and not p.name.startswith("."))
+        # the main output is the one named after the problem; other images are extra result tabs
+        existing.sort(key=lambda p: p.stem != slug)
         console_file = target / "console.txt"
         problems.append(
             {
@@ -283,6 +312,7 @@ def main() -> None:
                 "console": console_file.read_text(encoding="utf-8") if console_file.exists() else "",
                 "diagram": copy_diagram(d, target),
                 "datasets": copy_datasets(d, target),  # bundled real data (data/*.csv) with its source lines
+                "results": describe_results(target, existing[0] if existing else None),  # extra plots, 3D meshes
                 "wiki": wiki.get(f"{cat}/{slug}"),
                 "papers": papers.get(f"{cat}/{slug}", []),
                 "tags": [str(t) for t in meta.get("tags") or []],  # e.g. millennium

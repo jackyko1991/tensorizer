@@ -65,9 +65,12 @@ export default function DataView({
   dataset,
   tall = false,
   comments = true,
+  bare = false,
 }: {
   dataset: Dataset;
   tall?: boolean;
+  /** No own border (inside a frame that already has one, e.g. the data browser). */
+  bare?: boolean;
   /** Show the file's source lines above the table (the data browser shows them in its side panel instead). */
   comments?: boolean;
 }) {
@@ -102,7 +105,7 @@ export default function DataView({
 
   return (
     <div
-      className="flex min-h-0 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white"
+      className={`flex min-h-0 flex-col overflow-hidden bg-white ${bare ? "" : "rounded-lg border border-gray-200"}`}
       data-testid="dataset"
     >
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-gray-100 px-3 py-2 text-xs">
@@ -390,8 +393,8 @@ export function DataSources({ datasets }: { datasets: Dataset[] }) {
             )}
           </aside>
         )}
-        <div className="min-w-0 flex-1 p-2">
-          <DataView dataset={current} comments={false} />
+        <div className="min-w-0 flex-1">
+          <DataView dataset={current} comments={false} bare />
         </div>
       </section>
     </div>
