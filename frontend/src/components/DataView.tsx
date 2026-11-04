@@ -75,7 +75,7 @@ export default function DataView({
   comments?: boolean;
 }) {
   const { t } = useLang();
-  const url = assetUrl(dataset.url);
+  const url = /^(\/|https?:|data:|blob:)/.test(dataset.url) ? dataset.url : assetUrl(dataset.url);
   const [text, setText] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
   const readable = dataset.kind === "table" || dataset.kind === "text";
@@ -138,7 +138,9 @@ export default function DataView({
       )}
       <div className={`min-h-0 overflow-auto ${tall ? "flex-1" : "max-h-72"}`}>
         {/* one renderer per kind: table and text today; image / array canvases can slot in here */}
-        {dataset.kind === "mesh" ? (
+        {dataset.kind === "image" ? (
+          <img src={url} alt={dataset.name} className="mx-auto max-h-[70vh] max-w-full object-contain" />
+        ) : dataset.kind === "mesh" ? (
           <Suspense
             fallback={
               <div className="flex h-72 items-center justify-center">
@@ -301,7 +303,17 @@ const RAIL_ICON = {
 /** The Data tab of the lower panel, laid out like an editor's activity bar: a thin icon rail on the left (Files,
  *  Source & licence); clicking an icon opens its panel beside the rail, clicking it again closes it. The chosen file
  *  fills the rest. In a narrow column the open panel floats over the file instead of squeezing it. */
-export function DataSources({ datasets }: { datasets: Dataset[] }) {
+export function DataSources({
+  datasets,
+  rail: railIds = ["files", "source"],
+  listTitle = "data/",
+}: {
+  datasets: Dataset[];
+  /** Rail icons: the file list and/or the source & licence notes. */
+  rail?: ("files" | "source")[];
+  /** Heading of the file list (data/ for bundled data, results for run outputs). */
+  listTitle?: string;
+}) {
   const { t } = useLang();
   const [selected, setSelected] = useState(datasets[0]?.name ?? "");
   const [panel, setPanel] = useState<"files" | "source" | null>(null);
@@ -325,7 +337,7 @@ export function DataSources({ datasets }: { datasets: Dataset[] }) {
   const rail = [
     { id: "files" as const, label: `${t("dataset.files")} (${datasets.length})` },
     { id: "source" as const, label: t("dataset.source") },
-  ];
+  ].filter((r) => railIds.includes(r.id));
   return (
     <div className="@container">
       <section
@@ -372,7 +384,7 @@ export function DataSources({ datasets }: { datasets: Dataset[] }) {
             className="absolute top-0 bottom-0 left-10 z-10 w-56 overflow-y-auto border-r border-gray-200 bg-white shadow-lg @2xl:static @2xl:shadow-none"
           >
             <p className="border-b border-gray-100 px-2 py-1.5 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
-              {panel === "files" ? `data/ (${datasets.length})` : t("dataset.source")}
+              {panel === "files" ? `${listTitle} (${datasets.length})` : t("dataset.source")}
             </p>
             {panel === "files" ? (
               <div className="py-1">
