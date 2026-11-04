@@ -23,7 +23,7 @@ FILES = ["meta.yaml", "main.py", "equation.py", "tensors.py", "solve.py", "plot.
 FIXED_TIME = (2026, 1, 1, 0, 0, 0)  # constant zip timestamps → identical bytes for identical content
 
 
-def files(problem: Path) -> dict[str, str]:
+def files(problem: Path) -> dict[str, str | bytes]:
     """Relative path → text for every file of the project."""
     cat, slug = problem.parent.name, problem.name
     meta = yaml.safe_load((problem / "meta.yaml").read_text(encoding="utf-8"))
@@ -104,7 +104,11 @@ Licensed under the Apache License 2.0 — see {REPO_URL}.
     for f in sorted(problem.rglob("*")):
         rel = f.relative_to(problem).as_posix()
         if f.is_file() and f.name not in FILES and not rel.startswith(("i18n/", "__pycache__/")) and f.suffix != ".pyc":
-            out[f"problems/{cat}/{slug}/{rel}"] = f.read_text(encoding="utf-8")
+            raw = f.read_bytes()
+            try:
+                out[f"problems/{cat}/{slug}/{rel}"] = raw.decode("utf-8")
+            except UnicodeDecodeError:  # binary data (STL, images, arrays) goes in as bytes
+                out[f"problems/{cat}/{slug}/{rel}"] = raw
     return out
 
 
@@ -115,7 +119,7 @@ def zip_bytes(problem: Path) -> bytes:
         for path, text in files(problem).items():
             info = zipfile.ZipInfo(f"{problem.name}/{path}", date_time=FIXED_TIME)
             info.compress_type = zipfile.ZIP_DEFLATED
-            z.writestr(info, text.replace("\r\n", "\n"))
+            z.writestr(info, text if isinstance(text, bytes) else text.replace("\r\n", "\n"))
     return buffer.getvalue()
 
 

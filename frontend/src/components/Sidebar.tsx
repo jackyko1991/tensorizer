@@ -5,6 +5,7 @@ import { downloadPixiProject, vscodeCloneUrl, vscodeWebUrl } from "../notebook";
 import ContextMenu from "./ContextMenu";
 import DownloadIcon from "./DownloadIcon";
 import { prizeLabel } from "./PrizeBadges";
+import { plainText } from "./Tex";
 import CategoryIcon from "./CategoryIcon";
 import { RichText } from "./Tex";
 import type { Level, Manifest, Problem } from "../types";
@@ -88,10 +89,20 @@ export default function Sidebar({ manifest, selected, onSelect, onFork }: Props)
       return next;
     });
 
+  // hover text: the title plus every tag as its badge text (prizes, lists, status, role)
+  const hoverText = (p: Problem) => {
+    const labels = (p.tags ?? [])
+      .map((tag) =>
+        tag.startsWith("role:") ? t(`srole.${tag.slice(5)}` as Parameters<typeof t>[0]) : prizeLabel(tag, t),
+      )
+      .filter((x): x is string => !!x && !x.startsWith("srole."));
+    return [plainText(p.i18n?.[lang]?.title ?? p.title), ...labels].join("\n");
+  };
   const item = (p: Problem) => (
     <li key={p.id}>
       <button
         onClick={() => onSelect(p.id)}
+        title={hoverText(p)}
         onContextMenu={(e) => {
           e.preventDefault();
           setMenu({ x: e.clientX, y: e.clientY, problem: p });

@@ -115,6 +115,11 @@ export default function DataView({
           {t("dataset.download")}
         </a>
       </div>
+      {(dataset.kind === "table" || dataset.kind === "text") && dataset.comments.length === 0 && (
+        <p className="border-b border-amber-200 bg-amber-50 px-3 py-1.5 text-xs text-amber-800" data-testid="no-source">
+          ⚠ {t("dataset.noSource")}
+        </p>
+      )}
       {comments && dataset.comments.length > 0 && (
         <ul className="space-y-0.5 border-b border-gray-100 bg-gray-50/70 px-3 py-2 text-xs break-words text-gray-600">
           {dataset.comments.map((c, i) => (
