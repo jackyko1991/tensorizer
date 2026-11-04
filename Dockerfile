@@ -9,7 +9,9 @@
 # Runtime behaviour, all switchable by environment variables (docker run -e NAME=value, or Space variables):
 #   TENSORIZER_PORT    7860 (what Hugging Face expects); the server installer sets 8765
 #   TENSORIZER_SHARED  1 = public/shared server defences (the safe default); 0 on a person's own server
-#   TENSORIZER_TOKEN   pairing token (read by the runner from step 3 of the design; never passed to user code)
+#   TENSORIZER_TOKEN   pairing token (or TENSORIZER_TOKEN_SHA256, its hex SHA-256, as the installer writes it):
+#                      every route but /api/health then needs `Authorization: Bearer <token>`; never passed to
+#                      user code. With a token and TENSORIZER_SHARED=0, edited/Workspace code and the agent are on.
 #
 # The root filesystem can be read-only: everything the runner writes goes to /work (a tmpfs or a volume), e.g.
 #   docker run --read-only --tmpfs /work:uid=1000,gid=1000 --tmpfs /tmp -p 127.0.0.1:8765:8765 \

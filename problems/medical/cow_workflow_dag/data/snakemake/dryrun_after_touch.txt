@@ -1,0 +1,140 @@
+Assuming unrestricted shared filesystem usage.
+
+SNAKEMAKE
+=========
+  Date: 2026-11-04 18:37:11
+  Workflow ID: 31253a82-2cd4-4956-8252-ccbf301dae45
+  Platform: Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.39
+  Host: DESKTOP-M1MPD7U
+  User: jackyko
+  Snakemake version: 9.27.1
+  Python version: 3.14.10 | packaged by conda-forge | (main, Oct 26 2026, 11:35:38) [GCC 15.3.0]
+  Command: /home/jackyko/snakemake-tensorizer/.pixi/envs/default/bin/snakemake -n
+  Snakefile: /home/jackyko/cow_dag_run/wd/Snakefile
+  Base directory: /home/jackyko/cow_dag_run/wd
+  Run directory: /home/jackyko/cow_dag_run/wd
+  Working directory: /home/jackyko/cow_dag_run/wd
+  Config file(s): []
+  Config MD5: 99914b932bd37a50b983c5e7c90ae93b
+
+Building DAG of jobs...
+Job stats:
+job           count
+----------  -------
+centreline        1
+segment           1
+boundaries        1
+measure           1
+flow              2
+report            2
+cohort            1
+all               1
+total            10
+
+
+[Wed Nov  4 18:37:11 2026]
+rule segment:
+    input: cases/sub-002.npz
+    output: results/sub-002/segment.npz
+    log: logs/segment/sub-002.log
+    jobid: 13
+    reason: Updated input files: cases/sub-002.npz
+    wildcards: case=sub-002
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:37:11 2026]
+rule centreline:
+    input: cases/sub-002.npz
+    output: results/sub-002/centreline.npz
+    log: logs/centreline/sub-002.log
+    jobid: 14
+    reason: Updated input files: cases/sub-002.npz
+    wildcards: case=sub-002
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:37:11 2026]
+rule measure:
+    input: results/sub-002/segment.npz, results/sub-002/centreline.npz
+    output: results/sub-002/measure.npz
+    log: logs/measure/sub-002.log
+    jobid: 12
+    reason: Input files updated by another job: results/sub-002/segment.npz, results/sub-002/centreline.npz
+    wildcards: case=sub-002
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:37:11 2026]
+rule boundaries:
+    input: results/sub-002/centreline.npz
+    output: results/sub-002/boundaries.npz
+    log: logs/boundaries/sub-002.log
+    jobid: 15
+    reason: Input files updated by another job: results/sub-002/centreline.npz
+    wildcards: case=sub-002
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:37:11 2026]
+rule flow:
+    input: results/sub-002/measure.npz, results/sub-002/boundaries.npz
+    output: results/sub-002/baseline/flow.npz
+    log: logs/flow/sub-002_baseline.log
+    jobid: 11
+    reason: Input files updated by another job: results/sub-002/measure.npz, results/sub-002/boundaries.npz
+    wildcards: case=sub-002, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:37:11 2026]
+rule flow:
+    input: results/sub-002/measure.npz, results/sub-002/boundaries.npz
+    output: results/sub-002/lica_occluded/flow.npz
+    log: logs/flow/sub-002_lica_occluded.log
+    jobid: 17
+    reason: Input files updated by another job: results/sub-002/measure.npz, results/sub-002/boundaries.npz
+    wildcards: case=sub-002, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:37:11 2026]
+rule report:
+    input: results/sub-002/lica_occluded/flow.npz, results/sub-002/measure.npz
+    output: results/sub-002/lica_occluded/report.json
+    log: logs/report/sub-002_lica_occluded.log
+    jobid: 16
+    reason: Input files updated by another job: results/sub-002/measure.npz, results/sub-002/lica_occluded/flow.npz
+    wildcards: case=sub-002, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:37:11 2026]
+rule report:
+    input: results/sub-002/baseline/flow.npz, results/sub-002/measure.npz
+    output: results/sub-002/baseline/report.json
+    log: logs/report/sub-002_baseline.log
+    jobid: 10
+    reason: Input files updated by another job: results/sub-002/measure.npz, results/sub-002/baseline/flow.npz
+    wildcards: case=sub-002, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:37:11 2026]
+rule cohort:
+    input: results/sub-000/baseline/report.json, results/sub-000/lica_occluded/report.json, results/sub-002/baseline/report.json, results/sub-002/lica_occluded/report.json, results/sub-006/baseline/report.json, results/sub-006/lica_occluded/report.json, results/sub-021/baseline/report.json, results/sub-021/lica_occluded/report.json, results/sub-033/baseline/report.json, results/sub-033/lica_occluded/report.json, results/sub-354/baseline/report.json, results/sub-354/lica_occluded/report.json
+    output: results/cohort.csv
+    log: logs/cohort.log
+    jobid: 1
+    reason: Input files updated by another job: results/sub-002/lica_occluded/report.json, results/sub-002/baseline/report.json
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:37:11 2026]
+rule all:
+    input: results/cohort.csv
+    jobid: 0
+    reason: Input files updated by another job: results/cohort.csv
+    resources: tmpdir=/tmp
+Job stats:
+job           count
+----------  -------
+centreline        1
+segment           1
+boundaries        1
+measure           1
+flow              2
+report            2
+cohort            1
+all               1
+total            10
+
+Reasons:
+    (check individual jobs above for details)
+    input files updated by another job:
+        all, boundaries, cohort, flow, measure, report
+    updated input files:
+        centreline, segment
+This was a dry-run (flag -n). The order of jobs does not reflect the order of execution.

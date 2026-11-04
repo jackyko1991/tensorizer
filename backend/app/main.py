@@ -10,13 +10,15 @@ import sys
 from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Header, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from problems._common.runtime import load_meta, resolve_params
+from tensorizer_physics.auth import AUTH, TokenMiddleware, output_url
+from tensorizer_physics.jobs import JobLimit, JobManager, visitor_hash
 
 from . import agent, limits
 from .routes_agents import router as agents_router
@@ -24,10 +26,14 @@ from .routes_workspace import router as workspace_router
 from .run_queue import QUEUE
 from .runner import CACHE, CODE_FILES, ROOT, RunError, problem_dir, run_problem, stream_problem
 
-# Running edited code executes arbitrary Python: only enable on a private machine.
-# edited code runs only where allowed, and on a shared server only with TENSORIZER_SHARED_CODE=1
-ALLOW_CODE_EXEC = os.environ.get("ALLOW_CODE_EXEC") == "1" and limits.user_code_allowed()
-ORIGINS = [o for o in os.environ.get("CORS_ORIGINS", "*").split(",") if o]
+# Running edited code executes arbitrary Python: on by default only on a token-protected own server; elsewhere it
+# needs ALLOW_CODE_EXEC=1 (and on a shared server also TENSORIZER_SHARED_CODE=1). See limits.code_exec_policy.
+ALLOW_CODE_EXEC = limits.edited_code_allowed()
+# The site's origins. A token-protected or shared server answers only these (CORS_ORIGINS to change); a no-token
+# runner on this computer keeps answering any origin, as before.
+SITE_ORIGINS = "https://jackyko1991.github.io,http://localhost:5173,http://127.0.0.1:5173"
+_default_origins = SITE_ORIGINS if AUTH.enabled or limits.SHARED else "*"
+ORIGINS = [o.strip().rstrip("/") for o in os.environ.get("CORS_ORIGINS", _default_origins).split(",") if o.strip()]
 MAX_CODE_BYTES = 200_000
 
 # Windows can map .js to text/plain in the registry, and browsers refuse module scripts served that way.
@@ -35,12 +41,23 @@ mimetypes.add_type("text/javascript", ".js")
 mimetypes.add_type("text/css", ".css")
 
 app = FastAPI(title="Tensorizer API")
-# allow_private_network: lets the public github.io page call a backend on the visitor's own machine
-# (Chrome's Private Network Access preflight), for "run on this computer".
+
+
+def _scope_client(scope) -> str:
+    headers = dict(scope.get("headers") or [])
+    peer = (scope.get("client") or (None,))[0]
+    return limits.client_address(headers.get(b"x-forwarded-for", b"").decode("latin-1"), peer)
+
+
+# The pairing token (tensorizer_physics.auth): added first, so the CORS middleware below wraps it (preflights never
+# need the token, and a 401 still carries the CORS headers the page needs to tell "wrong token" from "unreachable").
+app.add_middleware(TokenMiddleware, client=_scope_client)
+# allow_private_network: lets the public github.io page call a backend on the visitor's own machine or LAN
+# (Chrome's Private Network Access preflight). allow_headers "*" echoes the requested headers, Authorization included.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ORIGINS,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
     allow_private_network=True,
 )
@@ -107,9 +124,16 @@ def _nvidia_gpu() -> str | None:
     return name[:80] or None
 
 
+FEATURES = ["run", "jobs"]
+
+
 @app.get("/api/health")
 def health() -> dict:
-    return {"status": "ok", "allow_code_exec": ALLOW_CODE_EXEC, "queue": QUEUE.status(), **_machine()}
+    """Public (no token): what this runner is and allows. auth "token": every other route needs the pairing token;
+    shared: the public-server defences are on; code_exec: edited and user-written code may run."""
+    status = {"status": "ok", "allow_code_exec": ALLOW_CODE_EXEC, "code_exec": ALLOW_CODE_EXEC}
+    status |= {"auth": "token" if AUTH.enabled else "none", "shared": limits.SHARED, "queue": QUEUE.status()}
+    return {**status, "features": FEATURES, "job_timeout_s": limits.JOB_TIMEOUT_S, **_machine()}
 
 
 @app.get("/api/queue")
@@ -165,10 +189,79 @@ async def run_stream(category: str, slug: str, req: RunRequest, request: Request
                 category, slug, params, req.files, req.verbose, _client(request), device=req.device
             ):
                 if event["type"] == "result":
-                    event = {**event, "output": f"/api/outputs/{event['run_id']}/{event['output']}", "params": params}
+                    event = {**event, "output": output_url(event["run_id"], event["output"]), "params": params}
                 yield json.dumps(event) + "\n"
         except RunError as e:
             yield json.dumps({"type": "error", "message": str(e), "console": e.console}) + "\n"
+
+    return StreamingResponse(events(), media_type="application/x-ndjson", headers={"Cache-Control": "no-cache"})
+
+
+# --- Detached jobs: runs that outlive the page (see tensorizer_physics.jobs) ----------------------------------------
+
+JOBS = JobManager(CACHE / "_jobs")
+VISITOR_CHARS = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_")
+
+
+class JobRequest(RunRequest):
+    category: str
+    slug: str
+
+
+def _visitor(x_visitor: str | None) -> str:
+    """The hash of the browser's random visitor id (X-Visitor); the id itself is never stored."""
+    v = (x_visitor or "").strip()
+    if not 16 <= len(v) <= 128 or set(v) - VISITOR_CHARS:
+        raise HTTPException(400, "missing or malformed X-Visitor header")
+    return visitor_hash(v)
+
+
+def _own_job(job_id: str, x_visitor: str | None):
+    job = JOBS.get(job_id, _visitor(x_visitor))
+    if job is None:  # someone else's job looks the same as no job
+        raise HTTPException(404, "unknown job")
+    return job
+
+
+@app.post("/api/jobs")
+async def job_start(req: JobRequest, request: Request, x_visitor: str | None = Header(None)) -> dict:
+    """Start a run that keeps going when the page closes; returns {"job_id"} at once."""
+    visitor = _visitor(x_visitor)
+    params = _validate(req.category, req.slug, req)
+    try:
+        job = JOBS.start(visitor, _client(request), req.category, req.slug, params, req.files, req.verbose, req.device)
+    except JobLimit as e:
+        raise HTTPException(e.status, str(e)) from None
+    return {"job_id": job.id, **job.summary()}
+
+
+@app.get("/api/jobs")
+def job_list(x_visitor: str | None = Header(None)) -> dict:
+    """The caller's own jobs, newest first."""
+    return {"jobs": [j.summary() for j in JOBS.mine(_visitor(x_visitor))]}
+
+
+@app.get("/api/jobs/{job_id}")
+def job_status(job_id: str, x_visitor: str | None = Header(None)) -> dict:
+    return _own_job(job_id, x_visitor).summary()
+
+
+@app.post("/api/jobs/{job_id}/cancel")
+def job_cancel(job_id: str, x_visitor: str | None = Header(None)) -> dict:
+    job = _own_job(job_id, x_visitor)
+    return {"cancelled": JOBS.cancel(job), **job.summary()}
+
+
+@app.get("/api/jobs/{job_id}/events")
+async def job_events(
+    job_id: str, x_visitor: str | None = Header(None), start: int = Query(0, alias="from")
+) -> StreamingResponse:
+    """The job's events from number ?from=N (newline-delimited JSON, each with its "seq"), then live until it ends."""
+    job = _own_job(job_id, x_visitor)
+
+    async def events():
+        async for event in JOBS.events(job, max(0, start)):
+            yield json.dumps(event) + "\n"
 
     return StreamingResponse(events(), media_type="application/x-ndjson", headers={"Cache-Control": "no-cache"})
 
@@ -183,7 +276,7 @@ async def run(category: str, slug: str, req: RunRequest, request: Request) -> di
     except RunError as e:
         raise HTTPException(400, {"message": str(e), "console": e.console}) from None
     return {
-        "output": f"/api/outputs/{result.run_id}/{result.output}",
+        "output": output_url(result.run_id, result.output),
         "console": result.console,
         "cached": result.cached,
         "params": params,
@@ -246,7 +339,7 @@ async def workspace_run_stream(session: str, req: RunRequest, request: Request) 
         try:
             async for event in agent.run_workspace(session, req.params, req.files, req.verbose, _client(request)):
                 if event["type"] == "result":
-                    event = {**event, "output": f"/api/outputs/{event['run_id']}/{event['output']}"}
+                    event = {**event, "output": output_url(event["run_id"], event["output"])}
                 yield json.dumps(event) + "\n"
         except (RunError, ValueError, TypeError) as e:
             yield json.dumps({"type": "error", "message": str(e), "console": getattr(e, "console", "")}) + "\n"

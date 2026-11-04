@@ -1,0 +1,357 @@
+{
+ "machine": {
+  "cpu": "AMD Ryzen 5 5600G with Radeon Graphics",
+  "threads": 6,
+  "gpu": "NVIDIA GeForce GTX 1080 Ti",
+  "torch": "2.13.0",
+  "python": "3.12.16",
+  "date": "2026-11-04",
+  "passes": 5,
+  "seconds": 23.7,
+  "cpu_load_percent": [
+   26.7,
+   100.0
+  ],
+  "gpu_load_percent": [
+   0.0,
+   5.0
+  ],
+  "note": "Measured under load: other jobs were training models on the same machine (system CPU use 27-100% during the run). Loop and tensor are timed back to back and the medians of 5 passes are shown, so the ratios hold up better than the absolute times; three separate runs gave CPU speed-ups that differed by up to ~3x at the same size. GPU timings are float64 (a GTX 1080 Ti runs float64 at 1/32 of its float32 rate) and exclude host-to-device copies."
+ },
+ "units": {
+  "dot": "N",
+  "pairwise": "N",
+  "matmul": "n",
+  "pendulum": "B",
+  "diffusion": "n",
+  "mc_pi": "N"
+ },
+ "code": {
+  "dot": {
+   "loop": "def dot_loop(x, y):\n    s = 0.0\n    for i in range(len(x)):\n        s += x[i] * y[i]\n    return s",
+   "tensor": "def dot_tensor(x, y):\n    return torch.dot(x, y)  # or torch.einsum(\"i,i->\", x, y)"
+  },
+  "pairwise": {
+   "loop": "def pairwise_loop(x):\n    n = len(x)\n    d = [[0.0] * n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):\n            dx = x[i][0] - x[j][0]\n            dy = x[i][1] - x[j][1]\n            dz = x[i][2] - x[j][2]\n            d[i][j] = math.sqrt(dx * dx + dy * dy + dz * dz)\n    return d",
+   "tensor": "def pairwise_tensor(x):\n    r = x[:, None, :] - x[None, :, :]  # (N, N, 3) all separations\n    return r.norm(dim=-1)  # (N, N)"
+  },
+  "matmul": {
+   "loop": "def matmul_loop(A, B):\n    n, m, p = len(A), len(B), len(B[0])\n    C = [[0.0] * p for _ in range(n)]\n    for i in range(n):\n        for j in range(p):\n            s = 0.0\n            for k in range(m):\n                s += A[i][k] * B[k][j]\n            C[i][j] = s\n    return C",
+   "tensor": "def matmul_tensor(A, B):\n    return A @ B  # or torch.einsum(\"ik,kj->ij\", A, B)"
+  },
+  "pendulum": {
+   "loop": "def pendulum_loop(theta, omega, g=9.81, L=1.0, dt=0.01):\n    def f(th, om):\n        return om, -g / L * math.sin(th)\n\n    out = []\n    for th, om in zip(theta, omega):  # one pendulum at a time\n        k1 = f(th, om)\n        k2 = f(th + 0.5 * dt * k1[0], om + 0.5 * dt * k1[1])\n        k3 = f(th + 0.5 * dt * k2[0], om + 0.5 * dt * k2[1])\n        k4 = f(th + dt * k3[0], om + dt * k3[1])\n        out.append(\n            (\n                th + dt / 6 * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]),\n                om + dt / 6 * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]),\n            )\n        )\n    return out",
+   "tensor": "def pendulum_tensor(theta, omega, g=9.81, L=1.0, dt=0.01):\n    y = torch.stack([theta, omega], dim=1)  # (B, 2): all pendulums at once\n\n    def f(y):\n        return torch.stack([y[:, 1], -g / L * torch.sin(y[:, 0])], dim=1)\n\n    k1 = f(y)\n    k2 = f(y + 0.5 * dt * k1)\n    k3 = f(y + 0.5 * dt * k2)\n    k4 = f(y + dt * k3)\n    return y + dt / 6 * (k1 + 2 * k2 + 2 * k3 + k4)"
+  },
+  "diffusion": {
+   "loop": "def diffusion_loop(u, a=0.2):\n    n = len(u)\n    new = [row[:] for row in u]  # boundary stays fixed\n    for i in range(1, n - 1):\n        for j in range(1, n - 1):\n            lap = u[i + 1][j] + u[i - 1][j] + u[i][j + 1] + u[i][j - 1] - 4 * u[i][j]\n            new[i][j] = u[i][j] + a * lap\n    return new",
+   "tensor": "def diffusion_tensor(u, a=0.2):\n    new = u.clone()\n    c = u[1:-1, 1:-1]\n    lap = u[2:, 1:-1] + u[:-2, 1:-1] + u[1:-1, 2:] + u[1:-1, :-2] - 4 * c\n    new[1:-1, 1:-1] = c + a * lap\n    return new"
+  },
+  "mc_pi": {
+   "loop": "def mc_pi_loop(xs, ys):\n    hits = 0\n    for x, y in zip(xs, ys):  # one dart at a time\n        if x * x + y * y <= 1.0:\n            hits += 1\n    return 4.0 * hits / len(xs)",
+   "tensor": "def mc_pi_tensor(xs, ys):\n    inside = xs**2 + ys**2 <= 1.0  # all darts at once: a (N,) bool tensor\n    return 4.0 * inside.to(xs.dtype).mean()"
+  }
+ },
+ "cases": {
+  "dot": [
+   {
+    "n": 10000,
+    "loop_s": 0.0009346000151708722,
+    "tensor_cpu_s": 1.4400051441043615e-05,
+    "tensor_gpu_s": 6.150000263005495e-05,
+    "speedup_cpu": 62.1733894927463,
+    "speedup_gpu": 15.383167578120313,
+    "speedup_cpu_range": [
+     49.189552014754135,
+     162.38337288439152
+    ],
+    "speedup_gpu_range": [
+     10.304300949677001,
+     17.591660057674073
+    ]
+   },
+   {
+    "n": 100000,
+    "loop_s": 0.009173099999316037,
+    "tensor_cpu_s": 3.1400006264448166e-05,
+    "tensor_gpu_s": 6.459996802732348e-05,
+    "speedup_cpu": 302.6368825169433,
+    "speedup_gpu": 141.99852228156124,
+    "speedup_cpu_range": [
+     244.47801420146467,
+     522.1704726113862
+    ],
+    "speedup_gpu_range": [
+     89.9035090907489,
+     161.3570398325943
+    ]
+   },
+   {
+    "n": 1000000,
+    "loop_s": 0.08920050004962832,
+    "tensor_cpu_s": 0.0002038999809883535,
+    "tensor_gpu_s": 0.0005993000231683254,
+    "speedup_cpu": 451.36737915628856,
+    "speedup_gpu": 148.84114233477106,
+    "speedup_cpu_range": [
+     218.03574574592162,
+     603.344419088732
+    ],
+    "speedup_gpu_range": [
+     143.55607728481186,
+     859.5432136147489
+    ]
+   }
+  ],
+  "pairwise": [
+   {
+    "n": 100,
+    "loop_s": 0.004212500003632158,
+    "tensor_cpu_s": 0.00037099997280165553,
+    "tensor_gpu_s": 0.00014180003199726343,
+    "speedup_cpu": 11.803951076095863,
+    "speedup_gpu": 29.94780686883083,
+    "speedup_cpu_range": [
+     11.108912479294606,
+     12.632615496323895
+    ],
+    "speedup_gpu_range": [
+     29.396374308200052,
+     39.78458569606284
+    ]
+   },
+   {
+    "n": 300,
+    "loop_s": 0.03838099999120459,
+    "tensor_cpu_s": 0.0007319999858736992,
+    "tensor_gpu_s": 0.00016110000433400273,
+    "speedup_cpu": 51.773908161032296,
+    "speedup_gpu": 247.26318389031667,
+    "speedup_cpu_range": [
+     34.759102617283666,
+     52.85614803610228
+    ],
+    "speedup_gpu_range": [
+     164.7760834849685,
+     275.5919545849934
+    ]
+   },
+   {
+    "n": 1000,
+    "loop_s": 0.43505289999302477,
+    "tensor_cpu_s": 0.007536000048276037,
+    "tensor_gpu_s": 0.0011852000025101006,
+    "speedup_cpu": 57.72994920462468,
+    "speedup_gpu": 388.71473089442316,
+    "speedup_cpu_range": [
+     38.48509909521458,
+     61.26881150784208
+    ],
+    "speedup_gpu_range": [
+     156.47505127768477,
+     1239.6319385925283
+    ]
+   }
+  ],
+  "matmul": [
+   {
+    "n": 32,
+    "loop_s": 0.003265499952249229,
+    "tensor_cpu_s": 3.209995338693261e-05,
+    "tensor_gpu_s": 7.190002361312509e-05,
+    "speedup_cpu": 105.08426523148006,
+    "speedup_gpu": 48.64810687538302,
+    "speedup_cpu_range": [
+     94.02690227213338,
+     383.5430413130493
+    ],
+    "speedup_gpu_range": [
+     40.76780511980537,
+     73.61853129008676
+    ]
+   },
+   {
+    "n": 64,
+    "loop_s": 0.02514580002753064,
+    "tensor_cpu_s": 4.309997893869877e-05,
+    "tensor_gpu_s": 8.640001760795712e-05,
+    "speedup_cpu": 565.5455194934985,
+    "speedup_gpu": 316.2406758285327,
+    "speedup_cpu_range": [
+     541.9352979253487,
+     1595.0420379915538
+    ],
+    "speedup_gpu_range": [
+     259.50247487580566,
+     471.04049638899295
+    ]
+   },
+   {
+    "n": 128,
+    "loop_s": 0.21940350002842024,
+    "tensor_cpu_s": 9.280000813305378e-05,
+    "tensor_gpu_s": 0.00012530002277344465,
+    "speedup_cpu": 1864.6377164297746,
+    "speedup_gpu": 1795.3250082073664,
+    "speedup_cpu_range": [
+     1575.8038817919337,
+     2501.7511611669147
+    ],
+    "speedup_gpu_range": [
+     1445.3459287611813,
+     2284.3386591507287
+    ]
+   }
+  ],
+  "pendulum": [
+   {
+    "n": 1000,
+    "loop_s": 0.0018657000036910176,
+    "tensor_cpu_s": 0.00043979997280985117,
+    "tensor_gpu_s": 0.0007808000082150102,
+    "speedup_cpu": 4.549568365947537,
+    "speedup_gpu": 2.389472315652508,
+    "speedup_cpu_range": [
+     3.9929154852998163,
+     7.894248773389309
+    ],
+    "speedup_gpu_range": [
+     2.033359447629675,
+     2.4962920817467804
+    ]
+   },
+   {
+    "n": 10000,
+    "loop_s": 0.020922800002153963,
+    "tensor_cpu_s": 0.0007418000022880733,
+    "tensor_gpu_s": 0.0008123000152409077,
+    "speedup_cpu": 29.70300929636822,
+    "speedup_gpu": 24.659731119736804,
+    "speedup_cpu_range": [
+     24.556945425731925,
+     35.800853186686524
+    ],
+    "speedup_gpu_range": [
+     21.322087535728002,
+     27.867341037191036
+    ]
+   },
+   {
+    "n": 100000,
+    "loop_s": 0.21092340000905097,
+    "tensor_cpu_s": 0.002965699997730553,
+    "tensor_gpu_s": 0.0028125999961048365,
+    "speedup_cpu": 68.21712749458248,
+    "speedup_gpu": 75.77959904884302,
+    "speedup_cpu_range": [
+     58.1833562674386,
+     73.27454139671876
+    ],
+    "speedup_gpu_range": [
+     71.35455111725803,
+     235.66364435941472
+    ]
+   }
+  ],
+  "diffusion": [
+   {
+    "n": 64,
+    "loop_s": 0.0014298000023700297,
+    "tensor_cpu_s": 0.00011709996033459902,
+    "tensor_gpu_s": 0.00037570000858977437,
+    "speedup_cpu": 12.073952115139669,
+    "speedup_gpu": 3.824327827026109,
+    "speedup_cpu_range": [
+     11.89348663401367,
+     14.275331232387053
+    ],
+    "speedup_gpu_range": [
+     3.6812565481747086,
+     4.535339875348421
+    ]
+   },
+   {
+    "n": 256,
+    "loop_s": 0.023943300009705126,
+    "tensor_cpu_s": 0.0003557000309228897,
+    "tensor_gpu_s": 0.0003733000485226512,
+    "speedup_cpu": 64.80010685858666,
+    "speedup_gpu": 64.13955772162802,
+    "speedup_cpu_range": [
+     45.21386861480041,
+     97.69854659236181
+    ],
+    "speedup_gpu_range": [
+     57.090541262249445,
+     78.37393407903211
+    ]
+   },
+   {
+    "n": 512,
+    "loop_s": 0.107990599994082,
+    "tensor_cpu_s": 0.0006139000179246068,
+    "tensor_gpu_s": 0.001748999988194555,
+    "speedup_cpu": 177.15530148285615,
+    "speedup_gpu": 62.231392214381984,
+    "speedup_cpu_range": [
+     85.82878161869209,
+     246.32749109908488
+    ],
+    "speedup_gpu_range": [
+     61.74419709719824,
+     359.02018094747774
+    ]
+   }
+  ],
+  "mc_pi": [
+   {
+    "n": 10000,
+    "loop_s": 0.0013388999504968524,
+    "tensor_cpu_s": 0.00010219996329396963,
+    "tensor_gpu_s": 0.0002327000256627798,
+    "speedup_cpu": 12.694720642995543,
+    "speedup_gpu": 5.343525169970815,
+    "speedup_cpu_range": [
+     10.91666556781663,
+     17.74627653864078
+    ],
+    "speedup_gpu_range": [
+     4.281739603082196,
+     7.1534155661326
+    ]
+   },
+   {
+    "n": 100000,
+    "loop_s": 0.013051000016275793,
+    "tensor_cpu_s": 0.0003299000090919435,
+    "tensor_gpu_s": 0.00029910000739619136,
+    "speedup_cpu": 39.56047182962782,
+    "speedup_gpu": 43.634235016879444,
+    "speedup_cpu_range": [
+     18.78996870523783,
+     45.59908427911565
+    ],
+    "speedup_gpu_range": [
+     41.76381618394477,
+     58.446717328577016
+    ]
+   },
+   {
+    "n": 1000000,
+    "loop_s": 0.12912240001605824,
+    "tensor_cpu_s": 0.003759699990041554,
+    "tensor_gpu_s": 0.0037651999737136066,
+    "speedup_cpu": 32.20590564194985,
+    "speedup_gpu": 34.58722004201149,
+    "speedup_cpu_range": [
+     24.371086330912334,
+     34.87486983995929
+    ],
+    "speedup_gpu_range": [
+     32.64221895034865,
+     296.15229220032035
+    ]
+   }
+  ]
+ }
+}

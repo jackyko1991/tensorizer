@@ -1,0 +1,100 @@
+title: 'The power of workflow orchestration: a Circle of Willis cohort as a tensor DAG'
+category: medical
+level: advanced
+order: 6
+tags: [series:vascular-flow:3, series:workflow-orchestration:1]
+summary: >
+  A vascular study is a chain of steps (segment the MRA, extract the centreline graph, measure the vessels, place the
+  inlets and outlets, solve the flow, report), each already a tensor program, so the workflow that Snakemake
+  orchestrates can be a tensor too. On six open (CC0) TopCoW MRA scans of the Circle of Willis, the same Snakefile is
+  run by Snakemake (offline) and by a tensor DAG engine: the job graph is a sum of Kronecker products, its levels,
+  critical path and rerun set are matrix–vector iterations, and the results match job for job. Then the time saved,
+  where it comes from, and what a file DAG cannot give: a gradient through the whole pipeline. Educational only, not
+  for clinical use.
+animated: true
+vector_form: 'A = \sum_{s,r} (A_{\mathrm{rule}})_{sr}\, E_{sr} \otimes \bigotimes_a M_a^{sr},\qquad (I - A)^{-1} = \sum_{k \ge 0} A^k,\qquad t = d \oplus (A \otimes t),\qquad K\,p = b,\quad G_e = \frac{\pi r_e^4}{8\mu L_e}'
+index_form: 'M_a^{sr} \in \{I_{n_a},\ \mathbb 1_{n_a},\ \mathbb 1_{n_a}^{\top}\},\qquad \operatorname{tr}(A^k) = 0\ \ (k = 1 \dots J),\qquad \ell_i = \max_j A_{ij}(\ell_j + 1),\qquad t_i = d_i + \max_j A_{ij}\, t_j,\qquad x = s \lor R\,s \qquad K_{nm} = \sum_e G_e B_{en} B_{em} + g_n \delta_{nm},\quad g_k = \frac{Q\, r_k^3}{P \sum_m r_m^3},\quad r_e = \sqrt{\frac{h^3 \sum_{x \to e} \sigma\big((I_x - \theta)/w\big)}{\pi L_e}}'
+translation:
+  - {symbol: 'A_{\mathrm{rule}}', code: "rule_graph(parse_snakefile(text))", shape: '(R, R)', meaning: 'rule $s$ reads a file pattern that rule $r$ writes; parsed from the bundled Snakefile itself'}
+  - {symbol: 'M_a^{sr}', code: 'kron_block(axes_r, axes_s, sizes)', shape: '(n_s, n_r)', meaning: 'per wildcard axis $a$ (case, condition): $I$ when both rules carry it (per-case edges $A \otimes I$), $\mathbb 1$ for a broadcast, $\mathbb 1^\top$ for a gather such as the cohort report'}
+  - {symbol: 'A', code: 'job_adjacency(A_rule, axes, sizes)', shape: '(J, J)', meaning: '$A_{ij} = 1$ when job $i$ reads an output of job $j$; 50 jobs, 79 edges'}
+  - {symbol: '\operatorname{tr}(A^k)', code: 'walk_traces(A), is_nilpotent(A)', shape: '(J,)', meaning: 'closed walks of length $k$; all zero ⇔ $A$ nilpotent ⇔ acyclic'}
+  - {symbol: '(I - A)^{-1}', code: 'torch.linalg.inv(I - A), closure(A)', shape: '(J, J)', meaning: 'counts the paths $j \to i$; its 0/1 pattern is the reachability (boolean repeated squaring)'}
+  - {symbol: '\ell_i', code: 'levels(A)', shape: '(J,)', meaning: 'topological level by boolean matrix–vector iteration: a job is ready when $A\,\neg\mathrm{done} = 0$ in its row'}
+  - {symbol: 't = d \oplus (A \otimes t)', code: 'finish_times(A, d)', shape: '(J,)', meaning: 'earliest finish times, a max-plus (tropical) fixed point; $\max_i t_i$ is the critical path'}
+  - {symbol: 'x = s \lor R s', code: 'rerun_set(closure(A), touched)', shape: '(J,)', meaning: 'jobs to rerun after the jobs in $s$ (readers of a changed file) became outdated'}
+  - {symbol: '\sigma((I - \theta)/w)', code: 'soft_threshold(image, theta, width)', shape: '(B, X, Y, Z)', meaning: 'soft segmentation, differentiable in the threshold $\theta$ (one per case)'}
+  - {symbol: 'T_v = \min_u (T_u + \ell_{uv}/R_{uv}^2)', code: 'relax(T, src, dst, w)', shape: '(V,)', meaning: 'min-plus eikonal on the voxel graph of all vessels of all cases at once: free ends and centrelines'}
+  - {symbol: 'r_e', code: "measure(seg, g)['radius']", shape: '(B, E)', meaning: 'edge radius from the soft volume of the voxels nearest to its centreline'}
+  - {symbol: 'K\,p = b', code: 'torch.linalg.solve(K, b)', shape: '(B, N, N)', meaning: 'Kirchhoff with Poiseuille conductances $G_e$ and Murray outlet loads $g_k$, one batched solve; Dirichlet rows $p = P$ at the open inlets'}
+  - {symbol: '\partial s/\partial\theta', code: 'share.sum().backward()', shape: '(B,)', meaning: 'the left-MCA flow share differentiated through flow, measure and segmentation, every case in one backward pass'}
+notes: >
+  Idea. The framing, the power of workflow orchestration, is Jacky Ko's, from his HPC and PhD work on vascular
+  pipelines: if every stage of the pipeline is a tensor program, the DAG that a workflow manager schedules can be one
+  too. This problem builds that and measures it.
+
+  Workflow. data/Snakefile has eight rules (segment, centreline, measure, boundaries, flow, report, cohort, all) and
+  two wildcards: the case (six scans) and the condition (both ICA inlets open, or the left ICA closed). Each rule's
+  shell runs workflow.py, which calls the same tensor function for one case that the tensor engine calls once for all
+  cases. Snakemake 9.27.1 ran it offline in WSL2 (its own environment, never part of this project) and its outputs
+  are bundled as references in data/snakemake: the job DAG (--dag), the dry-run job list, the rerun set after one
+  input changed, --summary, the per-job start and end times, and the cohort table its jobs wrote. The tests check that
+  the tensor engine has the same 50 jobs and 79 edges, that Snakemake's orders respect our $A$ and give our levels,
+  that the rerun set is the same, and that the cohort table is identical to the 9 digits written. A detail on reruns: touching an input
+  did not make Snakemake rerun anything, because for small files it compares checksums; the reference changes the
+  file's bytes (same arrays), and then 10 jobs rerun, as $x = s \lor Rs$ predicts.
+
+  Time. In the bundled run Snakemake took 118 s on 1 core, 43 s on 6 and 27 s on 12 (an earlier run on a less busy
+  machine: 79, 23 and 22 s); the tensor engine runs the same work in about 5 to 10 s on one thread. The honest
+  accounting: each Snakemake job is a new process that starts Python and imports torch and the job module (about
+  1.8 s, data/snakemake/startup.csv, so about 88 s of the 115 s of summed job time), reads and writes .npz files,
+  and is scheduled; the tensor engine pays that once. Batching itself buys little on a CPU here (running the cases
+  one at a time in-process takes about as long, sometimes less), so the gain comes from start-up and files, and it shrinks when every job is a heavy GPU-bound solve that
+  dwarfs the start-up. No schedule on $c$ cores beats $\max(\mathrm{CP}, W/c)$, the critical path from the max-plus
+  iteration and the total work over $c$, and the measured runs respect it; finding the best schedule is NP-hard in
+  general (Graham's list scheduling is within $W/c + \mathrm{CP}$).
+
+  Gradient. A file DAG passes numbers, not derivatives. The soft threshold makes segmentation, radii and flow
+  differentiable, so $\partial s_{\mathrm{L\,MCA}}/\partial\theta$ (the left-MCA share of the outflow) comes for every
+  case from one backward pass and matches central finite differences, which would cost Snakemake two extra full runs.
+  The centreline graph (topology) and the connected-component mask are held fixed.
+
+  Pipeline. Segment: soft threshold $\sigma((I - \theta)/w)$ of the normalised TOF intensity, hard mask $I > \theta$
+  minus components under 64 voxels, Dice against the TopCoW mask about 0.86 to 0.91. Centreline: from the TopCoW
+  vessel labels, junctions where labelled vessels meet (contacts within 3.5 mm merged; only anatomical pairs count, so
+  two A2s running side by side do not), a free end per terminal vessel (its farthest voxel by a min-plus eikonal with
+  travel time $\ell/R^2$, re-centred), and the shortest centred path between consecutive nodes (as in the aneurysm
+  problem's tensor stand-in for VMTK). Measure: each voxel near the labelled vessels goes to its nearest centreline
+  point, so an edge's radius is $\sqrt{V_e/(\pi L_e)}$ from the soft volume; asymmetry $2(r_R - r_L)/(r_R + r_L)$ per
+  vessel; a stenosis flag where the smoothed radius profile dips below half its median (in these healthy controls
+  such flags are segmentation artefacts). Boundaries, as in Venova: inlets at the free ends of the ICAs and the
+  basilar artery, outlets at the MCA, ACA and PCA ends; Pcom and Acom ends are never boundaries. Flow: a reduced-order
+  steady model, Poiseuille conductance per edge, $P$ = 90 mmHg at the open inlets, each outlet drained to 0 Pa through
+  a Murray load $g_k \propto r_k^3$ tuned so that a resistance-free network would carry 10 ml/s; one batched linear
+  solve. The collateral test closes the left ICA: where an Acom or a Pcom is patent, the left hemisphere stays
+  perfused. Simplified: Newtonian blood, rigid straight tubes, no pulsatility, no 3D flow (the aneurysm problem does
+  3D CFD on one vessel), threshold radii on 0.5 mm voxels, literature-order pressures and flows.
+
+  Data. TopCoW 2024, MRA_Lausanne subset (Zenodo 10.5281/zenodo.15692630, licence CC0): 20 healthy-control TOF-MRA
+  scans with Circle of Willis labels. Six cases are bundled as 96×80×48 crops at 0.5 mm (image and labels, under
+  1 MB in all); data/SOURCES.md has the processing and the citations (Yang et al., the TopCoW challenge; Di Noto et
+  al. 2022, the Lausanne cohort). The main TopCoW release is not used (its licence restricts commercial use).
+
+  Results. Besides the GIF there are two 3D results. results/centreline.pvd is the anatomy: every case's
+  segmentation surface (marching tetrahedra) and its centreline graph, both coloured by the vessel radius.
+  results/flow.pvd is the flow of the 1D Poiseuille network over 11 steps in which the left ICA narrows: the timestep
+  is the stenosis severity s, the fraction of the lumen diameter lost (0 open, 1 closed). Its layers are the vessel
+  surface coloured by the wall shear stress $\tau_w = 4\mu|Q|/(\pi r^3)$ of the nearest centreline edge (pressure as a
+  second array), the streamlines and particles (both coloured by speed), and the inlet and outlet discs with arrows.
+  There is no 3D CFD here: the streamlines are the idealised axial flow of the 1D model, lines parallel to each
+  vessel's centreline at $\rho = 0, 0.35, 0.7$ of its radius with the Hagen–Poiseuille speed $u = 2U(1 - \rho^2)$,
+  $U = |Q|/(\pi r^2)$; there is no secondary flow, and they break at the junctions. Each step is a steady state; the
+  particles only advance along their streamlines by a fixed pseudo-time of 4 ms per step (wrapping round to the start
+  of their vessel) to show the speeds. The stenosis is a 10 mm Poiseuille segment in series with the inlet, so its
+  conductance falls as $(1 - s)^4$; s = 0 and s = 1 are exactly the workflow's two conditions, and the steps between
+  are run by the tensor engine only (one batched solve per step). results/stenosis_sweep.csv gives the left-ICA
+  inflow and left-MCA share per step and case; results/timings.csv, results/equivalence.csv and results/cohort.csv
+  hold the other numbers.
+params:
+  threshold: {default: 0.30, min: 0.20, max: 0.45, step: 0.01, label: 'Segmentation threshold $\theta$ on the normalised intensity', unit: a.u.}
+  cores: {default: 12, min: 1, max: 12, step: 1, type: int, label: 'Cores $c$ in the bound $\max(\mathrm{CP}, W/c)$'}

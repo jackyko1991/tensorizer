@@ -1,0 +1,18 @@
+# Snakemake 9.27.1 run offline from ../Snakefile in WSL2 (Ubuntu 24.04), separate pixi env (snakemake-minimal, pytorch-cpu), OMP_NUM_THREADS=1 per job; machine: CPU(s): 12;Model name: AMD Ryzen 5 5600G with Radeon Graphics;Linux 6.18.54.1-microsoft-standard-WSL2;9.27.1;python 3.14.10 torch 2.14.1 threads 1;
+# seconds for one 'python -c ...' process: Python + torch/numpy import (the start-up every job pays) and bare Python
+what,seconds
+import_torch,1.780134937
+import_job_module,1.835820832
+python_only,.016375565
+import_torch,1.611121501
+import_job_module,2.525225233
+python_only,.016564178
+import_torch,1.932247230
+import_job_module,1.671726549
+python_only,.017535432
+import_torch,1.752295329
+import_job_module,1.548502079
+python_only,.011681562
+import_torch,1.399386575
+import_job_module,1.440997532
+python_only,.012535453

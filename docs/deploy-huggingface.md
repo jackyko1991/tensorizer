@@ -1,5 +1,11 @@
 # Deploying the backend on Hugging Face (free)
 
+> **Optional, for self-hosters.** Tensorizer no longer runs a shared demo server: the website runs problems on
+> **This device** or on **your own server** (⚙ Backend → Remote, see [remote-server.md](remote-server.md)). The Space
+> and its deploy workflow still work if you want your own runner on Hugging Face (a private Space or HF PRO hardware
+> suits this best). Add it in the site as one of your servers. For a private Space, set `TENSORIZER_SHARED=0` and
+> a `TENSORIZER_TOKEN` *secret* so it needs your pairing token; a public Space should keep `TENSORIZER_SHARED=1`.
+
 The website stays on GitHub Pages. This sets up the API that re-renders problems with your parameters
 on a free Hugging Face **Docker Space** (2 vCPU, 16 GB RAM). It sleeps after about 48 hours without
 visitors, and the first request afterwards takes about a minute to wake it.
@@ -59,10 +65,14 @@ These are set in the `Dockerfile`. To change one, add a Space variable with the 
 | `TENSORIZER_MAX_CONCURRENT` | 1 | Runs at the same time. On the 2 free CPUs, one at a time finishes the line fastest. |
 | `TENSORIZER_MAX_QUEUE` | 20 | Waiting runs before new ones are refused with "server is busy". |
 | `TENSORIZER_PER_CLIENT` | 1 | Runs one visitor (IP address) may have queued or running. |
+| `TENSORIZER_JOB_TIMEOUT_S` | 600 | Wall-clock limit (s) of a run started as a job, which keeps going after the page closes. |
+| `TENSORIZER_JOB_TTL_S` | 86400 | How long (s) finished jobs and their output stay listed. The Space's disk is temporary, so a restart clears them anyway. |
 | `CORS_ORIGINS` | `https://jackyko1991.github.io` | Websites allowed to call the API. |
 | `AGENT_ENABLED` | 1 | The Ask Claude panel. Visitors bring their own Anthropic API key, and Claude Code runs per chat in a scratch folder. |
 | `MAX_AGENT_SESSIONS` | 2 | Chats answered at the same time (each runs one Claude Code process, about 1 GB RAM). |
-| `ALLOW_CODE_EXEC` | off | Keep it off on a public Space. It allows running edited code, which is arbitrary Python. |
+| `ALLOW_CODE_EXEC` | off | Keep it off on a public Space. It allows running edited code, which is arbitrary Python. With `TENSORIZER_SHARED=1` it also needs `TENSORIZER_SHARED_CODE=1`. |
+| `TENSORIZER_TOKEN` (secret) | none | Pairing token: every route except `/api/health` then needs `Authorization: Bearer <token>` (or set `TENSORIZER_TOKEN_SHA256`, its hex SHA-256). With a token and `TENSORIZER_SHARED=0`, edited code, the Workspace and the agent are on unless set to 0. |
+| `TENSORIZER_SHARED` | 1 | Public-server defences. Set 0 only together with a token, for a Space only you use. |
 
 The agent can still run code it wrote through its `run_problem` tool. That code runs inside the disposable Space container, with a timeout, through the same queue, and with no secrets in its environment. The visitor's API key exists only in that chat's Claude Code process and is never stored or logged.
 

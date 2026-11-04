@@ -12,6 +12,8 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
+from tensorizer_physics.auth import output_url
+
 from . import agent, limits, workspace
 from .runner import RunError
 
@@ -145,7 +147,7 @@ async def run_stream(session: str, req: RunRequest, request: Request) -> Streami
         try:
             async for event in workspace.run(session, req.params, req.verbose, _client(request), req.device):
                 if event["type"] == "result":
-                    event = {**event, "output": f"/api/outputs/{event['run_id']}/{event['output']}"}
+                    event = {**event, "output": output_url(event["run_id"], event["output"])}
                 yield json.dumps(event) + "\n"
         except (RunError, ValueError, TypeError) as e:
             yield json.dumps({"type": "error", "message": str(e), "console": getattr(e, "console", "")}) + "\n"

@@ -69,6 +69,24 @@ export default function ZoomImage({ src, alt }: { src: string; alt: string }) {
   };
 
   const s = current();
+  // ⧉ copy the image (the frame on screen, for a GIF) to the clipboard as PNG
+  const [copied, setCopied] = useState<"" | "ok" | "fail">("");
+  const copy = async () => {
+    const i = img.current;
+    try {
+      if (!i || !navigator.clipboard?.write || typeof ClipboardItem === "undefined") throw new Error("no clipboard");
+      const c = document.createElement("canvas");
+      c.width = i.naturalWidth;
+      c.height = i.naturalHeight;
+      c.getContext("2d")!.drawImage(i, 0, 0);
+      const blob = await new Promise<Blob>((ok, bad) => c.toBlob((b) => (b ? ok(b) : bad(new Error("png"))), "image/png"));
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+      setCopied("ok");
+    } catch {
+      setCopied("fail");
+    }
+    window.setTimeout(() => setCopied(""), 1500);
+  };
   const btn = (active: boolean) =>
     `rounded px-1.5 py-0.5 ${active ? "bg-blue-600 text-white" : "hover:bg-gray-100"}`;
   return (
@@ -126,6 +144,15 @@ export default function ZoomImage({ src, alt }: { src: string; alt: string }) {
         </button>
         <button onClick={() => setScale(1)} className={btn(z === 1)} data-testid="zoom-100">
           100%
+        </button>
+        <span className="mx-1 h-4 w-px bg-gray-200" />
+        <button
+          onClick={copy}
+          className={btn(false)}
+          title={t("image.copyHint")}
+          data-testid="zoom-copy"
+        >
+          {copied === "ok" ? `✓ ${t("formula.copied")}` : copied === "fail" ? t("formula.copyFail") : `⧉ ${t("formula.copy")}`}
         </button>
         <span className="w-12 text-right tabular-nums text-gray-500" data-testid="zoom-level">
           {Math.round(s * 100)}%

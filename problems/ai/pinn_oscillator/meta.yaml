@@ -2,6 +2,7 @@ title: 'Physics-informed neural network (PINN): damped oscillator'
 category: ai
 level: advanced
 order: 4
+tags: [series:scientific-ml:1]
 summary: >
   A small neural network $\hat x(t; w)$ learns the motion of a damped mass on a spring from only ten noisy
   measurements in the first 40% of the interval. Adding the equation of motion $m\ddot x + \mu\dot x + kx = 0$ to the

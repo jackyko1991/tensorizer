@@ -2,6 +2,7 @@ title: Machine-learning–accelerated CFD
 category: fluids
 level: advanced
 order: 4
+tags: [series:scientific-ml:3]
 summary: >
   A plain finite-volume solver on a grid 16 times coarser than the truth smears the shocks of the viscous Burgers equation. A tiny CNN
   learns a correction to the face fluxes, trained by backpropagating through an unrolled coarse simulation. On initial

@@ -2,6 +2,7 @@ title: A tiny GPT writes Shakespeare
 category: ai
 level: intermediate
 order: 1
+tags: [series:ai-milestones:3]
 summary: >
   A character-level GPT built from raw tensor ops: embeddings, causal multi-head self-attention written as einsum,
   LayerNorm, an MLP and residual connections, no nn.Transformer. Trained for about a minute on Macbeth and Romeo and

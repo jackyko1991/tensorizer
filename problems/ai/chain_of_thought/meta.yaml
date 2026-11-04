@@ -70,4 +70,4 @@ params:
   layers: {default: 2, min: 1, max: 4, step: 1, type: int, label: Transformer blocks}
   batch: {default: 32, min: 8, max: 128, step: 8, type: int, label: Strings per step}
   lr: {default: 0.003, min: 0.0005, max: 0.01, step: 0.0005, label: Learning rate}
-tags: []
+tags: [series:ai-milestones:4]

@@ -7,12 +7,13 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { colorize, gradient } from "../colormaps";
 import { useLang } from "../i18n";
+import { robustRange } from "../robustRange";
 import { parsePvd, parseVtp, scalar, type PolyData } from "../vtk";
 
 interface Layer {
   name: string;
   /** One file per time step (a static layer has one file for all steps). */
-  files: Map<number, string>;
+  files: Map<number, string[]>; // a step may have several parts (e.g. one per case), all drawn
   /** Solid colour (from the .pvd) when there is nothing to colour by. */
   color?: string;
 }
@@ -23,6 +24,8 @@ interface Loaded {
   data: Map<string, PolyData>; // file → parsed
   /** Range of every (layer, array) over all time steps, so colours stay fixed while it plays. */
   ranges: Map<string, [number, number]>;
+  /** Which ends of a range clip some values (legend: ≤ lo, ≥ hi). */
+  clips: Map<string, [boolean, boolean]>;
   units: Map<string, string | undefined>;
   span: number;
 }
@@ -30,13 +33,14 @@ interface Loaded {
 const CMAP_FOR = (name: string) =>
   /age|time/i.test(name) ? "plasma" : /cp|pressure|delta|Δ|residual/i.test(name) ? "coolwarm" : "viridis";
 
-/** The file a layer shows at time t: its own step, else the latest earlier one (static layers: the only one). */
-function fileAt(layer: Layer, t: number): string | undefined {
-  if (layer.files.has(t)) return layer.files.get(t);
+/** The files a layer shows at time t: its own step, else the latest earlier one (static layers: the only one). */
+function filesAt(layer: Layer, t: number): string[] {
+  if (layer.files.has(t)) return layer.files.get(t)!;
   let best: number | undefined;
   for (const k of layer.files.keys()) if (k <= t && (best === undefined || k > best)) best = k;
-  return layer.files.get(best ?? [...layer.files.keys()][0]);
+  return layer.files.get(best ?? [...layer.files.keys()][0]) ?? [];
 }
+const fileAt = (layer: Layer, t: number): string | undefined => filesAt(layer, t)[0];
 
 export default function SceneView({ url, fill = false }: { url: string; fill?: boolean }) {
   const { t } = useLang();
@@ -81,36 +85,39 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
         const layers = new Map<string, Layer>();
         for (const e of entries) {
           if (!layers.has(e.layer)) layers.set(e.layer, { name: e.layer, files: new Map(), color: e.color });
-          layers.get(e.layer)!.files.set(e.time, e.file);
+          const parts = layers.get(e.layer)!.files;
+          parts.set(e.time, [...(parts.get(e.time) ?? []), e.file]);
         }
         const ranges = new Map<string, [number, number]>();
+        const clips = new Map<string, [boolean, boolean]>();
+        const values = new Map<string, Float32Array[]>(); // every step's values per (layer, array)
         const units = new Map<string, string | undefined>();
         const box = new THREE.Box3();
         for (const L of layers.values())
-          for (const f of L.files.values()) {
+          for (const f of [...L.files.values()].flat()) {
             const d = data.get(f)!;
             for (let i = 0; i < d.points.length; i += 3)
               box.expandByPoint(new THREE.Vector3(d.points[i], d.points[i + 1], d.points[i + 2]));
             for (const a of d.pointData) {
               const key = `${L.name}/${a.name}`;
-              const v = scalar(a);
-              let [lo, hi] = ranges.get(key) ?? [Infinity, -Infinity];
-              for (let i = 0; i < v.length; i++) {
-                if (v[i] < lo) lo = v[i];
-                if (v[i] > hi) hi = v[i];
-              }
-              ranges.set(key, [lo, hi]);
+              values.set(key, [...(values.get(key) ?? []), scalar(a)]);
               units.set(key, a.unit);
             }
           }
-        // an array that is empty in every step (a layer that only appears later) has no range yet
-        for (const [k, [lo, hi]] of ranges) if (!(lo <= hi)) ranges.set(k, [0, 1]);
+        // fixed over all steps: the 2nd–98th percentile (a few extreme values no longer wash out the colours);
+        // an array that is empty in every step (a layer that only appears later) gets [0, 1]
+        for (const [k, chunks] of values) {
+          const r = robustRange(chunks);
+          ranges.set(k, r ? [r.lo, r.hi] : [0, 1]);
+          clips.set(k, r ? [r.clipLow, r.clipHigh] : [false, false]);
+        }
         if (!live) return;
         const loaded: Loaded = {
           times: [...new Set(entries.map((e) => e.time))].sort((a, b) => a - b),
           layers: [...layers.values()],
           data,
           ranges,
+          clips,
           units,
           span: box.getSize(new THREE.Vector3()).length() || 1,
         };
@@ -212,9 +219,9 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
       }
     }
     const time = scene.times[Math.min(step, scene.times.length - 1)];
-    for (const L of scene.layers) {
-      if (!visible[L.name]) continue;
-      const d = scene.data.get(fileAt(L, time) ?? "");
+    const parts = scene.layers.flatMap((L) => (visible[L.name] ? filesAt(L, time).map((f) => [L, f] as const) : []));
+    for (const [L, f] of parts) {
+      const d = scene.data.get(f);
       if (!d) continue;
       const position = new THREE.BufferAttribute(d.points, 3);
       const arr = d.pointData.find((a) => a.name === colorBy[L.name]);
@@ -310,7 +317,10 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
       .map((L) => {
         const key = `${L.name}/${colorBy[L.name]}`;
         const [lo, hi] = scene.ranges.get(key) ?? [0, 1];
+        const [clipLow, clipHigh] = scene.clips.get(key) ?? [false, false];
         return {
+          clipLow,
+          clipHigh,
           layer: L.name,
           array: colorBy[L.name],
           unit: scene.units.get(key),
@@ -402,8 +412,14 @@ export default function SceneView({ url, fill = false }: { url: string; fill?: b
                         </p>
                         <div className="my-0.5 h-2 rounded-sm" style={{ background: gradient(legend.cmap) }} />
                         <p className="flex justify-between gap-1 tabular-nums">
-                          <span>{legend.lo.toPrecision(3)}</span>
-                          <span>{legend.hi.toPrecision(3)}</span>
+                          <span>
+                            {legend.clipLow ? "≤ " : ""}
+                            {legend.lo.toPrecision(3)}
+                          </span>
+                          <span>
+                            {legend.clipHigh ? "≥ " : ""}
+                            {legend.hi.toPrecision(3)}
+                          </span>
                         </p>
                       </div>
                     )}

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Workflow DAG: for each case, a chain of jobs from the MRA scan (segment, centreline, measure, flow) gathers into one cohort report; the job graph is a matrix A">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#111827">
+    <!-- the Circle of Willis as a ring with inlets below and outlets above -->
+    <circle cx="30" cy="44" r="13" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+    <line x1="22" y1="57" x2="18" y2="72" stroke="#2563eb" stroke-width="2.5"/>
+    <line x1="38" y1="57" x2="42" y2="72" stroke="#2563eb" stroke-width="2.5"/>
+    <line x1="30" y1="57" x2="30" y2="74" stroke="#2563eb" stroke-width="2"/>
+    <line x1="19" y1="35" x2="8" y2="24" stroke="#2563eb" stroke-width="2"/>
+    <line x1="41" y1="35" x2="52" y2="24" stroke="#2563eb" stroke-width="2"/>
+    <line x1="30" y1="31" x2="30" y2="18" stroke="#2563eb" stroke-width="2"/>
+    <text x="10" y="92" font-size="12">case</text>
+    <!-- job chains for two cases -->
+    <g stroke="#1e40af" stroke-width="1.5" fill="#93c5fd">
+      <rect x="66" y="26" width="16" height="12" rx="3"/><rect x="94" y="26" width="16" height="12" rx="3"/>
+      <rect x="122" y="26" width="16" height="12" rx="3"/><rect x="150" y="26" width="16" height="12" rx="3"/>
+      <rect x="66" y="62" width="16" height="12" rx="3"/><rect x="94" y="62" width="16" height="12" rx="3"/>
+      <rect x="122" y="62" width="16" height="12" rx="3"/><rect x="150" y="62" width="16" height="12" rx="3"/>
+    </g>
+    <g stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)">
+      <line x1="82" y1="32" x2="92" y2="32"/><line x1="138" y1="32" x2="148" y2="32"/>
+      <line x1="82" y1="68" x2="92" y2="68"/><line x1="110" y1="68" x2="120" y2="68"/><line x1="138" y1="68" x2="148" y2="68"/>
+      <line x1="166" y1="68" x2="194" y2="54"/>
+    </g>
+    <!-- the critical path in red -->
+    <g stroke="#dc2626" stroke-width="2" marker-end="url(#red)">
+      <line x1="110" y1="32" x2="120" y2="32"/><line x1="166" y1="32" x2="194" y2="46"/>
+    </g>
+    <rect x="196" y="42" width="30" height="16" rx="3" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+    <text x="190" y="80" font-size="12">cohort</text>
+    <line x1="58" y1="50" x2="64" y2="50" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- the job graph as a matrix -->
+    <g stroke="#9ca3af" stroke-width="1">
+      <rect x="84" y="100" width="48" height="48" fill="none" stroke="#374151" stroke-width="2"/>
+      <line x1="96" y1="100" x2="96" y2="148"/><line x1="108" y1="100" x2="108" y2="148"/><line x1="120" y1="100" x2="120" y2="148"/>
+      <line x1="84" y1="112" x2="132" y2="112"/><line x1="84" y1="124" x2="132" y2="124"/><line x1="84" y1="136" x2="132" y2="136"/>
+    </g>
+    <g fill="#f59e0b"><rect x="85" y="113" width="10" height="10"/><rect x="97" y="125" width="10" height="10"/><rect x="109" y="137" width="10" height="10"/></g>
+    <text x="68" y="129" font-style="italic" font-size="14">A</text>
+    <text x="142" y="122" font-style="italic" font-size="13" fill="#b91c1c">t</text>
+    <text x="150" y="122" font-size="12">= d ⊕ A⊗t</text>
+  </g>
+</svg>

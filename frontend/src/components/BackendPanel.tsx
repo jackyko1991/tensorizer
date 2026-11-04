@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import {
   backendChoice,
+  DEFAULT_LOCAL_PORT,
   deviceChoice,
   localAddress,
   localPort,
+  localPortSaved,
   probe,
+  RUNNER_PORT,
   setDeviceChoice,
   setLocalPort,
   type BackendChoice,
@@ -12,7 +15,9 @@ import {
   type Health,
 } from "../api";
 import { useLang, type Key } from "../i18n";
+import { activeServer } from "../servers";
 import GearIcon from "./GearIcon";
+import RemoteTab from "./RemoteTab";
 import ShellCommand from "./ShellCommand";
 
 type Tab = "local" | "remote" | "subscribed";
@@ -60,7 +65,7 @@ export function BackendButton({ backend, onOpen }: { backend: Health | null | "c
     >
       <span className={`h-2 w-2 rounded-full ${dot}`} />
       <span className="hidden sm:inline">
-        {t(local ? "be.tab.local" : "be.shared")}
+        {local ? t("be.tab.local") : (activeServer()?.name ?? t("be.tab.remote"))}
         {device}
         {!backend && ` / ${t("be.offline")}`}
       </span>
@@ -69,7 +74,8 @@ export function BackendButton({ backend, onOpen }: { backend: Health | null | "c
   );
 }
 
-/** ⚙ Backend: where runs happen. Local (this computer) works now; Remote and Subscribed are coming. */
+/** ⚙ Backend: where runs happen. Local (this computer) or Remote (the visitor's own servers); Subscribed is coming.
+ *  There is no shared server. */
 export default function BackendPanel({
   onClose,
   onChoose,
@@ -79,7 +85,7 @@ export default function BackendPanel({
 }) {
   const { t } = useLang();
   const mobile = isMobileDevice();
-  const [tab, setTab] = useState<Tab>(backendChoice() === "local" && !mobile ? "local" : "remote");
+  const [tab, setTab] = useState<Tab>(backendChoice() === "remote" || mobile ? "remote" : "local");
   useEffect(() => {
     const key = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", key);
@@ -138,7 +144,7 @@ export default function BackendPanel({
             ) : (
               <LocalTab onUse={() => onChoose("local")} />
             ))}
-          {tab === "remote" && <RemoteTab onUse={() => onChoose("server")} />}
+          {tab === "remote" && <RemoteTab onUse={() => onChoose(activeServer() ? "remote" : "local")} />}
           {tab === "subscribed" && <p className="text-gray-600">{t("be.sub.soon")}</p>}
         </div>
       </div>
@@ -164,6 +170,16 @@ function LocalTab({ onUse }: { onUse: () => void }) {
     const check = async () => {
       const h = await probe(address);
       if (!alive) return;
+      // no port chosen yet and nothing on 8000 (`pixi run api`): the runner's own default, 8765
+      if (!h && !localPortSaved() && address === localAddress(DEFAULT_LOCAL_PORT)) {
+        const other = await probe(localAddress(RUNNER_PORT));
+        if (!alive) return;
+        if (other) {
+          setLocalPort(RUNNER_PORT);
+          setPort(String(RUNNER_PORT)); // the effect runs again for the new address
+          return;
+        }
+      }
       setHealth(h);
       if (!h) timer = window.setTimeout(check, 3000);
     };
@@ -323,40 +339,6 @@ function Step({ n, label, command, badge }: { n: number; label: string; command:
         )}
       </p>
       <ShellCommand text={command} size="text-[11px]" />
-    </div>
-  );
-}
-
-function RemoteTab({ onUse }: { onUse: () => void }) {
-  const { t } = useLang();
-  const inUse = backendChoice() === "server";
-  return (
-    <div className="space-y-4">
-      <div className="rounded-lg border border-gray-200 p-3">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="font-medium text-gray-800">{t("be.shared")}</p>
-            <p className="text-xs text-gray-500">{t("be.sharedHint")}</p>
-          </div>
-          {inUse ? (
-            <span className="shrink-0 rounded-md bg-green-50 px-3 py-1.5 text-xs font-medium text-green-700">
-              ✓ {t("be.inUse")}
-            </span>
-          ) : (
-            <button
-              onClick={onUse}
-              className="shrink-0 rounded-md border border-gray-300 px-3 py-1.5 text-xs hover:bg-gray-50"
-              data-testid="use-shared"
-            >
-              {t("be.useShared")}
-            </button>
-          )}
-        </div>
-      </div>
-      <p className="text-gray-600">
-        <span className="mr-1.5 rounded bg-gray-100 px-1.5 py-0.5 text-[10px] text-gray-500">{t("be.soon")}</span>
-        {t("be.remote.soon")}
-      </p>
     </div>
   );
 }

@@ -2,7 +2,7 @@ title: 'AlphaGo in miniature: tree search on a $5\times5$ Go board'
 category: ai
 level: advanced
 order: 2
-tags: [turing:2024]
+tags: [turing:2024, series:ai-milestones:2]
 summary: >
   One self-play game of Go on a tiny board, chosen by the same search AlphaGo used: Monte Carlo tree search with the
   PUCT rule. The Go rules themselves are tensor operations: captures and the area score are flood fills, one einsum

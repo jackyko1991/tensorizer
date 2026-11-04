@@ -1,101 +1,209 @@
 {
- "einstein-1905": {
-  "title": {
-   "en": "Einstein's miracle year, 1905",
-   "zh-Hant": "愛因斯坦的奇蹟年（1905）",
-   "zh-Hans": "爱因斯坦的奇迹年（1905）",
-   "fr": "L'année miraculeuse d'Einstein, 1905",
-   "de": "Einsteins Wunderjahr 1905",
-   "es": "El año milagroso de Einstein, 1905",
-   "ja": "アインシュタインの奇跡の年（1905）",
-   "ru": "Чудесный год Эйнштейна, 1905",
-   "ko": "아인슈타인의 기적의 해(1905)",
-   "hi": "आइंस्टीन का चमत्कारी वर्ष, 1905"
+  "einstein-1905": {
+    "title": {
+      "en": "Einstein's miracle year, 1905",
+      "zh-Hant": "愛因斯坦的奇蹟年（1905）",
+      "zh-Hans": "爱因斯坦的奇迹年（1905）",
+      "fr": "L'année miraculeuse d'Einstein, 1905",
+      "de": "Einsteins Wunderjahr 1905",
+      "es": "El año milagroso de Einstein, 1905",
+      "ja": "アインシュタインの奇跡の年（1905）",
+      "ru": "Чудесный год Эйнштейна, 1905",
+      "ko": "아인슈타인의 기적의 해(1905)",
+      "hi": "आइंस्टीन का चमत्कारी वर्ष, 1905"
+    },
+    "summary": {
+      "en": "The 1905 papers in the order they appeared: light quanta (March), Brownian motion (May), special relativity (June) and E = mc² (September).",
+      "zh-Hant": "1905 年的論文，依發表順序：光量子（3 月）、布朗運動（5 月）、狹義相對論（6 月）與 E = mc²（9 月）。",
+      "zh-Hans": "1905 年的论文，依发表顺序：光量子（3 月）、布朗运动（5 月）、狭义相对论（6 月）与 E = mc²（9 月）。"
+    },
+    "group": "stories"
   },
-  "summary": {
-   "en": "The 1905 papers in the order they appeared: light quanta (March), Brownian motion (May), special relativity (June) and E = mc² (September).",
-   "zh-Hant": "1905 年的論文，依發表順序：光量子（3 月）、布朗運動（5 月）、狹義相對論（6 月）與 E = mc²（9 月）。",
-   "zh-Hans": "1905 年的论文，依发表顺序：光量子（3 月）、布朗运动（5 月）、狭义相对论（6 月）与 E = mc²（9 月）。"
+  "quantum-gravity": {
+    "group": "hypothesis-lab",
+    "title": {
+      "en": "Quantum gravity",
+      "zh-Hant": "量子重力",
+      "zh-Hans": "量子引力"
+    },
+    "summary": {
+      "en": "Two candidate routes to quantum gravity, neither tested by experiment: strings and a loop-quantum-cosmology bounce.",
+      "zh-Hant": "兩條通往量子重力的候選路線，都尚未被實驗檢驗：弦論，以及迴圈量子宇宙學的反彈。",
+      "zh-Hans": "两条通往量子引力的候选路线，都尚未被实验检验：弦论，以及圈量子宇宙学的反弹。"
+    }
   },
-  "group": "stories"
- },
- "quantum-gravity": {
-  "group": "hypothesis-lab",
-  "title": {
-   "en": "Quantum gravity",
-   "zh-Hant": "量子重力",
-   "zh-Hans": "量子引力"
+  "extra-dimensions": {
+    "group": "hypothesis-lab",
+    "title": {
+      "en": "Extra dimensions",
+      "zh-Hant": "額外維度",
+      "zh-Hans": "额外维度"
+    },
+    "summary": {
+      "en": "Is gravity weak because it leaks into hidden dimensions? Models, then the torsion-balance and LHC limits.",
+      "zh-Hant": "重力之所以弱，是因為洩漏到隱藏的維度嗎？先看模型，再看扭秤與 LHC 的限制。",
+      "zh-Hans": "引力之所以弱，是因为泄漏到隐藏的维度吗？先看模型，再看扭秤与 LHC 的限制。"
+    }
   },
-  "summary": {
-   "en": "Two candidate routes to quantum gravity, neither tested by experiment: strings and a loop-quantum-cosmology bounce.",
-   "zh-Hant": "兩條通往量子重力的候選路線，都尚未被實驗檢驗：弦論，以及迴圈量子宇宙學的反彈。",
-   "zh-Hans": "两条通往量子引力的候选路线，都尚未被实验检验：弦论，以及圈量子宇宙学的反弹。"
+  "varying-light-speed": {
+    "group": "hypothesis-lab",
+    "title": {
+      "en": "A varying speed of light",
+      "zh-Hant": "可變光速",
+      "zh-Hans": "可变光速"
+    },
+    "summary": {
+      "en": "A minority alternative to inflation for the horizon problem, set against the bounds on any change in c.",
+      "zh-Hant": "解決視界問題的少數派替代方案（取代暴脹），並對照光速變化的觀測限制。",
+      "zh-Hans": "解决视界问题的少数派替代方案（取代暴胀），并对照光速变化的观测限制。"
+    }
+  },
+  "tachyons": {
+    "group": "hypothesis-lab",
+    "title": {
+      "en": "Faster-than-light particles",
+      "zh-Hant": "超光速粒子",
+      "zh-Hans": "超光速粒子"
+    },
+    "summary": {
+      "en": "Imaginary mass, causality paradoxes, and how the 2011 OPERA anomaly turned out.",
+      "zh-Hant": "虛質量、因果悖論，以及 2011 年 OPERA 異常的真相。",
+      "zh-Hans": "虚质量、因果悖论，以及 2011 年 OPERA 异常的真相。"
+    }
+  },
+  "early-universe": {
+    "group": "hypothesis-lab",
+    "title": {
+      "en": "Unconfirmed early-universe physics",
+      "zh-Hant": "未經證實的早期宇宙物理",
+      "zh-Hans": "未经证实的早期宇宙物理"
+    },
+    "summary": {
+      "en": "Leading but unconfirmed ideas: inflation tested against Planck and BICEP/Keck, and leptogenesis for the matter excess.",
+      "zh-Hant": "主流但未經證實的想法：以 Planck 與 BICEP/Keck 檢驗暴脹，以及解釋物質過剩的輕子生成。",
+      "zh-Hans": "主流但未经证实的想法：以 Planck 与 BICEP/Keck 检验暴胀，以及解释物质过剩的轻子生成。"
+    }
+  },
+  "projection-hypothesis": {
+    "group": "hypothesis-lab",
+    "author": "Jacky Ka Long Ko",
+    "title": {
+      "en": "The Projection Hypothesis",
+      "zh-Hant": "投影假說",
+      "zh-Hans": "投影假说"
+    },
+    "summary": {
+      "en": "A speculative hypothesis by Jacky Ka Long Ko: the universe is one state in a space of very many (possibly infinitely many) dimensions, and what we observe as wavefunctions, particles and curved spacetime are its lower-dimensional projections. The series states the postulates, works out their consequences with the number of dimensions left open, and tests them against data.",
+      "zh-Hant": "Jacky Ka Long Ko 提出的推測性假說：宇宙是一個存在於極高（甚至無限）維空間中的單一狀態，我們觀察到的波函數、粒子與彎曲時空，都是它在低維的投影。本系列先寫出假設，再在維數不預設的情況下推導其後果，最後以數據檢驗。",
+      "zh-Hans": "Jacky Ka Long Ko 提出的推测性假说：宇宙是一个存在于极高（甚至无限）维空间中的单一状态，我们观察到的波函数、粒子与弯曲时空，都是它在低维的投影。本系列先写出假设，再在维数不预设的情况下推导其后果，最后以数据检验。"
+    }
+  },
+  "vascular-flow": {
+    "group": "stories",
+    "title": {
+      "en": "Vascular flow",
+      "zh-Hant": "血管血流",
+      "zh-Hans": "血管血流",
+      "fr": "Écoulement vasculaire",
+      "de": "Gefäßströmung",
+      "es": "Flujo vascular",
+      "ja": "血管の流れ",
+      "ru": "Кровоток в сосудах",
+      "ko": "혈관 흐름",
+      "hi": "संवहनी प्रवाह"
+    },
+    "summary": {
+      "en": "From a straight pipe to a real aneurysm to a whole cohort: Poiseuille and Navier–Stokes flow, then aneurysm CFD on a segmented MRA, then a Circle of Willis cohort run as a tensor workflow DAG.",
+      "zh-Hant": "從直管到真實的動脈瘤，再到整個受試者群：先是 Poiseuille 與 Navier–Stokes 流動，再是分割 MRA 上的動脈瘤 CFD，最後把一整群 Willis 環以張量工作流 DAG 執行。",
+      "zh-Hans": "从直管到真实的动脉瘤，再到整个受试者群：先是 Poiseuille 与 Navier–Stokes 流动，再是分割 MRA 上的动脉瘤 CFD，最后把一整群 Willis 环以张量工作流 DAG 运行。",
+      "fr": "D'un tuyau droit à un anévrisme réel puis à toute une cohorte : écoulement de Poiseuille et de Navier–Stokes, CFD d'anévrisme sur une ARM segmentée, puis une cohorte de polygones de Willis exécutée comme un DAG de workflow tensoriel.",
+      "de": "Vom geraden Rohr über ein echtes Aneurysma zur ganzen Kohorte: Poiseuille- und Navier–Stokes-Strömung, Aneurysma-CFD auf einer segmentierten MRA, dann eine Kohorte von Circuli Willisii als tensorieller Workflow-DAG.",
+      "es": "De una tubería recta a un aneurisma real y a toda una cohorte: flujo de Poiseuille y de Navier–Stokes, CFD de aneurisma sobre una ARM segmentada y, por último, una cohorte del polígono de Willis ejecutada como un DAG de flujo de trabajo tensorial.",
+      "ja": "まっすぐな管から実際の動脈瘤、そしてコホート全体へ：Poiseuille 流と Navier–Stokes 流、セグメンテーションした MRA 上の動脈瘤 CFD、最後にウィリス動脈輪のコホートをテンソルのワークフロー DAG として実行します。",
+      "ru": "От прямой трубы к реальной аневризме и к целой когорте: течение Пуазёйля и Навье–Стокса, CFD аневризмы по сегментированной МРА, затем когорта виллизиевых кругов, выполненная как тензорный DAG рабочего процесса.",
+      "ko": "곧은 관에서 실제 동맥류, 그리고 코호트 전체로: Poiseuille 흐름과 Navier–Stokes 흐름, 분할한 MRA 위의 동맥류 CFD, 마지막으로 윌리스 고리 코호트를 텐서 워크플로 DAG로 실행합니다.",
+      "hi": "सीधी नली से एक वास्तविक एन्यूरिज़्म तक और फिर पूरे समूह तक: Poiseuille और Navier–Stokes प्रवाह, खंडित MRA पर एन्यूरिज़्म CFD, और अंत में विलिस वृत्त का एक समूह जिसे टेंसर वर्कफ़्लो DAG के रूप में चलाया जाता है।"
+    }
+  },
+  "ai-milestones": {
+    "group": "ai",
+    "title": {
+      "en": "Milestones of AI, in tensors",
+      "zh-Hant": "人工智慧的里程碑：以張量重現",
+      "zh-Hans": "人工智能的里程碑：用张量重现",
+      "fr": "Les grandes étapes de l'IA, en tenseurs",
+      "de": "Meilensteine der KI, in Tensoren",
+      "es": "Hitos de la IA, en tensores",
+      "ja": "AI のマイルストーンをテンソルで",
+      "ru": "Вехи ИИ в тензорах",
+      "ko": "텐서로 다시 보는 AI의 이정표",
+      "hi": "टेंसरों में AI के मील के पत्थर"
+    },
+    "summary": {
+      "en": "From associative memory to reasoning in four steps: a Hopfield network (1982), a miniature AlphaGo (2016), a tiny GPT (2017) and why chain of thought helps (2022), each written as tensor code you can run.",
+      "zh-Hant": "四步從聯想記憶走到推理：Hopfield 網路（1982）、迷你 AlphaGo（2016）、小型 GPT（2017），以及思維鏈為何有幫助（2022），每一步都是可執行的張量程式碼。",
+      "zh-Hans": "四步从联想记忆走到推理：Hopfield 网络（1982）、迷你 AlphaGo（2016）、小型 GPT（2017），以及思维链为何有帮助（2022），每一步都是可运行的张量代码。",
+      "fr": "De la mémoire associative au raisonnement en quatre étapes : un réseau de Hopfield (1982), un AlphaGo miniature (2016), un minuscule GPT (2017) et pourquoi la chaîne de pensée aide (2022), chacun écrit en code tensoriel exécutable.",
+      "de": "Vom assoziativen Gedächtnis zum Schlussfolgern in vier Schritten: ein Hopfield-Netz (1982), ein Mini-AlphaGo (2016), ein winziges GPT (2017) und warum Chain of Thought hilft (2022), jeweils als lauffähiger Tensor-Code.",
+      "es": "De la memoria asociativa al razonamiento en cuatro pasos: una red de Hopfield (1982), un AlphaGo en miniatura (2016), un GPT diminuto (2017) y por qué ayuda la cadena de pensamiento (2022), cada uno escrito como código tensorial ejecutable.",
+      "ja": "連想記憶から推論まで 4 ステップ：Hopfield ネットワーク（1982）、ミニ AlphaGo（2016）、小さな GPT（2017）、そして思考の連鎖が効く理由（2022）。どれも実行できるテンソルコードで書かれています。",
+      "ru": "От ассоциативной памяти к рассуждению за четыре шага: сеть Хопфилда (1982), миниатюрный AlphaGo (2016), крошечный GPT (2017) и почему помогает цепочка рассуждений (2022) — всё в виде исполняемого тензорного кода.",
+      "ko": "연상 기억에서 추론까지 네 단계: 홉필드 네트워크(1982), 미니 AlphaGo(2016), 작은 GPT(2017), 그리고 사고의 사슬이 왜 도움이 되는지(2022). 모두 실행 가능한 텐서 코드로 작성되어 있습니다.",
+      "hi": "चार चरणों में साहचर्य स्मृति से तर्क तक: Hopfield नेटवर्क (1982), लघु AlphaGo (2016), छोटा GPT (2017) और chain of thought क्यों मदद करता है (2022), हर एक चलाने योग्य टेंसर कोड के रूप में।"
+    }
+  },
+  "scientific-ml": {
+    "group": "ai",
+    "title": {
+      "en": "Machine learning meets physics",
+      "zh-Hant": "機器學習遇上物理",
+      "zh-Hans": "机器学习遇上物理",
+      "fr": "L'apprentissage automatique rencontre la physique",
+      "de": "Maschinelles Lernen trifft Physik",
+      "es": "El aprendizaje automático se encuentra con la física",
+      "ja": "機械学習と物理の出会い",
+      "ru": "Машинное обучение встречает физику",
+      "ko": "머신러닝, 물리를 만나다",
+      "hi": "मशीन लर्निंग और भौतिकी का मिलन"
+    },
+    "summary": {
+      "en": "Three ways to put a neural network to work on equations: a physics-informed network that learns from the ODE itself, a Fourier neural operator that learns a whole solution map, and machine learning that speeds up a CFD solver.",
+      "zh-Hant": "讓神經網路處理方程的三種方式：直接從常微分方程學習的物理資訊神經網路、學習整個解算子的傅立葉神經算子，以及加速 CFD 求解器的機器學習。",
+      "zh-Hans": "让神经网络处理方程的三种方式：直接从常微分方程学习的物理信息神经网络、学习整个解算子的傅里叶神经算子，以及加速 CFD 求解器的机器学习。",
+      "fr": "Trois façons de faire travailler un réseau de neurones sur des équations : un réseau informé par la physique qui apprend de l'EDO elle-même, un opérateur neuronal de Fourier qui apprend toute une application solution, et l'apprentissage automatique qui accélère un solveur de CFD.",
+      "de": "Drei Wege, ein neuronales Netz an Gleichungen arbeiten zu lassen: ein physikinformiertes Netz, das aus der ODE selbst lernt, ein Fourier-Neural-Operator, der eine ganze Lösungsabbildung lernt, und maschinelles Lernen, das einen CFD-Löser beschleunigt.",
+      "es": "Tres formas de poner una red neuronal a trabajar con ecuaciones: una red informada por la física que aprende de la propia EDO, un operador neuronal de Fourier que aprende todo un mapa de soluciones y aprendizaje automático que acelera un solucionador de CFD.",
+      "ja": "ニューラルネットワークを方程式に使う 3 つの方法：常微分方程式そのものから学ぶ物理情報ニューラルネットワーク、解写像全体を学ぶフーリエニューラル作用素、そして CFD ソルバーを高速化する機械学習。",
+      "ru": "Три способа заставить нейросеть работать с уравнениями: физически информированная сеть, обучающаяся на самом ОДУ, фурье-нейрооператор, обучающийся целому отображению решений, и машинное обучение, ускоряющее CFD-решатель.",
+      "ko": "신경망을 방정식에 활용하는 세 가지 방법: 상미분방정식 자체에서 배우는 물리 정보 신경망, 해 사상 전체를 배우는 푸리에 신경 연산자, 그리고 CFD 솔버를 가속하는 머신러닝.",
+      "hi": "समीकरणों पर न्यूरल नेटवर्क लगाने के तीन तरीके: ODE से ही सीखने वाला भौतिकी-सूचित नेटवर्क, पूरे समाधान मानचित्र को सीखने वाला Fourier न्यूरल ऑपरेटर, और CFD सॉल्वर को तेज़ करने वाली मशीन लर्निंग।"
+    }
+  },
+  "workflow-orchestration": {
+    "group": "ai",
+    "title": {
+      "en": "Workflow orchestration",
+      "zh-Hant": "工作流程編排",
+      "zh-Hans": "工作流编排",
+      "fr": "Orchestration de workflows",
+      "de": "Workflow-Orchestrierung",
+      "es": "Orquestación de flujos de trabajo",
+      "ja": "ワークフローのオーケストレーション",
+      "ru": "Оркестрация рабочих процессов",
+      "ko": "워크플로 오케스트레이션",
+      "hi": "वर्कफ़्लो ऑर्केस्ट्रेशन"
+    },
+    "summary": {
+      "en": "A workflow that Snakemake orchestrates can itself be one tensor program: first a Circle of Willis cohort run as a tensor DAG, then the same engine read as a mixture of experts with a fixed router, trained end to end, distilled and quantised.",
+      "zh-Hant": "由 Snakemake 編排的工作流程本身就可以是一個張量程式：先把一整群 Willis 環以張量 DAG 執行，再把同一個引擎看成路由器固定的專家混合模型，端到端訓練、蒸餾並量化。",
+      "zh-Hans": "由 Snakemake 编排的工作流本身就可以是一个张量程序：先把一整群 Willis 环以张量 DAG 运行，再把同一个引擎看成路由器固定的专家混合模型，端到端训练、蒸馏并量化。",
+      "fr": "Un workflow orchestré par Snakemake peut lui-même être un seul programme tensoriel : d'abord une cohorte de polygones de Willis exécutée comme un DAG tensoriel, puis le même moteur vu comme un mélange d'experts à routeur fixe, entraîné de bout en bout, distillé et quantifié.",
+      "de": "Ein von Snakemake orchestrierter Workflow kann selbst ein einziges Tensorprogramm sein: zuerst eine Kohorte von Circuli Willisii als Tensor-DAG, dann dieselbe Engine als Mixture of Experts mit festem Router gelesen, durchgehend trainiert, destilliert und quantisiert.",
+      "es": "Un flujo de trabajo orquestado por Snakemake puede ser en sí mismo un único programa tensorial: primero una cohorte del polígono de Willis ejecutada como un DAG tensorial, después el mismo motor leído como una mezcla de expertos con enrutador fijo, entrenado de extremo a extremo, destilado y cuantizado.",
+      "ja": "Snakemake が編成するワークフローは、それ自体が一つのテンソルプログラムになりえます。まずウィリス動脈輪のコホートをテンソル DAG として実行し、次に同じエンジンをルーター固定の混合エキスパートとして読み、端から端まで学習し、蒸留し、量子化します。",
+      "ru": "Рабочий процесс, который оркестрирует Snakemake, сам может быть одной тензорной программой: сначала когорта виллизиевых кругов, выполненная как тензорный DAG, затем тот же движок как смесь экспертов с фиксированным маршрутизатором, обученная от начала до конца, дистиллированная и квантованная.",
+      "ko": "Snakemake가 오케스트레이션하는 워크플로는 그 자체로 하나의 텐서 프로그램이 될 수 있습니다. 먼저 윌리스 고리 코호트를 텐서 DAG로 실행하고, 이어서 같은 엔진을 라우터가 고정된 전문가 혼합으로 읽어 끝에서 끝까지 학습하고, 증류하고, 양자화합니다.",
+      "hi": "Snakemake द्वारा संचालित वर्कफ़्लो स्वयं एक ही टेंसर प्रोग्राम हो सकता है: पहले विलिस वृत्त के एक समूह को टेंसर DAG के रूप में चलाया जाता है, फिर उसी इंजन को स्थिर राउटर वाले मिक्सचर ऑफ़ एक्सपर्ट्स के रूप में पढ़ा जाता है, जिसे शुरू से अंत तक प्रशिक्षित, आसवित और क्वांटाइज़ किया जाता है।"
+    }
   }
- },
- "extra-dimensions": {
-  "group": "hypothesis-lab",
-  "title": {
-   "en": "Extra dimensions",
-   "zh-Hant": "額外維度",
-   "zh-Hans": "额外维度"
-  },
-  "summary": {
-   "en": "Is gravity weak because it leaks into hidden dimensions? Models, then the torsion-balance and LHC limits.",
-   "zh-Hant": "重力之所以弱，是因為洩漏到隱藏的維度嗎？先看模型，再看扭秤與 LHC 的限制。",
-   "zh-Hans": "引力之所以弱，是因为泄漏到隐藏的维度吗？先看模型，再看扭秤与 LHC 的限制。"
-  }
- },
- "varying-light-speed": {
-  "group": "hypothesis-lab",
-  "title": {
-   "en": "A varying speed of light",
-   "zh-Hant": "可變光速",
-   "zh-Hans": "可变光速"
-  },
-  "summary": {
-   "en": "A minority alternative to inflation for the horizon problem, set against the bounds on any change in c.",
-   "zh-Hant": "解決視界問題的少數派替代方案（取代暴脹），並對照光速變化的觀測限制。",
-   "zh-Hans": "解决视界问题的少数派替代方案（取代暴胀），并对照光速变化的观测限制。"
-  }
- },
- "tachyons": {
-  "group": "hypothesis-lab",
-  "title": {
-   "en": "Faster-than-light particles",
-   "zh-Hant": "超光速粒子",
-   "zh-Hans": "超光速粒子"
-  },
-  "summary": {
-   "en": "Imaginary mass, causality paradoxes, and how the 2011 OPERA anomaly turned out.",
-   "zh-Hant": "虛質量、因果悖論，以及 2011 年 OPERA 異常的真相。",
-   "zh-Hans": "虚质量、因果悖论，以及 2011 年 OPERA 异常的真相。"
-  }
- },
- "early-universe": {
-  "group": "hypothesis-lab",
-  "title": {
-   "en": "Unconfirmed early-universe physics",
-   "zh-Hant": "未經證實的早期宇宙物理",
-   "zh-Hans": "未经证实的早期宇宙物理"
-  },
-  "summary": {
-   "en": "Leading but unconfirmed ideas: inflation tested against Planck and BICEP/Keck, and leptogenesis for the matter excess.",
-   "zh-Hant": "主流但未經證實的想法：以 Planck 與 BICEP/Keck 檢驗暴脹，以及解釋物質過剩的輕子生成。",
-   "zh-Hans": "主流但未经证实的想法：以 Planck 与 BICEP/Keck 检验暴胀，以及解释物质过剩的轻子生成。"
-  }
- },
- "projection-hypothesis": {
-  "group": "hypothesis-lab",
-  "author": "Jacky Ka Long Ko",
-  "title": {
-   "en": "The Projection Hypothesis",
-   "zh-Hant": "投影假說",
-   "zh-Hans": "投影假说"
-  },
-  "summary": {
-   "en": "A speculative hypothesis by Jacky Ka Long Ko: the universe is one state in a space of very many (possibly infinitely many) dimensions, and what we observe as wavefunctions, particles and curved spacetime are its lower-dimensional projections. The series states the postulates, works out their consequences with the number of dimensions left open, and tests them against data.",
-   "zh-Hant": "Jacky Ka Long Ko 提出的推測性假說：宇宙是一個存在於極高（甚至無限）維空間中的單一狀態，我們觀察到的波函數、粒子與彎曲時空，都是它在低維的投影。本系列先寫出假設，再在維數不預設的情況下推導其後果，最後以數據檢驗。",
-   "zh-Hans": "Jacky Ka Long Ko 提出的推测性假说：宇宙是一个存在于极高（甚至无限）维空间中的单一状态，我们观察到的波函数、粒子与弯曲时空，都是它在低维的投影。本系列先写出假设，再在维数不预设的情况下推导其后果，最后以数据检验。"
-  }
- }
 }

@@ -5,6 +5,10 @@ problem to a *runner*: a small program that runs the Python code and sends back 
 to put a runner on a machine you control (a rented VPS, a mini-PC at home, a lab server or a Windows PC) and connect
 the website to it.
 
+There is no shared demo server: problems run either on **This device** (a runner on the computer you browse from)
+or on a server of your own, set up as below. The website's **⚙ Backend → Remote** tab has the same three set-up paths
+in short, step by step.
+
 You need: a Linux machine you can log in to with `ssh` (or Windows with WSL2, see the last section), and about
 10 minutes. Everything below is copy-paste. Lines starting with `#` are explanations, not commands.
 
@@ -26,7 +30,7 @@ your browser (https page) ──https──▶  your server ──▶ runner con
 | VPS without a domain | Caddy with a free `<ip>.sslip.io` name | `--sslip` | [B](#b-vps-without-a-domain-sslipio) |
 | Home server (e.g. a Beelink mini-PC), private use | Tailscale | `--no-tls` | [C1](#c1-home-server-with-tailscale-private) |
 | Home server, public URL | Cloudflare Tunnel | `--no-tls` | [C2](#c2-home-server-with-a-cloudflare-tunnel-public-url) |
-| Lab server behind a university/company VPN | an SSH tunnel | `--no-tls` | [D](#d-lab-server-behind-a-vpn-ssh-tunnel) |
+| Machine behind a university/company VPN or jump host (also without root/Docker, e.g. HPC) | an SSH tunnel | `--no-tls`, or no installer | [D](#d-a-machine-behind-a-vpn-ssh-tunnel) |
 | Windows PC | WSL2 | `--no-tls` | [E](#e-windows-with-wsl2) |
 
 ## What the installer does
@@ -62,10 +66,27 @@ your token.
 
 ## Connect the website
 
-1. Open <https://jackyko1991.github.io/tensorizer/> → **⚙ Compute** → **Add server**.
-2. Paste the URL and the token the installer printed, then **Test connection**. You should see the runner
-   version and the devices (`cpu`, or `cpu, cuda` with `--gpu`).
-3. Make it the active target. Runs, the Workspace and notebooks now use your server.
+1. Open <https://jackyko1991.github.io/tensorizer/> → **⚙ Backend** → **Remote** → **+ Add server**.
+2. Give it a name, paste the URL and the token the installer printed, and **Save**. The site runs **Test
+   connection** at once: a public health check, then one call with your token. You should see the runner version,
+   the devices (`cpu`, or `cpu, cuda` with `--gpu`), the queue, and "private · runs your own code".
+3. Press **Use**. Runs, jobs, the Workspace, notebooks and the AI assistant now go to your server.
+
+Where the token is kept: only in your browser, in this tab's session storage (forgotten when you close the tab), or
+in local storage if you tick **Remember on this device**. It is sent only to that server, in the
+`Authorization: Bearer` header, never in a URL. Run pictures are loaded by `<img>` tags, which cannot send a header,
+so the server signs each picture URL it hands out (`?sig=…`, valid for that one file, and only until the token
+changes).
+
+What Test connection's messages mean:
+
+| Message | Cause and fix |
+|---|---|
+| browsers block plain http:// servers | the site is `https://`, so it may only call `https://` servers or `http://localhost`: use options A–C, or an SSH tunnel (D) |
+| can't reach the server | the runner is not running, the address is wrong, or your VPN/tunnel is down; see [Troubleshooting](#troubleshooting) |
+| doesn't allow this website (CORS) | the server's `CORS_ORIGINS` doesn't list this site (the installer sets `https://jackyko1991.github.io`) |
+| wrong or missing pairing token | paste the token again (**Edit**); lost it? re-run the installer with `--new-token` |
+| too many wrong tokens | after 10 wrong tokens in a minute the server waits a minute before answering again |
 
 ---
 
@@ -152,28 +173,61 @@ address with no account needed; it changes every time and stops when you close t
 
 A public URL means anyone can find it: keep the token secret, and consider `--shared` (see [Security](#security)).
 
-## D. Lab server behind a VPN (SSH tunnel)
+## D. A machine behind a VPN (SSH tunnel)
 
-Your computer reaches the lab server over the institute VPN, but the server has no HTTPS name. An **SSH tunnel**
-makes the remote runner appear on your own computer as `localhost:8765`, which browsers allow.
+> **Check your institution's policy first.** Many universities, labs and companies do not allow installing software,
+> running servers, tunnels or remote-access tools (including Tailscale or Cloudflare) on their machines or network
+> without approval. Ask your IT or system administrators before you start, and follow their rules.
+
+A university, lab or company server that you reach only through a VPN or a jump host (bastion). The website talks
+to the runner **straight from your browser**, so this works only while your VPN or tunnel is up.
+
+### D1. You have root and Docker (or Podman) on the machine
 
 ```sh
-# 1. On the lab server (ask your admin if you have no sudo; Podman is used if it is installed instead of Docker):
-curl -fsSL https://jackyko1991.github.io/tensorizer/install.sh | sudo sh -s -- --no-tls          # add --gpu for NVIDIA GPUs
+# 1. On the machine: install the runner, local only (add --gpu for NVIDIA GPUs)
+curl -fsSL https://jackyko1991.github.io/tensorizer/install.sh | sudo sh -s -- --no-tls
 
 # 2. On your own computer, with the VPN connected; keep this terminal open while you work:
 ssh -N -L 8765:localhost:8765 you@lab-server.example.org
-#    -L 8765:localhost:8765  forwards your port 8765 to port 8765 on the lab server
+#    -L 8765:localhost:8765  forwards your port 8765 to port 8765 on the machine
 #    -N                      no remote shell, just the tunnel
+# Through a jump host / bastion:
+ssh -N -J you@jumphost.example.org -L 8765:localhost:8765 you@lab-server.example.org
 ```
 
-3. In the website, use **This device** (`http://localhost:8765`) and paste the token.
+3. In the website: **⚙ Backend → Remote → + Add server**, URL `http://localhost:8765`, and the token. Browsers allow
+   an `https://` page to call `http://localhost`, so no certificate is needed.
 
 If something on your computer already uses port 8765 (for example a local runner), forward another one:
-`ssh -N -L 8766:localhost:8765 …` and use `http://localhost:8766`.
+`ssh -N -L 8766:localhost:8765 …` and add `http://localhost:8766`.
 
-Alternatives when SSH is not allowed: Tailscale (C1) if your institute permits it, or ask IT for an internal
-HTTPS name and certificate and point a reverse proxy at `127.0.0.1:8765`.
+Instead of a tunnel you can give the machine HTTPS inside the VPN: Tailscale on it (C1) if your institute allows
+it, or a reverse proxy such as Caddy with an internal certificate from your IT department, pointing at
+`127.0.0.1:8765`. Then add that `https://` address with the token.
+
+### D2. No root or Docker (common on HPC and lab servers)
+
+Run the runner natively in your home folder with [pixi](https://pixi.sh); nothing needs administrator rights.
+
+```sh
+# 1. On the machine: install pixi and get the code
+curl -fsSL https://pixi.sh/install.sh | sh          # then open a new shell
+git clone https://github.com/jackyko1991/tensorizer && cd tensorizer && pixi install
+
+# 2. Make a token (copy it somewhere safe), then start the runner on this machine only (127.0.0.1)
+export TENSORIZER_TOKEN=$(openssl rand -hex 32); echo "$TENSORIZER_TOKEN"
+pixi run python -m tensorizer_physics.serve --host 127.0.0.1 --port 8765
+```
+
+3. Open the SSH tunnel from D1 step 2, and add `http://localhost:8765` with the token in the website.
+
+With the token set and shared mode off, your own code (edited problems, the Workspace, notebooks) runs too. On a
+multi-user machine the token matters even on `127.0.0.1`: other users of the same machine can reach that port.
+
+**Be a good neighbour.** Login nodes are shared: run heavy work on a compute node (for example inside an
+interactive job, then tunnel to that node) or ask your admins first. Never open the port to the internet, and
+follow your institution's rules for running services.
 
 ## E. Windows with WSL2
 
@@ -202,7 +256,7 @@ wsl -d Ubuntu
 curl -fsSL https://jackyko1991.github.io/tensorizer/install.sh | sudo sh -s -- --no-tls
 ```
 
-5. In the website, use **This device** (`http://localhost:8765`) and paste the token.
+5. In the website: **⚙ Backend → Remote → + Add server**, URL `http://localhost:8765`, and the token.
 
 WSL2 stops when no Ubuntu window is open for a while. Open Ubuntu (or run `wsl -d Ubuntu` in PowerShell) before you
 use the runner. (Without Docker at all: `pixi run api` in a clone of this repository runs the runner natively.)
@@ -211,18 +265,20 @@ use the runner. (Without Docker at all: `pixi run api` in a clone of this reposi
 
 ## Security
 
-- **Pairing token.** The installer makes a random 64-character token and gives it to the runner; the website must
-  send it with every request except the health check. It is stored only in `/etc/tensorizer/runner.env`
-  (root-only) and printed once. Lost it, or shared it by mistake? Run the installer again with `--new-token`.
-  *Note: the runner starts checking the token with the pairing step of the backend redesign (step 3 in
-  docs/design/backend.md). Until that release, treat a public URL as open to anyone who finds it and prefer the
-  private set-ups (Tailscale, SSH tunnel).*
+- **Pairing token.** The installer makes a random 64-character token, prints it once, and stores only its SHA-256
+  (`TENSORIZER_TOKEN_SHA256` in the root-only `/etc/tensorizer/runner.env`). Every request except `GET /api/health`
+  must carry `Authorization: Bearer <token>`; the runner compares hashes in constant time, never logs the token,
+  and after 10 wrong tokens in a minute from one address answers 429 for a minute. Lost it, or shared it by
+  mistake? Run the installer again with `--new-token`. Running the runner yourself: set `TENSORIZER_TOKEN`
+  (or `TENSORIZER_TOKEN_SHA256`) in its environment.
 - **Shared or private.** By default the runner is set up as *your own* server: generous limits (time, output,
   cache). With `--shared` it uses the public-demo defences: 120 s per run, one job per visitor, a rate limit, and
   no edited or user-written code. Use `--shared` if you hand the URL to a class or post it publicly.
-- **Edited code and the AI agent** are off in the container for now (`ALLOW_CODE_EXEC` and `AGENT_ENABLED` unset);
-  library problems with your parameters run. They will be enabled for token-protected private servers once the
-  token check is in place.
+- **Your own code and the AI agent.** On a token-protected private server, edited code, Workspace problems,
+  notebooks and the agent's runs are on (the installer writes `ALLOW_CODE_EXEC=1` and `AGENT_ENABLED=1`; set them
+  to 0 to turn them off). With `--shared` they are off. A runner **without** a token that listens on a network
+  address never runs user code, whatever `ALLOW_CODE_EXEC` says. `/api/health` reports `auth`, `shared` and
+  `code_exec`, and the site's Test connection shows them.
 - **Firewall.** Only SSH (22) and, for options A/B, HTTP/HTTPS (80, 443) need to be open. Never open 8765: the
   runner listens on `127.0.0.1` only, and Caddy, Tailscale, Cloudflare or SSH carry the traffic to it. With `ufw`:
 

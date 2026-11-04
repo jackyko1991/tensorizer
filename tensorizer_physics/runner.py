@@ -116,7 +116,9 @@ def _items(lines: list[str]) -> list[dict]:
     return list(items.values())[:200]
 
 
-async def _stream_tests(test_file: Path, work: Path, env: dict[str, str]) -> AsyncIterator[dict]:
+async def _stream_tests(
+    test_file: Path, work: Path, env: dict[str, str], timeout: float | None = None
+) -> AsyncIterator[dict]:
     """Run the problem's test.py (the TDD step 0) after a successful render: line events, then {"type": "tests"}."""
     cmd = [sys.executable, "-m", "pytest", str(test_file), "-v", "--tb=short", "--no-header", "-p", "no:cacheprovider"]
     cmd += ["-m", "not slow", "-W", "ignore::pytest.PytestUnknownMarkWarning"]  # quick checks only (CI runs all)
@@ -125,7 +127,8 @@ async def _stream_tests(test_file: Path, work: Path, env: dict[str, str]) -> Asy
     lines: list[str] = []
     code = None
     try:
-        async for event in _stream_process(cmd, work, {**env, "COLUMNS": "240"}):  # untrimmed failure lines
+        # COLUMNS: untrimmed failure lines
+        async for event in _stream_process(cmd, work, {**env, "COLUMNS": "240"}, timeout=timeout):
             if event["type"] == "exit":
                 code = event["code"]
                 break
@@ -161,14 +164,17 @@ def _env(out_dir: Path, device: str = "auto") -> dict[str, str]:
     return env
 
 
-async def _stream_process(cmd: list[str], cwd: Path, env: dict[str, str], stop=lambda: False) -> AsyncIterator[dict]:
+async def _stream_process(
+    cmd: list[str], cwd: Path, env: dict[str, str], stop=lambda: False, timeout: float | None = None
+) -> AsyncIterator[dict]:
     """Yield {"type": "line", "text", "replace"} events as the process prints, then {"type": "exit", "code"}.
 
     A segment ending in \\r (a tqdm redraw) is sent with replace=True so the terminal overwrites it in place.
     A plain Popen read by a thread is used because asyncio subprocesses are unsupported by the event loop
     uvicorn uses on Windows with --reload. `stop()` is checked about once a second (a cancelled run); when it turns
-    true the process is killed, even if it prints nothing.
+    true the process is killed, even if it prints nothing. `timeout` overrides TIMEOUT_S (detached jobs).
     """
+    limit = TIMEOUT_S if timeout is None else timeout
     loop = asyncio.get_running_loop()
     queue: asyncio.Queue = asyncio.Queue()
     proc = subprocess.Popen(
@@ -181,7 +187,7 @@ async def _stream_process(cmd: list[str], cwd: Path, env: dict[str, str], stop=l
         preexec_fn=limits.PREEXEC,  # shared server on POSIX: CPU-time, file-size and core limits
     )
     # Killed at the deadline even if nobody reads the output (the page closed): no orphan keeps the CPU busy.
-    watchdog = threading.Timer(TIMEOUT_S + 5, lambda: proc.poll() is None and proc.kill())
+    watchdog = threading.Timer(limit + 5, lambda: proc.poll() is None and proc.kill())
     watchdog.daemon = True
     watchdog.start()
 
@@ -203,7 +209,7 @@ async def _stream_process(cmd: list[str], cwd: Path, env: dict[str, str], stop=l
         loop.call_soon_threadsafe(queue.put_nowait, {"type": "exit", "code": proc.wait()})
 
     threading.Thread(target=reader, daemon=True).start()
-    deadline = time.monotonic() + TIMEOUT_S
+    deadline = time.monotonic() + limit
     printed = 0
     try:
         while True:
@@ -214,7 +220,7 @@ async def _stream_process(cmd: list[str], cwd: Path, env: dict[str, str], stop=l
                 if stop():
                     raise RunError("cancelled") from None
                 if left <= 1.0:
-                    raise RunError(f"timed out after {TIMEOUT_S:.0f} s") from None
+                    raise RunError(f"timed out after {limit:.0f} s") from None
                 continue
             if stop():
                 raise RunError("cancelled")
@@ -240,8 +246,13 @@ async def stream_problem(
     client: str = "local",
     root: Path | None = None,
     device: str = "auto",
+    timeout: float | None = None,
+    on_ticket=None,
 ) -> AsyncIterator[dict]:
     """Render one problem, yielding line events and finally {"type": "result", ...} (or raising RunError).
+
+    `timeout` overrides the run's wall-clock limit (detached jobs), and `on_ticket(ticket)` is called once the run
+    has its place in the queue (a job keeps it, to cancel the run and to tell queued from running).
 
     With `root`, the problem is taken from <root>/problems/<category>/<slug> (an agent's workspace) instead of the
     repository.
@@ -279,6 +290,10 @@ async def stream_problem(
         ticket = QUEUE.join(client, f"{category}/{slug}")
     except QueueFull as e:
         raise RunError(str(e)) from None
+    if timeout is not None:
+        ticket.max_run_s = timeout + 60  # the queue must not drop a long job's slot as abandoned
+    if on_ticket:
+        on_ticket(ticket)
     try:
         try:
             async for position in QUEUE.wait(ticket):
@@ -311,7 +326,7 @@ async def stream_problem(
         tests: dict | None = None
         test_log = ""
         try:
-            async for event in _stream_process(cmd, work, _env(out_dir, device), stop=lambda: ticket.cancelled):
+            async for event in _stream_process(cmd, work, _env(out_dir, device), lambda: ticket.cancelled, timeout):
                 if event["type"] == "exit":
                     code = event["code"]
                     break
@@ -324,7 +339,7 @@ async def stream_problem(
                     yield event
             test_file = work / "problems" / category / slug / "test.py"  # the edited copy when there are edits
             if code == 0 and test_file.is_file():
-                async for event in _stream_tests(test_file, work, _env(out_dir, device)):
+                async for event in _stream_tests(test_file, work, _env(out_dir, device), timeout):
                     if event["type"] == "tests":
                         tests = {k: event[k] for k in ("passed", "failed", "ok", "items")}
                         test_log = event["log"]

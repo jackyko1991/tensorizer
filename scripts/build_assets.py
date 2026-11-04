@@ -159,7 +159,8 @@ DATA_KINDS = {
     **dict.fromkeys([".csv", ".tsv"], "table"),
     **dict.fromkeys([".txt", ".dat", ".json", ".md"], "text"),
     **dict.fromkeys([".png", ".jpg", ".jpeg", ".gif", ".tif", ".tiff", ".svg"], "image"),
-    **dict.fromkeys([".npy", ".npz", ".pt", ".h5", ".hdf5", ".nc", ".fits"], "array"),
+    **dict.fromkeys([".npy", ".pt", ".h5", ".hdf5", ".nc", ".fits"], "array"),
+    ".npz": "images",  # an image dataset (N,H,W uint8 + labels); describe() falls back to "array" when it is not one
     **dict.fromkeys([".stl", ".ply"], "mesh"),
     **dict.fromkeys([".pvd", ".vtp"], "scene"),  # VTK: layered, animated 3D results
 }
@@ -205,7 +206,84 @@ def describe(src: Path, name: str, url: str) -> dict:
             entry["rows"] = max(0, len(body) - 1)
         else:
             entry["rows"] = len(lines)
+    elif kind == "images":
+        sets = describe_npz_images(src)
+        if sets:
+            entry["images"] = sets
+            entry["rows"] = sum(s["count"] for s in sets)
+        else:
+            entry["kind"] = "array"
     return entry
+
+
+def _label_key(image_key: str, keys: set[str]) -> str | None:
+    """The labels array paired with an image array by name: images/labels, x/y, x_train/y_train,
+    <p>_images/<p>_labels."""
+    low = image_key.lower()
+    candidates = []
+    if low.startswith("x"):
+        candidates += ["y" + image_key[1:], "Y" + image_key[1:]]
+    for word in ("images", "image", "imgs", "img"):
+        if word in low:
+            i = low.index(word)
+            reps = ("labels", "label", "targets", "y")
+            candidates += [image_key[:i] + rep + image_key[i + len(word) :] for rep in reps]
+    return next((c for c in candidates if c in keys), None)
+
+
+def describe_npz_images(src: Path) -> list[dict]:
+    """Image arrays in an .npz, without loading them: each (N,H,W) or (N,H,W,1|3) uint8 array with its shape and, if
+    a 1-D integer labels array of length N is paired with it by name, the class counts. [] when there is none (not an
+    image dataset, an unreadable archive, or pickled objects)."""
+    import zipfile
+
+    import numpy as np
+
+    try:
+        headers = {}
+        with zipfile.ZipFile(src) as zf:
+            for info in zf.infolist():
+                if not info.filename.endswith(".npy"):
+                    continue
+                with zf.open(info) as f:
+                    version = np.lib.format.read_magic(f)
+                    read = {(1, 0): np.lib.format.read_array_header_1_0, (2, 0): np.lib.format.read_array_header_2_0}
+                    if version not in read:
+                        continue
+                    shape, fortran, dtype = read[version](f)
+                headers[info.filename[:-4]] = (tuple(shape), fortran, dtype)
+        images = [
+            k
+            for k, (shape, fortran, dtype) in headers.items()
+            if dtype == np.uint8 and not fortran and (len(shape) == 3 or (len(shape) == 4 and shape[3] in (1, 3)))
+        ]
+        if not images:
+            return []
+        out = []
+        with np.load(src, allow_pickle=False) as z:
+            for k in images:
+                shape, _, dtype = headers[k]
+                lab = _label_key(k, set(headers))
+                entry = {
+                    "name": k,
+                    "count": int(shape[0]),
+                    "height": int(shape[1]),
+                    "width": int(shape[2]),
+                    "channels": int(shape[3]) if len(shape) == 4 else 1,
+                    "dtype": str(dtype),
+                    "labels": None,
+                    "classes": {},
+                }
+                if lab is not None:
+                    y = z[lab]
+                    if y.ndim == 1 and len(y) == shape[0] and np.issubdtype(y.dtype, np.integer):
+                        values, counts = np.unique(y, return_counts=True)
+                        entry["labels"] = lab
+                        entry["classes"] = {str(int(v)): int(c) for v, c in zip(values, counts)}
+                out.append(entry)
+        return out
+    except Exception:  # noqa: BLE001 - a broken or unusual archive is just shown as a plain array file
+        return []
 
 
 RESULT_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".ply", ".stl", ".csv", ".pvd", ".vtp"}

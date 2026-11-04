@@ -1,0 +1,6 @@
+# Snakemake 9.27.1 run offline from ../Snakefile in WSL2 (Ubuntu 24.04), separate pixi env (snakemake-minimal, pytorch-cpu), OMP_NUM_THREADS=1 per job; machine: CPU(s): 12;Model name: AMD Ryzen 5 5600G with Radeon Graphics;Linux 6.18.54.1-microsoft-standard-WSL2;9.27.1;python 3.14.10 torch 2.14.1 threads 1;
+# wall_s: the whole 'snakemake --cores N' command, from a fresh results/ folder
+cores,wall_s
+1,118.018222788
+6,43.444035665
+12,26.940932299

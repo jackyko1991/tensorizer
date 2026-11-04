@@ -17,7 +17,7 @@ done
 if [ "$#" -eq 0 ] || [ "$1" = "serve" ]; then
     [ "$#" -gt 0 ] && shift
     echo "tensorizer-runner: env=${TENSORIZER_PIXI_ENV} shared=${TENSORIZER_SHARED} port=${TENSORIZER_PORT}" \
-        "token=$([ -n "${TENSORIZER_TOKEN:-}" ] && echo set || echo none)"
+        "token=$([ -n "${TENSORIZER_TOKEN:-}${TENSORIZER_TOKEN_SHA256:-}" ] && echo set || echo none)"
     exec python -m tensorizer_physics.serve --host "$TENSORIZER_HOST" --port "$TENSORIZER_PORT" "$@"
 fi
 exec "$@"

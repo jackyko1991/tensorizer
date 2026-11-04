@@ -40,6 +40,7 @@ class Ticket:
     seen: float = field(default_factory=time.monotonic)
     started: float | None = None
     cancelled: bool = False  # set by the queue window's Cancel; a running job's process is then stopped
+    max_run_s: float | None = None  # a longer limit than the queue's (a detached job's timeout)
 
 
 class RunQueue:
@@ -112,7 +113,7 @@ class RunQueue:
     def _reap(self) -> None:
         now = time.monotonic()
         gone = [t for t in self.waiting if now - t.seen > STALE_S]
-        gone += [t for t in self.running if t.started is not None and now - t.started > self.max_run_s]
+        gone += [t for t in self.running if t.started is not None and now - t.started > (t.max_run_s or self.max_run_s)]
         for t in gone:
             self.leave(t)
 

@@ -9,7 +9,7 @@
 #   3. writes /etc/tensorizer/runner.env (port, shared mode, pairing token; readable by root only)
 #   4. creates and starts the systemd service  tensorizer-runner  (the container, listening on 127.0.0.1 only)
 #   5. optionally runs Caddy (also in a container, service tensorizer-caddy) for automatic HTTPS
-#   6. prints the URL to paste in the website (Compute settings) and, the first time, the pairing token
+#   6. prints the URL to paste in the website (Backend > Remote > Add server) and, the first time, the pairing token
 #
 # Options:
 #   --domain NAME     HTTPS for NAME with Caddy (point NAME's DNS A record at this server first)
@@ -206,31 +206,48 @@ step "Pulling $REF"
 run "$CT" pull "$REF"
 
 # ---- 3. settings and pairing token ---------------------------------------------------------------------------------
-# PAIRING TOKEN HOOK (design step 3). The installer makes a random token and gives it to the container as
-# TENSORIZER_TOKEN through the root-only env file below; the runner (step 3) is what checks it. The token is shown
-# on screen once and never written anywhere else (not in the unit file, not on a command line, not in a log).
-# If step 3 settles on storing only a hash, write TENSORIZER_TOKEN_SHA256 here instead of TENSORIZER_TOKEN.
+# PAIRING TOKEN (design step 3). The installer makes a random token, shows it on screen once, and gives the runner
+# only its SHA-256 (TENSORIZER_TOKEN_SHA256) through the root-only env file below; the runner compares the hash of
+# what the website sends. The token itself is never written anywhere (not in a file, the unit, argv or a log).
 new_token() {
     if have openssl; then openssl rand -hex 32
     else od -An -N32 -tx1 /dev/urandom | tr -d ' \n'
     fi
 }
+# sha256_hex TEXT: the hex SHA-256 of TEXT (printf is a shell builtin, so TEXT is not on any command line)
+sha256_hex() {
+    if have sha256sum; then printf '%s' "$1" | sha256sum | cut -d' ' -f1
+    else printf '%s' "$1" | openssl dgst -sha256 -r | cut -d' ' -f1
+    fi
+}
 
 TOKEN=""
+TOKEN_HASH=""
 TOKEN_IS_NEW=0
 if [ "$DRY_RUN" -eq 1 ]; then
     TOKEN="<random token from openssl rand -hex 32>"
+    TOKEN_HASH="<sha256 of the token>"
     TOKEN_IS_NEW=1
 elif [ "$NEW_TOKEN" -eq 0 ] && $SUDO test -f "$ENV_FILE"; then
-    TOKEN=$($SUDO sed -n 's/^TENSORIZER_TOKEN=//p' "$ENV_FILE")
+    TOKEN_HASH=$($SUDO sed -n 's/^TENSORIZER_TOKEN_SHA256=//p' "$ENV_FILE")
+    if [ -z "$TOKEN_HASH" ]; then  # an older install kept the token itself: keep it working, store only its hash
+        OLD_TOKEN=$($SUDO sed -n 's/^TENSORIZER_TOKEN=//p' "$ENV_FILE")
+        [ -n "$OLD_TOKEN" ] && TOKEN_HASH=$(sha256_hex "$OLD_TOKEN")
+        OLD_TOKEN=""
+    fi
 fi
-if [ -z "$TOKEN" ]; then
+if [ -z "$TOKEN_HASH" ]; then
     TOKEN=$(new_token)
+    TOKEN_HASH=$(sha256_hex "$TOKEN")
     TOKEN_IS_NEW=1
 fi
 
 PROXY_HOPS=0
 [ "$MODE" != notls ] && PROXY_HOPS=1  # Caddy in front: trust exactly one X-Forwarded-For hop
+# Your own server (token-protected): edited code, the Workspace, notebooks and the AI agent are on.
+# --shared: off (the public-demo defences).
+CODE=1
+[ "$SHARED" -eq 1 ] && CODE=0
 
 step "Writing $ENV_FILE"
 write_file "$ENV_FILE" 600 <<EOF
@@ -240,8 +257,9 @@ TENSORIZER_HOST=0.0.0.0
 TENSORIZER_SHARED=$SHARED
 TRUSTED_PROXY_HOPS=$PROXY_HOPS
 CORS_ORIGINS=https://jackyko1991.github.io
-AGENT_ENABLED=0
-TENSORIZER_TOKEN=$TOKEN
+ALLOW_CODE_EXEC=$CODE
+AGENT_ENABLED=$CODE
+TENSORIZER_TOKEN_SHA256=$TOKEN_HASH
 EOF
 
 # ---- 4. runner service ---------------------------------------------------------------------------------------------
@@ -341,7 +359,7 @@ say "  Tensorizer runner is installed."
 say "  URL   : $URL"
 if [ "$TOKEN_IS_NEW" -eq 1 ]; then
     say "  token : $TOKEN"
-    say "          (shown only now; copy it into the website's Compute settings)"
+    say "          (shown only now; copy it into the website: Backend > Remote > Add server)"
 else
     say "  token : unchanged (use --new-token to make a new one)"
 fi
@@ -353,6 +371,6 @@ if [ "$MODE" = notls ]; then
     say "  Next, make it reachable over HTTPS (docs/remote-server.md):"
     say "    Tailscale        : tailscale serve --bg $PORT"
     say "    Cloudflare Tunnel: cloudflared tunnel --url http://127.0.0.1:$PORT"
-    say "    SSH tunnel       : ssh -L $PORT:localhost:$PORT <this server>, then use 'This device'"
+    say "    SSH tunnel       : ssh -N -L $PORT:localhost:$PORT <this server>, then add http://localhost:$PORT"
 fi
 say "------------------------------------------------------------------------"

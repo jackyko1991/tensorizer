@@ -1,0 +1,36 @@
+# Two-modality digit arithmetic: an MNIST image and a three-word text ("now plus three") → (digit op number) mod 10.
+#
+# The workflow as Snakemake would see it: one job per rule per sample (and per operation for `fuse`). The
+# input function `routed` is the conditional rule choice: it picks, for each sample, the `fuse` expert of the
+# operation named in its text, so only those N of the N·3 possible fuse jobs are ever needed. The tensor engine
+# (solve.build_dag, solve.run_dag) reads this file and runs every rule ONCE, batched over all its needed jobs.
+# The rules have no shell actions: unlike medical/cow_workflow_dag, this file is never run by Snakemake itself.
+
+SAMPLES = [f"{i:04d}" for i in range(1000)]
+OPS = ["plus", "minus", "times"]
+OP = {}  # sample → operation, read from inputs/{sample}/tokens.npy by the parser (the router)
+
+
+def routed(wildcards):
+    return f"results/{wildcards.sample}/fused_{OP[wildcards.sample]}.npy"
+
+
+rule collect:
+    input: expand("results/{sample}/prediction.npy", sample=SAMPLES)
+    output: "results/predictions.npz"
+
+rule encode_image:
+    input: "inputs/{sample}/image.npy"
+    output: "results/{sample}/image.npy"
+
+rule encode_text:
+    input: "inputs/{sample}/tokens.npy"
+    output: "results/{sample}/text.npy"
+
+rule fuse:
+    input: "results/{sample}/image.npy", "results/{sample}/text.npy"
+    output: "results/{sample}/fused_{op}.npy"
+
+rule classify:
+    input: routed
+    output: "results/{sample}/prediction.npy"

@@ -1,0 +1,107 @@
+title: 'A workflow DAG is a mixture of experts with a fixed router'
+category: ai
+level: advanced
+order: 5
+tags: [series:workflow-orchestration:2]
+summary: >
+  An MNIST digit $d$ and a three-word text such as "now plus three" give the answer $y = (d \circ k) \bmod 10$; neither
+  modality alone suffices. Written as a Snakemake-style workflow (encode_image, encode_text, one fuse rule per
+  operation chosen by an input function, classify) and run by the tensor DAG engine of the Circle of Willis problem,
+  the pipeline computes exactly what a top-1 mixture-of-experts layer computes when its router matrix $G$ is fixed to
+  the rule choice. Then the four stages that one tensor program allows: a learned router, experts trained apart and
+  chained, one backward pass through the whole DAG, and distillation into one small dense network stored in int8.
+  A framing that connects known results, not a new theorem.
+animated: true
+vector_form: 'A_{\mathrm{classify}\leftarrow\mathrm{fuse}} = (I_N \otimes \mathbb 1_E^{\top}) \odot \mathbb 1_N \operatorname{vec}(G)^{\top},\qquad \mathbf o_n = \sum_e G_{ne}\, f_e(\mathbf u_n),\qquad \mathcal L_{\mathrm{aux}} = E \sum_e f_e P_e,\qquad \mathcal L_{\mathrm{KD}} = T^2\, \mathrm{KL}\big(\sigma(\mathbf z^t/T)\,\|\,\sigma(\mathbf z^s/T)\big)'
+index_form: 'D_{mnec} = G_{mne}\,[c = \mathrm{rank}_e(n)],\qquad U_{meci} = D_{mnec}\, u_{mni},\qquad Y_{mech} = f_e(U_{mec})_h,\qquad o_{mnh} = D_{mnec}\, g_{mne}\, Y_{mech},\qquad g = G\ \text{(workflow)}\ \text{or}\ G \odot p\ \text{(Switch)},\qquad \hat W_{io} = s_o \operatorname{round}(W_{io}/s_o)'
+translation:
+  - {symbol: 'A_{\mathrm{rule}}', code: 'build_dag(snakefile_text, N)', shape: '(R, R)', meaning: 'rule graph parsed from data/Snakefile with the parser of medical/cow_workflow_dag, plus the input function `routed` (a conditional edge classify ← fuse)'}
+  - {symbol: 'M^{sr}', code: 'block(dag, s, r, G)', shape: '(n_s, n_r)', meaning: 'job-level block: the Kronecker product of cow_workflow_dag ($I$, $\mathbb 1$, $\mathbb 1^\top$ per wildcard axis sample, op); for the conditional edge it is masked by the router, so job $n$ of classify reads job $(n, e)$ of fuse iff $G_{ne} = 1$'}
+  - {symbol: 'G_{ne}', code: 'router_matrix(tok)', shape: '(N, E)', meaning: 'the workflow''s router: one-hot of the operation word, found by a rule (the input function), not learned'}
+  - {symbol: '\mathrm{need}_r', code: 'needed_jobs(dag, G)', shape: '(n_r,)', meaning: 'jobs the target depends on, $\mathrm{need}_r = \bigvee_s M^{sr\top}\mathrm{need}_s$: only $N$ of the $N E$ fuse jobs'}
+  - {symbol: 'z_{mnv}', code: 'run_dag(w, x, tok, dag)', shape: '(M, N, 10)', meaning: 'the engine: rules level by level, each ONE batched call over its needed jobs (fuse: one call per value of its $op$ wildcard)'}
+  - {symbol: 'D_{mnec}', code: 'dispatch(G, C)', shape: '(M, N, E, C)', meaning: 'sample $n$ to slot $c$ of expert $e$ (its rank among the samples routed there), as in GShard/Switch; capacity $C$ = largest group'}
+  - {symbol: 'Y_{mech}', code: "einsum('meci,meih->mech', U, W1) …", shape: '(M, E, C, H)', meaning: 'all experts in one batched product; $m$ is the model (seed) axis, never summed'}
+  - {symbol: 'o_{mnh}', code: "einsum('mnec,mne,mech->mnh', D, g, Y)", shape: '(M, N, H)', meaning: 'combine: $e$ and $c$ summed, one nonzero term per sample, so with $g = G$ it equals the DAG output'}
+  - {symbol: 'p_{mne}', code: "gate_probs(w['gate'], h)", shape: '(M, N, E)', meaning: 'learned router: softmax of a linear gate on the text features; top-1 routing, output scaled by $p$'}
+  - {symbol: '\mathcal L_{\mathrm{aux}}', code: 'load_balance_loss(p, G)', shape: '(M,)', meaning: 'Switch load balancing: $f_e$ = fraction routed to $e$, $P_e$ = mean gate probability; 1 when balanced and uniform, $E$ when collapsed'}
+  - {symbol: '\mathcal L_{\mathrm{KD}}', code: 'kd_loss(z_s, z_t, T)', shape: '(M,)', meaning: 'Hinton distillation at temperature $T$; the student loss is $0.9\,\mathcal L_{\mathrm{KD}} + 0.1$ cross-entropy on the true answer'}
+  - {symbol: '\hat W_{io}', code: 'fake_quant(W)', shape: '(M, I, O)', meaning: 'symmetric int8 per output channel, $s_o = \max_i |W_{io}|/127$; stored as int8 + one float32 scale per channel'}
+notes: >
+  Idea. The framing is Jacky Ka Long Ko's: building the Circle of Willis workflow (medical/cow_workflow_dag) showed
+  that a Snakemake DAG can be one tensor program, and such a program looks like a multimodal mixture of experts. Stated
+  precisely: a workflow DAG is an MoE with a fixed router; an MoE is a DAG whose edges are chosen per input. This is a
+  framing that connects known results, not a new theorem, and this problem builds one small instance of it.
+
+  Equivalence. data/Snakefile has rules encode_image, encode_text, fuse (one job per sample and per operation, the
+  wildcard $op$), classify and collect; classify reads its input through an input function, `routed`, that names the
+  fuse output of the operation in the sample's text. The engine parses the file with the parser of
+  cow_workflow_dag and builds the job adjacency from its Kronecker blocks; the conditional edge's block is
+  $(I_N \otimes \mathbb 1_E^\top) \odot \mathbb 1_N \operatorname{vec}(G)^\top$, so the router matrix $G$ sits inside
+  the adjacency, and only the $N$ chosen of the $N E$ fuse jobs are needed (a boolean backward pass, as Snakemake
+  prunes jobs). Run level by level, one batched call per rule, it gives the same logits as a Switch-style layer
+  (dispatch tensor $D$ by cumulative ranks, all experts in one batched einsum, combine) with $G$ fixed to the rule
+  choice and gate values 1: bitwise identical in float32 and within $4 \times 10^{-15}$ in float64 on all 1000 test
+  samples × 2 seeds (the stacked and the per-group products sum in a different order), the same prediction everywhere.
+  This is an identity of two ways to write one computation, not an empirical finding.
+
+  Learned router. A softmax gate on the text features with top-1 routing and the Switch load-balancing loss
+  ($\alpha = 0.01$), encoders frozen, two variants side by side. In front of the workflow's own fuse experts the gate
+  alone rediscovers the rule: after the default 800 steps operation $e$ goes to expert $e$ for 0.85 ± 0.03 of the
+  test samples (accuracy 0.82 against 0.92 with the fixed router), still rising (0.95 and 0.90 after 1500 steps in a
+  trial run). Learned together with fresh experts it does not: the routing matches the operations no better than
+  chance (0.35 with the best expert permutation; 1/3 means no relation), the experts stay mixed and the accuracy stays
+  at 0.40. The fuse experts do not see the text, so a routing that ignores the operation leaves each
+  expert an impossible task; but at the start no expert is better at any operation, so a top-1 gate gets no signal to
+  break the symmetry. Gate noise, a 100× larger gate initialisation, a 500-step dense (soft) warm-up and $\alpha = 0.1$
+  did not change this in trial runs (not part of the default run). Larger MoEs train their routers from scratch
+  successfully; this toy says only that the fixed rule is not free to rediscover here.
+
+  Stages. (2) Split training: each expert on its own sub-task, the image expert (an MLP) on digit labels (0.916 test
+  accuracy), the text expert (one einsum attention layer) on the number word (1.000), the fuse experts on the
+  300-entry table from one-hot inputs (1.000); chained through the DAG with no joint training the pipeline answers
+  0.924 of the test pairs (higher than the digit accuracy because times 0 or times 5 forgive some wrong digits).
+  (3) End-to-end fine-tuning, one backward pass through all stages: 0.924, no gain; the bottleneck is the image
+  expert, and the joint loss brings no new information about digits (same 3000 images). (4) A dense student
+  (784 + 45 → 64 → 64 → 10, 57 930 weights, 0.53 of the pipeline's 108 766) distilled at $T = 4$ (loss
+  $0.9\,\mathcal L_{\mathrm{KD}}$ + 0.1 cross-entropy): 0.85–0.86, agreeing with its teacher on 0.85–0.87 of the
+  samples and still improving at the end of its 3000 steps; int8 per channel: 0.85–0.86, 58.9 kB instead of 232 kB
+  (435 kB for the pipeline). Times for the 1000 test pairs on one CPU thread: DAG engine 90 ms, the same DAG as one
+  MoE layer 19 ms (the engine also builds its job blocks), student 3.4 ms, int8 student 3.5 ms (computed with
+  dequantised floats, so smaller but not really faster here), and one call per job, as a scheduler would run it
+  without process start-up, 900–1000 ms.
+
+  What does not follow. Only stages that are tensor programs in one memory space fuse with no copy and pass a
+  gradient: file-based tools (OpenFOAM, VMTK, most of bioimage analysis) do not, and a Snakemake DAG of them stays a
+  DAG of processes. The Circle of Willis speed-up came mostly from the avoided per-job process start-up and file
+  I/O, not from batching. And end-to-end training only helps when a stage can learn something the split training did
+  not give it; here it did not.
+
+  Related work. Neural Module Networks (Andreas et al. 2016) assemble a network per question from modules chosen by
+  a parser, a DAG chosen per input; sparsely gated MoE (Shazeer et al. 2017) and the Switch Transformer (Fedus et al.
+  2021, top-1 routing and the load-balancing loss used here); modality experts in LIMoE (Mustafa et al. 2022) and
+  Uni-MoE (Li et al. 2024); model stitching (Lenc & Vedaldi 2015; Bansal et al. 2021) joins separately trained
+  networks through a learned interface, as stage 2 does through probability vectors; knowledge distillation (Hinton
+  et al. 2015); DSPy (Khattab et al. 2023) optimises whole pipelines of language-model calls end to end. Google's
+  Pathways (a 2021 blog post and vision) describes one model that routes each task through the parts it needs.
+
+  Data. MNIST (LeCun, Cortes & Burges; LeCun et al. 1998), licence CC BY-SA 3.0: 3000 training images (300 per digit)
+  and 1000 test images (100 per digit), the first ones of each digit in file order, bundled as uint8 (0.7 MB,
+  data/mnist_train.npz, data/mnist_test.npz, redistributed under the same licence; data/SOURCES.md has the source, checksums and
+  processing). Texts are generated: one operation word (plus, minus, times), one number word (zero to nine) and one
+  filler (now, then) in a random order; the test texts use a fixed seed.
+
+  Device and limits. The bundled numbers come from the default run on a CPU (the project's environment has no CUDA
+  build of PyTorch here; at about $10^5$ weights a GPU would not help): about 75–150 s of training and measuring plus the
+  GIF on a busy 6-core machine. All seeds train together on the model axis,
+  each with its own minibatches, and every seed is plotted. A toy with one digit and three operations: it shows the
+  structure, not how large multimodal MoEs behave.
+params:
+  seeds: {default: 2, min: 1, max: 4, step: 1, type: int, label: Seeds (models on the model axis)}
+  split_steps: {default: 1000, min: 200, max: 4000, step: 100, type: int, label: 'Stage 2 steps (each expert on its sub-task)'}
+  router_steps: {default: 800, min: 200, max: 4000, step: 100, type: int, label: 'Stage 1b steps (learned router)'}
+  global_steps: {default: 400, min: 0, max: 3000, step: 100, type: int, label: 'Stage 3 steps (end-to-end fine-tuning)'}
+  student_steps: {default: 3000, min: 500, max: 10000, step: 500, type: int, label: 'Stage 4 steps (distillation)'}
+  student_hidden: {default: 64, min: 16, max: 256, step: 16, type: int, label: 'Student width $H$'}
+  temperature: {default: 4.0, min: 1.0, max: 10.0, step: 0.5, label: 'Distillation temperature $T$'}
+  balance_weight: {default: 0.01, min: 0.0, max: 0.1, step: 0.005, label: 'Load-balancing weight $\alpha$'}

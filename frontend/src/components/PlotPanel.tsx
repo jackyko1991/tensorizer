@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DataSources } from "./DataView";
 import { useLang } from "../i18n";
 import { plainText, RichText } from "./Tex";
@@ -26,6 +26,27 @@ export default function PlotPanel({ problem, src, running, progress = null, clas
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [zoomed]);
+
+  // phones: the results browser ends exactly at the footer, so the Results tab fits the screen without scrolling
+  const box = useRef<HTMLDivElement>(null);
+  const [fitH, setFitH] = useState<number | null>(null);
+  useLayoutEffect(() => {
+    const fit = () => {
+      const el = box.current;
+      if (!el || window.matchMedia("(min-width: 1280px)").matches || el.offsetParent === null) return setFitH(null);
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      const footer = document.querySelector("footer")?.getBoundingClientRect().height ?? 0;
+      setFitH(Math.max(240, Math.floor(window.innerHeight - top - footer)));
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    if (box.current?.parentElement) ro.observe(box.current.parentElement);
+    window.addEventListener("resize", fit);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", fit);
+    };
+  }, [src, running]);
 
   const main: Dataset | null = src
     ? {
@@ -55,7 +76,12 @@ export default function PlotPanel({ problem, src, running, progress = null, clas
         </div>
       )}
       {main && !running ? (
-        <div className="h-[70vh] min-h-72 shrink-0 xl:h-auto xl:min-h-0 xl:flex-1 xl:shrink" data-testid="results-browser">
+        <div
+          ref={box}
+          style={fitH ? { height: fitH } : undefined}
+          className="h-[50vh] shrink-0 xl:h-auto xl:min-h-0 xl:flex-1 xl:shrink"
+          data-testid="results-browser"
+        >
           {/* a definite height on phones (the fill layout sizes to it); on desktop the panel's flex height */}
           <DataSources datasets={[main, ...(problem.results ?? [])]} rail={["files"]} listTitle={t("results")} fill />
         </div>

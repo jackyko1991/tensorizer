@@ -1,0 +1,12 @@
+# Snakemake 9.27.1 run offline from ../Snakefile in WSL2 (Ubuntu 24.04), separate pixi env (snakemake-minimal, pytorch-cpu), OMP_NUM_THREADS=1 per job; machine: CPU(s): 12;Model name: AMD Ryzen 5 5600G with Radeon Graphics;Linux 6.18.54.1-microsoft-standard-WSL2;9.27.1;python 3.14.10 torch 2.14.1 threads 1;
+rule,case,condition
+segment,sub-002,
+centreline,sub-002,
+measure,sub-002,
+boundaries,sub-002,
+flow,sub-002,baseline
+flow,sub-002,lica_occluded
+report,sub-002,lica_occluded
+report,sub-002,baseline
+cohort,,
+all,,

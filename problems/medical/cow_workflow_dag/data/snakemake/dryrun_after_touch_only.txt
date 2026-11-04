@@ -1,0 +1,21 @@
+Assuming unrestricted shared filesystem usage.
+
+SNAKEMAKE
+=========
+  Date: 2026-11-04 18:37:10
+  Workflow ID: 9b7f1c75-3372-409f-acdf-b6a8e553fb2c
+  Platform: Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.39
+  Host: DESKTOP-M1MPD7U
+  User: jackyko
+  Snakemake version: 9.27.1
+  Python version: 3.14.10 | packaged by conda-forge | (main, Oct 26 2026, 11:35:38) [GCC 15.3.0]
+  Command: /home/jackyko/snakemake-tensorizer/.pixi/envs/default/bin/snakemake -n
+  Snakefile: /home/jackyko/cow_dag_run/wd/Snakefile
+  Base directory: /home/jackyko/cow_dag_run/wd
+  Run directory: /home/jackyko/cow_dag_run/wd
+  Working directory: /home/jackyko/cow_dag_run/wd
+  Config file(s): []
+  Config MD5: 99914b932bd37a50b983c5e7c90ae93b
+
+Building DAG of jobs...
+Nothing to be done (all requested files are present and up to date).

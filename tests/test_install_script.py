@@ -51,6 +51,7 @@ def test_dry_run_domain_sets_up_caddy_and_service():
     assert "--read-only" in out and "-p 127.0.0.1:8765:8765" in out  # never published on a public interface
     assert "--env-file /etc/tensorizer/runner.env" in out  # the token travels in a root-only file, not argv
     assert "TENSORIZER_SHARED=0" in out and "TRUSTED_PROXY_HOPS=1" in out
+    assert "ALLOW_CODE_EXEC=1" in out and "AGENT_ENABLED=1" in out  # own, token-protected server
     assert "systemctl restart tensorizer-caddy.service" in out
     assert "URL   : https://runner.example.org" in out
 
@@ -58,7 +59,9 @@ def test_dry_run_domain_sets_up_caddy_and_service():
 @needs_sh
 def test_dry_run_never_shows_a_real_token():
     out = dry_run("--domain", "runner.example.org")
-    assert "TENSORIZER_TOKEN=<random token" in out
+    assert "TENSORIZER_TOKEN_SHA256=<sha256 of the token>" in out  # the server keeps only the hash
+    assert "TENSORIZER_TOKEN=" not in out
+    assert "token : <random token" in out  # shown once, on screen
     assert not any(len(w) == 64 and all(c in "0123456789abcdef" for c in w) for w in out.split())
 
 
@@ -69,6 +72,7 @@ def test_dry_run_sslip_gpu_shared_port():
     assert "tensorizer-runner:0.2.0-cuda" in out
     assert "--gpus all" in out or "nvidia.com/gpu=all" in out
     assert "TENSORIZER_SHARED=1" in out and "TENSORIZER_PORT=9000" in out
+    assert "ALLOW_CODE_EXEC=0" in out and "AGENT_ENABLED=0" in out  # shared: no user code
     assert "-p 127.0.0.1:9000:9000" in out
 
 

@@ -41,7 +41,7 @@ export interface CollectionItem {
 export interface Collection {
   id: string;
   kind: "series" | "tags";
-  /** Where the combobox lists it: stories, hypothesis-lab (series) or lists / prizes (automatic). */
+  /** Where the combobox lists it: stories, ai, hypothesis-lab (series) or lists / prizes (automatic). */
   group: Group;
   title: string;
   author?: string;
@@ -51,10 +51,11 @@ export interface Collection {
 
 type T = (key: Key) => string;
 
-export const GROUPS = ["stories", "hypothesis-lab", "lists", "prizes"] as const;
+export const GROUPS = ["stories", "ai", "hypothesis-lab", "lists", "prizes"] as const;
 export type Group = (typeof GROUPS)[number];
 export const GROUP_TITLE: Record<Group, Key> = {
   stories: "coll.group.stories",
+  ai: "coll.group.ai",
   "hypothesis-lab": "coll.group.lab",
   lists: "coll.group.lists",
   prizes: "coll.group.prizes",

@@ -40,11 +40,33 @@
   },
   "wikidata": "Q1407668"
  },
+ "ai/moe_dag_pipeline": {
+  "titles": {
+   "en": "MNIST database",
+   "zh": "MNIST数据库",
+   "fr": "Base de données MNIST",
+   "de": "MNIST-Datenbank",
+   "es": "Base de datos MNIST",
+   "ja": "MNISTデータベース",
+   "ru": "MNIST (база данных)",
+   "ko": "MNIST 데이터베이스"
+  },
+  "wikidata": "Q17069496"
+ },
  "ai/neural_operator": {
   "titles": {
    "en": "Neural operators"
   },
   "wikidata": "Q123501640"
+ },
+ "ai/operator_search_mnist": {
+  "titles": {
+   "en": "Neural architecture search",
+   "zh": "神经结构搜索",
+   "fr": "Recherche automatique d'architecture neuronale",
+   "ko": "신경망 구조 탐색"
+  },
+  "wikidata": "Q55080142"
  },
  "ai/pinn_oscillator": {
   "titles": {
@@ -55,6 +77,16 @@
    "zh": "物理信息神经网络"
   },
   "wikidata": "Q107285102"
+ },
+ "ai/stitch_llm_cnn_dag": {
+  "titles": {
+   "en": "Multimodal learning",
+   "zh": "多模态学习",
+   "fr": "Multimodalité (IA)",
+   "ru": "Мультимодальное обучение",
+   "ko": "멀티모달 학습"
+  },
+  "wikidata": "Q25052564"
  },
  "ai/tiny_transformer": {
   "titles": {
@@ -1655,6 +1687,19 @@
    "zh": "自旋迴訊"
   },
   "wikidata": "Q904043"
+ },
+ "medical/cow_workflow_dag": {
+  "titles": {
+   "en": "Directed acyclic graph",
+   "zh": "有向无环图",
+   "fr": "Graphe orienté acyclique",
+   "de": "Gerichteter azyklischer Graph",
+   "es": "Grafo acíclico dirigido",
+   "ja": "有向非巡回グラフ",
+   "ru": "Ориентированный ациклический граф",
+   "ko": "유향 비순환 그래프"
+  },
+  "wikidata": "Q1195339"
  },
  "medical/diffusion_tensor_imaging": {
   "titles": {

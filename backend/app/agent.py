@@ -26,10 +26,13 @@ from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from tensorizer_physics.auth import output_url
+
 from . import limits
 from .runner import CODE_FILES, PROBLEMS, RunError, copy_core, problem_dir, stream_problem
 
-ENABLED = os.environ.get("AGENT_ENABLED") == "1"
+# The agent and the Workspace: AGENT_ENABLED=1/0; unset, on only for a token-protected own server.
+ENABLED = os.environ.get("AGENT_ENABLED", "1" if limits.private_with_token() else "0") == "1"
 # On a personal machine (AGENT_AUTH=local) the agent may use this machine's Claude Code login; a shared server
 # only ever uses the visitor's own API key.
 LOCAL_ALLOWED = os.environ.get("AGENT_AUTH") == "local"
@@ -530,7 +533,7 @@ async def run_workspace(session_id: str, params: dict, files: dict[str, str] | N
     params = resolve_params(load_meta(s.workspace), params)
     async for event in stream_problem(category, slug, params, None, verbose, client, s.workspace.parents[2]):
         if event["type"] == "result":
-            s.output, s.console = f"/api/outputs/{event['run_id']}/{event['output']}", event["console"]
+            s.output, s.console = output_url(event["run_id"], event["output"]), event["console"]
         yield event
 
 
@@ -566,7 +569,7 @@ async def run_in_session(s: Session, params: dict, client_id: str) -> tuple[str,
                 result = e
         if result is None:
             raise RunError("the run produced no result")
-        out = f"/api/outputs/{result['run_id']}/{result['output']}"
+        out = output_url(result["run_id"], result["output"])
         s.output, s.console = out, result["console"]
         await report({"type": "run", "output": out, "console": result["console"], "ok": True})
         tests = result.get("tests")

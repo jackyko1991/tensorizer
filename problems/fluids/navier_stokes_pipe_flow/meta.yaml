@@ -2,6 +2,7 @@ title: Navier–Stokes pipe flow
 category: fluids
 level: intermediate
 order: 2
+tags: [series:vascular-flow:1]
 summary: >
   The full incompressible Navier–Stokes equations, applied to water in a round pipe that is suddenly pushed by a pressure gradient.
   For axial flow the nonlinear term drops out exactly, leaving a radial diffusion equation: momentum spreads in from the no-slip wall

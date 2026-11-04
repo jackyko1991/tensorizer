@@ -8,7 +8,8 @@ they stay generous. Every limit is listed in docs/design/backend.md ("Shared-ser
 - processes: killed at the deadline even when nobody reads their output; on Linux also CPU-time, file-size and
   core-dump limits per run; console output capped;
 - disk: the run cache is pruned to CACHE_MAX_BYTES, oldest first;
-- code: user-written code (edits, Workspace problems, notebooks) is off unless TENSORIZER_SHARED_CODE=1;
+- code: user-written code (edits, Workspace problems, notebooks) is off unless TENSORIZER_SHARED_CODE=1; on a
+  person's own server it follows code_exec_policy (on with a pairing token, never on a no-token network address);
 - identity: the visitor is the address the trusted proxy saw (TRUSTED_PROXY_HOPS), not a header the client wrote.
 """
 
@@ -22,6 +23,10 @@ from pathlib import Path
 
 SHARED = os.environ.get("TENSORIZER_SHARED") == "1"
 SHARED_CODE = os.environ.get("TENSORIZER_SHARED_CODE") == "1"
+# "1" / "0" / None (unset): see code_exec_policy
+ALLOW_CODE_EXEC_ENV = os.environ.get("ALLOW_CODE_EXEC")
+# The address the server listens on, set by `python -m tensorizer_physics.serve` (None: started another way)
+BIND = os.environ.get("TENSORIZER_BIND")
 
 
 def _num(name: str, default: float) -> float:
@@ -39,11 +44,58 @@ RATE_WINDOW_S = _num("TENSORIZER_RATE_WINDOW", 600)
 MAX_CONSOLE_BYTES = int(_num("TENSORIZER_MAX_CONSOLE", 1_000_000 if SHARED else 20_000_000))
 CACHE_MAX_BYTES = int(_num("TENSORIZER_CACHE_MAX_MB", 1500 if SHARED else 20_000) * 1e6)
 TRUSTED_PROXY_HOPS = int(_num("TRUSTED_PROXY_HOPS", 1 if SHARED else 0))
+# Detached jobs (POST /api/jobs) keep running after the page closes, so they get their own wall-clock limit, and
+# finished jobs (their event logs and outputs) are kept JOB_TTL_S seconds (0 = for good).
+JOB_TIMEOUT_S = _num("TENSORIZER_JOB_TIMEOUT_S", 600 if SHARED else RUN_TIMEOUT_S)
+JOB_TTL_S = _num("TENSORIZER_JOB_TTL_S", 24 * 3600 if SHARED else 0)
+
+
+def is_loopback(host: str | None) -> bool:
+    return (host or "").strip("[]").lower() in {"127.0.0.1", "localhost", "::1"} or (host or "").startswith("127.")
+
+
+def code_exec_policy(shared: bool, shared_code: bool, token: bool, allow: str | None, bind: str | None) -> bool:
+    """May this server run code the visitor wrote (Workspace runs, notebooks, the agent's runs)?
+
+    - shared server (the public demo): only with TENSORIZER_SHARED_CODE=1;
+    - own server with a pairing token: on, unless ALLOW_CODE_EXEC=0;
+    - own server without a token, listening on a network address: never (anyone who finds it could run code);
+    - own server without a token on this computer only (`pixi run api`): on, as before.
+    """
+    if shared:
+        return shared_code
+    if token:
+        return allow != "0"
+    return bind is None or is_loopback(bind)
+
+
+def edited_code_policy(shared: bool, shared_code: bool, token: bool, allow: str | None, bind: str | None) -> bool:
+    """May runs replace a library problem's code (the editor's Run)? As code_exec_policy, but outside the
+    token-protected own server it also needs an explicit ALLOW_CODE_EXEC=1 (as before)."""
+    if not code_exec_policy(shared, shared_code, token, allow, bind):
+        return False
+    return allow != "0" if token and not shared else allow == "1"
+
+
+def _token() -> bool:
+    from .auth import AUTH
+
+    return AUTH.enabled
+
+
+def private_with_token() -> bool:
+    """A person's own server protected by a pairing token: the generous defaults (code, Workspace, agent) apply."""
+    return not SHARED and _token()
 
 
 def user_code_allowed() -> bool:
-    """Running code the visitor wrote: always on a person's own runner, opt-in on a shared one."""
-    return not SHARED or SHARED_CODE
+    """Running code the visitor wrote (see code_exec_policy)."""
+    return code_exec_policy(SHARED, SHARED_CODE, _token(), ALLOW_CODE_EXEC_ENV, BIND)
+
+
+def edited_code_allowed() -> bool:
+    """Running edited library code (see edited_code_policy)."""
+    return edited_code_policy(SHARED, SHARED_CODE, _token(), ALLOW_CODE_EXEC_ENV, BIND)
 
 
 def client_address(forwarded: str, peer: str | None) -> str:
@@ -69,7 +121,9 @@ def limit_process() -> None:
     """preexec_fn for a run on POSIX: CPU seconds, largest file and no core dumps (Windows has no rlimits)."""
     import resource
 
-    cpu = int(RUN_TIMEOUT_S * 4) + 30  # CPU time adds up over threads; the wall-clock deadline is the main limit
+    cpu = (
+        int(max(RUN_TIMEOUT_S, JOB_TIMEOUT_S) * 4) + 30
+    )  # CPU time adds up over threads; the wall-clock deadline is the main limit
     resource.setrlimit(resource.RLIMIT_CPU, (cpu, cpu))
     resource.setrlimit(resource.RLIMIT_FSIZE, (200_000_000, 200_000_000))
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
@@ -79,13 +133,19 @@ def limit_process() -> None:
 PREEXEC = limit_process if SHARED and sys.platform != "win32" else None
 
 
+# Callables returning run-folder names that must stay (outputs of unexpired jobs); see tensorizer_physics.jobs.
+PRUNE_PROTECT: list = []
+
+
 def prune_cache(cache: Path, keep: Path | None = None) -> int:
-    """Delete the oldest cached runs until the cache fits CACHE_MAX_BYTES; returns how many were removed."""
+    """Delete the oldest cached runs until the cache fits CACHE_MAX_BYTES; returns how many were removed.
+    Folders starting with "_" (the job store) and the outputs of unexpired jobs are never removed here."""
     if not cache.is_dir():
         return 0
+    protected = {name for hook in PRUNE_PROTECT for name in hook()}
     runs = []
     for d in cache.iterdir():
-        if d.is_dir() and d != keep:
+        if d.is_dir() and d != keep and not d.name.startswith("_") and d.name not in protected:
             size = sum(f.stat().st_size for f in d.rglob("*") if f.is_file())
             runs.append((d.stat().st_mtime, size, d))
     total = sum(size for _, size, _ in runs)

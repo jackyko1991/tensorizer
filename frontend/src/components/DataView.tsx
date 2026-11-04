@@ -6,7 +6,7 @@ import ZoomImage from "./ZoomImage";
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { assetUrl } from "../api";
 import { useLang } from "../i18n";
-import type { Dataset } from "../types";
+import type { Dataset, ImageSetMeta } from "../types";
 import DownloadIcon from "./DownloadIcon";
 import { formatSize } from "./DataPanel";
 
@@ -14,6 +14,7 @@ const PREVIEW_ROWS = 200;
 // three.js is only downloaded when someone opens a mesh
 const MeshView = lazy(() => import("./MeshView"));
 const SceneView = lazy(() => import("./SceneView"));
+const ImageGridView = lazy(() => import("./ImageGridView"));
 const cache = new Map<string, Promise<string>>();
 
 function load(url: string): Promise<string> {
@@ -116,7 +117,9 @@ export default function DataView({
     ? t("dataset.shape").replace("{rows}", String(dataset.rows)).replace("{cols}", String(dataset.columns.length))
     : dataset.kind === "text"
       ? t("dataset.lines").replace("{n}", String(dataset.rows))
-      : dataset.kind;
+      : dataset.kind === "images" && dataset.images?.length
+        ? imagesShape(dataset.images, t)
+        : dataset.kind;
 
   return (
     <div
@@ -127,18 +130,18 @@ export default function DataView({
       }`}
       data-testid="dataset"
     >
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-gray-100 px-3 py-2 text-xs">
-        <span className="font-mono font-medium text-gray-800">
+      <div className="flex items-center gap-x-3 border-b border-gray-100 px-3 py-2 text-xs">
+        <span className="min-w-0 truncate font-mono font-medium text-gray-800" title={dataset.name}>
           {KIND_ICON[dataset.kind]} {dataset.name}
         </span>
-        <span className="text-gray-500">
+        <span className="hidden shrink-0 whitespace-nowrap text-gray-500 sm:inline">
           {shape}
           {dataset.size > 0 && ` / ${formatSize(dataset.size)}`}
         </span>
         <a
           href={url}
           download={dataset.name.split("/").pop()}
-          className="ml-auto flex items-center gap-1 text-blue-700 hover:underline"
+          className="ml-auto flex shrink-0 items-center gap-1 whitespace-nowrap text-blue-700 hover:underline"
         >
           <DownloadIcon className="h-3.5 w-3.5" />
           {t("dataset.download")}
@@ -149,7 +152,7 @@ export default function DataView({
           aria-label={t(big ? "mesh.shrink" : "mesh.expand")}
           aria-pressed={big}
           data-testid="data-expand"
-          className="rounded px-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+          className="shrink-0 rounded px-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
         >
           {big ? "✕" : "⤢"}
         </button>
@@ -167,7 +170,7 @@ export default function DataView({
         </ul>
       )}
       <div
-        className={`min-h-0 ${((dataset.kind === "mesh" || dataset.kind === "scene") && fit) || (dataset.kind === "image" && big) ? "relative overflow-hidden" : "overflow-auto"} ${tall || fit ? "flex-1" : "max-h-72"}`}
+        className={`min-h-0 ${((dataset.kind === "mesh" || dataset.kind === "scene" || dataset.kind === "images") && fit) || (dataset.kind === "image" && big) ? "relative overflow-hidden" : "overflow-auto"} ${tall || fit ? "flex-1" : "max-h-72"}`}
       >
         {/* one renderer per kind: table and text today; image / array canvases can slot in here */}
         {dataset.kind === "scene" ? (
@@ -179,6 +182,16 @@ export default function DataView({
             }
           >
             <SceneView url={url} fill={fit} />
+          </Suspense>
+        ) : dataset.kind === "images" ? (
+          <Suspense
+            fallback={
+              <div className="flex h-48 items-center justify-center">
+                <span className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600" />
+              </div>
+            }
+          >
+            <ImageGridView url={url} fill={fit} />
           </Suspense>
         ) : dataset.kind === "image" ? (
           big ? (
@@ -253,11 +266,24 @@ const KIND_ICON: Record<Dataset["kind"], string> = {
   table: "📊",
   text: "📄",
   image: "🖼",
+  images: "🔢",
   array: "🔢",
   mesh: "🧊",
   scene: "🎬",
   other: "📦",
 };
+
+/** "1000 images × 28×28, 10 classes" (from the manifest, before the file is fetched). */
+function imagesShape(sets: ImageSetMeta[], t: ReturnType<typeof useLang>["t"]): string {
+  const [first] = sets;
+  const k = new Set(sets.flatMap((s) => Object.keys(s.classes))).size;
+  const text = t("images.summary")
+    // labelled splits (x_train, x_test) add up; otherwise the arrays are views of the same stack (image, mask)
+    .replace("{n}", String(sets.every((s) => s.labels) ? sets.reduce((a, s) => a + s.count, 0) : first.count))
+    .replace("{h}", String(first.height))
+    .replace("{w}", String(first.width));
+  return k ? `${text}, ${t("images.classes").replace("{k}", String(k))}` : text;
+}
 
 /** A folder of the data tree: sub-folders and files, by name. */
 interface Folder {

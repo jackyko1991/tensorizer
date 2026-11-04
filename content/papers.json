@@ -40,6 +40,58 @@
    "url": "https://arxiv.org/abs/2008.02217"
   }
  ],
+ "ai/moe_dag_pipeline": [
+  {
+   "label": "Andreas et al., 2015 (arXiv)",
+   "title": "Neural Module Networks",
+   "url": "https://arxiv.org/abs/1511.02799"
+  },
+  {
+   "label": "Shazeer et al., 2017 (arXiv)",
+   "title": "Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer",
+   "url": "https://arxiv.org/abs/1701.06538"
+  },
+  {
+   "label": "Fedus et al., 2021 (arXiv)",
+   "title": "Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity",
+   "url": "https://arxiv.org/abs/2101.03961"
+  },
+  {
+   "label": "Mustafa et al., 2022 (arXiv)",
+   "title": "Multimodal Contrastive Learning with LIMoE: the Language-Image Mixture of Experts",
+   "url": "https://arxiv.org/abs/2206.02770"
+  },
+  {
+   "label": "Li et al., 2024 (arXiv)",
+   "title": "Uni-MoE: Scaling Unified Multimodal LLMs with Mixture of Experts",
+   "url": "https://arxiv.org/abs/2405.11273"
+  },
+  {
+   "label": "Lenc et al., 2014 (arXiv)",
+   "title": "Understanding image representations by measuring their equivariance and equivalence",
+   "url": "https://arxiv.org/abs/1411.5908"
+  },
+  {
+   "label": "Bansal et al., 2021 (arXiv)",
+   "title": "Revisiting Model Stitching to Compare Neural Representations",
+   "url": "https://arxiv.org/abs/2106.07682"
+  },
+  {
+   "label": "Hinton et al., 2015 (arXiv)",
+   "title": "Distilling the Knowledge in a Neural Network",
+   "url": "https://arxiv.org/abs/1503.02531"
+  },
+  {
+   "label": "Khattab et al., 2023 (arXiv)",
+   "title": "DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines",
+   "url": "https://arxiv.org/abs/2310.03714"
+  },
+  {
+   "label": "Lecun et al., 1998, Proc. IEEE",
+   "title": "Gradient-based learning applied to document recognition",
+   "url": "https://doi.org/10.1109/5.726791"
+  }
+ ],
  "ai/neural_operator": [
   {
    "label": "Li et al., 2020 (arXiv)",
@@ -47,11 +99,85 @@
    "url": "https://arxiv.org/abs/2010.08895"
   }
  ],
+ "ai/operator_search_mnist": [
+  {
+   "label": "Liu et al., 2018 (arXiv)",
+   "title": "DARTS: Differentiable Architecture Search",
+   "url": "https://arxiv.org/abs/1806.09055"
+  },
+  {
+   "label": "Zoph et al., 2016 (arXiv)",
+   "title": "Neural Architecture Search with Reinforcement Learning",
+   "url": "https://arxiv.org/abs/1611.01578"
+  },
+  {
+   "label": "Udrescu et al., 2019 (arXiv)",
+   "title": "AI Feynman: a Physics-Inspired Method for Symbolic Regression",
+   "url": "https://arxiv.org/abs/1905.11481"
+  },
+  {
+   "label": "Cranmer et al., 2023 (arXiv)",
+   "title": "Interpretable Machine Learning for Science with PySR and SymbolicRegression.jl",
+   "url": "https://arxiv.org/abs/2305.01582"
+  },
+  {
+   "label": "Lecun et al., 1998, Proc. IEEE",
+   "title": "Gradient-based learning applied to document recognition",
+   "url": "https://doi.org/10.1109/5.726791"
+  },
+  {
+   "label": "Koza, J. R. (1992). Genetic Programming: On the Programming of Computers by Means of Natural Selection. MIT Press.",
+   "title": "Genetic Programming",
+   "url": null
+  },
+  {
+   "label": "Xie et al., 2018 (arXiv)",
+   "title": "SNAS: Stochastic Neural Architecture Search",
+   "url": "https://arxiv.org/abs/1812.09926"
+  },
+  {
+   "label": "Dong et al., 2019 (arXiv)",
+   "title": "Searching for A Robust Neural Architecture in Four GPU Hours",
+   "url": "https://arxiv.org/abs/1910.04465"
+  }
+ ],
  "ai/pinn_oscillator": [
   {
    "label": "Raissi et al., 2019, Journal of Computational Physics",
    "title": "Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations",
    "url": "https://doi.org/10.1016/j.jcp.2018.10.045"
+  }
+ ],
+ "ai/stitch_llm_cnn_dag": [
+  {
+   "label": "Liu et al., 2023 (arXiv)",
+   "title": "Visual Instruction Tuning",
+   "url": "https://arxiv.org/abs/2304.08485"
+  },
+  {
+   "label": "Li et al., 2023 (arXiv)",
+   "title": "BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models",
+   "url": "https://arxiv.org/abs/2301.12597"
+  },
+  {
+   "label": "Lenc et al., 2014 (arXiv)",
+   "title": "Understanding image representations by measuring their equivariance and equivalence",
+   "url": "https://arxiv.org/abs/1411.5908"
+  },
+  {
+   "label": "Bansal et al., 2021 (arXiv)",
+   "title": "Revisiting Model Stitching to Compare Neural Representations",
+   "url": "https://arxiv.org/abs/2106.07682"
+  },
+  {
+   "label": "Tsimpoukelli et al., 2021 (arXiv)",
+   "title": "Multimodal Few-Shot Learning with Frozen Language Models",
+   "url": "https://arxiv.org/abs/2106.13884"
+  },
+  {
+   "label": "Fedus et al., 2021 (arXiv)",
+   "title": "Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity",
+   "url": "https://arxiv.org/abs/2101.03961"
   }
  ],
  "ai/tiny_transformer": [
@@ -1578,6 +1704,23 @@
    "label": "Hahn, 1950, Phys. Rev.",
    "title": "Spin Echoes",
    "url": "https://doi.org/10.1103/PhysRev.80.580"
+  }
+ ],
+ "medical/cow_workflow_dag": [
+  {
+   "label": "Mölder et al., 2021, F1000Res",
+   "title": "Sustainable data analysis with Snakemake",
+   "url": "https://doi.org/10.12688/f1000research.29032.2"
+  },
+  {
+   "label": "Yang et al., 2023 (arXiv)",
+   "title": "The TopCoW Challenge -- Topology-Aware Circle of Willis Segmentation for CT and MR Angiography",
+   "url": "https://arxiv.org/abs/2312.17670"
+  },
+  {
+   "label": "Di Noto et al., 2023, Neuroinform",
+   "title": "Towards Automated Brain Aneurysm Detection in TOF-MRA: Open Data, Weak Labels, and Anatomical Knowledge",
+   "url": "https://doi.org/10.1007/s12021-022-09597-0"
   }
  ],
  "medical/diffusion_tensor_imaging": [

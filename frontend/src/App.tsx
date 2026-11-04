@@ -2,11 +2,20 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   assetUrl,
   backendChoice,
+  hasJobs,
   health,
+  jobActive,
+  jobEvents,
+  jobSeen,
+  listJobs,
   loadManifest,
+  markJobSeen,
+  OPEN_JOB,
   RunFailed,
+  runProblemJob,
   runProblemStream,
   setBackendChoice,
+  takeOpenRequest,
   wsBlank,
   wsCopy,
   wsDelete,
@@ -17,10 +26,12 @@ import {
   wsSync,
   type Health,
   type LineEvent,
+  type RunResult,
   type TestTally,
   type WsEntry,
 } from "./api";
 import BackendPanel, { BackendButton } from "./components/BackendPanel";
+import JobsButton from "./components/JobsPanel";
 import CodePanel from "./components/CodePanel";
 import EquationPanel, { FormulationExport } from "./components/EquationPanel";
 import ParamsPanel from "./components/ParamsPanel";
@@ -505,6 +516,14 @@ export default function App() {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-4 lg:ml-0">
+          {hasJobs(backend) && (
+            <JobsButton
+              titleOf={(id) => {
+                const p = manifest?.problems.find((q) => q.id === id);
+                return p ? plainText(localize(p, lang).title) : id;
+              }}
+            />
+          )}
           <BackendButton backend={backend} onOpen={() => setBackendOpen(true)} />
           {backendOpen && (
             <BackendPanel
@@ -933,7 +952,16 @@ function ProblemView({
   const editable = inWorkspace;
   const hasEdits = Object.keys(edits).length > 0;
 
-  async function run() {
+  // Library runs go through detached jobs when the backend has them: the run keeps going if the page closes, and
+  // reopening the problem reattaches to it (or shows how it ended). `follow` stops watching, not the job.
+  const jobs = !ws && hasJobs(backend);
+  const follow = useRef<AbortController | null>(null);
+  const runningRef = useRef(running);
+  runningRef.current = running;
+  useEffect(() => () => follow.current?.abort(), []);
+
+  /** Clear the results and return the handlers that stream a run's output into the terminal. */
+  function startOutput() {
     setRunning(true);
     setHasRun(true);
     setMobileTab("results");
@@ -950,36 +978,81 @@ function ProblemView({
       lastWasRedraw = replace;
       setConsole(lines.join("\n"));
     };
+    // While waiting for a free slot on a shared server, one line shows the place in the queue.
+    const onQueued = (position: number) =>
+      onLine({
+        text: t("queue.wait").replace("{n}", String(position)),
+        replace: true,
+      });
+    const controller = new AbortController();
+    follow.current?.abort(); // stop watching an earlier job (it keeps running on the server)
+    follow.current = controller;
+    return { onLine, onQueued, signal: controller.signal };
+  }
+
+  async function showResult(pending: Promise<RunResult>, signal: AbortSignal, jobId?: () => string | undefined) {
+    const current = () => follow.current?.signal === signal;
     try {
-      // While waiting for a free slot on a shared server, one line shows the place in the queue.
-      const onQueued = (position: number) =>
-        onLine({
-          text: t("queue.wait").replace("{n}", String(position)),
-          replace: true,
-        });
-      const result = ws
-        ? await wsRunStream(await ws.sync(), params, verbose, onLine, onQueued, setProgress)
-        : await runProblemStream(
-            problem.id,
-            params,
-            hasEdits ? edits : undefined,
-            verbose,
-            onLine,
-            onQueued,
-            setProgress,
-          );
+      const result = await pending;
+      if (!current()) return;
       setSrc(result.output);
       setConsole(result.console);
       setTests(result.tests ?? null);
       ws?.onOutput?.(result.output);
     } catch (e) {
+      if (!current()) return; // another run or job took over the panels
       setError(e instanceof Error ? e.message : String(e));
       if (e instanceof RunFailed && e.console) setConsole(e.console);
     } finally {
-      setRunning(false);
-      setProgress(null);
+      const id = jobId?.();
+      if (id && !signal.aborted) markJobSeen(id); // its outcome was shown here
+      if (current()) {
+        setRunning(false);
+        setProgress(null);
+      }
     }
   }
+
+  async function run() {
+    const { onLine, onQueued, signal } = startOutput();
+    const files = hasEdits ? edits : undefined;
+    let jobId: string | undefined;
+    const pending = ws
+      ? ws.sync().then((session) => wsRunStream(session, params, verbose, onLine, onQueued, setProgress))
+      : jobs
+        ? runProblemJob(problem.id, params, files, verbose, onLine, onQueued, setProgress, (id) => (jobId = id), signal)
+        : runProblemStream(problem.id, params, files, verbose, onLine, onQueued, setProgress);
+    await showResult(pending, signal, () => jobId);
+  }
+
+  /** Show a job's output from its start: live while it runs, or how it ended. */
+  function attach(jobId: string) {
+    const { onLine, onQueued, signal } = startOutput();
+    void showResult(jobEvents(jobId, 0, onLine, onQueued, setProgress, signal), signal, () => jobId);
+  }
+
+  // Opening the problem (also after a reload): reattach to its job in progress, or show one that ended while the
+  // page was closed; the Jobs panel's "open" asks for a particular job.
+  useEffect(() => {
+    if (!jobs) return;
+    let alive = true;
+    const look = (wanted: string | null) =>
+      listJobs().then((list) => {
+        if (!alive || !list || (runningRef.current && !wanted)) return;
+        const job = wanted ? list.find((j) => j.id === wanted) : list.find((j) => j.problem === problem.id);
+        if (job && (wanted || jobActive(job) || !jobSeen(job.id))) attach(job.id);
+      });
+    void look(takeOpenRequest(problem.id));
+    const onOpen = () => {
+      const wanted = takeOpenRequest(problem.id);
+      if (wanted) void look(wanted);
+    };
+    window.addEventListener(OPEN_JOB, onOpen);
+    return () => {
+      alive = false;
+      window.removeEventListener(OPEN_JOB, onOpen);
+    };
+  }, [problem.id, jobs]);
 
   function edit(name: string, code: string) {
     if (ws) return ws.onFiles({ [name]: code });

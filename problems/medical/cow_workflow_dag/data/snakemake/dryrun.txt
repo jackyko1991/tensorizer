@@ -1,0 +1,500 @@
+Assuming unrestricted shared filesystem usage.
+
+SNAKEMAKE
+=========
+  Date: 2026-11-04 18:33:58
+  Workflow ID: 23a5d613-953f-425c-84a8-1064b5a376a4
+  Platform: Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.39
+  Host: DESKTOP-M1MPD7U
+  User: jackyko
+  Snakemake version: 9.27.1
+  Python version: 3.14.10 | packaged by conda-forge | (main, Oct 26 2026, 11:35:38) [GCC 15.3.0]
+  Command: /home/jackyko/snakemake-tensorizer/.pixi/envs/default/bin/snakemake -n
+  Snakefile: /home/jackyko/cow_dag_run/wd/Snakefile
+  Base directory: /home/jackyko/cow_dag_run/wd
+  Run directory: /home/jackyko/cow_dag_run/wd
+  Working directory: /home/jackyko/cow_dag_run/wd
+  Config file(s): []
+  Config MD5: 99914b932bd37a50b983c5e7c90ae93b
+
+Building DAG of jobs...
+Job stats:
+job           count
+----------  -------
+centreline        6
+segment           6
+boundaries        6
+measure           6
+flow             12
+report           12
+cohort            1
+all               1
+total            50
+
+
+[Wed Nov  4 18:33:58 2026]
+rule segment:
+    input: cases/sub-002.npz
+    output: results/sub-002/segment.npz
+    log: logs/segment/sub-002.log
+    jobid: 13
+    reason: Missing output files: results/sub-002/segment.npz
+    wildcards: case=sub-002
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule segment:
+    input: cases/sub-354.npz
+    output: results/sub-354/segment.npz
+    log: logs/segment/sub-354.log
+    jobid: 45
+    reason: Missing output files: results/sub-354/segment.npz
+    wildcards: case=sub-354
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule centreline:
+    input: cases/sub-354.npz
+    output: results/sub-354/centreline.npz
+    log: logs/centreline/sub-354.log
+    jobid: 46
+    reason: Missing output files: results/sub-354/centreline.npz
+    wildcards: case=sub-354
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule segment:
+    input: cases/sub-033.npz
+    output: results/sub-033/segment.npz
+    log: logs/segment/sub-033.log
+    jobid: 37
+    reason: Missing output files: results/sub-033/segment.npz
+    wildcards: case=sub-033
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule centreline:
+    input: cases/sub-033.npz
+    output: results/sub-033/centreline.npz
+    log: logs/centreline/sub-033.log
+    jobid: 38
+    reason: Missing output files: results/sub-033/centreline.npz
+    wildcards: case=sub-033
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule segment:
+    input: cases/sub-021.npz
+    output: results/sub-021/segment.npz
+    log: logs/segment/sub-021.log
+    jobid: 29
+    reason: Missing output files: results/sub-021/segment.npz
+    wildcards: case=sub-021
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule centreline:
+    input: cases/sub-006.npz
+    output: results/sub-006/centreline.npz
+    log: logs/centreline/sub-006.log
+    jobid: 22
+    reason: Missing output files: results/sub-006/centreline.npz
+    wildcards: case=sub-006
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule centreline:
+    input: cases/sub-021.npz
+    output: results/sub-021/centreline.npz
+    log: logs/centreline/sub-021.log
+    jobid: 30
+    reason: Missing output files: results/sub-021/centreline.npz
+    wildcards: case=sub-021
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule segment:
+    input: cases/sub-000.npz
+    output: results/sub-000/segment.npz
+    log: logs/segment/sub-000.log
+    jobid: 5
+    reason: Missing output files: results/sub-000/segment.npz
+    wildcards: case=sub-000
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule segment:
+    input: cases/sub-006.npz
+    output: results/sub-006/segment.npz
+    log: logs/segment/sub-006.log
+    jobid: 21
+    reason: Missing output files: results/sub-006/segment.npz
+    wildcards: case=sub-006
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule centreline:
+    input: cases/sub-000.npz
+    output: results/sub-000/centreline.npz
+    log: logs/centreline/sub-000.log
+    jobid: 6
+    reason: Missing output files: results/sub-000/centreline.npz
+    wildcards: case=sub-000
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule centreline:
+    input: cases/sub-002.npz
+    output: results/sub-002/centreline.npz
+    log: logs/centreline/sub-002.log
+    jobid: 14
+    reason: Missing output files: results/sub-002/centreline.npz
+    wildcards: case=sub-002
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule boundaries:
+    input: results/sub-354/centreline.npz
+    output: results/sub-354/boundaries.npz
+    log: logs/boundaries/sub-354.log
+    jobid: 47
+    reason: Missing output files: results/sub-354/boundaries.npz; Input files updated by another job: results/sub-354/centreline.npz
+    wildcards: case=sub-354
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule measure:
+    input: results/sub-033/segment.npz, results/sub-033/centreline.npz
+    output: results/sub-033/measure.npz
+    log: logs/measure/sub-033.log
+    jobid: 36
+    reason: Missing output files: results/sub-033/measure.npz; Input files updated by another job: results/sub-033/segment.npz, results/sub-033/centreline.npz
+    wildcards: case=sub-033
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule boundaries:
+    input: results/sub-033/centreline.npz
+    output: results/sub-033/boundaries.npz
+    log: logs/boundaries/sub-033.log
+    jobid: 39
+    reason: Missing output files: results/sub-033/boundaries.npz; Input files updated by another job: results/sub-033/centreline.npz
+    wildcards: case=sub-033
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule measure:
+    input: results/sub-021/segment.npz, results/sub-021/centreline.npz
+    output: results/sub-021/measure.npz
+    log: logs/measure/sub-021.log
+    jobid: 28
+    reason: Missing output files: results/sub-021/measure.npz; Input files updated by another job: results/sub-021/segment.npz, results/sub-021/centreline.npz
+    wildcards: case=sub-021
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule measure:
+    input: results/sub-002/segment.npz, results/sub-002/centreline.npz
+    output: results/sub-002/measure.npz
+    log: logs/measure/sub-002.log
+    jobid: 12
+    reason: Missing output files: results/sub-002/measure.npz; Input files updated by another job: results/sub-002/centreline.npz, results/sub-002/segment.npz
+    wildcards: case=sub-002
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule boundaries:
+    input: results/sub-021/centreline.npz
+    output: results/sub-021/boundaries.npz
+    log: logs/boundaries/sub-021.log
+    jobid: 31
+    reason: Missing output files: results/sub-021/boundaries.npz; Input files updated by another job: results/sub-021/centreline.npz
+    wildcards: case=sub-021
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule measure:
+    input: results/sub-006/segment.npz, results/sub-006/centreline.npz
+    output: results/sub-006/measure.npz
+    log: logs/measure/sub-006.log
+    jobid: 20
+    reason: Missing output files: results/sub-006/measure.npz; Input files updated by another job: results/sub-006/centreline.npz, results/sub-006/segment.npz
+    wildcards: case=sub-006
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule measure:
+    input: results/sub-000/segment.npz, results/sub-000/centreline.npz
+    output: results/sub-000/measure.npz
+    log: logs/measure/sub-000.log
+    jobid: 4
+    reason: Missing output files: results/sub-000/measure.npz; Input files updated by another job: results/sub-000/centreline.npz, results/sub-000/segment.npz
+    wildcards: case=sub-000
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule boundaries:
+    input: results/sub-006/centreline.npz
+    output: results/sub-006/boundaries.npz
+    log: logs/boundaries/sub-006.log
+    jobid: 23
+    reason: Missing output files: results/sub-006/boundaries.npz; Input files updated by another job: results/sub-006/centreline.npz
+    wildcards: case=sub-006
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule boundaries:
+    input: results/sub-000/centreline.npz
+    output: results/sub-000/boundaries.npz
+    log: logs/boundaries/sub-000.log
+    jobid: 7
+    reason: Missing output files: results/sub-000/boundaries.npz; Input files updated by another job: results/sub-000/centreline.npz
+    wildcards: case=sub-000
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule boundaries:
+    input: results/sub-002/centreline.npz
+    output: results/sub-002/boundaries.npz
+    log: logs/boundaries/sub-002.log
+    jobid: 15
+    reason: Missing output files: results/sub-002/boundaries.npz; Input files updated by another job: results/sub-002/centreline.npz
+    wildcards: case=sub-002
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule measure:
+    input: results/sub-354/segment.npz, results/sub-354/centreline.npz
+    output: results/sub-354/measure.npz
+    log: logs/measure/sub-354.log
+    jobid: 44
+    reason: Missing output files: results/sub-354/measure.npz; Input files updated by another job: results/sub-354/centreline.npz, results/sub-354/segment.npz
+    wildcards: case=sub-354
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule flow:
+    input: results/sub-021/measure.npz, results/sub-021/boundaries.npz
+    output: results/sub-021/lica_occluded/flow.npz
+    log: logs/flow/sub-021_lica_occluded.log
+    jobid: 33
+    reason: Missing output files: results/sub-021/lica_occluded/flow.npz; Input files updated by another job: results/sub-021/boundaries.npz, results/sub-021/measure.npz
+    wildcards: case=sub-021, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule flow:
+    input: results/sub-006/measure.npz, results/sub-006/boundaries.npz
+    output: results/sub-006/lica_occluded/flow.npz
+    log: logs/flow/sub-006_lica_occluded.log
+    jobid: 25
+    reason: Missing output files: results/sub-006/lica_occluded/flow.npz; Input files updated by another job: results/sub-006/boundaries.npz, results/sub-006/measure.npz
+    wildcards: case=sub-006, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule flow:
+    input: results/sub-021/measure.npz, results/sub-021/boundaries.npz
+    output: results/sub-021/baseline/flow.npz
+    log: logs/flow/sub-021_baseline.log
+    jobid: 27
+    reason: Missing output files: results/sub-021/baseline/flow.npz; Input files updated by another job: results/sub-021/boundaries.npz, results/sub-021/measure.npz
+    wildcards: case=sub-021, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule flow:
+    input: results/sub-002/measure.npz, results/sub-002/boundaries.npz
+    output: results/sub-002/lica_occluded/flow.npz
+    log: logs/flow/sub-002_lica_occluded.log
+    jobid: 17
+    reason: Missing output files: results/sub-002/lica_occluded/flow.npz; Input files updated by another job: results/sub-002/boundaries.npz, results/sub-002/measure.npz
+    wildcards: case=sub-002, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule flow:
+    input: results/sub-002/measure.npz, results/sub-002/boundaries.npz
+    output: results/sub-002/baseline/flow.npz
+    log: logs/flow/sub-002_baseline.log
+    jobid: 11
+    reason: Missing output files: results/sub-002/baseline/flow.npz; Input files updated by another job: results/sub-002/boundaries.npz, results/sub-002/measure.npz
+    wildcards: case=sub-002, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule flow:
+    input: results/sub-006/measure.npz, results/sub-006/boundaries.npz
+    output: results/sub-006/baseline/flow.npz
+    log: logs/flow/sub-006_baseline.log
+    jobid: 19
+    reason: Missing output files: results/sub-006/baseline/flow.npz; Input files updated by another job: results/sub-006/boundaries.npz, results/sub-006/measure.npz
+    wildcards: case=sub-006, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule flow:
+    input: results/sub-000/measure.npz, results/sub-000/boundaries.npz
+    output: results/sub-000/baseline/flow.npz
+    log: logs/flow/sub-000_baseline.log
+    jobid: 3
+    reason: Missing output files: results/sub-000/baseline/flow.npz; Input files updated by another job: results/sub-000/boundaries.npz, results/sub-000/measure.npz
+    wildcards: case=sub-000, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule flow:
+    input: results/sub-033/measure.npz, results/sub-033/boundaries.npz
+    output: results/sub-033/lica_occluded/flow.npz
+    log: logs/flow/sub-033_lica_occluded.log
+    jobid: 41
+    reason: Missing output files: results/sub-033/lica_occluded/flow.npz; Input files updated by another job: results/sub-033/boundaries.npz, results/sub-033/measure.npz
+    wildcards: case=sub-033, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule flow:
+    input: results/sub-354/measure.npz, results/sub-354/boundaries.npz
+    output: results/sub-354/lica_occluded/flow.npz
+    log: logs/flow/sub-354_lica_occluded.log
+    jobid: 49
+    reason: Missing output files: results/sub-354/lica_occluded/flow.npz; Input files updated by another job: results/sub-354/measure.npz, results/sub-354/boundaries.npz
+    wildcards: case=sub-354, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule flow:
+    input: results/sub-000/measure.npz, results/sub-000/boundaries.npz
+    output: results/sub-000/lica_occluded/flow.npz
+    log: logs/flow/sub-000_lica_occluded.log
+    jobid: 9
+    reason: Missing output files: results/sub-000/lica_occluded/flow.npz; Input files updated by another job: results/sub-000/boundaries.npz, results/sub-000/measure.npz
+    wildcards: case=sub-000, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule flow:
+    input: results/sub-033/measure.npz, results/sub-033/boundaries.npz
+    output: results/sub-033/baseline/flow.npz
+    log: logs/flow/sub-033_baseline.log
+    jobid: 35
+    reason: Missing output files: results/sub-033/baseline/flow.npz; Input files updated by another job: results/sub-033/boundaries.npz, results/sub-033/measure.npz
+    wildcards: case=sub-033, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule flow:
+    input: results/sub-354/measure.npz, results/sub-354/boundaries.npz
+    output: results/sub-354/baseline/flow.npz
+    log: logs/flow/sub-354_baseline.log
+    jobid: 43
+    reason: Missing output files: results/sub-354/baseline/flow.npz; Input files updated by another job: results/sub-354/measure.npz, results/sub-354/boundaries.npz
+    wildcards: case=sub-354, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule report:
+    input: results/sub-021/baseline/flow.npz, results/sub-021/measure.npz
+    output: results/sub-021/baseline/report.json
+    log: logs/report/sub-021_baseline.log
+    jobid: 26
+    reason: Missing output files: results/sub-021/baseline/report.json; Input files updated by another job: results/sub-021/baseline/flow.npz, results/sub-021/measure.npz
+    wildcards: case=sub-021, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule report:
+    input: results/sub-354/lica_occluded/flow.npz, results/sub-354/measure.npz
+    output: results/sub-354/lica_occluded/report.json
+    log: logs/report/sub-354_lica_occluded.log
+    jobid: 48
+    reason: Missing output files: results/sub-354/lica_occluded/report.json; Input files updated by another job: results/sub-354/lica_occluded/flow.npz, results/sub-354/measure.npz
+    wildcards: case=sub-354, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule report:
+    input: results/sub-021/lica_occluded/flow.npz, results/sub-021/measure.npz
+    output: results/sub-021/lica_occluded/report.json
+    log: logs/report/sub-021_lica_occluded.log
+    jobid: 32
+    reason: Missing output files: results/sub-021/lica_occluded/report.json; Input files updated by another job: results/sub-021/lica_occluded/flow.npz, results/sub-021/measure.npz
+    wildcards: case=sub-021, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule report:
+    input: results/sub-000/lica_occluded/flow.npz, results/sub-000/measure.npz
+    output: results/sub-000/lica_occluded/report.json
+    log: logs/report/sub-000_lica_occluded.log
+    jobid: 8
+    reason: Missing output files: results/sub-000/lica_occluded/report.json; Input files updated by another job: results/sub-000/measure.npz, results/sub-000/lica_occluded/flow.npz
+    wildcards: case=sub-000, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule report:
+    input: results/sub-033/baseline/flow.npz, results/sub-033/measure.npz
+    output: results/sub-033/baseline/report.json
+    log: logs/report/sub-033_baseline.log
+    jobid: 34
+    reason: Missing output files: results/sub-033/baseline/report.json; Input files updated by another job: results/sub-033/baseline/flow.npz, results/sub-033/measure.npz
+    wildcards: case=sub-033, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule report:
+    input: results/sub-002/baseline/flow.npz, results/sub-002/measure.npz
+    output: results/sub-002/baseline/report.json
+    log: logs/report/sub-002_baseline.log
+    jobid: 10
+    reason: Missing output files: results/sub-002/baseline/report.json; Input files updated by another job: results/sub-002/baseline/flow.npz, results/sub-002/measure.npz
+    wildcards: case=sub-002, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule report:
+    input: results/sub-000/baseline/flow.npz, results/sub-000/measure.npz
+    output: results/sub-000/baseline/report.json
+    log: logs/report/sub-000_baseline.log
+    jobid: 2
+    reason: Missing output files: results/sub-000/baseline/report.json; Input files updated by another job: results/sub-000/measure.npz, results/sub-000/baseline/flow.npz
+    wildcards: case=sub-000, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule report:
+    input: results/sub-002/lica_occluded/flow.npz, results/sub-002/measure.npz
+    output: results/sub-002/lica_occluded/report.json
+    log: logs/report/sub-002_lica_occluded.log
+    jobid: 16
+    reason: Missing output files: results/sub-002/lica_occluded/report.json; Input files updated by another job: results/sub-002/measure.npz, results/sub-002/lica_occluded/flow.npz
+    wildcards: case=sub-002, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule report:
+    input: results/sub-006/baseline/flow.npz, results/sub-006/measure.npz
+    output: results/sub-006/baseline/report.json
+    log: logs/report/sub-006_baseline.log
+    jobid: 18
+    reason: Missing output files: results/sub-006/baseline/report.json; Input files updated by another job: results/sub-006/baseline/flow.npz, results/sub-006/measure.npz
+    wildcards: case=sub-006, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule report:
+    input: results/sub-354/baseline/flow.npz, results/sub-354/measure.npz
+    output: results/sub-354/baseline/report.json
+    log: logs/report/sub-354_baseline.log
+    jobid: 42
+    reason: Missing output files: results/sub-354/baseline/report.json; Input files updated by another job: results/sub-354/baseline/flow.npz, results/sub-354/measure.npz
+    wildcards: case=sub-354, condition=baseline
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule report:
+    input: results/sub-033/lica_occluded/flow.npz, results/sub-033/measure.npz
+    output: results/sub-033/lica_occluded/report.json
+    log: logs/report/sub-033_lica_occluded.log
+    jobid: 40
+    reason: Missing output files: results/sub-033/lica_occluded/report.json; Input files updated by another job: results/sub-033/lica_occluded/flow.npz, results/sub-033/measure.npz
+    wildcards: case=sub-033, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule report:
+    input: results/sub-006/lica_occluded/flow.npz, results/sub-006/measure.npz
+    output: results/sub-006/lica_occluded/report.json
+    log: logs/report/sub-006_lica_occluded.log
+    jobid: 24
+    reason: Missing output files: results/sub-006/lica_occluded/report.json; Input files updated by another job: results/sub-006/lica_occluded/flow.npz, results/sub-006/measure.npz
+    wildcards: case=sub-006, condition=lica_occluded
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule cohort:
+    input: results/sub-000/baseline/report.json, results/sub-000/lica_occluded/report.json, results/sub-002/baseline/report.json, results/sub-002/lica_occluded/report.json, results/sub-006/baseline/report.json, results/sub-006/lica_occluded/report.json, results/sub-021/baseline/report.json, results/sub-021/lica_occluded/report.json, results/sub-033/baseline/report.json, results/sub-033/lica_occluded/report.json, results/sub-354/baseline/report.json, results/sub-354/lica_occluded/report.json
+    output: results/cohort.csv
+    log: logs/cohort.log
+    jobid: 1
+    reason: Missing output files: results/cohort.csv; Input files updated by another job: results/sub-006/lica_occluded/report.json, results/sub-002/lica_occluded/report.json, results/sub-354/lica_occluded/report.json, results/sub-021/lica_occluded/report.json, results/sub-000/lica_occluded/report.json, results/sub-002/baseline/report.json, results/sub-006/baseline/report.json, results/sub-033/baseline/report.json, results/sub-033/lica_occluded/report.json, results/sub-354/baseline/report.json, results/sub-021/baseline/report.json, results/sub-000/baseline/report.json
+    resources: tmpdir=/tmp
+[Wed Nov  4 18:33:58 2026]
+rule all:
+    input: results/cohort.csv
+    jobid: 0
+    reason: Input files updated by another job: results/cohort.csv
+    resources: tmpdir=/tmp
+Job stats:
+job           count
+----------  -------
+centreline        6
+segment           6
+boundaries        6
+measure           6
+flow             12
+report           12
+cohort            1
+all               1
+total            50
+
+Reasons:
+    (check individual jobs above for details)
+    input files updated by another job:
+        all, boundaries, cohort, flow, measure, report
+    output files have to be generated:
+        boundaries, centreline, cohort, flow, measure, report, segment
+This was a dry-run (flag -n). The order of jobs does not reflect the order of execution.

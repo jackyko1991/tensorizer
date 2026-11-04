@@ -1,0 +1,60 @@
+# Circle of Willis cohort: segment → centreline → measure → boundaries → flow → report → cohort.
+#
+# Each job runs ONE rule for ONE case (and condition) with the same tensor functions that the tensor engine
+# (solve.run_engine) calls ONCE per rule over the whole cohort. Run offline from this folder:
+#     PYTHONPATH=<repository root> snakemake --cores 1
+# The shell stamps the start and end of every job (seconds since the epoch) in its log, for the Gantt chart.
+
+CASES = ["sub-000", "sub-002", "sub-006", "sub-021", "sub-033", "sub-354"]
+CONDITIONS = ["baseline", "lica_occluded"]
+
+
+def job(name):
+    return ("date +%s.%N > {log} && python -m problems.medical.cow_workflow_dag.workflow " + name
+            + " {output} {input} && date +%s.%N >> {log}")
+
+
+rule all:
+    input: "results/cohort.csv"
+
+rule segment:
+    input: "cases/{case}.npz"
+    output: "results/{case}/segment.npz"
+    log: "logs/segment/{case}.log"
+    shell: job("segment")
+
+rule centreline:
+    input: "cases/{case}.npz"
+    output: "results/{case}/centreline.npz"
+    log: "logs/centreline/{case}.log"
+    shell: job("centreline")
+
+rule measure:
+    input: "results/{case}/segment.npz", "results/{case}/centreline.npz"
+    output: "results/{case}/measure.npz"
+    log: "logs/measure/{case}.log"
+    shell: job("measure")
+
+rule boundaries:
+    input: "results/{case}/centreline.npz"
+    output: "results/{case}/boundaries.npz"
+    log: "logs/boundaries/{case}.log"
+    shell: job("boundaries")
+
+rule flow:
+    input: "results/{case}/measure.npz", "results/{case}/boundaries.npz"
+    output: "results/{case}/{condition}/flow.npz"
+    log: "logs/flow/{case}_{condition}.log"
+    shell: job("flow")
+
+rule report:
+    input: "results/{case}/{condition}/flow.npz", "results/{case}/measure.npz"
+    output: "results/{case}/{condition}/report.json"
+    log: "logs/report/{case}_{condition}.log"
+    shell: job("report")
+
+rule cohort:
+    input: expand("results/{case}/{condition}/report.json", case=CASES, condition=CONDITIONS)
+    output: "results/cohort.csv"
+    log: "logs/cohort.log"
+    shell: job("cohort")

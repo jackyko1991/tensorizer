@@ -2,7 +2,7 @@ title: 'Hopfield networks: classic and modern associative memory'
 category: ai
 level: advanced
 order: 1
-tags: [nobel:physics:2024, boltzmann:2022]  # Hopfield and Hinton, artificial neural networks
+tags: [nobel:physics:2024, boltzmann:2022, series:ai-milestones:1]  # Hopfield and Hinton, artificial neural networks
 summary: >
   A memory that completes a picture from a corrupted or half-hidden version. The classic Hopfield network stores
   binary patterns in Hebbian weights $W_{ij}$ and slides downhill in an energy; it holds at most about $0.138\,N$

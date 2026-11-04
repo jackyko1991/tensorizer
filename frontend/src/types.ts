@@ -77,7 +77,7 @@ export interface Dataset {
   /** Path in the problem folder, e.g. data/s2.csv. */
   name: string;
   /** Which renderer shows it: table (csv/tsv) and text today; image and array files get the info card only. */
-  kind: "table" | "text" | "image" | "array" | "mesh" | "scene" | "other";
+  kind: "table" | "text" | "image" | "images" | "array" | "mesh" | "scene" | "other";
   /** Under generated/, for assetUrl(). */
   url: string;
   size: number;
@@ -87,6 +87,21 @@ export interface Dataset {
   rows: number;
   /** Result meshes: what the vertex colours mean (from <stem>.json next to the mesh). */
   legend?: { label: string; unit?: string; min: number; max: number; cmap?: string };
+  /** Image datasets (.npz): each image array (e.g. x_train, x_test) with its shape and class counts by label. */
+  images?: ImageSetMeta[];
+}
+
+export interface ImageSetMeta {
+  name: string;
+  count: number;
+  height: number;
+  width: number;
+  channels: number;
+  dtype: string;
+  /** The paired labels array, or null. */
+  labels: string | null;
+  /** Images per label value. */
+  classes: Record<string, number>;
 }
 
 export interface DataFile {

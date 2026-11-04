@@ -40,7 +40,7 @@ export default function QueueModal({ onClose }: { onClose: () => void }) {
         <div className="flex items-center justify-between border-b border-gray-200 px-4 py-2.5">
           <h2 className="text-sm font-semibold">
             {t("q.title")}{" "}
-            <span className="font-normal text-gray-500">/ {t(local ? "be.tab.local" : "be.shared")}</span>
+            <span className="font-normal text-gray-500">/ {t(local ? "be.tab.local" : "be.tab.remote")}</span>
           </h2>
           <button
             onClick={onClose}

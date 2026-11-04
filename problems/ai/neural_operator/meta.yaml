@@ -2,6 +2,7 @@ title: 'Fourier neural operator: learning the Burgers solution operator'
 category: ai
 level: advanced
 order: 3
+tags: [series:scientific-ml:2]
 summary: >
   Instead of solving one equation, a Fourier neural operator (FNO) learns the whole map $u_0(x) \mapsto u(x, T)$ of
   the viscous Burgers equation $u_t + u\,u_x = \nu\,u_{xx}$ from pairs produced by a spectral solver. Its key layer is

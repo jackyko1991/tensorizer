@@ -1,15 +1,18 @@
 import { AGENT_STRINGS } from "./strings.agent";
+import { JobGone, readJobEvents, visitorId, type JobEvent } from "./jobs";
+import { activeServer, authHeaderFor, getToken } from "./servers";
 import { WORKSPACE_STRINGS } from "./strings.workspace";
 import type { Manifest, Params, Problem } from "./types";
 
-// Where runs go (chosen in the Backend panel, kept in localStorage). "server": VITE_API_URL (the public Hugging Face
-// Space on GitHub Pages), else the same origin (Vite proxies /api in dev; uvicorn serves both in `pixi run serve`).
-// "local": a runner on the visitor's own machine at an address they can change, reachable from the public site
-// because it allows Private Network Access.
-export type BackendChoice = "server" | "local";
+// Where runs go (chosen in the Backend panel, kept in localStorage). There is no shared server:
+// "local": a runner on the visitor's own machine at a port they can change (reachable from the public site because
+// it allows Private Network Access; `pixi run api` listens on 8000, `python -m tensorizer_physics.serve` on 8765).
+// "remote": one of the visitor's own servers (servers.ts), with its pairing token sent as `Authorization: Bearer`.
+export type BackendChoice = "local" | "remote";
 export type Device = "auto" | "cpu" | "cuda" | "mps";
 export const DEFAULT_LOCAL_PORT = 8000;
-const SERVER_API = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
+/** The runner's own default port (python -m tensorizer_physics.serve, the server installer): tried after 8000. */
+export const RUNNER_PORT = 8765;
 const CHOICE_KEY = "tensorizer.backend";
 const PORT_KEY = "tensorizer.localPort";
 const OLD_URL_KEY = "tensorizer.localUrl"; // before the port-only field
@@ -30,6 +33,9 @@ function store(key: string, value: string) {
   }
 }
 
+/** True once the visitor chose a port (otherwise 8000 is tried, then 8765). */
+export const localPortSaved = () => stored(PORT_KEY) !== null || stored(OLD_URL_KEY) !== null;
+
 /** The local runner's port: Local always means this computer, so only the port can change. */
 export function localPort(): number {
   const saved = Number(stored(PORT_KEY) ?? /:(\d+)/.exec(stored(OLD_URL_KEY) ?? "")?.[1]);
@@ -49,20 +55,36 @@ export function deviceChoice(): Device {
 export const setDeviceChoice = (d: Device) => store(DEVICE_KEY, d);
 const runDevice = (): Device => (backendChoice() === "local" ? deviceChoice() : "auto");
 
+/** "remote" only while an own server is chosen and still in the list; otherwise this device (also for the old
+ *  "server" choice, the shared demo that no longer exists). */
 export function backendChoice(): BackendChoice {
-  try {
-    return localStorage.getItem(CHOICE_KEY) === "local" ? "local" : "server";
-  } catch {
-    return "server";
-  }
+  return stored(CHOICE_KEY) === "remote" && activeServer() ? "remote" : "local";
 }
+
+const baseFor = (choice: BackendChoice) => (choice === "remote" ? activeServer()!.url : localAddress());
 
 export function setBackendChoice(choice: BackendChoice) {
   store(CHOICE_KEY, choice);
-  API = choice === "local" ? localAddress() : SERVER_API;
+  API = baseFor(backendChoice());
 }
 
-let API = backendChoice() === "local" ? localAddress() : SERVER_API;
+/** Look again at the active server (after it was edited, removed or its token changed). */
+export function refreshBackend() {
+  API = baseFor(backendChoice());
+}
+
+let API = baseFor(backendChoice());
+
+/** fetch to the current backend: adds the pairing token for the visitor's own remote server, and only for URLs
+ *  under that server's address (a header already set, e.g. a connector token, is left alone). */
+function call(url: string, init: RequestInit = {}): Promise<Response> {
+  const server = backendChoice() === "remote" ? activeServer() : null;
+  const auth = server ? authHeaderFor(url, server, getToken(server.id)) : null;
+  if (!auth) return fetch(url, init);
+  const headers = new Headers(init.headers);
+  if (!headers.has("Authorization")) headers.set("Authorization", auth);
+  return fetch(url, { ...init, headers });
+}
 const GENERATED = `${import.meta.env.BASE_URL}generated/`;
 
 export const generatedUrl = (path: string) => GENERATED + path;
@@ -86,7 +108,12 @@ export interface Health {
   gpu?: string | null;
   /** an NVIDIA GPU this runner's PyTorch can't use (a CPU-only build) */
   nvidia?: string | null;
+  /** what the runner offers; "jobs" = detached runs (POST /api/jobs) that keep going after the page closes */
+  features?: string[];
 }
+
+export const hasJobs = (h: Health | null | undefined | "checking") =>
+  !!h && h !== "checking" && !!h.features?.includes("jobs");
 
 /** Check a runner at an address without switching to it (the Backend panel's Test). */
 export async function probe(base: string): Promise<Health | null> {
@@ -116,7 +143,7 @@ export interface QueueDetails {
 
 export async function queueDetails(): Promise<QueueDetails | null> {
   try {
-    const res = await fetch(`${API}/api/queue`);
+    const res = await call(`${API}/api/queue`);
     return res.ok ? await res.json() : null;
   } catch {
     return null;
@@ -125,16 +152,20 @@ export async function queueDetails(): Promise<QueueDetails | null> {
 
 /** Drop the caller's own waiting or stuck runs; returns how many. */
 export async function cancelMyRuns(): Promise<number> {
-  const res = await fetch(`${API}/api/queue/cancel`, { method: "POST" });
+  const res = await call(`${API}/api/queue/cancel`, { method: "POST" });
   return res.ok ? (await res.json()).cancelled : 0;
 }
 
 export async function health(): Promise<Health | null> {
   try {
-    const res = await fetch(`${API}/api/health`);
+    const res = await call(`${API}/api/health`);
     return res.ok ? await res.json() : null;
   } catch {
-    return null;
+    // This device, no port chosen yet: the runner's own default port (8765) when 8000 doesn't answer
+    if (backendChoice() !== "local" || localPortSaved()) return null;
+    const other = await probe(localAddress(RUNNER_PORT));
+    if (other) setLocalPort(RUNNER_PORT);
+    return other;
   }
 }
 
@@ -194,7 +225,7 @@ export async function runProblemStream(
   current = controller;
   try {
     const path = typeof id === "string" ? `/api/run-stream/${id}` : `/api/workspace/${id.session}/run-stream`;
-    res = await fetch(`${API}${path}`, {
+    res = await call(`${API}${path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ params, files, verbose, device: runDevice() }),
@@ -231,6 +262,157 @@ export async function runProblemStream(
   throw new RunFailed("the run ended without a result");
 }
 
+// --- Detached jobs: runs that keep going after the page closes (POST /api/jobs) ------------------------------------
+
+export type JobStatus = "queued" | "running" | "done" | "failed" | "cancelled";
+export interface JobInfo {
+  id: string;
+  /** library problem id, "category/slug" */
+  problem: string;
+  status: JobStatus;
+  /** epoch seconds */
+  created: number;
+  started: number | null;
+  finished: number | null;
+  position: number | null;
+  events: number;
+  error: string | null;
+  result: { output: string; cached: boolean; tests: TestTally | null } | null;
+}
+export const jobActive = (j: JobInfo) => j.status === "queued" || j.status === "running";
+
+const visitorHeaders = (json = false): Record<string, string> => ({
+  "X-Visitor": visitorId(),
+  ...(json ? { "Content-Type": "application/json" } : {}),
+});
+/** Tell the Jobs indicator to look again (a job was started or cancelled on this page). */
+export const JOBS_CHANGED = "tensorizer:jobs-changed";
+const jobsChanged = () => window.dispatchEvent(new Event(JOBS_CHANGED));
+
+/** Start a run that outlives the page; returns its job id. */
+export async function startJob(
+  id: string,
+  params: Params,
+  files: Record<string, string> | undefined,
+  verbose: boolean,
+): Promise<string> {
+  const [category, slug] = id.split("/");
+  let res: Response;
+  try {
+    res = await call(`${API}/api/jobs`, {
+      method: "POST",
+      headers: visitorHeaders(true),
+      body: JSON.stringify({ category, slug, params, files, verbose, device: runDevice() }),
+    });
+  } catch {
+    throw new RunFailed(unreachable());
+  }
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new RunFailed(typeof body.detail === "string" ? body.detail : `request failed (${res.status})`);
+  jobsChanged();
+  return body.job_id;
+}
+
+/** The visitor's own jobs, newest first (null: the backend can't be reached or has no jobs). */
+export async function listJobs(): Promise<JobInfo[] | null> {
+  try {
+    const res = await call(`${API}/api/jobs`, { headers: visitorHeaders() });
+    return res.ok ? (await res.json()).jobs : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function cancelJob(id: string): Promise<boolean> {
+  try {
+    const res = await call(`${API}/api/jobs/${id}/cancel`, { method: "POST", headers: visitorHeaders() });
+    jobsChanged();
+    return res.ok && (await res.json()).cancelled;
+  } catch {
+    return false;
+  }
+}
+
+/** Follow a job's output from event `from` (0 = replay everything), reconnecting when the stream breaks, with the
+ *  same callbacks as runProblemStream. Aborting `signal` stops following; the job itself keeps running. */
+export async function jobEvents(
+  jobId: string,
+  from: number,
+  onLine: (line: LineEvent) => void,
+  onQueued: (position: number) => void = () => {},
+  onProgress: (fraction: number) => void = () => {},
+  signal?: AbortSignal,
+): Promise<RunResult> {
+  let final: JobEvent;
+  try {
+    final = await readJobEvents({
+      from,
+      signal,
+      open: (n, s) => call(`${API}/api/jobs/${jobId}/events?from=${n}`, { headers: visitorHeaders(), signal: s }),
+      onEvent: (event) => {
+        if (event.type === "line") onLine({ text: String(event.text), replace: !!event.replace });
+        else if (event.type === "queued") onQueued(Number(event.position));
+        else if (event.type === "progress") {
+          const total = Number(event.total);
+          onProgress(total ? Number(event.done) / total : 0);
+        }
+      },
+    });
+  } catch (e) {
+    if (signal?.aborted) throw new RunFailed("cancelled");
+    if (e instanceof JobGone) throw new RunFailed(e.message);
+    throw interrupted(WORKSPACE_STRINGS["ws.streamCut"], e);
+  }
+  jobsChanged();
+  if (final.type === "error") throw new RunFailed(String(final.message), String(final.console ?? ""));
+  return { ...(final as unknown as RunResult), output: API + String(final.output) };
+}
+
+/** Start a job and follow it: runProblemStream's behaviour, but the run survives closing the page.
+ *  `onJob` gets the id as soon as the job exists. */
+export async function runProblemJob(
+  id: string,
+  params: Params,
+  files: Record<string, string> | undefined,
+  verbose: boolean,
+  onLine: (line: LineEvent) => void,
+  onQueued: (position: number) => void = () => {},
+  onProgress: (fraction: number) => void = () => {},
+  onJob: (jobId: string) => void = () => {},
+  signal?: AbortSignal,
+): Promise<RunResult> {
+  const jobId = await startJob(id, params, files, verbose);
+  onJob(jobId);
+  const controller = new AbortController(); // the queue window's Cancel stops following at once (abortMyRun)
+  current = controller;
+  const both = signal ? AbortSignal.any([signal, controller.signal]) : controller.signal;
+  return jobEvents(jobId, 0, onLine, onQueued, onProgress, both);
+}
+
+// The Jobs panel's "open": the problem page shows that job's output (now, or once it has opened).
+export const OPEN_JOB = "tensorizer:open-job";
+let openRequest: { id: string; problem: string } | null = null;
+export function requestOpenJob(job: JobInfo) {
+  openRequest = { id: job.id, problem: job.problem };
+  window.dispatchEvent(new Event(OPEN_JOB));
+}
+/** The job the Jobs panel asked to show for this problem, once. */
+export function takeOpenRequest(problem: string): string | null {
+  if (openRequest?.problem !== problem) return null;
+  const id = openRequest.id;
+  openRequest = null;
+  return id;
+}
+
+// Jobs whose outcome this browser already showed: a reopened problem page shows a job that finished while the page
+// was closed, but not every old one again.
+const SEEN_KEY = "tensorizer.jobsSeen";
+export const jobSeen = (id: string) => (stored(SEEN_KEY) ?? "").split(",").includes(id);
+export function markJobSeen(id: string) {
+  const ids = (stored(SEEN_KEY) ?? "").split(",").filter((x) => x && x !== id);
+  store(SEEN_KEY, [...ids.slice(-49), id].join(","));
+}
+
 export async function runProblem(
   id: string,
   params: Params,
@@ -239,7 +421,7 @@ export async function runProblem(
 ): Promise<RunResult> {
   let res: Response;
   try {
-    res = await fetch(`${API}/api/run/${id}`, {
+    res = await call(`${API}/api/run/${id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ params, files, verbose, device: runDevice() }),
@@ -268,7 +450,7 @@ function interrupted(row: readonly string[], cause: unknown): RunFailed {
 function unreachable(): string {
   return backendChoice() === "local"
     ? `can't reach this computer's runner at ${localAddress()}: start it (see ⚙ Backend → Local)`
-    : "can't reach the backend — the server may be waking up; try again in a minute";
+    : `can't reach your server at ${API}: check it is running and your VPN or tunnel is up (⚙ Backend → Remote → Test connection)`;
 }
 
 // --- Agent (AI Assistant: Local | Cloud | API) ------------------------------------------------------------------
@@ -304,7 +486,7 @@ export interface AgentStatus {
 
 export async function agentStatus(): Promise<AgentStatus | null> {
   try {
-    const res = await fetch(`${API}/api/agent/status`);
+    const res = await call(`${API}/api/agent/status`);
     return res.ok ? await res.json() : null;
   } catch {
     return null;
@@ -325,7 +507,7 @@ export interface FoundAgent {
 export async function scanAgents(): Promise<FoundAgent[]> {
   let res: Response;
   try {
-    res = await fetch(`${API}/api/agents/scan`, { method: "POST" });
+    res = await call(`${API}/api/agents/scan`, { method: "POST" });
   } catch {
     throw new RunFailed(unreachable());
   }
@@ -378,7 +560,7 @@ export async function agentChat(
   if (apiKey) headers["X-Agent-Key"] = apiKey;
   let res: Response;
   try {
-    res = await fetch(`${API}/api/agents/chat`, {
+    res = await call(`${API}/api/agents/chat`, {
       method: "POST",
       headers,
       body: JSON.stringify(body),
@@ -422,7 +604,7 @@ export interface Connector {
 export async function createConnector(previous: string | null): Promise<Connector> {
   let res: Response;
   try {
-    res = await fetch(`${API}/api/agents/connector`, {
+    res = await call(`${API}/api/agents/connector`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ previous }),
@@ -517,7 +699,7 @@ export function assetUrl(path: string): string {
 
 /** A blank new problem in the Workspace (a copy of the template), to edit and run by hand. */
 export async function newWorkspace(): Promise<Problem> {
-  const res = await fetch(`${API}/api/workspace/new`, { method: "POST" });
+  const res = await call(`${API}/api/workspace/new`, { method: "POST" });
   if (!res.ok) throw new RunFailed(`request failed (${res.status})`);
   return res.json();
 }
@@ -530,7 +712,7 @@ export type WsEntry = Problem & { session: string; meta: string };
 async function wsPost<T>(path: string, body?: unknown): Promise<T> {
   let res: Response;
   try {
-    res = await fetch(`${API}/api/ws${path}`, {
+    res = await call(`${API}/api/ws${path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: body === undefined ? undefined : JSON.stringify(body),
@@ -558,7 +740,7 @@ export const wsSync = (session: string | null, files: Record<string, string>, da
 export async function wsPutData(session: string, name: string, blob: Blob): Promise<void> {
   let res: Response;
   try {
-    res = await fetch(`${API}/api/ws/${session}/data/${encodeURIComponent(name)}`, { method: "PUT", body: blob });
+    res = await call(`${API}/api/ws/${session}/data/${encodeURIComponent(name)}`, { method: "PUT", body: blob });
   } catch {
     throw new RunFailed(unreachable());
   }
@@ -597,7 +779,7 @@ export async function wsRunStream(
 ): Promise<RunResult> {
   let res: Response;
   try {
-    res = await fetch(`${API}/api/ws/${session}/run-stream`, {
+    res = await call(`${API}/api/ws/${session}/run-stream`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ params, verbose, device: runDevice() }),

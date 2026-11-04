@@ -1,0 +1,120 @@
+title: 'Train apart, stitch by a DAG tensor: a CNN and a tiny LM'
+category: ai
+level: advanced
+order: 6
+summary: >
+  A small CNN learns MNIST digits and a tiny character-level GPT learns sentences such as "three+two=five.",
+  each on its own. One DAG edge then joins them: a connector turns the CNN's features into soft tokens that replace
+  the first word, so the LM answers "[image of a 3]+two=" with "five". The whole training process is itself a
+  tensor DAG (rules on levels, a max-plus critical path, one batched call per rule over the seeds), and it is compared
+  with the same network trained end to end on the joint task alone, with the same compute (multiply-adds). The
+  stitching edge is also written as a mixture-of-experts layer with a fixed router, and a learned router is put to
+  the test.
+animated: true
+vector_form: 'X^0 = G_{\mathrm{img}} \odot C\big(\mathrm{CNN}(\mathrm{image})\big) + G_{\mathrm{txt}} \odot \mathrm{Tok}[\mathrm{text}],\qquad z = \mathrm{LM}(X^0 + P),\qquad \ell_r = \max_{s} (A_{\mathrm{rule}})_{rs}(\ell_s + 1),\qquad t = d \oplus (A_{\mathrm{rule}} \otimes t)'
+index_form: 'q_{mne} = \mathrm{softmax}_e\,\mathrm{CNN}_m(x_{mn}) \qquad c_{mntc} = \mathrm{GELU}(q_{mne}W^1_{mef} + S_{mtf})\,W^2_{mfc} + b^2_{mc} \qquad X^0_{mntc} = G_{mntx}\,Y^x_{mntc} \qquad \mathcal L_m = -\frac{1}{|\mu_m|}\sum_{n,t}\mu_{mnt}\log \mathrm{softmax}_v z_{mntv}[y_{mnt}]'
+translation:
+  - {symbol: 'A_{\mathrm{rule}}', code: 'rule_graph(parse_snakefile(training.smk))', shape: '(R, R)', meaning: 'rule $s$ reads what rule $r$ writes; the training process parsed from data/training.smk with the Circle of Willis problem''s parser'}
+  - {symbol: 'A = \sum A_{\mathrm{rule}} \otimes M', code: 'dag.job_adjacency(A_rule, axes, sizes)', shape: '(J, J)', meaning: 'job graph over the wildcards seed and $n$: a rule without $n$ broadcasts to every $n$ ($I \otimes \mathbb 1$), evaluate gathers all ($\mathbb 1^\top$)'}
+  - {symbol: '\ell_r', code: 'dag.levels(A_rule)', shape: '(R,)', meaning: 'level of each rule: train_cnn, train_lm and the monolith on 0, the connector on 1, fine-tune and router on 2, evaluate on 3'}
+  - {symbol: 't = d \oplus (A \otimes t)', code: 'dag.finish_times(A_rule, seconds)', shape: '(R,)', meaning: 'max-plus finish times from the measured rule durations; $\max t$ is the critical path'}
+  - {symbol: 'q_{mne}', code: 'cnn_output(x, w)', shape: '(M, N, 10)', meaning: 'the CNN''s ten digit probabilities for each image; the model axis $m$ becomes the groups of one grouped convolution per layer'}
+  - {symbol: 'c_{mntc}', code: 'connector(q, slots, w)', shape: '(M, P, d)', meaning: 'the DAG edge: digit probabilities plus a slot vector $S_t$ → an LM input vector at position $t$; the $K = 5$ soft tokens replace the hidden first word'}
+  - {symbol: 'G_{mntx}', code: 'route_fixed(...), route_learned(r, w)', shape: '(M, N, T, 2)', meaning: 'router: one-hot by data type (image slot or letter), or a learned Switch top-1 softmax over the position features'}
+  - {symbol: 'X^0 = G_{mntx}Y^x_{mntc}', code: "einsum('mntx,xmntc->mntc', G, Y)", shape: '(M, N, T, d)', meaning: 'repeated $x$ ⇒ summed: the combine of the MoE layer; each expert $Y^x$ is computed only on its dispatched group'}
+  - {symbol: 'z_{mntv}', code: 'lm_logits(X0, w)', shape: '(M, N, T, V)', meaning: 'next-letter logits of the tiny GPT (einsum attention with a model axis, from chain_of_thought)'}
+  - {symbol: '\mathcal L_m', code: 'masked_ce(z, y, mask)', shape: '(M,)', meaning: 'per-model loss on the text after the prefix (nats); summing the $M$ losses gives every model its own gradient'}
+notes: >
+  Idea. Networks can be trained separately, then connected through a DAG tensor, then optimised globally, and the
+  whole process can itself be controlled by the DAG tensor. The idea is Jacky Ka Long Ko's; this problem tests it on a
+  small CNN and a tiny character-level LM, deliberately not as a vision-language model trained jointly from scratch,
+  and compares it with exactly that non-DAG alternative.
+
+  What is new and what is not. Building a multimodal model from a separately pretrained image encoder, a pretrained
+  LM and a small learned connector is how LLaVA (Liu et al. 2023, a linear or MLP projection into the LM's token
+  space) and BLIP-2 (Li et al. 2023, the Q-Former between a frozen image encoder and a frozen LLM) are made; Frozen
+  (Tsimpoukelli et al. 2021) feeds an image to a frozen LM as a soft prefix, as here; and model stitching (Lenc and
+  Vedaldi, CVPR 2015, arXiv 2014; Bansal et al. 2021) joins two trained networks with a small trainable layer. What
+  this problem adds is the orchestration: the model graph and the training process are both run by the tensor DAG
+  engine of the Circle of Willis workflow problem (rule graph, Kronecker job graph, boolean levels, max-plus critical
+  path), and the DAG-built model is measured against a monolith.
+
+  Task and models. A CNN (two 5×5 convolutions, 8474 weights) learns the ten digits from 3000 MNIST images. A
+  two-layer GPT (d = 32, four heads, 27 543 weights, einsum attention with a model axis from chain_of_thought) learns
+  the 300 sentences "a op b = r." with op in +, −, × mod 10, the digits written as words ("three+two=five.", the
+  first word right-aligned in a 5-letter slot). The joint task gives an MNIST test image of a and the text "+two=";
+  the operand word is not in the text. The DAG edge is a connector (3808 weights): from the CNN's ten digit
+  probabilities $q$ and a slot vector $S_t$ it makes $K = 5$ soft tokens $c_t = \mathrm{GELU}(qW_1 + S_t)W_2 + b_2$
+  that replace the operand slot at the LM input. (Feeding the CNN's penultimate features instead learned much more
+  slowly in trials: about 0.25 joint accuracy after 100 connector steps against about 0.6.) Accuracy is the share of
+  test examples whose answer letters and full stop are all the LM's top choice given the true prefix, which is
+  exactly what greedy decoding writes.
+
+  The training process as a DAG. data/training.smk lists the rules; the engine parses it with the Circle of Willis
+  parser and runs it level by level, each rule as ONE batched call over its models on a stacked model axis (seed ×
+  joint-set size $n$): level 0 train_cnn ∥ train_lm ∥ train_monolith; level 1 train_connector (CNN and LM frozen,
+  broadcast from seed to (seed, $n$) by the $I \otimes \mathbb 1$ block); level 2 global_finetune (everything, end to
+  end through the edge, at a 100 times smaller learning rate) ∥ two learned routers; level 3 evaluate. With 2 seeds
+  and 4 sizes: 8 rules, 45 jobs, 84 job edges, $A$ nilpotent. The tests check the levels, that a cycle is refused,
+  that two seeds trained in one stack give the same losses as each trained alone (Adam is elementwise, clipping is
+  per model) and that one model's loss sends zero gradient to the others.
+
+  The baseline. The monolith is the same CNN + connector + LM (39 825 weights), randomly initialised and trained end
+  to end on the joint examples only. Its budget is matched in multiply-adds per model: the DAG pipeline's 150 CNN, 600
+  LM, 150 connector and 80 fine-tune steps (batch 32) cost as much as 682 joint steps, which the monolith gets
+  (counting each pretraining in full for every model, although in the DAG one pretrained CNN and LM serve all four
+  values of $n$).
+
+  Results (2 seeds, 1000 test images, chance 0.1, CPU). Multithreaded float reductions make repeated runs differ by
+  a few points, so the figures below are the range of the seed-mean over four full runs; results/stages.csv holds the
+  exact numbers of the bundled run. Alone, the CNN reads 0.89 of the test digits and the LM completes 0.97 to 0.99 of
+  the text prompts; writing the CNN's digit as text and giving it to the LM scores 0.88 to 0.89, the ceiling of this
+  pipeline. Joint accuracy for $n$ = 100, 300, 1000, 3000 joint examples: untrained connector about 0.16; after the
+  connector stage 0.41–0.47, 0.58–0.63, 0.60–0.69, 0.64–0.68; after the global fine-tune 0.41–0.47, 0.63–0.67,
+  0.68–0.75, 0.71–0.75; the monolith 0.14, 0.13–0.15, 0.16–0.17, 0.23. The DAG-built model wins at every $n$ in every
+  run, by the most where joint data are scarce, and the fine-tune adds 0.03 to 0.08 from $n$ = 300 on (at $n$ = 100
+  it changes nothing on average). The reason is plain: the DAG reuses unimodal data (3000 labelled digits and every
+  sentence), while the monolith must discover digits and arithmetic from $n$ answer words alone, and × often hides the
+  operand (anything × 0 = 0). With more steps or data the monolith would improve (its loss is still falling at the end
+  of its budget): this is a small-budget comparison, not a law.
+
+  DAG edge = MoE dispatch. The same input layer is written as a mixture of experts: expert img (CNN + connector) and
+  expert txt (the LM's token embedding), a router $G$ over positions × experts, each expert run batched on the
+  positions dispatched to it, and the combine $X^0 = G_{mntx}Y^x_{mntc}$. With $G$ one-hot by data type (image slot or
+  letter, known before any data is seen, as a workflow picks a rule by its wildcard) the MoE output equals the
+  DAG-wired output to 1e-6, and so do all gradients (tested). The precise relation: a DAG edge is an MoE dispatch with
+  a fixed router decided by the data type; an MoE is a DAG whose edges are chosen per token by a learned router.
+
+  Can a router learn that routing? A linear router on each position's features (7×7 pooled image and one-hot id)
+  was trained with the experts frozen and the Switch load-balancing loss ($\alpha$ = 0.01). Switch top-1 (only the
+  chosen expert runs, scaled by $p$) is unreliable: its routing accuracy ranged from 0 to 0.92 over models and runs,
+  and its task accuracy from 0 to about 0.46, because the unchosen expert gets no gradient, so
+  a wrong early choice is never corrected, and the balance loss pulls towards a 50/50 split while the true split is
+  5/17. Trained as a dense mixture ($G = p$, both experts everywhere) and then used top-1, the router recovers the
+  modality routing in every model and run (0.97 to 0.99 of positions) and reaches about 0.35 to 0.65 task accuracy, a little below the
+  fixed router because $p < 1$ scales the outputs. When the right edge is known from the data type, fixing it is
+  both exact and cheaper.
+
+  Time. On a 6-core desktop CPU the default run trains in about 66 s when the machine is quiet (up to 2 to 4
+  minutes when it is shared with other heavy jobs), plus about 15 s for the GIF: in the quiet run the monolith took
+  35 s, the LM 12 s, the connector 4.5 s and the fine-tune 4 s. With one worker per rule the max-plus critical path
+  is the monolith, then evaluate (39 s); the DAG system's own chain LM → connector → fine-tune → evaluate takes about
+  24 s. The code picks the GPU when torch sees one; this project's environment has
+  a CPU build of torch, so every bundled number is from the CPU.
+
+  Data. MNIST (Y. LeCun, C. Cortes, C. J. C. Burges), licence CC BY-SA 3.0: a balanced subset of 3000 training and
+  1000 test images is bundled (data/mnist_subset.npz, 0.7 MB; data/SOURCES.md has the source, the checksums and the
+  processing). The sentences are generated in code.
+
+  Try. Fewer LM steps (the LM's accuracy caps everything), a larger $\alpha$ (the Switch router collapses more), no
+  fine-tune (0 steps), or one seed to see how much the seeds disagree.
+params:
+  seeds: {default: 2, min: 1, max: 3, step: 1, type: int, label: 'Seeds (independent replicates)'}
+  steps_cnn: {default: 150, min: 50, max: 1000, step: 50, type: int, label: 'CNN pretraining steps'}
+  steps_lm: {default: 600, min: 100, max: 2000, step: 50, type: int, label: 'LM pretraining steps'}
+  steps_con: {default: 150, min: 20, max: 600, step: 10, type: int, label: 'Connector steps (CNN and LM frozen)'}
+  steps_ft: {default: 80, min: 0, max: 600, step: 10, type: int, label: 'Global fine-tune steps'}
+  steps_router: {default: 60, min: 10, max: 600, step: 10, type: int, label: 'Learned-router steps (each router)'}
+  lr_ft: {default: 0.0003, min: 0.00005, max: 0.003, step: 0.00005, label: 'Fine-tune learning rate'}
+  alpha: {default: 0.01, min: 0.0, max: 0.1, step: 0.005, label: 'Load-balancing weight $\alpha$'}
+tags: [series:workflow-orchestration:3]

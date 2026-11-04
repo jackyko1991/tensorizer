@@ -1,0 +1,134 @@
+digraph snakemake_dag {
+    graph[bgcolor=white, margin=0];
+    node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
+    edge[penwidth=2, color=grey];
+	0[label = "all", color = "0.00 0.6 0.85", style="rounded"];
+	1[label = "cohort", color = "0.25 0.6 0.85", style="rounded"];
+	2[label = "report", color = "0.50 0.6 0.85", style="rounded"];
+	3[label = "flow\ncondition: baseline", color = "0.33 0.6 0.85", style="rounded"];
+	4[label = "measure", color = "0.42 0.6 0.85", style="rounded"];
+	5[label = "segment\ncase: sub-000", color = "0.58 0.6 0.85", style="rounded"];
+	6[label = "centreline\ncase: sub-000", color = "0.17 0.6 0.85", style="rounded"];
+	7[label = "boundaries", color = "0.08 0.6 0.85", style="rounded"];
+	8[label = "report", color = "0.50 0.6 0.85", style="rounded"];
+	9[label = "flow\ncondition: lica_occluded", color = "0.33 0.6 0.85", style="rounded"];
+	10[label = "report", color = "0.50 0.6 0.85", style="rounded"];
+	11[label = "flow\ncondition: baseline", color = "0.33 0.6 0.85", style="rounded"];
+	12[label = "measure", color = "0.42 0.6 0.85", style="rounded"];
+	13[label = "segment\ncase: sub-002", color = "0.58 0.6 0.85", style="rounded"];
+	14[label = "centreline\ncase: sub-002", color = "0.17 0.6 0.85", style="rounded"];
+	15[label = "boundaries", color = "0.08 0.6 0.85", style="rounded"];
+	16[label = "report", color = "0.50 0.6 0.85", style="rounded"];
+	17[label = "flow\ncondition: lica_occluded", color = "0.33 0.6 0.85", style="rounded"];
+	18[label = "report", color = "0.50 0.6 0.85", style="rounded"];
+	19[label = "flow\ncondition: baseline", color = "0.33 0.6 0.85", style="rounded"];
+	20[label = "measure", color = "0.42 0.6 0.85", style="rounded"];
+	21[label = "segment\ncase: sub-006", color = "0.58 0.6 0.85", style="rounded"];
+	22[label = "centreline\ncase: sub-006", color = "0.17 0.6 0.85", style="rounded"];
+	23[label = "boundaries", color = "0.08 0.6 0.85", style="rounded"];
+	24[label = "report", color = "0.50 0.6 0.85", style="rounded"];
+	25[label = "flow\ncondition: lica_occluded", color = "0.33 0.6 0.85", style="rounded"];
+	26[label = "report", color = "0.50 0.6 0.85", style="rounded"];
+	27[label = "flow\ncondition: baseline", color = "0.33 0.6 0.85", style="rounded"];
+	28[label = "measure", color = "0.42 0.6 0.85", style="rounded"];
+	29[label = "segment\ncase: sub-021", color = "0.58 0.6 0.85", style="rounded"];
+	30[label = "centreline\ncase: sub-021", color = "0.17 0.6 0.85", style="rounded"];
+	31[label = "boundaries", color = "0.08 0.6 0.85", style="rounded"];
+	32[label = "report", color = "0.50 0.6 0.85", style="rounded"];
+	33[label = "flow\ncondition: lica_occluded", color = "0.33 0.6 0.85", style="rounded"];
+	34[label = "report", color = "0.50 0.6 0.85", style="rounded"];
+	35[label = "flow\ncondition: baseline", color = "0.33 0.6 0.85", style="rounded"];
+	36[label = "measure", color = "0.42 0.6 0.85", style="rounded"];
+	37[label = "segment\ncase: sub-033", color = "0.58 0.6 0.85", style="rounded"];
+	38[label = "centreline\ncase: sub-033", color = "0.17 0.6 0.85", style="rounded"];
+	39[label = "boundaries", color = "0.08 0.6 0.85", style="rounded"];
+	40[label = "report", color = "0.50 0.6 0.85", style="rounded"];
+	41[label = "flow\ncondition: lica_occluded", color = "0.33 0.6 0.85", style="rounded"];
+	42[label = "report", color = "0.50 0.6 0.85", style="rounded"];
+	43[label = "flow\ncondition: baseline", color = "0.33 0.6 0.85", style="rounded"];
+	44[label = "measure", color = "0.42 0.6 0.85", style="rounded"];
+	45[label = "segment\ncase: sub-354", color = "0.58 0.6 0.85", style="rounded"];
+	46[label = "centreline\ncase: sub-354", color = "0.17 0.6 0.85", style="rounded"];
+	47[label = "boundaries", color = "0.08 0.6 0.85", style="rounded"];
+	48[label = "report", color = "0.50 0.6 0.85", style="rounded"];
+	49[label = "flow\ncondition: lica_occluded", color = "0.33 0.6 0.85", style="rounded"];
+	1 -> 0
+	2 -> 1
+	8 -> 1
+	10 -> 1
+	16 -> 1
+	18 -> 1
+	24 -> 1
+	26 -> 1
+	32 -> 1
+	34 -> 1
+	40 -> 1
+	42 -> 1
+	48 -> 1
+	3 -> 2
+	4 -> 2
+	4 -> 3
+	7 -> 3
+	5 -> 4
+	6 -> 4
+	6 -> 7
+	9 -> 8
+	4 -> 8
+	4 -> 9
+	7 -> 9
+	11 -> 10
+	12 -> 10
+	12 -> 11
+	15 -> 11
+	13 -> 12
+	14 -> 12
+	14 -> 15
+	17 -> 16
+	12 -> 16
+	12 -> 17
+	15 -> 17
+	19 -> 18
+	20 -> 18
+	20 -> 19
+	23 -> 19
+	21 -> 20
+	22 -> 20
+	22 -> 23
+	25 -> 24
+	20 -> 24
+	20 -> 25
+	23 -> 25
+	27 -> 26
+	28 -> 26
+	28 -> 27
+	31 -> 27
+	29 -> 28
+	30 -> 28
+	30 -> 31
+	33 -> 32
+	28 -> 32
+	28 -> 33
+	31 -> 33
+	35 -> 34
+	36 -> 34
+	36 -> 35
+	39 -> 35
+	37 -> 36
+	38 -> 36
+	38 -> 39
+	41 -> 40
+	36 -> 40
+	36 -> 41
+	39 -> 41
+	43 -> 42
+	44 -> 42
+	44 -> 43
+	47 -> 43
+	45 -> 44
+	46 -> 44
+	46 -> 47
+	49 -> 48
+	44 -> 48
+	44 -> 49
+	47 -> 49
+}            

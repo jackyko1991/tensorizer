@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLang } from "../i18n";
 import { RichText } from "./Tex";
 
@@ -17,6 +17,8 @@ export interface TocItem {
 export default function PageToc({ items, scrollRoot }: { items: TocItem[]; scrollRoot: string }) {
   const { t } = useLang();
   const [active, setActive] = useState(items[0]?.id);
+  // a clicked entry stays active while the smooth scroll runs (the observer would pick an earlier one)
+  const clickedAt = useRef(0);
 
   useEffect(() => {
     const root = document.getElementById(scrollRoot);
@@ -24,8 +26,12 @@ export default function PageToc({ items, scrollRoot }: { items: TocItem[]; scrol
     const observer = new IntersectionObserver(
       (entries) => {
         for (const e of entries) seen.set(e.target.id, e.isIntersecting);
-        const first = items.find((it) => seen.get(it.id));
-        if (first) setActive(first.id);
+        if (Date.now() - clickedAt.current < 1200) return;
+        // at the very bottom the last sections can never reach the top: take the last one in view
+        const atBottom = root && root.scrollTop + root.clientHeight >= root.scrollHeight - 4;
+        const inView = items.filter((it) => seen.get(it.id));
+        const pick = atBottom ? inView[inView.length - 1] : inView[0];
+        if (pick) setActive(pick.id);
       },
       { root, rootMargin: "0px 0px -60% 0px" },
     );
@@ -43,7 +49,11 @@ export default function PageToc({ items, scrollRoot }: { items: TocItem[]; scrol
         {items.map((it) => (
           <li key={it.id}>
             <button
-              onClick={() => document.getElementById(it.id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
+              onClick={() => {
+                clickedAt.current = Date.now();
+                setActive(it.id);
+                document.getElementById(it.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
               className={`-ml-px flex w-full items-baseline gap-2 border-l-2 px-3 py-1 text-left ${
                 active === it.id
                   ? "border-blue-600 font-medium text-blue-700"

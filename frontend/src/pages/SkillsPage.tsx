@@ -1,9 +1,24 @@
+import { useState } from "react";
 import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
 import { RichText } from "../components/Tex";
 import { usePageText, type PageKey } from "../content/pages";
 import { useLang } from "../i18n";
 import type { Manifest } from "../types";
+import LoopsTab from "./LoopsTab";
+
+const TABS = ["techniques", "loops"] as const;
+type Tab = (typeof TABS)[number];
+const TAB_STORE = "tensorizer.skillsTab";
+
+function storedTab(): Tab {
+  try {
+    const v = localStorage.getItem(TAB_STORE);
+    return v === "loops" ? "loops" : "techniques";
+  } catch {
+    return "techniques";
+  }
+}
 
 interface Skill {
   /** key of skills.<id>.title / skills.<id>.text in content/pages.<lang>.json */
@@ -118,9 +133,45 @@ export default function SkillsPage({ manifest }: { manifest: Manifest }) {
     return p && (p.i18n?.[lang]?.title ?? p.title);
   };
 
+  const [tab, setTab] = useState<Tab>(storedTab);
+  const choose = (t: Tab) => {
+    setTab(t);
+    try {
+      localStorage.setItem(TAB_STORE, t);
+    } catch {
+      // storage blocked: remembered for this visit only
+    }
+    document.getElementById("skills-scroll")?.scrollTo({ top: 0 });
+  };
+
   return (
     <div id="skills-scroll" className="h-full overflow-y-auto scroll-smooth bg-gray-50/60">
-      <div className="mx-auto flex max-w-6xl gap-8 px-5 py-10">
+      <div className="mx-auto max-w-6xl px-5 pt-6">
+        <div
+          className="flex gap-1 overflow-x-auto overflow-y-hidden border-b border-gray-200 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          role="tablist"
+          data-testid="skills-tabs"
+        >
+          {TABS.map((t) => (
+            <button
+              key={t}
+              role="tab"
+              aria-selected={tab === t}
+              onClick={() => choose(t)}
+              data-testid={`skills-tab-${t}`}
+              className={`-mb-px shrink-0 whitespace-nowrap border-b-2 px-4 py-2 text-sm font-medium ${
+                tab === t ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-800"
+              }`}
+            >
+              {T(t === "techniques" ? "skills.tab.techniques" : "skills.tab.loops")}
+            </button>
+          ))}
+        </div>
+      </div>
+      {tab === "loops" ? (
+        <LoopsTab title={title} />
+      ) : (
+      <div className="mx-auto flex max-w-6xl gap-8 px-5 pt-6 pb-10">
         <PageToc
           scrollRoot="skills-scroll"
           items={SKILLS.map((s, i) => ({
@@ -172,6 +223,7 @@ export default function SkillsPage({ manifest }: { manifest: Manifest }) {
           ))}
         </article>
       </div>
+      )}
     </div>
   );
 }
