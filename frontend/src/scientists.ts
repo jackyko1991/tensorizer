@@ -11,6 +11,8 @@ export interface Scientist {
   /** Joke one-liner by language; missing languages fall back to English. */
   meme: Partial<Record<string, string>> & { en: string };
   look: Look;
+  /** No authentic likeness survives: the card says so under the drawn sprite. */
+  noPortrait?: boolean;
 }
 
 interface Look {
@@ -354,6 +356,19 @@ export const SCIENTISTS: Scientist[] = [
       "zh-Hans": "每个对称都藏着一条守恒律。时间不在乎你何时开始，所以能量守恒。",
     },
     look: { hair: "side", hairColor: DARK, glasses: "round", coat: TEAL },
+  },
+  {
+    id: "hooke",
+    name: "Robert Hooke",
+    years: "1635–1703",
+    aliases: ["Hooke", "虎克", "胡克", "フック", "Гук", "훅", "हुक"],
+    meme: {
+      en: "Ut tensio, sic vis: as the extension, so the force. I published it as an anagram first, ceiiinosssttuv, just to be safe.",
+      "zh-Hant": "Ut tensio, sic vis：伸長多少，力就多少。我先以字謎 ceiiinosssttuv 發表，以防萬一。",
+      "zh-Hans": "Ut tensio, sic vis：伸长多少，力就多少。我先以字谜 ceiiinosssttuv 发表，以防万一。",
+    },
+    look: { hair: "long", hairColor: BROWN, coat: SLATE },
+    noPortrait: true,
   },
   {
     id: "shannon",

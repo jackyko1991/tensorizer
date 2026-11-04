@@ -26,7 +26,7 @@ const WIDTH = 288;
 
 /** The pixelated photo (32×40) when the scientist has one, else the hand-drawn 16×16 sprite. */
 function Portrait({ s }: { s: Scientist }) {
-  const [photo, setPhoto] = useState(true);
+  const [photo, setPhoto] = useState(!s.noPortrait);
   if (photo)
     return (
       <img
@@ -59,9 +59,9 @@ function Sprite({ s }: { s: Scientist }) {
   }, [s]);
   return (
     <svg
-      viewBox="0 0 16 16"
-      width={48}
-      height={48}
+      viewBox="0 -2 16 20"
+      width={64}
+      height={80}
       shapeRendering="crispEdges"
       className="shrink-0 rounded bg-[#f5f1e6]"
     >
@@ -152,6 +152,7 @@ export default function SciCard() {
         <p className="mt-1 leading-snug text-gray-600 italic" title={t("sci.joke")}>
           {s.meme[lang] ?? s.meme.en}
         </p>
+        {s.noPortrait && <p className="mt-1.5 text-[10px] text-gray-400">{t("sci.noPortrait")}</p>}
         {credit && (
           <a
             href={credit.source}
