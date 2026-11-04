@@ -371,6 +371,30 @@ export const SCIENTISTS: Scientist[] = [
     noPortrait: true,
   },
   {
+    id: "navier",
+    name: "Claude-Louis Navier",
+    years: "1785–1836",
+    aliases: ["Navier", "納維", "纳维", "ナビエ", "Навье", "나비에", "नेवियर"],
+    meme: {
+      en: "I wrote down the equations of viscous flow in 1822. Whether they always have smooth solutions is worth a million dollars now.",
+      "zh-Hant": "我在 1822 年寫下了黏性流體的方程。它們是否總有光滑解？現在值一百萬美元。",
+      "zh-Hans": "我在 1822 年写下了黏性流体的方程。它们是否总有光滑解？现在值一百万美元。",
+    },
+    look: { hair: "curly", hairColor: DARK, coat: NAVY },
+  },
+  {
+    id: "stokes",
+    name: "George Gabriel Stokes",
+    years: "1819–1903",
+    aliases: ["Stokes", "斯托克斯", "ストークス", "Стокс", "스토크스", "स्टोक्स"],
+    meme: {
+      en: "Navier got the equations; I got the viscosity right, the drag on a falling sphere, and half the name.",
+      "zh-Hant": "方程是納維寫的；我把黏性弄對了、算出下落小球的阻力，還分到一半的名字。",
+      "zh-Hans": "方程是纳维写的；我把黏性弄对了、算出下落小球的阻力，还分到一半的名字。",
+    },
+    look: { hair: "receding", hairColor: GREY, beard: "full", beardColor: GREY, coat: DARK },
+  },
+  {
     id: "shannon",
     name: "Claude Shannon",
     years: "1916–2001",
