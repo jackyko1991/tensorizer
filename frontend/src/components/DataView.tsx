@@ -414,8 +414,11 @@ export function DataSources({
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
   }, [big]);
-  // the file list stays folded when enlarging; the rail button opens it to pick another file
-  const expand = (v: boolean) => setBig(v);
+  // enlarging opens the file list on a wide screen (it sits beside the viewer); on a phone it stays folded
+  const expand = (v: boolean) => {
+    setBig(v);
+    if (v && datasets.length > 1 && railIds.includes("files") && window.innerWidth >= 768) setPanel("files");
+  };
   // picking a file closes the panel when it floats over the viewer (narrow column); a wide layout keeps it open
   const choose = (name: string) => {
     setSelected(name);
