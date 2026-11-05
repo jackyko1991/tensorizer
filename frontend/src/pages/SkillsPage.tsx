@@ -1,24 +1,16 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
 import { RichText } from "../components/Tex";
 import { usePageText, type PageKey } from "../content/pages";
 import { useLang } from "../i18n";
+import { PAGE_TABS, type SkillsTab } from "../pageRoute";
 import type { Manifest } from "../types";
 import LoopsTab from "./LoopsTab";
 
-const TABS = ["techniques", "loops"] as const;
-type Tab = (typeof TABS)[number];
-const TAB_STORE = "tensorizer.skillsTab";
-
-function storedTab(): Tab {
-  try {
-    const v = localStorage.getItem(TAB_STORE);
-    return v === "loops" ? "loops" : "techniques";
-  } catch {
-    return "techniques";
-  }
-}
+// The tab comes from the address (#/skills/<tab>[/<section>], parsed in App); App remembers the last one.
+const TABS = PAGE_TABS.skills;
+type Tab = SkillsTab;
 
 interface Skill {
   /** key of skills.<id>.title / skills.<id>.text in content/pages.<lang>.json */
@@ -125,7 +117,18 @@ bell = torch.einsum("abcd,cd->ab", CNOT, torch.einsum("ac,cb->ab", H1, psi0))`,
   },
 ];
 
-export default function SkillsPage({ manifest }: { manifest: Manifest }) {
+export default function SkillsPage({
+  manifest,
+  tab,
+  section,
+  onTab,
+}: {
+  manifest: Manifest;
+  tab: Tab;
+  /** optional anchor inside the tab: #/skills/techniques/einsum → card skill-einsum, #/skills/loops/matmul → loops-matmul */
+  section: string | null;
+  onTab: (t: Tab) => void;
+}) {
   const T = usePageText();
   const { lang } = useLang();
   const title = (id: string) => {
@@ -133,16 +136,16 @@ export default function SkillsPage({ manifest }: { manifest: Manifest }) {
     return p && (p.i18n?.[lang]?.title ?? p.title);
   };
 
-  const [tab, setTab] = useState<Tab>(storedTab);
   const choose = (t: Tab) => {
-    setTab(t);
-    try {
-      localStorage.setItem(TAB_STORE, t);
-    } catch {
-      // storage blocked: remembered for this visit only
-    }
-    document.getElementById("skills-scroll")?.scrollTo({ top: 0 });
+    if (t === tab) return;
+    onTab(t);
   };
+  // New tab: start at the top, or at the section the address names.
+  useEffect(() => {
+    const el = section && document.getElementById(`${tab === "loops" ? "loops" : "skill"}-${section}`);
+    if (el) el.scrollIntoView({ block: "start", behavior: "instant" });
+    else document.getElementById("skills-scroll")?.scrollTo({ top: 0 });
+  }, [tab, section]);
 
   return (
     <div id="skills-scroll" className="h-full overflow-y-auto scroll-smooth bg-gray-50/60">

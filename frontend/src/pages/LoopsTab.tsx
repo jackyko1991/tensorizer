@@ -1,8 +1,12 @@
+import type { ReactNode } from "react";
 import CodeBlock from "../components/CodeBlock";
+import HwChip from "../components/HwChip";
+import LoopVsTensorAnim from "../components/LoopVsTensorAnim";
 import PageToc from "../components/PageToc";
-import { RichText } from "../components/Tex";
+import Tex, { RichText } from "../components/Tex";
 import bench from "../content/loop_bench.json";
 import { usePageText, type PageKey } from "../content/pages";
+import type { AnimCase } from "../loopAnim";
 
 /** One measured size of a case in loop_bench.json (written by scripts/loop_benchmark.py). */
 interface BenchRow {
@@ -145,18 +149,155 @@ function SpeedupChart({ id }: { id: string }) {
   );
 }
 
+/** Each comparison in maths: vector form, index (tensor) form, and the same thing spelled in PyTorch. */
+const EQ: Record<string, { vector: string; index: string; code: string; note?: boolean }> = {
+  dot: {
+    vector: String.raw`s = \mathbf{x} \cdot \mathbf{y}`,
+    index: String.raw`s = \sum_i x_i\, y_i`,
+    code: `torch.einsum("i,i->", x, y)`,
+  },
+  pairwise: {
+    vector: String.raw`D = \bigl\lVert \mathbf{x}_i - \mathbf{x}_j \bigr\rVert`,
+    index: String.raw`D_{ij} = \sqrt{\textstyle\sum_k (x_{ik} - x_{jk})^2}`,
+    code: `(x[:, None, :] - x[None, :, :]).norm(dim=-1)`,
+    note: true,
+  },
+  matmul: {
+    vector: String.raw`C = A B`,
+    index: String.raw`C_{ij} = \sum_k A_{ik}\, B_{kj}`,
+    code: `torch.einsum("ik,kj->ij", A, B)`,
+  },
+  pendulum: {
+    vector: String.raw`\dot{\mathbf{y}} = \mathbf{f}(\mathbf{y}), \quad \mathbf{y}_{n+1} = \mathbf{y}_n + \tfrac{h}{6}\left(\mathbf{k}_1 + 2\mathbf{k}_2 + 2\mathbf{k}_3 + \mathbf{k}_4\right)`,
+    index: String.raw`y_{b,n+1} = y_{b,n} + \tfrac{h}{6}\left(k_{1b} + 2k_{2b} + 2k_{3b} + k_{4b}\right)`,
+    code: `y = y + h / 6 * (k1 + 2 * k2 + 2 * k3 + k4)  # y: (B, 2)`,
+    note: true,
+  },
+  diffusion: {
+    vector: String.raw`u^{n+1} = u^n + \alpha\, \Delta t\, \nabla^2 u^n`,
+    index: String.raw`\begin{aligned} u^{n+1}_{ij} = u^n_{ij} + r\bigl(&u^n_{i+1,j} + u^n_{i-1,j} \ &+ u^n_{i,j+1} + u^n_{i,j-1} - 4u^n_{ij}\bigr) \end{aligned}`,
+    code: `c + r * (u[2:, 1:-1] + u[:-2, 1:-1] + u[1:-1, 2:] + u[1:-1, :-2] - 4 * c)`,
+    note: true,
+  },
+  mc_pi: {
+    vector: String.raw`\pi \approx 4\, \Pr\!\left(\lVert \mathbf{p} \rVert \le 1\right)`,
+    index: String.raw`\pi \approx \frac{4}{N} \sum_n \mathbb{1}\!\left[x_n^2 + y_n^2 \le 1\right]`,
+    code: `4 * (x**2 + y**2 <= 1).float().mean()`,
+  },
+};
+
+/** The operation in two notations side by side (stacked on phones), as on the Concept page, plus its PyTorch spelling. */
+function EquationCard({ id }: { id: string }) {
+  const T = usePageText();
+  const eq = EQ[id];
+  if (!eq) return null;
+  const h3 = "text-xs font-semibold uppercase tracking-wide text-gray-500";
+  return (
+    <div className="mt-4 rounded-lg border border-gray-200 bg-white px-4 py-3" data-testid={`loops-eq-${id}`}>
+      <div className="grid gap-x-6 gap-y-3 md:grid-cols-2">
+        <div className="min-w-0">
+          <h3 className={h3}>{T("loops.eq.vector")}</h3>
+          <div className="mt-1 text-base">
+            <Tex tex={eq.vector} display />
+          </div>
+        </div>
+        <div className="min-w-0">
+          <h3 className={h3}>{T("loops.eq.index")}</h3>
+          <div className="mt-1 text-base">
+            <Tex tex={eq.index} display />
+          </div>
+          {eq.note && (
+            <p className="text-center text-xs text-gray-600">
+              <RichText text={T(`loops.eq.${id}.note` as PageKey)} />
+            </p>
+          )}
+        </div>
+      </div>
+      <div className="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1 border-t border-gray-100 pt-2 text-xs">
+        <span className="text-gray-500">{T("loops.eq.code")}</span>
+        <code className="font-mono break-all text-blue-800">{eq.code}</code>
+      </div>
+    </div>
+  );
+}
+
+/** Hardware that accelerates each operation: page-text key of the chip badge's hover text. */
+const HW: Record<string, PageKey> = {
+  dot: "loops.hw.dot",
+  pairwise: "loops.hw.pairwise",
+  matmul: "loops.hw.matmul",
+  diffusion: "loops.hw.diffusion",
+  mc_pi: "loops.hw.mc_pi",
+};
+
+/** Dedicated matrix-multiply units by vendor: [vendor, unit, since, precisions, reached from PyTorch via]. */
+const GEMM_UNITS: string[][] = [
+  ["NVIDIA", "Tensor Cores", "Volta V100 (2017); GeForce: Turing RTX 20 (2018)", "FP16, INT8; BF16, TF32 (Ampere+); FP8 (Ada/Hopper+); FP4 (Blackwell)", "cuBLAS / cuDNN"],
+  ["AMD", "Matrix Cores (MFMA); WMMA", "CDNA MI100 (2020); RDNA 3 (2022)", "FP16, BF16, INT8; FP8 (MI300)", "rocBLAS / hipBLASLt (ROCm)"],
+  ["Apple", "AMX (CPU); GPU", "M1 (2020)", "FP32, FP16; BF16 (M2+)", "Accelerate / MPS"],
+  ["Intel", "AMX (Xeon CPU)", "Sapphire Rapids (2023)", "BF16, INT8; FP16 (Granite Rapids)", "oneDNN"],
+  ["Intel", "XMX (Arc GPU)", "Arc Alchemist (2022)", "FP16, BF16, INT8", "oneDNN / XPU"],
+  ["Arm", "SME / SME2", "Armv9-A; e.g. Apple M4 (2024)", "FP32, FP16, BF16, INT8", "KleidiAI"],
+  ["Google", "TPU MXU (systolic array)", "TPU v1 (2016)", "INT8 (v1); BF16 (v2+), FP32 accumulate", "XLA (JAX / PyTorch/XLA)"],
+];
+
+/** The vendor table of the matrix-multiply card: scrolls sideways inside its own box on phones. */
+function GemmTable() {
+  const T = usePageText();
+  const head = ["vendor", "unit", "since", "prec", "via"] as const;
+  return (
+    <details className="group mt-4 rounded-lg border border-gray-200 bg-white" data-testid="gemm-table">
+      <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-2 text-sm font-medium text-gray-800 [&::-webkit-details-marker]:hidden">
+        <span className="text-xs text-gray-500 group-open:hidden" aria-hidden>▸</span>
+        <span className="hidden text-xs text-gray-500 group-open:inline" aria-hidden>▾</span>
+        {T("loops.hw.table.title")}
+      </summary>
+      <div className="overflow-x-auto border-t border-gray-100">
+        <table className="w-full min-w-[40rem] text-left text-xs">
+          <thead className="bg-gray-50 text-gray-600">
+            <tr>
+              {head.map((h) => (
+                <th key={h} className="px-3 py-1.5 font-semibold">
+                  {T(`loops.hw.table.${h}`)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100 text-gray-700">
+            {GEMM_UNITS.map((row, i) => (
+              <tr key={i}>
+                {row.map((cell, j) => (
+                  <td key={j} className={`px-3 py-1.5 align-top ${j === 0 ? "font-medium text-gray-900" : ""} ${j === 4 ? "font-mono" : ""}`}>
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="space-y-1 border-t border-gray-100 px-4 py-2 text-xs leading-relaxed text-gray-600">
+        <p>
+          <RichText text={T("loops.hw.matmul.why")} />
+        </p>
+      </div>
+    </details>
+  );
+}
+
 /** Every section of the tab, in order: numbered 1..N in the table of contents and on the cards. */
 const SECTIONS = ["why", ...CASES.map((c) => c.id), "fine", "bench"];
 const num = (key: string) => SECTIONS.indexOf(key) + 1;
 
 /** Card heading with the numbered blue circle, as on the Concept page. */
-function Heading({ n, text }: { n: number; text: string }) {
+function Heading({ n, text, extra }: { n: number; text: string; extra?: ReactNode }) {
   return (
     <h2 className="flex flex-wrap items-baseline gap-3 text-lg font-semibold">
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm text-white">
         {n}
       </span>
       <RichText text={text} />
+      {extra}
     </h2>
   );
 }
@@ -208,16 +349,30 @@ export default function LoopsTab({ title }: { title: (id: string) => string | un
               className="scroll-mt-6 rounded-xl border border-gray-200 bg-white p-6"
               data-testid={`loops-case-${c.id}`}
             >
-              <Heading n={num(c.id)} text={T(`loops.${c.id}.title` as PageKey)} />
+              <Heading
+                n={num(c.id)}
+                text={T(`loops.${c.id}.title` as PageKey)}
+                extra={
+                  HW[c.id] && (
+                    <HwChip
+                      label={T("loops.hw.label")}
+                      text={T(HW[c.id]) ?? ""}
+                    />
+                  )
+                }
+              />
               <p className="mt-3 text-sm leading-relaxed text-gray-700">
                 <RichText text={T(`loops.${c.id}.text` as PageKey)} />
               </p>
+              {c.id === "matmul" && <GemmTable />}
+              <EquationCard id={c.id} />
               {code && (
                 <div className="mt-4 grid gap-3 md:grid-cols-2">
                   <CodeBlock code={code.loop} title={T("loops.loop")} />
                   <CodeBlock code={code.tensor} title={T("loops.tensor")} />
                 </div>
               )}
+              <LoopVsTensorAnim id={c.id as AnimCase} />
               <SpeedupChart id={c.id} />
               {links.length > 0 && (
                 <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
@@ -270,6 +425,9 @@ for t in range(n_steps):    # the loop over time stays: step t+1 needs step t
             <p className="mt-2 leading-relaxed text-amber-800">
               {fill(T("loops.underLoad"), { lo: Math.round(Math.min(...load)), hi: Math.round(Math.max(...load)) })}
             </p>
+          )}
+          {m.gpu && /GTX 10\d0/.test(m.gpu) && (
+            <p className="mt-2 leading-relaxed text-gray-700">{fill(T("loops.pascalGpu"), { gpu: m.gpu })}</p>
           )}
           <p className="mt-2 leading-relaxed text-gray-700">{T("loops.caveat")}</p>
           <pre className="mt-2 overflow-x-auto rounded-lg bg-gray-900 px-3 py-2 font-mono text-xs text-gray-100">

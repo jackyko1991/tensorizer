@@ -44,6 +44,7 @@ import AgentPanel from "./components/AgentPanel";
 import ExportMenu from "./components/ExportMenu";
 import { REPO_URL } from "./notebook";
 import ConceptPage from "./pages/ConceptPage";
+import { formatPageRoute, parsePageRoute, resolveTab, TAB_STORE } from "./pageRoute";
 import AgentsPage from "./pages/AgentsPage";
 import SkillsPage from "./pages/SkillsPage";
 import { plainText, RichText } from "./components/Tex";
@@ -154,12 +155,24 @@ export default function App() {
     if (moved) window.location.replace(`#/${moved.id}`);
   }, [manifest, selected]);
 
-  // #/concept and #/skills are pages; any other hash is a problem id (category/slug), a workspace problem
-  // (workspace/<id>) or one of its notebooks (workspace/<id>/nb/<notebook>).
-  const page: Page =
-    selected === "concept" || selected === "skills" || selected === "agents" || selected === "workspace"
+  // #/concept[/<tab>[/<section>]] and #/skills[/<tab>[/<section>]] are pages with sub-tabs, #/agents and #/workspace
+  // pages; any other hash is a problem id (category/slug), a workspace problem (workspace/<id>) or one of its
+  // notebooks (workspace/<id>/nb/<notebook>).
+  const pageRoute = parsePageRoute(selected);
+  const page: Page = pageRoute
+    ? pageRoute.page
+    : selected === "agents" || selected === "workspace"
       ? selected
       : "problems";
+  // The sub-tab: the address wins; #/skills alone opens the remembered tab. A missing or unknown tab is rewritten
+  // in place (no new history entry) to the canonical #/<page>/<tab>, so back/forward always land on a tab.
+  const subTab = pageRoute ? resolveTab(pageRoute.page, pageRoute.tab, stored(TAB_STORE[pageRoute.page])) : null;
+  useEffect(() => {
+    if (!pageRoute || !subTab) return;
+    store(TAB_STORE[pageRoute.page], subTab);
+    if (pageRoute.tab !== subTab) window.location.replace(`#${formatPageRoute(pageRoute.page, subTab)}`);
+  }, [pageRoute?.page, pageRoute?.tab, subTab]);
+  const openTab = (tab: string) => pageRoute && (window.location.hash = formatPageRoute(pageRoute.page, tab));
   // Left panel: the library (Problems) or the Workspace tree, remembered; opening a workspace problem shows it.
   const [leftTab, setLeftTabState] = useState<"problems" | "workspace">(() =>
     stored(LEFT_TAB) === "workspace" ? "workspace" : "problems",
@@ -559,12 +572,22 @@ export default function App() {
 
       {manifest && page === "concept" && (
         <main className="min-h-0 flex-1">
-          <ConceptPage manifest={manifest} />
+          <ConceptPage
+            manifest={manifest}
+            tab={subTab === "dataflow" ? "dataflow" : "laws"}
+            section={pageRoute?.section ?? null}
+            onTab={openTab}
+          />
         </main>
       )}
       {manifest && page === "skills" && (
         <main className="min-h-0 flex-1">
-          <SkillsPage manifest={manifest} />
+          <SkillsPage
+            manifest={manifest}
+            tab={subTab === "loops" ? "loops" : "techniques"}
+            section={pageRoute?.section ?? null}
+            onTab={openTab}
+          />
         </main>
       )}
       {page === "agents" && (

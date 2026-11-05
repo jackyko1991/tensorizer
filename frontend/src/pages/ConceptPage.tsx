@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { generatedUrl } from "../api";
 import CodeBlock, { extractDef } from "../components/CodeBlock";
 import Tex, { RichText } from "../components/Tex";
@@ -6,6 +6,7 @@ import PageToc from "../components/PageToc";
 import TranslationTable from "../components/TranslationTable";
 import { usePageText, type PageKey } from "../content/pages";
 import { localize, useLang } from "../i18n";
+import { PAGE_TABS, type ConceptTab } from "../pageRoute";
 import type { Manifest } from "../types";
 import DataflowConcept from "./DataflowConcept";
 
@@ -18,14 +19,30 @@ const STEPS = [0, 1, 2, 3, 4, 5, 6, 7] as const; // 0: tests first (TDD)
  * from the problem's real files in the manifest, so the page always matches the library.
  * Text comes from content/pages.<lang>.json.
  */
-export default function ConceptPage({ manifest }: { manifest: Manifest }) {
+export default function ConceptPage({
+  manifest,
+  tab,
+  section,
+  onTab,
+}: {
+  manifest: Manifest;
+  /** from the address: #/concept/<tab>[/<section>], parsed in App (which also remembers the last tab) */
+  tab: ConceptTab;
+  /** optional anchor in the laws tab: #/concept/laws/3 → step-3 */
+  section: string | null;
+  onTab: (t: ConceptTab) => void;
+}) {
   const T = usePageText();
   const { t, lang } = useLang();
   const p = manifest.problems.find((x) => x.id === PENDULUM);
+  useEffect(() => {
+    const el = section && document.getElementById(tab === "laws" ? `step-${section}` : section);
+    if (el) el.scrollIntoView({ block: "start", behavior: "instant" });
+    else document.getElementById("concept-scroll")?.scrollTo({ top: 0 });
+  }, [tab, section]);
   if (!p) return <p className="p-8 text-sm text-gray-500">{T("concept.missing")}</p>;
   const file = (name: string) => p.files.find((f) => f.name === name)?.code ?? "";
   const R = (key: PageKey) => <RichText text={T(key)} />;
-  const [tab, setTab] = useConceptTab();
 
   return (
     <div id="concept-scroll" className="h-full overflow-y-auto scroll-smooth bg-gray-50/60">
@@ -36,17 +53,17 @@ export default function ConceptPage({ manifest }: { manifest: Manifest }) {
               key={k}
               role="tab"
               aria-selected={tab === k}
-              onClick={() => setTab(k)}
+              onClick={() => k !== tab && onTab(k)}
               className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium ${
                 tab === k ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-800"
               }`}
             >
-              {T(k === "law" ? "flow.tab.law" : "flow.tab")}
+              {T(k === "laws" ? "flow.tab.law" : "flow.tab")}
             </button>
           ))}
         </div>
       </div>
-      {tab === "flow" ? (
+      {tab === "dataflow" ? (
         <div className="pt-6">
           <DataflowConcept />
         </div>
@@ -171,30 +188,7 @@ export default function ConceptPage({ manifest }: { manifest: Manifest }) {
   );
 }
 
-const TABS = ["law", "flow"] as const;
-type ConceptTab = (typeof TABS)[number];
-const TAB_KEY = "tensorizer.conceptTab";
-
-/** Which Concept tab is open, remembered per browser. */
-function useConceptTab(): [ConceptTab, (t: ConceptTab) => void] {
-  const [tab, setTab] = useState<ConceptTab>(() => {
-    try {
-      return localStorage.getItem(TAB_KEY) === "flow" ? "flow" : "law";
-    } catch {
-      return "law";
-    }
-  });
-  const choose = (t: ConceptTab) => {
-    setTab(t);
-    try {
-      localStorage.setItem(TAB_KEY, t);
-    } catch {
-      // private window: remembered for this page only
-    }
-    document.getElementById("concept-scroll")?.scrollTo({ top: 0 });
-  };
-  return [tab, choose];
-}
+const TABS = PAGE_TABS.concept;
 
 function Step({ n, title, file, children }: { n: number; title: string; file?: string; children: React.ReactNode }) {
   return (

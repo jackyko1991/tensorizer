@@ -3,10 +3,11 @@ import { useEffect, useRef, useState } from "react";
 /**
  * One tooltip for the whole site, in the same white card style as the series hover card. Any element with a
  * `title` keeps working as before: on hover its title moves to `data-tip` (so the browser's black tooltip never
- * shows) and this card appears below it (above when there is no room). Line breaks in a title are kept.
+ * shows) and this card appears below it (above when there is no room). Line breaks in a title are kept; an optional
+ * `data-tip-heading` attribute is shown as a bold first line.
  */
 export default function HoverTip() {
-  const [tip, setTip] = useState<{ text: string; x: number; y: number; above: boolean } | null>(null);
+  const [tip, setTip] = useState<{ text: string; heading: string | null; x: number; y: number; above: boolean } | null>(null);
   const timer = useRef<number | undefined>(undefined);
   const current = useRef<Element | null>(null);
   const card = useRef<HTMLDivElement>(null);
@@ -34,7 +35,7 @@ export default function HoverTip() {
       timer.current = window.setTimeout(() => {
         const r = el.getBoundingClientRect();
         const above = r.bottom + 90 > window.innerHeight;
-        setTip({ text, x: r.left + r.width / 2, y: above ? r.top - 6 : r.bottom + 6, above });
+        setTip({ text, heading: el.getAttribute("data-tip-heading"), x: r.left + r.width / 2, y: above ? r.top - 6 : r.bottom + 6, above });
       }, 350);
     };
     const out = (e: MouseEvent) => {
@@ -78,6 +79,7 @@ export default function HoverTip() {
         transform: `translate(-50%, ${tip.above ? "-100%" : "0"})`,
       }}
     >
+      {tip.heading && <div className="mb-0.5 font-semibold text-gray-900">{tip.heading}</div>}
       {tip.text}
     </div>
   );
