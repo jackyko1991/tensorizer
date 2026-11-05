@@ -10,9 +10,12 @@ for d in "$TENSORIZER_CACHE" "$TENSORIZER_WORKSPACES" "$AGENT_WORKSPACES" "$MPLC
     mkdir -p "$d" 2>/dev/null || echo "warning: cannot create $d (mount /work as a tmpfs or a writable volume)" >&2
 done
 
-# Activate the pixi environment that was installed at build time.
+# Activate the pixi environment that was installed at build time. Activation scripts of conda packages are not
+# written for `set -u` (e.g. hwloc's bash completion reads $ZSH_VERSION), so relax it while sourcing.
+set +u
 # shellcheck disable=SC1091
 . /usr/local/share/tensorizer/shell-hook.sh
+set -u
 
 if [ "$#" -eq 0 ] || [ "$1" = "serve" ]; then
     [ "$#" -gt 0 ] && shift
