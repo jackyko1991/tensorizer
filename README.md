@@ -1,5 +1,10 @@
 # Tensorizer
 
+[![CI](https://github.com/jackyko1991/tensorizer/actions/workflows/ci.yml/badge.svg)](https://github.com/jackyko1991/tensorizer/actions/workflows/ci.yml)
+[![Site](https://github.com/jackyko1991/tensorizer/actions/workflows/pages.yml/badge.svg)](https://github.com/jackyko1991/tensorizer/actions/workflows/pages.yml)
+[![Runner image build](https://github.com/jackyko1991/tensorizer/actions/workflows/runner-image.yml/badge.svg)](https://github.com/jackyko1991/tensorizer/actions/workflows/runner-image.yml)
+[![Docker image](https://img.shields.io/badge/docker-ghcr.io%2Fjackyko1991%2Ftensorizer--runner-2496ED?logo=docker&logoColor=white)](https://github.com/jackyko1991/tensorizer/pkgs/container/tensorizer-runner)
+
 **An education tool to study physics equation conversion to tensor form, PyTorch implementation, solving and visualization.**
 
 Tensorizer standardizes the conversion of physics equations into GPU-accelerated tensors through the following workflow:
@@ -55,7 +60,7 @@ The interface and all problem text are available in 10 languages: English, ÁπÅÈ´
 ## Problem library
 
 <!-- library:start -->
-227 problems in 19 topics by difficulty level. Click a topic to expand it.
+233 problems in 19 topics by difficulty level. Click a topic to expand it.
 
 <details>
 <summary><b>Mechanics</b> (13 problems)</summary>
@@ -546,7 +551,7 @@ The interface and all problem text are available in 10 languages: English, ÁπÅÈ´
 </details>
 
 <details>
-<summary><b>Medical Physics</b> (11 problems)</summary>
+<summary><b>Medical Physics</b> (12 problems)</summary>
 
 <details>
 <summary>üü¢ Beginner (3)</summary>
@@ -571,7 +576,7 @@ The interface and all problem text are available in 10 languages: English, ÁπÅÈ´
 </details>
 
 <details>
-<summary>üî¥ Advanced (5)</summary>
+<summary>üî¥ Advanced (6)</summary>
 
 | Problem | Key equation |
 |---|---|
@@ -580,6 +585,7 @@ The interface and all problem text are available in 10 languages: English, ÁπÅÈ´
 | [Diffusion tensor imaging: mapping nerve fibres](problems/medical/diffusion_tensor_imaging) | $S_{vg} = S_{0v}\,e^{-b\,\hat g_{gi}\,D_{vij}\,\hat g_{gj}}$ |
 | [Photon-counting CT and material decomposition](problems/medical/photon_counting_ct) | $A_{rm} = \textstyle\int a_m\,dl$ |
 | [Aneurysm CFD: the OpenFOAM + VMTK workflow, rebuilt with tensors](problems/medical/aneurysm_cfd) | $(\nabla\!\cdot\mathbf u)_c = \tfrac1h\Big(\sum_{o(f)=c}u_f - \sum_{n(f)=c}u_f\Big)$ |
+| [The power of workflow orchestration: a Circle of Willis cohort as a tensor DAG](problems/medical/cow_workflow_dag) | $M_a^{sr} \in \{I_{n_a},\ \mathbb 1_{n_a},\ \mathbb 1_{n_a}^{\top}\}$ |
 
 </details>
 
@@ -752,7 +758,7 @@ The interface and all problem text are available in 10 languages: English, ÁπÅÈ´
 </details>
 
 <details>
-<summary><b>AI & Machine Learning</b> (6 problems)</summary>
+<summary><b>AI & Machine Learning</b> (11 problems)</summary>
 
 <details>
 <summary>üü† Intermediate (2)</summary>
@@ -765,7 +771,7 @@ The interface and all problem text are available in 10 languages: English, ÁπÅÈ´
 </details>
 
 <details>
-<summary>üî¥ Advanced (4)</summary>
+<summary>üî¥ Advanced (9)</summary>
 
 | Problem | Key equation |
 |---|---|
@@ -773,6 +779,11 @@ The interface and all problem text are available in 10 languages: English, ÁπÅÈ´
 | [AlphaGo in miniature: tree search on a $5\times5$ Go board](problems/ai/alphago_mini) | $r_{bp} \leftarrow r_{bp} \lor \big(s_{bp} \land [A_{pq}\,r_{bq} > 0]\big)$ |
 | [Fourier neural operator: learning the Burgers solution operator](problems/ai/neural_operator) | $\hat w_{bok} = R_{iok}\,\hat v_{bik}$ |
 | [Physics-informed neural network (PINN): damped oscillator](problems/ai/pinn_oscillator) | $h^{(l+1)}_{ni} = \tanh\!\big(W^{(l)}_{ij}\,h^{(l)}_{nj} + b^{(l)}_i\big)$ |
+| [A workflow DAG is a mixture of experts with a fixed router](problems/ai/moe_dag_pipeline) | $D_{mnec} = G_{mne}\,[c = \mathrm{rank}_e(n)]$ |
+| [Train apart, stitch by a DAG tensor: a CNN and a tiny LM](problems/ai/stitch_llm_cnn_dag) | $q_{mne} = \mathrm{softmax}_e\,\mathrm{CNN}_m(x_{mn})$ |
+| [Operator search on MNIST: a tensor DAG writes its own classification equation](problems/ai/operator_search_mnist) | $w_{eo} = \frac{M_{eo}\, e^{\alpha_{eo}/T}}{\sum_{o'} M_{eo'}\, e^{\alpha_{eo'}/T}}$ |
+| [Snake played by a CNN and a mixture of expert controllers](problems/ai/snake_moe_control) | $D_{mbks} = G_{mbk}\,[s = \mathrm{rank}_k(b)]$ |
+| [Equation finder: a tensor AI that writes the governing equation of its data](problems/ai/equation_finder) | $\Theta_{nk} = \sum_{\text{parts}} s\, D^{\alpha}\Big(\prod_g u_g^{p_g}\Big)_n$ |
 
 </details>
 
