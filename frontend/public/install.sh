@@ -18,7 +18,8 @@
 #                     (the default when no mode is given)
 #   --ip ADDR         the public address for --sslip (default: detected)
 #   --port N          local port of the runner (default 8765)
-#   --gpu             NVIDIA GPU: the -cuda image (needs the NVIDIA driver and the NVIDIA Container Toolkit)
+#   --gpu             NVIDIA GPU: the -cuda image (needs the NVIDIA driver and the NVIDIA Container Toolkit;
+#                     x86_64 only: on ARM64 the installer stops, the CPU image runs there instead)
 #   --shared          public/shared-server defences (TENSORIZER_SHARED=1); default off: your own server
 #   --version TAG     image version (default latest)
 #   --image REF       a different image (default ghcr.io/jackyko1991/tensorizer-runner)
@@ -28,6 +29,9 @@
 #   --uninstall       remove the services, containers, image, Caddy certificates and /etc/tensorizer
 #   --dry-run         print every command and file instead of running or writing it (no root needed)
 #   -h, --help        this help
+#
+# The CPU image is multi-arch (x86_64 and ARM64: Raspberry Pi 4/5 with a 64-bit OS, Graviton, Ampere); the CUDA
+# image is x86_64 only.
 set -eu
 
 # ---- defaults ------------------------------------------------------------------------------------------------------
@@ -93,6 +97,16 @@ done
 [ -n "$MODE" ] || MODE=notls
 case "$PORT" in '' | *[!0-9]*) die "--port must be a number" ;; esac
 case "$DOMAIN" in *[!A-Za-z0-9.-]*) die "--domain: letters, digits, dots and dashes only" ;; esac
+
+# CPU architecture (TENSORIZER_INSTALL_ARCH overrides uname -m, for tests). The CPU image is multi-arch, so
+# `docker pull` picks the right one by itself; only the CUDA image is x86_64 only.
+ARCH=${TENSORIZER_INSTALL_ARCH:-$(uname -m)}
+if [ "$GPU" -eq 1 ]; then
+    case "$ARCH" in
+        aarch64 | arm64 | armv8* | armv7* | armv6*)
+            die "--gpu: the CUDA image is x86_64 (amd64) only and this machine is $ARCH. Run without --gpu: the CPU image works on ARM64." ;;
+    esac
+fi
 
 TAG=$VERSION
 [ "$GPU" -eq 1 ] && TAG="$VERSION-cuda"

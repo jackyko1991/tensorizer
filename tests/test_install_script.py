@@ -5,6 +5,7 @@ Nothing here touches the machine: the installer only runs with --dry-run, which 
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -74,6 +75,21 @@ def test_dry_run_sslip_gpu_shared_port():
     assert "TENSORIZER_SHARED=1" in out and "TENSORIZER_PORT=9000" in out
     assert "ALLOW_CODE_EXEC=0" in out and "AGENT_ENABLED=0" in out  # shared: no user code
     assert "-p 127.0.0.1:9000:9000" in out
+
+
+@needs_sh
+@pytest.mark.parametrize("arch", ["aarch64", "arm64"])
+def test_gpu_on_arm64_says_cuda_is_amd64_only(arch):
+    env = {**os.environ, "TENSORIZER_INSTALL_ARCH": arch}
+    r = subprocess.run(
+        [SH, str(SCRIPT), "--dry-run", "--gpu"], capture_output=True, text=True, encoding="utf-8", timeout=60, env=env
+    )
+    assert r.returncode != 0 and "x86_64 (amd64) only" in r.stderr
+    # the CPU image is multi-arch: the same command without --gpu works on ARM64
+    r = subprocess.run(
+        [SH, str(SCRIPT), "--dry-run"], capture_output=True, text=True, encoding="utf-8", timeout=60, env=env
+    )
+    assert r.returncode == 0 and " pull ghcr.io/jackyko1991/tensorizer-runner:latest" in r.stdout
 
 
 @needs_sh

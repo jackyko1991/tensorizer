@@ -27,6 +27,24 @@
   },
   "wikidata": "Q108941486"
  },
+ "ai/cxr_report_dag": {
+  "titles": {
+   "en": "Chest radiograph",
+   "zh": "胸部X光",
+   "fr": "Radiographie du thorax",
+   "de": "Röntgen-Thorax",
+   "es": "Radiografía de tórax",
+   "ru": "Рентгенография грудной клетки",
+   "hi": "वक्ष विकिरणचित्र"
+  },
+  "wikidata": "Q1283318"
+ },
+ "ai/equation_finder": {
+  "titles": {
+   "en": "Sparse identification of non-linear dynamics"
+  },
+  "wikidata": "Q116442972"
+ },
  "ai/hopfield_memory": {
   "titles": {
    "en": "Hopfield network",
@@ -77,6 +95,16 @@
    "zh": "物理信息神经网络"
   },
   "wikidata": "Q107285102"
+ },
+ "ai/snake_moe_control": {
+  "titles": {
+   "en": "Mixture of experts",
+   "zh": "混合专家模型",
+   "fr": "Mélange d'experts",
+   "es": "Mezcla de expertos",
+   "ko": "전문가 혼합"
+  },
+  "wikidata": "Q30688561"
  },
  "ai/stitch_llm_cnn_dag": {
   "titles": {

@@ -341,8 +341,28 @@ function Path({ title, children }: { title: string; children: ReactNode }) {
 
 const TUNNEL = "ssh -N -L 8765:localhost:8765 you@machine";
 const TUNNEL_JUMP = "ssh -N -J you@jumphost -L 8765:localhost:8765 you@machine";
+const PIXI_INSTALL = "curl -fsSL https://pixi.sh/install.sh | sh";
+const CLONE = "git clone https://github.com/jackyko1991/tensorizer && cd tensorizer && pixi install";
+const MAKE_TOKEN = 'export TENSORIZER_TOKEN=$(openssl rand -hex 32); echo "$TENSORIZER_TOKEN"';
+const SERVE_LOCAL = "pixi run python -m tensorizer_physics.serve --host 127.0.0.1 --port 8765";
 
-/** Three set-up paths for non-experts, each step with a copyable command; the full guide is on GitHub. */
+/** Make a runner on 127.0.0.1:8765 reachable over HTTPS: Tailscale, or a Cloudflare Tunnel (paths 2 and 5). */
+function ReachSteps() {
+  const { t } = useLang();
+  return (
+    <>
+      <Step text={t("be.g2.ts1")} commands={["curl -fsSL https://tailscale.com/install.sh | sh", "sudo tailscale up"]} />
+      <Step text={t("be.g2.ts2")} />
+      <Step text={t("be.g2.ts3")} commands={["sudo tailscale serve --bg 8765", "tailscale serve status"]} />
+      <Step text={t("be.g2.ts4")} />
+      <p className="-mt-1 text-gray-500">{t("be.g2.s2b")}</p>
+      <Step text={t("be.g2.s3")} commands={["cloudflared tunnel --url http://127.0.0.1:8765"]} />
+      <Step text={t("be.g2.s4")} />
+    </>
+  );
+}
+
+/** Five set-up paths for non-experts, each step with a copyable command; the full guide is on GitHub. */
 function SetupGuide() {
   const { t } = useLang();
   return (
@@ -364,18 +384,14 @@ function SetupGuide() {
           <Step text={t("be.g1.s5c")} commands={[`${INSTALL} --sslip --gpu`, "nvidia-smi"]} />
           <Step text={t("be.g1.s6")} />
         </ol>
+        <p className="text-gray-500">{t("be.g.armNote")}</p>
       </Path>
       <Path title={t("be.g2.title")}>
         <ol className="list-decimal space-y-2 pl-4">
           <Step text={t("be.g2.s1")} commands={[`${INSTALL} --no-tls`]} />
-          <Step text={t("be.g2.ts1")} commands={["curl -fsSL https://tailscale.com/install.sh | sh", "sudo tailscale up"]} />
-          <Step text={t("be.g2.ts2")} />
-          <Step text={t("be.g2.ts3")} commands={["sudo tailscale serve --bg 8765", "tailscale serve status"]} />
-          <Step text={t("be.g2.ts4")} />
-          <p className="-mt-1 text-gray-500">{t("be.g2.s2b")}</p>
-          <Step text={t("be.g2.s3")} commands={["cloudflared tunnel --url http://127.0.0.1:8765"]} />
-          <Step text={t("be.g2.s4")} />
+          <ReachSteps />
         </ol>
+        <p className="text-gray-500">{t("be.g.armNote")}</p>
       </Path>
       <Path title={t("be.g3.title")}>
         <p className="rounded-md border border-amber-300 bg-amber-50 px-2 py-1.5 font-medium text-amber-900" data-testid="vpn-policy">
@@ -391,23 +407,48 @@ function SetupGuide() {
         </ol>
         <p className="font-medium text-gray-800">{t("be.g3.b")}</p>
         <ol className="list-decimal space-y-2 pl-4">
-          <Step
-            text={t("be.g3.b1")}
-            commands={[
-              "curl -fsSL https://pixi.sh/install.sh | sh",
-              "git clone https://github.com/jackyko1991/tensorizer && cd tensorizer && pixi install",
-            ]}
-          />
-          <Step
-            text={t("be.g3.b2")}
-            commands={[
-              'export TENSORIZER_TOKEN=$(openssl rand -hex 32); echo "$TENSORIZER_TOKEN"',
-              "pixi run python -m tensorizer_physics.serve --host 127.0.0.1 --port 8765",
-            ]}
-          />
+          <Step text={t("be.g3.b1")} commands={[PIXI_INSTALL, CLONE]} />
+          <Step text={t("be.g3.b2")} commands={[MAKE_TOKEN, SERVE_LOCAL]} />
           <Step text={t("be.g3.b3")} />
         </ol>
         <p className="rounded-md bg-amber-50 px-2 py-1.5 text-amber-900">⚠ {t("be.g3.b4")}</p>
+      </Path>
+      <Path title={t("be.g4.title")}>
+        <p className="text-gray-600">{t("be.g4.why")}</p>
+        <ol className="list-decimal space-y-2 pl-4">
+          <Step text={t("be.g4.s1")} commands={[PIXI_INSTALL, CLONE]} />
+        </ol>
+        <p className="font-medium text-gray-800">{t("be.g4.a")}</p>
+        <ol className="list-decimal space-y-2 pl-4">
+          <Step text={t("be.g4.a1")} commands={["pixi run python -m tensorizer_physics.serve --port 8765"]} />
+          <Step text={t("be.g4.a2")} />
+        </ol>
+        <p className="text-gray-500">{t("be.g4.f64")}</p>
+        <p className="font-medium text-gray-800">{t("be.g4.b")}</p>
+        <ol className="list-decimal space-y-2 pl-4">
+          <Step text={t("be.g4.b1")} commands={[MAKE_TOKEN, SERVE_LOCAL]} />
+          <Step text={t("be.g4.b2")} commands={["tailscale serve --bg 8765", "tailscale serve status"]} />
+          <Step text={t("be.g4.b3")} />
+        </ol>
+      </Path>
+      <Path title={t("be.g5.title")}>
+        <p className="rounded-md bg-amber-50 px-2 py-1.5 text-amber-900" data-testid="arm-pending">
+          {t("be.g5.pending")}
+        </p>
+        <p className="text-gray-600">{t("be.g5.req")}</p>
+        <ol className="list-decimal space-y-2 pl-4">
+          <Step text={t("be.g5.s1")} commands={[`${INSTALL} --no-tls`]} />
+        </ol>
+        <p className="font-medium text-gray-800">{t("be.g5.s2")}</p>
+        <ol className="list-decimal space-y-2 pl-4">
+          <ReachSteps />
+        </ol>
+        <p className="font-medium text-gray-800">{t("be.g5.b")}</p>
+        <ol className="list-decimal space-y-2 pl-4">
+          <Step text={t("be.g3.b1")} commands={[PIXI_INSTALL, CLONE]} />
+          <Step text={t("be.g3.b2")} commands={[MAKE_TOKEN, SERVE_LOCAL]} />
+          <Step text={t("be.g5.b3")} />
+        </ol>
       </Path>
       <div className="pt-1">
         <p className="font-medium text-gray-800">{t("be.rs.secTitle")}</p>

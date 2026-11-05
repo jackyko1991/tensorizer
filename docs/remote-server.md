@@ -6,7 +6,7 @@ to put a runner on a machine you control (a rented VPS, a mini-PC at home, a lab
 the website to it.
 
 There is no shared demo server: problems run either on **This device** (a runner on the computer you browse from)
-or on a server of your own, set up as below. The website's **⚙ Backend → Remote** tab has the same three set-up paths
+or on a server of your own, set up as below. The website's **⚙ Backend → Remote** tab has the same set-up paths
 in short, step by step.
 
 You need: a Linux machine you can log in to with `ssh` (or Windows with WSL2, see the last section), and about
@@ -32,6 +32,12 @@ your browser (https page) ──https──▶  your server ──▶ runner con
 | Home server, public URL | Cloudflare Tunnel | `--no-tls` | [C2](#c2-home-server-with-a-cloudflare-tunnel-public-url) |
 | Machine behind a university/company VPN or jump host (also without root/Docker, e.g. HPC) | an SSH tunnel | `--no-tls`, or no installer | [D](#d-a-machine-behind-a-vpn-ssh-tunnel) |
 | Windows PC | WSL2 | `--no-tls` | [E](#e-windows-with-wsl2) |
+| Mac (Apple GPU) | Tailscale, or none on the same Mac | no installer (native) | [F](#f-mac-native-uses-the-apple-gpu) |
+| ARM64: Raspberry Pi 4/5, AWS Graviton, Ampere, Oracle Always Free | Tailscale or Cloudflare Tunnel | `--no-tls` | [G](#g-arm64-device-raspberry-pi-45-cloud-arm-servers) |
+
+**Architectures.** The CPU image `:latest` / `:<version>` is multi-arch: the same tag runs on x86_64 (amd64) and
+ARM64 (arm64), and `docker pull` picks the right one. The CUDA image (`:cuda`, `:<version>-cuda`, `--gpu`) is
+x86_64 only; the installer stops with a message if you ask for it on ARM.
 
 ## What the installer does
 
@@ -53,7 +59,7 @@ Useful options (all of them: `--help`):
 
 | Option | Meaning |
 |---|---|
-| `--gpu` | use the NVIDIA GPU (installs the `-cuda` image; needs the NVIDIA driver and the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)) |
+| `--gpu` | use the NVIDIA GPU (installs the `-cuda` image, x86_64 only; needs the NVIDIA driver and the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)) |
 | `--port 8765` | the runner's local port |
 | `--memory 4g`, `--cpus 2` | cap what the runner may use |
 | `--shared` | turn on the public-demo defences (time limits, one job per visitor, no edited code); see [Security](#security) |
@@ -260,6 +266,81 @@ curl -fsSL https://jackyko1991.github.io/tensorizer/install.sh | sudo sh -s -- -
 
 WSL2 stops when no Ubuntu window is open for a while. Open Ubuntu (or run `wsl -d Ubuntu` in PowerShell) before you
 use the runner. (Without Docker at all: `pixi run api` in a clone of this repository runs the runner natively.)
+
+## F. Mac (native, uses the Apple GPU)
+
+Run the runner directly on macOS, **not in Docker**: Docker on a Mac runs a Linux virtual machine, which has no
+access to the Apple GPU (Metal/MPS). The GPU needs Apple silicon (M1 or later); Intel Macs run on the CPU.
+
+```sh
+# 1. In Terminal: install pixi, then get the code and its environment (a few minutes the first time)
+curl -fsSL https://pixi.sh/install.sh | sh          # then open a new Terminal window
+git clone https://github.com/jackyko1991/tensorizer && cd tensorizer && pixi install
+```
+
+### F1. On the same Mac
+
+```sh
+# 2. Start the runner for this computer only. No token: the website's Local mode cannot send one.
+pixi run python -m tensorizer_physics.serve --port 8765
+```
+
+3. In the website: **⚙ Backend → Local**, port `8765`, and **Device: MPS**. *Auto* only picks an NVIDIA GPU, so on
+   a Mac it means the CPU; the start-up banner lists `mps (Apple GPU)` when PyTorch can use it.
+
+**float64.** MPS has no float64. A problem whose code uses `float64` runs on the CPU instead (the console says
+`device: cpu (this problem uses float64, which MPS does not support)`), and single operations MPS lacks fall back to
+the CPU (`PYTORCH_ENABLE_MPS_FALLBACK=1`), so every problem still runs.
+
+### F2. From your other devices (Tailscale)
+
+```sh
+# 2. Make a token (copy it somewhere safe), then start the runner with it
+export TENSORIZER_TOKEN=$(openssl rand -hex 32); echo "$TENSORIZER_TOKEN"
+pixi run python -m tensorizer_physics.serve --host 127.0.0.1 --port 8765
+
+# 3. Install the Tailscale app for macOS (https://tailscale.com/download or the Mac App Store) and log in; in the
+#    admin console (https://login.tailscale.com/admin/dns) turn on MagicDNS and "HTTPS Certificates". Then, in a
+#    second Terminal window (if `tailscale` is not found, turn on the command-line tool in the app's settings):
+tailscale serve --bg 8765
+tailscale serve status        # prints https://<mac>.<tailnet>.ts.net
+```
+
+4. On each other device: install Tailscale with the same account, then **⚙ Backend → Remote → + Add server** with
+   `https://<mac>.<tailnet>.ts.net` and the token.
+
+With a token set, the Local mode of F1 no longer works (every request needs the token); use the remote server
+entry on the Mac too. Remote runs use the server's default device, which on a Mac is the CPU: the Device choice
+(MPS) applies to Local only.
+
+## G. ARM64 device (Raspberry Pi 4/5, cloud ARM servers)
+
+> The ARM64 image is published with the next runner image build (the `Runner container image` workflow); until
+> then `docker pull` on ARM finds no matching image.
+
+Needs a **64-bit OS** (Raspberry Pi OS 64-bit, or Ubuntu 24.04 arm64; `uname -m` prints `aarch64`) and at least
+4 GB memory (8 GB is better). Everything runs on the CPU, so the heavy CFD and training problems are slow.
+
+```sh
+# 1. The same installer: it installs Docker if needed and pulls the ARM64 image by itself.
+#    --gpu is not available on ARM (the CUDA image is x86_64 only).
+curl -fsSL https://jackyko1991.github.io/tensorizer/install.sh | sudo sh -s -- --no-tls
+```
+
+2. Make it reachable exactly as for a home server: [C1 (Tailscale)](#c1-home-server-with-tailscale-private) or
+   [C2 (Cloudflare Tunnel)](#c2-home-server-with-a-cloudflare-tunnel-public-url), then add the `https://` address
+   and the token in the website.
+
+**Without Docker** (pixi has a `linux-aarch64` environment):
+
+```sh
+curl -fsSL https://pixi.sh/install.sh | sh          # then open a new shell
+git clone https://github.com/jackyko1991/tensorizer && cd tensorizer && pixi install
+export TENSORIZER_TOKEN=$(openssl rand -hex 32); echo "$TENSORIZER_TOKEN"
+pixi run python -m tensorizer_physics.serve --host 127.0.0.1 --port 8765   # keep it running, e.g. in tmux
+```
+
+Then `tailscale serve --bg 8765` or a Cloudflare Tunnel as in C1/C2, and add the `https://` address with the token.
 
 ---
 

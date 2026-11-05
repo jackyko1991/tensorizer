@@ -70,8 +70,13 @@ export default function DataView({
   comments = true,
   bare = false,
   fill = false,
+  expanded,
+  onExpand,
 }: {
   dataset: Dataset;
+  /** Controlled ⤢: the parent (the data browser) enlarges itself, file list included, instead of this view. */
+  expanded?: boolean;
+  onExpand?: (big: boolean) => void;
   tall?: boolean;
   /** No own border (inside a frame that already has one, e.g. the data browser). */
   bare?: boolean;
@@ -86,13 +91,16 @@ export default function DataView({
   const [text, setText] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
   // ⤢ any file to the whole page (an overlay); Esc or ⤡ brings it back
-  const [big, setBig] = useState(false);
+  const [ownBig, setOwnBig] = useState(false);
+  const controlled = onExpand !== undefined;
+  const big = controlled ? !!expanded : ownBig;
+  const toggleBig = () => (controlled ? onExpand(!big) : setOwnBig((b) => !b));
   useEffect(() => {
-    if (!big) return;
-    const key = (e: KeyboardEvent) => e.key === "Escape" && setBig(false);
+    if (!big || controlled) return;
+    const key = (e: KeyboardEvent) => e.key === "Escape" && setOwnBig(false);
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, [big]);
+  }, [big, controlled]);
   const fit = fill || big;
   const readable = dataset.kind === "table" || dataset.kind === "text";
   useEffect(() => {
@@ -124,9 +132,9 @@ export default function DataView({
   return (
     <div
       className={`flex min-h-0 flex-col overflow-hidden bg-white ${
-        big
+        big && !controlled
           ? "fixed inset-3 z-50 rounded-lg border border-gray-200 shadow-2xl"
-          : `${bare ? "" : "rounded-lg border border-gray-200"} ${fill ? "h-full" : ""}`
+          : `${bare ? "" : "rounded-lg border border-gray-200"} ${fill || big ? "h-full" : ""}`
       }`}
       data-testid="dataset"
     >
@@ -147,7 +155,7 @@ export default function DataView({
           {t("dataset.download")}
         </a>
         <button
-          onClick={() => setBig((b) => !b)}
+          onClick={toggleBig}
           title={t(big ? "mesh.shrink" : "mesh.expand")}
           aria-label={t(big ? "mesh.shrink" : "mesh.expand")}
           aria-pressed={big}
@@ -398,6 +406,16 @@ export function DataSources({
   const [selected, setSelected] = useState(datasets[0]?.name ?? "");
   const [panel, setPanel] = useState<"files" | "source" | null>(null);
   const frame = useRef<HTMLElement>(null);
+  // ⤢ enlarges the whole browser (rail, file list and viewer), so another file can be picked while zoomed
+  const [big, setBig] = useState(false);
+  useEffect(() => {
+    if (!big) return;
+    const key = (e: KeyboardEvent) => e.key === "Escape" && setBig(false);
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
+  }, [big]);
+  // the file list stays folded when enlarging; the rail button opens it to pick another file
+  const expand = (v: boolean) => setBig(v);
   // picking a file closes the panel when it floats over the viewer (narrow column); a wide layout keeps it open
   const choose = (name: string) => {
     setSelected(name);
@@ -419,11 +437,16 @@ export function DataSources({
     { id: "source" as const, label: t("dataset.source") },
   ].filter((r) => railIds.includes(r.id));
   return (
-    <div className={`@container ${fill ? "h-full" : ""}`}>
+    <div
+      className={`@container ${
+        big ? "fixed inset-3 z-50 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-2xl" : fill ? "h-full" : ""
+      }`}
+      data-testid={big ? "data-sources-big" : undefined}
+    >
       <section
         ref={frame}
         data-testid="data-sources"
-        className={`relative flex overflow-hidden bg-white ${fill ? "h-full" : ""}`}
+        className={`relative flex overflow-hidden bg-white ${fill || big ? "h-full" : ""}`}
       >
         <nav className="flex w-10 shrink-0 flex-col items-center gap-1 border-r border-gray-200 bg-gray-50 py-2">
           {rail.map((r) => (
@@ -486,7 +509,7 @@ export function DataSources({
           </aside>
         )}
         <div className="flex min-w-0 flex-1 flex-col">
-          <DataView dataset={current} comments={false} bare fill={fill} />
+          <DataView dataset={current} comments={false} bare fill={fill || big} expanded={big} onExpand={expand} />
         </div>
       </section>
     </div>

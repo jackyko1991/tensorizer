@@ -3,8 +3,10 @@
 #   CPU  : docker build -t tensorizer-runner .
 #   CUDA : docker build --build-arg PIXI_ENV=cuda -t tensorizer-runner:cuda .
 #
-# CI (.github/workflows/runner-image.yml) publishes ghcr.io/jackyko1991/tensorizer-runner:<version> and
-# :<version>-cuda. The Hugging Face Space builds this file as is (CPU, the last stage), see docs/deploy-huggingface.md.
+# CI (.github/workflows/runner-image.yml) publishes ghcr.io/jackyko1991/tensorizer-runner:<version> (multi-arch:
+# linux/amd64 + linux/arm64; nothing here is architecture-specific, both base images are multi-arch) and
+# :<version>-cuda (amd64 only). The Hugging Face Space builds this file as is (CPU, the last stage), see
+# docs/deploy-huggingface.md.
 #
 # Runtime behaviour, all switchable by environment variables (docker run -e NAME=value, or Space variables):
 #   TENSORIZER_PORT    7860 (what Hugging Face expects); the server installer sets 8765

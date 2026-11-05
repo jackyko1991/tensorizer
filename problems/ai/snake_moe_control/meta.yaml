@@ -1,0 +1,120 @@
+title: 'Snake played by a CNN and a mixture of expert controllers'
+category: ai
+level: advanced
+order: 8
+summary: >
+  A game-playing agent built from two parts: a small CNN that looks at the board and a control network that picks
+  the move, here a mixture of experts whose router sends each game to one of $K$ small expert networks. The game is
+  Snake on a $10 \times 10$ grid, written entirely as tensors so that a batch of games advances in one step. The
+  controllers learn by imitating a planning teacher (breadth-first search and flood fill, also tensor operations).
+  Four controllers with the same weight budget are compared: a dense mixture, a Switch top-1 router, a dense-trained
+  router used top-1, and one plain MLP; then the routing is measured against the game state, to see what, if
+  anything, each expert is used for. All four eat about 20 pieces of food per game where a random policy eats 0.2,
+  two thirds of the teacher's score; at this size the plain MLP does as well as any mixture.
+animated: true
+vector_form: 'z = \sum_k G_k(\mathbf h)\, f_k(\mathbf h),\qquad \mathbf h = \mathrm{CNN}(\text{view}),\qquad p = \mathrm{softmax}(W^G \mathbf h + b^G),\qquad G = p\ \text{(dense)}\ \text{or}\ \mathrm{onehot}(\arg\max p) \odot p\ \text{(top-1)},\qquad \mathcal L = \mathrm{CE}(z, a^{\ast}) + \alpha\, K \sum_k f_k P_k'
+index_form: 'D_{mbks} = G_{mbk}\,[s = \mathrm{rank}_k(b)],\qquad U_{mksf} = D_{mbks}\, h_{mbf},\qquad Y_{mksa} = f_k(U_{mks})_a,\qquad z_{mba} = D_{mbks}\, g_{mbk}\, Y_{mksa},\qquad \mathrm{age}^{\prime}_{brc} = \max(\mathrm{age}_{brc} - [\neg \mathrm{eat}_b], 0),\ \mathrm{age}^{\prime}_{b,\mathbf x^{\prime}_b} = \ell^{\prime}_b'
+translation:
+  - {symbol: '\mathrm{age}_{brc}', code: 'State.age', shape: '(B, N, N)', meaning: 'the board of game $b$: 0 = empty, otherwise the moves until that body cell is free again (head = length $\ell_b$, tail = 1)'}
+  - {symbol: '\mathbf x''_b = \mathbf x_b + \Delta_{d''_b}', code: 'step(s, action, u, hunger_limit)', shape: '(B, 2)', meaning: 'all $B$ games move at once; $d''_b = (d_b + a_b - 1) \bmod 4$ for the relative action $a_b$ (left, straight, right); a wall or a cell with age $> 1$ ends the game (the tail cell, age 1, is leaving)'}
+  - {symbol: '\mathrm{food}''_b', code: 'place_food(age, u)', shape: '(B, 2)', meaning: 'after eating, the empty cell with the largest of the seeded uniform numbers $u_{brc}$: never on the body'}
+  - {symbol: 'v_{bcij}', code: 'planes(s)', shape: '(B, 4, 2N-1, 2N-1)', meaning: 'what the CNN sees: wall, body, age/length and food, centred on the head with the heading pointing up, so the three moves are always the same three neighbours'}
+  - {symbol: 'h_{mbf}', code: 'cnn_features(x, w)', shape: '(M, B, F)', meaning: 'CNN features; the model axis $m$ (variant × seed) becomes the groups of one grouped convolution per layer'}
+  - {symbol: 'p_{mbk}', code: 'router_probs(h, router)', shape: '(M, B, K)', meaning: 'router: softmax over the $K$ experts, rows sum to 1'}
+  - {symbol: 'D_{mbks}', code: 'dispatch(G, C)', shape: '(M, B, K, C)', meaning: 'game $b$ to slot $s$ of expert $k$ (its rank among the games routed there), imported from moe_dag_pipeline'}
+  - {symbol: 'Y_{mksa}', code: "einsum('mksf,mkfh->mksh', U, W1) …", shape: '(M, K, C, 3)', meaning: 'all experts in one batched product, each on its own buffer of games: three action logits'}
+  - {symbol: 'z_{mba}', code: "einsum('mbks,mbk,mksa->mba', D, g, Y)", shape: '(M, B, 3)', meaning: 'combine; dense: $z = p_{mbk} y_{mkba}$ with every expert on every game'}
+  - {symbol: '\mathcal L_{\mathrm{aux}}', code: 'load_balance_loss(p, top1(p))', shape: '(M,)', meaning: 'Switch load balancing, $K \sum_k f_k P_k$: 1 when balanced, $K$ when collapsed'}
+  - {symbol: 'a^{\ast}_b', code: 'teacher_actions(s)', shape: '(B,)', meaning: 'the teacher: no deadly move, then a move whose free region (flood fill) holds the snake, then the shortest path to the food (breadth-first search as repeated tensor relaxation)'}
+notes: >
+  Idea. Jacky Ka Long Ko suggested a game-playing agent made of a CNN for perception and a control network with
+  mixture-of-experts routing, and asked for the tensor routing part above all. This problem builds a small one on
+  Snake, a generic grid game written from scratch here (own pixel look, no assets).
+
+  Game. $B$ games on an $N \times N$ board ($N = 10$) are one set of tensors. The board stores each body cell's age
+  (moves until it is free again: the head has age = length, the tail 1), so one move of every game is a handful of
+  tensor operations: the head steps to $\mathbf x + \Delta_{d'}$ with the new heading $d' = (d + a - 1) \bmod 4$ for
+  the relative action $a$ (left, straight, right); a wall or a cell of age $> 1$ ends the game (the tail cell is
+  leaving, so it is free); without food every age drops by 1, with food the snake keeps its tail and grows by one;
+  the new food is the empty cell with the largest of $N^2$ seeded uniform numbers, so it never lands on the body. A
+  game also ends after $N^2$ moves without food or when the snake fills the board. Tests: wall and self collision,
+  the free tail cell, growth by one, food never on the body, the ages always exactly $\ell, \ell - 1, \dots, 1$, and
+  the batched step equal to a plain per-game Python loop given the same random numbers.
+
+  Agent. Perception is a CNN (3×3 convolution with 8 channels, a stride-2 3×3 convolution with 16, a linear layer to
+  $F = 64$ features; 84 472 weights) on a view centred on the head with the heading pointing up, four planes: wall,
+  body, age/length (which cells free up first) and food. In this frame the three relative moves are always the same
+  three neighbours of the centre (a test checks that a move is deadly exactly when that neighbour is a wall or a body
+  cell that stays). Control is a mixture of $K = 4$ experts, each an MLP $64 \to 32 \to 3$ giving action logits,
+  behind a softmax router $p = \mathrm{softmax}(W^G \mathbf h + b^G)$: 8976 weights. The routed layer is the one of
+  moe_dag_pipeline, imported from it: a dispatch tensor puts each game into its expert's buffer (cumulative ranks, as
+  in GShard and Switch), all experts run in one batched einsum, and a combine einsum brings the logits back. Exact
+  checks: with a fixed one-hot router the layer equals running each game's expert alone (to $10^{-6}$), a uniform
+  dense router gives the mean of the experts, router rows sum to 1, and the load-balancing loss on known cases (1
+  when balanced, $K$ when collapsed, 1.1 on a hand-computed example).
+
+  Four controllers, same budget: (a) a dense mixture $z = \sum_k p_k f_k$ (every expert on every game); (b) Switch
+  top-1, only the most probable expert runs and its logits are scaled by $p_k$; (c) the dense-trained model of (a)
+  run with top-1 routing, no further training; (d) one MLP $64 \to 132 \to 3$ (8979 weights, the same as the
+  mixture). (a) and (b) both add the Switch load-balancing loss with $\alpha = 0.01$. Each variant has two seeds;
+  seed $s$ starts from the same CNN and expert weights in every variant, and all six trained models share one model
+  axis (the CNN's grouped convolution), each with its own minibatches.
+
+  Teacher and training. The teacher is a planner written with the same tensors: breadth-first search as repeated
+  relaxation over the free cells ($\mathrm{dist} \leftarrow \min(\mathrm{dist}, 1 + \min_{\mathrm{nbr}}
+  \mathrm{dist})$) and, in the same loop, a flood fill that labels each free region by its smallest cell index. It
+  never takes a deadly move, prefers a move whose free region can hold the snake, then the shortest path to the food,
+  then the larger region; its distance field equals a textbook queue-based BFS in a test. Training is behaviour
+  cloning (Pomerleau 1989): cross-entropy on the teacher's moves, from 54 040 states of 192 teacher games, 600 AdamW
+  steps of 128 states per model, with one DAgger round (Ross et al. 2011) after 360 steps: the students play 48 games
+  each, the teacher labels the 38 267 states they reach, and training continues on both. No reinforcement-learning
+  fine-tune is done; deep Q-learning (Mnih et al. 2015) is the classic way to learn such games from reward alone,
+  which would take far longer on a CPU.
+
+  Results (default run, 128 evaluation games shared by every policy: same starts and the same food stream, at most
+  300 moves). Food eaten per game, mean over games, with the two seeds: random 0.16 (dies after 15 moves);
+  (a) dense 20.7 (20.9, 20.4); (b) Switch 20.4 (21.1, 19.6); (c) dense→top-1 18.1 (18.4, 17.8); (d) monolithic 21.7
+  (21.8, 21.6); teacher 31.0 (287 of 300 moves survived on average, against 147–179 for the students). The students
+  agree with the teacher on 95–96 % of training states, yet score a third less: small errors compound over a game,
+  the usual weakness of behaviour cloning. A slow test checks that a trained policy beats random by a clear margin.
+
+  Routing, shown even where it is not a specialisation. The dense routers use all four experts (loads 0.16–0.38).
+  What they track best is the move itself: the mutual information between the routed expert and the controller's
+  move is 0.51 and 0.56 bit (2 bit is the most possible with four experts); in seed 1 one expert takes almost every
+  left and right turn and almost every state with no free cell ahead, while the other three share the straight
+  moves. Free cells ahead carry 0.20–0.28 bit, the distance to the food 0.08–0.12 and the body length 0.02–0.13 (a
+  drift from short to long snakes in seed 1 only). So the experts split by what to do (turn or keep going), not by a
+  strategy such as food-chasing versus tail avoidance; since an expert's output decides the move, this division is
+  partly built in. The Switch routers collapsed despite the balancing loss: seed 1 sends 85 % of the states to one
+  expert and 15 % to a second, seed 2 73 % and 26 %, two experts unused in each; the symmetry-breaking difficulty
+  seen in moe_dag_pipeline appears here as collapse. It costs nothing in score, because one expert with the shared
+  CNN (which holds most of the weights) already plays as well as four. Running the dense-trained router top-1 (c)
+  keeps the dense routing (0.60 and 0.67 bit with the move) but loses 2.6 food per game: the dense model blends its
+  experts and is not quite separable.
+
+  What holds and what does not. Exact: the batched game equals the reference loop, the routed layer with a fixed
+  router equals per-game expert calls, and the dense mixture with a uniform router is the expert mean. Measured on
+  one board size with two seeds: imitation brings every controller to about two thirds of the teacher, and no
+  mixture beats the plain MLP with the same weights (the MLP is ahead by about 1 food per game in both seeds, a small
+  gap at two seeds). Mixtures of experts pay off when many experts hold far more weights than one input can use; a
+  four-expert controller behind a CNN that does most of the work demonstrates the routing, not its advantage.
+
+  Related work. Adaptive mixtures of local experts (Jacobs, Jordan, Nowlan and Hinton 1991) introduced a gate that
+  assigns each case to one of several competing experts; the sparsely gated MoE layer (Shazeer et al. 2017) and the
+  Switch Transformer (Fedus et al. 2021, top-1 routing and the load-balancing loss used here) scaled it up. Deep
+  Q-networks (Mnih et al. 2015) learned Atari games from pixels with a CNN and reward alone; ALVINN (Pomerleau 1989)
+  steered a vehicle by imitating a human driver, the origin of behaviour cloning, and DAgger (Ross, Gordon and
+  Bagnell 2011) fixes its compounding errors by labelling the states the learner itself visits.
+
+  Device and limits. CPU by default: about 80 s of teacher, training and evaluation on a busy 6-core machine (6.6 s
+  teacher games, 6.0 s DAgger, 53 s training, 16 s evaluation) plus about 30 s for the GIF; a GPU (pixi run -e cuda)
+  speeds up the CNN but not the teacher's many small searches. The GIF shows (c), whose router uses all experts and
+  runs exactly one per game; routing.png shows all three routed variants, routing.csv and scores.csv hold the numbers.
+params:
+  grid: {default: 10, min: 8, max: 14, step: 1, type: int, label: 'Board size $N$ (cells)'}
+  seeds: {default: 2, min: 1, max: 4, step: 1, type: int, label: Seeds per variant}
+  experts: {default: 4, min: 2, max: 8, step: 1, type: int, label: 'Experts $K$'}
+  steps: {default: 600, min: 200, max: 4000, step: 100, type: int, label: Training steps}
+  balance_weight: {default: 0.01, min: 0.0, max: 0.1, step: 0.005, label: 'Load-balancing weight $\alpha$'}
+  dagger: {default: 1, min: 0, max: 1, step: 1, type: int, label: 'DAgger round (1 = on)'}
+  eval_games: {default: 128, min: 32, max: 512, step: 32, type: int, label: Evaluation games}

@@ -5,7 +5,7 @@ description = "Study physics equations in tensor form with PyTorch: equation →
 license = "Apache-2.0"
 license-file = "LICENSE"
 channels = ["conda-forge"]
-platforms = ["win-64", "osx-arm64", "linux-64"]
+platforms = ["win-64", "osx-arm64", "linux-64", "linux-aarch64"]
 
 [dependencies]
 python = "3.12.*"

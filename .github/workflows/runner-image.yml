@@ -1,13 +1,17 @@
 name: Runner container image
 
 # Builds the runner image (Dockerfile) and pushes it to the GitHub Container Registry:
-#   ghcr.io/jackyko1991/tensorizer-runner:<version>        CPU     (also :latest)
-#   ghcr.io/jackyko1991/tensorizer-runner:<version>-cuda   NVIDIA  (also :cuda)
+#   ghcr.io/jackyko1991/tensorizer-runner:<version>        CPU     (also :latest)   linux/amd64 + linux/arm64
+#   ghcr.io/jackyko1991/tensorizer-runner:<version>-cuda   NVIDIA  (also :cuda)     linux/amd64 only
 # The server installer (scripts/install.sh) and docs/remote-server.md pull these tags.
 #
 # Runs only on version tags (v1.2.3, also what publishing a GitHub release creates) and by hand
 # (Actions → Runner container image → Run workflow). Never on ordinary pushes: the CUDA image is large and slow.
-# linux/amd64 only: pixi.toml lists no linux-aarch64 platform, so there is no lock for arm64 yet.
+#
+# CPU: each architecture builds natively (ubuntu-24.04 and the GitHub ARM runner ubuntu-24.04-arm, no QEMU) and is
+# pushed by digest only; the `cpu-manifest` job then joins the two digests into one multi-arch tag, so
+# `docker pull ...:latest` picks the right one on x86_64 and on arm64 (Raspberry Pi 4/5, Graviton, Ampere).
+# CUDA: amd64 only (PyTorch's CUDA builds in pixi.toml's cuda environment are win-64/linux-64).
 on:
   push:
     tags: ["v*"]
@@ -34,82 +38,150 @@ env:
   IMAGE: ghcr.io/jackyko1991/tensorizer-runner
 
 jobs:
-  image:
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      matrix:
-        variant: [cpu, cuda]
+  version:
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.v.outputs.version }}
     steps:
-      - name: Skip CUDA when not asked for
-        id: gate
-        run: |
-          if [ "${{ matrix.variant }}" = "cuda" ] && [ "${{ github.event_name }}" = "workflow_dispatch" ] \
-             && [ "${{ inputs.cuda }}" != "true" ]; then echo "skip=1" >> "$GITHUB_OUTPUT"; fi
-
-      - if: steps.gate.outputs.skip != '1'
-        uses: actions/checkout@v7.0.1
-
-      # The CUDA environment (PyTorch + CUDA libraries) needs more disk than a fresh runner has free.
-      - name: Free disk space
-        if: steps.gate.outputs.skip != '1'
-        run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
-          df -h /
-
-      - name: Version
-        if: steps.gate.outputs.skip != '1'
-        id: v
+      - uses: actions/checkout@v7.0.1
+      - id: v
         run: |
           v="${{ inputs.version }}"
           if [ -z "$v" ] && [ "${GITHUB_REF_TYPE}" = "tag" ]; then v="${GITHUB_REF_NAME#v}"; fi
           if [ -z "$v" ]; then v="$(sed -n 's/^version *= *"\(.*\)"/\1/p' pixi.toml | head -n1)"; fi
-          if [ "${{ matrix.variant }}" = "cuda" ]; then
-            echo "tags=${IMAGE}:${v}-cuda,${IMAGE}:cuda" >> "$GITHUB_OUTPUT"
-            echo "env=cuda" >> "$GITHUB_OUTPUT"
-          else
-            echo "tags=${IMAGE}:${v},${IMAGE}:latest" >> "$GITHUB_OUTPUT"
-            echo "env=default" >> "$GITHUB_OUTPUT"
-          fi
           echo "version=${v}" >> "$GITHUB_OUTPUT"
 
-      - if: steps.gate.outputs.skip != '1'
-        uses: docker/setup-buildx-action@v3
+  # ---- CPU: one native build per architecture, pushed by digest (no tag yet) ---------------------------------------
+  cpu:
+    needs: version
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            arch: amd64
+            runner: ubuntu-24.04
+          - platform: linux/arm64
+            arch: arm64
+            runner: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v7.0.1
 
-      - if: steps.gate.outputs.skip != '1'
-        uses: docker/login-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: ${{ matrix.platform }}
+          build-args: PIXI_ENV=default
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ needs.version.outputs.version }}
+            org.opencontainers.image.licenses=Apache-2.0
+            org.opencontainers.image.description=Tensorizer runner (cpu)
+          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=runner-cpu-${{ matrix.arch }}
+          cache-to: type=gha,mode=max,scope=runner-cpu-${{ matrix.arch }}
+
+      # Smoke test of the pushed image on its own architecture: read-only root, /work on tmpfs, /api/health answers.
+      - name: Smoke test
+        run: |
+          ref="${IMAGE}@${{ steps.build.outputs.digest }}"
+          docker run -d --name smoke --read-only --tmpfs /work:uid=1000,gid=1000 --tmpfs /tmp \
+            -e TENSORIZER_PORT=8765 -e TENSORIZER_SHARED=0 -p 127.0.0.1:8765:8765 "$ref"
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:8765/api/health; then echo; docker rm -f smoke; exit 0; fi
+            sleep 2
+          done
+          docker logs smoke; exit 1
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          d="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${d#sha256:}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: digest-cpu-${{ matrix.arch }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  # ---- CPU: join the per-architecture digests into the multi-arch tags :<version> and :latest ----------------------
+  cpu-manifest:
+    needs: [version, cpu]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digest-cpu-*
+          merge-multiple: true
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create the multi-arch manifest
+        working-directory: /tmp/digests
+        run: |
+          v="${{ needs.version.outputs.version }}"
+          docker buildx imagetools create -t "${IMAGE}:${v}" -t "${IMAGE}:latest" \
+            $(printf "${IMAGE}@sha256:%s " *)
+          docker buildx imagetools inspect "${IMAGE}:${v}"
+
+  # ---- CUDA: amd64 only --------------------------------------------------------------------------------------------
+  cuda:
+    needs: version
+    if: github.event_name != 'workflow_dispatch' || inputs.cuda
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      # The CUDA environment (PyTorch + CUDA libraries) needs more disk than a fresh runner has free.
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h /
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        if: steps.gate.outputs.skip != '1'
         uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/amd64
-          build-args: PIXI_ENV=${{ steps.v.outputs.env }}
-          tags: ${{ steps.v.outputs.tags }}
+          build-args: PIXI_ENV=cuda
+          tags: ${{ env.IMAGE }}:${{ needs.version.outputs.version }}-cuda,${{ env.IMAGE }}:cuda
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.version=${{ steps.v.outputs.version }}
+            org.opencontainers.image.version=${{ needs.version.outputs.version }}
             org.opencontainers.image.licenses=Apache-2.0
-            org.opencontainers.image.description=Tensorizer runner (${{ matrix.variant }})
+            org.opencontainers.image.description=Tensorizer runner (cuda)
           push: true
-          cache-from: type=gha,scope=runner-${{ matrix.variant }}
-          cache-to: type=gha,mode=max,scope=runner-${{ matrix.variant }}
-
-      # Smoke test of the pushed CPU image: read-only root, /work on tmpfs, /api/health answers.
-      - name: Smoke test
-        if: steps.gate.outputs.skip != '1' && matrix.variant == 'cpu'
-        run: |
-          docker run -d --name smoke --read-only --tmpfs /work:uid=1000,gid=1000 --tmpfs /tmp \
-            -e TENSORIZER_PORT=8765 -e TENSORIZER_SHARED=0 -p 127.0.0.1:8765:8765 "${IMAGE}:${{ steps.v.outputs.version }}"
-          for i in $(seq 1 60); do
-            if curl -fsS http://127.0.0.1:8765/api/health; then echo; docker rm -f smoke; exit 0; fi
-            sleep 2
-          done
-          docker logs smoke; exit 1
+          cache-from: type=gha,scope=runner-cuda
+          cache-to: type=gha,mode=max,scope=runner-cuda

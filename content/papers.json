@@ -23,6 +23,80 @@
    "url": "https://arxiv.org/abs/2402.12875"
   }
  ],
+ "ai/cxr_report_dag": [
+  {
+   "label": "Wang et al., 2017 (arXiv)",
+   "title": "ChestX-ray8: Hospital-scale Chest X-ray Database and Benchmarks on Weakly-Supervised Classification and Localization of Common Thorax Diseases",
+   "url": "https://arxiv.org/abs/1705.02315"
+  },
+  {
+   "label": "Demner-Fushman et al., 2016, Journal of the American Medical Informatics Association",
+   "title": "Preparing a collection of radiology examinations for distribution and retrieval",
+   "url": "https://doi.org/10.1093/jamia/ocv080"
+  },
+  {
+   "label": "Johnson et al., 2019, Sci Data",
+   "title": "MIMIC-CXR, a de-identified publicly available database of chest radiographs with free-text reports",
+   "url": "https://doi.org/10.1038/s41597-019-0322-0"
+  },
+  {
+   "label": "Rückert et al., 2024, Sci Data",
+   "title": "ROCOv2: Radiology Objects in COntext Version 2, an Updated Multimodal Image Dataset",
+   "url": "https://doi.org/10.1038/s41597-024-03496-6"
+  },
+  {
+   "label": "Chen et al., 2020 (arXiv)",
+   "title": "Generating Radiology Reports via Memory-driven Transformer",
+   "url": "https://arxiv.org/abs/2010.16056"
+  },
+  {
+   "label": "Jing et al., 2017 (arXiv)",
+   "title": "On the Automatic Generation of Medical Imaging Reports",
+   "url": "https://arxiv.org/abs/1711.08195"
+  },
+  {
+   "label": "Liu et al., 2023 (arXiv)",
+   "title": "Visual Instruction Tuning",
+   "url": "https://arxiv.org/abs/2304.08485"
+  },
+  {
+   "label": "Li et al., 2023 (arXiv)",
+   "title": "BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models",
+   "url": "https://arxiv.org/abs/2301.12597"
+  }
+ ],
+ "ai/equation_finder": [
+  {
+   "label": "Brunton et al., 2016, Proc. Natl. Acad. Sci. U.S.A.",
+   "title": "Discovering governing equations from data by sparse identification of nonlinear dynamical systems",
+   "url": "https://doi.org/10.1073/pnas.1517384113"
+  },
+  {
+   "label": "Rudy et al., 2017, Sci. Adv.",
+   "title": "Data-driven discovery of partial differential equations",
+   "url": "https://doi.org/10.1126/sciadv.1602614"
+  },
+  {
+   "label": "Messenger et al., 2021, Journal of Computational Physics",
+   "title": "Weak SINDy for partial differential equations",
+   "url": "https://doi.org/10.1016/j.jcp.2021.110525"
+  },
+  {
+   "label": "Schmidt et al., 2009, Science",
+   "title": "Distilling Free-Form Natural Laws from Experimental Data",
+   "url": "https://doi.org/10.1126/science.1165893"
+  },
+  {
+   "label": "Udrescu et al., 2020, Sci. Adv.",
+   "title": "AI Feynman: A physics-inspired method for symbolic regression",
+   "url": "https://doi.org/10.1126/sciadv.aay2631"
+  },
+  {
+   "label": "Kane Yee, 1966, IEEE Trans. Antennas Propagat.",
+   "title": "Numerical solution of initial boundary value problems involving maxwell's equations in isotropic media",
+   "url": "https://doi.org/10.1109/TAP.1966.1138693"
+  }
+ ],
  "ai/hopfield_memory": [
   {
    "label": "Hopfield, 1982, Proc. Natl. Acad. Sci. U.S.A.",
@@ -146,6 +220,38 @@
    "label": "Raissi et al., 2019, Journal of Computational Physics",
    "title": "Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations",
    "url": "https://doi.org/10.1016/j.jcp.2018.10.045"
+  }
+ ],
+ "ai/snake_moe_control": [
+  {
+   "label": "Jacobs et al., 1991, Neural Computation",
+   "title": "Adaptive Mixtures of Local Experts",
+   "url": "https://doi.org/10.1162/neco.1991.3.1.79"
+  },
+  {
+   "label": "Shazeer et al., 2017 (arXiv)",
+   "title": "Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer",
+   "url": "https://arxiv.org/abs/1701.06538"
+  },
+  {
+   "label": "Fedus et al., 2021 (arXiv)",
+   "title": "Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity",
+   "url": "https://arxiv.org/abs/2101.03961"
+  },
+  {
+   "label": "Mnih et al., 2015, Nature",
+   "title": "Human-level control through deep reinforcement learning",
+   "url": "https://doi.org/10.1038/nature14236"
+  },
+  {
+   "label": "Ross et al., 2010 (arXiv)",
+   "title": "A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning",
+   "url": "https://arxiv.org/abs/1011.0686"
+  },
+  {
+   "label": "Pomerleau, D. A. (1989). Advances in Neural Information Processing Systems 1, 305–313",
+   "title": "ALVINN: An Autonomous Land Vehicle in a Neural Network",
+   "url": null
   }
  ],
  "ai/stitch_llm_cnn_dag": [
