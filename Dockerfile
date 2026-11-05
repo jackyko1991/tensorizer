@@ -26,7 +26,7 @@ ARG PIXI_ENV
 WORKDIR /app
 # The CUDA environment declares system-requirements cuda = "12"; the build machine has no GPU, so say it has one.
 ENV CONDA_OVERRIDE_CUDA=12.0
-COPY pixi.toml pixi.lock ./
+COPY pixi.toml pixi.lock LICENSE ./
 RUN pixi install --locked -e "${PIXI_ENV}" && rm -rf /root/.cache
 # Activation script, so the runtime image needs no pixi (and never writes to .pixi at start-up).
 RUN pixi shell-hook --locked -e "${PIXI_ENV}" -s bash > /shell-hook.sh
