@@ -49,7 +49,11 @@ export default function ConceptPage({
   return (
     <div id="concept-scroll" className="h-full scroll-smooth bg-gray-50/60 xl:overflow-y-auto">
       <div className="mx-auto max-w-6xl px-5 pt-6">
-        <div className="flex gap-1 overflow-x-auto border-b border-gray-200" role="tablist" data-testid="concept-tabs">
+        <div
+          className="flex gap-1 overflow-x-auto overflow-y-hidden border-b border-gray-200 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          role="tablist"
+          data-testid="concept-tabs"
+        >
           {TABS.map((k) => (
             <button
               key={k}
