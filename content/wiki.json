@@ -129,6 +129,14 @@
   },
   "wikidata": "Q85810444"
  },
+ "ai/umap_tensor": {
+  "titles": {
+   "en": "Nonlinear dimensionality reduction",
+   "zh": "非线性降维",
+   "fr": "Réduction non linéaire de la dimensionnalité"
+  },
+  "wikidata": "Q7049464"
+ },
  "astro/black_hole_geodesics": {
   "titles": {
    "de": "Schwarzschild-Metrik",

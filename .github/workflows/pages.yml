@@ -51,3 +51,6 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5.0.1
+        with:
+          # the site artifact is ~350 MB (rendered problems + per-script font slices): Pages can sync longer than 10 min
+          timeout: 1800000

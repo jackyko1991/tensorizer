@@ -1,0 +1,5 @@
+# SHA-256 of the bundled files (fetched 2026-11-05; NIH Data_Entry_2017_v2020.csv c69a6daca3549af707ca9cacbdf9f9a7b6a9188e8c61157df653520bb72d8eb1)
+d523991df4abda475c4463311596c48b8a55910b1f473d73919b6119dc225b37  nih_cxr_subset.npz
+1e6abf73cf2d6e9331f2f937c85f8eba317a730e6f2737f6f38c6e468f91a6f8  pmc_cxr_subset.npz
+e2ef9c04fe23cccfd58d8d7ddb02a27e990b847a53dfa974c457ee604e24f5ab  pmc_captions.csv
+1c03257c3acdcee7602cadf76ded5ca1fea2248dbfd32984c71b8227869095f4  ATTRIBUTION.csv

@@ -293,6 +293,18 @@
    "url": "https://arxiv.org/abs/1706.03762"
   }
  ],
+ "ai/umap_tensor": [
+  {
+   "label": "McInnes et al., 2018 (arXiv)",
+   "title": "UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction",
+   "url": "https://arxiv.org/abs/1802.03426"
+  },
+  {
+   "label": "L. van der Maaten and G. Hinton, Journal of Machine Learning Research 9, 2579–2605 (2008)",
+   "title": "Visualizing Data using t-SNE",
+   "url": null
+  }
+ ],
  "astro/black_hole_geodesics": [
   {
    "label": "Schwarzschild, 1916, Sitzungsber. Preuss. Akad. Wiss. Berlin, 189",

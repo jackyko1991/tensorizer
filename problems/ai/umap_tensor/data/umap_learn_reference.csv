@@ -1,0 +1,13 @@
+# umap-learn reference for problems/ai/umap_tensor, computed offline by data/make_reference.py (generated; licence: as the problem). Source of the method: McInnes, Healy & Melville 2018, arXiv:1802.03426; umap-learn is BSD-3-Clause.
+# umap-learn 0.5.12, scikit-learn 1.9.1, numpy 2.5.4, python 3.12.16, win32; UMAP(n_neighbors=15, min_dist=0.1, random_state=42) (random_state makes it single-threaded and repeatable)
+# find_ab_params(spread=1, min_dist=0.1): a = 1.576943, b = 0.895061
+# metrics with k = 10; seconds = wall time of fit_transform (run 0 includes numba JIT)
+dataset,method,run,seconds,sk_trustworthiness,sk_knn_accuracy_10fold
+mnist,umap-learn,0,27.946,,
+mnist,umap-learn,1,14.287,,
+mnist,umap-learn,final,,0.96329,0.89080
+mnist,sklearn-pca,final,,0.74011,0.40760
+swiss_roll,umap-learn,0,5.151,,
+swiss_roll,umap-learn,1,5.107,,
+swiss_roll,umap-learn,final,,0.99901,
+swiss_roll,sklearn-pca,final,,0.94253,

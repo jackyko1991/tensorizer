@@ -1,0 +1,119 @@
+title: 'Chest X-ray to report by a DAG tensor: a CNN and a tiny LM stitched'
+category: ai
+level: advanced
+order: 10
+summary: >
+  A teaching toy, not clinical report generation. A small CNN learns six findings from 410 NIH chest X-rays, and a
+  tiny character-level GPT learns template reports ("enlarged heart. pleural effusion. no pneumothorax.") from a
+  written label header, each on its own. One DAG edge joins them: a connector turns the CNN's finding probabilities
+  into a soft header, so the LM writes a report from the image alone. The training process is itself a tensor DAG
+  (rules on levels, max-plus critical path, one batched call per rule over the seeds), compared with the same network
+  trained end to end with the same compute, then fine-tuned on 251 real texts (figure caption + the sentences citing
+  that radiograph) from openly licensed (CC BY) PubMed Central articles. Stage 2 is weak, as expected with so few
+  pairs, and the page says so.
+animated: true
+vector_form: 'X^0 = G_{\mathrm{img}} \odot C\big(\sigma(\mathrm{CNN}(\mathrm{image}))\big) + G_{\mathrm{txt}} \odot \mathrm{Tok}[\mathrm{text}],\qquad z = \mathrm{LM}(X^0 + P),\qquad \hat y = \mathrm{parse}\big(\mathrm{greedy}(z)\big),\qquad t = d \oplus (A_{\mathrm{rule}} \otimes t)'
+index_form: 'q_{mnf} = \sigma\big(\mathrm{CNN}_m(x_{mn})\big)_f \qquad c_{mntc} = \mathrm{GELU}(q_{mnf}W^1_{mfh} + S_{mth})\,W^2_{mhc} + b^2_{mc} \qquad X^0_{mntc} = G_{mntx}\,Y^x_{mntc} \qquad \mathcal L_m = -\frac{1}{|\mu_m|}\sum_{n,t}\mu_{mnt}\log \mathrm{softmax}_v z_{mntv}[y_{mnt}] \qquad F_1 = \frac{2\,\mathrm{tp}}{2\,\mathrm{tp} + \mathrm{fp} + \mathrm{fn}}'
+translation:
+  - {symbol: 'A_{\mathrm{rule}}', code: 'rule_graph(parse_snakefile(training.smk))', shape: '(R, R)', meaning: 'rule $s$ reads what rule $r$ writes; the training process parsed from data/training.smk with the Circle of Willis problem''s parser'}
+  - {symbol: '\ell_r', code: 'dag.levels(A_rule)', shape: '(R,)', meaning: 'level of each rule: CNN, LM and monolith on 0, connector on 1, fine-tune and router on 2, captions on 3, evaluate on 4'}
+  - {symbol: 't = d \oplus (A \otimes t)', code: 'dag.finish_times(A_rule, seconds)', shape: '(R,)', meaning: 'max-plus finish times from the measured rule durations; $\max t$ is the critical path'}
+  - {symbol: 'q_{mnf}', code: 'cnn_output(x, w)', shape: '(M, N, 6)', meaning: 'the CNN''s six finding probabilities (sigmoid, multi-label) for each image; the model axis $m$ becomes the groups of one grouped convolution per layer'}
+  - {symbol: 'c_{mntc}', code: 'connector(q, slots, w)', shape: '(M, P, d)', meaning: 'the DAG edge: finding probabilities plus a slot vector $S_t$ → an LM input vector; the $K = 6$ soft tokens replace the written label header'}
+  - {symbol: 'G_{mntx}', code: 'route_fixed(...), route_learned(r, w)', shape: '(M, N, T, 2)', meaning: 'router: one-hot by data type (header slot or letter), or a learned softmax over the position features (trained dense, used top-1)'}
+  - {symbol: 'X^0 = G_{mntx}Y^x_{mntc}', code: "einsum('mntx,xmntc->mntc', G, Y)", shape: '(M, N, T, d)', meaning: 'repeated $x$ ⇒ summed: the combine of the MoE layer; each expert $Y^x$ is computed only on its dispatched group'}
+  - {symbol: 'z_{mntv}', code: 'lm_logits(X0, w)', shape: '(M, N, T, V)', meaning: 'next-letter logits of the tiny GPT (einsum attention with a model axis, from chain_of_thought)'}
+  - {symbol: '\mathcal L_m', code: 'masked_ce(z, y, mask)', shape: '(M,)', meaning: 'per-model loss on the report letters after the header (nats); summing the $M$ losses gives every model its own gradient'}
+  - {symbol: '\mathrm{tp}_{mf}', code: "einsum('mnf,mnf->mf', pred, true)", shape: '(M, 6)', meaning: 'repeated $n$ ⇒ summed: true positives of the labels parsed back from each written report; micro $F_1$ pools them over $f$'}
+notes: >
+  What this is. A teaching toy, not clinical report generation: tiny models, 64×64 images, a few hundred noisy
+  labels, and no real radiology reports. Nothing here says anything about clinical accuracy. The idea (networks
+  trained separately, connected through a DAG tensor, optimised globally, the whole process itself controlled by
+  the DAG tensor) is Jacky Ka Long Ko's; this problem carries the CNN + tiny-LM stitching of the previous problem in
+  this series over to chest radiographs and a text that reads like a (very short) report.
+
+  Why no real reports. None of the openly available report collections passes the licence rule used here (open,
+  redistributable, commercial use allowed): IU X-ray / OpenI (Demner-Fushman et al. 2016) is CC BY-NC-ND;
+  MIMIC-CXR (Johnson et al. 2019), VinDr-CXR and BRAX need credentialed access under data use agreements; CheXpert
+  and PadChest are for research use only. So stage 1 uses template reports generated in code from the NIH label
+  sets, which turns it into multi-label classification verbalised as text, and stage 2 uses figure captions plus the
+  sentences that cite the figure from CC BY PubMed Central articles: short, heterogeneous texts written for case
+  reports, often pointing at arrows and panels.
+
+  What is new and what is not. Report generation from chest X-rays is an active field (Jing et al. 2018, R2Gen by
+  Chen et al. 2020); a pretrained image encoder joined to a language model by a small learned connector is how LLaVA
+  (Liu et al. 2023) and BLIP-2 (Li et al. 2023) are built. What this problem adds is the orchestration: the model
+  graph and the training process are both run by the tensor DAG engine of the Circle of Willis workflow problem (rule
+  graph parsed from data/training.smk, Kronecker job graph, boolean levels, max-plus critical path), every rule one
+  batched call over the seeds, and the DAG-built model is measured against a monolith with the same compute.
+
+  Data. NIH ChestX-ray14 (Wang et al. 2017, NIH Clinical Center; no restrictions on use, with attribution): 549
+  frontal PA images, one per patient, six findings (cardiomegaly, effusion, infiltration, atelectasis, pneumothorax,
+  mass or nodule) or none, at most two per image; 410 training, 139 test. The labels were mined from reports by NLP
+  and are noisy (about 10 % or more wrong). PMC: 316 chest radiograph figures from 316 open-access articles, every
+  one CC BY (checked in the article's own XML licence; rule: CC BY, CC BY-SA or CC0, reject NC, ND, other or
+  missing). Candidates came from the ROCOv2 metadata (Rückert et al. 2024), used only as an index of PMCIDs; nothing
+  from ROCOv2 is bundled. Of 2114 articles checked, 1575 were accepted and 539 rejected by licence (all CC BY-NC).
+  The stage-2 text is the caption followed by the same article's sentences that cite the figure (315 of 316
+  articles have at least one), whole sentences only, up to 360 characters, the context of the tiny LM: median 35
+  words (IQR 26–45) against 12 (8–18) for the caption alone. Every figure and text is credited in
+  data/ATTRIBUTION.csv; data/SOURCES.md has the sources, terms, counts, checksums and processing.
+
+  Models and the training DAG. CNN: three grouped convolutions, 41 014 weights, six sigmoid outputs (multi-label,
+  positives weighted by their rarity). LM: a two-layer character GPT (d = 32, four heads, 40 108 weights) trained on
+  every template, the label header written as six letters in front ("ce----", then "enlarged heart. pleural
+  effusion."). Connector (2848 weights): from the six probabilities $q$ and a slot vector $S_t$ it makes the $K = 6$
+  soft tokens that replace the header. Levels: 0 train_cnn ∥ train_lm ∥ train_monolith; 1 train_connector (CNN and
+  LM frozen); 2 global_finetune ∥ train_router; 3 caption_finetune (connector + LM on the PMC texts, CNN frozen); 4
+  evaluate. The tests check the levels and the critical path, that the job graph is nilpotent, that two seeds in
+  one stack train exactly as each alone (to float32 rounding), that one model's loss sends no gradient to the others,
+  that the connector stage changes only the connector, and that the MoE layer with the fixed router equals the DAG
+  wiring to 1e-6, gradients too. Reports are written greedily (with a key/value cache, tested against the plain
+  forward pass) and parsed back into labels by keyword, with negation ("no pneumothorax.").
+
+  Stage 1 results (2 seeds, 139 test images, seed means; results/stages.csv has every number). The CNN alone: mean
+  AUROC 0.62 (chance 0.5), micro F1 0.31 at threshold 0.5 (random guessing at the training prevalence: 0.16). Its
+  labels written as a header for the LM alone: micro F1 0.32, so the LM verbalises faithfully (0.90 of its outputs
+  are well-formed templates, even for label sets it never saw). The stitched model: micro F1 0.22 after the connector
+  stage and 0.20 after the global fine-tune (0.15 to 0.25 over runs and seeds), every report a well-formed template,
+  0.26 to 0.27 exactly the template of the true labels. The monolith, the same network trained end to end on the 410
+  image–report pairs with the same multiply-adds (405 joint steps), writes "clear lungs." or "normal chest." for
+  every image: micro F1 0, exact 0.27 (the share of normal images). So the DAG pipeline clearly beats the monolith,
+  because it reuses the CNN's label supervision and all the template text, but it does not beat the CNN alone: a
+  template report can only re-express what the classifier knows, and the stitched model, trained by likelihood,
+  writes the most probable report, which leans to "normal" when the image is ambiguous, while the CNN's
+  rarity-weighted threshold favours recall, which $F_1$ rewards. The fine-tune changes little.
+
+  DAG edge = MoE dispatch. The input layer as a mixture of experts (image expert = CNN + connector, text expert =
+  token embedding) with $G$ one-hot by data type gives the DAG-wired outputs exactly (tested). A linear router
+  trained as a dense mixture with the experts frozen, then used top-1 (route, then run the chosen expert), sends
+  every position to its modality's expert (routing accuracy 1.00 in both seeds), so its reports and scores equal the
+  fixed router's.
+
+  Stage 2 results (65 held-out PMC figures): weak, as expected. After 150 steps on 251 texts the model writes "chest
+  x-ray showing" and then letter soup: BLEU-1 0.05, ROUGE-L 0.06, finding-keyword recall 0, held-out cross-entropy
+  2.32 nats per letter. Giving it another figure's image changes nothing (2.32 nats, the same scores): the image is
+  not used. A blind baseline that returns one fixed training text scores higher (BLEU-1 0.17, ROUGE-L 0.22). A
+  character LM of 40 000 weights cannot learn this language from about 70 000 characters in a CPU minute; with the
+  first-clause captions of an earlier version (median 6 words) ROUGE-L was about 0.28, but those texts were barely
+  sentences. The DAG machinery works; the data are far too few for stage 2.
+
+  Time. On a 6-core desktop CPU training takes about 85 s when the machine is quiet, plus about 30 s for the GIF;
+  measured times grow two to three times when other heavy jobs share the machine (the run shown in the GIF and
+  timings.csv was made under such load, so its seconds are larger), with the caption stage the most affected. With one worker per rule the max-plus critical path is CNN → connector → fine-tune → captions → evaluate.
+  The code picks a GPU when torch sees one (pixi run -e cuda); the default environment has a CPU build of torch, so
+  every bundled number is from the CPU.
+
+  Try. More caption steps (stage 2 improves slowly), no global fine-tune (0 steps), fewer CNN steps (the CNN caps
+  everything), or one seed to see how much the seeds disagree.
+params:
+  seeds: {default: 2, min: 1, max: 3, step: 1, type: int, label: 'Seeds (independent replicates)'}
+  steps_cnn: {default: 250, min: 50, max: 1000, step: 50, type: int, label: 'CNN pretraining steps'}
+  steps_lm: {default: 200, min: 50, max: 1500, step: 50, type: int, label: 'LM pretraining steps (template reports)'}
+  steps_con: {default: 120, min: 20, max: 600, step: 10, type: int, label: 'Connector steps (CNN and LM frozen)'}
+  steps_ft: {default: 60, min: 0, max: 600, step: 10, type: int, label: 'Global fine-tune steps'}
+  steps_router: {default: 40, min: 10, max: 400, step: 10, type: int, label: 'Learned-router steps'}
+  steps_cap: {default: 150, min: 20, max: 2000, step: 20, type: int, label: 'Caption fine-tune steps (stage 2)'}
+  lr_ft: {default: 0.0003, min: 0.00005, max: 0.003, step: 0.00005, label: 'Fine-tune learning rate'}
+  lr_cap: {default: 0.01, min: 0.0005, max: 0.02, step: 0.0005, label: 'Caption learning rate'}
+tags: [series:workflow-orchestration:5]

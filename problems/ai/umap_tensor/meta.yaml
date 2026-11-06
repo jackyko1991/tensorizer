@@ -1,0 +1,92 @@
+title: 'UMAP as a tensor problem: kNN graph, fuzzy sets and a force layout on MNIST'
+category: ai
+level: advanced
+order: 11
+summary: >
+  UMAP, the dimension-reduction method that draws 784-pixel MNIST digits as a 2D map, written entirely as tensor
+  operations: an exact kNN graph from one distance matrix and topk, a bisection that finds every point's bandwidth
+  $\sigma_i$ at once, the fuzzy union $P + P^\top - P\circ P^\top$, a spectral start from the graph Laplacian, and
+  attractive and repulsive forces applied to the whole edge list per epoch (by hand, and again by autograd). On 2500
+  digits and a Swiss roll it matches the umap-learn library on trustworthiness, neighbour recall and digit accuracy,
+  far ahead of PCA.
+animated: true
+vector_form: 'w = P + P^\top - P\circ P^\top,\qquad q_{ij} = \frac{1}{1 + a\,\lVert \mathbf y_i - \mathbf y_j\rVert^{2b}},\qquad C = \sum_{i\neq j} -\big[w_{ij}\log q_{ij} + (1-w_{ij})\log(1-q_{ij})\big]'
+index_form: 'p_{j|i} = e^{-(d_{ij}-\rho_i)/\sigma_i},\ \ \sum_{j} p_{j|i} = \log_2 k \qquad w_{ij} = p_{j|i} + p_{i|j} - p_{j|i}\,p_{i|j} \qquad y_{ic} \mathrel{+}= \alpha \sum_{j} \frac{-2ab\, d_{ij}^{2(b-1)}}{1 + a\, d_{ij}^{2b}}\, (y_{ic}-y_{jc}) + \alpha \sum_{s} \frac{2b\,(y_{ic}-y_{sc})}{(\epsilon + d_{is}^2)(1 + a\, d_{is}^{2b})}'
+translation:
+  - {symbol: 'd_{ij}', code: 'knn(x, k)  # sq_dist + topk', shape: '(N, k)', meaning: 'distances to the $k$ nearest points (the point itself first), from $\lVert x_i\rVert^2 + \lVert x_j\rVert^2 - 2\,x_{id}x_{jd}$ (repeated $d$ ⇒ summed) and topk; exact, row blocks keep memory at $O(BN)$'}
+  - {symbol: '\rho_i,\ \sigma_i', code: 'smooth_knn(dist, k)', shape: '(N,), (N,)', meaning: '$\rho_i$ = distance to the nearest other point; $\sigma_i$ by 64 halvings of one bracket tensor for all points at once, so that $\sum_j e^{-(d_{ij}-\rho_i)/\sigma_i} = \log_2 k$'}
+  - {symbol: 'p_{j|i}', code: 'zeros(N, N).scatter_(1, idx, p)', shape: '(N, N)', meaning: 'directed membership: 1 for the nearest neighbour, decaying with the distance beyond it, 0 outside the kNN list'}
+  - {symbol: 'w_{ij}', code: 'P + P.T - P * P.T', shape: '(N, N)', meaning: 'fuzzy union (probabilistic OR) of the two directions: symmetric, in $[0, 1]$; its non-zeros are the edge list $(i_e, j_e)$, $E$ ≈ 50 000 for 2500 digits'}
+  - {symbol: 'a,\ b', code: 'fit_ab(min_dist)', shape: '()', meaning: 'Gauss–Newton fit of $1/(1 + a x^{2b})$ to 1 below min_dist and $e^{-(x - \mathrm{min\_dist})}$ beyond: $a$ = 1.577, $b$ = 0.895 for min_dist = 0.1'}
+  - {symbol: 'L\,v = \lambda v', code: 'linalg.eigh(I - D^-½ W D^-½)', shape: '(N, N)', meaning: 'spectral start: the two lowest non-trivial eigenvectors of the normalised graph Laplacian, scaled to $[0, 10]$'}
+  - {symbol: '\sum_{j},\ \sum_{s}', code: 'out.index_add_(0, i, g)', shape: '(N, 2)', meaning: 'forces of all sampled edges $(i, j)$ and of 5 random negatives $s$ per edge, summed per point in one scatter-add; each term clipped to $\pm 4$; learning rate $\alpha = 1 - \mathrm{epoch}/n$'}
+  - {symbol: '-\partial C/\partial y_{ic}', code: 'autograd.grad(sampled_loss(y, ...), y)', shape: '(N, 2)', meaning: 'the same step from autograd on the sampled loss $\sum_e -\log q_{ij} + \sum_s -\log(1-q_{is})$: equal to the hand-written forces (tested)'}
+  - {symbol: 'T(k)', code: 'trustworthiness(x, y, 10)', shape: '()', meaning: '$1 - \frac{2}{Nk(2N-3k-1)}\sum_i\sum_{j\in U_k(i)}(r_{ij}-k)$, ranks $r$ from an argsort of an argsort; continuity swaps $x$ and $y$'}
+notes: >
+  The question. "UMAP as just a tensor problem" is Jacky Ka Long Ko's request: take UMAP (Uniform Manifold
+  Approximation and Projection; McInnes, Healy and Melville 2018), usually run through the umap-learn library with
+  its numba loops, and write every step as batched tensor operations, then check that the result is as good.
+
+  Method, as tensors (N points in D dimensions). 1. kNN graph: the (N, N) squared distances
+  $\lVert x_i\rVert^2 + \lVert x_j\rVert^2 - 2 x_i\cdot x_j$ (an einsum), computed in row blocks, then topk gives
+  (N, k) distances and indices; exact, as umap-learn is below 4096 points (above that it switches to approximate
+  nearest-neighbour descent). 2. Fuzzy simplicial set: $\rho_i$ is the distance to the nearest other point;
+  $\sigma_i$ solves $\sum_j e^{-(d_{ij}-\rho_i)/\sigma_i} = \log_2 k$ by bisection, all N brackets halved together
+  (64 times, a doubling phase first while the upper end is unknown); the memberships are scattered into a dense
+  (N, N) matrix $P$ and symmetrised by the fuzzy union $W = P + P^\top - P\circ P^\top$ (dense is fine at a few
+  thousand points; a sparse COO tensor is the same formula at scale). 3. The low-dimensional similarity
+  $q = 1/(1 + a d^{2b})$, with $a$ and $b$ fitted to min_dist by a 2-parameter Gauss–Newton least-squares fit;
+  start: the two lowest non-trivial eigenvectors of the normalised Laplacian $I - D^{-1/2} W D^{-1/2}$ from a dense
+  torch.linalg.eigh (about 4 s for 2500 points on one core; umap-learn uses a sparse solver; if eigh fails the code
+  falls back to a random start). 4. Layout: 500 epochs; an edge of weight $w_{ij}$ is active once every
+  $\max w / w_{ij}$ epochs (umap-learn's schedule, kept as an (E,) tensor of next-sample epochs); every active edge
+  attracts its two ends and draws 5 random negatives that repel its head; all forces of the epoch are computed at
+  once and summed per point with index_add_ (a synchronous update, where umap-learn moves points edge by edge).
+  The same loop with autograd: the gradient of the sampled cross-entropy, clipped after summing. 5. Metrics, all
+  tensor ops with $k$ = 10: trustworthiness and continuity (Venna and Kaski 2001) from rank matrices (an argsort of an
+  argsort), kNN recall, and leave-one-out 10-NN digit accuracy in the 2D layout; PCA by SVD as the linear baseline.
+
+  Data. MNIST (LeCun, Cortes and Burges), licence CC BY-SA 3.0: data/mnist_subset.npz holds the first 250 training
+  images of every digit (2500 images, uint8; the share-alike licence applies to this subset), see data/SOURCES.md.
+  The Swiss roll (1500 points, as in scikit-learn's make_swiss_roll, with a little noise) is generated in code, so
+  its true flat coordinates (arc length, height) are known. The umap-learn reference (umap-learn 0.5.12,
+  scikit-learn 1.9.1, random_state 42) was computed once offline in a throwaway environment by
+  data/make_reference.py; only its 2D coordinates and metrics are bundled.
+
+  Results (bundled run, CPU, one thread). MNIST, 2500 digits: trustworthiness / continuity / 10-NN recall / 10-NN
+  digit accuracy = 0.957 / 0.963 / 0.39 / 0.887 with the hand-written forces, 0.960 / 0.963 / 0.40 / 0.898 with
+  autograd, 0.963 / 0.963 / 0.40 / 0.896 for umap-learn, and 0.740 / 0.913 / 0.07 / 0.414 for PCA. Swiss roll:
+  trustworthiness 0.999 (umap-learn 0.999, PCA 0.943), and against the true flat coordinates 0.999 with 76 % of
+  the true 10 nearest neighbours kept (umap-learn 77 %, PCA 28 %). Our trustworthiness also equals
+  scikit-learn's to $2\times 10^{-4}$ on the bundled umap-learn layouts (tested), and $a$, $b$ equal umap-learn's.
+  Wall time on MNIST: 11 s with the forces (0.5 s graph, 4 s eigh, 7 s layout), 15 s with autograd, 14 s for
+  umap-learn (second call, one thread; its first call, with numba compilation, took 28 s). After the best rotation,
+  reflection and scale (Procrustes), our MNIST layout differs from umap-learn's by a disparity of 0.05 (0 = same
+  shape, 1 = unrelated); the same digit clusters sit in the same places.
+
+  Verdict and limits. UMAP is a tensor problem: graph construction, bandwidth search, fuzzy union, spectral start
+  and the force layout are all batched tensor operations, and the result is as good as the reference by every
+  metric here. What differs: layouts are compared by metrics, never by coordinates, because UMAP layouts are only
+  defined up to rotation, reflection and the randomness of negative sampling (another seed moves the clusters
+  around); beyond 4096 points umap-learn's kNN becomes approximate while ours stays exact (and costs $O(N^2)$); our dense $N\times N$ matrices and eigh limit this version
+  to about $10^4$ points (blocks, sparse tensors and an iterative eigensolver would lift that); the synchronous
+  update makes early epochs look like a hot gas (the learning rate is near 1 and every point gets all its kicks at
+  once) before the layout cools. The Swiss roll keeps every local neighbourhood but is not unrolled as one clean
+  sheet: it tears into strips, as with umap-learn, a known trait of UMAP and t-SNE. The digit accuracy is a measure
+  of how well the map separates classes it never saw, not a classifier. Results vary by a few thousandths across
+  BLAS builds and thread counts.
+
+  Related work. t-SNE (van der Maaten and Hinton 2008) set the pattern of matching neighbour probabilities with a
+  heavy-tailed kernel in 2D; UMAP replaces its normalised probabilities with fuzzy memberships and its full
+  repulsion with negative sampling (as in word2vec), which is why it scales. Laplacian eigenmaps (Belkin and Niyogi
+  2003) give the spectral start.
+
+  Try it. Fewer neighbours (5) gives more, smaller clusters; min_dist near 0.9 packs points loosely; fewer
+  epochs shows an unfinished layout; another seed rotates and reshuffles the map while the metrics stay put.
+params:
+  n_neighbors: {default: 15, min: 5, max: 50, step: 1, type: int, label: 'Neighbours $k$ (the point itself included)'}
+  min_dist: {default: 0.1, min: 0.0, max: 0.99, step: 0.01, label: 'Minimum distance in the layout', unit: a.u.}
+  n_epochs: {default: 500, min: 50, max: 1000, step: 50, type: int, label: 'Layout epochs'}
+  neg_rate: {default: 5, min: 1, max: 15, step: 1, type: int, label: 'Negative samples per edge sample'}
+  n_mnist: {default: 2500, min: 500, max: 2500, step: 500, type: int, label: 'MNIST images (balanced over digits)'}
+  seed: {default: 0, min: 0, max: 9, step: 1, type: int, label: 'Random seed'}

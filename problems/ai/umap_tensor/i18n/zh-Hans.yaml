@@ -1,0 +1,23 @@
+source_hash: 3af965e9bb1a
+title: 把 UMAP 当作张量问题：在 MNIST 上构建 kNN 图、模糊集与力导向布局
+summary: UMAP 是一种降维方法，能把 784 像素的 MNIST 数字画成一张二维地图；这里完全用张量运算写成：由一个距离矩阵加上 topk 得到精确的 kNN 图，用二分法同时求出每个点的带宽 $\sigma_i$，模糊并集 $P + P^\top - P\circ P^\top$，由图拉普拉斯矩阵得到的谱初始化，以及每个 epoch 一次性作用于整个边列表的吸引力与排斥力（先手写，再用 autograd 重做一遍）。在 2500 个数字和一个瑞士卷数据集上，它在可信度（trustworthiness）、近邻召回率和数字准确率上都与 umap-learn 库相当，远远领先 PCA。
+notes: 问题。“把 UMAP 纯粹当作张量问题”是 Jacky Ka Long Ko 提出的要求：拿 UMAP（Uniform Manifold Approximation and Projection，均匀流形逼近与投影；McInnes、Healy 和 Melville 2018），它通常通过 umap-learn 库及其 numba 循环运行，把每一步都写成批量张量运算，再验证结果同样好。方法，用张量表示（N 个点，D 维）。1. kNN 图：(N, N) 的平方距离 $\lVert x_i\rVert^2 + \lVert x_j\rVert^2 - 2 x_i\cdot x_j$（一个 einsum），按行分块计算，再由 topk 得到 (N, k) 的距离和索引；这是精确的，与 umap-learn 在 4096 个点以下时一致（超过这个数它会改用近似最近邻下降法）。2. 模糊单纯集：$\rho_i$ 是到最近的另一个点的距离；$\sigma_i$ 用二分法求解 $\sum_j e^{-(d_{ij}-\rho_i)/\sigma_i} = \log_2 k$，所有 N 个区间一起减半（64 次，上界未知时先进行倍增阶段）；隶属度被散布到稠密的 (N, N) 矩阵 $P$ 中，并用模糊并集 $W = P + P^\top - P\circ P^\top$ 对称化（几千个点时用稠密矩阵没有问题；大规模时用稀疏 COO 张量，公式相同）。3. 低维相似度 $q = 1/(1 + a d^{2b})$，其中 $a$ 和 $b$ 通过双参数 Gauss–Newton 最小二乘拟合 min_dist 得到；初始化：用稠密的 torch.linalg.eigh 求归一化拉普拉斯矩阵 $I - D^{-1/2} W D^{-1/2}$ 最小的两个非平凡特征向量（2500 个点在单核上约 4 s；umap-learn 使用稀疏求解器；如果 eigh 失败，代码会退回随机初始化）。4. 布局：500 个 epoch；权重为 $w_{ij}$ 的边每 $\max w / w_{ij}$ 个 epoch 激活一次（umap-learn 的调度，保存为一个记录下次采样 epoch 的 (E,) 张量）；每条激活的边吸引其两端，并抽取 5 个随机负样本来排斥其头端；一个 epoch
+  的所有力一次算出，并用 index_add_ 按点求和（同步更新，而 umap-learn 是逐条边移动点）。同一个循环改用 autograd：采样交叉熵的梯度，在求和之后裁剪。5. 评估指标，全部是张量运算，$k$ = 10：由排名矩阵（argsort 的 argsort）计算可信度和连续性（Venna 和 Kaski 2001）、kNN 召回率，以及二维布局中留一法 10-NN 数字准确率；用 SVD 实现的 PCA 作为线性基线。数据。MNIST（LeCun、Cortes 和 Burges），许可证 CC BY-SA 3.0：data/mnist_subset.npz 收录每个数字的前 250 张训练图像（2500 张图像，uint8；相同方式共享许可适用于这个子集），见 data/SOURCES.md。瑞士卷（1500 个点，与 scikit-learn 的 make_swiss_roll 相同，带少量噪声）在代码中生成，因此其真实的展平坐标（弧长、高度）是已知的。umap-learn 参考结果（umap-learn 0.5.12、scikit-learn 1.9.1、random_state 42）由 data/make_reference.py 在一个用完即弃的环境中离线计算一次；只附带其二维坐标和指标。结果（附带的运行结果，CPU，单线程）。MNIST，2500 个数字：可信度 / 连续性 / 10-NN 召回率 / 10-NN 数字准确率 = 手写力 0.957 / 0.963 / 0.39 / 0.887，autograd 0.960 / 0.963 / 0.40 / 0.898，umap-learn 0.963 / 0.963 / 0.40 / 0.896，PCA 0.740 / 0.913 / 0.07 / 0.414。瑞士卷：可信度 0.999（umap-learn 0.999，PCA 0.943），相对于真实展平坐标为 0.999，并保留了 76 % 的真实 10 个最近邻（umap-learn 77 %，PCA 28 %）。在附带的 umap-learn 布局上，我们的可信度与 scikit-learn 的结果相差在 $2\times 10^{-4}$ 以内（已测试），且 $a$、$b$ 与 umap-learn 的相同。MNIST 上的实际耗时：力版本
+  11 s（建图 0.5 s、eigh 4 s、布局 7 s），autograd 15 s，umap-learn 14 s（第二次调用，单线程；第一次调用含 numba 编译，耗时 28 s）。经过最佳的旋转、镜像和缩放（Procrustes）之后，我们的 MNIST 布局与 umap-learn 的差异度为 0.05（0 = 形状相同，1 = 毫无关联）；相同的数字簇位于相同的位置。结论与局限。UMAP 是一个张量问题：建图、带宽搜索、模糊并集、谱初始化和力导向布局全都是批量张量运算，而且在这里的每项指标上结果都与参考实现一样好。不同之处：布局用指标比较，从不用坐标比较，因为 UMAP 布局只在旋转、镜像以及负采样的随机性意义下才有定义（换一个种子，簇就会移动）；超过 4096 个点时 umap-learn 的 kNN 变为近似，而我们的仍然精确（代价是 $O(N^2)$）；我们稠密的 $N\times N$ 矩阵和 eigh 把这个版本限制在约 $10^4$ 个点（分块、稀疏张量和迭代特征求解器可以突破这一限制）；同步更新使早期 epoch 看起来像一团炽热的气体（学习率接近 1，且每个点一次承受所有推力），之后布局才逐渐冷却。瑞士卷保留了每个局部邻域，但没有被展开成一张干净的平面：它撕裂成条带，与 umap-learn 相同，这是 UMAP 和 t-SNE 的已知特性。数字准确率衡量的是地图把它从未见过的类别分开得有多好，而不是一个分类器。不同的 BLAS 构建和线程数会使结果相差千分之几。相关工作。t-SNE（van der Maaten 和 Hinton 2008）确立了在二维中用重尾核匹配近邻概率的模式；UMAP 用模糊隶属度取代其归一化概率，并用负采样（如 word2vec）取代其完整排斥，这正是它能够扩展的原因。拉普拉斯特征映射（Belkin 和 Niyogi 2003）提供了谱初始化。动手试试。较少的近邻（5）会产生更多、更小的簇；min_dist 接近 0.9 会让点排列得较松散；较少的 epoch 会呈现未完成的布局；换一个种子会旋转并重新排列地图，而指标保持不变。
+meanings:
+- 到 $k$ 个最近点的距离（点本身排第一），由 $\lVert x_i\rVert^2 + \lVert x_j\rVert^2 - 2\,x_{id}x_{jd}$（重复的 $d$ ⇒ 求和）和 topk 得到；精确，按行分块使内存保持在 $O(BN)$
+- $\rho_i$ = 到最近的另一个点的距离；$\sigma_i$ 由一个覆盖所有点的区间张量同时减半 64 次求得，使 $\sum_j e^{-(d_{ij}-\rho_i)/\sigma_i} = \log_2 k$
+- 有向隶属度：最近邻为 1，超出后随距离衰减，kNN 列表之外为 0
+- 两个方向的模糊并集（概率式 OR）：对称，取值在 $[0, 1]$ 内；其非零项即边列表 $(i_e, j_e)$，2500 个数字时 $E$ ≈ 50 000
+- 用 Gauss–Newton 将 $1/(1 + a x^{2b})$ 拟合到 min_dist 以下为 1、以上为 $e^{-(x - \mathrm{min\_dist})}$ 的曲线：min_dist = 0.1 时 $a$ = 1.577，$b$ = 0.895
+- 谱初始化：归一化图拉普拉斯矩阵最小的两个非平凡特征向量，缩放到 $[0, 10]$
+- 所有被采样的边 $(i, j)$ 以及每条边 5 个随机负样本 $s$ 的力，用一次 scatter-add 按点求和；每一项裁剪到 $\pm 4$；学习率 $\alpha = 1 - \mathrm{epoch}/n$
+- 同一步由 autograd 对采样损失 $\sum_e -\log q_{ij} + \sum_s -\log(1-q_{is})$ 求得：与手写的力相同（已测试）
+- $1 - \frac{2}{Nk(2N-3k-1)}\sum_i\sum_{j\in U_k(i)}(r_{ij}-k)$，排名 $r$ 来自 argsort 的 argsort；连续性则交换 $x$ 和 $y$
+labels:
+  n_neighbors: 近邻数 $k$（含点本身）
+  min_dist: 布局中的最小距离
+  n_epochs: 布局 epoch 数
+  neg_rate: 每次边采样的负样本数
+  n_mnist: MNIST 图像数（各数字均衡）
+  seed: 随机种子

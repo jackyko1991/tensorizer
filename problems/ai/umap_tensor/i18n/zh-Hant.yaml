@@ -1,0 +1,23 @@
+source_hash: 3af965e9bb1a
+title: 以張量問題實作 UMAP：在 MNIST 上建構 kNN 圖、模糊集合與力導向佈局
+summary: UMAP 是一種降維方法，能把 784 像素的 MNIST 數字畫成一張二維地圖；這裡完全以張量運算寫成：由一個距離矩陣加上 topk 得到精確的 kNN 圖，用二分法同時求出每個點的頻寬 $\sigma_i$，模糊聯集 $P + P^\top - P\circ P^\top$，由圖拉普拉斯矩陣得到的譜初始化，以及每個 epoch 一次性作用於整個邊列表的吸引力與排斥力（先手寫，再用 autograd 重做一次）。在 2500 個數字與一個瑞士捲資料集上，它在可信度（trustworthiness）、鄰居召回率與數字準確率上都與 umap-learn 函式庫相當，遠遠領先 PCA。
+notes: 問題。「把 UMAP 純粹當作張量問題」是 Jacky Ka Long Ko 的要求：取 UMAP（Uniform Manifold Approximation and Projection，均勻流形逼近與投影；McInnes、Healy 與 Melville 2018），它通常透過 umap-learn 函式庫及其 numba 迴圈執行，把每一步都寫成批次張量運算，再驗證結果一樣好。方法，以張量表示（N 個點，D 維）。1. kNN 圖：(N, N) 的平方距離 $\lVert x_i\rVert^2 + \lVert x_j\rVert^2 - 2 x_i\cdot x_j$（一個 einsum），按列區塊計算，再由 topk 得到 (N, k) 的距離與索引；這是精確的，與 umap-learn 在 4096 個點以下時相同（超過此數它會改用近似最近鄰下降法）。2. 模糊單純集：$\rho_i$ 是到最近的另一個點的距離；$\sigma_i$ 以二分法解 $\sum_j e^{-(d_{ij}-\rho_i)/\sigma_i} = \log_2 k$，所有 N 個區間一起減半（64 次，在上界未知時先進行倍增階段）；隸屬度被散佈到稠密的 (N, N) 矩陣 $P$ 中，並以模糊聯集 $W = P + P^\top - P\circ P^\top$ 對稱化（幾千個點時用稠密矩陣沒問題；大規模時用稀疏 COO 張量，公式相同）。3. 低維相似度 $q = 1/(1 + a d^{2b})$，其中 $a$ 與 $b$ 以雙參數 Gauss–Newton 最小平方法擬合 min_dist；初始化：用稠密的 torch.linalg.eigh 求正規化拉普拉斯矩陣 $I - D^{-1/2} W D^{-1/2}$ 最低的兩個非平凡特徵向量（2500 個點在單核心上約 4 s；umap-learn 使用稀疏求解器；若 eigh 失敗，程式會退回隨機初始化）。4. 佈局：500 個 epoch；權重為 $w_{ij}$ 的邊每 $\max w / w_{ij}$ 個 epoch 啟用一次（umap-learn 的排程，以一個記錄下次取樣 epoch 的 (E,) 張量保存）；每條啟用的邊吸引其兩端，並抽取 5 個隨機負樣本來排斥其頭端；一個 epoch 的所有力一次算出，並以
+  index_add_ 按點加總（同步更新，而 umap-learn 是逐條邊移動點）。同一個迴圈改用 autograd：取樣交叉熵的梯度，在加總後裁剪。5. 評估指標，全部是張量運算，$k$ = 10：由排名矩陣（argsort 的 argsort）計算可信度與連續性（Venna 與 Kaski 2001）、kNN 召回率，以及二維佈局中留一法 10-NN 數字準確率；以 SVD 實作的 PCA 作為線性基準。資料。MNIST（LeCun、Cortes 與 Burges），授權 CC BY-SA 3.0：data/mnist_subset.npz 收錄每個數字的前 250 張訓練影像（2500 張影像，uint8；相同方式分享授權適用於此子集），見 data/SOURCES.md。瑞士捲（1500 個點，與 scikit-learn 的 make_swiss_roll 相同，帶少量雜訊）在程式中生成，因此其真實的平展座標（弧長、高度）是已知的。umap-learn 參考結果（umap-learn 0.5.12、scikit-learn 1.9.1、random_state 42）由 data/make_reference.py 在一個用完即棄的環境中離線計算一次；只附帶其二維座標與指標。結果（附帶的執行結果，CPU，單執行緒）。MNIST，2500 個數字：可信度 / 連續性 / 10-NN 召回率 / 10-NN 數字準確率 = 手寫力 0.957 / 0.963 / 0.39 / 0.887，autograd 0.960 / 0.963 / 0.40 / 0.898，umap-learn 0.963 / 0.963 / 0.40 / 0.896，PCA 0.740 / 0.913 / 0.07 / 0.414。瑞士捲：可信度 0.999（umap-learn 0.999，PCA 0.943），相對於真實平展座標為 0.999，並保留了 76 % 的真實 10 個最近鄰（umap-learn 77 %，PCA 28 %）。在附帶的 umap-learn 佈局上，我們的可信度也與 scikit-learn 的結果相差在 $2\times 10^{-4}$ 以內（已測試），且 $a$、$b$ 與 umap-learn 的相同。MNIST 上的實際耗時：力版本 11 s（建圖
+  0.5 s、eigh 4 s、佈局 7 s），autograd 15 s，umap-learn 14 s（第二次呼叫，單執行緒；第一次呼叫含 numba 編譯，耗時 28 s）。經過最佳的旋轉、鏡射與縮放（Procrustes）後，我們的 MNIST 佈局與 umap-learn 的差異度為 0.05（0 = 形狀相同，1 = 毫無關聯）；相同的數字群集位於相同的位置。結論與限制。UMAP 是一個張量問題：建圖、頻寬搜尋、模糊聯集、譜初始化與力導向佈局全都是批次張量運算，而且在這裡的每項指標上結果都與參考實作一樣好。不同之處：佈局以指標比較，絕不以座標比較，因為 UMAP 佈局只在旋轉、鏡射以及負取樣的隨機性之下才有定義（換一個種子，群集就會移動）；超過 4096 個點時 umap-learn 的 kNN 變為近似，而我們的仍然精確（代價是 $O(N^2)$）；我們稠密的 $N\times N$ 矩陣與 eigh 把這個版本限制在約 $10^4$ 個點（區塊化、稀疏張量與迭代特徵求解器可以突破此限制）；同步更新使早期 epoch 看起來像一團熾熱的氣體（學習率接近 1，且每個點一次承受所有推力），之後佈局才逐漸冷卻。瑞士捲保留了每個局部鄰域，但沒有被展開成一張乾淨的平面：它撕裂成條狀，與 umap-learn 相同，這是 UMAP 與 t-SNE 的已知特性。數字準確率衡量的是地圖把它從未見過的類別分開得多好，而不是一個分類器。不同的 BLAS 版本與執行緒數會使結果相差千分之幾。相關研究。t-SNE（van der Maaten 與 Hinton 2008）確立了在二維中以重尾核匹配鄰居機率的模式；UMAP 以模糊隸屬度取代其正規化機率，並以負取樣（如 word2vec）取代其完整排斥，這正是它能夠擴展的原因。拉普拉斯特徵映射（Belkin 與 Niyogi 2003）提供了譜初始化。動手試試。較少的鄰居（5）會產生更多、更小的群集；min_dist 接近 0.9 會讓點排列得較鬆散；較少的 epoch 會呈現未完成的佈局；換一個種子會旋轉並重新排列地圖，而指標保持不變。
+meanings:
+- 到 $k$ 個最近點的距離（點本身排第一），由 $\lVert x_i\rVert^2 + \lVert x_j\rVert^2 - 2\,x_{id}x_{jd}$（重複的 $d$ ⇒ 求和）與 topk 得到；精確，列區塊使記憶體保持在 $O(BN)$
+- $\rho_i$ = 到最近的另一個點的距離；$\sigma_i$ 由一個涵蓋所有點的區間張量同時減半 64 次求得，使 $\sum_j e^{-(d_{ij}-\rho_i)/\sigma_i} = \log_2 k$
+- 有向隸屬度：最近鄰為 1，超出後隨距離衰減，kNN 列表之外為 0
+- 兩個方向的模糊聯集（機率式 OR）：對稱，值在 $[0, 1]$ 內；其非零項即邊列表 $(i_e, j_e)$，2500 個數字時 $E$ ≈ 50 000
+- 以 Gauss–Newton 將 $1/(1 + a x^{2b})$ 擬合到 min_dist 以下為 1、以上為 $e^{-(x - \mathrm{min\_dist})}$ 的曲線：min_dist = 0.1 時 $a$ = 1.577，$b$ = 0.895
+- 譜初始化：正規化圖拉普拉斯矩陣最低的兩個非平凡特徵向量，縮放到 $[0, 10]$
+- 所有被取樣的邊 $(i, j)$ 以及每條邊 5 個隨機負樣本 $s$ 的力，以一次 scatter-add 按點加總；每一項裁剪到 $\pm 4$；學習率 $\alpha = 1 - \mathrm{epoch}/n$
+- 同一步由 autograd 對取樣損失 $\sum_e -\log q_{ij} + \sum_s -\log(1-q_{is})$ 求得：與手寫的力相同（已測試）
+- $1 - \frac{2}{Nk(2N-3k-1)}\sum_i\sum_{j\in U_k(i)}(r_{ij}-k)$，排名 $r$ 來自 argsort 的 argsort；連續性則交換 $x$ 與 $y$
+labels:
+  n_neighbors: 鄰居數 $k$（含點本身）
+  min_dist: 佈局中的最小距離
+  n_epochs: 佈局 epoch 數
+  neg_rate: 每次邊取樣的負樣本數
+  n_mnist: MNIST 影像數（各數字均衡）
+  seed: 隨機種子
