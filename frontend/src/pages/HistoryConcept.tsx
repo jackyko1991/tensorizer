@@ -165,7 +165,8 @@ export default function HistoryConcept({ section }: { section: string | null }) 
   // "how to measure a curved space from the inside": the part's one-line story, without its bold "Part I, Maths:" lead
   const tagline = (part: number) =>
     T(`history.introPart${part}` as PageKey)
-      .replace(/^\*\*[^*]+\*\*\s*[:：]\s*/, "")
+      .replace(/^\*\*[^*]+\*\*\s*[:：]?\s*/, "") // the colon may sit inside the bold ("**Part I, Maths:** how…")
+      .replace(/^\p{Ll}/u, (c) => c.toUpperCase()) // it now starts its own line: "How to measure…"
       .trim();
   const navList = (onPick: (id: string) => void) =>
     HISTORY_PARTS.map((part) => (
