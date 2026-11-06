@@ -449,7 +449,7 @@
   "maths.recap.test": "**Der Feynman-Test.** Wenn du das Penrose-Bild von $\\operatorname{tr}(ABC)$ zeichnen, seinen `einsum`-String schreiben, sagen kannst, welche Kontraktionsreihenfolge für gegebene Formen am günstigsten ist, und abschätzen kannst, ob es speicher- oder rechengebunden sein wird, dann hast du diese Seite verstanden.",
   "history.tab": "Geschichte der Tensoren",
   "history.kicker": "Konzept · eine Trilogie",
-  "history.title": "Die Tensor-Trilogie: von Gauß bis Apple Silicon und NVLink",
+  "history.title": "Die Tensor-Trilogie: von Gauß bis CUDA",
   "history.intro": "Jeder Aufruf von `torch.einsum` steht auf zwei Jahrhunderten Arbeit.",
   "history.introPart1": "**Teil I, Mathematik:** wie man einen gekrümmten Raum von innen vermisst.",
   "history.introPart2": "**Teil II, Physik:** wie Einstein mit der Hilfe eines Freundes diese Sprache in Gravitation verwandelte.",

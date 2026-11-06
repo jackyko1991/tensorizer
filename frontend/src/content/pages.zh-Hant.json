@@ -449,7 +449,7 @@
   "maths.recap.test": "**費曼測驗。** 如果你能畫出 $\\operatorname{tr}(ABC)$ 的彭羅斯圖、寫出它的 `einsum` 字串、說出在給定形狀下哪種縮並順序最便宜，並猜出它會受記憶體限制還是受運算限制，那你就理解這一頁了。",
   "history.tab": "張量史",
   "history.kicker": "概念 · 三部曲",
-  "history.title": "張量三部曲：從高斯到 Apple 晶片與 NVLink",
+  "history.title": "張量三部曲：從高斯到 CUDA",
   "history.intro": "每一次呼叫 `torch.einsum`，背後都站著兩個世紀的接力。",
   "history.introPart1": "**第一部・數學**：如何從內部量度一個彎曲的空間。",
   "history.introPart2": "**第二部・物理**：愛因斯坦如何在老友的幫助下，把這套語言變成引力。",
