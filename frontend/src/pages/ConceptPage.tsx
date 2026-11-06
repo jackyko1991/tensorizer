@@ -9,6 +9,7 @@ import { localize, useLang } from "../i18n";
 import { PAGE_TABS, type ConceptTab } from "../pageRoute";
 import type { Manifest } from "../types";
 import DataflowConcept from "./DataflowConcept";
+import MathsConcept from "./MathsConcept";
 
 const PENDULUM = "mechanics/simple_pendulum";
 const STEPS = [0, 1, 2, 3, 4, 5, 6, 7] as const; // 0: tests first (TDD)
@@ -36,7 +37,7 @@ export default function ConceptPage({
   const { t, lang } = useLang();
   const p = manifest.problems.find((x) => x.id === PENDULUM);
   useEffect(() => {
-    const el = section && document.getElementById(tab === "laws" ? `step-${section}` : section);
+    const el = section && document.getElementById(tab === "laws" ? `step-${section}` : tab === "maths" ? `maths-${section}` : section);
     if (el) el.scrollIntoView({ block: "start", behavior: "instant" });
     else document.getElementById("concept-scroll")?.scrollTo({ top: 0 });
   }, [tab, section]);
@@ -58,12 +59,16 @@ export default function ConceptPage({
                 tab === k ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-800"
               }`}
             >
-              {T(k === "laws" ? "flow.tab.law" : "flow.tab")}
+              {T(k === "laws" ? "flow.tab.law" : k === "maths" ? "maths.tab" : "flow.tab")}
             </button>
           ))}
         </div>
       </div>
-      {tab === "dataflow" ? (
+      {tab === "maths" ? (
+        <div className="pt-6">
+          <MathsConcept />
+        </div>
+      ) : tab === "dataflow" ? (
         <div className="pt-6">
           <DataflowConcept />
         </div>

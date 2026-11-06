@@ -44,7 +44,7 @@ import AgentPanel from "./components/AgentPanel";
 import ExportMenu from "./components/ExportMenu";
 import { REPO_URL } from "./notebook";
 import ConceptPage from "./pages/ConceptPage";
-import { formatPageRoute, parsePageRoute, resolveTab, TAB_STORE } from "./pageRoute";
+import { formatPageRoute, isTab, parsePageRoute, resolveTab, TAB_STORE } from "./pageRoute";
 import AgentsPage from "./pages/AgentsPage";
 import SkillsPage from "./pages/SkillsPage";
 import { plainText, RichText } from "./components/Tex";
@@ -574,7 +574,7 @@ export default function App() {
         <main className="min-h-0 flex-1">
           <ConceptPage
             manifest={manifest}
-            tab={subTab === "dataflow" ? "dataflow" : "laws"}
+            tab={isTab("concept", subTab) ? subTab : "laws"}
             section={pageRoute?.section ?? null}
             onTab={openTab}
           />
@@ -584,7 +584,7 @@ export default function App() {
         <main className="min-h-0 flex-1">
           <SkillsPage
             manifest={manifest}
-            tab={subTab === "loops" ? "loops" : "techniques"}
+            tab={subTab === "loops" || subTab === "blas" ? subTab : "techniques"}
             section={pageRoute?.section ?? null}
             onTab={openTab}
           />

@@ -6,7 +6,7 @@ import { test } from "node:test";
 
 const root = new URL("../src/", import.meta.url);
 const read = (p: string) => readFileSync(new URL(p, root), "utf-8");
-const SOURCES = ["pages/LoopsTab.tsx", "components/LoopVsTensorAnim.tsx", "components/HwChip.tsx"];
+const SOURCES = ["pages/LoopsTab.tsx", "components/LoopVsTensorAnim.tsx", "components/HwChip.tsx", "components/animKit.tsx"];
 const CASES = ["dot", "pairwise", "matmul", "pendulum", "diffusion", "mc_pi"];
 
 function usedKeys(): Set<string> {

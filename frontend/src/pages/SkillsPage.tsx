@@ -6,7 +6,10 @@ import { usePageText, type PageKey } from "../content/pages";
 import { useLang } from "../i18n";
 import { PAGE_TABS, type SkillsTab } from "../pageRoute";
 import type { Manifest } from "../types";
+import BlasTab from "./BlasTab";
 import LoopsTab from "./LoopsTab";
+import TechniqueAnim from "../components/TechniqueAnim";
+import type { TechCase } from "../techAnim";
 
 // The tab comes from the address (#/skills/<tab>[/<section>], parsed in App); App remembers the last one.
 const TABS = PAGE_TABS.skills;
@@ -125,7 +128,7 @@ export default function SkillsPage({
 }: {
   manifest: Manifest;
   tab: Tab;
-  /** optional anchor inside the tab: #/skills/techniques/einsum → card skill-einsum, #/skills/loops/matmul → loops-matmul */
+  /** optional anchor inside the tab: #/skills/techniques/einsum → card skill-einsum, #/skills/loops/matmul → loops-matmul, #/skills/blas/repro → blas-repro */
   section: string | null;
   onTab: (t: Tab) => void;
 }) {
@@ -142,7 +145,7 @@ export default function SkillsPage({
   };
   // New tab: start at the top, or at the section the address names.
   useEffect(() => {
-    const el = section && document.getElementById(`${tab === "loops" ? "loops" : "skill"}-${section}`);
+    const el = section && document.getElementById(`${tab === "techniques" ? "skill" : tab}-${section}`);
     if (el) el.scrollIntoView({ block: "start", behavior: "instant" });
     else document.getElementById("skills-scroll")?.scrollTo({ top: 0 });
   }, [tab, section]);
@@ -166,13 +169,15 @@ export default function SkillsPage({
                 tab === t ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-800"
               }`}
             >
-              {T(t === "techniques" ? "skills.tab.techniques" : "skills.tab.loops")}
+              {T(`skills.tab.${t}`)}
             </button>
           ))}
         </div>
       </div>
       {tab === "loops" ? (
         <LoopsTab title={title} />
+      ) : tab === "blas" ? (
+        <BlasTab />
       ) : (
       <div className="mx-auto flex max-w-6xl gap-8 px-5 pt-6 pb-10">
         <PageToc
@@ -208,6 +213,7 @@ export default function SkillsPage({
               <div className="mt-4">
                 <CodeBlock code={s.code} />
               </div>
+              <TechniqueAnim id={s.id as TechCase} />
               <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
                 <span className="text-gray-500">{T("skills.usedIn")}</span>
                 {s.usedIn

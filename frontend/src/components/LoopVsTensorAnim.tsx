@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { usePageText, type PageKey } from "../content/pages";
 import {
   DIFF_SHIFTS,
@@ -28,118 +28,10 @@ import {
   type AnimCase,
 } from "../loopAnim";
 import { RichText } from "./Tex";
-
-/** Site colours: gray idle, blue tensor / done (as the chart's CPU bars), amber for the loop's current element. */
-const COL = {
-  idle: "#f3f4f6",
-  idleLine: "#d1d5db",
-  done: "#93c5fd",
-  doneLine: "#60a5fa",
-  blue: "#2563eb",
-  blueLight: "#dbeafe",
-  cur: "#f59e0b",
-  curLight: "#fde68a",
-  text: "#374151",
-  muted: "#6b7280",
-};
+import { AnimControls, COL, Cell, Txt, blueScale, useAnimClock } from "./animKit";
 
 const W = 240; // SVG user units; scaled to the panel width
 const HOLD = 12; // ticks the finished picture stays before the cycle restarts
-const SPEEDS = [0.5, 1, 2, 4];
-
-/** Blue sequential scale for a value in [0, 1]. */
-function blueScale(v: number): string {
-  const t = Math.min(Math.max(v, 0), 1);
-  const lerp = (a: number, b: number) => Math.round(a + (b - a) * t);
-  return `rgb(${lerp(239, 30)},${lerp(246, 64)},${lerp(255, 175)})`; // blue-50 -> blue-800
-}
-
-type Kind = "sans" | "mono" | "math";
-
-/** Font of a label: the page's sans text, the CodeBlock code font, or KaTeX's fonts for math. */
-const FAMILY: Record<Kind, string> = { sans: "inherit", mono: "var(--font-code)", math: "KaTeX_Main, serif" };
-
-/**
- * A tiny TeX-like renderer for SVG labels, so they look like the $...$ math in the card text: letters in
- * KaTeX_Math italic, digits and operators upright in KaTeX_Main, `_i` / `_{ij}` subscripts, `^2` superscripts.
- */
-function mathSpans(src: string): ReactNode[] {
-  const out: ReactNode[] = [];
-  let shift = 0; // current dy offset in em
-  let k = 0;
-  const run = (text: string, script: 0 | 1 | -1) => {
-    const target = script === 1 ? 0.35 : script === -1 ? -0.45 : 0;
-    for (const ch of text) {
-      const letter = /\p{L}/u.test(ch);
-      out.push(
-        <tspan
-          key={k++}
-          dy={target !== shift ? `${(target - shift) * (script ? 1 / 0.72 : 1)}em` : undefined}
-          fontFamily={letter ? "KaTeX_Math, serif" : "KaTeX_Main, serif"}
-          fontStyle={letter ? "italic" : "normal"}
-          fontSize={script ? "72%" : undefined}
-        >
-          {ch === " " ? " " : ch}
-        </tspan>,
-      );
-      shift = target;
-    }
-  };
-  for (let i = 0; i < src.length; i++) {
-    const c = src[i];
-    if ((c === "_" || c === "^") && i + 1 < src.length) {
-      let arg = src[i + 1];
-      if (arg === "{") {
-        const end = src.indexOf("}", i + 2);
-        arg = src.slice(i + 2, end);
-        i = end;
-      } else i++;
-      run(arg, c === "_" ? 1 : -1);
-    } else run(c, 0);
-  }
-  return out;
-}
-
-function Txt({ x, y, children, size = 8, color = COL.text, anchor = "start", weight, kind = "sans" }: {
-  x: number;
-  y: number;
-  children: ReactNode;
-  size?: number;
-  color?: string;
-  anchor?: "start" | "middle" | "end";
-  weight?: number;
-  kind?: Kind;
-}) {
-  const body = kind === "math" ? mathSpans(Array.isArray(children) ? children.join("") : String(children)) : children;
-  return (
-    <text x={x} y={y} fontSize={size} fill={color} textAnchor={anchor} style={{ fontFamily: FAMILY[kind] }} fontWeight={weight}>
-      {body}
-    </text>
-  );
-}
-
-function Cell({ x, y, s, fill, stroke = COL.idleLine, sw = 0.75, label, labelColor = COL.text, size = 8 }: {
-  x: number;
-  y: number;
-  s: number;
-  fill: string;
-  stroke?: string;
-  sw?: number;
-  label?: string | number;
-  labelColor?: string;
-  size?: number;
-}) {
-  return (
-    <g>
-      <rect x={x} y={y} width={s} height={s} rx={1.5} fill={fill} stroke={stroke} strokeWidth={sw} />
-      {label != null && (
-        <Txt x={x + s / 2} y={y + s / 2 + size * 0.36} size={size} anchor="middle" color={labelColor}>
-          {label}
-        </Txt>
-      )}
-    </g>
-  );
-}
 
 // ---- one picture per case; `f` = ticks done on that side ----------------------------------------------
 
@@ -518,36 +410,15 @@ const PICTURES: Record<AnimCase, { draw: (p: { side: "loop" | "tensor"; f: numbe
 /** Base tick length (ms at 1x): every loop run takes a few seconds, whatever its number of passes. */
 const tickMs = (c: AnimCase) => Math.min(320, Math.max(90, 8000 / loopFrames(c)));
 
-const btn =
-  "rounded-md border border-gray-300 bg-white px-2.5 py-1 text-xs text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500";
-
 /**
  * Loop vs tensor, side by side: the loop side takes one tick per element, the tensor side one vectorised
  * call. Loops forever; starts paused under prefers-reduced-motion; pauses while off-screen.
  */
 export default function LoopVsTensorAnim({ id }: { id: AnimCase }) {
   const T = usePageText();
-  const root = useRef<HTMLDivElement>(null);
-  const reduced = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-  const [playing, setPlaying] = useState(!reduced);
-  const [visible, setVisible] = useState(false);
-  const [speed, setSpeed] = useState(1);
-  const [g, setG] = useState(0);
   const cycle = loopFrames(id) + HOLD;
-
-  useEffect(() => {
-    const el = root.current;
-    if (!el || typeof IntersectionObserver === "undefined") return setVisible(true);
-    const ob = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { threshold: 0 });
-    ob.observe(el);
-    return () => ob.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!playing || !visible) return;
-    const h = window.setInterval(() => setG((v) => (v + 1) % (cycle + 1)), tickMs(id) / speed);
-    return () => window.clearInterval(h);
-  }, [playing, visible, speed, id, cycle]);
+  const clock = useAnimClock(cycle, tickMs(id));
+  const { root, g } = clock;
 
   const lf = Math.min(g, loopFrames(id));
   const tf = Math.min(g, tensorFrames(id));
@@ -588,38 +459,7 @@ export default function LoopVsTensorAnim({ id }: { id: AnimCase }) {
           tf >= tensorFrames(id),
         )}
       </div>
-      <div className="mt-2 flex flex-wrap items-center gap-2">
-        <button type="button" className={btn} onClick={() => setPlaying((p) => !p)} aria-pressed={playing}>
-          {playing ? `❚❚ ${T("loops.anim.pause")}` : `▶ ${T("loops.anim.play")}`}
-        </button>
-        <button
-          type="button"
-          className={btn}
-          onClick={() => {
-            setPlaying(false);
-            setG((v) => (v + 1) % (cycle + 1));
-          }}
-        >
-          {T("loops.anim.step")} ›
-        </button>
-        <button type="button" className={btn} onClick={() => setG(0)}>
-          ↺ {T("loops.anim.restart")}
-        </button>
-        <label className="flex items-center gap-1.5 text-xs text-gray-600">
-          {T("loops.anim.speed")}
-          <select
-            className="rounded-md border border-gray-300 bg-white px-1.5 py-1 text-xs"
-            value={speed}
-            onChange={(e) => setSpeed(Number(e.target.value))}
-          >
-            {SPEEDS.map((v) => (
-              <option key={v} value={v}>
-                {v}×
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
+      <AnimControls clock={clock} />
       <p className="mt-2 text-[11px] leading-snug text-gray-500">
         <RichText text={T("loops.anim.note")} />
       </p>

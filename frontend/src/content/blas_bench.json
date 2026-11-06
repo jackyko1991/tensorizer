@@ -1,0 +1,453 @@
+{
+ "machine": {
+  "cpu": "AMD Ryzen 5 5600G with Radeon Graphics",
+  "cores": 6,
+  "threads": 6,
+  "gpu": "NVIDIA GeForce GTX 1080 Ti",
+  "torch": "2.13.0",
+  "python": "3.12.16",
+  "os": "Windows 11",
+  "date": "2026-11-05",
+  "passes": 5,
+  "seconds": 37.3,
+  "cpu_load_percent": [
+   39.2,
+   15.5
+  ],
+  "gpu_load_percent": [
+   2.0,
+   0.0
+  ],
+  "note": ""
+ },
+ "blas": {
+  "BLAS_INFO": "mkl",
+  "LAPACK_INFO": "mkl",
+  "mkl_available": true,
+  "mkldnn_available": true,
+  "libraries": [
+   "Intel(R) oneAPI Math Kernel Library Version 2026.1-Product Build 20260612 for Intel(R) 64 architecture applications",
+   "Intel(R) MKL-DNN v3.12.0 (Git Hash N/A)",
+   "CUDA Runtime 12.8",
+   "CuDNN 91.0.2  (built against CUDA 12.9)"
+  ],
+  "cpu_capability": "AVX2",
+  "cuda": "12.8"
+ },
+ "peak": {
+  "cpu": {
+   "float32": {
+    "1t": 124.8,
+    "all": 749.0
+   },
+   "float64": {
+    "1t": 62.4,
+    "all": 374.5
+   },
+   "assumption": "6 cores x 3.90 GHz (reported max clock; boost can be higher) x 2 FMA units x 8 float32 lanes (AVX2) x 2 FLOPs per FMA; float64 has half the lanes"
+  },
+  "cuda": {
+   "float32": 13698.0,
+   "float64": 428.1,
+   "assumption": "28 SMs x 128 CUDA cores x 2 FLOPs per FMA x 1911 MHz max SM clock; float64 at 1/32 of float32 (compute capability 6.1); no Tensor Cores counted"
+  }
+ },
+ "agreement": {
+  "reference": "float64 CPU",
+  "rtol": {
+   "float32": 0.0001,
+   "float64": 1e-10
+  },
+  "max_rel_error": {
+   "cpu_float32_1t": 3.3873290979505645e-07,
+   "cpu_float32_all": 3.3873290979505645e-07,
+   "cpu_float64_1t": 0.0,
+   "cpu_float64_all": 0.0,
+   "cuda_float32": 1.4135875145758614e-07,
+   "cuda_float64": 9.212539504043814e-16
+  },
+  "reproducibility": {
+   "n": 256,
+   "cpu_float32_1t_vs_all_bitwise_equal": true,
+   "cpu_float32_1t_vs_all_max_abs_diff": 0.0,
+   "cpu_vs_cuda_float32_bitwise_equal": false,
+   "cpu_vs_cuda_float32_max_abs_diff": 8.106231689453125e-06
+  }
+ },
+ "code": "def gemm(A, B):\n    return A @ B  # torch.matmul -> sgemm / dgemm of the BLAS library PyTorch was built with",
+ "flops": "2 n^3",
+ "results": {
+  "cpu_float32_1t": {
+   "id": "cpu_float32_1t",
+   "device": "cpu",
+   "dtype": "float32",
+   "threads": 1,
+   "rows": [
+    {
+     "n": 64,
+     "seconds": 1.0600022505968809e-05,
+     "gflops": 49.46,
+     "gflops_range": [
+      44.06,
+      62.42
+     ]
+    },
+    {
+     "n": 128,
+     "seconds": 5.069997860118747e-05,
+     "gflops": 82.73,
+     "gflops_range": [
+      57.38,
+      94.47
+     ]
+    },
+    {
+     "n": 256,
+     "seconds": 0.00035930000012740493,
+     "gflops": 93.39,
+     "gflops_range": [
+      92.59,
+      97.54
+     ]
+    },
+    {
+     "n": 512,
+     "seconds": 0.002667900000233203,
+     "gflops": 100.62,
+     "gflops_range": [
+      83.46,
+      105.77
+     ]
+    },
+    {
+     "n": 1024,
+     "seconds": 0.025392100011231378,
+     "gflops": 84.57,
+     "gflops_range": [
+      80.94,
+      96.75
+     ]
+    },
+    {
+     "n": 2048,
+     "seconds": 0.2038338000420481,
+     "gflops": 84.28,
+     "gflops_range": [
+      81.81,
+      95.31
+     ]
+    }
+   ]
+  },
+  "cpu_float32_all": {
+   "id": "cpu_float32_all",
+   "device": "cpu",
+   "dtype": "float32",
+   "threads": 6,
+   "rows": [
+    {
+     "n": 64,
+     "seconds": 1.1100026313215494e-05,
+     "gflops": 47.23,
+     "gflops_range": [
+      34.27,
+      49.93
+     ]
+    },
+    {
+     "n": 128,
+     "seconds": 2.9999995604157448e-05,
+     "gflops": 139.81,
+     "gflops_range": [
+      94.68,
+      174.04
+     ]
+    },
+    {
+     "n": 256,
+     "seconds": 0.00012050004443153739,
+     "gflops": 278.46,
+     "gflops_range": [
+      236.97,
+      284.84
+     ]
+    },
+    {
+     "n": 512,
+     "seconds": 0.000846399983856827,
+     "gflops": 317.15,
+     "gflops_range": [
+      266.78,
+      358.1
+     ]
+    },
+    {
+     "n": 1024,
+     "seconds": 0.00656510004773736,
+     "gflops": 327.11,
+     "gflops_range": [
+      310.57,
+      371.76
+     ]
+    },
+    {
+     "n": 2048,
+     "seconds": 0.05128515002434142,
+     "gflops": 334.99,
+     "gflops_range": [
+      287.74,
+      421.96
+     ]
+    }
+   ]
+  },
+  "cpu_float64_1t": {
+   "id": "cpu_float64_1t",
+   "device": "cpu",
+   "dtype": "float64",
+   "threads": 1,
+   "rows": [
+    {
+     "n": 64,
+     "seconds": 2.3900007363408804e-05,
+     "gflops": 21.94,
+     "gflops_range": [
+      16.13,
+      32.77
+     ]
+    },
+    {
+     "n": 128,
+     "seconds": 0.00012799998512491584,
+     "gflops": 32.77,
+     "gflops_range": [
+      30.73,
+      35.64
+     ]
+    },
+    {
+     "n": 256,
+     "seconds": 0.0007261999999172986,
+     "gflops": 46.21,
+     "gflops_range": [
+      36.13,
+      53.72
+     ]
+    },
+    {
+     "n": 512,
+     "seconds": 0.006219999981112778,
+     "gflops": 43.16,
+     "gflops_range": [
+      37.57,
+      50.1
+     ]
+    },
+    {
+     "n": 1024,
+     "seconds": 0.04658610001206398,
+     "gflops": 46.1,
+     "gflops_range": [
+      44.0,
+      50.22
+     ]
+    },
+    {
+     "n": 2048,
+     "seconds": 0.35803319996921346,
+     "gflops": 47.98,
+     "gflops_range": [
+      47.41,
+      52.83
+     ]
+    }
+   ]
+  },
+  "cpu_float64_all": {
+   "id": "cpu_float64_all",
+   "device": "cpu",
+   "dtype": "float64",
+   "threads": 6,
+   "rows": [
+    {
+     "n": 64,
+     "seconds": 1.829996472224593e-05,
+     "gflops": 28.65,
+     "gflops_range": [
+      18.02,
+      38.27
+     ]
+    },
+    {
+     "n": 128,
+     "seconds": 5.230004899203777e-05,
+     "gflops": 80.2,
+     "gflops_range": [
+      67.43,
+      100.1
+     ]
+    },
+    {
+     "n": 256,
+     "seconds": 0.0002742999931797385,
+     "gflops": 122.33,
+     "gflops_range": [
+      101.83,
+      135.3
+     ]
+    },
+    {
+     "n": 512,
+     "seconds": 0.0022785000037401915,
+     "gflops": 117.81,
+     "gflops_range": [
+      112.14,
+      123.86
+     ]
+    },
+    {
+     "n": 1024,
+     "seconds": 0.019496000022627413,
+     "gflops": 110.15,
+     "gflops_range": [
+      99.81,
+      114.82
+     ]
+    },
+    {
+     "n": 2048,
+     "seconds": 0.10949840000830591,
+     "gflops": 156.9,
+     "gflops_range": [
+      152.79,
+      173.38
+     ]
+    }
+   ]
+  },
+  "cuda_float32": {
+   "id": "cuda_float32",
+   "device": "cuda",
+   "dtype": "float32",
+   "threads": null,
+   "rows": [
+    {
+     "n": 64,
+     "seconds": 4.6600005589425564e-05,
+     "gflops": 11.25,
+     "gflops_range": [
+      5.09,
+      14.4
+     ]
+    },
+    {
+     "n": 128,
+     "seconds": 4.6200002543628216e-05,
+     "gflops": 90.79,
+     "gflops_range": [
+      44.67,
+      119.5
+     ]
+    },
+    {
+     "n": 256,
+     "seconds": 4.4899992644786835e-05,
+     "gflops": 747.31,
+     "gflops_range": [
+      472.6,
+      878.39
+     ]
+    },
+    {
+     "n": 512,
+     "seconds": 8.719996549189091e-05,
+     "gflops": 3078.39,
+     "gflops_range": [
+      2236.96,
+      3481.66
+     ]
+    },
+    {
+     "n": 1024,
+     "seconds": 0.00028300000121816993,
+     "gflops": 7588.28,
+     "gflops_range": [
+      4982.56,
+      7851.86
+     ]
+    },
+    {
+     "n": 2048,
+     "seconds": 0.0016983000095933676,
+     "gflops": 10115.92,
+     "gflops_range": [
+      6372.83,
+      10307.1
+     ]
+    }
+   ]
+  },
+  "cuda_float64": {
+   "id": "cuda_float64",
+   "device": "cuda",
+   "dtype": "float64",
+   "threads": null,
+   "rows": [
+    {
+     "n": 64,
+     "seconds": 4.4199987314641476e-05,
+     "gflops": 11.86,
+     "gflops_range": [
+      9.64,
+      12.11
+     ]
+    },
+    {
+     "n": 128,
+     "seconds": 6.330001633614302e-05,
+     "gflops": 66.26,
+     "gflops_range": [
+      49.87,
+      71.09
+     ]
+    },
+    {
+     "n": 256,
+     "seconds": 0.00016410002717748284,
+     "gflops": 204.48,
+     "gflops_range": [
+      125.77,
+      216.9
+     ]
+    },
+    {
+     "n": 512,
+     "seconds": 0.0009700999944470823,
+     "gflops": 276.71,
+     "gflops_range": [
+      186.43,
+      281.08
+     ]
+    },
+    {
+     "n": 1024,
+     "seconds": 0.007557500037364662,
+     "gflops": 284.15,
+     "gflops_range": [
+      207.65,
+      301.46
+     ]
+    },
+    {
+     "n": 2048,
+     "seconds": 0.0484396000392735,
+     "gflops": 354.67,
+     "gflops_range": [
+      344.74,
+      362.28
+     ]
+    }
+   ]
+  }
+ }
+}
