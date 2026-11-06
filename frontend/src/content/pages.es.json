@@ -449,7 +449,7 @@
   "maths.recap.test": "**La prueba de Feynman.** Si sabes dibujar el diagrama de Penrose de $\\operatorname{tr}(ABC)$, escribir su cadena `einsum`, decir qué orden de contracción es el más barato para unas formas dadas y adivinar si estará limitado por memoria o por cómputo, has entendido esta página.",
   "history.tab": "Historia de los tensores",
   "history.kicker": "Concepto · una trilogía",
-  "history.title": "La trilogía del tensor: de Gauss a CUDA",
+  "history.title": "La trilogía del tensor: de la geodesia a los imperios del chip",
   "history.intro": "Cada llamada a `torch.einsum` se apoya en dos siglos de trabajo.",
   "history.introPart1": "**Parte I, Matemáticas:** cómo medir un espacio curvo desde dentro.",
   "history.introPart2": "**Parte II, Física:** cómo Einstein, con la ayuda de un amigo, convirtió ese lenguaje en gravedad.",

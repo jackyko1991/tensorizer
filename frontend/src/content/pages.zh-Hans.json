@@ -449,7 +449,7 @@
   "maths.recap.test": "**费曼测试。** 如果你能画出 $\\operatorname{tr}(ABC)$ 的彭罗斯图、写出它的 `einsum` 字符串、说出在给定形状下哪种缩并顺序最便宜，并猜出它会受内存限制还是受计算限制，那你就理解这一页了。",
   "history.tab": "张量史",
   "history.kicker": "概念 · 三部曲",
-  "history.title": "张量三部曲：从高斯到 CUDA",
+  "history.title": "张量三部曲：从大地测量到芯片帝国",
   "history.intro": "每一次调用 `torch.einsum`，背后都站着两个世纪的接力。",
   "history.introPart1": "**第一部・数学**：如何从内部度量一个弯曲的空间。",
   "history.introPart2": "**第二部・物理**：爱因斯坦如何在老友的帮助下，把这套语言变成引力。",

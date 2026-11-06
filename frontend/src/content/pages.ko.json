@@ -449,7 +449,7 @@
   "maths.recap.test": "**파인만 테스트.** $\\operatorname{tr}(ABC)$의 펜로즈 그림을 그리고, 그 `einsum` 문자열을 쓰고, 주어진 모양에서 어떤 축약 순서가 가장 싼지 말하고, 메모리 제한일지 연산 제한일지 짐작할 수 있다면, 이 페이지를 이해한 것입니다.",
   "history.tab": "텐서의 역사",
   "history.kicker": "개념 · 3부작",
-  "history.title": "텐서 3부작: 가우스에서 CUDA까지",
+  "history.title": "텐서 3부작: 측지 측량에서 칩 제국까지",
   "history.intro": "`torch.einsum` 호출 하나하나는 두 세기에 걸친 연구 위에 서 있습니다.",
   "history.introPart1": "**1부, 수학:** 휘어진 공간을 그 안에서 재는 법.",
   "history.introPart2": "**2부, 물리:** 아인슈타인이 친구의 도움으로 이 언어를 중력 이론으로 바꾼 이야기.",

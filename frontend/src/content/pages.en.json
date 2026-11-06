@@ -449,7 +449,7 @@
   "maths.recap.test": "**The Feynman test.** If you can draw the Penrose picture of $\\operatorname{tr}(ABC)$, write its `einsum` string, say which contraction order is cheapest for given shapes, and guess whether it will be memory- or compute-bound, you have understood this page.",
   "history.tab": "Tensor history",
   "history.kicker": "Concept · a trilogy",
-  "history.title": "The tensor trilogy: from Gauss to CUDA",
+  "history.title": "The tensor trilogy: from land surveys to chip empires",
   "history.intro": "Every `torch.einsum` call stands on two centuries of work.",
   "history.introPart1": "**Part I, Maths:** how to measure a curved space from the inside.",
   "history.introPart2": "**Part II, Physics:** how Einstein, with a friend's help, turned that language into gravity.",
