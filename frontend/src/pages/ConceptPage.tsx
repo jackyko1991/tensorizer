@@ -10,6 +10,7 @@ import { PAGE_TABS, type ConceptTab } from "../pageRoute";
 import type { Manifest } from "../types";
 import DataflowConcept from "./DataflowConcept";
 import MathsConcept from "./MathsConcept";
+import HistoryConcept from "./HistoryConcept";
 
 const PENDULUM = "mechanics/simple_pendulum";
 const STEPS = [0, 1, 2, 3, 4, 5, 6, 7] as const; // 0: tests first (TDD)
@@ -37,7 +38,7 @@ export default function ConceptPage({
   const { t, lang } = useLang();
   const p = manifest.problems.find((x) => x.id === PENDULUM);
   useEffect(() => {
-    const el = section && document.getElementById(tab === "laws" ? `step-${section}` : tab === "maths" ? `maths-${section}` : section);
+    const el = section && document.getElementById(tab === "laws" ? `step-${section}` : tab === "maths" ? `maths-${section}` : tab === "history" ? `history-${section}` : section);
     if (el) el.scrollIntoView({ block: "start", behavior: "instant" });
     else document.getElementById("concept-scroll")?.scrollTo({ top: 0 });
   }, [tab, section]);
@@ -46,25 +47,27 @@ export default function ConceptPage({
   const R = (key: PageKey) => <RichText text={T(key)} />;
 
   return (
-    <div id="concept-scroll" className="h-full overflow-y-auto scroll-smooth bg-gray-50/60">
+    <div id="concept-scroll" className="h-full scroll-smooth bg-gray-50/60 xl:overflow-y-auto">
       <div className="mx-auto max-w-6xl px-5 pt-6">
-        <div className="flex gap-1 border-b border-gray-200" role="tablist" data-testid="concept-tabs">
+        <div className="flex gap-1 overflow-x-auto border-b border-gray-200" role="tablist" data-testid="concept-tabs">
           {TABS.map((k) => (
             <button
               key={k}
               role="tab"
               aria-selected={tab === k}
               onClick={() => k !== tab && onTab(k)}
-              className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium ${
+              className={`-mb-px shrink-0 whitespace-nowrap border-b-2 px-4 py-2 text-sm font-medium ${
                 tab === k ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-800"
               }`}
             >
-              {T(k === "laws" ? "flow.tab.law" : k === "maths" ? "maths.tab" : "flow.tab")}
+              {T(k === "laws" ? "flow.tab.law" : k === "maths" ? "maths.tab" : k === "history" ? "history.tab" : "flow.tab")}
             </button>
           ))}
         </div>
       </div>
-      {tab === "maths" ? (
+      {tab === "history" ? (
+        <HistoryConcept section={section} />
+      ) : tab === "maths" ? (
         <div className="pt-6">
           <MathsConcept />
         </div>

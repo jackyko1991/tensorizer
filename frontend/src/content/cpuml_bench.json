@@ -1,0 +1,534 @@
+{
+ "machine": {
+  "cpu": "AMD Ryzen 5 5600G with Radeon Graphics",
+  "threads": 6,
+  "gpu": "NVIDIA GeForce GTX 1080 Ti",
+  "torch": "2.13.0",
+  "python": "3.12.16",
+  "date": "2026-11-06",
+  "passes": 3,
+  "seconds": 211.0,
+  "cpu_load_percent": [
+   7.2,
+   20.8
+  ],
+  "note": ""
+ },
+ "sklearn": {
+  "sklearn": "1.9.1",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "python": "3.15.2",
+  "blas": "mkl 2026.1-Product (6 threads)",
+  "date": "2026-11-06",
+  "cpu_load_percent": [
+   23.0,
+   22.4
+  ]
+ },
+ "settings": {
+  "pca_k": 50,
+  "svm_C": 0.01,
+  "ksvm_C": 1.0,
+  "logreg_C": 0.1,
+  "knn_k": 10,
+  "kmeans_k": 10,
+  "mnist": [
+   2000,
+   500
+  ]
+ },
+ "units": {
+  "pca": "N",
+  "linsvm": "N",
+  "ksvm": "N",
+  "logreg": "N",
+  "knn": "N",
+  "kmeans": "N"
+ },
+ "code": {
+  "pca": {
+   "sklearn": "def pca_sklearn(X, k):\n    from sklearn.decomposition import PCA\n\n    pca = PCA(n_components=k, svd_solver=\"full\").fit(X)\n    return pca.components_, pca.explained_variance_ratio_",
+   "tensor": "def pca_tensor(X, k):\n    Xc = X - X.mean(dim=0)  # centring: (N, D) - (D,) broadcasts over the rows\n    U, S, Vh = torch.linalg.svd(Xc, full_matrices=False)  # Xc = U diag(S) Vh\n    var = S**2 / (X.shape[0] - 1)  # variance along each principal axis\n    return Vh[:k], var[:k] / var.sum()  # components (k, D), explained variance ratio (k,)"
+  },
+  "linsvm": {
+   "sklearn": "def linsvm_sklearn(X, y, C):\n    from sklearn.svm import LinearSVC\n\n    svm = LinearSVC(C=C, loss=\"squared_hinge\", tol=1e-5, max_iter=20_000).fit(X, y)  # one-vs-rest\n    return np.vstack([svm.coef_.T, svm.intercept_])  # (D + 1, K)",
+   "tensor": "def linsvm_tensor(X, y, C):\n    Xb = torch.cat([X, torch.ones_like(X[:, :1])], dim=1)  # (N, D+1): liblinear penalises the bias as a weight\n    Y = 2.0 * (y[:, None] == torch.arange(N_CLASSES, device=X.device)) - 1  # (N, K): +1 own class, -1 rest\n    W = torch.zeros(Xb.shape[1], N_CLASSES, device=X.device, requires_grad=True)  # all K one-vs-rest SVMs\n    opt = torch.optim.LBFGS([W], max_iter=2000, tolerance_grad=1e-7, tolerance_change=0, history_size=20,\n                            line_search_fn=\"strong_wolfe\")  # fmt: skip\n\n    def objective():\n        opt.zero_grad()\n        hinge = (1 - Y * (Xb @ W)).clamp(min=0)  # (N, K)\n        loss = (0.5 * (W**2).sum() + C * (hinge**2).sum()) / (C * len(X))  # scaled: same minimiser\n        loss.backward()\n        return loss\n\n    opt.step(objective)\n    return W.detach()"
+  },
+  "ksvm": {
+   "sklearn": "def ksvm_sklearn(X, y, C, gamma):\n    from sklearn.svm import SVC\n\n    svm = SVC(C=C, kernel=\"rbf\", gamma=gamma).fit(X, y)  # SMO on the dual (libsvm)\n    alpha = np.zeros(len(X))\n    alpha[svm.support_] = np.abs(svm.dual_coef_[0])  # dual_coef_ = y_i alpha_i on the support vectors\n    return alpha, float(svm.intercept_[0])",
+   "tensor": "def ksvm_tensor(X, y, C, gamma, iters=3000):\n    sq = (X**2).sum(dim=1)\n    K = torch.exp(-gamma * (sq[:, None] + sq[None, :] - 2 * X @ X.T).clamp(min=0))  # (N, N) by broadcasting\n    Q = K * (y[:, None] * y[None, :])  # y_i y_j K_ij\n    v = torch.ones_like(y)\n    for _ in range(30):  # power iteration: largest eigenvalue L of Q sets the step 1/L\n        v = Q @ v\n        v = v / v.norm()\n    L = v @ Q @ v\n    a = z = torch.zeros_like(y)\n    t, last = 1.0, None\n    for it in range(iters):  # accelerated projected gradient ascent on the SVC dual (FISTA)\n        a_new = project(z + (1 - Q @ z) / L, y, C)  # gradient of sum(a) - a.Q.a/2, then back into the box\n        t_new = (1 + (1 + 4 * t * t) ** 0.5) / 2\n        z = a_new + (t - 1) / t_new * (a_new - a)\n        a, t = a_new, t_new\n        if it % 50 == 49:\n            dual = a.sum() - 0.5 * a @ Q @ a\n            if last is not None and dual - last <= 1e-6 * dual.abs():\n                break\n            last = dual\n    f = K @ (a * y)\n    free = (a > 1e-3 * C) & (a < (1 - 1e-3) * C)  # margin support vectors: y_i (f_i + b) = 1\n    b = (y - f)[free].mean() if free.any() else (y - f)[a > 0].mean()\n    return a, b\n\n\ndef project(v, y, C, grid=32, rounds=5):\n    \"\"\"Closest point to v with 0 <= a <= C and sum(y a) = 0: a = clip(v - mu y, 0, C), mu found by a grid search.\"\"\"\n    lo = -(v.abs().max() + C)\n    hi = -lo\n    for _ in range(rounds):  # sum(y clip(v - mu y)) falls as mu grows: keep the grid cell where it crosses 0\n        mu = torch.linspace(0, 1, grid + 1, device=v.device) * (hi - lo) + lo  # (G+1,)\n        h = (y * (v[None, :] - mu[:, None] * y).clamp(0, C)).sum(dim=1)  # (G+1,) all candidates at once\n        i = torch.searchsorted(-h, torch.zeros(1, device=v.device)).clamp(1, grid)\n        lo, hi = mu[i - 1], mu[i]\n    return (v - 0.5 * (lo + hi) * y).clamp(0, C)"
+  },
+  "logreg": {
+   "sklearn": "def logreg_sklearn(X, y, C):\n    from sklearn.linear_model import LogisticRegression\n\n    lr = LogisticRegression(C=C, tol=1e-6, max_iter=5000).fit(X, y)  # multinomial, lbfgs, L2 penalty\n    return np.vstack([lr.coef_.T, lr.intercept_])  # (D + 1, K)",
+   "tensor": "def logreg_tensor(X, y, C):\n    W = torch.zeros(X.shape[1], N_CLASSES, device=X.device, requires_grad=True)\n    b = torch.zeros(N_CLASSES, device=X.device, requires_grad=True)  # bias: not penalised, as in sklearn\n    opt = torch.optim.LBFGS([W, b], max_iter=2000, tolerance_grad=1e-7, tolerance_change=0, history_size=20,\n                            line_search_fn=\"strong_wolfe\")  # fmt: skip\n\n    def objective():\n        opt.zero_grad()\n        ce = torch.nn.functional.cross_entropy(X @ W + b, y, reduction=\"sum\")  # softmax + log-loss\n        loss = (0.5 * (W**2).sum() + C * ce) / (C * len(X))  # lambda = 1/C; scaled: same minimiser\n        loss.backward()  # autograd: dJ/dW = X^T (softmax - onehot) + W / C, up to the scale\n        return loss\n\n    opt.step(objective)\n    return torch.cat([W, b[None]]).detach()"
+  },
+  "knn": {
+   "sklearn": "def knn_sklearn(Xtr, ytr, Xte, k):\n    from sklearn.neighbors import KNeighborsClassifier\n\n    return KNeighborsClassifier(n_neighbors=k).fit(Xtr, ytr).predict(Xte)",
+   "tensor": "def knn_tensor(Xtr, ytr, Xte, k):\n    d = torch.cdist(Xte, Xtr)  # (M, N) every test-train distance\n    idx = d.topk(k, largest=False).indices  # (M, k) the k nearest\n    votes = torch.nn.functional.one_hot(ytr[idx], N_CLASSES).sum(dim=1)  # (M, K) votes per class\n    return votes.argmax(dim=1)  # ties: the smallest label, as in sklearn"
+  },
+  "kmeans": {
+   "sklearn": "def kmeans_sklearn(X, centers):\n    from sklearn.cluster import KMeans\n\n    km = KMeans(n_clusters=len(centers), init=centers, n_init=1, max_iter=300, tol=0, algorithm=\"lloyd\").fit(X)\n    return km.cluster_centers_, km.labels_, km.n_iter_",
+   "tensor": "def kmeans_tensor(X, centers, max_iter=300):\n    labels = torch.cdist(X, centers).argmin(dim=1)  # (N,) nearest centre of every point\n    n_iter = 0\n    while n_iter < max_iter:  # Lloyd: move every centre to its cluster mean, then reassign every point\n        sums = torch.zeros_like(centers).index_add_(0, labels, X)  # (k, D) sum per cluster\n        counts = torch.bincount(labels, minlength=len(centers)).clamp(min=1)\n        centers = sums / counts[:, None]\n        new = torch.cdist(X, centers).argmin(dim=1)\n        n_iter += 1\n        if torch.equal(new, labels):\n            break  # no point changed cluster: converged\n        labels = new\n    return centers, labels, n_iter"
+  }
+ },
+ "agreement": {
+  "pca": {
+   "sklearn": {
+    "evr_sum": 0.8345784544944763,
+    "evr1": 0.09940611571073532,
+    "seconds": 0.07795600005192682
+   },
+   "cpu": {
+    "evr_sum": 0.8345785737037659,
+    "evr1": 0.09940604120492935,
+    "evr_maxdiff": 7.450580596923828e-08,
+    "min_cos10": 0.9999992847442627,
+    "seconds": 0.07876859995303676
+   },
+   "cuda": {
+    "evr_sum": 0.8345704674720764,
+    "evr1": 0.09940018504858017,
+    "evr_maxdiff": 5.930662155151367e-06,
+    "min_cos10": 1.0000795125961304,
+    "seconds": 0.0775722999824211
+   }
+  },
+  "linsvm": {
+   "sklearn": {
+    "test_acc": 0.868,
+    "objective": 18.954182892165846,
+    "seconds": 0.12033440003870055
+   },
+   "cpu": {
+    "test_acc": 0.868,
+    "objective": 18.95419005431321,
+    "pred_match": 1.0,
+    "coef_rel_diff": 0.0007498067599586562,
+    "seconds": 0.4979157999623567
+   },
+   "cuda": {
+    "test_acc": 0.868,
+    "objective": 18.954187821819797,
+    "pred_match": 1.0,
+    "coef_rel_diff": 0.0006184199117499994,
+    "seconds": 0.7428632999653928
+   }
+  },
+  "ksvm": {
+   "sklearn": {
+    "test_acc": 0.952,
+    "dual": 349.4069885627743,
+    "n_sv": 763.0,
+    "seconds": 0.2914321499702055
+   },
+   "cpu": {
+    "test_acc": 0.952,
+    "dual": 349.40581853773597,
+    "n_sv": 765.0,
+    "pred_match": 1.0,
+    "seconds": 1.0063299000030383
+   },
+   "cuda": {
+    "test_acc": 0.952,
+    "dual": 349.4058201528131,
+    "n_sv": 765.0,
+    "pred_match": 1.0,
+    "seconds": 1.7159625999629498
+   }
+  },
+  "logreg": {
+   "sklearn": {
+    "test_acc": 0.878,
+    "objective": 71.93597073397204,
+    "seconds": 0.4431822999904398
+   },
+   "cpu": {
+    "test_acc": 0.876,
+    "objective": 71.93596577584546,
+    "pred_match": 0.998,
+    "coef_rel_diff": 0.0005851121887565461,
+    "seconds": 0.7204001999925822
+   },
+   "cuda": {
+    "test_acc": 0.876,
+    "objective": 71.93594717798254,
+    "pred_match": 0.998,
+    "coef_rel_diff": 0.0005416599451794794,
+    "seconds": 1.079058300005272
+   }
+  },
+  "knn": {
+   "sklearn": {
+    "test_acc": 0.898,
+    "seconds": 0.028789400006644428
+   },
+   "cpu": {
+    "test_acc": 0.898,
+    "pred_match": 1.0,
+    "seconds": 0.009601199999451637
+   },
+   "cuda": {
+    "test_acc": 0.898,
+    "pred_match": 1.0,
+    "seconds": 0.001083299983292818
+   }
+  },
+  "kmeans": {
+   "sklearn": {
+    "inertia": 77874.45685291688,
+    "iters": 35.0,
+    "seconds": 0.031024600029923022
+   },
+   "cpu": {
+    "inertia": 77874.45685291974,
+    "iters": 34.0,
+    "label_match": 1.0,
+    "seconds": 0.1328061000094749
+   },
+   "cuda": {
+    "inertia": 77874.45685291976,
+    "iters": 34.0,
+    "label_match": 1.0,
+    "seconds": 0.023300300003029406
+   }
+  }
+ },
+ "cases": {
+  "pca": [
+   {
+    "n": 2000,
+    "sklearn_s": 0.009243900014553219,
+    "tensor_cpu_s": 0.005474400008097291,
+    "speedup_cpu": 1.6885686104194775,
+    "speedup_cpu_range": [
+     0.6721994555785625,
+     2.3099707856080105
+    ],
+    "tensor_gpu_s": 0.0065033999853767455,
+    "speedup_gpu": 1.421394968068801,
+    "speedup_gpu_range": [
+     0.7891862344837289,
+     1.4829302904040056
+    ]
+   },
+   {
+    "n": 20000,
+    "sklearn_s": 0.03920659999130294,
+    "tensor_cpu_s": 0.0347438000026159,
+    "speedup_cpu": 1.128448816432026,
+    "speedup_cpu_range": [
+     1.1052599977352575,
+     1.5720255767306606
+    ],
+    "tensor_gpu_s": 0.010828900034539402,
+    "speedup_gpu": 3.6205523983277366,
+    "speedup_gpu_range": [
+     2.4273669033666145,
+     3.836894339452569
+    ]
+   },
+   {
+    "n": 200000,
+    "sklearn_s": 0.4479134000139311,
+    "tensor_cpu_s": 0.41074844999820925,
+    "speedup_cpu": 1.0904810475021485,
+    "speedup_cpu_range": [
+     0.7071959615539858,
+     1.2802224435110898
+    ],
+    "tensor_gpu_s": 0.0684330000076443,
+    "speedup_gpu": 6.545283707624932,
+    "speedup_gpu_range": [
+     6.027530919927596,
+     6.723232787883278
+    ]
+   }
+  ],
+  "linsvm": [
+   {
+    "n": 2000,
+    "sklearn_s": 0.046299499983433634,
+    "tensor_cpu_s": 0.033536900009494275,
+    "speedup_cpu": 1.3805539560998863,
+    "speedup_cpu_range": [
+     1.2169574739730618,
+     1.8889436772899355
+    ],
+    "tensor_gpu_s": 0.17181169998366386,
+    "speedup_gpu": 0.2694781553749591,
+    "speedup_gpu_range": [
+     0.20413906833465917,
+     0.3455154968706895
+    ]
+   },
+   {
+    "n": 20000,
+    "sklearn_s": 1.053296300000511,
+    "tensor_cpu_s": 0.15132109995465726,
+    "speedup_cpu": 6.960670391083114,
+    "speedup_cpu_range": [
+     6.260167436422282,
+     8.477074796774737
+    ],
+    "tensor_gpu_s": 0.19056240003556013,
+    "speedup_gpu": 5.527303916218306,
+    "speedup_gpu_range": [
+     3.815160792928469,
+     6.266714809096585
+    ]
+   },
+   {
+    "n": 100000,
+    "sklearn_s": 8.160540200013202,
+    "tensor_cpu_s": 0.9006478000083007,
+    "speedup_cpu": 9.06074516579954,
+    "speedup_cpu_range": [
+     6.297498133447779,
+     10.443974870647338
+    ],
+    "tensor_gpu_s": 0.2690736500080675,
+    "speedup_gpu": 30.328277034070517,
+    "speedup_gpu_range": [
+     16.540630495240237,
+     38.697725941729644
+    ]
+   }
+  ],
+  "ksvm": [
+   {
+    "n": 1000,
+    "sklearn_s": 0.02786010003183037,
+    "tensor_cpu_s": 0.28252095001516864,
+    "speedup_cpu": 0.09861251008229496,
+    "speedup_cpu_range": [
+     0.09379329398464958,
+     0.12455519867227657
+    ],
+    "tensor_gpu_s": 0.8214371000067331,
+    "speedup_gpu": 0.0339162913771511,
+    "speedup_gpu_range": [
+     0.03151586381455269,
+     0.04472866371300683
+    ]
+   },
+   {
+    "n": 2000,
+    "sklearn_s": 0.10973020002711564,
+    "tensor_cpu_s": 0.8721345000085421,
+    "speedup_cpu": 0.12581797879345546,
+    "speedup_cpu_range": [
+     0.07869482969600429,
+     0.18595068087369596
+    ],
+    "tensor_gpu_s": 1.1413979000062682,
+    "speedup_gpu": 0.09613667593615954,
+    "speedup_gpu_range": [
+     0.0902413002219507,
+     0.11491050504994214
+    ]
+   },
+   {
+    "n": 5000,
+    "sklearn_s": 0.5813030999852344,
+    "tensor_cpu_s": 3.4417223000200465,
+    "speedup_cpu": 0.16889889692199994,
+    "speedup_cpu_range": [
+     0.15125961297988808,
+     0.18661145543205263
+    ],
+    "tensor_gpu_s": 2.2473076000460424,
+    "speedup_gpu": 0.2586664593548853,
+    "speedup_gpu_range": [
+     0.2294649480292411,
+     0.3714494103099735
+    ]
+   }
+  ],
+  "logreg": [
+   {
+    "n": 2000,
+    "sklearn_s": 0.03296169999521226,
+    "tensor_cpu_s": 0.05034469999372959,
+    "speedup_cpu": 0.6547203578394075,
+    "speedup_cpu_range": [
+     0.5377861538228805,
+     0.7577346261043717
+    ],
+    "tensor_gpu_s": 0.22702409996418282,
+    "speedup_gpu": 0.14519031239596397,
+    "speedup_gpu_range": [
+     0.12433032827834424,
+     0.18056890774017004
+    ]
+   },
+   {
+    "n": 20000,
+    "sklearn_s": 0.288771049992647,
+    "tensor_cpu_s": 0.20265150000341237,
+    "speedup_cpu": 1.424963792460379,
+    "speedup_cpu_range": [
+     1.2736827166452813,
+     1.5110018335253201
+    ],
+    "tensor_gpu_s": 0.19011070003034547,
+    "speedup_gpu": 1.5189626356988501,
+    "speedup_gpu_range": [
+     1.1941825600704223,
+     1.6934156886395983
+    ]
+   },
+   {
+    "n": 100000,
+    "sklearn_s": 1.369806599977892,
+    "tensor_cpu_s": 0.8398417999851517,
+    "speedup_cpu": 1.6310293200482637,
+    "speedup_cpu_range": [
+     1.3471766213981857,
+     1.7845880387241786
+    ],
+    "tensor_gpu_s": 0.2395259999902919,
+    "speedup_gpu": 5.718822173932729,
+    "speedup_gpu_range": [
+     4.617218540332773,
+     6.609607286271583
+    ]
+   }
+  ],
+  "knn": [
+   {
+    "n": 2000,
+    "sklearn_s": 0.008000999980140477,
+    "tensor_cpu_s": 0.00483750004786998,
+    "speedup_cpu": 1.6539534678998982,
+    "speedup_cpu_range": [
+     1.467794181392562,
+     1.978431583791084
+    ],
+    "tensor_gpu_s": 0.001248600019607693,
+    "speedup_gpu": 6.407976817631615,
+    "speedup_gpu_range": [
+     3.274706422970074,
+     9.375369917769257
+    ]
+   },
+   {
+    "n": 20000,
+    "sklearn_s": 0.03838849999010563,
+    "tensor_cpu_s": 0.05465310002909973,
+    "speedup_cpu": 0.7024029738416648,
+    "speedup_cpu_range": [
+     0.6233640538451289,
+     0.7125466596626451
+    ],
+    "tensor_gpu_s": 0.004576499981340021,
+    "speedup_gpu": 8.38817877125071,
+    "speedup_gpu_range": [
+     2.3849112662016347,
+     10.293597249124199
+    ]
+   },
+   {
+    "n": 200000,
+    "sklearn_s": 0.3746664500213228,
+    "tensor_cpu_s": 0.6076312999939546,
+    "speedup_cpu": 0.6166016300099261,
+    "speedup_cpu_range": [
+     0.5664701287377347,
+     0.6945567517435735
+    ],
+    "tensor_gpu_s": 0.03546970000024885,
+    "speedup_gpu": 10.563000251445438,
+    "speedup_gpu_range": [
+     8.852371279506144,
+     11.646386885128553
+    ]
+   }
+  ],
+  "kmeans": [
+   {
+    "n": 2000,
+    "sklearn_s": 0.0029312000260688365,
+    "tensor_cpu_s": 0.006328499992378056,
+    "speedup_cpu": 0.46317453260632485,
+    "speedup_cpu_range": [
+     0.4292440637179776,
+     0.48023380731821613
+    ],
+    "tensor_gpu_s": 0.009757300023920834,
+    "speedup_gpu": 0.30041097628265556,
+    "speedup_gpu_range": [
+     0.2367545246826455,
+     0.3715983792079125
+    ]
+   },
+   {
+    "n": 20000,
+    "sklearn_s": 0.032138400012627244,
+    "tensor_cpu_s": 0.10089600004721433,
+    "speedup_cpu": 0.31852997143185124,
+    "speedup_cpu_range": [
+     0.30868638391419795,
+     0.45625990496691593
+    ],
+    "tensor_gpu_s": 0.04250770004000515,
+    "speedup_gpu": 0.7560606662411969,
+    "speedup_gpu_range": [
+     0.7067327161299597,
+     1.1063156914129733
+    ]
+   },
+   {
+    "n": 200000,
+    "sklearn_s": 0.8725173999555409,
+    "tensor_cpu_s": 5.7203854999970645,
+    "speedup_cpu": 0.15252772736312764,
+    "speedup_cpu_range": [
+     0.1435275264321737,
+     0.16876065308937593
+    ],
+    "tensor_gpu_s": 0.5585971000255086,
+    "speedup_gpu": 1.5619798239477023,
+    "speedup_gpu_range": [
+     1.3927555356995986,
+     1.7013158916226974
+    ]
+   }
+  ]
+ },
+ "umap": {
+  "rows": {
+   "forces": {
+    "trust": 0.957,
+    "cont": 0.963,
+    "recall": 0.39,
+    "acc": 0.887,
+    "seconds": 11
+   },
+   "autograd": {
+    "trust": 0.96,
+    "cont": 0.963,
+    "recall": 0.4,
+    "acc": 0.898,
+    "seconds": 15
+   },
+   "umap_learn": {
+    "trust": 0.963,
+    "cont": 0.963,
+    "recall": 0.4,
+    "acc": 0.896,
+    "seconds": 14
+   },
+   "pca": {
+    "trust": 0.74,
+    "cont": 0.913,
+    "recall": 0.07,
+    "acc": 0.414,
+    "seconds": null
+   }
+  },
+  "umap_learn_first_call_s": 28,
+  "procrustes": 0.05,
+  "versions": "umap-learn 0.5.12, scikit-learn 1.9.1"
+ }
+}

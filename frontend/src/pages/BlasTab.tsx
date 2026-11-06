@@ -464,7 +464,7 @@ function Panel({ title, series, peaks }: { title: string; series: Series[]; peak
                 return (
                   <g key={r.n} data-testid="blas-error-bar">
                     <title>{`${label(s.id)}, n = ${r.n}: ${fmtGflops(r.gflops)} GFLOP/s (${fmtGflops(lo)}–${fmtGflops(hi)})`}</title>
-                    {/* error bar |—| standing upright: the spread over passes, with end caps */}
+                    {/* error bar |-| standing upright: the spread over passes, with end caps */}
                     <line x1={x} x2={x} y1={Y(lo)} y2={Y(hi)} stroke="#1f2937" strokeWidth="1.25" />
                     <line x1={x - 3} x2={x + 3} y1={Y(lo)} y2={Y(lo)} stroke="#1f2937" strokeWidth="1.25" />
                     <line x1={x - 3} x2={x + 3} y1={Y(hi)} y2={Y(hi)} stroke="#1f2937" strokeWidth="1.25" />

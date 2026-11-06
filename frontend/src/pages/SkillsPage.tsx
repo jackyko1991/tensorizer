@@ -7,7 +7,9 @@ import { useLang } from "../i18n";
 import { PAGE_TABS, type SkillsTab } from "../pageRoute";
 import type { Manifest } from "../types";
 import BlasTab from "./BlasTab";
+import CpumlTab from "./CpumlTab";
 import LoopsTab from "./LoopsTab";
+import NvlinkTab from "./NvlinkTab";
 import TechniqueAnim from "../components/TechniqueAnim";
 import type { TechCase } from "../techAnim";
 
@@ -178,6 +180,10 @@ export default function SkillsPage({
         <LoopsTab title={title} />
       ) : tab === "blas" ? (
         <BlasTab />
+      ) : tab === "cpuml" ? (
+        <CpumlTab title={title} />
+      ) : tab === "nvlink" ? (
+        <NvlinkTab />
       ) : (
       <div className="mx-auto flex max-w-6xl gap-8 px-5 pt-6 pb-10">
         <PageToc

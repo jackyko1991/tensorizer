@@ -584,7 +584,7 @@ export default function App() {
         <main className="min-h-0 flex-1">
           <SkillsPage
             manifest={manifest}
-            tab={subTab === "loops" || subTab === "blas" ? subTab : "techniques"}
+            tab={isTab("skills", subTab) ? subTab : "techniques"}
             section={pageRoute?.section ?? null}
             onTab={openTab}
           />

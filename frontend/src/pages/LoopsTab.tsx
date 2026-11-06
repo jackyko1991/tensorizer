@@ -75,7 +75,7 @@ function Bar({ value, range, color, label }: { value: number; range?: number[] |
       <div className="relative h-3.5 flex-1 rounded-sm bg-gray-100">
         <div className={`absolute inset-y-0 left-0 rounded-sm ${color}`} style={{ width: pct(value) }} />
         {range && range.length === 2 && (
-          // error bar |—|: the spread over passes, with end caps
+          // error bar |-|: the spread over passes, with end caps
           <div
             className="absolute inset-y-0.5 border-x-[1.5px] border-gray-800"
             style={{ left: pct(range[0]), width: `calc(${pct(range[1])} - ${pct(range[0])})` }}

@@ -64,8 +64,8 @@ const ROWS: [string, string[]][] = [
   ["array", ["torch.tensor", "jnp.array", "mx.array", "tf.constant", "np.array"]],
   ["device", ['x.to("cuda" | "mps")', "jax.device_put", "unified memory", 'with tf.device("/GPU:0")', "CPU only"]],
   ["contraction", ["torch.einsum", "jnp.einsum", "mx.einsum", "tf.einsum", "np.einsum"]],
-  ["gradient", ["torch.autograd.grad", "jax.grad", "mx.grad", "tf.GradientTape", "—"]],
-  ["compile / fuse", ["torch.compile", "jax.jit", "mx.compile", "tf.function", "—"]],
+  ["gradient", ["torch.autograd.grad", "jax.grad", "mx.grad", "tf.GradientTape", "none"]],
+  ["compile / fuse", ["torch.compile", "jax.jit", "mx.compile", "tf.function", "none"]],
   ["execution", ["eager", "traced (jit) or eager", "lazy", "eager or graph", "eager"]],
 ];
 

@@ -5,8 +5,8 @@ import { useLayoutEffect, useMemo, useRef } from "react";
 const MIN_SCALE = 0.6; // below this, a piece scrolls sideways instead of shrinking further
 
 /**
- * Split a display equation into separate relations at top-level gaps — "\qquad", or "\quad"
- * right after a comma ("a = b,\quad c = d") — so they can wrap onto separate lines in a
+ * Split a display equation into separate relations at top-level gaps ("\qquad", or "\quad"
+ * right after a comma ("a = b,\quad c = d"), so they can wrap onto separate lines in a
  * narrow column. Braces are respected; "a \quad\Longrightarrow\quad b" stays together.
  */
 function splitRelations(tex: string): string[] {
