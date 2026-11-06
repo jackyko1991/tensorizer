@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Equation finder: field data u(x, t) go into a library of candidate terms, sparse regression keeps a few of them, and the result is written as an equation">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#111827">
+    <!-- data: a field u(x, t), drawn as three time slices -->
+    <rect x="8" y="22" width="56" height="64" fill="#ffffff" stroke="#374151" stroke-width="2"/>
+    <path d="M12,74 C22,74 26,40 36,40 C46,40 50,70 60,70" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+    <path d="M12,70 C24,70 28,48 36,48 C46,48 50,66 60,66" fill="none" stroke="#2563eb" stroke-width="1.5"/>
+    <path d="M12,66 C26,66 30,56 36,56 C46,56 50,62 60,62" fill="none" stroke="#1e40af" stroke-width="2"/>
+    <text x="22" y="16" font-style="italic">u(x,t)</text>
+    <!-- arrow to the library -->
+    <line x1="68" y1="54" x2="88" y2="54" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- library Θ(u): a column of candidate terms, a few kept -->
+    <g stroke="#374151" stroke-width="1.5">
+      <rect x="94" y="14" width="44" height="12" fill="#ffffff"/>
+      <rect x="94" y="28" width="44" height="12" fill="#93c5fd"/>
+      <rect x="94" y="42" width="44" height="12" fill="#ffffff"/>
+      <rect x="94" y="56" width="44" height="12" fill="#ffffff"/>
+      <rect x="94" y="70" width="44" height="12" fill="#2563eb"/>
+      <rect x="94" y="84" width="44" height="12" fill="#ffffff"/>
+    </g>
+    <g stroke="#9ca3af" stroke-width="1.2">
+      <line x1="140" y1="20" x2="146" y2="20" stroke-dasharray="2 2"/>
+      <line x1="140" y1="48" x2="146" y2="48" stroke-dasharray="2 2"/>
+      <line x1="140" y1="62" x2="146" y2="62" stroke-dasharray="2 2"/>
+      <line x1="140" y1="90" x2="146" y2="90" stroke-dasharray="2 2"/>
+    </g>
+    <text x="106" y="112" font-style="italic">Θ(u)</text>
+    <!-- sparse ξ selects terms -->
+    <line x1="144" y1="54" x2="164" y2="54" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="150" y="44" font-style="italic" fill="#b45309">ξ</text>
+    <!-- written equation -->
+    <rect x="168" y="38" width="66" height="32" rx="4" fill="#ffffff" stroke="#f59e0b" stroke-width="2"/>
+    <text x="173" y="59" font-size="12" font-style="italic">u<tspan font-size="9" dy="3">t</tspan><tspan dy="-3"> = ν u</tspan><tspan font-size="9" dy="3">xx</tspan></text>
+    <!-- noise / time axis -->
+    <line x1="8" y1="130" x2="232" y2="130" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="8" y="150" font-size="12" fill="#374151">data → library → sparse ξ → LaTeX</text>
+  </g>
+</svg>

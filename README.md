@@ -945,4 +945,4 @@ A new category also needs an entry in `CATEGORIES` in `scripts/build_assets.py`.
 
 ## License
 
-Tensorizer is licensed under the [Apache License 2.0](LICENSE): you may use, modify and redistribute it, including commercially, provided you keep the license and [NOTICE](NOTICE). Bundled third-party components keep their own licenses (PyTorch BSD-3, KaTeX/React/CodeMirror MIT, Source Code Pro SIL OFL 1.1).
+Tensorizer is licensed under the [Apache License 2.0](LICENSE): you may use, modify and redistribute it, including commercially, provided you keep the license and [NOTICE](NOTICE). Bundled third-party components keep their own licenses (PyTorch BSD-3, KaTeX/React/CodeMirror MIT, the Noto Sans fonts (Noto Sans, Noto Sans TC/SC/JP/KR) and Source Code Pro SIL OFL 1.1).

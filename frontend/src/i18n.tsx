@@ -370,11 +370,50 @@ interface LangState {
 
 const LangContext = createContext<LangState | null>(null);
 
+// CJK text font for the active language only (index.css picks it via :lang()), so an English visitor
+// downloads no CJK fonts. Each fontsource CSS file splits the family into ~100 unicode-range slices, and
+// the browser fetches only the slices for glyphs on the page. Weights match Tailwind's font-normal /
+// font-medium / font-semibold and <strong> (700).
+const SCRIPT_FONTS: Partial<Record<Lang, () => Promise<unknown>[]>> = {
+  "zh-Hant": () => [
+    import("@fontsource/noto-sans-tc/400.css"),
+    import("@fontsource/noto-sans-tc/500.css"),
+    import("@fontsource/noto-sans-tc/600.css"),
+    import("@fontsource/noto-sans-tc/700.css"),
+  ],
+  "zh-Hans": () => [
+    import("@fontsource/noto-sans-sc/400.css"),
+    import("@fontsource/noto-sans-sc/500.css"),
+    import("@fontsource/noto-sans-sc/600.css"),
+    import("@fontsource/noto-sans-sc/700.css"),
+  ],
+  ja: () => [
+    import("@fontsource/noto-sans-jp/400.css"),
+    import("@fontsource/noto-sans-jp/500.css"),
+    import("@fontsource/noto-sans-jp/600.css"),
+    import("@fontsource/noto-sans-jp/700.css"),
+  ],
+  ko: () => [
+    import("@fontsource/noto-sans-kr/400.css"),
+    import("@fontsource/noto-sans-kr/500.css"),
+    import("@fontsource/noto-sans-kr/600.css"),
+    import("@fontsource/noto-sans-kr/700.css"),
+  ],
+};
+const loadedScriptFonts = new Set<Lang>();
+function loadScriptFont(lang: Lang) {
+  const load = SCRIPT_FONTS[lang];
+  if (!load || loadedScriptFonts.has(lang)) return;
+  loadedScriptFonts.add(lang);
+  Promise.all(load()).catch(() => loadedScriptFonts.delete(lang)); // offline: system CJK fonts stay in use
+}
+
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(initialLang);
   // Keep ?lang= in the address bar so a copied link opens in the same language.
   useEffect(() => {
     document.documentElement.lang = lang;
+    loadScriptFont(lang);
     const url = new URL(window.location.href);
     if (url.searchParams.get("lang") !== lang) {
       url.searchParams.set("lang", lang);

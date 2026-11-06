@@ -167,16 +167,16 @@
       "hi": "मशीन लर्निंग और भौतिकी का मिलन"
     },
     "summary": {
-      "en": "Three ways to put a neural network to work on equations: a physics-informed network that learns from the ODE itself, a Fourier neural operator that learns a whole solution map, and machine learning that speeds up a CFD solver.",
-      "zh-Hant": "讓神經網路處理方程的三種方式：直接從常微分方程學習的物理資訊神經網路、學習整個解算子的傅立葉神經算子，以及加速 CFD 求解器的機器學習。",
-      "zh-Hans": "让神经网络处理方程的三种方式：直接从常微分方程学习的物理信息神经网络、学习整个解算子的傅里叶神经算子，以及加速 CFD 求解器的机器学习。",
-      "fr": "Trois façons de faire travailler un réseau de neurones sur des équations : un réseau informé par la physique qui apprend de l'EDO elle-même, un opérateur neuronal de Fourier qui apprend toute une application solution, et l'apprentissage automatique qui accélère un solveur de CFD.",
-      "de": "Drei Wege, ein neuronales Netz an Gleichungen arbeiten zu lassen: ein physikinformiertes Netz, das aus der ODE selbst lernt, ein Fourier-Neural-Operator, der eine ganze Lösungsabbildung lernt, und maschinelles Lernen, das einen CFD-Löser beschleunigt.",
-      "es": "Tres formas de poner una red neuronal a trabajar con ecuaciones: una red informada por la física que aprende de la propia EDO, un operador neuronal de Fourier que aprende todo un mapa de soluciones y aprendizaje automático que acelera un solucionador de CFD.",
-      "ja": "ニューラルネットワークを方程式に使う 3 つの方法：常微分方程式そのものから学ぶ物理情報ニューラルネットワーク、解写像全体を学ぶフーリエニューラル作用素、そして CFD ソルバーを高速化する機械学習。",
-      "ru": "Три способа заставить нейросеть работать с уравнениями: физически информированная сеть, обучающаяся на самом ОДУ, фурье-нейрооператор, обучающийся целому отображению решений, и машинное обучение, ускоряющее CFD-решатель.",
-      "ko": "신경망을 방정식에 활용하는 세 가지 방법: 상미분방정식 자체에서 배우는 물리 정보 신경망, 해 사상 전체를 배우는 푸리에 신경 연산자, 그리고 CFD 솔버를 가속하는 머신러닝.",
-      "hi": "समीकरणों पर न्यूरल नेटवर्क लगाने के तीन तरीके: ODE से ही सीखने वाला भौतिकी-सूचित नेटवर्क, पूरे समाधान मानचित्र को सीखने वाला Fourier न्यूरल ऑपरेटर, और CFD सॉल्वर को तेज़ करने वाली मशीन लर्निंग।"
+      "en": "Four ways to put machine learning to work on equations: a physics-informed network that learns from the ODE itself, a Fourier neural operator that learns a whole solution map, machine learning that speeds up a CFD solver, and sparse regression that finds the equation itself from data.",
+      "zh-Hant": "讓機器學習處理方程的四種方式：直接從常微分方程學習的物理資訊神經網路、學習整個解算子的傅立葉神經算子、加速 CFD 求解器的機器學習，以及從資料中直接找出方程本身的稀疏迴歸。",
+      "zh-Hans": "让机器学习处理方程的四种方式：直接从常微分方程学习的物理信息神经网络、学习整个解算子的傅里叶神经算子、加速 CFD 求解器的机器学习，以及从数据中直接找出方程本身的稀疏回归。",
+      "fr": "Quatre façons de faire travailler l'apprentissage automatique sur des équations : un réseau informé par la physique qui apprend de l'EDO elle-même, un opérateur neuronal de Fourier qui apprend toute une application solution, l'apprentissage automatique qui accélère un solveur de CFD, et la régression parcimonieuse qui retrouve l'équation elle-même à partir des données.",
+      "de": "Vier Wege, maschinelles Lernen an Gleichungen arbeiten zu lassen: ein physikinformiertes Netz, das aus der ODE selbst lernt, ein Fourier-Neural-Operator, der eine ganze Lösungsabbildung lernt, maschinelles Lernen, das einen CFD-Löser beschleunigt, und dünnbesetzte Regression, die die Gleichung selbst aus Daten findet.",
+      "es": "Cuatro formas de poner el aprendizaje automático a trabajar con ecuaciones: una red informada por la física que aprende de la propia EDO, un operador neuronal de Fourier que aprende todo un mapa de soluciones, aprendizaje automático que acelera un solucionador de CFD y regresión dispersa que encuentra la propia ecuación a partir de los datos.",
+      "ja": "機械学習を方程式に使う 4 つの方法：常微分方程式そのものから学ぶ物理情報ニューラルネットワーク、解写像全体を学ぶフーリエニューラル作用素、CFD ソルバーを高速化する機械学習、そしてデータから方程式そのものを見つけるスパース回帰。",
+      "ru": "Четыре способа заставить машинное обучение работать с уравнениями: физически информированная сеть, обучающаяся на самом ОДУ, фурье-нейрооператор, обучающийся целому отображению решений, машинное обучение, ускоряющее CFD-решатель, и разреженная регрессия, находящая само уравнение по данным.",
+      "ko": "머신러닝을 방정식에 활용하는 네 가지 방법: 상미분방정식 자체에서 배우는 물리 정보 신경망, 해 사상 전체를 배우는 푸리에 신경 연산자, CFD 솔버를 가속하는 머신러닝, 그리고 데이터에서 방정식 자체를 찾아내는 희소 회귀.",
+      "hi": "समीकरणों पर मशीन लर्निंग लगाने के चार तरीके: ODE से ही सीखने वाला भौतिकी-सूचित नेटवर्क, पूरे समाधान मानचित्र को सीखने वाला Fourier न्यूरल ऑपरेटर, CFD सॉल्वर को तेज़ करने वाली मशीन लर्निंग, और डेटा से समीकरण को ही खोज निकालने वाला विरल प्रतिगमन।"
     }
   },
   "workflow-orchestration": {

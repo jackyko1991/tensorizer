@@ -1,0 +1,91 @@
+title: 'Equation finder: a tensor AI that writes the governing equation of its data'
+category: ai
+level: advanced
+order: 9
+tags: [series:scientific-ml:4]
+summary: >
+  Give it field data, get back the law in LaTeX. A library of candidate terms ($1, u, u^2, u_x, u u_x, u_{xx},
+  \nabla^2 E_z, \partial_x B_y, \dots$) is built with finite differences, Savitzky–Golay filters or the weak form, and
+  sequentially thresholded ridge regression (PDE-FIND) keeps the few terms that explain $\partial_t u$. From simulated
+  data it recovers the Lorenz system, the heat equation, viscous Burgers and Maxwell's equations from a Yee FDTD run
+  (with $c$ to 0.2 %, 0.03 % with the weak form), and finds $\nabla\cdot\mathbf B = 0$ hidden in the library; a noise study shows where each
+  derivative estimator breaks.
+animated: true
+vector_form: '\partial_t u = \Theta(u)\,\xi,\qquad \xi^\star = \operatorname*{arg\,min}_{\xi}\ \lVert \partial_t u - \Theta(u)\,\xi\rVert_2^2 + \lambda\lVert\xi\rVert_2^2 \ \ \text{with } |\hat\xi_k| < \tau \Rightarrow \xi_k = 0,\qquad -\!\int\! \partial_t\phi\, u = \sum_k \xi_k (-1)^{|\alpha_k|}\!\int\! (D^{\alpha_k}\phi)\, f_k(u)'
+index_form: '\Theta_{nk} = \sum_{\text{parts}} s\, D^{\alpha}\Big(\prod_g u_g^{p_g}\Big)_n \qquad \dot u_{nf} \approx \sum_j w^{(d)}_j\, u_{f,\,n+j} / h^d \qquad G_{pq,k} = \sum_{x,t} \Phi^{(\alpha_k)}_{px}\, \Psi_{qt}\, f_k(u)_{xt}\, h_x h_t \qquad \xi_{fk} = \Big[\big(\Theta^\top\Theta + \lambda I\big)^{-1}_{M_f}\, \Theta^\top \dot u_f\Big]_k'
+translation:
+  - {symbol: '\Theta_{nk}', code: 'strong_library(U, h, terms, method)', shape: '(rows, K)', meaning: 'the library: column $k$ is a candidate term $D^\alpha(\prod_g u_g^{p_g})$ at every interior grid point $n$, e.g. $u u_x = \tfrac12\partial_x(u^2)$, $\nabla^2 E_z = \partial_{xx}E_z + \partial_{yy}E_z$'}
+  - {symbol: 'w^{(d)}_j', code: 'fd_kernel(d), sg_kernel(m, p, d)', shape: '(2m+1,)', meaning: 'derivative engine: a 1D convolution along one axis; central differences, or Savitzky–Golay (least-squares polynomial of degree $p$ on $2m+1$ samples) after a cubic smoother'}
+  - {symbol: 'G_{pq,k}', code: "contract(f, [Phi[a][d], Psi[0]])", shape: '(P·Q, K)', meaning: 'weak form: $x$ and $t$ summed; the derivatives sit on the smooth bumps $\phi(s) = (1-s^2)^{10}$, never on the noisy data'}
+  - {symbol: 'M_f', code: 'masked_ridge(G, r, mask, lam)', shape: '(E, K)', meaning: 'one batched ridge solve for every equation $f$ over its surviving terms; STRidge zeroes $|\hat\xi_k| < \tau$ and refits'}
+  - {symbol: '\tau', code: 'TOLS, select(path, A_val, b_val)', shape: '(41,)', meaning: 'tolerance sweep: keep the model with the fewest terms whose validation error is within 5 % (+ $10^{-3}$) of the best'}
+  - {symbol: '\sigma(\alpha_{fk}/T)', code: 'gate_search(A, b)', shape: '(E, K)', meaning: 'the DARTS-style alternative: $\xi = \sigma(\alpha/T)\, w$ with a gate penalty, temperature annealed from 1 to 0.01'}
+  - {symbol: '\pm', code: "einsum('bn,nk,nl->bkl', w, A, A)", shape: '(B, k, k)', meaning: 'bootstrap: $B$ row resamplings as multinomial weights, all fits in one batched solve'}
+  - {symbol: '\hat\xi', code: 'read_equation(write_equation(...), terms)', shape: '(K,)', meaning: 'the written LaTeX read back by a parser: it reproduces the fitted model to the printed precision'}
+notes: >
+  The idea. This is Jacky Ka Long Ko's "automatic physics-equation finder": a small tensor AI that looks at field
+  data and writes down the equation that governs it, in LaTeX (the SINDy / PDE-FIND approach). It follows the
+  operator search on MNIST, which ended with "a handwritten digit has no governing equation"; here the data come from
+  laws, so there is something to find. The architecture has three modules: (1) a denoising smoother, (2) an
+  einsum / finite-difference derivative engine, (3) sparse operator regression. Here (2) and (3) are complete and (1)
+  is a Savitzky–Golay smoother (no neural network is needed for it).
+
+  Method. Every candidate term is a derivative of a monomial of the fields, $D^\alpha(\prod_g u_g^{p_g})$: 20
+  monomials up to degree 3 for the Lorenz system, 13 terms $D^d(u^p)$ ($p, d \le 3$) for the 1D equations, 17 terms
+  for Maxwell (the fields, their $x$ and $y$ derivatives, their Laplacians, a few products). Three ways to build the
+  linear system $\partial_t u = \Theta\xi$: central finite differences (fd); Savitzky–Golay (sg: a cubic smoother on
+  7 samples, then a quartic derivative fit on 9), both 1D convolutions axis by axis; and the weak form (weak SINDy,
+  Messenger and Bortz 2021), where the equation is integrated against bumps $(1-s^2)^{10}$ and integration by parts
+  moves every derivative onto them, one tensor contraction per axis. STRidge (Rudy et al. 2017) then runs on unit-norm
+  columns: ridge, zero every coefficient below $\tau$, refit, repeat; a sweep of 41 tolerances for 3 ridge strengths,
+  and the model kept is the one with the fewest terms whose validation error is within 5 % (+ $10^{-3}$) of the best.
+  The larger ridge strength matters for Maxwell: since $\nabla\cdot\mathbf B = 0$, the columns $\partial_x B_x$ and
+  $\partial_y B_y$ are almost opposite, and with a weak ridge the regression added $2200\,\nabla\cdot\mathbf B$ to the
+  $E_z$ equation. Coefficients are refitted by least squares on the kept terms, with a bootstrap over rows for the ±;
+  that ± is statistical only and does not include the bias of the derivative estimate, so it is often far smaller
+  than the true error. The alternative regression is the DARTS-style relaxation of operator_search_mnist:
+  $\xi = \sigma(\alpha/T)\,w$ with a gate penalty and the temperature annealed from 1 to 0.01. Data, all simulated
+  here: 8 Lorenz trajectories (RK4); the heat equation on a 10 cm periodic rod, exact by Fourier modes ($D$ =
+  0.2 cm²/s); viscous Burgers on $2\pi$ m, exact by the Cole–Hopf transform ($\nu$ = 0.1 m²/s); Maxwell in a periodic
+  6.4 cm box from a Yee FDTD run (TM mode, 0.5 mm cells, Courant number 0.5), sampled as a measurement would be (all
+  fields interpolated to the same points and times). Noise: Gaussian, 0, 0.1, 1 and 5 % of each field's standard
+  deviation.
+
+  Results. The tests check that the kernels and the weak form are exact where calculus says so, that the data obey
+  their laws (heat kernel, Cole–Hopf, Yee keeps $\nabla\cdot\mathbf B = 0$ to round-off and conserves its energy to
+  0.2 %), that STRidge recovers a planted sparse vector exactly, that every target is recovered from clean data and
+  that the written LaTeX, read back by a parser, reproduces the fitted model. Bundled run, clean data, finite
+  differences: Lorenz $\sigma$ = 9.9987, $\rho$ = 27.989, $\beta$ = 2.6662; heat $D$ = 0.20023 cm²/s; Burgers
+  $u_t = -1.0007\,u u_x + 0.09996\,u_{xx}$; Maxwell $\partial_t E_z = c^2(\partial_x B_y - \partial_y B_x)$ with $c$ =
+  29.92 cm/ns (true 29.98) and $\partial_t \mathbf B = -\nabla\times\mathbf E$ with coefficients 0.996. The weak form
+  is far more accurate (errors of $10^{-8}$ on the exact data; 0.03 % on Maxwell, which is the Yee scheme's own
+  numerical dispersion, not the finder). The smallest singular vector of the Maxwell library is
+  $0.707\,\partial_x B_x + 0.707\,\partial_y B_y$, with a singular value 220 times below the next one: the data reveal
+  $\nabla\cdot\mathbf B = 0$ as an implicit law. Noise (right terms found?): finite differences fail from 0.1 % noise
+  on heat and Burgers and from 1 % on Lorenz, and survive 5 % only on Maxwell (with 25 % coefficient error);
+  Savitzky–Golay survives 0.1 % everywhere and 5 % only on Maxwell; the weak form finds the right terms at every level
+  for heat, Burgers and Maxwell (at 5 % noise, coefficient errors 7 %, 6 % and 0.1 %) and up to 1 % for Lorenz (at 5 %
+  it adds two tiny spurious terms to $\dot y$). The annealed gates match weak STRidge on Burgers and Maxwell but miss
+  the $-y$ term of the Lorenz $\dot y$ at every noise level and for every penalty tried ($10^{-6}$ to $10^{-3}$):
+  $25.5\,x - 0.95\,xz$ absorbs it, a local minimum the relaxation does not leave; they also fail on heat at 5 %.
+  Re-simulating the equations found from the first snapshot reproduces the heat and Burgers data to
+  $3\times 10^{-4}$ and Maxwell to 3 %; Lorenz is 3 % off after 5 time units because chaos amplifies a 0.01 %
+  coefficient error. results/noise_study.csv and results/equations.tex hold every number and equation; one GIF per
+  target (Maxwell is the main one) and results/summary.png.
+
+  Verdict. The finder recovers known equation forms from clean, well-sampled data, and with the weak form it
+  tolerates realistic noise; derivative estimation, not the regression, is what breaks first. It only finds terms that
+  are in its library, it needs the right variables to be measured, and a discovered equation is a hypothesis: it does
+  not discover new physics (or physiology) without independent validation. It is not a replacement for large language
+  models either; it is a different task (fitting a law to data, not producing text).
+
+  Related work. SINDy (Brunton, Proctor and Kutz 2016), PDE-FIND and STRidge (Rudy et al. 2017), weak SINDy
+  (Messenger and Bortz 2021); symbolic regression by genetic programming (Schmidt and Lipson 2009) and AI Feynman
+  (Udrescu and Tegmark 2020); the Yee scheme (Yee 1966).
+
+  Try it. Fewer bootstrap resamplings for a quicker run, more gate steps to see whether the relaxation escapes its
+  Lorenz minimum (it did not up to 4000), or a coarser Yee grid.
+params:
+  bootstrap: {default: 100, min: 20, max: 400, step: 10, type: int, label: 'Bootstrap resamplings for the ± of each coefficient'}
+  gate_steps: {default: 800, min: 200, max: 5000, step: 100, type: int, label: 'Adam steps of the annealed-gate search'}
+  maxwell_grid: {default: 128, type: choice, options: [64, 96, 128], label: 'Yee grid of the Maxwell simulation ($n \times n$ cells of 0.5 mm)'}

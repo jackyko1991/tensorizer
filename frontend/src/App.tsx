@@ -498,7 +498,7 @@ export default function App() {
             onClick={() => (window.location.hash = "/workspace")}
             title={t("home.open")}
             aria-label={t("home.open")}
-            className="flex items-center gap-3 rounded-md hover:opacity-90"
+            className="flex shrink-0 items-center gap-3 rounded-md hover:opacity-90"
             data-testid="logo"
           >
             <img src={`${import.meta.env.BASE_URL}logo-light.svg`} alt="" className="h-8 w-8" />

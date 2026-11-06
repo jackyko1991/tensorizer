@@ -37,7 +37,8 @@ audit = "python scripts/audit.py"
 lint = "ruff check . && ruff format --check ."
 format = "ruff format . && ruff check --fix ."
 
-web-install = { cmd = "npm install", cwd = "frontend" }
+# npm install only when the dependency files changed (pixi caches the task by its inputs/outputs)
+web-install = { cmd = "npm install --no-audit --no-fund", cwd = "frontend", inputs = ["frontend/package.json", "frontend/package-lock.json"], outputs = ["frontend/node_modules/.package-lock.json"] }
 web-build = { cmd = "npm run build", cwd = "frontend", depends-on = ["web-install"] }
 
 # Hot-reload development: API + Vite together, open http://localhost:5173.
