@@ -78,27 +78,33 @@ export function StepIcon({ n }: { n: 1 | 2 | 3 | 4 }) {
       )}
       {n === 2 && (
         <>
-          <circle cx={16} cy={16} r={6} {...s} />
-          <path d="M6 42 Q16 24 26 42" {...s} />
-          <circle cx={48} cy={24} r={4.5} {...s} />
-          <path d="M41 42 Q48 30 55 42" {...s} />
-          <path d="M26 6 h22 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-14 l-6 5 v-5 h-2 a4 4 0 0 1 -4 -4 v-6 a4 4 0 0 1 4 -4 z" fill={C.blueSoft} stroke={C.blue} strokeWidth={1.5} />
+          {/* the explainer (left) talks; the bubble's tail points at his head; a smaller listener on the right */}
+          <circle cx={14} cy={24} r={6} {...s} />
+          <path d="M4 46 Q14 30 24 46" {...s} />
+          <circle cx={51} cy={30} r={4.5} {...s} />
+          <path d="M44 46 Q51 36 58 46" {...s} />
+          <path d="M28 3 H48 a4 4 0 0 1 4 4 V13 a4 4 0 0 1 -4 4 H33 L22 22 L28 17 a4 4 0 0 1 -4 -4 V7 a4 4 0 0 1 4 -4 Z" fill={C.blueSoft} stroke={C.blue} strokeWidth={1.5} strokeLinejoin="round" />
+          {[31, 38, 45].map((x) => (
+            <circle key={x} cx={x} cy={10} r={1.4} fill={C.blue} />
+          ))}
         </>
       )}
       {n === 3 && (
         <>
-          <path d="M4 34 H22 M34 34 H44" {...s} />
-          <path d="M22 34 L26 30 M34 34 L30 38" stroke={C.red} strokeWidth={2} strokeLinecap="round" />
-          <circle cx={28} cy={22} r={11} {...s} fill="#fff" fillOpacity={0.6} />
-          <path d="M36 30 L46 40" {...s} strokeWidth={3.5} />
-          <text x={52} y={20} fontSize={16} fontWeight={700} fill={C.red}>?</text>
+          {/* a magnifier with the question it finds */}
+          <circle cx={27} cy={20} r={13} {...s} fill="#fff" />
+          <path d="M36.5 29.5 L48 41" {...s} strokeWidth={3.5} />
+          <text x={27} y={26} fontSize={17} fontWeight={700} fill={C.red} textAnchor="middle">?</text>
         </>
       )}
       {n === 4 && (
         <>
-          <path d="M32 8 A16 16 0 1 1 17 18" {...s} />
-          <path d="M12 12 L17 18 L23 13" {...s} />
-          <path d="M24 22 H40 M24 28 H36 M24 34 H32" stroke={C.green} strokeWidth={2} strokeLinecap="round" />
+          {/* a long text becomes a short one */}
+          {[10, 16, 22, 28, 34].map((y, i) => (
+            <line key={y} x1={6} y1={y} x2={i === 4 ? 17 : 24} y2={y} stroke={C.muted} strokeWidth={2} strokeLinecap="round" />
+          ))}
+          <path d="M29 22 H37 M33.5 18.5 L37 22 L33.5 25.5" {...s} />
+          <path d="M43 18 H57 M43 26 H52" stroke={C.green} strokeWidth={2.5} strokeLinecap="round" />
         </>
       )}
     </svg>
