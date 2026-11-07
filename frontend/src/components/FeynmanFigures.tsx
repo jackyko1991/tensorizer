@@ -354,15 +354,15 @@ export function ZipFigure() {
         <text x={60} y={30} fontSize={13} textAnchor="middle" fill={C.amber} fontWeight={700}>j</text>
         <text x={18} y={74} fontSize={13} textAnchor="middle" fill={C.green} fontWeight={700}>i</text>
         <text x={60} y={124} fontSize={13} textAnchor="middle" fill={C.ink} fontStyle="italic">Q</text>
-        {/* p: one price per product (j), drawn as a row so it lines up with Q's columns */}
-        {p.map((v, j) => cell(130 + j * 30, 55, v, "#fef3c7", `p${j}`))}
-        <text x={160} y={45} fontSize={13} textAnchor="middle" fill={C.amber} fontWeight={700}>j</text>
-        <text x={160} y={106} fontSize={13} textAnchor="middle" fill={C.ink} fontStyle="italic">p</text>
+        {/* p: one price per product (j), a column vector: Q's row meets p's column along j */}
+        {p.map((v, j) => cell(142, 40 + j * 30, v, "#fef3c7", `p${j}`))}
+        <text x={132} y={74} fontSize={13} textAnchor="middle" fill={C.amber} fontWeight={700}>j</text>
+        <text x={157} y={124} fontSize={13} textAnchor="middle" fill={C.ink} fontStyle="italic">p</text>
         {/* zip: the j sides meet and disappear */}
-        <path d="M95 70 H122" stroke={C.amber} strokeWidth={2} strokeDasharray="4 3" />
+        <path d="M96 70 H120" stroke={C.amber} strokeWidth={2} strokeDasharray="4 3" />
         <text x={108} y={64} fontSize={14} textAnchor="middle" fill={C.amber}>×</text>
-        <path d="M198 70 H232" stroke={C.ink} strokeWidth={1.5} markerEnd="url(#fz-arrow)" />
-        <text x={215} y={62} fontSize={13} textAnchor="middle" fill={C.amber}>Σⱼ</text>
+        <path d="M182 70 H234" stroke={C.ink} strokeWidth={1.5} markerEnd="url(#fz-arrow)" />
+        <text x={208} y={62} fontSize={13} textAnchor="middle" fill={C.amber}>Σⱼ</text>
         <defs>
           <marker id="fz-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
             <path d="M0 0 L10 5 L0 10 Z" fill={C.ink} />
