@@ -1,6 +1,8 @@
 import { useState, type ReactNode } from "react";
 import { AnimControls, COL, Txt, blueScale, useAnimClock } from "../components/animKit";
+import { CodeNotes } from "../components/BlasAnim";
 import CodeBlock from "../components/CodeBlock";
+import NvlinkAnim from "../components/NvlinkAnim";
 import PageToc from "../components/PageToc";
 import Tex, { RichText } from "../components/Tex";
 import { usePageText, type PageKey } from "../content/pages";
@@ -624,6 +626,7 @@ export default function NvlinkTab() {
             <RichText text={T("nvlink.why.text")} />
           </p>
           <BandwidthBars />
+          <NvlinkAnim id="path" />
           <h3 className={h3}>{T("nvlink.why.timeTitle")}</h3>
           <ul className="mt-2 grid gap-3 text-sm leading-relaxed text-gray-700 md:grid-cols-3">
             {(["dp", "tp", "pp"] as const).map((k) => (
@@ -632,6 +635,7 @@ export default function NvlinkTab() {
               </li>
             ))}
           </ul>
+          <NvlinkAnim id="parallel" />
           <Sources ids={["hopper", "h100"]} />
         </Card>
 
@@ -640,6 +644,7 @@ export default function NvlinkTab() {
           <p className={P}>
             <RichText text={T("nvlink.gens.text")} />
           </p>
+          <NvlinkAnim id="gens" />
           <GenTable />
         </Card>
 
@@ -649,6 +654,7 @@ export default function NvlinkTab() {
             <RichText text={T("nvlink.topo.text")} />
           </p>
           <TopologyDiagram />
+          <NvlinkAnim id="hops" />
           <ul className="mt-4 space-y-3 text-sm leading-relaxed text-gray-700">
             {SYSTEMS.map((s) => (
               <li key={s.id} className="rounded-lg bg-gray-50 p-3" data-testid={`nvlink-sys-${s.id}`}>
@@ -704,6 +710,7 @@ export default function NvlinkTab() {
               </tbody>
             </table>
           </div>
+          <NvlinkAnim id="colls" />
           <RingAnim />
           <div className="mt-4 rounded-lg border border-gray-200 bg-white px-4 py-3" data-testid="nvlink-eq">
             <h3 className="text-xs font-semibold tracking-wide text-gray-500">{T("nvlink.coll.eqTitle")}</h3>
@@ -718,6 +725,7 @@ export default function NvlinkTab() {
           <p className="mt-2 text-sm leading-relaxed text-gray-700">
             <RichText text={T("nvlink.coll.tree")} />
           </p>
+          <NvlinkAnim id="tree" />
           <h3 className={h3}>{T("nvlink.coll.ncclTitle")}</h3>
           <p className="mt-2 text-sm leading-relaxed text-gray-700">
             <RichText text={T("nvlink.coll.nccl")} />
@@ -736,18 +744,24 @@ export default function NvlinkTab() {
           <div className="mt-4 space-y-4">
             <div>
               <CodeBlock code={CODE_DDP} title={T("nvlink.code.ddp")} />
+              <CodeNotes prefix="nvlink" id="ddp" />
+              <NvlinkAnim id="ddp" />
               <Sources ids={["dist", "ddp", "torchrun"]} label="nvlink.docs" />
             </div>
             <div>
               <CodeBlock code={CODE_P2P} title={T("nvlink.code.p2p")} />
+              <CodeNotes prefix="nvlink" id="p2p" />
+              <NvlinkAnim id="p2p" />
               <Sources ids={["peer"]} label="nvlink.docs" />
             </div>
             <div>
               <CodeBlock code={CODE_SMI} title={T("nvlink.code.smi")} />
+              <CodeNotes prefix="nvlink" id="smi" />
               <Sources ids={["smi", "ncclEnv"]} label="nvlink.docs" />
             </div>
             <div>
               <CodeBlock code={CODE_GLOO} title={T("nvlink.code.gloo")} />
+              <CodeNotes prefix="nvlink" id="gloo" />
               <p className="mt-2 text-sm leading-relaxed text-gray-700">
                 <RichText text={T("nvlink.code.glooText")} />
               </p>
@@ -779,6 +793,7 @@ export default function NvlinkTab() {
           <p className={P} data-testid="nvlink-worked">
             <RichText text={fill(T("nvlink.practice.worked"), worked)} />
           </p>
+          <NvlinkAnim id="overlap" />
           <CostCalculator />
           <p className={P}>
             <RichText text={T("nvlink.practice.caveat")} />

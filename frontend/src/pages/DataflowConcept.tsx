@@ -1,12 +1,19 @@
 import CodeBlock from "../components/CodeBlock";
+import DataflowAnim from "../components/DataflowAnim";
 import PageToc from "../components/PageToc";
 import { RichText } from "../components/Tex";
 import TensorLab, { PairMemory } from "../components/TensorLab";
 import { usePageText, type PageKey } from "../content/pages";
+import type { FlowCase } from "../dataflowAnim";
 
 // "mem" (the cost of the output) sits after vectorisation; sections are numbered by position
 const SECTIONS = ["s1", "s2", "mem", "s3", "s4", "s5", "s6", "s7"] as const;
 type Section = (typeof SECTIONS)[number];
+
+// DataflowAnim picture of a card, drawn after this paragraph (s1 and mem have TensorLab / PairMemory, s6 the table)
+const ANIM_AFTER: Partial<Record<Section, number>> = { s2: 2, s3: 2, s4: 2, s5: 3, s7: 1 };
+// cards whose code block gets a plain "reading the code" note (flow.code.<card>); the others comment every line
+const CODE_NOTES = ["mem", "s4", "s5", "s7"];
 
 const CODE: Partial<Record<Section, string>> = {
   s1: `x = torch.arange(6.0).reshape(2, 3)   # shape (2, 3), one buffer of 6 numbers
@@ -109,6 +116,7 @@ export default function DataflowConcept() {
                       </p>
                       {key === "s1" && k === 2 && <TensorLab />}
                       {key === "mem" && k === 1 && <PairMemory />}
+                      {ANIM_AFTER[key] === k && <DataflowAnim id={key as FlowCase} />}
                     </div>
                   ),
               )}
@@ -116,6 +124,9 @@ export default function DataflowConcept() {
                 <FrameworkTable concept={T("flow.table.concept")} />
               ) : (
                 CODE[key] && <CodeBlock code={CODE[key]!} />
+              )}
+              {CODE_NOTES.includes(key) && (
+                <p className="text-xs leading-relaxed text-gray-600">{R(`flow.code.${key}` as PageKey)}</p>
               )}
             </div>
           </section>

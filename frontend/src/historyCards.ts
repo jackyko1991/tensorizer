@@ -22,6 +22,16 @@ export interface HistoryCard {
   photo?: Photo;
   drawing?: Drawing;
   sources: { label: string; url: string }[];
+  /** hidden "💡 Did you know?" notes, opened from a badge next to the year */
+  funFacts?: FunFact[];
+}
+
+export interface FunFact {
+  /** text in content/pages.<lang>.json under history.fun.<id> */
+  id: string;
+  sources: { label: string; url: string }[];
+  /** a youtube-nocookie.com player shown above the text, created only while the note is open */
+  embed?: string;
 }
 
 const PD = "Public domain";
@@ -41,6 +51,15 @@ export const HISTORY_CARDS: HistoryCard[] = [
       { label: "Theorema Egregium (Wikipedia)", url: "https://en.wikipedia.org/wiki/Theorema_Egregium" },
       { label: "MacTutor: Carl Friedrich Gauss", url: "https://mathshistory.st-andrews.ac.uk/Biographies/Gauss/" },
     ],
+    funFacts: [
+      {
+        id: "heliotrope",
+        sources: [
+          { label: "Heliotrope (instrument) (Wikipedia)", url: "https://en.wikipedia.org/wiki/Heliotrope_(instrument)" },
+          { label: "The American Surveyor: the surveyor's heliotrope", url: "https://amerisurv.com/2004/10/31/the-surveyors-heliotrope-its-rise-and-demise/" },
+        ],
+      },
+    ],
   },
   {
     id: "riemann",
@@ -50,6 +69,15 @@ export const HISTORY_CARDS: HistoryCard[] = [
     sources: [
       { label: "Riemann, On the Hypotheses… (Clifford's translation, TCD)", url: "https://www.maths.tcd.ie/pub/HistMath/People/Riemann/Geom/" },
       { label: "MacTutor: Bernhard Riemann", url: "https://mathshistory.st-andrews.ac.uk/Biographies/Riemann/" },
+    ],
+    funFacts: [
+      {
+        id: "habilitation",
+        sources: [
+          { label: "Dictionary of Scientific Biography: Riemann (MacTutor, PDF)", url: "https://mathshistory.st-andrews.ac.uk/DSB/Riemann.pdf" },
+          { label: "Riemann's habilitation lecture (Berkeley)", url: "https://math.berkeley.edu/~robin/Riemann/" },
+        ],
+      },
     ],
   },
   {
@@ -158,6 +186,15 @@ export const HISTORY_CARDS: HistoryCard[] = [
       { label: "Einstein 1916, Annalen der Physik 49 (DOI)", url: "https://doi.org/10.1002/andp.19163540702" },
       { label: "Einstein field equations (Wikipedia)", url: "https://en.wikipedia.org/wiki/Einstein_field_equations" },
     ],
+    funFacts: [
+      {
+        id: "hilbert",
+        sources: [
+          { label: "General relativity priority dispute (Wikipedia)", url: "https://en.wikipedia.org/wiki/General_relativity_priority_dispute" },
+          { label: "Corry, Renn & Stachel, Science 278 (1997) (DOI)", url: "https://doi.org/10.1126/science.278.5341.1270" },
+        ],
+      },
+    ],
   },
   {
     id: "cuda",
@@ -168,6 +205,29 @@ export const HISTORY_CARDS: HistoryCard[] = [
       { label: "CUDA (Wikipedia)", url: "https://en.wikipedia.org/wiki/CUDA" },
       { label: "NVIDIA CUDA Toolkit archive (1.0, June 2007)", url: "https://developer.nvidia.com/cuda-toolkit-archive" },
       { label: "Nvidia: history (Wikipedia)", url: "https://en.wikipedia.org/wiki/Nvidia" },
+    ],
+    funFacts: [
+      {
+        id: "brook",
+        sources: [{ label: "NVIDIA: inside the programming evolution of GPU computing", url: "https://developer.nvidia.com/blog/inside-the-programming-evolution-of-gpu-computing" }],
+      },
+      {
+        id: "mythbusters",
+        sources: [
+          { label: "bit-tech: Mythbusters finish Nvision in style (2008)", url: "https://www.bit-tech.net/news/mythbusters-finish-nvision-in-style/1" },
+          { label: "Tom's Hardware: Mythbusters at Nvision (2008)", url: "https://www.tomshardware.com/news/GeForce-Nvision-Mona-Lisa-Mythbustrs,6291.html" },
+        ],
+        // the video chosen by the site's author (oEmbed author_name "Joe Schmoe", not an official upload)
+        embed: "https://www.youtube-nocookie.com/embed/WmW6SD-EHVY",
+      },
+      {
+        id: "dennys",
+        sources: [
+          { label: "NVIDIA blog: the Denny's booth (2023)", url: "https://blogs.nvidia.com/blog/nvidia-dennys-trillion/" },
+          { label: "Tom's Hardware: Jensen Huang's Denny's event (2023)", url: "https://www.tomshardware.com/news/nvidia-ceo-balances-10-plates-serves-crowded-after-work-dennys-event" },
+          { label: "Nvidia: founding (Wikipedia)", url: "https://en.wikipedia.org/wiki/Nvidia" },
+        ],
+      },
     ],
   },
   {
@@ -200,6 +260,15 @@ export const HISTORY_CARDS: HistoryCard[] = [
     sources: [
       { label: "Krizhevsky, Sutskever & Hinton, NeurIPS 2012", url: "https://papers.nips.cc/paper_files/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html" },
       { label: "Computer History Museum: AlexNet source code", url: "https://computerhistory.org/blog/chm-releases-alexnet-source-code/" },
+    ],
+    funFacts: [
+      {
+        id: "alexnet",
+        sources: [
+          { label: "AlexNet (Wikipedia)", url: "https://en.wikipedia.org/wiki/AlexNet" },
+          { label: "computerhistory/AlexNet-Source-Code (GitHub)", url: "https://github.com/computerhistory/AlexNet-Source-Code" },
+        ],
+      },
     ],
   },
   {
@@ -240,6 +309,15 @@ export const HISTORY_CARDS: HistoryCard[] = [
         url: "https://cloud.google.com/blog/products/ai-machine-learning/an-in-depth-look-at-googles-first-tensor-processing-unit-tpu",
       },
     ],
+    funFacts: [
+      {
+        id: "alphago",
+        sources: [
+          { label: "Google Cloud blog: the TPU announcement (May 2016)", url: "https://cloud.google.com/blog/products/ai-machine-learning/google-supercharges-machine-learning-tasks-with-custom-chip" },
+          { label: "Christian Science Monitor: Is Google's new chip a game changer for AI? (2016)", url: "https://www.csmonitor.com/Technology/2016/0519/Is-Google-s-new-chip-a-game-changer-for-AI" },
+        ],
+      },
+    ],
   },
   {
     id: "nvlink",
@@ -271,6 +349,15 @@ export const HISTORY_CARDS: HistoryCard[] = [
     sources: [
       { label: "TOP500: NVIDIA delivers DGX-1 to OpenAI (2016)", url: "https://top500.org/news/nvidia-delivers-dgx-1-supercomputer-in-a-box-to-openai/" },
       { label: "Nvidia DGX (Wikipedia)", url: "https://en.wikipedia.org/wiki/Nvidia_DGX" },
+    ],
+    funFacts: [
+      {
+        id: "dgx1",
+        sources: [
+          { label: "Fortune: Jensen Huang and the first DGX-1 (2024)", url: "https://fortune.com/2024/02/22/jensen-huang-elon-musk-openai-first-ai-supercomputer-sam-altman/" },
+          { label: "Fortune: OpenAI gets its first DGX-1 (2016)", url: "https://fortune.com/2016/08/15/elon-musk-artificial-intelligence-openai-nvidia-supercomputer/" },
+        ],
+      },
     ],
   },
   {

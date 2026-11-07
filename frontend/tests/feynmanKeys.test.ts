@@ -15,7 +15,7 @@ const SITE = ["maths", "ladder", "tdd"];
 
 function usedKeys(): Set<string> {
   const keys = new Set<string>();
-  for (const f of ["pages/FeynmanConcept.tsx", "pages/ConceptPage.tsx"])
+  for (const f of ["pages/FeynmanConcept.tsx", "pages/ConceptPage.tsx", "components/FeynmanFigures.tsx"])
     for (const m of read(f).matchAll(/["'`](feynman\.[A-Za-z0-9_.]+)["'`]/g))
       if (!m[1].endsWith(".webp")) keys.add(m[1]); // not the photo file name
   for (const s of SECTIONS) keys.add(`feynman.${s}.title`);
@@ -60,5 +60,6 @@ test("the template-string lists match the component", () => {
 test("the photo credited on the page is in public/feynman/CREDITS.md", () => {
   const credits = readFileSync(new URL("../public/feynman/CREDITS.md", import.meta.url), "utf-8");
   assert.ok(credits.includes("feynman.webp") && credits.includes("Richard_Feynman_1959.png"));
+  for (const f of ["badge.webp", "ice.webp"]) assert.ok(credits.includes(f), `${f} not credited`);
   assert.ok(read("pages/FeynmanConcept.tsx").includes("Richard_Feynman_1959.png"));
 });

@@ -5,35 +5,37 @@ import Tex, { RichText } from "../components/Tex";
 import bench from "../content/blas_bench.json";
 import { usePageText, type PageKey } from "../content/pages";
 import { attainable, bestChain, chainCost, intensity, kernelCost, orderText, ridge, type Order } from "../tensorMaths";
+import MathsAnim from "../components/MathsAnim";
+import { animsAfter, type MathsCase } from "../mathsAnim";
 
 // Sections in order; the address #/concept/maths/<key> scrolls to id maths-<key>.
 export const MATHS_SECTIONS = ["tensor", "einsum", "penrose", "topo", "roof", "recap"] as const;
 type Section = (typeof MATHS_SECTIONS)[number];
 export const FEYNMAN = ["plain", "analogy", "precise", "example"] as const;
 
-// Equation cards: the formula and the PyTorch line that computes it (not translated).
-const EQS: Partial<Record<Section, { tex: string; code: string }[]>> = {
+// Equation cards: the formula, the PyTorch line that computes it (not translated) and its animation.
+const EQS: Partial<Record<Section, { tex: string; code: string; anim: MathsCase }[]>> = {
   tensor: [
-    { tex: String.raw`T_{i_1 i_2 \dots i_r}, \quad r = \text{rank}`, code: "x = torch.zeros(32, 480, 640, 3)   # x.ndim == 4, x.shape == (32, 480, 640, 3)" },
-    { tex: String.raw`v'_i = R_{ij} v_j, \quad A'_{ij} = R_{ik} R_{jl} A_{kl}`, code: "v2 = R @ v          # one R per index\nA2 = R @ A @ R.T    # two indices, two R's" },
+    { tex: String.raw`T_{i_1 i_2 \dots i_r}, \quad r = \text{rank}`, code: "x = torch.zeros(32, 480, 640, 3)   # x.ndim == 4, x.shape == (32, 480, 640, 3)", anim: "eqRank" },
+    { tex: String.raw`v'_i = R_{ij} v_j, \quad A'_{ij} = R_{ik} R_{jl} A_{kl}`, code: "v2 = R @ v          # one R per index\nA2 = R @ A @ R.T    # two indices, two R's", anim: "eqRotate" },
   ],
   einsum: [
-    { tex: String.raw`s = x_i y_i`, code: 'torch.einsum("i,i->", x, y)        # dot product' },
-    { tex: String.raw`y_i = A_{ij} x_j`, code: 'torch.einsum("ij,j->i", A, x)      # matrix-vector' },
-    { tex: String.raw`C_{ik} = A_{ij} B_{jk}`, code: 'torch.einsum("ij,jk->ik", A, B)    # matrix product, A @ B' },
-    { tex: String.raw`t = A_{ii}`, code: 'torch.einsum("ii->", A)            # trace' },
-    { tex: String.raw`P_{ij} = u_i v_j`, code: 'torch.einsum("i,j->ij", u, v)      # outer product: nothing summed' },
-    { tex: String.raw`C_{bik} = A_{bij} B_{bjk}`, code: 'torch.einsum("bij,bjk->bik", A, B)  # a batch of products, b is free' },
+    { tex: String.raw`s = x_i y_i`, code: 'torch.einsum("i,i->", x, y)        # dot product', anim: "eqDot" },
+    { tex: String.raw`y_i = A_{ij} x_j`, code: 'torch.einsum("ij,j->i", A, x)      # matrix-vector', anim: "eqMatvec" },
+    { tex: String.raw`C_{ik} = A_{ij} B_{jk}`, code: 'torch.einsum("ij,jk->ik", A, B)    # matrix product, A @ B', anim: "eqMatmul" },
+    { tex: String.raw`t = A_{ii}`, code: 'torch.einsum("ii->", A)            # trace', anim: "eqTrace" },
+    { tex: String.raw`P_{ij} = u_i v_j`, code: 'torch.einsum("i,j->ij", u, v)      # outer product: nothing summed', anim: "eqOuter" },
+    { tex: String.raw`C_{bik} = A_{bij} B_{bjk}`, code: 'torch.einsum("bij,bjk->bik", A, B)  # a batch of products, b is free', anim: "eqBatch" },
   ],
   penrose: [
-    { tex: String.raw`\operatorname{tr}(AB) = A_{ij} B_{ji} = B_{ji} A_{ij} = \operatorname{tr}(BA)`, code: 'torch.einsum("ij,ji->", A, B)      # one loop through A and B' },
-    { tex: String.raw`T_{s_1 s_2 s_3} = A_{s_1 \alpha} B_{\alpha s_2 \beta} C_{\beta s_3}`, code: 'T = torch.einsum("ia,ajb,bk->ijk", A, B, C)   # a 3-site MPS' },
+    { tex: String.raw`\operatorname{tr}(AB) = A_{ij} B_{ji} = B_{ji} A_{ij} = \operatorname{tr}(BA)`, code: 'torch.einsum("ij,ji->", A, B)      # one loop through A and B', anim: "eqLoop" },
+    { tex: String.raw`T_{s_1 s_2 s_3} = A_{s_1 \alpha} B_{\alpha s_2 \beta} C_{\beta s_3}`, code: 'T = torch.einsum("ia,ajb,bk->ijk", A, B, C)   # a 3-site MPS', anim: "eqMps" },
   ],
   topo: [
-    { tex: String.raw`\text{cost}\big((AB)C\big) = abc + acd, \qquad \text{cost}\big(A(BC)\big) = bcd + abd`, code: 'torch.einsum("ij,jk,kl->il", A, B, C)   # opt_einsum chooses the order\ntorch.linalg.multi_dot([A, B, C])        # cheapest bracketing of a chain' },
+    { tex: String.raw`\text{cost}\big((AB)C\big) = abc + acd, \qquad \text{cost}\big(A(BC)\big) = bcd + abd`, code: 'torch.einsum("ij,jk,kl->il", A, B, C)   # opt_einsum chooses the order\ntorch.linalg.multi_dot([A, B, C])        # cheapest bracketing of a chain', anim: "eqChain" },
   ],
   roof: [
-    { tex: String.raw`P_\text{att} = \min(P,\ \beta I), \qquad I = \frac{\text{FLOPs}}{\text{bytes moved}}, \qquad I^* = \frac{P}{\beta}`, code: "f = torch.compile(lambda x: torch.relu(a * x + b))   # one fused kernel instead of three" },
+    { tex: String.raw`P_\text{att} = \min(P,\ \beta I), \qquad I = \frac{\text{FLOPs}}{\text{bytes moved}}, \qquad I^* = \frac{P}{\beta}`, code: "f = torch.compile(lambda x: torch.relu(a * x + b))   # one fused kernel instead of three", anim: "eqRoof" },
   ],
 };
 
@@ -107,7 +109,17 @@ export default function MathsConcept() {
                   {FEYNMAN.map((f) => (
                     <div key={f} className="space-y-4">
                       <Feynman kind={f} text={T(k(`${s}.${f}`))} label={T(k(`label.${f}`))} />
-                      {s === "tensor" && f === "precise" && <p>{R("maths.tensor.updown")}</p>}
+                      {animsAfter(s, f).map((id) => (
+                        <MathsAnim key={id} id={id} />
+                      ))}
+                      {s === "tensor" && f === "precise" && (
+                        <>
+                          <p>{R("maths.tensor.updown")}</p>
+                          {animsAfter(s, "updown").map((id) => (
+                            <MathsAnim key={id} id={id} />
+                          ))}
+                        </>
+                      )}
                       {s === "tensor" && f === "plain" && <RankFigure />}
                       {s === "einsum" && f === "precise" && <MatmulFigure />}
                       {s === "penrose" && f === "precise" && <PenroseFigures />}
@@ -119,7 +131,14 @@ export default function MathsConcept() {
                           <p>{R("maths.roof.ops")}</p>
                         </>
                       )}
-                      {s === "roof" && f === "example" && <p>{R("maths.roof.fusion")}</p>}
+                      {s === "roof" && f === "example" && (
+                        <>
+                          <p>{R("maths.roof.fusion")}</p>
+                          {animsAfter(s, "fusion").map((id) => (
+                            <MathsAnim key={id} id={id} />
+                          ))}
+                        </>
+                      )}
                     </div>
                   ))}
                   {EQS[s] && <EqCards items={EQS[s]!} title={T("maths.label.code")} />}
@@ -152,19 +171,26 @@ export function Feynman({ kind, text, label }: { kind: (typeof FEYNMAN)[number];
   );
 }
 
-function EqCards({ items, title }: { items: { tex: string; code: string }[]; title: string }) {
+function EqCards({ items, title }: { items: { tex: string; code: string; anim: MathsCase }[]; title: string }) {
   return (
     <div>
       <p className="mb-2 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">{title}</p>
       <div className="grid gap-3 md:grid-cols-2">
-        {items.map((e) => (
-          <div key={e.tex} className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-            <div className="bg-gray-50 px-2 py-1 text-base">
-              <Tex tex={e.tex} display />
+        {items.map((e, i) => {
+          // a card without a partner (a single one, or an odd last one) spans the whole row
+          const full = items.length % 2 === 1 && i === items.length - 1;
+          return (
+            <div key={e.tex} className={`overflow-hidden rounded-lg border border-gray-200 bg-white ${full ? "col-span-full" : ""}`}>
+              <div className="bg-gray-50 px-2 py-1 text-base">
+                <Tex tex={e.tex} display />
+              </div>
+              <CodeBlock code={e.code} />
+              <div className="p-2">
+                <MathsAnim id={e.anim} compact={!full} />
+              </div>
             </div>
-            <CodeBlock code={e.code} />
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -309,7 +335,7 @@ function MatmulFigure() {
   return (
     <Figure caption={T("maths.einsum.fig")} testid="maths-matmul">
       <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-      <svg viewBox="0 0 285 125" className="w-full max-w-xs" role="img" aria-label="C = A B">
+      <svg viewBox="0 0 295 125" className="w-full max-w-xs" role="img" aria-label="C = A B">
         <ArrowDefs />
         {/* A: 3 x 4 */}
         <Cells x={30} y={40} rows={3} cols={4} s={s} hi={(r) => (r === ri ? "#bfdbfe" : undefined)} />
@@ -322,11 +348,12 @@ function MatmulFigure() {
         {label(159, 16, "B")}
         <Arrow x1={125} y1={24} x2={125} y2={88} label="j" lx={115} ly={50} />
         <Arrow x1={135} y1={98} x2={183} y2={98} label="k" lx={159} ly={114} />
-        <text x={205} y={72} fontSize="16" fill={C.muted} textAnchor="middle">=</text>
+        <text x={199} y={72} fontSize="16" fill={C.muted} textAnchor="middle">=</text>
         {/* C: 3 x 3 */}
-        <Cells x={225} y={40} rows={3} cols={3} s={s} hi={(r, c) => (r === ri && c === ck ? "#2563eb" : undefined)} />
-        {label(249, 30, "C")}
-        <Arrow x1={225} y1={98} x2={273} y2={98} label="k" lx={249} ly={114} />
+        <Cells x={235} y={40} rows={3} cols={3} s={s} hi={(r, c) => (r === ri && c === ck ? "#2563eb" : undefined)} />
+        {label(259, 30, "C")}
+        <Arrow x1={227} y1={40} x2={227} y2={88} label="i" lx={218} ly={68} />
+        <Arrow x1={235} y1={98} x2={283} y2={98} label="k" lx={259} ly={114} />
       </svg>
       <div className="text-center text-sm">
         <Tex tex={String.raw`C_{ik} = \sum_j A_{ij} B_{jk}`} />
@@ -505,8 +532,8 @@ function PenroseFigures() {
       <path d={`M${x0} 45 C ${x0} 5, ${x0 + 90} 5, ${x0 + 90} 45 C ${x0 + 90} 85, ${x0} 85, ${x0} 45`} fill="none" stroke={C.leg} strokeWidth="2" />
       <PNode x={x0} y={45} label={a} />
       <PNode x={x0 + 90} y={45} label={b} />
-      <text x={x0 + 45} y={20} fontSize="12" fontFamily="serif" fontStyle="italic" fill={C.idx} textAnchor="middle">j</text>
-      <text x={x0 + 45} y={80} fontSize="12" fontFamily="serif" fontStyle="italic" fill={C.idx} textAnchor="middle">i</text>
+      <text x={x0 + 45} y={10} fontSize="12" fontFamily="serif" fontStyle="italic" fill={C.idx} textAnchor="middle">j</text>
+      <text x={x0 + 45} y={88} fontSize="12" fontFamily="serif" fontStyle="italic" fill={C.idx} textAnchor="middle">i</text>
     </g>
   );
   const sites = [0, 1, 2, 3, 4, 5];
@@ -921,6 +948,9 @@ function Recap() {
           </li>
         ))}
       </ul>
+      {animsAfter("recap", "mis").map((id) => (
+        <MathsAnim key={id} id={id} />
+      ))}
       <p className="rounded-lg border border-blue-100 bg-blue-50/60 px-4 py-2.5 text-blue-900">
         <RichText text={T("maths.recap.test")} />
       </p>

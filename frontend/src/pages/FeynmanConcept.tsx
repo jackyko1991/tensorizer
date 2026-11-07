@@ -3,6 +3,7 @@ import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
 import Tex, { RichText } from "../components/Tex";
 import { usePageText, type PageKey } from "../content/pages";
+import { BridgeFigure, DiagramFigure, ORingFigure, SkyFigure, StepIcon, ZipFigure } from "../components/FeynmanFigures";
 import { FEYNMAN, Feynman, Links } from "./MathsConcept";
 
 // Sections in order; the address #/concept/feynman/<key> scrolls to id feynman-<key> (done by ConceptPage).
@@ -67,6 +68,28 @@ const LINKS: Partial<Record<Section, { label: string; url?: string }[]>> = {
   ],
 };
 
+// Further Commons pictures (public domain, licences checked on the file pages; credits in public/feynman/CREDITS.md)
+const PHOTOS = {
+  badge: {
+    file: "badge.webp",
+    w: 400,
+    h: 463,
+    author: "United States Army (Los Alamos, c. 1943)",
+    licence: "Public domain",
+    licenceUrl: "https://commons.wikimedia.org/wiki/Template:PD-USGov",
+    source: "https://commons.wikimedia.org/wiki/File:Richard_Feynman_Los_Alamos_ID_badge.jpg",
+  },
+  ice: {
+    file: "ice.webp",
+    w: 381,
+    h: 480,
+    author: "NASA (Kennedy Space Center, 28 January 1986)",
+    licence: "Public domain",
+    licenceUrl: "https://commons.wikimedia.org/wiki/Template:PD-USGov-NASA",
+    source: "https://commons.wikimedia.org/wiki/File:Ice_on_the_Pad_on_the_Day_of_STS-51-L%27s_Launch_-_GPN-2004-00011.jpg",
+  },
+} as const;
+
 const PHOTO = {
   file: "feynman.webp",
   author: "Unknown photographer (The Big T, Caltech yearbook, 1959)",
@@ -120,6 +143,8 @@ export default function FeynmanConcept() {
                     <div key={f} className="space-y-4">
                       <Feynman kind={f} text={T(k(`steps.${f}`))} label={T(`maths.label.${f}` as PageKey)} />
                       {f === "plain" && <StepCycle />}
+                      {f === "analogy" && <BridgeFigure />}
+                      {f === "example" && <SkyFigure />}
                     </div>
                   ))}
                   <p className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5">{R("feynman.steps.origin")}</p>
@@ -147,7 +172,8 @@ function StepCycle() {
       <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {STEP_IDS.map((n) => (
           <li key={n} className="relative rounded-lg border border-blue-100 bg-white p-3">
-            <div className="flex items-center gap-2">
+            <StepIcon n={n} />
+            <div className="mt-1 flex items-center gap-2">
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">
                 {n}
               </span>
@@ -254,6 +280,27 @@ function LifeStory() {
               <p className="mt-1">
                 <RichText text={T(`feynman.life.${e}.text` as PageKey)} />
               </p>
+              {e === "losalamos" && <SmallPhoto photo={PHOTOS.badge} caption={T("feynman.fig.badge.caption")} alt={T("feynman.fig.badge.alt")} />}
+              {e === "diagrams" && (
+                <div className="mt-3 space-y-3">
+                  <DiagramFigure />
+                  {/* our own problem built on one Feynman diagram */}
+                  <a
+                    href="#/nuclear/feynman_ee_mumu"
+                    className="inline-flex items-center gap-1.5 rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-800 hover:border-blue-400 hover:bg-blue-100"
+                    data-testid="feynman-problem-link"
+                  >
+                    <span aria-hidden>→</span>
+                    <RichText text={T("feynman.life.diagrams.link")} />
+                  </a>
+                </div>
+              )}
+              {e === "challenger" && (
+                <div className="mt-3 grid items-start gap-3 sm:grid-cols-[minmax(0,11rem)_1fr]">
+                  <SmallPhoto photo={PHOTOS.ice} caption={T("feynman.fig.ice.caption")} alt={T("feynman.fig.ice.alt")} />
+                  <ORingFigure />
+                </div>
+              )}
             </li>
           ))}
         </ol>
@@ -327,6 +374,7 @@ function WorkedExample() {
               </div>
               {n === 4 && (
                 <div className="mt-3 space-y-3">
+                  <ZipFigure />
                   <p>
                     <RichText text={T("feynman.example.check")} />
                   </p>
@@ -394,5 +442,36 @@ function Pitfalls() {
         )}
       </div>
     </>
+  );
+}
+
+/** A small credited photo inside the timeline. */
+function SmallPhoto({ photo, caption, alt }: { photo: (typeof PHOTOS)[keyof typeof PHOTOS]; caption: string; alt: string }) {
+  const T = usePageText();
+  return (
+    <figure className="mt-3 max-w-[11rem]" data-testid={`feynman-photo-${photo.file.replace(".webp", "")}`}>
+      <img
+        src={`${import.meta.env.BASE_URL}feynman/${photo.file}`}
+        alt={alt}
+        width={photo.w}
+        height={photo.h}
+        className="w-full rounded-lg border border-gray-200 bg-gray-100"
+      />
+      <figcaption className="mt-1 text-xs text-gray-600">
+        <span className="block text-gray-800">
+          <RichText text={caption} />
+        </span>
+        <span className="mt-0.5 block text-[11px] text-gray-500">
+          {T("feynman.picture")}: {photo.author},{" "}
+          <a href={photo.licenceUrl} {...ext} className="underline hover:text-gray-800">
+            {photo.licence}
+          </a>
+          ,{" "}
+          <a href={photo.source} {...ext} className="underline hover:text-gray-800">
+            Wikimedia Commons
+          </a>
+        </span>
+      </figcaption>
+    </figure>
   );
 }

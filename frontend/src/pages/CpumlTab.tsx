@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 import CodeBlock from "../components/CodeBlock";
+import CpumlAnim, { CpumlCodeNotes } from "../components/CpumlAnim";
 import PageToc from "../components/PageToc";
 import Tex, { RichText } from "../components/Tex";
 import bench from "../content/cpuml_bench.json";
 import { usePageText, type PageKey } from "../content/pages";
+import { CODE_LINES } from "../cpumlAnim";
 import { barSpan, fmtMetric, fmtTick, fmtTime, fmtX, speedupPos, ticks } from "../cpumlChart";
 
 /** One measured size of a case in cpuml_bench.json (written by scripts/cpuml_benchmark.py). */
@@ -332,8 +334,9 @@ function SpeedupChart({ id }: { id: Case }) {
         <div />
         <div className="flex items-center gap-2">
           <div className="relative h-4 flex-1 text-[10px] text-gray-500">
-            {ticks().map((v) => (
-              <span key={v} className="absolute top-0 -translate-x-1/2 pt-1 leading-none" style={{ left: `${speedupPos(v)}%` }}>
+            {ticks().map((v, i) => (
+              // on a phone every second decade only (0.01×, 1×, 100×), so the labels never touch
+              <span key={v} className={`absolute top-0 -translate-x-1/2 pt-1 leading-none whitespace-nowrap ${i % 2 ? "hidden sm:inline" : ""}`} style={{ left: `${speedupPos(v)}%` }}>
                 {fmtTick(v)}
               </span>
             ))}
@@ -351,6 +354,9 @@ function SpeedupChart({ id }: { id: Case }) {
             </span>
           </div>
           <span className="w-16 shrink-0" />
+        </div>
+        <div className="col-span-2 text-center text-[10px] text-gray-600" data-testid="cpuml-chart-axis">
+          <RichText text={T("cpuml.plot.axis")} />
         </div>
       </div>
       <p className="mt-2 text-[11px] text-gray-500">{T("cpuml.chart.range")}</p>
@@ -465,27 +471,28 @@ export default function CpumlTab({ title }: { title: (id: string) => string | un
 
         {CASES.map((c) => {
           const code = B.code[c];
+          const vars = {
+            k: s.pca_k,
+            C: c === "linsvm" ? s.svm_C : c === "ksvm" ? s.ksvm_C : s.logreg_C,
+            knn: s.knn_k,
+            clusters: s.kmeans_k,
+            umap: num("umap"),
+          };
           return (
             <Card key={c} id={c}>
               <Heading n={num(c)} text={T(`cpuml.${c}.title` as PageKey)} />
               <p className="mt-3 text-sm leading-relaxed text-gray-700">
-                <RichText
-                  text={fill(T(`cpuml.${c}.text` as PageKey), {
-                    k: s.pca_k,
-                    C: c === "linsvm" ? s.svm_C : c === "ksvm" ? s.ksvm_C : s.logreg_C,
-                    knn: s.knn_k,
-                    clusters: s.kmeans_k,
-                    umap: num("umap"),
-                  })}
-                />
+                <RichText text={fill(T(`cpuml.${c}.text` as PageKey), vars)} />
               </p>
               <EquationCard id={c} />
+              <CpumlAnim id={c} />
               {code && (
                 <div className="mt-4 grid gap-3 md:grid-cols-2">
                   <CodeBlock code={code.sklearn} title={T("cpuml.code.sklearn")} />
                   <CodeBlock code={code.tensor} title={T("cpuml.code.tensor")} />
                 </div>
               )}
+              <CpumlCodeNotes id={c} lines={CODE_LINES[c]} />
               <div className="mt-4 rounded-lg bg-gray-50 px-4 py-3 text-sm leading-relaxed text-gray-700">
                 <h3 className="font-semibold text-gray-900">{T("cpuml.changes")}</h3>
                 <p className="mt-1">
@@ -494,6 +501,15 @@ export default function CpumlTab({ title }: { title: (id: string) => string | un
               </div>
               <AgreementTable id={c} />
               <SpeedupChart id={c} />
+              <div className="mt-3 rounded-lg bg-gray-50 px-4 py-3 text-sm leading-relaxed text-gray-700" data-testid={`cpuml-plot-${c}`}>
+                <h3 className="font-semibold text-gray-900">{T("cpuml.plot.title")}</h3>
+                <p className="mt-1">
+                  <RichText text={fill(T(`cpuml.plot.${c}` as PageKey), vars)} />
+                </p>
+                <p className="mt-1.5">
+                  <RichText text={T("cpuml.plot.common")} />
+                </p>
+              </div>
               <p className="mt-3 text-sm leading-relaxed text-gray-700">
                 <RichText text={T(`cpuml.${c}.result` as PageKey)} />
               </p>

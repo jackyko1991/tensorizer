@@ -17,6 +17,7 @@ const SOURCES = [
   "pages/MathsConcept.tsx",
   "pages/HistoryConcept.tsx",
   "pages/FeynmanConcept.tsx",
+  "components/FeynmanFigures.tsx",
   "pages/SkillsPage.tsx",
   "pages/LoopsTab.tsx",
   "pages/BlasTab.tsx",

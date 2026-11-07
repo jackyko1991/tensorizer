@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { decades, fmtGflops, gemmIntensity, linePath, logScale, percentOfPeak, roofline } from "../blasChart";
+import BlasAnim, { CodeNotes } from "../components/BlasAnim";
 import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
 import Tex, { RichText } from "../components/Tex";
@@ -615,6 +616,7 @@ export default function BlasTab() {
               </tbody>
             </table>
           </div>
+          <BlasAnim id="levels" />
           <h3 className="mt-5 text-sm font-semibold text-gray-900">{T("blas.what.fastTitle")}</h3>
           <ul className="mt-2 grid gap-3 text-sm leading-relaxed text-gray-700 md:grid-cols-3">
             {(["blocking", "kernel", "threads"] as const).map((k) => (
@@ -623,6 +625,7 @@ export default function BlasTab() {
               </li>
             ))}
           </ul>
+          <BlasAnim id="gemm" />
           <div className="mt-4 rounded-lg border border-gray-200 bg-white px-4 py-3" data-testid="blas-eq">
             <div className="grid gap-x-6 gap-y-3 md:grid-cols-2">
               {EQS.map((e) => (
@@ -648,6 +651,7 @@ export default function BlasTab() {
           <p className="mt-3 text-sm leading-relaxed text-gray-700">
             <RichText text={T("blas.libs.text")} />
           </p>
+          <BlasAnim id="dispatch" />
           <LibTable />
         </Card>
 
@@ -659,18 +663,22 @@ export default function BlasTab() {
           <div className="mt-4 space-y-4">
             <div>
               <CodeBlock code={CODE_TORCH} title={T("blas.which.torch")} />
+              <CodeNotes prefix="blas" id="torch" />
               <DocLinks links={DOCS.torch} />
             </div>
             <div>
               <CodeBlock code={CODE_NUMPY} title={T("blas.which.numpy")} />
+              <CodeNotes prefix="blas" id="numpy" />
               <DocLinks links={DOCS.numpy} />
             </div>
             <div>
               <CodeBlock code={CODE_THREADS} title={T("blas.which.threads")} />
+              <CodeNotes prefix="blas" id="threads" />
               <DocLinks links={DOCS.threads} />
               <p className="mt-2 text-sm leading-relaxed text-gray-700">
                 <RichText text={T("blas.which.threadsText")} />
               </p>
+              <BlasAnim id="threads" />
             </div>
           </div>
           <p className="mt-4 rounded-lg border border-blue-100 bg-blue-50/60 px-4 py-2.5 text-sm leading-relaxed text-blue-900" data-testid="blas-project">
@@ -685,7 +693,9 @@ export default function BlasTab() {
           </p>
           <div className="mt-4">
             <CodeBlock code={CODE_ORDER} title={T("blas.repro.order")} />
+            <CodeNotes prefix="blas" id="order" />
           </div>
+          <BlasAnim id="order" />
           {typeof repro.cpu_vs_cuda_float32_max_abs_diff === "number" && (
             <p className="mt-3 text-sm leading-relaxed text-gray-700">
               <RichText
@@ -702,6 +712,7 @@ export default function BlasTab() {
           </p>
           <div className="mt-3">
             <CodeBlock code={CODE_TOL} title={T("blas.repro.tolTitle")} />
+            <CodeNotes prefix="blas" id="tol" />
             <DocLinks links={DOCS.tol} />
           </div>
           <p className="mt-4 text-sm leading-relaxed text-gray-700">
@@ -709,8 +720,10 @@ export default function BlasTab() {
           </p>
           <div className="mt-3">
             <CodeBlock code={CODE_DET} title={T("blas.repro.detTitle")} />
+            <CodeNotes prefix="blas" id="det" />
             <DocLinks links={DOCS.det} />
           </div>
+          <BlasAnim id="atomics" />
           <div className="mt-5 rounded-lg bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-950" data-testid="blas-ci">
             <h3 className="font-semibold">{T("blas.repro.ci.title")}</h3>
             <p className="mt-1">
@@ -735,6 +748,7 @@ export default function BlasTab() {
           <p className="mt-3 text-sm leading-relaxed text-gray-700">
             <RichText text={T("blas.bench.text")} />
           </p>
+          <BlasAnim id="overhead" />
           <div className="mt-4 grid gap-3 md:grid-cols-2" data-testid="blas-chart">
             <Panel
               title={T("blas.chart.cpu")}
@@ -770,6 +784,7 @@ export default function BlasTab() {
               })}
             />
           </p>
+          <BlasAnim id="timing" />
           {load.length > 0 && Math.max(...load) >= 10 && (
             <p className="mt-2 text-sm leading-relaxed text-amber-800">
               {fill(T("blas.load"), { lo: Math.round(Math.min(...load)), hi: Math.round(Math.max(...load)) })}
@@ -784,6 +799,7 @@ export default function BlasTab() {
           <pre className="mt-2 overflow-x-auto rounded-lg bg-gray-900 px-3 py-2 font-mono text-xs text-gray-100">
             pixi run -e cuda python scripts/blas_benchmark.py
           </pre>
+          <CodeNotes prefix="blas" id="bench" />
         </Card>
       </article>
     </div>

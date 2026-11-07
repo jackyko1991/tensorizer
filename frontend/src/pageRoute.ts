@@ -2,7 +2,7 @@
 // Pure helpers (no DOM), unit-tested in frontend/tests/pageRoute.test.ts.
 
 export const PAGE_TABS = {
-  concept: ["laws", "dataflow", "maths", "history", "feynman"],
+  concept: ["laws", "feynman", "maths", "dataflow", "history"],
   skills: ["techniques", "loops", "blas", "nvlink", "cpuml"],
 } as const;
 export type TabbedPage = keyof typeof PAGE_TABS;

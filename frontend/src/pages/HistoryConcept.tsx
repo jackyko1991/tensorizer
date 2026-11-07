@@ -9,6 +9,8 @@ import { formatPageRoute } from "../pageRoute";
  * alternate left and right of a central line on wide screens (≥ lg) and sit to the right of a line at the left
  * on phones. A sticky navigation (sidebar on wide screens, folding bar on phones) highlights the card in view.
  * Deep links: #/concept/history/<card id> (the scroll is done by ConceptPage, element id history-<card id>).
+ * Some cards hide "💡 Did you know?" notes (card.funFacts): a 💡 button next to the year opens one card's note, and a
+ * switch at the bottom of the navigation opens or closes them all.
  */
 
 const SCROLL_ROOT = "concept-scroll";
@@ -139,6 +141,36 @@ export default function HistoryConcept({ section }: { section: string | null }) 
   const ids = useMemo(() => HISTORY_CARDS.map((c) => c.id), []);
   const { active, seen, jump } = useScrollSpy(ids, section);
   const [open, setOpen] = useState(false);
+  // cards whose fun-fact note is open (all closed at first)
+  const factIds = useMemo(() => HISTORY_CARDS.filter((c) => c.funFacts?.length).map((c) => c.id), []);
+  const [factsOpen, setFactsOpen] = useState<Set<string>>(() => new Set());
+  const allFacts = factIds.every((id) => factsOpen.has(id));
+  const toggleFact = (id: string) =>
+    setFactsOpen((s) => {
+      const next = new Set(s);
+      if (!next.delete(id)) next.add(id);
+      return next;
+    });
+  const factSwitch = (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={allFacts}
+      onClick={() => setFactsOpen(allFacts ? new Set() : new Set(factIds))}
+      data-history-fun-all
+      className="mt-3 flex w-full items-center gap-2 rounded-lg border border-dashed border-amber-300 bg-amber-50/60 px-3 py-2 text-left text-sm text-amber-900 hover:bg-amber-50"
+    >
+      <span className="min-w-0 flex-1">{T("history.fun.showAll")}</span>
+      <span
+        aria-hidden
+        className={`relative h-5 w-9 shrink-0 rounded-full transition-colors ${allFacts ? "bg-amber-500" : "bg-gray-300"}`}
+      >
+        <span
+          className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${allFacts ? "translate-x-4" : ""}`}
+        />
+      </span>
+    </button>
+  );
   const listRef = useRef<HTMLOListElement>(null);
   const partStarts = useMemo(
     () => new Set(HISTORY_PARTS.map((part) => HISTORY_CARDS.find((c) => c.part === part)!.id)),
@@ -204,6 +236,7 @@ export default function HistoryConcept({ section }: { section: string | null }) 
       >
         <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-gray-500">{T("history.nav")}</p>
         {navList(jump)}
+        {factSwitch}
       </nav>
 
       <article className="min-w-0 flex-1">
@@ -237,6 +270,7 @@ export default function HistoryConcept({ section }: { section: string | null }) 
                 setOpen(false);
                 jump(id);
               })}
+              {factSwitch}
             </div>
           )}
         </div>
@@ -293,6 +327,8 @@ export default function HistoryConcept({ section }: { section: string | null }) 
                           seen={isSeen(c.id)}
                           active={active === c.id}
                           top={layout?.tops[c.id]}
+                          factOpen={factsOpen.has(c.id)}
+                          onToggleFact={() => toggleFact(c.id)}
                         />,
                       ]
                     : [],
@@ -313,6 +349,8 @@ function TimelineCard({
   seen,
   active,
   top,
+  factOpen,
+  onToggleFact,
 }: {
   card: HistoryCard;
   /** global index over all parts: even = left column, odd = right column on wide screens */
@@ -322,6 +360,9 @@ function TimelineCard({
   active: boolean;
   /** wide screens: offset from the top of the timeline (useInterlock); undefined in the single-column layout */
   top?: number;
+  /** the card's "💡 Did you know?" note is expanded */
+  factOpen: boolean;
+  onToggleFact: () => void;
 }) {
   const left = index % 2 === 0;
   const T = usePageText();
@@ -415,7 +456,58 @@ function TimelineCard({
         <div className="p-5">
           <p className="flex flex-wrap items-center gap-2">
             <span className={`rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums ring-1 ${st.badge}`}>{year}</span>
+            {card.funFacts?.length ? (
+              <button
+                type="button"
+                onClick={onToggleFact}
+                aria-expanded={factOpen}
+                aria-controls={`history-fun-${card.id}`}
+                aria-label={T("history.fun.title")}
+                title={T("history.fun.title")}
+                data-history-fun-badge={card.id}
+                className={`rounded-full border border-dashed px-1.5 py-0.5 text-xs leading-none transition-colors ${
+                  factOpen ? "border-amber-500 bg-amber-100" : "border-amber-300 bg-amber-50 hover:bg-amber-100"
+                }`}
+              >
+                <span aria-hidden>💡</span>
+              </button>
+            ) : null}
           </p>
+          {card.funFacts?.length && factOpen ? (
+            <aside
+              id={`history-fun-${card.id}`}
+              data-history-fun={card.id}
+              className="mt-3 rounded-lg border-2 border-dashed border-amber-300 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-gray-800"
+            >
+              <p className="text-xs font-semibold text-amber-900">{T("history.fun.title")}</p>
+              {card.funFacts.map((f) => (
+                <div key={f.id} className="mt-1.5 break-words [&+&]:mt-2.5 [&+&]:border-t [&+&]:border-dashed [&+&]:border-amber-200 [&+&]:pt-2.5">
+                  {f.embed && (
+                    // only rendered while the note is open, so nothing loads from YouTube while it is collapsed
+                    <iframe
+                      src={f.embed}
+                      title={T("history.fun.videoTitle")}
+                      loading="lazy"
+                      allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      className="mb-2 aspect-video w-full rounded"
+                    />
+                  )}
+                  <p>
+                    <RichText text={T(`history.fun.${f.id}` as PageKey)} />
+                  </p>
+                  <p className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs">
+                    {f.sources.map((s) => (
+                      <a key={s.url} href={s.url} target="_blank" rel="noreferrer" className="text-blue-700 hover:underline">
+                        {s.label} ↗
+                      </a>
+                    ))}
+                  </p>
+                </div>
+              ))}
+            </aside>
+          ) : null}
           <h3 className="mt-2 text-xl font-bold leading-snug break-words">{k("title")}</h3>
           <div className="mt-3 space-y-3 text-sm leading-relaxed text-gray-700 [&_.katex]:whitespace-nowrap">
             <p>
