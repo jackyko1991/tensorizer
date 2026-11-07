@@ -9,7 +9,7 @@ import { attainable, bestChain, chainCost, intensity, kernelCost, orderText, rid
 // Sections in order; the address #/concept/maths/<key> scrolls to id maths-<key>.
 export const MATHS_SECTIONS = ["tensor", "einsum", "penrose", "topo", "roof", "recap"] as const;
 type Section = (typeof MATHS_SECTIONS)[number];
-const FEYNMAN = ["plain", "analogy", "precise", "example"] as const;
+export const FEYNMAN = ["plain", "analogy", "precise", "example"] as const;
 
 // Equation cards: the formula and the PyTorch line that computes it (not translated).
 const EQS: Partial<Record<Section, { tex: string; code: string }[]>> = {
@@ -141,7 +141,7 @@ const FEYNMAN_STYLE: Record<(typeof FEYNMAN)[number], string> = {
   example: "rounded-lg border-l-4 border-emerald-300 bg-emerald-50/70 px-4 py-2.5 text-emerald-950",
 };
 
-function Feynman({ kind, text, label }: { kind: (typeof FEYNMAN)[number]; text: string; label: string }) {
+export function Feynman({ kind, text, label }: { kind: (typeof FEYNMAN)[number]; text: string; label: string }) {
   return (
     <div className={FEYNMAN_STYLE[kind]} data-feynman={kind}>
       <p className="mb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">{label}</p>
@@ -170,7 +170,7 @@ function EqCards({ items, title }: { items: { tex: string; code: string }[]; tit
   );
 }
 
-function Links({ items, title }: { items: { label: string; url?: string }[]; title: string }) {
+export function Links({ items, title }: { items: { label: string; url?: string }[]; title: string }) {
   return (
     <div className="border-t border-gray-100 pt-3">
       <p className="mb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">{title}</p>

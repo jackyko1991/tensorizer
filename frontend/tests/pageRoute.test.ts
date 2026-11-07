@@ -19,6 +19,8 @@ test("parse: page, tab and section; other routes are not tabbed pages", () => {
   assert.deepEqual(parsePageRoute("concept/maths/roof"), { page: "concept", tab: "maths", section: "roof" });
   assert.deepEqual(parsePageRoute("concept/history"), { page: "concept", tab: "history", section: null });
   assert.deepEqual(parsePageRoute("concept/history/riemann"), { page: "concept", tab: "history", section: "riemann" });
+  assert.deepEqual(parsePageRoute("concept/feynman"), { page: "concept", tab: "feynman", section: null });
+  assert.deepEqual(parsePageRoute("concept/feynman/example"), { page: "concept", tab: "feynman", section: "example" });
   for (const r of [null, "", "agents", "workspace", "mechanics/simple_pendulum", "skillsx", "workspace/a/nb/b"])
     assert.equal(parsePageRoute(r), null, String(r));
 });
@@ -44,6 +46,8 @@ test("resolve: the address wins, an unknown tab falls back to the first, no tab 
   assert.equal(resolveTab("concept", null, "maths"), "maths");
   assert.equal(resolveTab("concept", "history", "laws"), "history");
   assert.equal(resolveTab("concept", null, "history"), "history");
+  assert.equal(resolveTab("concept", "feynman", "maths"), "feynman");
+  assert.equal(resolveTab("concept", null, "feynman"), "feynman");
 });
 
 test("format round-trips through parse", () => {
@@ -54,6 +58,12 @@ test("format round-trips through parse", () => {
   assert.equal(formatPageRoute("concept", "laws", "3"), "/concept/laws/3");
   assert.equal(formatPageRoute("concept", "maths", "penrose"), "/concept/maths/penrose");
   assert.equal(formatPageRoute("concept", "history", "gauss"), "/concept/history/gauss");
+  assert.equal(formatPageRoute("concept", "feynman", "steps"), "/concept/feynman/steps");
+  assert.deepEqual(parsePageRoute(formatPageRoute("concept", "feynman", "pitfalls")), {
+    page: "concept",
+    tab: "feynman",
+    section: "pitfalls",
+  });
   assert.deepEqual(parsePageRoute(formatPageRoute("concept", "history", "einsum")), {
     page: "concept",
     tab: "history",
