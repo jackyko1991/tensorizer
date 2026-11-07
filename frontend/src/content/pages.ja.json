@@ -1413,7 +1413,7 @@
   "reading.group.gpu": "GPU、性能、ディープラーニング",
   "reading.group.history": "歴史",
   "reading.top": "イチオシ",
-  "reading.amazon": "Amazon UK で見る",
+  "reading.amazon": "Amazon UK",
   "reading.free": "無料オンライン版",
   "reading.site": "このサイトでは：",
   "reading.book.fleisch.why": "いちばんやさしい入門書。ベクトル、共変成分と反変成分、計量を、平易な言葉とすべての考え方に添えた図で説明します。",
@@ -1431,7 +1431,7 @@
   "reading.book.pytorch.why": "PyTorch のテンソルの実践ガイド。基礎から、実際のモデルの学習と活用まで。",
   "reading.book.bishop.why": "Pattern Recognition and Machine Learning の著者による、網羅的で自己完結したディープラーニング教科書。",
   "reading.book.chipwar.why": "マイクロチップはどのように発明され、今は誰が作っているのか。そしてなぜ世界で最も激しく争われる技術になったのか。",
+  "reading.book.pais.why": "アインシュタインを知る物理学者による決定版の科学的伝記。グロスマンの助けでテンソル解析を学び、苦闘の末に場の方程式へたどり着くまでを、数学ごと丁寧に描く。",
   "reading.book.witt.why": "ジェンスン・フアンと Nvidia の物語。グラフィックスカードから CUDA、そして現代の AI を支えるハードウェアまで。",
-  "reading.book.nvidiaway.why": "Nvidia の企業文化と、CUDA やデータセンターへの長期的な賭けが、いかにして同社を AI を動かす企業にしたか。",
   "reading.book.worlds.why": "2012 年のディープラーニング・ブームの火付け役となったデータセット ImageNet の生みの親による回想録。"
 }

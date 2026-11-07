@@ -1413,7 +1413,7 @@
   "reading.group.gpu": "GPU、效能與深度學習",
   "reading.group.history": "歷史",
   "reading.top": "首選",
-  "reading.amazon": "在 Amazon UK 查看",
+  "reading.amazon": "Amazon UK",
   "reading.free": "免費線上版",
   "reading.site": "本站相關：",
   "reading.book.fleisch.why": "最平易近人的入門：向量、協變與逆變分量和度規，用淺白的文字講解，每個概念都配有圖。",
@@ -1431,7 +1431,7 @@
   "reading.book.pytorch.why": "PyTorch 張量的實用指南，從基礎到訓練和應用真實的模型。",
   "reading.book.bishop.why": "一本完整且自成體系的深度學習教科書，作者也寫了 Pattern Recognition and Machine Learning。",
   "reading.book.chipwar.why": "微晶片如何被發明、如今由誰製造，以及它為何成為全球競爭最激烈的技術。",
+  "reading.book.pais.why": "公認最權威的愛因斯坦科學傳記，作者是認識他的物理學家：完整寫出他如何在格羅斯曼幫助下學會張量微積分、一步步艱難推出場方程，數學細節一應俱全。",
   "reading.book.witt.why": "黃仁勳與 Nvidia 的故事，從顯示卡到 CUDA，再到支撐現代 AI 的硬體。",
-  "reading.book.nvidiaway.why": "Nvidia 的企業文化，以及它在 CUDA 和資料中心上的長期押注，如何讓它成為驅動 AI 的公司。",
   "reading.book.worlds.why": "ImageNet 創建者的回憶錄，這個資料集在 2012 年掀起了深度學習熱潮。"
 }

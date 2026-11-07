@@ -1413,7 +1413,7 @@
   "reading.group.gpu": "GPU, performance et apprentissage profond",
   "reading.group.history": "Histoire",
   "reading.top": "Coup de cœur",
-  "reading.amazon": "Voir sur Amazon UK",
+  "reading.amazon": "Amazon UK",
   "reading.free": "Édition gratuite en ligne",
   "reading.site": "Sur ce site :",
   "reading.book.fleisch.why": "Le début le plus en douceur : vecteurs, composantes covariantes et contravariantes et métrique, en mots simples avec une image pour chaque idée.",
@@ -1431,7 +1431,7 @@
   "reading.book.pytorch.why": "Un guide pratique des tenseurs dans PyTorch, des bases jusqu'à l'entraînement et l'utilisation de vrais modèles.",
   "reading.book.bishop.why": "Un manuel d'apprentissage profond complet et autonome, par l'auteur de Pattern Recognition and Machine Learning.",
   "reading.book.chipwar.why": "Comment la puce électronique a été inventée, qui la fabrique aujourd'hui, et pourquoi elle est devenue la technologie la plus disputée au monde.",
+  "reading.book.pais.why": "La biographie scientifique de référence d'Einstein, par un physicien qui l'a connu : comment il apprend le calcul tensoriel avec Grossmann et arrache les équations du champ, mathématiques comprises.",
   "reading.book.witt.why": "L'histoire de Jensen Huang et de Nvidia, des cartes graphiques à CUDA et au matériel derrière l'IA moderne.",
-  "reading.book.nvidiaway.why": "Comment la culture de Nvidia et ses paris de long terme sur CUDA et les centres de données en ont fait l'entreprise qui fait tourner l'IA.",
   "reading.book.worlds.why": "Les mémoires de la créatrice d'ImageNet, le jeu de données qui a lancé l'essor de l'apprentissage profond en 2012."
 }

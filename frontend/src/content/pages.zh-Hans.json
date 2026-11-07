@@ -1413,7 +1413,7 @@
   "reading.group.gpu": "GPU、性能与深度学习",
   "reading.group.history": "历史",
   "reading.top": "首选",
-  "reading.amazon": "在 Amazon UK 查看",
+  "reading.amazon": "Amazon UK",
   "reading.free": "免费在线版",
   "reading.site": "本站相关：",
   "reading.book.fleisch.why": "最平易近人的入门：矢量、协变与逆变分量以及度规，用浅白的语言讲解，每个概念都配有图。",
@@ -1431,7 +1431,7 @@
   "reading.book.pytorch.why": "PyTorch 张量的实用指南，从基础到训练和应用真实的模型。",
   "reading.book.bishop.why": "一本全面且自成体系的深度学习教材，作者也写了 Pattern Recognition and Machine Learning。",
   "reading.book.chipwar.why": "微芯片如何被发明、如今由谁制造，以及它为何成为全球争夺最激烈的技术。",
+  "reading.book.pais.why": "公认最权威的爱因斯坦科学传记，作者是认识他的物理学家：完整写出他如何在格罗斯曼帮助下学会张量微积分、一步步艰难推出场方程，数学细节一应俱全。",
   "reading.book.witt.why": "黄仁勋与 Nvidia 的故事，从显卡到 CUDA，再到支撑现代 AI 的硬件。",
-  "reading.book.nvidiaway.why": "Nvidia 的企业文化，以及它在 CUDA 和数据中心上的长期押注，如何让它成为驱动 AI 的公司。",
   "reading.book.worlds.why": "ImageNet 创建者的回忆录，这个数据集在 2012 年掀起了深度学习热潮。"
 }

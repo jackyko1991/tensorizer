@@ -83,19 +83,20 @@ function BookCard({ book: b }: { book: Book }) {
       </p>
       <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-700">{T(`reading.book.${b.id}.why` as PageKey)}</p>
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-        <a
-          href={amazonUrl(b.isbn10)}
-          target="_blank"
-          rel={AFFILIATE_REL}
-          className="rounded-md bg-blue-600 px-3 py-1.5 font-medium text-white hover:bg-blue-700"
-        >
-          {T("reading.amazon")}
-        </a>
         {b.free && (
           <a href={b.free} target="_blank" rel="noopener noreferrer" className="font-medium text-blue-700 hover:underline">
             {T("reading.free")} ↗
           </a>
         )}
+        {/* a quiet text link, not a call to action: the book is the point, not the shop */}
+        <a
+          href={amazonUrl(b.isbn10)}
+          target="_blank"
+          rel={AFFILIATE_REL}
+          className="text-gray-500 hover:text-blue-700 hover:underline"
+        >
+          {T("reading.amazon")} ↗
+        </a>
       </div>
       <p className="mt-3 border-t border-gray-100 pt-2 text-xs text-gray-500">
         {T("reading.site")}{" "}

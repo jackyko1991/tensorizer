@@ -1413,7 +1413,7 @@
   "reading.group.gpu": "GPU, 성능, 딥러닝",
   "reading.group.history": "역사",
   "reading.top": "추천",
-  "reading.amazon": "Amazon UK에서 보기",
+  "reading.amazon": "Amazon UK",
   "reading.free": "무료 온라인판",
   "reading.site": "이 사이트에서:",
   "reading.book.fleisch.why": "가장 부드러운 입문서: 벡터, 공변 성분과 반변 성분, 계량을 쉬운 말로 설명하고 모든 개념에 그림을 곁들입니다.",
@@ -1431,7 +1431,7 @@
   "reading.book.pytorch.why": "기초부터 실제 모델의 학습과 활용까지, PyTorch에서 텐서를 다루는 실용 안내서.",
   "reading.book.bishop.why": "Pattern Recognition and Machine Learning의 저자가 쓴, 철저하고 그 자체로 완결된 딥러닝 교과서.",
   "reading.book.chipwar.why": "마이크로칩이 어떻게 발명되었고, 오늘날 누가 만들며, 왜 세계에서 가장 치열한 다툼의 대상이 된 기술인지.",
+  "reading.book.pais.why": "아인슈타인을 알았던 물리학자가 쓴 가장 권위 있는 과학 전기: 그로스만의 도움으로 텐서 미적분을 배우고 힘겹게 장 방정식에 이르는 과정을 수학까지 모두 담았다.",
   "reading.book.witt.why": "젠슨 황과 Nvidia의 이야기: 그래픽 카드에서 CUDA, 그리고 현대 AI를 떠받치는 하드웨어까지.",
-  "reading.book.nvidiaway.why": "Nvidia의 문화와 CUDA, 데이터 센터에 건 오랜 투자가 어떻게 이 회사를 AI를 움직이는 기업으로 만들었는지.",
   "reading.book.worlds.why": "2012년 딥러닝 붐을 일으킨 데이터셋 ImageNet을 만든 사람의 회고록."
 }

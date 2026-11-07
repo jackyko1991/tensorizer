@@ -1413,7 +1413,7 @@
   "reading.group.gpu": "GPU, rendimiento y aprendizaje profundo",
   "reading.group.history": "Historia",
   "reading.top": "Recomendado",
-  "reading.amazon": "Ver en Amazon UK",
+  "reading.amazon": "Amazon UK",
   "reading.free": "Edición gratuita en línea",
   "reading.site": "En este sitio:",
   "reading.book.fleisch.why": "El comienzo más suave: vectores, componentes covariantes y contravariantes y la métrica, con palabras sencillas y una imagen para cada idea.",
@@ -1431,7 +1431,7 @@
   "reading.book.pytorch.why": "Una guía práctica de los tensores en PyTorch, desde lo básico hasta entrenar y aplicar modelos reales.",
   "reading.book.bishop.why": "Un libro de texto de aprendizaje profundo completo y autocontenido, del autor de Pattern Recognition and Machine Learning.",
   "reading.book.chipwar.why": "Cómo se inventó el microchip, quién lo fabrica hoy y por qué se convirtió en la tecnología más disputada del mundo.",
+  "reading.book.pais.why": "La biografía científica de referencia de Einstein, escrita por un físico que lo conoció: cómo aprendió el cálculo tensorial con Grossmann y llegó a duras penas a las ecuaciones de campo, con toda la matemática.",
   "reading.book.witt.why": "La historia de Jensen Huang y Nvidia, de las tarjetas gráficas a CUDA y el hardware detrás de la IA moderna.",
-  "reading.book.nvidiaway.why": "Cómo la cultura de Nvidia y sus apuestas a largo plazo por CUDA y los centros de datos la convirtieron en la empresa que impulsa la IA.",
   "reading.book.worlds.why": "Las memorias de la creadora de ImageNet, el conjunto de datos que desató el auge del aprendizaje profundo en 2012."
 }

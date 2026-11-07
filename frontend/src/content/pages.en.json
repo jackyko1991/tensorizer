@@ -1413,7 +1413,7 @@
   "reading.group.gpu": "GPUs, performance and deep learning",
   "reading.group.history": "History",
   "reading.top": "Top pick",
-  "reading.amazon": "View on Amazon UK",
+  "reading.amazon": "Amazon UK",
   "reading.free": "Free online edition",
   "reading.site": "On this site:",
   "reading.book.fleisch.why": "The gentlest start: vectors, covariant and contravariant components and the metric, in plain words with a picture for every idea.",
@@ -1431,7 +1431,7 @@
   "reading.book.pytorch.why": "A practical guide to tensors in PyTorch, from the basics to training and applying real models.",
   "reading.book.bishop.why": "A thorough, self-contained deep learning textbook by the author of Pattern Recognition and Machine Learning.",
   "reading.book.chipwar.why": "How the microchip was invented, who makes it today, and why it became the world's most contested technology.",
+  "reading.book.pais.why": "The definitive scientific biography of Einstein, by a physicist who knew him: how he learned tensor calculus with Grossmann and fought his way to the field equations, with the mathematics in full.",
   "reading.book.witt.why": "The story of Jensen Huang and Nvidia, from graphics cards to CUDA and the hardware behind modern AI.",
-  "reading.book.nvidiaway.why": "How Nvidia's culture and its long bets on CUDA and data centres made it the company that powers AI.",
   "reading.book.worlds.why": "A memoir by the creator of ImageNet, the dataset that set off the deep learning boom in 2012."
 }
