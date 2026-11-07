@@ -163,7 +163,7 @@ const FEYNMAN_STYLE: Record<(typeof FEYNMAN)[number], string> = {
 export function Feynman({ kind, text, label }: { kind: (typeof FEYNMAN)[number]; text: string; label: string }) {
   return (
     <div className={FEYNMAN_STYLE[kind]} data-feynman={kind}>
-      <p className="mb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">{label}</p>
+      {label && <p className="mb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">{label}</p>}
       <ListOrText text={text} />
     </div>
   );
