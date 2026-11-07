@@ -164,9 +164,36 @@ export function Feynman({ kind, text, label }: { kind: (typeof FEYNMAN)[number];
   return (
     <div className={FEYNMAN_STYLE[kind]} data-feynman={kind}>
       <p className="mb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">{label}</p>
+      <ListOrText text={text} />
+    </div>
+  );
+}
+
+/** "Intro: **(1)** a; **(2)** b; **(3)** c." becomes the intro and a numbered list; other text stays one paragraph. */
+export function ListOrText({ text }: { text: string }) {
+  const parts = text.split(/\s*\*\*\(\d+\)\*\*\s*/);
+  if (parts.length < 3) {
+    return (
       <p>
         <RichText text={text} />
       </p>
+    );
+  }
+  const [intro, ...items] = parts;
+  return (
+    <div className="space-y-1.5">
+      {intro.trim() && (
+        <p>
+          <RichText text={intro.trim()} />
+        </p>
+      )}
+      <ol className="list-decimal space-y-1 pl-6 marker:font-semibold marker:text-gray-500">
+        {items.map((it, i) => (
+          <li key={i}>
+            <RichText text={it.trim().replace(/[;；,，、.。।]$/, "")} />
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
