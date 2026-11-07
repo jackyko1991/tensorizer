@@ -1,7 +1,7 @@
 // Hash routes of the Concept and Coding Skills sub-tabs. Run: node --test frontend/tests
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { formatPageRoute, parsePageRoute, resolveTab } from "../src/pageRoute.ts";
+import { PAGE_TABS, formatPageRoute, parsePageRoute, resolveTab } from "../src/pageRoute.ts";
 
 test("parse: page, tab and section; other routes are not tabbed pages", () => {
   assert.deepEqual(parsePageRoute("skills"), { page: "skills", tab: null, section: null });
@@ -21,6 +21,8 @@ test("parse: page, tab and section; other routes are not tabbed pages", () => {
   assert.deepEqual(parsePageRoute("concept/history/riemann"), { page: "concept", tab: "history", section: "riemann" });
   assert.deepEqual(parsePageRoute("concept/feynman"), { page: "concept", tab: "feynman", section: null });
   assert.deepEqual(parsePageRoute("concept/feynman/example"), { page: "concept", tab: "feynman", section: "example" });
+  assert.deepEqual(parsePageRoute("concept/reading"), { page: "concept", tab: "reading", section: null });
+  assert.deepEqual(parsePageRoute("concept/reading/gpu"), { page: "concept", tab: "reading", section: "gpu" });
   for (const r of [null, "", "agents", "workspace", "mechanics/simple_pendulum", "skillsx", "workspace/a/nb/b"])
     assert.equal(parsePageRoute(r), null, String(r));
 });
@@ -48,6 +50,8 @@ test("resolve: the address wins, an unknown tab falls back to the first, no tab 
   assert.equal(resolveTab("concept", null, "history"), "history");
   assert.equal(resolveTab("concept", "feynman", "maths"), "feynman");
   assert.equal(resolveTab("concept", null, "feynman"), "feynman");
+  assert.equal(resolveTab("concept", "reading", "laws"), "reading");
+  assert.equal(resolveTab("concept", null, "reading"), "reading");
 });
 
 test("format round-trips through parse", () => {
@@ -59,6 +63,7 @@ test("format round-trips through parse", () => {
   assert.equal(formatPageRoute("concept", "maths", "penrose"), "/concept/maths/penrose");
   assert.equal(formatPageRoute("concept", "history", "gauss"), "/concept/history/gauss");
   assert.equal(formatPageRoute("concept", "feynman", "steps"), "/concept/feynman/steps");
+  assert.equal(formatPageRoute("concept", "reading", "history"), "/concept/reading/history");
   assert.deepEqual(parsePageRoute(formatPageRoute("concept", "feynman", "pitfalls")), {
     page: "concept",
     tab: "feynman",
@@ -74,4 +79,8 @@ test("format round-trips through parse", () => {
     tab: "loops",
     section: "matmul",
   });
+});
+
+test("the concept tabs in order: further reading is the last", () => {
+  assert.deepEqual([...PAGE_TABS.concept], ["laws", "feynman", "maths", "dataflow", "history", "reading"]);
 });

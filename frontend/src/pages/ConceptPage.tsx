@@ -12,6 +12,7 @@ import DataflowConcept from "./DataflowConcept";
 import MathsConcept from "./MathsConcept";
 import HistoryConcept from "./HistoryConcept";
 import FeynmanConcept from "./FeynmanConcept";
+import ReadingConcept from "./ReadingConcept";
 
 const PENDULUM = "mechanics/simple_pendulum";
 const STEPS = [0, 1, 2, 3, 4, 5, 6, 7] as const; // 0: tests first (TDD)
@@ -39,10 +40,16 @@ export default function ConceptPage({
   const { t, lang } = useLang();
   const p = manifest.problems.find((x) => x.id === PENDULUM);
   useEffect(() => {
-    const el = section && document.getElementById(tab === "laws" ? `step-${section}` : tab === "maths" ? `maths-${section}` : tab === "history" ? `history-${section}` : tab === "feynman" ? `feynman-${section}` : section);
+    const el = section && document.getElementById(tab === "laws" ? `step-${section}` : tab === "maths" ? `maths-${section}` : tab === "history" ? `history-${section}` : tab === "feynman" ? `feynman-${section}` : tab === "reading" ? `reading-${section}` : section);
     if (el) el.scrollIntoView({ block: "start", behavior: "instant" });
     else document.getElementById("concept-scroll")?.scrollTo({ top: 0 });
   }, [tab, section]);
+  // keep the selected tab visible in the tab bar on narrow screens (the last tabs sit past the right edge)
+  useEffect(() => {
+    const bar = document.querySelector<HTMLElement>("[data-testid=concept-tabs]");
+    const sel = bar?.querySelector<HTMLElement>("[aria-selected=true]");
+    if (bar && sel) bar.scrollLeft = Math.max(0, sel.offsetLeft - bar.offsetLeft - (bar.clientWidth - sel.offsetWidth) / 2);
+  }, [tab]);
   if (!p) return <p className="p-8 text-sm text-gray-500">{T("concept.missing")}</p>;
   const file = (name: string) => p.files.find((f) => f.name === name)?.code ?? "";
   const R = (key: PageKey) => <RichText text={T(key)} />;
@@ -65,13 +72,17 @@ export default function ConceptPage({
                 tab === k ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-800"
               }`}
             >
-              {T(k === "laws" ? "flow.tab.law" : k === "maths" ? "maths.tab" : k === "history" ? "history.tab" : k === "feynman" ? "feynman.tab" : "flow.tab")}
+              {T(k === "laws" ? "flow.tab.law" : k === "maths" ? "maths.tab" : k === "history" ? "history.tab" : k === "feynman" ? "feynman.tab" : k === "reading" ? "reading.tab" : "flow.tab")}
             </button>
           ))}
         </div>
       </div>
       {tab === "history" ? (
         <HistoryConcept section={section} />
+      ) : tab === "reading" ? (
+        <div className="pt-6">
+          <ReadingConcept />
+        </div>
       ) : tab === "feynman" ? (
         <div className="pt-6">
           <FeynmanConcept />
