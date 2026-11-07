@@ -80,9 +80,9 @@ export function StepIcon({ n }: { n: 1 | 2 | 3 | 4 }) {
         <>
           {/* the explainer (left) talks; the bubble's tail points at his head; a smaller listener on the right */}
           <circle cx={14} cy={24} r={6} {...s} />
-          <path d="M4 46 Q14 30 24 46" {...s} />
+          <path d="M2 46 Q14 18 26 46" {...s} />
           <circle cx={51} cy={30} r={4.5} {...s} />
-          <path d="M44 46 Q51 36 58 46" {...s} />
+          <path d="M42.5 46 Q51 27 59.5 46" {...s} />
           <path d="M28 3 H48 a4 4 0 0 1 4 4 V13 a4 4 0 0 1 -4 4 H33 L22 22 L28 17 a4 4 0 0 1 -4 -4 V7 a4 4 0 0 1 4 -4 Z" fill={C.blueSoft} stroke={C.blue} strokeWidth={1.5} strokeLinejoin="round" />
           {[31, 38, 45].map((x) => (
             <circle key={x} cx={x} cy={10} r={1.4} fill={C.blue} />
