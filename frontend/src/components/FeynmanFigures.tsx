@@ -360,6 +360,13 @@ export function ZipFigure() {
         <text x={157} y={124} fontSize={13} textAnchor="middle" fill={C.ink} fontStyle="italic">p</text>
         {/* zip: the j sides meet and disappear */}
         <text x={108} y={75} fontSize={14} textAnchor="middle" fill={C.amber}>×</text>
+        {/* the same index j: Q's columns and p's rows */}
+        <path d="M69 26 Q122 14 131 60" fill="none" stroke={C.amber} strokeWidth={1.5} markerEnd="url(#fz-arrow-j)" />
+        <defs>
+          <marker id="fz-arrow-j" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 0 L10 5 L0 10 Z" fill={C.amber} />
+          </marker>
+        </defs>
         <path d="M182 70 H234" stroke={C.ink} strokeWidth={1.5} markerEnd="url(#fz-arrow)" />
         <text x={208} y={62} fontSize={13} textAnchor="middle" fill={C.amber}>Σⱼ</text>
         <defs>
