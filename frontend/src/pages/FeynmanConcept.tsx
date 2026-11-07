@@ -139,9 +139,10 @@ export default function FeynmanConcept() {
             <div className="mt-4 space-y-4 text-sm leading-relaxed text-gray-700">
               {s === "steps" && (
                 <>
-                  {FEYNMAN.map((f) => (
+                  {/* "precise" is left out: the four numbered step cards already say it */}
+                  {FEYNMAN.filter((f) => f !== "precise").map((f) => (
                     <div key={f} className="space-y-4">
-                      <Feynman kind={f} text={T(k(`steps.${f}`))} label={f === "precise" ? "" : T(`maths.label.${f}` as PageKey)} />
+                      <Feynman kind={f} text={T(k(`steps.${f}`))} label={T(`maths.label.${f}` as PageKey)} />
                       {f === "plain" && <StepCycle />}
                       {f === "analogy" && <BridgeFigure />}
                       {f === "example" && <SkyFigure />}
