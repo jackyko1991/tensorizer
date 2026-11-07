@@ -333,8 +333,14 @@ export function ORingFigure() {
 }
 
 /** The repeated index: Q (sides i, j) and p (side j) are zipped along j; only i is left on the result. */
-export function ZipFigure() {
+/**
+ * The einsum "zip". form="matrix": p is a column (Q's row meets p's column); form="index": p_j is a row of numbers
+ * labelled j, lined up with Q's j axis (in index form a vector has no row or column). `corner` sits top right (the
+ * form switch), `below` under the drawing (the matching formula).
+ */
+export function ZipFigure({ form = "matrix", corner, below }: { form?: "matrix" | "index"; corner?: React.ReactNode; below?: React.ReactNode }) {
   const T = usePageText();
+  const col = form === "matrix";
   const Q = [
     [2, 1],
     [0, 3],
@@ -348,27 +354,46 @@ export function ZipFigure() {
   );
   return (
     <Figure caption={T("feynman.fig.zip.caption")} testid="feynman-fig-zip">
+      {corner && <div className="mb-1 flex justify-end">{corner}</div>}
       <svg viewBox="0 0 330 150" className="mx-auto w-full max-w-[460px]" role="img" aria-label={T("feynman.fig.zip.caption")}>
         {/* Q: rows are customers (i), columns are products (j) */}
         {Q.map((row, i) => row.map((v, j) => cell(30 + j * 30, 40 + i * 30, v, C.blueSoft, `q${i}${j}`)))}
         <text x={60} y={30} fontSize={13} textAnchor="middle" fill={C.amber} fontWeight={700}>j</text>
         <text x={18} y={74} fontSize={13} textAnchor="middle" fill={C.green} fontWeight={700}>i</text>
         <text x={60} y={124} fontSize={13} textAnchor="middle" fill={C.ink} fontStyle="italic">Q</text>
-        {/* p: one price per product (j), a column vector: Q's row meets p's column along j */}
-        {p.map((v, j) => cell(142, 40 + j * 30, v, "#fef3c7", `p${j}`))}
-        <text x={132} y={74} fontSize={13} textAnchor="middle" fill={C.amber} fontWeight={700}>j</text>
-        <text x={157} y={124} fontSize={13} textAnchor="middle" fill={C.ink} fontStyle="italic">p</text>
+        {col ? (
+          <>
+            {/* matrix form: p is a column vector, Q's row meets p's column along j */}
+            {p.map((v, j) => cell(142, 40 + j * 30, v, "#fef3c7", `p${j}`))}
+            <text x={132} y={74} fontSize={13} textAnchor="middle" fill={C.amber} fontWeight={700}>j</text>
+            <text x={157} y={124} fontSize={13} textAnchor="middle" fill={C.ink} fontStyle="italic">p</text>
+            {/* the same index j: Q's columns and p's rows */}
+            <path d="M69 26 Q122 14 131 60" fill="none" stroke={C.amber} strokeWidth={1.5} markerEnd="url(#fz-arrow-j)" />
+            <defs>
+              <marker id="fz-arrow-j" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 Z" fill={C.amber} />
+              </marker>
+            </defs>
+          </>
+        ) : (
+          <>
+            {/* index form: p_j is just numbers labelled j, drawn along j like Q's columns */}
+            {p.map((v, j) => cell(130 + j * 30, 55, v, "#fef3c7", `p${j}`))}
+            <text x={160} y={45} fontSize={13} textAnchor="middle" fill={C.amber} fontWeight={700}>j</text>
+            <text x={160} y={106} fontSize={13} textAnchor="middle" fill={C.ink} fontStyle="italic">p</text>
+            {/* the same index j on Q and on p */}
+            <path d="M69 25 Q118 10 152 34" fill="none" stroke={C.amber} strokeWidth={1.5} markerEnd="url(#fz-arrow-j)" />
+            <defs>
+              <marker id="fz-arrow-j" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 Z" fill={C.amber} />
+              </marker>
+            </defs>
+          </>
+        )}
         {/* zip: the j sides meet and disappear */}
         <text x={108} y={75} fontSize={14} textAnchor="middle" fill={C.amber}>×</text>
-        {/* the same index j: Q's columns and p's rows */}
-        <path d="M69 26 Q122 14 131 60" fill="none" stroke={C.amber} strokeWidth={1.5} markerEnd="url(#fz-arrow-j)" />
-        <defs>
-          <marker id="fz-arrow-j" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-            <path d="M0 0 L10 5 L0 10 Z" fill={C.amber} />
-          </marker>
-        </defs>
-        <path d="M182 70 H234" stroke={C.ink} strokeWidth={1.5} markerEnd="url(#fz-arrow)" />
-        <text x={208} y={62} fontSize={13} textAnchor="middle" fill={C.amber}>Σⱼ</text>
+        <path d={col ? "M182 70 H234" : "M198 70 H236"} stroke={C.ink} strokeWidth={1.5} markerEnd="url(#fz-arrow)" />
+        <text x={col ? 208 : 217} y={62} fontSize={13} textAnchor="middle" fill={C.amber}>Σⱼ</text>
         <defs>
           <marker id="fz-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
             <path d="M0 0 L10 5 L0 10 Z" fill={C.ink} />
@@ -380,6 +405,7 @@ export function ZipFigure() {
         <text x={265} y={124} fontSize={12} textAnchor="middle" fill={C.muted}>2·3 + 1·5</text>
         <text x={265} y={141} fontSize={12} textAnchor="middle" fill={C.muted}>0·3 + 3·5</text>
       </svg>
+      {below}
       <Legend
         items={[
           { n: 1, key: "feynman.fig.zip.j", color: C.amber },

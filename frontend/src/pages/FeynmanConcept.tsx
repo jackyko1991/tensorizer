@@ -375,7 +375,7 @@ function WorkedExample() {
               </div>
               {n === 4 && (
                 <div className="mt-3 space-y-3">
-                  <ZipFigure />
+                  <PForms />
                   <p>
                     <RichText text={T("feynman.example.check")} />
                   </p>
@@ -387,6 +387,76 @@ function WorkedExample() {
         ))}
       </ol>
     </>
+  );
+}
+
+// The same product two ways: as matrices (p is a column) and with indices (p_j has no row or column).
+const PFORM_TEX = {
+  matrix: String.raw`Q\,p = \begin{pmatrix} 2 & 1 \\ 0 & 3 \end{pmatrix} \begin{pmatrix} 3 \\ 5 \end{pmatrix} = \begin{pmatrix} 11 \\ 15 \end{pmatrix}`,
+  index: String.raw`\begin{aligned} (Qp)_i &= \textstyle\sum_j Q_{ij}\, p_j \hspace{2em} p_1 = 3 \hspace{1em} p_2 = 5 \\ (Qp)_1 &= Q_{11}p_1 + Q_{12}p_2 = 11 \\ (Qp)_2 &= Q_{21}p_1 + Q_{22}p_2 = 15 \end{aligned}`,
+} as const;
+
+function PForms() {
+  const T = usePageText();
+  const [form, setForm] = useState<keyof typeof PFORM_TEX>("matrix");
+  const other = form === "matrix" ? "index" : "matrix";
+  // top right of the figure: a switch between the two forms, and a (?) that explains them; the drawing and the formula follow it
+  const corner = (
+    <div className="flex items-center gap-2 text-xs" data-testid="feynman-pform">
+      <span className={form === "matrix" ? "font-semibold text-blue-700" : "text-gray-500"}>{T("feynman.pform.matrix")}</span>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={form === "index"}
+        aria-label={`${T("feynman.pform.title")}: ${T(`feynman.pform.${other}`)}`}
+        onClick={() => setForm(other)}
+        className={`relative h-5 w-9 shrink-0 rounded-full transition ${form === "index" ? "bg-blue-600" : "bg-gray-300"}`}
+      >
+        <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${form === "index" ? "left-[18px]" : "left-0.5"}`} />
+      </button>
+      <span className={form === "index" ? "font-semibold text-blue-700" : "text-gray-500"}>{T("feynman.pform.index")}</span>
+      <HelpCard heading={T("feynman.pform.title")} text={T("feynman.pform.help")} />
+    </div>
+  );
+  return (
+    <ZipFigure
+      form={form}
+      corner={corner}
+      below={
+        <div className="mt-1 overflow-x-auto px-2 py-1 text-sm">
+          <Tex tex={PFORM_TEX[form]} display />
+        </div>
+      }
+    />
+  );
+}
+
+/** A (?) that opens a white card with rich text (maths rendered) on hover or keyboard focus. */
+function HelpCard({ heading, text }: { heading: string; text: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span className="relative inline-flex" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <button
+        type="button"
+        className="inline-flex h-5 w-5 cursor-help items-center justify-center rounded-full border border-gray-300 bg-white text-[11px] font-semibold text-gray-500"
+        aria-expanded={open}
+        aria-label={heading}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
+        onClick={() => setOpen((o) => !o)}
+      >
+        ?
+      </button>
+      {open && (
+        <span
+          role="tooltip"
+          className="absolute top-full right-0 z-30 mt-1.5 block w-72 max-w-[80vw] rounded-lg border border-gray-200 bg-white p-3 text-left text-xs leading-relaxed text-gray-700 shadow-lg"
+        >
+          <span className="mb-1 block font-semibold text-gray-900">{heading}</span>
+          <RichText text={text} />
+        </span>
+      )}
+    </span>
   );
 }
 
