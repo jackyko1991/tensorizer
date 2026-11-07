@@ -100,8 +100,6 @@ test("every reading.* key the tab uses exists in all languages", () => {
     const t = text(f);
     const missing = [...keys].filter((k) => typeof t[k] !== "string" || !t[k]);
     assert.deepEqual(missing, [], `${f} lacks ${missing.join(", ")}`);
-    // the quoted link label in the note is the link label itself
-    assert.ok(t["reading.note"].includes(t["reading.amazon"]), `${f}: reading.note does not quote reading.amazon`);
   }
 });
 

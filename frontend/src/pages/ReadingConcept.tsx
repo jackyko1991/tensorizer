@@ -45,8 +45,8 @@ export default function ReadingConcept() {
         ))}
 
         {/* affiliate disclosure: one quiet grey line under the books */}
-        <p className="border-t border-gray-200 pt-3 text-xs text-gray-400" data-testid="reading-disclosure">
-          {T("reading.disclosure")} {T("reading.note")}
+        <p className="border-t border-gray-200 pt-3 text-center text-xs text-gray-400" data-testid="reading-disclosure">
+          {T("reading.note")} {T("reading.disclosure")}
         </p>
       </article>
     </div>
