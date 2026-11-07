@@ -11,7 +11,7 @@ const SECTIONS = ["steps", "roots", "life", "site", "example", "pitfalls"];
 const FEYNMAN = ["plain", "analogy", "precise", "example"];
 const ROOTS = ["notebook", "create", "freshman", "lectures"];
 const LIFE = ["losalamos", "diagrams", "nobel", "challenger"];
-const SITE = ["maths", "ladder", "tdd"];
+const SITE = ["ladder", "maths", "tdd"];
 
 function usedKeys(): Set<string> {
   const keys = new Set<string>();
