@@ -6,7 +6,7 @@ import { AFFILIATE_REL, BOOK_GROUPS, BOOKS, amazonUrl, type Book } from "../book
 /**
  * Concept tab "Further reading": books in four groups, top picks (★) first. Each card has the title, authors,
  * publisher and year, a one-line reason, an affiliate link to Amazon UK, a link to a free official online edition
- * when one exists, and a link to the matching tab of this site. Affiliate disclosure at the top (Amazon Associates
+ * when one exists, and a link to the matching tab of this site. Affiliate disclosure at the bottom (Amazon Associates
  * Operating Agreement; ASA/CMA). No prices, ratings, covers or Amazon scripts. Book data: books.ts.
  * Deep links: #/concept/reading/<group> (the scroll is done by ConceptPage, element id reading-<group>).
  */
@@ -26,13 +26,6 @@ export default function ReadingConcept() {
           <p className="mt-3 text-gray-600">
             <RichText text={T("reading.intro")} />
           </p>
-          <div
-            className="mt-3 space-y-1 rounded-lg border border-blue-100 bg-blue-50/60 px-4 py-2.5 text-sm text-blue-900"
-            data-testid="reading-disclosure"
-          >
-            <p className="font-medium">{T("reading.disclosure")}</p>
-            <p>{T("reading.note")}</p>
-          </div>
         </header>
 
         {BOOK_GROUPS.map((g, i) => (
@@ -50,6 +43,11 @@ export default function ReadingConcept() {
             </div>
           </section>
         ))}
+
+        {/* affiliate disclosure: one quiet grey line under the books */}
+        <p className="border-t border-gray-200 pt-3 text-xs text-gray-400" data-testid="reading-disclosure">
+          {T("reading.disclosure")} {T("reading.note")}
+        </p>
       </article>
     </div>
   );
