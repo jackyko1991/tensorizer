@@ -50,8 +50,8 @@ test("resolve: the address wins, an unknown tab falls back to the first, no tab 
   assert.equal(resolveTab("concept", null, "history"), "history");
   assert.equal(resolveTab("concept", "feynman", "maths"), "feynman");
   assert.equal(resolveTab("concept", null, "feynman"), "feynman");
-  assert.equal(resolveTab("concept", "reading", "laws"), "reading");
-  assert.equal(resolveTab("concept", null, "reading"), "reading");
+  assert.equal(resolveTab("concept", "reading", "laws"), "laws"); // Further reading is its own page now
+  assert.equal(resolveTab("concept", null, "reading"), "laws");
 });
 
 test("format round-trips through parse", () => {
@@ -81,6 +81,6 @@ test("format round-trips through parse", () => {
   });
 });
 
-test("the concept tabs in order: further reading is the last", () => {
-  assert.deepEqual([...PAGE_TABS.concept], ["laws", "feynman", "maths", "dataflow", "history", "reading"]);
+test("the concept tabs in order (Further reading is a top-level page, #/reading)", () => {
+  assert.deepEqual([...PAGE_TABS.concept], ["laws", "feynman", "maths", "dataflow", "history"]);
 });

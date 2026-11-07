@@ -12,7 +12,6 @@ import DataflowConcept from "./DataflowConcept";
 import MathsConcept from "./MathsConcept";
 import HistoryConcept from "./HistoryConcept";
 import FeynmanConcept from "./FeynmanConcept";
-import ReadingConcept from "./ReadingConcept";
 
 const PENDULUM = "mechanics/simple_pendulum";
 const STEPS = [0, 1, 2, 3, 4, 5, 6, 7] as const; // 0: tests first (TDD)
@@ -40,7 +39,7 @@ export default function ConceptPage({
   const { t, lang } = useLang();
   const p = manifest.problems.find((x) => x.id === PENDULUM);
   useEffect(() => {
-    const el = section && document.getElementById(tab === "laws" ? `step-${section}` : tab === "maths" ? `maths-${section}` : tab === "history" ? `history-${section}` : tab === "feynman" ? `feynman-${section}` : tab === "reading" ? `reading-${section}` : section);
+    const el = section && document.getElementById(tab === "laws" ? `step-${section}` : tab === "maths" ? `maths-${section}` : tab === "history" ? `history-${section}` : tab === "feynman" ? `feynman-${section}` : section);
     if (el) el.scrollIntoView({ block: "start", behavior: "instant" });
     else document.getElementById("concept-scroll")?.scrollTo({ top: 0 });
   }, [tab, section]);
@@ -72,17 +71,13 @@ export default function ConceptPage({
                 tab === k ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-800"
               }`}
             >
-              {T(k === "laws" ? "flow.tab.law" : k === "maths" ? "maths.tab" : k === "history" ? "history.tab" : k === "feynman" ? "feynman.tab" : k === "reading" ? "reading.tab" : "flow.tab")}
+              {T(k === "laws" ? "flow.tab.law" : k === "maths" ? "maths.tab" : k === "history" ? "history.tab" : k === "feynman" ? "feynman.tab" : "flow.tab")}
             </button>
           ))}
         </div>
       </div>
       {tab === "history" ? (
         <HistoryConcept section={section} />
-      ) : tab === "reading" ? (
-        <div className="pt-6">
-          <ReadingConcept />
-        </div>
       ) : tab === "feynman" ? (
         <div className="pt-6">
           <FeynmanConcept />

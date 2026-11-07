@@ -201,6 +201,24 @@ export const LINES_PER_M = 3; // contour lines crossed per metre
 export const upper = (f: number) => STICK_M * f;
 /** Lower (covariant) component: lines crossed per unit; shrinks with the unit. */
 export const lower = (f: number) => LINES_PER_M / f;
+/**
+ * The hill of the updown picture: a round hill whose flanks fall 3 m per m (a cone with a rounded top),
+ * z = 6.5 - 3r. Contour L (height L m) is the circle r = (6.5 - L) / 3, so the straight walk from the summit
+ * outwards meets one every 1/3 m.
+ */
+export const HILL = { top: 6.5, rMax: 6.5 / LINES_PER_M, levels: [1, 2, 3, 4, 5, 6] };
+export function hillZ(x: number, y: number): number {
+  const r = Math.hypot(x, y);
+  const z = r >= 0.1 ? HILL.top - LINES_PER_M * r : HILL.top - 0.15 - 15 * r * r; // smooth cap, same slope at 0.1
+  return Math.max(0, z);
+}
+export const contourR = (L: number) => (HILL.top - L) / LINES_PER_M;
+/** Where the walk (from the summit along +x, the stick length) crosses the contours, nearest first. */
+export const crossings = (len = STICK_M) =>
+  HILL.levels
+    .map(contourR)
+    .sort((a, b) => a - b)
+    .filter((r) => r <= len);
 /** Unit index shown at each updown step: m, dm, cm, then cm held. */
 export const UPDOWN_UNIT = [0, 1, 2, 2, 2];
 

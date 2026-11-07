@@ -15,7 +15,7 @@ const HOLD = 6; // ticks the finished picture stays before the cycle restarts
 const PICTURES: Record<MathsCase, { draw: (p: PicProps) => ReactNode; h: number }> = {
   address: { draw: (p) => <Address {...p} />, h: 118 },
   rotate: { draw: (p) => <Rotate {...p} />, h: 168 },
-  updown: { draw: (p) => <Updown {...p} />, h: 188 },
+  updown: { draw: (p) => <Updown {...p} />, h: 386 },
   metric: { draw: (p) => <Metric {...p} />, h: 140 },
   photo: { draw: (p) => <Photo {...p} />, h: 166 },
   eqRank: { draw: (p) => <EqRank {...p} />, h: 126 },
@@ -101,7 +101,7 @@ export default function MathsAnim({ id, compact = false }: { id: MathsCase; comp
           <RichText text={caption} />
         </p>
       </figure>
-      <div className="flex flex-wrap items-center gap-x-4">
+      <div className="flex flex-wrap items-center justify-center gap-x-4">
         <AnimControls clock={clock} />
         {id === "updown" && (
           <div className="mt-2 flex items-center gap-1.5 text-xs text-gray-600" data-testid="maths-unit-toggle">

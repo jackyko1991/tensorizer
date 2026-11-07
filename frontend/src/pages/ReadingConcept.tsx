@@ -1,22 +1,28 @@
+import { useEffect } from "react";
 import PageToc from "../components/PageToc";
 import { RichText } from "../components/Tex";
 import { usePageText, type PageKey } from "../content/pages";
 import { AFFILIATE_REL, BOOK_GROUPS, BOOKS, amazonUrl, type Book } from "../books";
 
 /**
- * Concept tab "Further reading": books in four groups, top picks (★) first. Each card has the title, authors,
+ * Top-level page "Further reading" (#/reading, last in the header): books in four groups, top picks (★) first. Each card has the title, authors,
  * publisher and year, a one-line reason, an affiliate link to Amazon UK, a link to a free official online edition
  * when one exists, and a link to the matching tab of this site. Affiliate disclosure at the bottom (Amazon Associates
  * Operating Agreement; ASA/CMA). No prices, ratings, covers or Amazon scripts. Book data: books.ts.
- * Deep links: #/concept/reading/<group> (the scroll is done by ConceptPage, element id reading-<group>).
+ * Deep links: #/reading/<group> scroll to the element id reading-<group>.
  */
-export default function ReadingConcept() {
+export default function ReadingConcept({ section = null }: { section?: string | null }) {
   const T = usePageText();
+  useEffect(() => {
+    const el = section && document.getElementById(`reading-${section}`);
+    if (el) el.scrollIntoView({ block: "start", behavior: "instant" });
+    else document.getElementById("reading-scroll")?.scrollTo({ top: 0 });
+  }, [section]);
 
   return (
-    <div className="mx-auto flex max-w-6xl gap-8 px-5 pb-10">
+    <div className="mx-auto flex max-w-6xl gap-8 px-5 pt-6 pb-10">
       <PageToc
-        scrollRoot="concept-scroll"
+        scrollRoot="reading-scroll"
         items={BOOK_GROUPS.map((g, i) => ({ id: `reading-${g}`, mark: i + 1, label: T(`reading.group.${g}` as PageKey) }))}
       />
       <article className="min-w-0 max-w-4xl flex-1 space-y-10" data-testid="reading-concept">

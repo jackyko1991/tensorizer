@@ -1,5 +1,17 @@
 /** UI strings for the Agent Skills page: one row per key, en, zh-Hant, zh-Hans, fr, de, es, ja, ru, ko, hi. */
 export const SKILLS_STRINGS = {
+  "tab.reading": [
+    "Further reading",
+    "延伸閱讀",
+    "延伸阅读",
+    "Pour aller plus loin",
+    "Weiterführende Literatur",
+    "Lecturas recomendadas",
+    "さらに読む",
+    "Что почитать",
+    "더 읽을거리",
+    "आगे पढ़ने के लिए",
+  ],
   "tab.agents": [
     "Agent Skills",
     "AI 代理技能",

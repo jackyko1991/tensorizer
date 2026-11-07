@@ -9,7 +9,7 @@ import {
   BATCH_SHAPE,
   DOT,
   EX_A,
-  LINES_PER_M,
+  HILL,
   MM,
   MV,
   OUTER,
@@ -34,6 +34,9 @@ import {
   mStage,
   numel,
   photoPixel,
+  contourR,
+  crossings,
+  hillZ,
   rot,
   rotAngle,
   rotMatrix,
@@ -355,6 +358,112 @@ export function Rotate({ g, s, T }: PicProps) {
   );
 }
 
+// ---- the hill of "index up or down": a round hill in a fixed oblique view, its contour rings and their map ----
+
+const HC = 128; // screen x of the summit
+const HY = 156; // screen y of the hill's base centre
+const HS = 52; // px per metre across
+const HK = 0.45; // depth foreshortening (looking down at an angle)
+const HZ = 14; // px up per metre of height, exaggerated so the hill stands up
+const HGAP = 72; // the map lies this far below the hill's base
+const HMAP = 2.3; // half size of the map, m
+const HILL_M = HY + HGAP; // screen y of the map's centre
+const HILL_DY = 198; // how far the gauge moves down to make room for the hill
+const hSurf = (x: number, y: number, z = hillZ(x, y)): [number, number] => [HC + HS * x, HY - HS * HK * y - HZ * z];
+const hMap = (x: number, y: number): [number, number] => [HC + HS * x, HILL_M - HS * HK * y];
+const pts = (a: [number, number][]) => a.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+const ringPts = (r: number, at: (x: number, y: number) => [number, number]) =>
+  Array.from({ length: 49 }, (_, k) => at(r * Math.cos((k * Math.PI) / 24), r * Math.sin((k * Math.PI) / 24)));
+/** Whether the ring point at angle a is seen, not hidden behind the hill in front of it (same screen column). */
+function ringVisible(r: number, a: number, L: number): boolean {
+  const x = r * Math.cos(a);
+  const y = r * Math.sin(a);
+  const Y = hSurf(x, y, L)[1];
+  for (let yy = y - 0.02; yy > -HILL.rMax; yy -= 0.02) if (hSurf(x, yy)[1] < Y - 0.5) return false;
+  return true;
+}
+/** Height bands: light to deeper green, one shade per metre. */
+const band = (z: number) => {
+  const t = Math.min(Math.floor(z) / 7, 1);
+  const lerp = (a: number, b: number) => Math.round(a + (b - a) * t);
+  return `rgb(${lerp(220, 74)},${lerp(252, 222)},${lerp(231, 128)})`;
+};
+
+function Hill({ f, T }: { f: number; T: PicProps["T"] }) {
+  // the surface as small polar patches, painted back to front
+  const dr = HILL.rMax / 20;
+  const da = Math.PI / 18;
+  const patches: { y: number; el: ReactNode }[] = [];
+  for (let i = 0; i < 20; i++)
+    for (let j = 0; j < 36; j++) {
+      const r0 = i * dr;
+      const r1 = r0 + dr;
+      const a0 = j * da;
+      const a1 = a0 + da;
+      const P = (r: number, a: number) => hSurf(r * Math.cos(a), r * Math.sin(a));
+      const rm = (r0 + r1) / 2;
+      const c = band(hillZ(rm * Math.cos(a0 + da / 2), rm * Math.sin(a0 + da / 2)));
+      patches.push({
+        y: rm * Math.sin(a0 + da / 2),
+        el: <polygon key={`${i}-${j}`} points={pts([P(r0, a0), P(r1, a0), P(r1, a1), P(r0, a1)])} fill={c} stroke={c} strokeWidth={0.4} />,
+      });
+    }
+  patches.sort((a, b) => b.y - a.y);
+  const u = 1 / f; // one unit along the walk, highlighted on the map
+  const strip = 0.25; // half width of that highlight, m
+  const [w0, wy] = hMap(0, 0);
+  const [w1] = hMap(STICK_M, 0);
+  return (
+    <g>
+      {/* the map below: the projected rings, the unit, the walk and its crossings */}
+      <polygon points={pts([hMap(-HMAP, -HMAP), hMap(HMAP, -HMAP), hMap(HMAP, HMAP), hMap(-HMAP, HMAP)])} fill="white" stroke={COL.idleLine} strokeWidth={0.7} />
+      {HILL.levels.map((L) => (
+        <polyline key={L} points={pts(ringPts(contourR(L), hMap))} fill="none" stroke={COL.green} strokeWidth={0.9} />
+      ))}
+      <polygon points={pts([hMap(0, -strip), hMap(u, -strip), hMap(u, strip), hMap(0, strip)])} fill={COL.curLight} fillOpacity={0.6} stroke={COL.cur} strokeWidth={0.8} strokeDasharray="2 1" />
+      <Arrow x1={w0} y1={wy} x2={w1} y2={wy} color={COL.blue} w={1.4} />
+      {crossings().map((r, k) => {
+        const [cx, cy] = hMap(r, 0);
+        const inUnit = r < u;
+        return (
+          <g key={k}>
+            {/* the count sits inside an opaque marker on the crossing: no text touches a line */}
+            <circle cx={cx} cy={cy} r={4.4} fill={inUnit ? COL.cur : COL.green} stroke="white" strokeWidth={0.8} />
+            <Txt x={cx} y={cy + 2.1} size={5.8} anchor="middle" color="white" weight={700}>
+              {String(k + 1)}
+            </Txt>
+          </g>
+        );
+      })}
+      {/* the hill: shaded height bands, then the visible part of each contour ring on the surface */}
+      {patches.map((p) => p.el)}
+      {HILL.levels.map((L) => {
+        const ring = ringPts(contourR(L), (x, y) => hSurf(x, y, L));
+        return ring.slice(0, -1).map((p, k) =>
+          ringVisible(contourR(L), ((k + 0.5) * Math.PI) / 24, L) ? (
+            <line key={`r${L}-${k}`} x1={p[0]} y1={p[1]} x2={ring[k + 1][0]} y2={ring[k + 1][1]} stroke="#15803d" strokeWidth={1.1} strokeLinecap="round" />
+          ) : null,
+        );
+      })}
+      {/* drop lines: from the left end of each ring on the hill straight down to the same ring on the map */}
+      {HILL.levels.map((L) => {
+        const [x1, y1] = hSurf(-contourR(L), 0, L);
+        const [, y2] = hMap(-contourR(L), 0);
+        return <line key={L} x1={x1} y1={y1} x2={x1} y2={y2} stroke={COL.muted} strokeWidth={0.6} strokeDasharray="1.5 1.5" />;
+      })}
+      {[1, 3, 5].map((L) => {
+        // below the front-right of the ring, in the band before the next ring down, far from the drop lines
+        const a = -Math.PI / 3;
+        const [X, Y] = hSurf(contourR(L) * Math.cos(a), contourR(L) * Math.sin(a), L);
+        return <MU key={L} x={X} y={Y + 9} m={String(L)} u=" m" size={6} anchor="middle" color="#14532d" />;
+      })}
+      <Txt x={hMap(-HMAP, -HMAP)[0]} y={hMap(-HMAP, -HMAP)[1] + 9} size={6.5} color={COL.muted}>
+        {T("maths.anim.updown.map")}
+      </Txt>
+    </g>
+  );
+}
+
 export function Updown({ s, T }: PicProps) {
   const ui = UPDOWN_UNIT[s.step];
   const f = UNITS[ui].f;
@@ -376,8 +485,7 @@ export function Updown({ s, T }: PicProps) {
         </Txt>,
       );
   }
-  // contour lines every 1/3 m, offset half a spacing: 6 of them on the 2 m stick
-  const lines = Array.from({ length: 7 }, (_, k) => X0 + ((k + 0.5) * PX) / LINES_PER_M).filter((x) => x < X0 + 210);
+  const DY = HILL_DY; // the gauge sits below the hill
   const LX = (v: number) => 34 + ((Math.log10(v) + 2) / 5) * 186;
   const pair = s.step >= 3;
   const row = (y: number, v: number, label: string, color: string, on: boolean) => (
@@ -410,33 +518,28 @@ export function Updown({ s, T }: PicProps) {
       <Txt x={X0} y={58} size={6.5} color={COL.muted}>
         {T("maths.anim.updown.hill")}
       </Txt>
-      <rect x={X0} y={62} width={210} height={34} fill={COL.greenLight} stroke={COL.idleLine} strokeWidth={0.6} />
-      <rect x={X0} y={62} width={PX / f} height={34} fill={COL.curLight} fillOpacity={0.5} stroke={COL.cur} strokeWidth={0.8} strokeDasharray="2 1" />
-      {lines.map((x, k) => (
-        <path key={k} d={`M ${x} 62 Q ${x + 5} 70 ${x} 79 T ${x} 96`} fill="none" stroke={COL.green} strokeWidth={1} />
-      ))}
-      <line x1={X0} y1={79} x2={X0 + STICK_M * PX} y2={79} stroke={COL.blue} strokeWidth={1.4} />
-      <Txt x={232} y={84} size={8} kind="math" color={COL.cur} weight={600}>
+      <Hill f={f} T={T} />
+      <Txt x={W - 4} y={80} size={8} anchor="end" kind="math" color={COL.cur} weight={600}>
         {`w_1 = ${fmt(w1)}`}
       </Txt>
       {/* log gauge: the two components move apart, the pairing stays at 6 */}
-      {row(116, v1, "v^1", COL.blue, false)}
-      {row(129, w1, "w_1", COL.cur, false)}
-      {row(142, v1 * w1, "w_1 v^1", COL.green, pair)}
-      <line x1={34} y1={150} x2={220} y2={150} stroke={COL.text} strokeWidth={0.6} />
+      {row(116 + DY, v1, "v^1", COL.blue, false)}
+      {row(129 + DY, w1, "w_1", COL.cur, false)}
+      {row(142 + DY, v1 * w1, "w_1 v^1", COL.green, pair)}
+      <line x1={34} y1={150 + DY} x2={220} y2={150 + DY} stroke={COL.text} strokeWidth={0.6} />
       {[-2, -1, 0, 1, 2, 3].map((k) => (
         <g key={k}>
-          <line x1={LX(10 ** k)} y1={150} x2={LX(10 ** k)} y2={153} stroke={COL.text} strokeWidth={0.6} />
-          <Txt x={LX(10 ** k)} y={160} size={6} anchor="middle" color={COL.muted} kind="math">
+          <line x1={LX(10 ** k)} y1={150 + DY} x2={LX(10 ** k)} y2={153 + DY} stroke={COL.text} strokeWidth={0.6} />
+          <Txt x={LX(10 ** k)} y={160 + DY} size={6} anchor="middle" color={COL.muted} kind="math">
             {fmt(10 ** k, 2)}
           </Txt>
         </g>
       ))}
-      <Txt x={127} y={170} size={6.5} anchor="middle" color={COL.muted}>
+      <Txt x={127} y={170 + DY} size={6.5} anchor="middle" color={COL.muted}>
         {T("maths.anim.updown.axis")}
       </Txt>
       {s.step === 4 && (
-        <Txt x={140} y={182} size={7.5} anchor="middle" kind="math" color={COL.violet}>
+        <Txt x={140} y={182 + DY} size={7.5} anchor="middle" kind="math" color={COL.violet}>
           {"e_i · e_j = δ_{ij}  ⇒  v^i = v_i"}
         </Txt>
       )}

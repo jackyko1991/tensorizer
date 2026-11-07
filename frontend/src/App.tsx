@@ -47,6 +47,7 @@ import ConceptPage from "./pages/ConceptPage";
 import { formatPageRoute, isTab, parsePageRoute, resolveTab, TAB_STORE } from "./pageRoute";
 import AgentsPage from "./pages/AgentsPage";
 import SkillsPage from "./pages/SkillsPage";
+import ReadingPage from "./pages/ReadingConcept";
 import { plainText, RichText } from "./components/Tex";
 import NotebookView from "./components/NotebookView";
 import DataPanel from "./components/DataPanel";
@@ -86,7 +87,7 @@ import {
 
 const currentHash = () => decodeURIComponent(window.location.hash.replace(/^#\/?/, "")) || null;
 const select = (id: string) => (window.location.hash = `/${id}`);
-const PAGES = ["problems", "concept", "skills", "agents"] as const;
+const PAGES = ["problems", "concept", "skills", "agents", "reading"] as const;
 type Page = (typeof PAGES)[number] | "workspace";
 const LEFT_TAB = "tensorizer.leftTab";
 const RECENT = "tensorizer.recent";
@@ -109,6 +110,7 @@ const TAB_KEY: Record<(typeof PAGES)[number], Key> = {
   concept: "tab.concept",
   skills: "tab.skills",
   agents: "tab.agents",
+  reading: "tab.reading",
 };
 
 /**
@@ -148,7 +150,7 @@ export default function App() {
   // A problem that moved to another category (e.g. others/tiny_transformer → ai/tiny_transformer): old links follow
   // it by its slug.
   useEffect(() => {
-    if (!manifest || !selected || !selected.includes("/") || selected.startsWith("workspace/")) return;
+    if (!manifest || !selected || !selected.includes("/") || selected.startsWith("workspace/") || selected.startsWith("reading/")) return;
     if (manifest.problems.some((p) => p.id === selected)) return;
     const slug = selected.split("/").pop();
     const moved = manifest.problems.find((p) => p.slug === slug);
@@ -158,12 +160,20 @@ export default function App() {
   // #/concept[/<tab>[/<section>]] and #/skills[/<tab>[/<section>]] are pages with sub-tabs, #/agents and #/workspace
   // pages; any other hash is a problem id (category/slug), a workspace problem (workspace/<id>) or one of its
   // notebooks (workspace/<id>/nb/<notebook>).
-  const pageRoute = parsePageRoute(selected);
+  // Further reading used to be a Concept tab: #/concept/reading… is not a concept route any more (redirected below).
+  const oldReading = !!selected?.startsWith("concept/reading");
+  const pageRoute = oldReading ? null : parsePageRoute(selected);
   const page: Page = pageRoute
     ? pageRoute.page
     : selected === "agents" || selected === "workspace"
       ? selected
-      : "problems";
+      : oldReading || selected === "reading" || selected?.startsWith("reading/")
+        ? "reading"
+        : "problems";
+  // Further reading used to be a Concept tab: old links #/concept/reading[/<group>] move to #/reading[/<group>].
+  useEffect(() => {
+    if (selected?.startsWith("concept/reading")) window.location.replace(`#/${selected.slice("concept/".length)}`);
+  }, [selected]);
   // The sub-tab: the address wins; #/skills alone opens the remembered tab. A missing or unknown tab is rewritten
   // in place (no new history entry) to the canonical #/<page>/<tab>, so back/forward always land on a tab.
   const subTab = pageRoute ? resolveTab(pageRoute.page, pageRoute.tab, stored(TAB_STORE[pageRoute.page])) : null;
@@ -593,6 +603,11 @@ export default function App() {
       {page === "agents" && (
         <main className="min-h-0 flex-1">
           <AgentsPage />
+        </main>
+      )}
+      {page === "reading" && (
+        <main id="reading-scroll" className="min-h-0 flex-1 scroll-smooth bg-gray-50/60 xl:overflow-y-auto">
+          <ReadingPage section={selected?.split("/")[1] ?? null} />
         </main>
       )}
       {manifest && page === "workspace" && (

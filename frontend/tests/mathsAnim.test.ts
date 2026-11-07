@@ -10,6 +10,7 @@ import {
   DOT,
   EX_A,
   FUSION,
+  HILL,
   LOOP,
   MATHS_CASES,
   MATHS_PLACE,
@@ -29,6 +30,9 @@ import {
   att,
   busy,
   chainSteps,
+  contourR,
+  crossings,
+  hillZ,
   countAt,
   intensityOf,
   loopTerms,
@@ -103,6 +107,14 @@ test("index up or down: components move in opposite directions, the pairing stay
   assert.deepEqual(UNITS.map((u) => upper(u.f)), [2, 20, 200]);
   for (const u of UNITS) close(upper(u.f) * lower(u.f), 6);
   close(lower(100), 0.03);
+  // the drawn hill: 6 contours on the 2 m walk, 1/3 m apart, each ring at its own height
+  const xs = crossings();
+  assert.equal(xs.length, upper(1) * lower(1));
+  for (let k = 1; k < xs.length; k++) close(xs[k] - xs[k - 1], 1 / 3);
+  for (const L of HILL.levels)
+    for (const t of [0, 1, 2.5, 4]) close(hillZ(contourR(L) * Math.cos(t), contourR(L) * Math.sin(t)), L);
+  close(hillZ(0.1, 0), hillZ(0.0999999, 0), 1e-5); // the rounded top joins the flank
+  assert.equal(hillZ(HILL.rMax + 0.1, 0), 0);
   // slanted axes: v_i = g_ij v^j, and at 90 degrees the two kinds coincide
   for (const phi of [Math.PI / 2, metPhi(1, 4, 10), metPhi(2, 0, 8)]) {
     const m = slanted(phi);
