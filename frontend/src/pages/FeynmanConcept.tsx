@@ -13,7 +13,7 @@ type Section = (typeof FEYNMAN_SECTIONS)[number];
 export const STEP_IDS = [1, 2, 3, 4] as const;
 export const ROOTS = ["notebook", "create", "freshman", "lectures"] as const;
 export const LIFE = ["losalamos", "diagrams", "nobel", "challenger"] as const;
-export const SITE = ["maths", "ladder", "tdd"] as const;
+export const SITE = ["ladder", "maths", "tdd"] as const; // in step order: 1, then 2 & 4, then 3
 export const PITFALLS = [1, 2, 3] as const;
 export const CHECKS = [1, 2, 3, 4, 5, 6] as const;
 
