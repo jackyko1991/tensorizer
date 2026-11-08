@@ -279,7 +279,7 @@
   "loops.anim.tensorSteps": "ベクトル化されたステップ: {n}",
   "loops.anim.play": "再生",
   "loops.anim.pause": "一時停止",
-  "loops.anim.step": "1 ステップ",
+  "loops.anim.step": "次へ",
   "loops.anim.restart": "最初から",
   "loops.anim.speed": "速度",
   "loops.anim.note": "左の 1 ティックは Python ループ本体の 1 周（要素 1 個）、右の 1 ティックは全要素に対するベクトル化された 1 回の呼び出しです。ティックは実時間ではありません。実測時間は下のグラフにあります。",

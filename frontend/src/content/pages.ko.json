@@ -279,7 +279,7 @@
   "loops.anim.tensorSteps": "벡터화 스텝: {n}",
   "loops.anim.play": "재생",
   "loops.anim.pause": "일시정지",
-  "loops.anim.step": "한 단계",
+  "loops.anim.step": "다음",
   "loops.anim.restart": "처음부터",
   "loops.anim.speed": "속도",
   "loops.anim.note": "왼쪽의 한 틱은 Python 루프 본문의 한 번 반복(원소 하나)이고, 오른쪽의 한 틱은 모든 원소에 대한 벡터화 호출 한 번입니다. 틱은 실제 시간이 아닙니다. 측정된 시간은 아래 차트에 있습니다.",

@@ -279,7 +279,7 @@
   "loops.anim.tensorSteps": "pas vectorisés : {n}",
   "loops.anim.play": "Lecture",
   "loops.anim.pause": "Pause",
-  "loops.anim.step": "Pas",
+  "loops.anim.step": "Suivant",
   "loops.anim.restart": "Recommencer",
   "loops.anim.speed": "Vitesse",
   "loops.anim.note": "Un top à gauche est un passage du corps de la boucle Python (un élément) ; un top à droite est un appel vectorisé sur tous les éléments. Les tops ne mesurent pas le temps réel : les temps mesurés figurent dans le graphique ci-dessous.",

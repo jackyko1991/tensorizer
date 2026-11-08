@@ -279,7 +279,7 @@
   "loops.anim.tensorSteps": "vectorised steps: {n}",
   "loops.anim.play": "Play",
   "loops.anim.pause": "Pause",
-  "loops.anim.step": "Step",
+  "loops.anim.step": "Next",
   "loops.anim.restart": "Restart",
   "loops.anim.speed": "Speed",
   "loops.anim.note": "One tick on the left is one pass of the Python loop body (one element); one tick on the right is one vectorised call over all elements. Ticks are not wall-clock time: the measured times are in the chart below.",

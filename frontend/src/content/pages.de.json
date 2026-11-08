@@ -279,7 +279,7 @@
   "loops.anim.tensorSteps": "vektorisierte Schritte: {n}",
   "loops.anim.play": "Abspielen",
   "loops.anim.pause": "Pause",
-  "loops.anim.step": "Schritt",
+  "loops.anim.step": "Weiter",
   "loops.anim.restart": "Neustart",
   "loops.anim.speed": "Tempo",
   "loops.anim.note": "Ein Takt links ist ein Durchlauf des Python-Schleifenrumpfs (ein Element); ein Takt rechts ist ein vektorisierter Aufruf über alle Elemente. Takte sind keine Rechenzeit: Die gemessenen Zeiten stehen im Diagramm darunter.",

@@ -279,7 +279,7 @@
   "loops.anim.tensorSteps": "向量化步數：{n}",
   "loops.anim.play": "播放",
   "loops.anim.pause": "暫停",
-  "loops.anim.step": "單步",
+  "loops.anim.step": "下一步",
   "loops.anim.restart": "重新開始",
   "loops.anim.speed": "速度",
   "loops.anim.note": "左邊每一拍是 Python 迴圈主體執行一次（一個元素）；右邊每一拍是對所有元素的一次向量化呼叫。拍數不是實際耗時：實測時間見下方圖表。",

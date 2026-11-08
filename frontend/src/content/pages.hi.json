@@ -279,7 +279,7 @@
   "loops.anim.tensorSteps": "वेक्टराइज़्ड स्टेप: {n}",
   "loops.anim.play": "चलाएँ",
   "loops.anim.pause": "रोकें",
-  "loops.anim.step": "एक कदम",
+  "loops.anim.step": "अगला",
   "loops.anim.restart": "फिर से शुरू",
   "loops.anim.speed": "गति",
   "loops.anim.note": "बाईं ओर एक टिक Python लूप बॉडी का एक चक्कर (एक एलिमेंट) है; दाईं ओर एक टिक सभी एलिमेंट्स पर एक वेक्टराइज़्ड कॉल है। टिक असली समय नहीं हैं: मापे गए समय नीचे के चार्ट में हैं।",

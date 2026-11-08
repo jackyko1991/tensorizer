@@ -279,7 +279,7 @@
   "loops.anim.tensorSteps": "pasos vectorizados: {n}",
   "loops.anim.play": "Reproducir",
   "loops.anim.pause": "Pausa",
-  "loops.anim.step": "Paso",
+  "loops.anim.step": "Siguiente",
   "loops.anim.restart": "Reiniciar",
   "loops.anim.speed": "Velocidad",
   "loops.anim.note": "Un tic a la izquierda es una pasada del cuerpo del bucle de Python (un elemento); un tic a la derecha es una llamada vectorizada sobre todos los elementos. Los tics no son tiempo real: los tiempos medidos están en el gráfico de abajo.",
