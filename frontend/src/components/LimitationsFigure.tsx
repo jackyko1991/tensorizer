@@ -49,12 +49,12 @@ export default function LimitationsFigure({ kind, l }: { kind: string; l: number
         {label(375,177,l ? "相位示意：轉兩圈復原" : "Phase schematic: two turns")}
       </>}
       {kind === "connections" && <>
-        <circle cx="165" cy="105" r="72" fill="none" stroke="#c4b5fd" strokeWidth="2" strokeDasharray="5 4"/>
-        <circle cx="165" cy="105" r="29" fill="#ddd6fe"/>
+        <circle cx="165" cy="105" r="72" fill="none" stroke="#93c5fd" strokeWidth="2" strokeDasharray="5 4"/>
+        <circle cx="165" cy="105" r="29" fill="#dbeafe"/>
         {label(165,109,l ? "磁通" : "Flux")}
         <circle cx={165+72*Math.cos(theta)} cy={105-72*Math.sin(theta)} r="7" fill="#0f766e"/>
-        <circle cx="380" cy="105" r="43" fill="white" stroke="#c4b5fd"/>
-        <Arrow x1={380} y1={105} x2={380+35*Math.cos(flux.phaseRadians)} y2={105-35*Math.sin(flux.phaseRadians)} color="#7c3aed" w={3} head={9}/>
+        <circle cx="380" cy="105" r="43" fill="white" stroke="#93c5fd"/>
+        <Arrow x1={380} y1={105} x2={380+35*Math.cos(flux.phaseRadians)} y2={105-35*Math.sin(flux.phaseRadians)} color="#2563eb" w={3} head={9}/>
         {label(380,177,l ? "累積相位" : "Accumulated phase")}
         {label(165,205,l ? "電子繞過磁通區" : "Electron around excluded flux")}
       </>}
@@ -89,8 +89,8 @@ export default function LimitationsFigure({ kind, l }: { kind: string; l: number
       </>}
     </svg>
     {kind === "connections" && <div className="mb-4 grid gap-3 text-center text-xs sm:grid-cols-2">
-      <div className="rounded-lg border border-violet-100 bg-white px-3 py-2"><p className="mb-1 text-gray-500">{l?"固定磁通":"Fixed magnetic flux"}</p><Tex tex={String.raw`\Phi\simeq${(flux.fluxWebers/1e-15).toFixed(2)}\times10^{-15}\,\mathrm{Wb}`}/></div>
-      <div className="rounded-lg border border-violet-100 bg-white px-3 py-2"><p className="mb-1 text-gray-500">{l?"電子累積相位":"Electron phase"}</p><Tex tex={String.raw`\Delta\varphi=${flux.phaseDegrees.toFixed(1)}^\circ`}/></div>
+      <div className="rounded-lg border border-blue-100 bg-white px-3 py-2"><p className="mb-1 text-gray-500">{l?"固定磁通":"Fixed magnetic flux"}</p><Tex tex={String.raw`\Phi\simeq${(flux.fluxWebers/1e-15).toFixed(2)}\times10^{-15}\,\mathrm{Wb}`}/></div>
+      <div className="rounded-lg border border-blue-100 bg-white px-3 py-2"><p className="mb-1 text-gray-500">{l?"電子累積相位":"Electron phase"}</p><Tex tex={String.raw`\Delta\varphi=${flux.phaseDegrees.toFixed(1)}^\circ`}/></div>
     </div>}
     {kind === "topology" && <div className="mt-2 space-y-3">
       <label className="flex items-center gap-3 text-xs text-blue-900">{l?"把圈縮小":"Shrink the loops"}<input type="range" min="0" max="100" value={angle} onChange={e=>{setPlaying(false);setAngle(Number(e.target.value));}} aria-label={l?"把圈縮小":"Shrink the loops"} className="min-w-0 flex-1 accent-blue-600"/></label>
@@ -100,7 +100,7 @@ export default function LimitationsFigure({ kind, l }: { kind: string; l: number
       <label className="mt-2 flex items-center gap-3 text-xs text-blue-900">{l ? "角度" : "Angle"}: {angle}°
         <input className="min-w-0 flex-1 accent-blue-600" aria-label={l ? "圖解角度" : "Diagram angle"} type="range" min="0" max={kind === 'spinors' || kind === 'connections' ? 720 : kind === 'bridge' ? 180 : 360} value={angle} onChange={e=>{setPlaying(false);setAngle(Number(e.target.value));}}/>
       </label>
-      <div className="mt-3 flex flex-wrap gap-2">{kind==="connections"&&<button type="button" className="rounded border border-violet-200 bg-white px-3 py-1 text-xs text-violet-800" onClick={()=>{if(angle>=720)setAngle(0);setPlaying(p=>!p);}}>{playing?(l?"暫停":"Pause"):(l?"播放動畫":"Play animation")}</button>}{(kind === 'spinors' ? [0,360,720] : kind === 'connections' ? [0,90,360,720] : kind === 'bridge' ? [0,90,180] : [0,90,180,360]).map(a=><button type="button" key={a} onClick={()=>{setPlaying(false);setAngle(a);}} className="rounded border border-blue-200 bg-white px-3 py-1 text-xs text-blue-800">{a}°</button>)}</div>
+      <div className="mt-3 flex flex-wrap gap-2">{kind==="connections"&&<button type="button" className="rounded border border-blue-200 bg-white px-3 py-1 text-xs text-blue-800" onClick={()=>{if(angle>=720)setAngle(0);setPlaying(p=>!p);}}>{playing?(l?"暫停":"Pause"):(l?"播放動畫":"Play animation")}</button>}{(kind === 'spinors' ? [0,360,720] : kind === 'connections' ? [0,90,360,720] : kind === 'bridge' ? [0,90,180] : [0,90,180,360]).map(a=><button type="button" key={a} onClick={()=>{setPlaying(false);setAngle(a);}} className="rounded border border-blue-200 bg-white px-3 py-1 text-xs text-blue-800">{a}°</button>)}</div>
     </>}
     <figcaption className="mt-3 text-xs leading-relaxed text-gray-600">{captions[kind]?.[l]}</figcaption>
   </figure>;
