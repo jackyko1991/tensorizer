@@ -43,7 +43,7 @@ export default function PageToc({ items, scrollRoot }: { items: TocItem[]; scrol
   }, [items.map((it) => it.id).join(), scrollRoot]);
 
   return (
-    <nav aria-label={t("toc")} className="sticky top-6 hidden w-56 shrink-0 self-start lg:block">
+    <nav aria-label={t("toc")} className={`sticky hidden w-56 shrink-0 self-start lg:block ${scrollRoot === "concept-scroll" ? "top-24" : "top-6"}`}>
       <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-gray-500">{t("toc")}</p>
       <ol className="space-y-0.5 border-l border-gray-200 text-sm">
         {items.map((it) => (

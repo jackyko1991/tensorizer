@@ -55,7 +55,8 @@ export default function ConceptPage({
   const R = (key: PageKey) => <RichText text={T(key)} />;
 
   return (
-    <div id="concept-scroll" className="h-full scroll-smooth bg-gray-50/60 xl:overflow-y-auto">
+    <div id="concept-scroll" className="h-full scroll-pt-16 scroll-smooth bg-gray-50/60 xl:overflow-y-auto">
+      <div className="sticky top-0 z-30 bg-gray-50" data-testid="concept-tabs-sticky">
       <div className="mx-auto max-w-6xl px-5 pt-6">
         <div
           className="flex gap-1 overflow-x-auto overflow-y-hidden border-b border-gray-200 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -76,6 +77,7 @@ export default function ConceptPage({
             </button>
           ))}
         </div>
+      </div>
       </div>
       {tab === "limitations" ? (
         <div className="pt-6"><LimitationsConcept /></div>
