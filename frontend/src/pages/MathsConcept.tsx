@@ -237,8 +237,8 @@ const EQUATION_TAB_LABELS: Partial<Record<MathsCase, string>> = {
 
 export function EqCards({ items, title }: { items: { tex: string; code: string; anim: MathsCase }[]; title: string }) {
   const [selected, setSelected] = useState<number | null>(() => {
-    const innerProduct = items.findIndex(item => item.anim === "eqDot");
-    return innerProduct < 0 ? null : innerProduct;
+    const firstExample = items.findIndex(item => item.anim === "eqDot" || item.anim === "eqLoop");
+    return firstExample < 0 ? null : firstExample;
   });
   const uid = useId().replaceAll(":", "");
   const T = usePageText();
