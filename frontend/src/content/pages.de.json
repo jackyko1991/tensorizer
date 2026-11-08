@@ -633,7 +633,7 @@
   "maths.recap.mis1": "**„Ein Tensor ist nur ein mehrdimensionales Array.“** Im Code ja. In der Physik ist der Tensor das Objekt hinter dem Array, und das Array sind seine Komponenten in einem Koordinatensystem. Deshalb ist die mechanische Spannung ein Tensor, eine beliebige Zahlentabelle aber nicht.",
   "maths.recap.mis2": "**„Rang heißt Matrixrang.“** Zwei verschiedene Dinge teilen sich das Wort: Die Stufe (Ordnung, englisch rank) eines Tensors zählt seine Indizes; der Rang einer Matrix zählt ihre unabhängigen Zeilen. Eine $1000 \\times 1000$-Matrix hat immer Tensorstufe 2, ihr Matrixrang kann aber 1 sein.",
   "maths.recap.mis5": "**„Obere und untere Indizes sind nur Schreibweise.“** Im gekrümmten Raum oder bei schrägen Achsen transformieren sie sich verschieden, und man braucht die Metrik, um das eine in das andere umzuwandeln; bei senkrechten Einheitsachsen im flachen Raum fallen sie zusammen, und das ist der einzige Fall, mit dem Array-Code zu tun hat.",
-  "maths.recap.test": "**Der Feynman-Test.** Wenn du das Penrose-Diagramm für $\\operatorname{tr}(ABC)$ zeichnen, die summierten und verbleibenden Indizes benennen und den passenden `einsum`-Ausdruck schreiben kannst, hast du den Kern dieser Seite verstanden.",
+  "maths.recap.test": "**Der Feynman-Test.** Wenn du Tensorordnung und Matrixrang unterscheiden, obere und untere Indizes erklären und dieselbe Kontraktion als `einsum` und als Penrose-Diagramm darstellen kannst, hast du den Kern dieser Seite verstanden.",
   "maths.anim.title": "Animation",
   "maths.anim.summed": "summiert",
   "maths.anim.free": "frei",

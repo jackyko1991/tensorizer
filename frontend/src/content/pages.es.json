@@ -633,7 +633,7 @@
   "maths.recap.mis1": "**«Un tensor no es más que un arreglo multidimensional.»** En programación, sí. En física, el tensor es el objeto que hay detrás del arreglo, y el arreglo son sus componentes en un sistema de coordenadas. Por eso la tensión mecánica es un tensor y una tabla de números cualquiera no lo es.",
   "maths.recap.mis2": "**«Rango significa rango de una matriz.»** Dos cosas distintas comparten la palabra: el rango (orden) de un tensor cuenta sus índices; el rango de una matriz cuenta sus filas independientes. Una matriz $1000 \\times 1000$ siempre tiene rango tensorial 2, pero su rango matricial puede ser 1.",
   "maths.recap.mis5": "**«Los índices arriba y abajo son solo notación.»** En un espacio curvo o con ejes oblicuos se transforman de forma distinta y hace falta la métrica para pasar de uno a otro; con ejes unitarios perpendiculares en un espacio plano coinciden, el único caso que trata el código con arreglos.",
-  "maths.recap.test": "**La prueba de Feynman.** Si puedes dibujar el diagrama de Penrose de $\\operatorname{tr}(ABC)$, identificar qué índices se suman y cuáles quedan, y escribir la cadena `einsum` correspondiente, has entendido lo esencial de esta página.",
+  "maths.recap.test": "**La prueba de Feynman.** Si puedes distinguir el orden de un tensor del rango de una matriz, explicar los índices superiores e inferiores y expresar la misma contracción con `einsum` y un diagrama de Penrose, has entendido lo esencial de esta página.",
   "maths.anim.title": "Animación",
   "maths.anim.summed": "sumado",
   "maths.anim.free": "libre",

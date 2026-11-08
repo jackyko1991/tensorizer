@@ -633,7 +633,7 @@
   "maths.recap.mis1": "**\"A tensor is just a multidimensional array.\"** In code, yes. In physics the tensor is the object behind the array, and the array is its components in one coordinate system. That is why stress is a tensor and an arbitrary table of numbers is not.",
   "maths.recap.mis2": "**\"Rank means matrix rank.\"** Two different things share the word: the rank (order) of a tensor counts its indices; the rank of a matrix counts its independent rows. A $1000 \\times 1000$ matrix always has tensor rank 2, but its matrix rank can be 1.",
   "maths.recap.mis5": "**\"Upper and lower indices are only notation.\"** In curved space or with slanted axes they transform differently and the metric is needed to turn one into the other; with perpendicular unit axes in flat space they coincide, the only case array code deals with.",
-  "maths.recap.test": "**The Feynman test.** If you can draw the Penrose diagram for $\\operatorname{tr}(ABC)$, identify which indices are summed and which remain, and write the matching `einsum` string, you have understood the core of this page.",
+  "maths.recap.test": "**The Feynman test.** If you can distinguish tensor order from matrix rank, explain upper versus lower indices, and express the same contraction with `einsum` and a Penrose diagram, you have understood the core of this page.",
   "maths.anim.title": "Animation",
   "maths.anim.summed": "summed",
   "maths.anim.free": "free",

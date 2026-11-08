@@ -633,7 +633,7 @@
   "maths.recap.mis1": "**« Un tenseur n'est qu'un tableau multidimensionnel. »** En programmation, oui. En physique, le tenseur est l'objet derrière le tableau, et le tableau en est les composantes dans un système de coordonnées. C'est pourquoi la contrainte mécanique est un tenseur alors qu'un tableau de nombres quelconque ne l'est pas.",
   "maths.recap.mis2": "**« Le rang, c'est le rang d'une matrice. »** Deux choses différentes partagent ce mot : le rang (ordre) d'un tenseur compte ses indices ; le rang d'une matrice compte ses lignes indépendantes. Une matrice $1000 \\times 1000$ est toujours un tenseur de rang 2, mais son rang matriciel peut valoir 1.",
   "maths.recap.mis5": "**« Indices en haut et en bas, ce n'est que de la notation. »** En espace courbe ou avec des axes obliques, ils se transforment différemment et il faut la métrique pour passer de l'un à l'autre ; avec des axes unitaires perpendiculaires en espace plat, ils coïncident, le seul cas que traite le code sur tableaux.",
-  "maths.recap.test": "**Le test de Feynman.** Si vous pouvez dessiner le diagramme de Penrose de $\\operatorname{tr}(ABC)$, identifier les indices sommés et ceux qui restent, puis écrire la chaîne `einsum` correspondante, vous avez compris l’essentiel de cette page.",
+  "maths.recap.test": "**Le test de Feynman.** Si vous pouvez distinguer l’ordre d’un tenseur du rang d’une matrice, expliquer les indices supérieurs et inférieurs et représenter une même contraction avec `einsum` et un diagramme de Penrose, vous avez compris l’essentiel de cette page.",
   "maths.anim.title": "Animation",
   "maths.anim.summed": "sommé",
   "maths.anim.free": "libre",
