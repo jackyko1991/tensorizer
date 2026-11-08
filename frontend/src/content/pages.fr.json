@@ -628,14 +628,12 @@
   "maths.roof.table.intensity": "Intensité (FLOP/octet)",
   "maths.roof.table.bound": "Sur le CPU",
   "maths.recap.title": "Récapitulatif et idées reçues",
-  "maths.recap.kid": "**Expliquez-le à un enfant de 12 ans.** Un tenseur est une boîte de nombres aux côtés étiquetés. Multiplier des tenseurs, c'est aligner un côté d'une boîte avec un côté d'une autre, multiplier les nombres qui se rencontrent et les additionner. Penrose dessinait les boîtes comme des taches avec des ficelles : nouez deux ficelles et vous avez fait cette multiplication-addition. L'ordre dans lequel on noue les ficelles peut rendre le travail dix fois plus court. Et un ordinateur est un chef avec une camionnette de livraison lente : certaines tâches laissent le chef attendre les ingrédients, d'autres l'occupent pleinement, et le roofline vous dit lesquelles.",
+  "maths.recap.kid": "**Expliquez-le à un enfant de 12 ans.** Un tenseur est une boîte de nombres aux côtés étiquetés. Multiplier des tenseurs, c'est aligner un côté d'une boîte avec un côté d'une autre, multiplier les nombres qui se rencontrent et les additionner. Penrose dessinait les boîtes comme des taches avec des ficelles : nouez deux ficelles et vous avez fait cette multiplication-addition.",
   "maths.recap.mis": "Idées reçues",
   "maths.recap.mis1": "**« Un tenseur n'est qu'un tableau multidimensionnel. »** En programmation, oui. En physique, le tenseur est l'objet derrière le tableau, et le tableau en est les composantes dans un système de coordonnées. C'est pourquoi la contrainte mécanique est un tenseur alors qu'un tableau de nombres quelconque ne l'est pas.",
   "maths.recap.mis2": "**« Le rang, c'est le rang d'une matrice. »** Deux choses différentes partagent ce mot : le rang (ordre) d'un tenseur compte ses indices ; le rang d'une matrice compte ses lignes indépendantes. Une matrice $1000 \\times 1000$ est toujours un tenseur de rang 2, mais son rang matriciel peut valoir 1.",
-  "maths.recap.mis3": "**« L'ordre des multiplications n'a pas d'importance. »** Pour le résultat (associativité), non ; pour le coût, énormément, comme le montre la section 4.",
-  "maths.recap.mis4": "**« Un GPU plus rapide accélère tous les noyaux. »** Seulement ceux limités par le calcul. Un noyau limité par la mémoire tourne à la vitesse de la mémoire ; plus de FLOP/s n'y change rien, alors que la fusion ou une meilleure réutilisation des données le peuvent.",
   "maths.recap.mis5": "**« Indices en haut et en bas, ce n'est que de la notation. »** En espace courbe ou avec des axes obliques, ils se transforment différemment et il faut la métrique pour passer de l'un à l'autre ; avec des axes unitaires perpendiculaires en espace plat, ils coïncident, le seul cas que traite le code sur tableaux.",
-  "maths.recap.test": "**Le test de Feynman.** Si vous savez dessiner l'image de Penrose de $\\operatorname{tr}(ABC)$, écrire sa chaîne `einsum`, dire quel ordre de contraction est le moins cher pour des formes données, et deviner s'il sera limité par la mémoire ou par le calcul, vous avez compris cette page.",
+  "maths.recap.test": "**Le test de Feynman.** Si vous pouvez dessiner le diagramme de Penrose de $\\operatorname{tr}(ABC)$, identifier les indices sommés et ceux qui restent, puis écrire la chaîne `einsum` correspondante, vous avez compris l’essentiel de cette page.",
   "maths.anim.title": "Animation",
   "maths.anim.summed": "sommé",
   "maths.anim.free": "libre",
@@ -1456,5 +1454,8 @@
   "limitations.tab": "Limites des tenseurs",
   "maths.tensor.views": "Comprendre un tenseur",
   "maths.tensor.arrayTab": "Tableaux et indices",
-  "maths.tensor.geometryTab": "Éléments géométriques"
+  "maths.tensor.geometryTab": "Éléments géométriques",
+  "maths.topo.takeaway": "L'ordre dans lequel on noue les ficelles peut rendre le travail dix fois plus court.",
+  "maths.topo.misconception": "**« Changer le regroupement ne change rien. »** En conservant l’ordre des matrices, le regroupement préserve le résultat mathématique exact, mais la taille des intermédiaires et le coût du calcul peuvent beaucoup changer.",
+  "maths.roof.misconception": "**« Un GPU plus rapide accélère tous les noyaux. »** Seulement ceux limités par le calcul. Un noyau limité par la mémoire tourne à la vitesse de la mémoire ; plus de FLOP/s n'y change rien, alors que la fusion ou une meilleure réutilisation des données le peuvent."
 }

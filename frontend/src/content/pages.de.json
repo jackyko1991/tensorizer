@@ -628,14 +628,12 @@
   "maths.roof.table.intensity": "Intensität (FLOP/Byte)",
   "maths.roof.table.bound": "Auf der CPU",
   "maths.recap.title": "Zusammenfassung und häufige Irrtümer",
-  "maths.recap.kid": "**Erklär es einer Zwölfjährigen.** Ein Tensor ist eine Kiste voller Zahlen mit beschrifteten Seiten. Tensoren multiplizieren heißt, eine Seite einer Kiste an eine Seite einer anderen zu legen, die Zahlen, die sich treffen, zu multiplizieren und aufzuaddieren. Penrose zeichnete die Kisten als Kleckse mit Schnüren: Knote zwei Schnüre zusammen, und du hast dieses Multiplizieren-und-Addieren erledigt. Welche Schnüre du zuerst verknotest, kann die Arbeit zehnmal kürzer machen. Und ein Computer ist ein Koch mit einem langsamen Lieferwagen: Manche Aufgaben lassen den Koch auf Zutaten warten, andere halten ihn beschäftigt, und die Roofline sagt dir, welche welche sind.",
+  "maths.recap.kid": "**Erklär es einer Zwölfjährigen.** Ein Tensor ist eine Kiste voller Zahlen mit beschrifteten Seiten. Tensoren multiplizieren heißt, eine Seite einer Kiste an eine Seite einer anderen zu legen, die Zahlen, die sich treffen, zu multiplizieren und aufzuaddieren. Penrose zeichnete die Kisten als Kleckse mit Schnüren: Knote zwei Schnüre zusammen, und du hast dieses Multiplizieren-und-Addieren erledigt.",
   "maths.recap.mis": "Häufige Irrtümer",
   "maths.recap.mis1": "**„Ein Tensor ist nur ein mehrdimensionales Array.“** Im Code ja. In der Physik ist der Tensor das Objekt hinter dem Array, und das Array sind seine Komponenten in einem Koordinatensystem. Deshalb ist die mechanische Spannung ein Tensor, eine beliebige Zahlentabelle aber nicht.",
   "maths.recap.mis2": "**„Rang heißt Matrixrang.“** Zwei verschiedene Dinge teilen sich das Wort: Die Stufe (Ordnung, englisch rank) eines Tensors zählt seine Indizes; der Rang einer Matrix zählt ihre unabhängigen Zeilen. Eine $1000 \\times 1000$-Matrix hat immer Tensorstufe 2, ihr Matrixrang kann aber 1 sein.",
-  "maths.recap.mis3": "**„Die Reihenfolge der Multiplikation spielt keine Rolle.“** Für das Ergebnis (Assoziativität) nicht; für die Kosten enorm, wie Abschnitt 4 zeigt.",
-  "maths.recap.mis4": "**„Eine schnellere GPU macht jeden Kernel schneller.“** Nur die rechengebundenen. Ein speichergebundener Kernel läuft mit der Geschwindigkeit des Speichers; mehr FLOP/s helfen ihm nicht, Fusion oder bessere Wiederverwendung der Daten dagegen schon.",
   "maths.recap.mis5": "**„Obere und untere Indizes sind nur Schreibweise.“** Im gekrümmten Raum oder bei schrägen Achsen transformieren sie sich verschieden, und man braucht die Metrik, um das eine in das andere umzuwandeln; bei senkrechten Einheitsachsen im flachen Raum fallen sie zusammen, und das ist der einzige Fall, mit dem Array-Code zu tun hat.",
-  "maths.recap.test": "**Der Feynman-Test.** Wenn du das Penrose-Bild von $\\operatorname{tr}(ABC)$ zeichnen, seinen `einsum`-String schreiben, sagen kannst, welche Kontraktionsreihenfolge für gegebene Formen am günstigsten ist, und abschätzen kannst, ob es speicher- oder rechengebunden sein wird, dann hast du diese Seite verstanden.",
+  "maths.recap.test": "**Der Feynman-Test.** Wenn du das Penrose-Diagramm für $\\operatorname{tr}(ABC)$ zeichnen, die summierten und verbleibenden Indizes benennen und den passenden `einsum`-Ausdruck schreiben kannst, hast du den Kern dieser Seite verstanden.",
   "maths.anim.title": "Animation",
   "maths.anim.summed": "summiert",
   "maths.anim.free": "frei",
@@ -1456,5 +1454,8 @@
   "limitations.tab": "Grenzen von Tensoren",
   "maths.tensor.views": "Tensoren verstehen",
   "maths.tensor.arrayTab": "Arrays und Einträge",
-  "maths.tensor.geometryTab": "Geometrische Bausteine"
+  "maths.tensor.geometryTab": "Geometrische Bausteine",
+  "maths.topo.takeaway": "Welche Schnüre du zuerst verknotest, kann die Arbeit zehnmal kürzer machen.",
+  "maths.topo.misconception": "**„Die Klammerung macht keinen Unterschied.“** Bei unveränderter Reihenfolge der Matrizen bleibt das exakte mathematische Ergebnis gleich; die Größe der Zwischenergebnisse und der Rechenaufwand können sich jedoch stark ändern.",
+  "maths.roof.misconception": "**„Eine schnellere GPU macht jeden Kernel schneller.“** Nur die rechengebundenen. Ein speichergebundener Kernel läuft mit der Geschwindigkeit des Speichers; mehr FLOP/s helfen ihm nicht, Fusion oder bessere Wiederverwendung der Daten dagegen schon."
 }

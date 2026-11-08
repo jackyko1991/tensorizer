@@ -663,7 +663,7 @@ function Recap() {
       </p>
       <h3 className="font-semibold text-gray-900">{T("maths.recap.mis")}</h3>
       <ul className="list-disc space-y-2 pl-5">
-        {[1, 2, 3, 4, 5].map((i) => (
+        {[1, 2, 5].map((i) => (
           <li key={i}>
             <RichText text={T(`maths.recap.mis${i}` as PageKey)} />
           </li>
@@ -674,7 +674,6 @@ function Recap() {
       ))}
       <p className="rounded-lg border border-blue-100 bg-blue-50/60 px-4 py-2.5 text-blue-900">
         <RichText text={T("maths.recap.test")} />
-        <a href="#/concept/dataflow/topo" className="ml-2 text-blue-700 underline">{T("maths.topo.title")} →</a>
       </p>
     </>
   );

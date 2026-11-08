@@ -1,3 +1,4 @@
+import { RichText } from "../components/Tex";
 import MathsAnim from "../components/MathsAnim";
 import AnalogyPicture from "../components/AnalogyPicture";
 import { usePageText, type PageKey } from "../content/pages";
@@ -24,6 +25,8 @@ export default function TopologyCard({ number }: { number: number }) {
     {animsAfter("topo",f).map(id=><MathsAnim key={id} id={id}/>)}
     {f==="plain"&&<DagFigure/>}{f==="example"&&<ChainTable/>}
    </div>)}
+   <p className="rounded-lg border-l-4 border-amber-300 bg-amber-50 px-4 py-3 text-amber-950"><RichText text={T("maths.topo.takeaway")}/></p>
+   <aside className="rounded-lg border border-blue-100 bg-blue-50/50 p-4"><h3 className="mb-2 font-semibold text-gray-900">{T("maths.recap.mis")}</h3><p><RichText text={T("maths.topo.misconception")}/></p></aside>
    <EqCards items={EQUATIONS} title={T("maths.label.code")}/>
    <Links items={REFERENCES} title={T("maths.label.links")}/>
   </div>

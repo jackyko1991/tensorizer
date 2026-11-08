@@ -34,6 +34,7 @@ export default function RooflineCard({ number }: { number: number }) {
         {f==="example" && <><p><RichText text={T("maths.roof.fusion")}/></p>
           {animsAfter("roof","fusion").map(id=><MathsAnim key={id} id={id}/>)}</>}
       </div>)}
+      <aside className="rounded-lg border border-blue-100 bg-blue-50/50 p-4"><h3 className="mb-2 font-semibold text-gray-900">{T("maths.recap.mis")}</h3><p><RichText text={T("maths.roof.misconception")}/></p></aside>
       <EqCards items={EQUATIONS} title={T("maths.label.code")}/>
       <Links items={REFERENCES} title={T("maths.label.links")}/>
     </div>

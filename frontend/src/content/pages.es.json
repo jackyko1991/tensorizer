@@ -628,14 +628,12 @@
   "maths.roof.table.intensity": "Intensidad (FLOP/byte)",
   "maths.roof.table.bound": "En la CPU",
   "maths.recap.title": "Resumen y errores frecuentes",
-  "maths.recap.kid": "**Explícaselo a alguien de 12 años.** Un tensor es una caja de números con los lados etiquetados. Multiplicar tensores es poner un lado de una caja junto a un lado de otra, multiplicar los números que se encuentran y sumarlos. Penrose dibujaba las cajas como manchas con cuerdas: ata dos cuerdas y habrás hecho esa multiplicación con suma. Qué cuerdas atas primero puede hacer el trabajo diez veces más corto. Y un ordenador es un chef con una furgoneta de reparto lenta: algunos trabajos dejan al chef esperando ingredientes, otros lo mantienen ocupado, y el roofline te dice cuál es cuál.",
+  "maths.recap.kid": "**Explícaselo a alguien de 12 años.** Un tensor es una caja de números con los lados etiquetados. Multiplicar tensores es poner un lado de una caja junto a un lado de otra, multiplicar los números que se encuentran y sumarlos. Penrose dibujaba las cajas como manchas con cuerdas: ata dos cuerdas y habrás hecho esa multiplicación con suma.",
   "maths.recap.mis": "Errores frecuentes",
   "maths.recap.mis1": "**«Un tensor no es más que un arreglo multidimensional.»** En programación, sí. En física, el tensor es el objeto que hay detrás del arreglo, y el arreglo son sus componentes en un sistema de coordenadas. Por eso la tensión mecánica es un tensor y una tabla de números cualquiera no lo es.",
   "maths.recap.mis2": "**«Rango significa rango de una matriz.»** Dos cosas distintas comparten la palabra: el rango (orden) de un tensor cuenta sus índices; el rango de una matriz cuenta sus filas independientes. Una matriz $1000 \\times 1000$ siempre tiene rango tensorial 2, pero su rango matricial puede ser 1.",
-  "maths.recap.mis3": "**«El orden de las multiplicaciones no importa.»** Para el resultado (asociatividad), no; para el coste, muchísimo, como muestra la sección 4.",
-  "maths.recap.mis4": "**«Una GPU más rápida acelera todos los kernels.»** Solo los limitados por cómputo. Un kernel limitado por memoria va a la velocidad de la memoria; más FLOP/s no le ayudan, mientras que la fusión o una mejor reutilización de los datos sí.",
   "maths.recap.mis5": "**«Los índices arriba y abajo son solo notación.»** En un espacio curvo o con ejes oblicuos se transforman de forma distinta y hace falta la métrica para pasar de uno a otro; con ejes unitarios perpendiculares en un espacio plano coinciden, el único caso que trata el código con arreglos.",
-  "maths.recap.test": "**La prueba de Feynman.** Si sabes dibujar el diagrama de Penrose de $\\operatorname{tr}(ABC)$, escribir su cadena `einsum`, decir qué orden de contracción es el más barato para unas formas dadas y adivinar si estará limitado por memoria o por cómputo, has entendido esta página.",
+  "maths.recap.test": "**La prueba de Feynman.** Si puedes dibujar el diagrama de Penrose de $\\operatorname{tr}(ABC)$, identificar qué índices se suman y cuáles quedan, y escribir la cadena `einsum` correspondiente, has entendido lo esencial de esta página.",
   "maths.anim.title": "Animación",
   "maths.anim.summed": "sumado",
   "maths.anim.free": "libre",
@@ -1456,5 +1454,8 @@
   "limitations.tab": "Límites de los tensores",
   "maths.tensor.views": "Comprender un tensor",
   "maths.tensor.arrayTab": "Arrays e índices",
-  "maths.tensor.geometryTab": "Piezas geométricas"
+  "maths.tensor.geometryTab": "Piezas geométricas",
+  "maths.topo.takeaway": "Qué cuerdas atas primero puede hacer el trabajo diez veces más corto.",
+  "maths.topo.misconception": "**«Cambiar la agrupación no cambia nada».** Manteniendo el orden de las matrices, cambiar los paréntesis conserva el resultado matemático exacto, pero puede alterar mucho los tamaños intermedios y el coste del cálculo.",
+  "maths.roof.misconception": "**«Una GPU más rápida acelera todos los kernels.»** Solo los limitados por cómputo. Un kernel limitado por memoria va a la velocidad de la memoria; más FLOP/s no le ayudan, mientras que la fusión o una mejor reutilización de los datos sí."
 }
