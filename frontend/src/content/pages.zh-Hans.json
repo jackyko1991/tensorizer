@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "微芯片如何被发明、如今由谁制造，以及它为何成为全球争夺最激烈的技术。",
   "reading.book.pais.why": "公认最权威的爱因斯坦科学传记，作者是认识他的物理学家：完整写出他如何在格罗斯曼帮助下学会张量微积分、一步步艰难推出场方程，数学细节一应俱全。",
   "reading.book.witt.why": "黄仁勋与 Nvidia 的故事，从显卡到 CUDA，再到支撑现代 AI 的硬件。",
-  "reading.book.worlds.why": "ImageNet 创建者的回忆录，这个数据集在 2012 年掀起了深度学习热潮。"
+  "reading.book.worlds.why": "ImageNet 创建者的回忆录，这个数据集在 2012 年掀起了深度学习热潮。",
+  "feynman.ice.tabs": "冰水实验",
+  "feynman.ice.diagram": "静态图解",
+  "feynman.ice.video": "视频",
+  "feynman.ice.videoTitle": "费曼用冰水展示 O 型环的低温反应",
+  "feynman.ice.watch": "在 YouTube 观看",
+  "limitations.tab": "张量的适用范围与局限"
 }

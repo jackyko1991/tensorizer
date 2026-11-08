@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "f2954398a9c7",
   "reading.book.pais.why": "5e785aa25d55",
   "reading.book.witt.why": "5227ff8bf998",
-  "reading.book.worlds.why": "13abf74ec89b"
+  "reading.book.worlds.why": "13abf74ec89b",
+  "feynman.ice.tabs": "얼음물 실험",
+  "feynman.ice.diagram": "도해",
+  "feynman.ice.video": "동영상",
+  "feynman.ice.videoTitle": "파인만의 얼음물 O링 실험",
+  "feynman.ice.watch": "YouTube에서 보기",
+  "limitations.tab": "텐서의 적용 범위"
 }

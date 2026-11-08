@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "f2954398a9c7",
   "reading.book.pais.why": "5e785aa25d55",
   "reading.book.witt.why": "5227ff8bf998",
-  "reading.book.worlds.why": "13abf74ec89b"
+  "reading.book.worlds.why": "13abf74ec89b",
+  "feynman.ice.tabs": "Démonstration dans l’eau glacée",
+  "feynman.ice.diagram": "Schéma",
+  "feynman.ice.video": "Vidéo",
+  "feynman.ice.videoTitle": "Feynman : le joint torique dans l’eau glacée",
+  "feynman.ice.watch": "Voir sur YouTube",
+  "limitations.tab": "Limites des tenseurs"
 }

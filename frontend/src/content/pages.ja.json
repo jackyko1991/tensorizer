@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "マイクロチップはどのように発明され、今は誰が作っているのか。そしてなぜ世界で最も激しく争われる技術になったのか。",
   "reading.book.pais.why": "アインシュタインを知る物理学者による決定版の科学的伝記。グロスマンの助けでテンソル解析を学び、苦闘の末に場の方程式へたどり着くまでを、数学ごと丁寧に描く。",
   "reading.book.witt.why": "ジェンスン・フアンと Nvidia の物語。グラフィックスカードから CUDA、そして現代の AI を支えるハードウェアまで。",
-  "reading.book.worlds.why": "2012 年のディープラーニング・ブームの火付け役となったデータセット ImageNet の生みの親による回想録。"
+  "reading.book.worlds.why": "2012 年のディープラーニング・ブームの火付け役となったデータセット ImageNet の生みの親による回想録。",
+  "feynman.ice.tabs": "氷水の実験",
+  "feynman.ice.diagram": "図解",
+  "feynman.ice.video": "動画",
+  "feynman.ice.videoTitle": "氷水によるフェインマンのOリング実験",
+  "feynman.ice.watch": "YouTubeで見る",
+  "limitations.tab": "テンソルの適用範囲"
 }

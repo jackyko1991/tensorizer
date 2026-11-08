@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "f2954398a9c7",
   "reading.book.pais.why": "5e785aa25d55",
   "reading.book.witt.why": "5227ff8bf998",
-  "reading.book.worlds.why": "13abf74ec89b"
+  "reading.book.worlds.why": "13abf74ec89b",
+  "feynman.ice.tabs": "Demostración con agua helada",
+  "feynman.ice.diagram": "Diagrama",
+  "feynman.ice.video": "Vídeo",
+  "feynman.ice.videoTitle": "Feynman y la junta tórica en agua helada",
+  "feynman.ice.watch": "Ver en YouTube",
+  "limitations.tab": "Límites de los tensores"
 }

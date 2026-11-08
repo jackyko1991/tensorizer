@@ -12,6 +12,7 @@ import DataflowConcept from "./DataflowConcept";
 import MathsConcept from "./MathsConcept";
 import HistoryConcept from "./HistoryConcept";
 import FeynmanConcept from "./FeynmanConcept";
+import LimitationsConcept from "./LimitationsConcept";
 
 const PENDULUM = "mechanics/simple_pendulum";
 const STEPS = [0, 1, 2, 3, 4, 5, 6, 7] as const; // 0: tests first (TDD)
@@ -71,12 +72,14 @@ export default function ConceptPage({
                 tab === k ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-800"
               }`}
             >
-              {T(k === "laws" ? "flow.tab.law" : k === "maths" ? "maths.tab" : k === "history" ? "history.tab" : k === "feynman" ? "feynman.tab" : "flow.tab")}
+              {T(k === "laws" ? "flow.tab.law" : k === "maths" ? "maths.tab" : k === "limitations" ? "limitations.tab" : k === "history" ? "history.tab" : k === "feynman" ? "feynman.tab" : "flow.tab")}
             </button>
           ))}
         </div>
       </div>
-      {tab === "history" ? (
+      {tab === "limitations" ? (
+        <div className="pt-6"><LimitationsConcept /></div>
+      ) : tab === "history" ? (
         <HistoryConcept section={section} />
       ) : tab === "feynman" ? (
         <div className="pt-6">

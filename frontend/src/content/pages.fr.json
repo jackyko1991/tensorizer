@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "Comment la puce électronique a été inventée, qui la fabrique aujourd'hui, et pourquoi elle est devenue la technologie la plus disputée au monde.",
   "reading.book.pais.why": "La biographie scientifique de référence d'Einstein, par un physicien qui l'a connu : comment il apprend le calcul tensoriel avec Grossmann et arrache les équations du champ, mathématiques comprises.",
   "reading.book.witt.why": "L'histoire de Jensen Huang et de Nvidia, des cartes graphiques à CUDA et au matériel derrière l'IA moderne.",
-  "reading.book.worlds.why": "Les mémoires de la créatrice d'ImageNet, le jeu de données qui a lancé l'essor de l'apprentissage profond en 2012."
+  "reading.book.worlds.why": "Les mémoires de la créatrice d'ImageNet, le jeu de données qui a lancé l'essor de l'apprentissage profond en 2012.",
+  "feynman.ice.tabs": "Démonstration dans l’eau glacée",
+  "feynman.ice.diagram": "Schéma",
+  "feynman.ice.video": "Vidéo",
+  "feynman.ice.videoTitle": "Feynman : le joint torique dans l’eau glacée",
+  "feynman.ice.watch": "Voir sur YouTube",
+  "limitations.tab": "Limites des tenseurs"
 }

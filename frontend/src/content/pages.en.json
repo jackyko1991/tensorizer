@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "How the microchip was invented, who makes it today, and why it became the world's most contested technology.",
   "reading.book.pais.why": "The definitive scientific biography of Einstein, by a physicist who knew him: how he learned tensor calculus with Grossmann and fought his way to the field equations, with the mathematics in full.",
   "reading.book.witt.why": "The story of Jensen Huang and Nvidia, from graphics cards to CUDA and the hardware behind modern AI.",
-  "reading.book.worlds.why": "A memoir by the creator of ImageNet, the dataset that set off the deep learning boom in 2012."
+  "reading.book.worlds.why": "A memoir by the creator of ImageNet, the dataset that set off the deep learning boom in 2012.",
+  "feynman.ice.tabs": "Ice-water demonstration",
+  "feynman.ice.diagram": "Diagram",
+  "feynman.ice.video": "Video",
+  "feynman.ice.videoTitle": "Feynman demonstrates O-ring behaviour in ice water",
+  "feynman.ice.watch": "Watch on YouTube",
+  "limitations.tab": "Limits of tensors"
 }

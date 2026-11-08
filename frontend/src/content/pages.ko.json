@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "마이크로칩이 어떻게 발명되었고, 오늘날 누가 만들며, 왜 세계에서 가장 치열한 다툼의 대상이 된 기술인지.",
   "reading.book.pais.why": "아인슈타인을 알았던 물리학자가 쓴 가장 권위 있는 과학 전기: 그로스만의 도움으로 텐서 미적분을 배우고 힘겹게 장 방정식에 이르는 과정을 수학까지 모두 담았다.",
   "reading.book.witt.why": "젠슨 황과 Nvidia의 이야기: 그래픽 카드에서 CUDA, 그리고 현대 AI를 떠받치는 하드웨어까지.",
-  "reading.book.worlds.why": "2012년 딥러닝 붐을 일으킨 데이터셋 ImageNet을 만든 사람의 회고록."
+  "reading.book.worlds.why": "2012년 딥러닝 붐을 일으킨 데이터셋 ImageNet을 만든 사람의 회고록.",
+  "feynman.ice.tabs": "얼음물 실험",
+  "feynman.ice.diagram": "도해",
+  "feynman.ice.video": "동영상",
+  "feynman.ice.videoTitle": "파인만의 얼음물 O링 실험",
+  "feynman.ice.watch": "YouTube에서 보기",
+  "limitations.tab": "텐서의 적용 범위"
 }

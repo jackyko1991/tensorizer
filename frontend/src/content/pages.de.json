@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "Wie der Mikrochip erfunden wurde, wer ihn heute herstellt und warum er zur umkämpftesten Technologie der Welt wurde.",
   "reading.book.pais.why": "Die maßgebliche wissenschaftliche Einstein-Biografie, von einem Physiker, der ihn kannte: wie er mit Grossmann den Tensorkalkül lernte und sich zu den Feldgleichungen durchkämpfte, mit der ganzen Mathematik.",
   "reading.book.witt.why": "Die Geschichte von Jensen Huang und Nvidia, von Grafikkarten über CUDA bis zur Hardware hinter moderner KI.",
-  "reading.book.worlds.why": "Die Memoiren der Schöpferin von ImageNet, dem Datensatz, der 2012 den Deep-Learning-Boom auslöste."
+  "reading.book.worlds.why": "Die Memoiren der Schöpferin von ImageNet, dem Datensatz, der 2012 den Deep-Learning-Boom auslöste.",
+  "feynman.ice.tabs": "Eiswasser-Versuch",
+  "feynman.ice.diagram": "Diagramm",
+  "feynman.ice.video": "Video",
+  "feynman.ice.videoTitle": "Feynmans O-Ring-Versuch im Eiswasser",
+  "feynman.ice.watch": "Auf YouTube ansehen",
+  "limitations.tab": "Grenzen von Tensoren"
 }

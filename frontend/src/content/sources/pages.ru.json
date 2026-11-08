@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "f2954398a9c7",
   "reading.book.pais.why": "5e785aa25d55",
   "reading.book.witt.why": "5227ff8bf998",
-  "reading.book.worlds.why": "13abf74ec89b"
+  "reading.book.worlds.why": "13abf74ec89b",
+  "feynman.ice.tabs": "Опыт с ледяной водой",
+  "feynman.ice.diagram": "Схема",
+  "feynman.ice.video": "Видео",
+  "feynman.ice.videoTitle": "Опыт Фейнмана с уплотнительным кольцом",
+  "feynman.ice.watch": "Смотреть на YouTube",
+  "limitations.tab": "Границы тензоров"
 }

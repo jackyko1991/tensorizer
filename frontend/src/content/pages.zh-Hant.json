@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "微晶片如何被發明、如今由誰製造，以及它為何成為全球競爭最激烈的技術。",
   "reading.book.pais.why": "公認最權威的愛因斯坦科學傳記，作者是認識他的物理學家：完整寫出他如何在格羅斯曼幫助下學會張量微積分、一步步艱難推出場方程，數學細節一應俱全。",
   "reading.book.witt.why": "黃仁勳與 Nvidia 的故事，從顯示卡到 CUDA，再到支撐現代 AI 的硬體。",
-  "reading.book.worlds.why": "ImageNet 創建者的回憶錄，這個資料集在 2012 年掀起了深度學習熱潮。"
+  "reading.book.worlds.why": "ImageNet 創建者的回憶錄，這個資料集在 2012 年掀起了深度學習熱潮。",
+  "feynman.ice.tabs": "冰水實驗",
+  "feynman.ice.diagram": "靜態圖解",
+  "feynman.ice.video": "影片",
+  "feynman.ice.videoTitle": "費曼以冰水展示 O 型環的低溫反應",
+  "feynman.ice.watch": "在 YouTube 觀看",
+  "limitations.tab": "張量的適用範圍與限制"
 }

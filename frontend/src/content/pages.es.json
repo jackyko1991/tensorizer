@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "Cómo se inventó el microchip, quién lo fabrica hoy y por qué se convirtió en la tecnología más disputada del mundo.",
   "reading.book.pais.why": "La biografía científica de referencia de Einstein, escrita por un físico que lo conoció: cómo aprendió el cálculo tensorial con Grossmann y llegó a duras penas a las ecuaciones de campo, con toda la matemática.",
   "reading.book.witt.why": "La historia de Jensen Huang y Nvidia, de las tarjetas gráficas a CUDA y el hardware detrás de la IA moderna.",
-  "reading.book.worlds.why": "Las memorias de la creadora de ImageNet, el conjunto de datos que desató el auge del aprendizaje profundo en 2012."
+  "reading.book.worlds.why": "Las memorias de la creadora de ImageNet, el conjunto de datos que desató el auge del aprendizaje profundo en 2012.",
+  "feynman.ice.tabs": "Demostración con agua helada",
+  "feynman.ice.diagram": "Diagrama",
+  "feynman.ice.video": "Vídeo",
+  "feynman.ice.videoTitle": "Feynman y la junta tórica en agua helada",
+  "feynman.ice.watch": "Ver en YouTube",
+  "limitations.tab": "Límites de los tensores"
 }

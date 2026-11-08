@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "f2954398a9c7",
   "reading.book.pais.why": "5e785aa25d55",
   "reading.book.witt.why": "5227ff8bf998",
-  "reading.book.worlds.why": "13abf74ec89b"
+  "reading.book.worlds.why": "13abf74ec89b",
+  "feynman.ice.tabs": "氷水の実験",
+  "feynman.ice.diagram": "図解",
+  "feynman.ice.video": "動画",
+  "feynman.ice.videoTitle": "氷水によるフェインマンのOリング実験",
+  "feynman.ice.watch": "YouTubeで見る",
+  "limitations.tab": "テンソルの適用範囲"
 }

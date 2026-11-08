@@ -82,5 +82,5 @@ test("format round-trips through parse", () => {
 });
 
 test("the concept tabs in order (Further reading is a top-level page, #/reading)", () => {
-  assert.deepEqual([...PAGE_TABS.concept], ["laws", "feynman", "maths", "dataflow", "history"]);
+  assert.deepEqual([...PAGE_TABS.concept], ["laws", "feynman", "maths", "dataflow", "limitations", "history"]);
 });

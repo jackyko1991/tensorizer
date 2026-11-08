@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "f2954398a9c7",
   "reading.book.pais.why": "5e785aa25d55",
   "reading.book.witt.why": "5227ff8bf998",
-  "reading.book.worlds.why": "13abf74ec89b"
+  "reading.book.worlds.why": "13abf74ec89b",
+  "feynman.ice.tabs": "Eiswasser-Versuch",
+  "feynman.ice.diagram": "Diagramm",
+  "feynman.ice.video": "Video",
+  "feynman.ice.videoTitle": "Feynmans O-Ring-Versuch im Eiswasser",
+  "feynman.ice.watch": "Auf YouTube ansehen",
+  "limitations.tab": "Grenzen von Tensoren"
 }

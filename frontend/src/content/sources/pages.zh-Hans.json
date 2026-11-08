@@ -1433,5 +1433,11 @@
   "reading.book.chipwar.why": "f2954398a9c7",
   "reading.book.pais.why": "5e785aa25d55",
   "reading.book.witt.why": "5227ff8bf998",
-  "reading.book.worlds.why": "13abf74ec89b"
+  "reading.book.worlds.why": "13abf74ec89b",
+  "feynman.ice.tabs": "冰水实验",
+  "feynman.ice.diagram": "静态图解",
+  "feynman.ice.video": "视频",
+  "feynman.ice.videoTitle": "费曼用冰水展示 O 型环的低温反应",
+  "feynman.ice.watch": "在 YouTube 观看",
+  "limitations.tab": "张量的适用范围与局限"
 }

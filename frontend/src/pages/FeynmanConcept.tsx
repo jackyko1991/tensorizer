@@ -299,7 +299,7 @@ function LifeStory() {
               {e === "challenger" && (
                 <div className="mt-3 grid items-start gap-3 sm:grid-cols-[minmax(0,11rem)_1fr]">
                   <SmallPhoto photo={PHOTOS.ice} caption={T("feynman.fig.ice.caption")} alt={T("feynman.fig.ice.alt")} />
-                  <ORingFigure />
+                  <IceWaterTabs />
                 </div>
               )}
             </li>
@@ -307,6 +307,39 @@ function LifeStory() {
         </ol>
       </div>
     </>
+  );
+}
+
+function IceWaterTabs() {
+  const T = usePageText();
+  const [tab, setTab] = useState<"diagram" | "video">("diagram");
+  return (
+    <div className="min-w-0" data-testid="feynman-ice-tabs">
+      <div role="tablist" aria-label={T("feynman.ice.tabs")} className="mb-3 flex border-b border-gray-200">
+        {(["diagram", "video"] as const).map((id) => (
+          <button key={id} id={`ice-tab-${id}`} type="button" role="tab" aria-selected={tab === id}
+            aria-controls={`ice-panel-${id}`} tabIndex={tab === id ? 0 : -1}
+            onClick={() => setTab(id)} onKeyDown={(e) => {
+              if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) {
+                e.preventDefault();
+                const next = e.key === "Home" ? "diagram" : e.key === "End" ? "video" : tab === "diagram" ? "video" : "diagram";
+                setTab(next); document.getElementById(`ice-tab-${next}`)?.focus();
+              }
+            }}
+            className={`border-b-2 px-4 py-2 text-sm font-medium ${tab === id ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500"}`}>
+            {T(id === "diagram" ? "feynman.ice.diagram" : "feynman.ice.video")}
+          </button>
+        ))}
+      </div>
+      <div id={`ice-panel-${tab}`} role="tabpanel" aria-labelledby={`ice-tab-${tab}`} tabIndex={0}>
+        {tab === "diagram" ? <ORingFigure /> : <>
+          <iframe className="aspect-video w-full rounded-lg border-0" src="https://www.youtube-nocookie.com/embed/raMmRKGkGD4"
+            title={T("feynman.ice.videoTitle")} loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin" />
+          <a className="mt-2 inline-block text-xs text-blue-700 underline" href="https://www.youtube.com/watch?v=raMmRKGkGD4" target="_blank" rel="noreferrer">{T("feynman.ice.watch")}</a>
+        </>}
+      </div>
+    </div>
   );
 }
 
