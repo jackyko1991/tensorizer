@@ -4,16 +4,16 @@
     "張量不只可以排成表，也能拆成幾條小規則：先讀出輸入的一部分，乘上一個係數，再沿指定方向送出。把每條規則的結果加起來，就拼回完整的作用。"
   ],
   "analogy": [
-    "Think of a sorting station. A reader measures how much arrives along one direction; a belt sends that amount along another. The output arrows e₁,e₂ are the basis; the readers ε¹,ε² are the dual basis. Each reader returns 1 on its matching basis arrow and 0 on the other.",
-    "想像一個分送站：讀尺先量出輸入在某個方向有多少，輸送帶再把份量送往另一個方向。送出的箭頭 e₁、e₂ 是基底；讀取用的 ε¹、ε² 是對偶基底。每把讀尺讀自己的基底箭頭會得到 1，讀另一支會得到 0。"
+    "Think of a sorting station. A reader measures how much arrives along one direction; a belt sends that amount along another. The output arrows $e_1,e_2$ are the basis; the readers $\\varepsilon^1,\\varepsilon^2$ are the dual basis. Each reader returns 1 on its matching basis arrow and 0 on the other.",
+    "想像一個分送站：讀尺先量出輸入在某個方向有多少，輸送帶再把份量送往另一個方向。送出的箭頭 $e_1$、$e_2$ 是基底；讀取用的 $\\varepsilon^1$、$\\varepsilon^2$ 是對偶基底。每把讀尺讀自己的基底箭頭會得到 1，讀另一支會得到 0。"
   ],
   "precise": [
-    "A coefficient Tⁱⱼ weights the rule eᵢ ⊗ εʲ: read with εʲ, then output along eᵢ. The ⊗ sign joins those two jobs. The type (1,1) counts one output-direction slot and one input-reader slot; this tensor takes a vector and returns a vector. Turning the measuring basis changes the readers and coefficients together, so the same physical input still gives the same physical output.",
-    "係數 Tⁱⱼ 替小規則 eᵢ ⊗ εʲ 加上份量；⊗ 把「用 εʲ 讀取」與「沿 eᵢ 送出」接起來。(1,1) 表示一個輸出方向位置、一個輸入讀尺位置；這個張量吃進向量、吐出向量。轉動量測基底時，讀尺與係數一起改寫，同一個實際輸入仍得到同一個實際輸出。"
+    "A coefficient $T^i{}_j$ weights the rule $e_i\\otimes\\varepsilon^j$: read with $\\varepsilon^j$, then output along $e_i$. The $\\otimes$ sign joins those two jobs. The type $(1,1)$ counts one output-direction slot and one input-reader slot; this tensor takes a vector and returns a vector. Turning the measuring basis changes the readers and coefficients together, so the same physical input still gives the same physical output.",
+    "係數 $T^i{}_j$ 替小規則 $e_i\\otimes\\varepsilon^j$ 加上份量；$\\otimes$ 把「用 $\\varepsilon^j$ 讀取」與「沿 $e_i$ 送出」接起來。$(1,1)$ 表示一個輸出方向位置、一個輸入讀尺位置；這個張量吃進向量、吐出向量。轉動量測基底時，讀尺與係數一起改寫，同一個實際輸入仍得到同一個實際輸出。"
   ],
   "example": [
-    "At 0°, use input v=(1,2). The four pieces contribute (2,0), (2,0), (0,0), (0,6), adding to (4,6). Select 90°: the coefficients and individual pieces change, but the final arrow stays at (4,6).",
-    "在 0° 時，輸入 v=(1,2)。四片分別送出 (2,0)、(2,0)、(0,0)、(0,6)，合起來是 (4,6)。按 90°：係數和各片的拆法變了，但最後的箭頭仍指向 (4,6)。"
+    "At 0°, use input $v=(1,2)$. The four pieces contribute $(2,0)$, $(2,0)$, $(0,0)$, $(0,6)$, adding to $(4,6)$. Select 90°: the coefficients and individual pieces change, but the final arrow stays at $(4,6)$.",
+    "在 0° 時，輸入 $v=(1,2)$。四片分別送出 $(2,0)$、$(2,0)$、$(0,0)$、$(0,6)$，合起來是 $(4,6)$。按 90°：係數和各片的拆法變了，但最後的箭頭仍指向 $(4,6)$。"
   ],
   "legend": [
     "Here $i$ chooses an output arrow, $j$ an input reader; $\\Sigma$ adds all four rules. The reader-basis pairing $\\varepsilon^j(e_i)=\\delta^j_i$ means “1 for a match, 0 otherwise”, not a metric assumption.",

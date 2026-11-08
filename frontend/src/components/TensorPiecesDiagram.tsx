@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Tex, { RichText } from "./Tex";
 import { useLang } from "../i18n";
 import { EXAMPLE_INPUT, tensorPieces, type Vec2 } from "../tensorDecomposition";
 import { AnimControls, btn, useAnimClock } from "./animKit";
@@ -40,7 +41,7 @@ export default function TensorPiecesDiagram() {
             <button type="button" onClick={()=>{clock.setPlaying(false);clock.setG(32+index*4+3);}} aria-pressed={stage===2 && current===index}
               className={`w-full rounded-lg border p-2.5 text-left transition-colors ${stage>=2 && (stage===3 || current===index) ? "border-blue-200 bg-blue-50/60" : "border-gray-100 bg-gray-50/30"}`}>
               <span className="mr-2 inline-block h-2 w-2 rounded-full" style={{background:colours[index]}}/>
-              <span className="font-medium">{fmt(t.weight)} × e{t.i===0?"₁":"₂"} ⊗ ε{t.j===0?"¹":"²"}</span>
+              <span className="font-medium"><Tex tex={String.raw`${fmt(t.weight)}\,e_{${t.i+1}}\otimes\varepsilon^{${t.j+1}}`}/></span>
               <span className="mt-1 block pl-4 text-gray-600">{stage>=1 ? `${l?"讀到":"Read"} ${fmt(t.measurement)}` : (l?"等待讀取輸入":"Waiting to read input")}
                 {stage>=2 && ` → ${l?"送出":"send"} ${pair(t.vector)}`}</span>
             </button>
@@ -62,8 +63,8 @@ export default function TensorPiecesDiagram() {
       </div>
       <div className="border-t border-gray-100 px-4 py-3 text-xs text-gray-600">
         <label className="flex items-center gap-3">{l?"量測基底":"Measuring basis"}: {angle}°<input type="range" min="0" max="90" value={angle} onChange={e=>changeFrame(Number(e.target.value))} aria-label={l?"轉動基底":"Turn the basis"} className="min-w-0 flex-1 accent-blue-600"/></label>
-        <div className="mt-2 flex flex-wrap items-center gap-2">{[0,45,90].map(a=><button type="button" key={a} className={btn} onClick={()=>changeFrame(a)}>{a}°</button>)}<span>{l?"輸入在這組基底下":"Input in this basis"}: {pair(data.input)}</span></div>
-        <p className="mt-2">{l?"每一片＝係數 × 輸出方向 ⊗ 輸入讀尺；點一片查看，最後把箭頭首尾相接。":"Each piece = coefficient × output direction ⊗ input reader. Select one, then add the arrows head to tail."}</p>
+        <div className="mt-2 flex flex-wrap items-center gap-2">{[0,45,90].map(a=><button type="button" key={a} className={btn} onClick={()=>changeFrame(a)}>{a}°</button>)}<span>{l?"輸入在這組基底下":"Input in this basis"}: <Tex tex={pair(data.input)}/></span></div>
+        <p className="mt-2"><RichText text={l?String.raw`每一片＝係數 $\times$ 輸出方向 $\otimes$ 輸入讀尺；點一片查看，最後把箭頭首尾相接。`:String.raw`Each piece = coefficient $\times$ output direction $\otimes$ input reader. Select one, then add the arrows head to tail.`}/></p>
       </div>
     </figure>
     <AnimControls clock={clock}/>
