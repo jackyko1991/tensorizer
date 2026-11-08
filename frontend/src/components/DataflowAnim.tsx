@@ -139,7 +139,7 @@ function Vectorise({ s, T }: PicProps) {
       <Arrow x1={70} y1={40} x2={70} y2={61} color={s.step === 0 ? COL.cur : COL.idleLine} />
       <Arrow x1={42} y1={61} x2={42} y2={40} color={s.step === 0 ? COL.cur : COL.idleLine} />
       <Txt x={8} y={93} size={6.5} kind="mono" color={COL.muted}>
-        r[a, b] = x[b] - x[a]
+        r[a, b] = x[b] + x[a]
       </Txt>
       <Txt x={gx + (n * gs) / 2} y={gy - 12} anchor="middle" kind="math" color={COL.muted}>b</Txt>
       <Txt x={gx - 14} y={gy + (n * gs) / 2 + 3} anchor="middle" kind="math" color={COL.muted}>a</Txt>
@@ -168,7 +168,7 @@ function Vectorise({ s, T }: PicProps) {
       <Txt x={200} y={36} size={6.5} kind="mono" color={COL.cur}>
         {s.step === 0 ? `a, b = ${ca}, ${cb}` : ""}
       </Txt>
-      <Txt x={200} y={54} size={7} kind="math" color={COL.muted}>{"r_{ab} = x_b − x_a"}</Txt>
+      <Txt x={200} y={54} size={7} kind="math" color={COL.muted}>{"r_{ab} = x_b + x_a"}</Txt>
       <Txt x={200} y={72} size={7} color={COL.cur} weight={600}>
         {T("flow.anim.s2.trips").replace("{n}", String(trips))}
       </Txt>
@@ -202,22 +202,20 @@ function Vectorise({ s, T }: PicProps) {
           <Txt x={v2 + (n * vs) / 2} y={by - 7} size={6} anchor="middle" kind="mono" color={COL.violet}>0</Txt>
         </g>
       )}
-      <Txt x={(v1 + n * vs + v2) / 2} y={by + (n * vs) / 2 + 4} size={10} anchor="middle" kind="math">−</Txt>
+      <Txt x={(v1 + n * vs + v2) / 2} y={by + (n * vs) / 2 + 4} size={10} anchor="middle" kind="math">+</Txt>
       <Txt x={(v2 + n * vs + rx) / 2} y={by + (n * vs) / 2 + 4} size={10} anchor="middle" kind="math">=</Txt>
       {/* the result, all pairs written by one kernel */}
       {Array.from({ length: NN }, (_, p) => {
         const [a, b] = pairAB(p);
-        const diag = a === b;
         return (
           <Cell
             key={`r${p}`}
             x={rx + b * rs}
             y={by - 2 + a * rs}
             s={rs - 1}
-            fill={!filled ? "white" : flash ? COL.blue : diag ? COL.blueLight : COL.done}
+            fill={!filled ? "white" : flash ? COL.blue : COL.done}
             stroke={filled ? COL.blue : COL.idleLine}
             sw={filled ? 0.8 : 0.5}
-            label={filled && diag ? 0 : undefined}
             size={6}
             labelColor={flash ? "white" : COL.text}
           />

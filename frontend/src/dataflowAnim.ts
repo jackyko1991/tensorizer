@@ -1,6 +1,6 @@
 /**
  * Pure step logic of the Concept "Tensor dataflow" animations (components/DataflowAnim): which stage a tick
- * belongs to and the small computations each picture shows (pair separations, a contraction lowered to a
+ * belongs to and the small computations each picture shows (pairwise sums, a contraction lowered to a
  * matrix product, float32 / float64 digits, an autograd graph, the device choice). Checked against explicit
  * references in tests/dataflowAnim.test.ts.
  */
@@ -44,7 +44,7 @@ export function stageAt(c: FlowCase, g: number): { idx: number; step: number; t:
   return { idx: last, step: st[last][0], t: st[last][1] - 1, n: st[last][1] };
 }
 
-// ---- s2: pair separations ------------------------------------------------------------------------------
+// ---- s2: pairwise sums ------------------------------------------------------------------------------
 
 /** Loop order of the double loop `for a: for b:`: pass k visits pair (a, b). */
 export const pairAB = (k: number): [number, number] => [Math.floor(k / PAIR_N), k % PAIR_N];

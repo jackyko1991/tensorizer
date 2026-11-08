@@ -36,10 +36,10 @@ for a0 in range(0, N, chunk):
   s2: `# a Python loop: one interpreter round trip per pair
 for a in range(N):
     for b in range(N):
-        r[a, b] = x[b] - x[a]
+        r[a, b] = x[b] + x[a]
 
 # one kernel for all N² pairs: broadcasting reuses x with stride 0
-r = x[None, :, :] - x[:, None, :]          # (N, N, 3)
+r = x[None, :, :] + x[:, None, :]          # (N, N, 3)
 x[:, None, :].expand(N, N, 3).stride()     # (3, 0, 1): the new axis costs no memory`,
   s3: `dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 x = torch.randn(4096, 4096, device=dev)    # created on the GPU: no copy
