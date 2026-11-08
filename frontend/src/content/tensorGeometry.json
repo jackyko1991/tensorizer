@@ -16,8 +16,8 @@
     "在 0° 時，輸入 v=(1,2)。四片分別送出 (2,0)、(2,0)、(0,0)、(0,6)，合起來是 (4,6)。按 90°：係數和各片的拆法變了，但最後的箭頭仍指向 (4,6)。"
   ],
   "legend": [
-    "Here i chooses an output arrow, j an input reader; Σ adds all four rules. The reader-basis pairing εʲ(eᵢ)=δʲᵢ means “1 for a match, 0 otherwise”, not a metric assumption.",
-    "i 選送出的箭頭，j 選讀取用的尺；Σ 把四條規則加起來。εʲ(eᵢ)=δʲᵢ 表示「配對為 1，否則為 0」，不是對長度或垂直性的假設。"
+    "Here $i$ chooses an output arrow, $j$ an input reader; $\\Sigma$ adds all four rules. The reader-basis pairing $\\varepsilon^j(e_i)=\\delta^j_i$ means “1 for a match, 0 otherwise”, not a metric assumption.",
+    "$i$ 選送出的箭頭，$j$ 選讀取用的尺；$\\Sigma$ 把四條規則加起來。$\\varepsilon^j(e_i)=\\delta^j_i$ 表示「配對為 1，否則為 0」，不是對長度或垂直性的假設。"
   ],
   "parts": [
     [
