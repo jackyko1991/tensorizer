@@ -4,7 +4,7 @@ import { useLang } from "../i18n";
 import { EXAMPLE_INPUT, tensorPieces, type Vec2 } from "../tensorDecomposition";
 import { AnimControls, btn, useAnimClock } from "./animKit";
 
-const colours = ["#2563eb", "#d97706", "#7c3aed", "#059669"];
+const colours = { amount: "#2563eb", basis: "#059669", dual: "#d97706" };
 const fmt = (x: number) => Math.abs(x) < 1e-9 ? "0" : Number(x.toFixed(2)).toString();
 const pair = (v: Vec2) => `(${v.map(fmt).join(", ")})`;
 
@@ -40,22 +40,36 @@ export default function TensorPiecesDiagram() {
           {data.terms.map((t,index)=><li key={index}>
             <button type="button" onClick={()=>{clock.setPlaying(false);clock.setG(32+index*4+3);}} aria-pressed={stage===2 && current===index}
               className={`w-full rounded-lg border p-2.5 text-left transition-colors ${stage>=2 && (stage===3 || current===index) ? "border-blue-200 bg-blue-50/60" : "border-gray-100 bg-gray-50/30"}`}>
-              <span className="mr-2 inline-block h-2 w-2 rounded-full" style={{background:colours[index]}}/>
+              <span className="mr-2 inline-block h-2 w-2 rounded-full" style={{background:colours.amount}}/>
               <span className="font-medium"><Tex tex={String.raw`\textcolor{#2563eb}{${fmt(t.weight)}}\,\textcolor{#059669}{e_{${t.i+1}}}\otimes\textcolor{#d97706}{\varepsilon^{${t.j+1}}}`}/></span>
-              <span className="mt-1 block pl-4 text-gray-600">{stage>=1 ? `${l?"讀到":"Read"} ${fmt(t.measurement)}` : (l?"等待讀取輸入":"Waiting to read input")}
-                {stage>=2 && ` → ${l?"送出":"send"} ${pair(t.vector)}`}</span>
+              <span className="mt-1 block pl-4"><span style={{color:colours.dual}}>{stage>=1 ? `${l?"讀到":"Read"} ${fmt(t.measurement)}` : (l?"等待讀取輸入":"Waiting to read input")}</span>
+                {stage>=2 && <span style={{color:colours.basis}}>{` → ${l?"送出":"send"} ${pair(t.vector)}`}</span>}</span>
             </button>
           </li>)}
         </ol>
         <svg viewBox="0 0 240 238" className="mx-auto w-full max-w-[280px] p-2" role="img" aria-label={l?"四片張量規則，合成同一支輸出箭頭":"Four tensor pieces reconstruct the same output arrow"}>
+          <text x="120" y="14" fontSize="10" textAnchor="middle">
+            <tspan fill={colours.amount}>{l?"份量":"Amount"}</tspan><tspan> · </tspan>
+            <tspan fill={colours.basis}>{l?"輸出方向":"Output basis"}</tspan><tspan> · </tspan>
+            <tspan fill={colours.dual}>{l?"輸入讀尺":"Dual reader"}</tspan>
+          </text>
           <path d="M20 188H220M72 220V20" stroke="#e5e7eb" fill="none"/>
-          {data.basis.map((e,i)=><g key={i}>{arrow(origin,[origin[0]+32*e[0],origin[1]-32*e[1]],"#94a3b8",1.8)}<text x={origin[0]+44*e[0]} y={origin[1]-44*e[1]+4} fontSize="11" textAnchor="middle" fill="#64748b">e{i===0?"₁":"₂"}</text></g>)}
+          {data.basis.map((e,i)=><g key={i}>{arrow(origin,[origin[0]+32*e[0],origin[1]-32*e[1]],colours.basis,1.8)}<text x={origin[0]+44*e[0]} y={origin[1]-44*e[1]+4} fontSize="11" textAnchor="middle" fill={colours.basis}>e{i===0?"₁":"₂"}</text></g>)}
           {arrow(origin,project(EXAMPLE_INPUT),"#64748b",2)}
           <text x="12" y="146" fontSize="11" fill="#64748b">v = (1, 2)</text>
-          {stage===2 && arrow(origin,project(data.terms[current].vector),colours[current],3)}
+          {stage===1 && data.basis.map((e,i)=>{
+            const tip=project(EXAMPLE_INPUT), foot=project([e[0]*data.input[i],e[1]*data.input[i]]);
+            return <g key={i} stroke={colours.dual} fill={colours.dual}>
+              <path d={`M${tip}L${foot}`} strokeDasharray="3 3" fill="none"/>
+              <circle cx={foot[0]} cy={foot[1]} r="3"/>
+              <text x={foot[0]+6} y={foot[1]+(i===0?16:-8)} stroke="none" fontSize="10">ε{i===0?"¹":"²"}(v) = {fmt(data.input[i])}</text>
+            </g>;
+          })}
+          {stage===2 && <>{arrow(origin,project(data.terms[current].vector),colours.basis,3)}
+            <text x="120" y="40" fontSize="12" textAnchor="middle" fill={colours.amount}>T{data.terms[current].i===0?"¹":"²"}{data.terms[current].j===0?"₁":"₂"} = {fmt(data.terms[current].weight)}</text></>}
           {stage===3 && data.terms.map((t,i)=>{
             const start = running; running = [running[0]+t.vector[0],running[1]+t.vector[1]];
-            return <g key={i} opacity={.65}>{arrow(project(start),project(running),colours[i],2)}</g>;
+            return <g key={i} opacity={.65}>{arrow(project(start),project(running),colours.basis,2)}</g>;
           })}
           {stage===3 && <>{arrow(origin,project(data.result),"#111827",3)}<text x="156" y="73" fontSize="12" fill="#111827">Tv = {pair(data.result)}</text></>}
           <text x="120" y="227" fontSize="11" textAnchor="middle" fill="#64748b">{l?"固定圖面：輸入 v 與總輸出 Tv 不變":"Fixed page view: v and total Tv stay put"}</text>
