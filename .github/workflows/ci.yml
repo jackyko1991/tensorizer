@@ -17,6 +17,9 @@ jobs:
       - uses: prefix-dev/setup-pixi@v0.11.2
         with:
           pixi-version: v0.70.0
+          # Official v0.70.0 Linux x86_64 binary; release download URLs currently return 504.
+          pixi-url: https://api.github.com/repos/prefix-dev/pixi/releases/assets/435151918
+          pixi-url-headers: '{"Accept":"application/octet-stream"}'
           cache: true
       - run: pixi run lint
       # Colab opens the committed notebooks/ — they must match the problem files
@@ -37,6 +40,9 @@ jobs:
       - uses: prefix-dev/setup-pixi@v0.11.2
         with:
           pixi-version: v0.70.0
+          # Official v0.70.0 Linux x86_64 binary; release download URLs currently return 504.
+          pixi-url: https://api.github.com/repos/prefix-dev/pixi/releases/assets/435151918
+          pixi-url-headers: '{"Accept":"application/octet-stream"}'
           cache: true
       - run: pixi run pytest -q problems/${{ matrix.topic }} tests/test_smoke.py
 
@@ -47,6 +53,9 @@ jobs:
       - uses: prefix-dev/setup-pixi@v0.11.2
         with:
           pixi-version: v0.70.0
+          # Official v0.70.0 Linux x86_64 binary; release download URLs currently return 504.
+          pixi-url: https://api.github.com/repos/prefix-dev/pixi/releases/assets/435151918
+          pixi-url-headers: '{"Accept":"application/octet-stream"}'
           cache: true
       - run: pixi run python scripts/build_assets.py --manifest-only
       - run: pixi run web-build
