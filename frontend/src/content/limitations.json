@@ -23,8 +23,8 @@
     ],
     "equation": "v_{\\mathrm{new}}=(\\cos\\theta,-\\sin\\theta)",
     "legend": [
-      "θ is the angle through which we turn the measuring axes. v_new is the same unit arrow written using those new axes. cos and sin give its horizontal and vertical parts.",
-      "θ 是量測方向轉過的角度，v_new 是同一支單位箭頭在新方向下的分量。cos 和 sin 算出它沿著兩個量測方向各有多少。"
+      "θ is the angle through which we turn the measuring axes. $v_{\\mathrm{new}}$ is the same unit arrow written using those new axes. cos and sin give its horizontal and vertical parts.",
+      "θ 是量測方向轉過的角度，$v_{\\mathrm{new}}$ 是同一支單位箭頭在新方向下的分量。cos 和 sin 算出它沿著兩個量測方向各有多少。"
     ],
     "code": "arrow = torch.tensor([1., 0.])\n# Same arrow, with the measuring axes turned 90 degrees:\narrow_in_new_axes = torch.tensor([0., -1.])",
     "diagram": "scope"
