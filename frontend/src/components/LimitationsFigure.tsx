@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { loopRadii } from "../limitationsModel";
+import { Arrow } from "./MathsAnimPics";
 
 /** Interactive illustrations embedded in each card’s own experiment or challenge. */
 export default function LimitationsFigure({ kind, l }: { kind: string; l: number }) {
@@ -65,8 +66,8 @@ export default function LimitationsFigure({ kind, l }: { kind: string; l: number
       </>}
       {kind === "bridge" && <>
         <path d={`M120 140h85l${85*Math.cos(theta)} ${-85*Math.sin(theta)}h-85Z`} fill="#bfdbfe"/>
-        <path d="M120 140H205" stroke="#0f766e" strokeWidth="4"/>
-        <path d={`M120 140L${120+85*Math.cos(theta)} ${140-85*Math.sin(theta)}`} stroke="#2563eb" strokeWidth="4"/>
+        <Arrow x1={120} y1={140} x2={205} y2={140} color="#0f766e" w={4} head={12}/>
+        <Arrow x1={120} y1={140} x2={120+85*Math.cos(theta)} y2={140-85*Math.sin(theta)} color="#2563eb" w={4} head={12}/>
         {label(205,162,'a')}{label(110+95*Math.cos(theta),135-95*Math.sin(theta),'b')}
         {label(380,80,`${l ? '平行程度' : 'Alignment'}: ${Math.cos(theta).toFixed(2)}`)}
         {label(380,118,`${l ? '定向面積' : 'Oriented area'}: ${Math.sin(theta).toFixed(2)}`)}
