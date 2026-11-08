@@ -1473,5 +1473,6 @@
   "lab.dotScalars": "escalares",
   "lab.dotLegend": "Cada punto es un escalar. Ambas vistas de broadcasting comparten la entrada de la izquierda; cada plano de salida contiene las diferencias de todos los pares de partículas en un eje.",
   "lab.dotSample": "Solo se dibujan las primeras 12 partículas y sus pares; los totales y la memoria siguen usando el N completo.",
-  "lab.dotWork": "Restas escalares necesarias para calcular D completo"
+  "lab.dotWork": "Restas escalares necesarias para calcular D completo",
+  "loops.anim.prev": "Anterior"
 }

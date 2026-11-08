@@ -1473,5 +1473,6 @@
   "lab.dotScalars": "Skalare",
   "lab.dotLegend": "Jeder Punkt ist ein Skalar. Beide Broadcast-Ansichten teilen die Eingabe links; jede Ausgabeschicht zeigt die Differenzen aller Teilchenpaare entlang einer Achse.",
   "lab.dotSample": "Gezeichnet sind nur die ersten 12 Teilchen und ihre Paare; Gesamtzahlen und Speicherbedarf verwenden weiterhin das volle N.",
-  "lab.dotWork": "Skalare Subtraktionen zur Berechnung des vollständigen D"
+  "lab.dotWork": "Skalare Subtraktionen zur Berechnung des vollständigen D",
+  "loops.anim.prev": "Zurück"
 }

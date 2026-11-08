@@ -167,20 +167,27 @@ export function useAnimClock(cycle: number, tickMs: number) {
     setPlaying(false);
     setG((v) => (v + 1) % (cycle + 1));
   };
-  return { root, g, setG, playing, setPlaying, speed, setSpeed, step };
+  const prev = () => {
+    setPlaying(false);
+    setG((v) => Math.max(0, v - 1));
+  };
+  return { root, g, setG, playing, setPlaying, speed, setSpeed, step, prev };
 }
 
 export const btn =
   "rounded-md border border-gray-300 bg-white px-2.5 py-1 text-xs text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500";
 
-/** Play / pause, single step, restart and speed. */
+/** Play / pause, previous and next step, restart and speed. */
 export function AnimControls({ clock }: { clock: ReturnType<typeof useAnimClock> }) {
   const T = usePageText();
-  const { playing, setPlaying, setG, speed, setSpeed, step } = clock;
+  const { playing, setPlaying, setG, speed, setSpeed, step, prev, g } = clock;
   return (
     <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
       <button type="button" className={btn} onClick={() => setPlaying((p) => !p)} aria-pressed={playing}>
         {playing ? `❚❚ ${T("loops.anim.pause")}` : `▶ ${T("loops.anim.play")}`}
+      </button>
+      <button type="button" className={`${btn} disabled:cursor-default disabled:opacity-40`} onClick={prev} disabled={g === 0}>
+        ‹ {T("loops.anim.prev")}
       </button>
       <button type="button" className={btn} onClick={step}>
         {T("loops.anim.step")} ›

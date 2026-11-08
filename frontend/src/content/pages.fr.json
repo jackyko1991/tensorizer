@@ -1473,5 +1473,6 @@
   "lab.dotScalars": "scalaires",
   "lab.dotLegend": "Chaque point est un scalaire. Les deux vues de diffusion partagent l’entrée à gauche ; chaque tranche de sortie contient les différences de toutes les paires de particules suivant un axe.",
   "lab.dotSample": "Seules les 12 premières particules et leurs paires sont dessinées ; les totaux et la mémoire utilisent toujours le N complet.",
-  "lab.dotWork": "Soustractions scalaires nécessaires pour calculer D en entier"
+  "lab.dotWork": "Soustractions scalaires nécessaires pour calculer D en entier",
+  "loops.anim.prev": "Précédent"
 }
