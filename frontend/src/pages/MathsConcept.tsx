@@ -247,7 +247,10 @@ const EQUATION_TAB_LABELS: Partial<Record<MathsCase, string>> = {
 };
 
 export function EqCards({ items, title }: { items: { tex: string; code: string; anim: MathsCase }[]; title: string }) {
-  const [selected, setSelected] = useState<number | null>(null);
+  const [selected, setSelected] = useState<number | null>(() => {
+    const innerProduct = items.findIndex(item => item.anim === "eqDot");
+    return innerProduct < 0 ? null : innerProduct;
+  });
   const uid = useId().replaceAll(":", "");
   const T = usePageText();
   const example = selected === null ? null : items[selected];
@@ -267,8 +270,8 @@ export function EqCards({ items, title }: { items: { tex: string; code: string; 
                 : event.key === "ArrowLeft" ? (i + items.length - 1) % items.length : null;
               if (next !== null) { event.preventDefault(); setSelected(next); focusTab(next); }
             }}
-            className={`rounded-t-md border-b-2 px-4 py-2 text-sm transition-colors ${selected === i ? "border-blue-600 bg-blue-50 text-blue-800" : "border-transparent text-gray-600 hover:bg-gray-50 hover:text-blue-700"}`}>
-            <Tex tex={EQUATION_TAB_LABELS[e.anim] ?? e.tex} />
+            className={`min-w-0 max-w-full rounded-t-md border-b-2 px-3 py-2 text-left text-xs transition-colors sm:text-sm ${selected === i ? "border-blue-600 bg-blue-50 text-blue-800" : "border-transparent text-gray-600 hover:bg-gray-50 hover:text-blue-700"}`}>
+            <span className="mr-2">{T(`maths.examples.${e.anim}` as PageKey)}</span><Tex tex={EQUATION_TAB_LABELS[e.anim] ?? e.tex} />
           </button>
         ))}
       </div>
@@ -276,7 +279,7 @@ export function EqCards({ items, title }: { items: { tex: string; code: string; 
         hidden={selected === null} tabIndex={0} className="overflow-hidden rounded-b-lg border border-t-0 border-gray-200 bg-white">
         {example && <div key={example.anim}>
           <div className="flex items-start gap-2 bg-gray-50 px-3 py-2">
-            <div className="min-w-0 flex-1"><Tex tex={example.tex} display /></div>
+            <div className="min-w-0 flex-1"><p className="text-center text-xs font-semibold text-gray-600">{T(`maths.examples.${example.anim}` as PageKey)}</p><Tex tex={example.tex} display /></div>
             <button type="button" className="shrink-0 rounded px-2 py-1 text-sm text-gray-500 hover:bg-gray-200" aria-label={T("maths.examples.close")}
               onClick={() => { const previous = selected; setSelected(null); if (previous !== null) focusTab(previous); }}>×</button>
           </div>
