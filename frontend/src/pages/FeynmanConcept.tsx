@@ -336,7 +336,6 @@ function IceWaterTabs() {
           <iframe className="aspect-video w-full rounded-lg border-0" src="https://www.youtube-nocookie.com/embed/raMmRKGkGD4"
             title={T("feynman.ice.videoTitle")} loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen
             referrerPolicy="strict-origin-when-cross-origin" />
-          <a className="mt-2 inline-block text-xs text-blue-700 underline" href="https://www.youtube.com/watch?v=raMmRKGkGD4" target="_blank" rel="noreferrer">{T("feynman.ice.watch")}</a>
         </>}
       </div>
     </div>
