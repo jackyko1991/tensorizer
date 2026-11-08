@@ -28,8 +28,7 @@ export default function LimitationsConcept() {
       <PageToc scrollRoot="concept-scroll" items={content.sections.map((s, i) => ({ id: s.id, label: s.title[l], mark: i + 1 }))} />
       <article className="min-w-0 max-w-4xl flex-1 space-y-10" data-testid="limitations-concept">
         <header>
-          <p className="text-sm font-medium text-blue-700">{l ? "概念 · 認識張量的邊界" : "Concept · understanding the limits of tensors"}</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight">{l ? "張量的適用範圍與限制" : "The scope and limits of tensors"}</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">{l ? "張量的適用範圍與限制" : "The scope and limits of tensors"}</h1>
           <p className="mt-3 text-gray-600">{l ? "張量很強大：從力、電磁場到彎曲的時空，都能用它描述。但普通時空張量也有邊界。自然界有沒有一種量子態，旋轉 360° 後振幅會變號，要到 720° 才復原？有，電子的自旋態就是例子，這時需要旋量來描述。數字相同，不一定代表相同的物理；接著看看電子、波的路徑，以及兩顆粒子如何共用一份紀錄。" : "Tensors are powerful: they describe forces, electromagnetic fields and curved spacetime. But ordinary spacetime tensors have limits. Can a quantum state’s amplitudes change sign after a 360° rotation, returning after 720°? Yes: an electron’s spin state does exactly that. We need spinors to describe this behaviour. Identical arrays need not mean identical physics. Next, explore electrons, the paths taken by waves, and the shared state of two particles."}</p>
         </header>
         {content.sections.map((s, i) => (

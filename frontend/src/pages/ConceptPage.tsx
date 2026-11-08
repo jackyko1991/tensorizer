@@ -106,8 +106,7 @@ export default function ConceptPage({
           />
           <article className="min-w-0 max-w-4xl flex-1 space-y-10">
             <header>
-              <p className="text-sm font-medium text-blue-700">{T("concept.kicker")}</p>
-              <h1 className="mt-1 text-3xl font-semibold tracking-tight">{T("concept.title")}</h1>
+              <h1 className="text-3xl font-semibold tracking-tight">{T("concept.title")}</h1>
               <p className="mt-3 text-gray-600">{R("concept.intro")}</p>
               {/* the whole pipeline on one line; scrolls sideways on narrow screens */}
               <ol className="mt-6 flex items-center gap-1 overflow-x-auto pb-1 text-[11px] whitespace-nowrap">

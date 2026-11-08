@@ -90,8 +90,7 @@ export default function MathsConcept() {
       />
       <article className="min-w-0 max-w-4xl flex-1 space-y-10" data-testid="maths-concept">
         <header>
-          <p className="text-sm font-medium text-blue-700">{T("maths.kicker")}</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight">{T("maths.title")}</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">{T("maths.title")}</h1>
           <p className="mt-3 text-gray-600">{R("maths.intro")}</p>
           <p className="mt-3 rounded-lg border border-blue-100 bg-blue-50/60 px-4 py-2.5 text-sm text-blue-900">
             {R("maths.feynman")}

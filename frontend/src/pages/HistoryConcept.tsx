@@ -241,8 +241,7 @@ export default function HistoryConcept({ section }: { section: string | null }) 
 
       <article className="min-w-0 flex-1">
         <header className="max-w-3xl">
-          <p className="text-sm font-medium text-blue-700">{T("history.kicker")}</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight">{T("history.title")}</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">{T("history.title")}</h1>
           <p className="mt-3 text-gray-600">
             <RichText text={T("history.intro")} />
           </p>
