@@ -18,7 +18,7 @@ export default function LimitationsFigure({ kind, l }: { kind: string; l: number
     <svg viewBox="0 0 500 220" className="mx-auto w-full max-w-xl" role="img" aria-label={captions[kind]?.[l]}>
       {kind === "scope" && <>
         <g transform={`rotate(${-angle} 150 112)`} stroke="#94a3b8" strokeWidth="2"><path d="M70 112H235M150 195V28"/><path d="M227 107L235 112L227 117M145 36L150 28L155 36" fill="none"/></g>
-        <path d="M150 112H215l-9-6m9 6-9 6" fill="none" stroke="#2563eb" strokeWidth="4"/>
+        <g fill="#2563eb"><path d="M150 112H205" fill="none" stroke="#2563eb" strokeWidth="4" strokeLinecap="round"/><polygon points="215,112 202,105 202,119"/></g>
         {label(150,212,l ? "桌上的箭頭沒有動" : "Arrow fixed on the table")}
         <rect x="295" y="57" width="180" height="108" rx="12" fill="white" stroke="#bfdbfe"/>
         {label(385,89,l ? "新視角裡的分量" : "Coordinates in the new view")}
@@ -26,8 +26,8 @@ export default function LimitationsFigure({ kind, l }: { kind: string; l: number
       </>}
       {kind === "spinors" && <>
         {[125,375].map(x => <circle key={x} cx={x} cy="90" r="55" fill="white" stroke="#bfdbfe"/>)}
-        <g transform={`rotate(${-angle} 125 90)`}><path d="M125 90H170l-8-5m8 5-8 5" fill="none" stroke="#2563eb" strokeWidth="3"/></g>
-        <g transform={`rotate(${-angle/2} 375 90)`}><path d="M375 90H420l-8-5m8 5-8 5" fill="none" stroke="#7c3aed" strokeWidth="3"/></g>
+        <g transform={`rotate(${-angle} 125 90)`}><g fill="#2563eb"><path d="M125 90H161" fill="none" stroke="#2563eb" strokeWidth="3" strokeLinecap="round"/><polygon points="170,90 158,84 158,96"/></g></g>
+        <g transform={`rotate(${-angle/2} 375 90)`}><g fill="#7c3aed"><path d="M375 90H411" fill="none" stroke="#7c3aed" strokeWidth="3" strokeLinecap="round"/><polygon points="420,90 408,84 408,96"/></g></g>
         {label(125,177,l ? "方向：轉一圈復原" : "Direction: one turn")}
         {label(375,177,l ? "相位示意：轉兩圈復原" : "Phase schematic: two turns")}
       </>}
