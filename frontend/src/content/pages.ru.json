@@ -1439,5 +1439,8 @@
   "feynman.ice.video": "Видео",
   "feynman.ice.videoTitle": "Опыт Фейнмана с уплотнительным кольцом",
   "feynman.ice.watch": "Смотреть на YouTube",
-  "limitations.tab": "Границы тензоров"
+  "limitations.tab": "Границы тензоров",
+  "maths.tensor.views": "Как понять тензор",
+  "maths.tensor.arrayTab": "Массивы и индексы",
+  "maths.tensor.geometryTab": "Геометрические части"
 }

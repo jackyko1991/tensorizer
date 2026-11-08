@@ -1439,5 +1439,8 @@
   "feynman.ice.video": "동영상",
   "feynman.ice.videoTitle": "파인만의 얼음물 O링 실험",
   "feynman.ice.watch": "YouTube에서 보기",
-  "limitations.tab": "텐서의 적용 범위"
+  "limitations.tab": "텐서의 적용 범위",
+  "maths.tensor.views": "텐서를 이해하는 방법",
+  "maths.tensor.arrayTab": "배열과 인덱스",
+  "maths.tensor.geometryTab": "기하학적 구성 요소"
 }

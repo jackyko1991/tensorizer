@@ -1439,5 +1439,8 @@
   "feynman.ice.video": "Vídeo",
   "feynman.ice.videoTitle": "Feynman y la junta tórica en agua helada",
   "feynman.ice.watch": "Ver en YouTube",
-  "limitations.tab": "Límites de los tensores"
+  "limitations.tab": "Límites de los tensores",
+  "maths.tensor.views": "Comprender un tensor",
+  "maths.tensor.arrayTab": "Arrays e índices",
+  "maths.tensor.geometryTab": "Piezas geométricas"
 }

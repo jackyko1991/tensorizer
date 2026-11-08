@@ -1439,5 +1439,8 @@
   "feynman.ice.video": "Vidéo",
   "feynman.ice.videoTitle": "Feynman : le joint torique dans l’eau glacée",
   "feynman.ice.watch": "Voir sur YouTube",
-  "limitations.tab": "Limites des tenseurs"
+  "limitations.tab": "Limites des tenseurs",
+  "maths.tensor.views": "Comprendre un tenseur",
+  "maths.tensor.arrayTab": "Tableaux et indices",
+  "maths.tensor.geometryTab": "Éléments géométriques"
 }

@@ -1439,5 +1439,8 @@
   "feynman.ice.video": "Video",
   "feynman.ice.videoTitle": "Feynman demonstrates O-ring behaviour in ice water",
   "feynman.ice.watch": "Watch on YouTube",
-  "limitations.tab": "Limits of tensors"
+  "limitations.tab": "Limits of tensors",
+  "maths.tensor.views": "Ways to understand a tensor",
+  "maths.tensor.arrayTab": "Arrays & entries",
+  "maths.tensor.geometryTab": "Geometric pieces"
 }

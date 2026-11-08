@@ -1439,5 +1439,8 @@
   "feynman.ice.video": "動画",
   "feynman.ice.videoTitle": "氷水によるフェインマンのOリング実験",
   "feynman.ice.watch": "YouTubeで見る",
-  "limitations.tab": "テンソルの適用範囲"
+  "limitations.tab": "テンソルの適用範囲",
+  "maths.tensor.views": "テンソルの見方",
+  "maths.tensor.arrayTab": "配列と添字",
+  "maths.tensor.geometryTab": "幾何的な部品"
 }

@@ -1439,5 +1439,8 @@
   "feynman.ice.video": "Video",
   "feynman.ice.videoTitle": "Feynmans O-Ring-Versuch im Eiswasser",
   "feynman.ice.watch": "Auf YouTube ansehen",
-  "limitations.tab": "Grenzen von Tensoren"
+  "limitations.tab": "Grenzen von Tensoren",
+  "maths.tensor.views": "Tensoren verstehen",
+  "maths.tensor.arrayTab": "Arrays und Einträge",
+  "maths.tensor.geometryTab": "Geometrische Bausteine"
 }

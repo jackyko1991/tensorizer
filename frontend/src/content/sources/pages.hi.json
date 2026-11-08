@@ -1439,5 +1439,8 @@
   "feynman.ice.video": "वीडियो",
   "feynman.ice.videoTitle": "बर्फ़ के पानी में फ़ाइनमैन का O-रिंग प्रयोग",
   "feynman.ice.watch": "YouTube पर देखें",
-  "limitations.tab": "टेंसर की सीमाएँ"
+  "limitations.tab": "टेंसर की सीमाएँ",
+  "maths.tensor.views": "टेंसर को समझने के तरीके",
+  "maths.tensor.arrayTab": "ऐरे और इंडेक्स",
+  "maths.tensor.geometryTab": "ज्यामितीय घटक"
 }

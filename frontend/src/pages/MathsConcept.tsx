@@ -6,6 +6,9 @@ import bench from "../content/blas_bench.json";
 import { usePageText, type PageKey } from "../content/pages";
 import { attainable, bestChain, chainCost, intensity, kernelCost, orderText, ridge, type Order } from "../tensorMaths";
 import MathsAnim from "../components/MathsAnim";
+import TensorPiecesDiagram from "../components/TensorPiecesDiagram";
+import geometry from "../content/tensorGeometry.json";
+import { useLang } from "../i18n";
 import { animsAfter, type MathsCase } from "../mathsAnim";
 
 // Sections in order; the address #/concept/maths/<key> scrolls to id maths-<key>.
@@ -73,6 +76,7 @@ const C = { node: "#dbeafe", edge: "#2563eb", leg: "#1f2937", idx: "#c2410c", gr
 
 /** The Concept page's "Tensor maths" tab: tensors, einsum, Penrose diagrams, contraction order and the roofline. */
 export default function MathsConcept() {
+  const [tensorView, setTensorView] = useState<"array" | "geometry">("array");
   const T = usePageText();
   const R = (key: PageKey) => <RichText text={T(key)} />;
   const k = (s: string) => `maths.${s}` as PageKey;
@@ -102,7 +106,19 @@ export default function MathsConcept() {
               {T(k(`${s}.title`))}
             </h2>
             <div className="mt-4 space-y-4 text-sm leading-relaxed text-gray-700">
-              {s === "recap" ? (
+              {s === "tensor" && <div role="tablist" aria-label={T("maths.tensor.views")} className="flex border-b border-gray-200">
+                {(["array", "geometry"] as const).map(view=><button key={view} type="button" role="tab" id={`tensor-view-${view}`} aria-selected={tensorView===view} aria-controls="tensor-view-panel" tabIndex={tensorView===view?0:-1}
+                  onClick={()=>setTensorView(view)} onKeyDown={e=>{
+                    if (["ArrowLeft","ArrowRight","Home","End"].includes(e.key)) {
+                      e.preventDefault(); const next=e.key==="Home"?"array":e.key==="End"?"geometry":tensorView==="array"?"geometry":"array";
+                      setTensorView(next); document.getElementById(`tensor-view-${next}`)?.focus();
+                    }
+                  }} className={`border-b-2 px-4 py-2 text-sm font-medium ${tensorView===view?"border-blue-600 text-blue-700":"border-transparent text-gray-500 hover:text-gray-800"}`}>
+                  {T(view==="array"?"maths.tensor.arrayTab":"maths.tensor.geometryTab")}
+                </button>)}
+              </div>}
+              <div id={s==="tensor"?"tensor-view-panel":undefined} role={s==="tensor"?"tabpanel":undefined} aria-labelledby={s==="tensor"?`tensor-view-${tensorView}`:undefined} className="space-y-4">
+              {s === "tensor" && tensorView === "geometry" ? <TensorGeometry /> : s === "recap" ? (
                 <Recap />
               ) : (
                 <>
@@ -144,6 +160,7 @@ export default function MathsConcept() {
                   {EQS[s] && <EqCards items={EQS[s]!} title={T("maths.label.code")} />}
                 </>
               )}
+              </div>
               {LINKS[s] && <Links items={LINKS[s]!} title={T("maths.label.links")} />}
             </div>
           </section>
@@ -151,6 +168,28 @@ export default function MathsConcept() {
       </article>
     </div>
   );
+}
+
+function TensorGeometry() {
+  const { lang } = useLang();
+  const T = usePageText();
+  const l = lang.startsWith("zh") ? 1 : 0;
+  return <div className="space-y-4" data-testid="tensor-geometric-view">
+    {FEYNMAN.map(f=><div key={f} className="space-y-4">
+      <Feynman kind={f} text={geometry[f][l]} label={T(`maths.label.${f}`)} />
+      {f==="analogy" && <TensorPiecesDiagram/>}
+    </div>)}
+    <figure className="overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
+      <figcaption className="px-4 pt-3 text-xs text-gray-600">{geometry.legend[l]}</figcaption>
+      <div className="px-3 py-2"><Tex tex={String.raw`T=\sum_{i,j=1}^{2}T^i{}_j\,(e_i\otimes\varepsilon^j),\qquad (e_i\otimes\varepsilon^j)(v)=\varepsilon^j(v)e_i`} display/></div>
+    </figure>
+    <details className="rounded-lg border border-gray-200 bg-gray-50/50 p-3">
+      <summary className="cursor-pointer text-sm font-medium text-blue-800">{geometry.partsTitle[l]}</summary>
+      <dl className="mt-3 grid gap-x-4 gap-y-2 text-xs sm:grid-cols-[auto_1fr]">{geometry.parts.map(([name,role])=><div key={name[0]} className="contents"><dt className="font-semibold">{name[l]}</dt><dd className="text-gray-600">{role[l]}</dd></div>)}</dl>
+      <p className="mt-3 text-xs text-gray-600">{geometry.note[l]}</p>
+    </details>
+    <a className="text-xs text-blue-700 hover:underline" href="https://www.damtp.cam.ac.uk/user/tong/gr/grhtml/S2.html" target="_blank" rel="noreferrer">David Tong: Differential Geometry, tensors and dual bases ↗</a>
+  </div>;
 }
 
 const FEYNMAN_STYLE: Record<(typeof FEYNMAN)[number], string> = {

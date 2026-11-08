@@ -1439,5 +1439,8 @@
   "feynman.ice.video": "视频",
   "feynman.ice.videoTitle": "费曼用冰水展示 O 型环的低温反应",
   "feynman.ice.watch": "在 YouTube 观看",
-  "limitations.tab": "张量的适用范围与局限"
+  "limitations.tab": "张量的适用范围与局限",
+  "maths.tensor.views": "理解张量的方式",
+  "maths.tensor.arrayTab": "数组与索引",
+  "maths.tensor.geometryTab": "拆开几何部件"
 }

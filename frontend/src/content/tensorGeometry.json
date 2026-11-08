@@ -1,0 +1,92 @@
+{
+  "plain": [
+    "A tensor can be assembled from small rules, not just displayed as a table. Each piece says: read one part of the input, multiply by a coefficient, then send the result along a chosen direction. Adding all pieces gives the whole action.",
+    "張量不只可以排成表，也能拆成幾條小規則：先讀出輸入的一部分，乘上一個係數，再沿指定方向送出。把每條規則的結果加起來，就拼回完整的作用。"
+  ],
+  "analogy": [
+    "Think of a sorting station. A reader measures how much arrives along one direction; a belt sends that amount along another. The output arrows e₁,e₂ are the basis; the readers ε¹,ε² are the dual basis. Each reader returns 1 on its matching basis arrow and 0 on the other.",
+    "想像一個分送站：讀尺先量出輸入在某個方向有多少，輸送帶再把份量送往另一個方向。送出的箭頭 e₁、e₂ 是基底；讀取用的 ε¹、ε² 是對偶基底。每把讀尺讀自己的基底箭頭會得到 1，讀另一支會得到 0。"
+  ],
+  "precise": [
+    "A coefficient Tⁱⱼ weights the rule eᵢ ⊗ εʲ: read with εʲ, then output along eᵢ. The ⊗ sign joins those two jobs. The type (1,1) counts one output-direction slot and one input-reader slot; this tensor takes a vector and returns a vector. Turning the measuring basis changes the readers and coefficients together, so the same physical input still gives the same physical output.",
+    "係數 Tⁱⱼ 替小規則 eᵢ ⊗ εʲ 加上份量；⊗ 把「用 εʲ 讀取」與「沿 eᵢ 送出」接起來。(1,1) 表示一個輸出方向位置、一個輸入讀尺位置；這個張量吃進向量、吐出向量。轉動量測基底時，讀尺與係數一起改寫，同一個實際輸入仍得到同一個實際輸出。"
+  ],
+  "example": [
+    "At 0°, use input v=(1,2). The four pieces contribute (2,0), (2,0), (0,0), (0,6), adding to (4,6). Select 90°: the coefficients and individual pieces change, but the final arrow stays at (4,6).",
+    "在 0° 時，輸入 v=(1,2)。四片分別送出 (2,0)、(2,0)、(0,0)、(0,6)，合起來是 (4,6)。按 90°：係數和各片的拆法變了，但最後的箭頭仍指向 (4,6)。"
+  ],
+  "legend": [
+    "Here i chooses an output arrow, j an input reader; Σ adds all four rules. The reader-basis pairing εʲ(eᵢ)=δʲᵢ means “1 for a match, 0 otherwise”, not a metric assumption.",
+    "i 選送出的箭頭，j 選讀取用的尺；Σ 把四條規則加起來。εʲ(eᵢ)=δʲᵢ 表示「配對為 1，否則為 0」，不是對長度或垂直性的假設。"
+  ],
+  "partsTitle": [
+    "Where the other pieces fit",
+    "其他零件放在哪裡？"
+  ],
+  "parts": [
+    [
+      [
+        "Coefficients",
+        "分量"
+      ],
+      [
+        "The amounts in the chosen basis.",
+        "選定基底下，每片小規則的份量。"
+      ]
+    ],
+    [
+      [
+        "Basis + dual basis",
+        "基底＋對偶基底"
+      ],
+      [
+        "Output directions and input readers.",
+        "指定送出方向，以及怎麼讀取輸入。"
+      ]
+    ],
+    [
+      [
+        "Transformation rule",
+        "變換法則"
+      ],
+      [
+        "Change the description while preserving the action.",
+        "換描述方式，保留同一個作用。"
+      ]
+    ],
+    [
+      [
+        "Type / symmetry",
+        "型別／對稱性"
+      ],
+      [
+        "Which input and output slots? Some tensors have extra symmetries.",
+        "有哪些輸入、輸出位置？部分張量另有對稱條件。"
+      ]
+    ],
+    [
+      [
+        "Metric (extra)",
+        "度規（額外結構）"
+      ],
+      [
+        "Measures lengths and angles; a nondegenerate metric also converts vectors and covectors.",
+        "量長度、角度；非退化度規也能轉換向量與協向量。"
+      ]
+    ],
+    [
+      [
+        "Connection (extra)",
+        "聯絡（額外結構）"
+      ],
+      [
+        "Compares tensors at different points and defines covariant differentiation.",
+        "比較不同位置的張量，並定義協變微分。"
+      ]
+    ]
+  ],
+  "note": [
+    "A tensor needs neither a metric nor a connection just to exist. Add them when the problem asks for measurement or comparison across locations.",
+    "張量的存在本身不要求度規或聯絡；要量長度，或跨位置比較、做協變微分時，再加上相應結構。"
+  ]
+}
