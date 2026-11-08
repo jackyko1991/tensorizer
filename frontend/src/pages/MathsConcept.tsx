@@ -3,7 +3,6 @@ import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
 import Tex, { RichText } from "../components/Tex";
 import { usePageText, type PageKey } from "../content/pages";
-import { bestChain, chainCost, orderText, type Order } from "../tensorMaths";
 import MathsAnim from "../components/MathsAnim";
 import TensorPiecesDiagram from "../components/TensorPiecesDiagram";
 import AnalogyPicture from "../components/AnalogyPicture";
@@ -12,7 +11,7 @@ import { useLang } from "../i18n";
 import { animsAfter, type MathsCase } from "../mathsAnim";
 
 // Sections in order; the address #/concept/maths/<key> scrolls to id maths-<key>.
-export const MATHS_SECTIONS = ["tensor", "einsum", "penrose", "topo", "recap"] as const;
+export const MATHS_SECTIONS = ["tensor", "einsum", "penrose", "recap"] as const;
 type Section = (typeof MATHS_SECTIONS)[number];
 export const FEYNMAN = ["plain", "analogy", "precise", "example"] as const;
 
@@ -34,9 +33,6 @@ const EQS: Partial<Record<Section, { tex: string; code: string; anim: MathsCase 
     { tex: String.raw`\operatorname{tr}(AB) = A_{ij} B_{ji} = B_{ji} A_{ij} = \operatorname{tr}(BA)`, code: 'torch.einsum("ij,ji->", A, B)      # one loop through A and B', anim: "eqLoop" },
     { tex: String.raw`T_{s_1 s_2 s_3} = A_{s_1 \alpha} B_{\alpha s_2 \beta} C_{\beta s_3}`, code: 'T = torch.einsum("ia,ajb,bk->ijk", A, B, C)   # a 3-site MPS', anim: "eqMps" },
   ],
-  topo: [
-    { tex: String.raw`\text{cost}\big((AB)C\big) = abc + acd, \qquad \text{cost}\big(A(BC)\big) = bcd + abd`, code: 'torch.einsum("ij,jk,kl->il", A, B, C)   # opt_einsum chooses the order\ntorch.linalg.multi_dot([A, B, C])        # cheapest bracketing of a chain', anim: "eqChain" },
-  ],
 };
 
 // External references, opened in a new tab (titles not translated).
@@ -56,17 +52,12 @@ const LINKS: Partial<Record<Section, { label: string; url?: string }[]>> = {
     { label: "J. C. Bridgeman & C. T. Chubb (2017), Hand-waving and interpretive dance: an introductory course on tensor networks, J. Phys. A 50, 223001 (arXiv:1603.03039)", url: "https://arxiv.org/abs/1603.03039" },
     { label: "Wikipedia: Penrose graphical notation", url: "https://en.wikipedia.org/wiki/Penrose_graphical_notation" },
   ],
-  topo: [
-    { label: "Wikipedia: Matrix chain multiplication", url: "https://en.wikipedia.org/wiki/Matrix_chain_multiplication" },
-    { label: "D. G. A. Smith & J. Gray (2018), opt_einsum, J. Open Source Softw. 3, 753", url: "https://doi.org/10.21105/joss.00753" },
-    { label: "PyTorch: torch.linalg.multi_dot", url: "https://docs.pytorch.org/docs/stable/generated/torch.linalg.multi_dot.html" },
-  ],
 };
 
 // colours shared by the diagrams
 const C = { node: "#dbeafe", edge: "#2563eb", leg: "#1f2937", idx: "#c2410c", grid: "#e5e7eb", muted: "#6b7280" };
 
-/** The Concept page's "Tensor maths" tab: tensors, einsum, Penrose diagrams, contraction order. */
+/** The Concept page's "Tensor maths" tab: tensors, einsum, Penrose diagrams. */
 export default function MathsConcept() {
   const [tensorView, setTensorView] = useState<"array" | "geometry">("array");
   const T = usePageText();
@@ -134,8 +125,6 @@ export default function MathsConcept() {
                       {s === "tensor" && f === "plain" && <RankFigure />}
                       {s === "einsum" && f === "precise" && <MatmulFigure />}
                       {s === "penrose" && f === "precise" && <PenroseFigures />}
-                      {s === "topo" && f === "plain" && <DagFigure />}
-                      {s === "topo" && f === "example" && <ChainTable />}
 
                     </div>
                   ))}
@@ -280,8 +269,6 @@ export function EqCards({ items, title }: { items: { tex: string; code: string; 
         {example && <div key={example.anim}>
           <div className="flex items-start gap-2 bg-gray-50 px-3 py-2">
             <div className="min-w-0 flex-1"><p className="text-center text-xs font-semibold text-gray-600">{T(`maths.examples.${example.anim}` as PageKey)}</p><Tex tex={example.tex} display /></div>
-            <button type="button" className="shrink-0 rounded px-2 py-1 text-sm text-gray-500 hover:bg-gray-200" aria-label={T("maths.examples.close")}
-              onClick={() => { const previous = selected; setSelected(null); if (previous !== null) focusTab(previous); }}>×</button>
           </div>
           <CodeBlock code={example.code} />
           <div className="p-2"><MathsAnim id={example.anim} /></div>
@@ -665,142 +652,6 @@ function PenroseFigures() {
   );
 }
 
-/* ---------- 4. operator graph and contraction order ---------- */
-
-const DAG = [
-  { op: "@", side: "W₁ (784, 256)" },
-  { op: "+", side: "b₁ (256,)" },
-  { op: "ReLU" },
-  { op: "@", side: "W₂ (256, 10)" },
-];
-const EDGES = ["x (B, 784)", "(B, 256)", "(B, 256)", "(B, 256)", "y (B, 10)"];
-
-function DagFigure() {
-  const T = usePageText();
-  const node = (x: number, y: number, t: string) => (
-    <g key={`${x}-${y}`}>
-      <rect x={x - 24} y={y - 15} width={48} height={30} rx={8} fill={C.node} stroke={C.edge} strokeWidth="1.5" />
-      <text x={x} y={y + 4} fontSize="12" fill={C.leg} textAnchor="middle" fontWeight="600">
-        {t}
-      </text>
-    </g>
-  );
-  const edgeDefs = (
-    <defs>
-      <marker id="maths-dag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-        <path d="M0,0 L10,5 L0,10 z" fill={C.leg} />
-      </marker>
-    </defs>
-  );
-  // wide screens: left to right; phones: top to bottom
-  const xs = [0, 1, 2, 3].map((i) => 135 + i * 125);
-  const ys = [0, 1, 2, 3].map((i) => 70 + i * 70);
-  return (
-    <Figure caption={T("maths.topo.fig")} testid="maths-dag">
-      <svg viewBox="0 0 640 130" className="hidden w-full sm:block" role="img" aria-label="operator graph">
-        {edgeDefs}
-        {EDGES.map((e, i) => {
-          const x1 = i === 0 ? 20 : xs[i - 1] + 24;
-          const x2 = i === 4 ? 625 : xs[i] - 24;
-          return (
-            <g key={i}>
-              <line x1={x1} y1={85} x2={x2} y2={85} stroke={C.leg} strokeWidth="1.5" markerEnd="url(#maths-dag)" />
-              <text x={(x1 + x2) / 2} y={105} fontSize="10.5" fill={C.idx} textAnchor="middle" fontFamily="monospace">
-                {e}
-              </text>
-            </g>
-          );
-        })}
-        {DAG.map((d, i) => (
-          <g key={i}>
-            {d.side && (
-              <>
-                <line x1={xs[i]} y1={28} x2={xs[i]} y2={68} stroke={C.leg} strokeWidth="1.5" markerEnd="url(#maths-dag)" />
-                <text x={xs[i]} y={20} fontSize="10.5" fill={C.muted} textAnchor="middle" fontFamily="monospace">
-                  {d.side}
-                </text>
-              </>
-            )}
-            {node(xs[i], 85, d.op)}
-          </g>
-        ))}
-      </svg>
-      <svg viewBox="0 0 300 340" className="mx-auto block w-full max-w-xs sm:hidden" role="img" aria-label="operator graph">
-        {edgeDefs}
-        {EDGES.map((e, i) => {
-          const y1 = i === 0 ? 8 : ys[i - 1] + 15;
-          const y2 = i === 4 ? 335 : ys[i] - 15;
-          return (
-            <g key={i}>
-              <line x1={90} y1={y1} x2={90} y2={y2} stroke={C.leg} strokeWidth="1.5" markerEnd="url(#maths-dag)" />
-              <text x={84} y={(y1 + y2) / 2 + 4} fontSize="11" fill={C.idx} textAnchor="end" fontFamily="monospace">
-                {e}
-              </text>
-            </g>
-          );
-        })}
-        {DAG.map((d, i) => (
-          <g key={i}>
-            {d.side && (
-              <>
-                <line x1={190} y1={ys[i]} x2={116} y2={ys[i]} stroke={C.leg} strokeWidth="1.5" markerEnd="url(#maths-dag)" />
-                <text x={196} y={ys[i] + 4} fontSize="11" fill={C.muted} fontFamily="monospace">
-                  {d.side}
-                </text>
-              </>
-            )}
-            {node(90, ys[i], d.op)}
-          </g>
-        ))}
-      </svg>
-    </Figure>
-  );
-}
-
-const CHAIN = [10, 100, 5, 50]; // A 10x100, B 100x5, C 5x50
-const fmt = (n: number) => n.toLocaleString("en").replace(/,/g, " ");
-
-function ChainTable() {
-  const T = usePageText();
-  const best = bestChain(CHAIN);
-  const [a, b, c, d] = CHAIN;
-  const rows: { order: Order; steps: string; inter: string }[] = [
-    { order: [[0, 1], 2], steps: `AB: ${a}·${b}·${c}, then (AB)C: ${a}·${c}·${d}`, inter: `${a} × ${c}` },
-    { order: [0, [1, 2]], steps: `BC: ${b}·${c}·${d}, then A(BC): ${a}·${b}·${d}`, inter: `${b} × ${d}` },
-  ];
-  return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200" data-testid="maths-chain">
-      <table className="w-full text-left text-xs">
-        <thead className="bg-gray-50 text-gray-500">
-          <tr>
-            <th className="px-3 py-2 font-medium">{T("maths.topo.table.order")}</th>
-            <th className="px-3 py-2 font-medium">{T("maths.topo.table.steps")}</th>
-            <th className="px-3 py-2 text-right font-medium">{T("maths.topo.table.cost")}</th>
-            <th className="px-3 py-2 font-medium">{T("maths.topo.table.inter")}</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100">
-          {rows.map((r) => {
-            const cost = chainCost(CHAIN, r.order).cost;
-            const isBest = cost === best.cost;
-            return (
-              <tr key={orderText(r.order)} className={isBest ? "bg-emerald-50/70" : ""}>
-                <td className="px-3 py-2 font-mono font-semibold text-gray-800">{orderText(r.order)}</td>
-                <td className="px-3 py-2 font-mono text-[11px] text-gray-700">{r.steps}</td>
-                <td className="px-3 py-2 text-right font-mono text-gray-800">
-                  {fmt(cost)}
-                  {isBest && <span className="ml-2 font-sans text-[11px] text-emerald-700">✓ {T("maths.topo.best")}</span>}
-                </td>
-                <td className="px-3 py-2 font-mono text-[11px] text-gray-700">{r.inter}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
 /* ---------- 6. recap ---------- */
 
 function Recap() {
@@ -823,6 +674,7 @@ function Recap() {
       ))}
       <p className="rounded-lg border border-blue-100 bg-blue-50/60 px-4 py-2.5 text-blue-900">
         <RichText text={T("maths.recap.test")} />
+        <a href="#/concept/dataflow/topo" className="ml-2 text-blue-700 underline">{T("maths.topo.title")} →</a>
       </p>
     </>
   );

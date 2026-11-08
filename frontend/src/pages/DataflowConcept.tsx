@@ -1,3 +1,4 @@
+import TopologyCard from "./TopologyCard";
 import RooflineCard from "./RooflineCard";
 import CodeBlock from "../components/CodeBlock";
 import DataflowAnim from "../components/DataflowAnim";
@@ -8,7 +9,7 @@ import { usePageText, type PageKey } from "../content/pages";
 import type { FlowCase } from "../dataflowAnim";
 
 // "mem" (the cost of the output) sits after vectorisation; sections are numbered by position
-const SECTIONS = ["s1", "s2", "mem", "s3", "s4", "roof", "s5", "s6", "s7"] as const;
+const SECTIONS = ["s1", "s2", "mem", "s3", "s4", "roof", "s5", "topo", "s6", "s7"] as const;
 type Section = (typeof SECTIONS)[number];
 
 // DataflowAnim picture of a card, drawn after this paragraph (s1 and mem have TensorLab / PairMemory, s6 the table)
@@ -87,7 +88,7 @@ export default function DataflowConcept() {
     <div className="mx-auto flex max-w-6xl gap-8 px-5 pb-10">
       <PageToc
         scrollRoot="concept-scroll"
-        items={SECTIONS.map((key, i) => ({ id: `flow-${key}`, mark: i + 1, label: T(key === "roof" ? "maths.roof.title" : `flow.${key}.title` as PageKey) }))}
+        items={SECTIONS.map((key, i) => ({ id: `flow-${key}`, mark: i + 1, label: T(key === "roof" || key === "topo" ? `maths.${key}.title` : `flow.${key}.title` as PageKey) }))}
       />
       <article className="min-w-0 max-w-4xl flex-1 space-y-10">
         <header>
@@ -98,7 +99,7 @@ export default function DataflowConcept() {
           </p>
         </header>
 
-        {SECTIONS.map((key, i) => key === "roof" ? <RooflineCard key={key} number={i+1}/> : (
+        {SECTIONS.map((key, i) => key === "roof" ? <RooflineCard key={key} number={i+1}/> : key === "topo" ? <TopologyCard key={key} number={i+1}/> : (
           <section key={key} id={`flow-${key}`} className="scroll-mt-6 rounded-xl border border-gray-200 bg-white p-6">
             <h2 className="flex flex-wrap items-baseline gap-3 text-lg font-semibold">
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-sm text-white">
