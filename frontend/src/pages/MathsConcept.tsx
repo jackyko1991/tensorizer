@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
 import Tex, { RichText } from "../components/Tex";
@@ -199,8 +199,9 @@ function TensorGeometry() {
     </figure>
     <h3 className="pt-1 text-sm font-semibold text-gray-900">{l?"再拆開：份量 × 輸出方向 ⊗ 輸入讀尺":"Break it down: amount × output direction ⊗ input reader"}</h3>
     {FEYNMAN.map(f=><div key={f} className="space-y-4">
-      <Feynman kind={f} text={geometry[f][l]} label={T(`maths.label.${f}`)} />
-      {f==="analogy" && <TensorPiecesDiagram/>}
+      <Feynman kind={f} text={geometry[f][l]} label={T(`maths.label.${f}`)}>
+        {f==="example" && <TensorPiecesDiagram/>}
+      </Feynman>
     </div>)}
     <a className="text-xs text-blue-700 hover:underline" href="https://www.damtp.cam.ac.uk/user/tong/gr/grhtml/S2.html" target="_blank" rel="noreferrer">David Tong: Differential Geometry, tensors and dual bases ↗</a>
   </div>;
@@ -213,11 +214,12 @@ const FEYNMAN_STYLE: Record<(typeof FEYNMAN)[number], string> = {
   example: "rounded-lg border-l-4 border-emerald-300 bg-emerald-50/70 px-4 py-2.5 text-emerald-950",
 };
 
-export function Feynman({ kind, text, label }: { kind: (typeof FEYNMAN)[number]; text: string; label: string }) {
+export function Feynman({ kind, text, label, children }: { kind: (typeof FEYNMAN)[number]; text: string; label: string; children?: ReactNode }) {
   return (
     <div className={FEYNMAN_STYLE[kind]} data-feynman={kind}>
       {label && <p className="mb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">{label}</p>}
       <ListOrText text={text} />
+      {children && <div className="mt-3">{children}</div>}
     </div>
   );
 }
