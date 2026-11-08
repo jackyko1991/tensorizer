@@ -547,6 +547,7 @@
   "maths.label.example": "Kleines Beispiel",
   "maths.label.links": "Weiterlesen",
   "maths.label.code": "Gleichung und PyTorch",
+  "maths.examples.close": "Beispiel schließen",
   "maths.tensor.title": "Was ein Tensor ist",
   "maths.tensor.plain": "Ein Tensor ist eine Kiste voller Zahlen, angeordnet entlang einiger Richtungen. Die Zahl der Richtungen ist seine **Stufe** (oder Ordnung): eine einzelne Zahl hat Stufe 0, eine Liste Stufe 1, eine Tabelle Stufe 2, ein Stapel Tabellen Stufe 3 und so weiter. Wie lang die Kiste in jeder Richtung ist, ist ihre **Form** (Shape). Um eine Zahl herauszugreifen, nennt man eine Position pro Richtung: diese Position ist ein **Index**.",
   "maths.tensor.analogy": "Denk an Adressen. In einem Dorf reicht die Hausnummer (Stufe 1). In einem Wohnblock braucht man Stockwerk und Tür (Stufe 2). In einer Stadt aus Hochhäusern braucht man Gebäude, Stockwerk und Tür (Stufe 3). Die Form sagt, wie viele Gebäude, Stockwerke und Türen es gibt; jede Wohnung ist eine Komponente; die ganze Stadt ist der Tensor.",

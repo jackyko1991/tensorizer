@@ -547,6 +547,7 @@
   "maths.label.example": "Ejemplo pequeño",
   "maths.label.links": "Para saber más",
   "maths.label.code": "Ecuación y PyTorch",
+  "maths.examples.close": "Cerrar ejemplo",
   "maths.tensor.title": "Qué es un tensor",
   "maths.tensor.plain": "Un tensor es una caja de números dispuestos a lo largo de unas cuantas direcciones. El número de direcciones es su **rango** (u orden): un número suelto tiene rango 0, una lista rango 1, una tabla rango 2, una pila de tablas rango 3, y así sucesivamente. Lo larga que es la caja en cada dirección es su **forma**. Para señalar un número das una posición por dirección: esa posición es un **índice**.",
   "maths.tensor.analogy": "Piensa en direcciones postales. En un pueblo basta con el número de la casa (rango 1). En un bloque de pisos necesitas planta y puerta (rango 2). En una ciudad de torres necesitas edificio, planta y puerta (rango 3). La forma dice cuántos edificios, plantas y puertas hay; cada piso es una componente; la ciudad entera es el tensor.",

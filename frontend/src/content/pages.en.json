@@ -547,6 +547,7 @@
   "maths.label.example": "Tiny example",
   "maths.label.links": "Read more",
   "maths.label.code": "Equation and PyTorch",
+  "maths.examples.close": "Close example",
   "maths.tensor.title": "What a tensor is",
   "maths.tensor.plain": "A tensor is a box of numbers laid out along a few directions. The number of directions is its **rank** (or order): a single number has rank 0, a list rank 1, a table rank 2, a stack of tables rank 3, and so on. How long the box is in each direction is its **shape**. To pick out one number you name one position per direction: that position is an **index**.",
   "maths.tensor.analogy": "Think of addresses. In a village, a house number is enough (rank 1). In a block of flats you need floor and door (rank 2). In a city of tower blocks you need building, floor and door (rank 3). The shape says how many buildings, floors and doors there are; each flat is one component; the whole city is the tensor.",

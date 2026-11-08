@@ -547,6 +547,7 @@
   "maths.label.example": "Petit exemple",
   "maths.label.links": "En savoir plus",
   "maths.label.code": "Équation et PyTorch",
+  "maths.examples.close": "Fermer l’exemple",
   "maths.tensor.title": "Qu'est-ce qu'un tenseur ?",
   "maths.tensor.plain": "Un tenseur est une boîte de nombres rangés selon quelques directions. Le nombre de directions est son **rang** (ou ordre) : un nombre seul est de rang 0, une liste de rang 1, un tableau de rang 2, une pile de tableaux de rang 3, et ainsi de suite. La longueur de la boîte dans chaque direction est sa **forme**. Pour désigner un nombre, on donne une position par direction : cette position est un **indice**.",
   "maths.tensor.analogy": "Pensez aux adresses. Dans un village, un numéro de maison suffit (rang 1). Dans un immeuble, il faut l'étage et la porte (rang 2). Dans une ville de tours, il faut la tour, l'étage et la porte (rang 3). La forme dit combien il y a de tours, d'étages et de portes ; chaque appartement est une composante ; la ville entière est le tenseur.",

@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
 import Tex, { RichText } from "../components/Tex";
@@ -235,26 +235,51 @@ export function ListOrText({ text }: { text: string }) {
   );
 }
 
+const EQUATION_TAB_LABELS: Partial<Record<MathsCase, string>> = {
+  eqRank: "\\operatorname{rank}", eqRotate: "Rv",
+  eqDot: "x\\cdot y", eqMatvec: "Ax", eqMatmul: "AB",
+  eqTrace: "\\operatorname{tr}(A)", eqOuter: "u\\otimes v", eqBatch: "A_bB_b",
+  eqLoop: "\\operatorname{tr}(AB)", eqMps: "\\mathrm{MPS}",
+  eqChain: "(AB)C\\;/\\;A(BC)", eqRoof: "P=\\min(P_{\\max},\\beta I)",
+};
+
 export function EqCards({ items, title }: { items: { tex: string; code: string; anim: MathsCase }[]; title: string }) {
+  const [selected, setSelected] = useState<number | null>(null);
+  const uid = useId().replaceAll(":", "");
+  const T = usePageText();
+  const example = selected === null ? null : items[selected];
+  const focusTab = (index: number) => document.getElementById(`${uid}-tab-${index}`)?.focus();
   return (
-    <div>
+    <div data-testid="equation-examples">
       <p className="mb-2 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">{title}</p>
-      <div className="grid gap-3 md:grid-cols-2">
-        {items.map((e, i) => {
-          // a card without a partner (a single one, or an odd last one) spans the whole row
-          const full = items.length % 2 === 1 && i === items.length - 1;
-          return (
-            <div key={e.tex} className={`overflow-hidden rounded-lg border border-gray-200 bg-white ${full ? "col-span-full" : ""}`}>
-              <div className="bg-gray-50 px-2 py-1 text-base">
-                <Tex tex={e.tex} display />
-              </div>
-              <CodeBlock code={e.code} />
-              <div className="p-2">
-                <MathsAnim id={e.anim} compact={!full} />
-              </div>
-            </div>
-          );
-        })}
+      <div className="flex flex-wrap gap-1 border-b border-gray-200" role="tablist" aria-label={title}>
+        {items.map((e, i) => (
+          <button key={e.anim} type="button" role="tab" id={`${uid}-tab-${i}`} aria-selected={selected === i}
+            aria-expanded={selected === i} aria-controls={`${uid}-panel`} tabIndex={(selected ?? 0) === i ? 0 : -1}
+            onClick={() => setSelected(current => current === i ? null : i)}
+            onKeyDown={event => {
+              if (event.key === "Escape") { setSelected(null); focusTab(i); return; }
+              const next = event.key === "Home" ? 0 : event.key === "End" ? items.length - 1
+                : event.key === "ArrowRight" ? (i + 1) % items.length
+                : event.key === "ArrowLeft" ? (i + items.length - 1) % items.length : null;
+              if (next !== null) { event.preventDefault(); setSelected(next); focusTab(next); }
+            }}
+            className={`rounded-t-md border-b-2 px-4 py-2 text-sm transition-colors ${selected === i ? "border-blue-600 bg-blue-50 text-blue-800" : "border-transparent text-gray-600 hover:bg-gray-50 hover:text-blue-700"}`}>
+            <Tex tex={EQUATION_TAB_LABELS[e.anim] ?? e.tex} />
+          </button>
+        ))}
+      </div>
+      <div id={`${uid}-panel`} role="tabpanel" aria-labelledby={selected === null ? undefined : `${uid}-tab-${selected}`}
+        hidden={selected === null} tabIndex={0} className="overflow-hidden rounded-b-lg border border-t-0 border-gray-200 bg-white">
+        {example && <div key={example.anim}>
+          <div className="flex items-start gap-2 bg-gray-50 px-3 py-2">
+            <div className="min-w-0 flex-1"><Tex tex={example.tex} display /></div>
+            <button type="button" className="shrink-0 rounded px-2 py-1 text-sm text-gray-500 hover:bg-gray-200" aria-label={T("maths.examples.close")}
+              onClick={() => { const previous = selected; setSelected(null); if (previous !== null) focusTab(previous); }}>×</button>
+          </div>
+          <CodeBlock code={example.code} />
+          <div className="p-2"><MathsAnim id={example.anim} /></div>
+        </div>}
       </div>
     </div>
   );
