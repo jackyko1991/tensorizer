@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { usePageText, type PageKey } from "../content/pages";
+import {memoryPercent,MEMORY_TICKS,type MemoryScale} from "../pairMemory";
 
 /** One step of the lab: a view or a new tensor, described by what PyTorch actually stores. */
 interface Step {
@@ -266,7 +267,8 @@ function size(bytes: number): string {
   if (bytes >= 1e12) return `${(bytes / 1e12).toFixed(1)} TB`;
   if (bytes >= GB) return `${(bytes / GB).toFixed(1)} GB`;
   if (bytes >= 1e6) return `${(bytes / 1e6).toFixed(1)} MB`;
-  return `${(bytes / 1e3).toFixed(1)} kB`;
+  if (bytes >= 1e3) return `${(bytes / 1e3).toFixed(1)} kB`;
+  return `${bytes} B`;
 }
 
 /** How big the pairwise tensor D (N, N, 3) gets: slide N and watch it pass typical GPU memory sizes. */
@@ -274,10 +276,11 @@ export function PairMemory() {
   const T = usePageText();
   const L = (k: string) => T(`lab.${k}` as PageKey);
   const [n, setN] = useState(6);
+  const [scale,setScale]=useState<MemoryScale>("linear");
   const f32 = 12 * n * n;
   const f64 = 24 * n * n;
-  // bar on a log scale from 1 MB to 1 TB
-  const pos = (b: number) => `${Math.min(100, Math.max(0, ((Math.log10(b) - 6) / 6) * 100))}%`;
+  const pos=(bytes:number)=>`${memoryPercent(bytes,scale)}%`;
+  const ticks=MEMORY_TICKS[scale];
 
   return (
     <figure className="rounded-lg border border-gray-200 bg-gray-50 p-4" data-testid="pair-memory">
@@ -290,7 +293,7 @@ export function PairMemory() {
           step={0.01}
           value={Math.log10(n)}
           onChange={(e) => setN(Math.round(10 ** Number(e.target.value)))}
-          className="flex-1 accent-blue-600"
+          className="min-w-0 flex-1 accent-blue-600"
           aria-label={L("particles")}
         />
       </label>
@@ -298,20 +301,20 @@ export function PairMemory() {
         {[6,12,1000,10000,100000].map(count=><button key={count} type="button" aria-pressed={n===count} onClick={()=>setN(count)} className={`rounded border px-2 py-1 text-xs ${n===count?"border-blue-500 bg-blue-50 text-blue-700":"border-gray-200 bg-white text-gray-600"}`}>{count.toLocaleString()}</button>)}
       </div>
       <PairTensorDots n={n}/>
-      <div className="relative mt-5 h-6 rounded bg-white ring-1 ring-gray-200">
-        <div
-          className="absolute inset-y-0 left-0 rounded bg-blue-500/80 transition-all duration-200"
-          style={{ width: pos(f32) }}
-        />
-        <div
-          className="absolute inset-y-0 left-0 rounded border-r-2 border-dashed border-violet-500 transition-all duration-200"
-          style={{ width: pos(f64) }}
-        />
-        {GPUS.map((g) => (
-          <div key={g.label} className="absolute -top-4 h-10 border-l border-red-400" style={{ left: pos(g.bytes) }}>
-            <span className="absolute -top-0.5 left-1 text-[10px] whitespace-nowrap text-red-600">{g.label}</span>
-          </div>
-        ))}
+      <div className="mt-3 flex flex-wrap items-center gap-2" role="group" aria-label={L("memoryScale")}>
+        <span className="text-xs text-gray-600">{L("memoryScale")}</span>
+        {(["linear","log"] as const).map(value=><button key={value} type="button" data-memory-scale={value} aria-pressed={scale===value} onClick={()=>setScale(value)} className={`rounded border px-2 py-1 text-xs ${scale===value?"border-blue-500 bg-blue-50 text-blue-700":"border-gray-200 bg-white text-gray-600"}`}>{L(value==="linear"?"scaleLinear":"scaleLog")}</button>)}
+      </div>
+      <p className="mt-2 text-[11px] text-gray-600" data-testid="memory-scale-note">{L(scale==="linear"?"scaleLinearNote":"scaleLogNote")}</p>
+      <div className="relative mt-14 h-6 rounded bg-white ring-1 ring-gray-200" data-testid="memory-capacity-plot" data-scale={scale}>
+        <div data-memory-dtype="float32" className="absolute inset-y-0 left-0 rounded bg-blue-500/80 transition-all duration-200" style={{width:pos(f32)}} title={`float32: ${size(f32)}`}/>
+        <div data-memory-dtype="float64" className="absolute inset-y-0 border-l-2 border-dashed border-violet-500 transition-all duration-200" style={{left:pos(f64)}} title={`float64: ${size(f64)}`}/>
+        {GPUS.map((g,i)=><div key={g.label} data-gpu-bytes={g.bytes} className="absolute border-l border-red-400" style={{left:pos(g.bytes),top:-18-i*15,height:42+i*15}}>
+          <span className="absolute -top-1 z-10 whitespace-nowrap bg-gray-50 px-1 text-[10px] leading-none text-red-600" style={memoryPercent(g.bytes,scale)>70?{right:1}:{left:1}}>{g.label}</span>
+        </div>)}
+      </div>
+      <div className="relative mt-1 h-6 font-mono text-[10px] text-gray-500" data-testid="memory-axis">
+        {ticks.map((bytes,i)=><span key={bytes} data-memory-tick={bytes} className={`absolute top-0 whitespace-nowrap ${scale==="linear"&&i===3?"hidden sm:inline":""}`} style={{left:pos(bytes),transform:i===0?"none":i===ticks.length-1?"translateX(-100%)":"translateX(-50%)"}}><span className="absolute -top-1 h-1 border-l border-gray-300" style={{left:i===0?0:i===ticks.length-1?"100%":"50%"}}/>{bytes===0?"0 B":size(bytes).replace(".0 "," ")}</span>)}
       </div>
       <p className="mt-2 font-mono text-xs text-gray-700" data-testid="pair-bytes">
         D ({n.toLocaleString()}, {n.toLocaleString()}, 3): float32 {size(f32)} / float64 {size(f64)}
