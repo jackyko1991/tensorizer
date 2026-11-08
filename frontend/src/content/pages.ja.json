@@ -1457,5 +1457,15 @@
   "maths.tensor.geometryTab": "幾何的な部品",
   "maths.topo.takeaway": "どのひもから先に結ぶかで、仕事が 10 分の 1 になることもあります。",
   "maths.topo.misconception": "**「行列のまとめ方を変えても何も変わらない。」** 行列の並び順を保てば、括弧の付け方を変えても厳密な数学的結果は同じです。しかし、中間テンソルの大きさや計算量は大きく変わることがあります。",
-  "maths.roof.misconception": "**「速い GPU ならどのカーネルも速くなる。」** 速くなるのは演算律速のものだけです。メモリ律速のカーネルはメモリの速さで動くので、FLOP/s を増やしても役に立ちません。役立つのは融合やデータの再利用の改善です。"
+  "maths.roof.misconception": "**「速い GPU ならどのカーネルも速くなる。」** 速くなるのは演算律速のものだけです。メモリ律速のカーネルはメモリの速さで動くので、FLOP/s を増やしても役に立ちません。役立つのは融合やデータの再利用の改善です。",
+  "flow.tensorcore.tabVector": "Python ループ → ベクトル化",
+  "flow.tensorcore.tabHardware": "ハードウェア：FMA → Tensor Core",
+  "flow.tensorcore.intro": "ベクトル化は処理をまとめてコンパイル済みカーネルに渡します。その下の層で、Tensor Core は行列の積和をブロック単位のハードウェア演算にまとめます。同じ小さな計算を二つの粒度で比べましょう。",
+  "flow.tensorcore.title": "一つずつの積和か、行列ブロック全体の積和か？",
+  "flow.tensorcore.s0": "A、B、C は 4×4 行列です。小さな立方体は一つの積を表し、16 本の出力列にはそれぞれ四つの積があります。",
+  "flow.tensorcore.s1": "左側：出力ごとに四つのスカラー積和を行い、ブロック全体で 64 回の FMA 更新になります。",
+  "flow.tensorcore.s2": "右側：一つの 4×4×4 MMA 数学演算で同じ 64 個の積をまとめ、16 個の出力を更新します。",
+  "flow.tensorcore.s3": "両方とも D = AB + C を計算します。緑の出力セルを選んで同じ成分を比べましょう。",
+  "flow.tensorcore.caption": "この Volta の例は FP16 入力と FP32 累積を使います。Pascal も多数の FMA を並列実行できます。再生ステップは演算の粒度を示し、クロック数や実測の速度比ではありません。",
+  "flow.tensorcore.result": "出力 D 全体を表示"
 }

@@ -1,3 +1,4 @@
+import VectorizationExamples from "../components/TensorCoreAnim";
 import TopologyCard from "./TopologyCard";
 import RooflineCard from "./RooflineCard";
 import CodeBlock from "../components/CodeBlock";
@@ -117,7 +118,7 @@ export default function DataflowConcept() {
                       </p>
                       {key === "s1" && k === 2 && <TensorLab />}
                       {key === "mem" && k === 1 && <PairMemory />}
-                      {ANIM_AFTER[key] === k && <DataflowAnim id={key as FlowCase} />}
+                      {ANIM_AFTER[key] === k && (key === "s2" ? <VectorizationExamples/> : <DataflowAnim id={key as FlowCase} />)}
                     </div>
                   ),
               )}

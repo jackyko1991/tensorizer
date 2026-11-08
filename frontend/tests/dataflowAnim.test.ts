@@ -65,8 +65,8 @@ test("the animations' flow.anim.* and flow.code.* keys exist in pages.en.json an
 
 test("every card of the tab has an illustration", () => {
   const ids = sections();
-  assert.deepEqual(ids, ["s1", "s2", "mem", "s3", "s4", "s5", "s6", "s7"]);
-  const own: Record<string, string> = { s1: "<TensorLab", mem: "<PairMemory", s6: "<FrameworkTable" };
+  assert.deepEqual(ids, ["s1", "s2", "mem", "s3", "s4", "roof", "s5", "topo", "s6", "s7"]);
+  const own: Record<string, string> = { s1: "<TensorLab", mem: "<PairMemory", s6: "<FrameworkTable", roof: "<RooflineCard", topo: "<TopologyCard" };
   for (const id of ids) {
     if (own[id]) assert.ok(page.includes(own[id]), `${id} lost ${own[id]}`);
     else assert.ok((FLOW_CASES as string[]).includes(id), `${id} has no DataflowAnim case`);

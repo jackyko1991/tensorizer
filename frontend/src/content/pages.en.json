@@ -1457,5 +1457,15 @@
   "maths.tensor.geometryTab": "Geometric pieces",
   "maths.topo.takeaway": "Which strings you tie first can make the job ten times shorter.",
   "maths.topo.misconception": "**“Changing the grouping makes no difference.”** Keeping matrix order fixed, regrouping preserves the exact mathematical result, but intermediate sizes and computational cost can change dramatically.",
-  "maths.roof.misconception": "**\"A faster GPU makes every kernel faster.\"** Only compute-bound ones. A memory-bound kernel runs at the speed of memory; more FLOP/s cannot help it, while fusion or better reuse of data can."
+  "maths.roof.misconception": "**\"A faster GPU makes every kernel faster.\"** Only compute-bound ones. A memory-bound kernel runs at the speed of memory; more FLOP/s cannot help it, while fusion or better reuse of data can.",
+  "flow.tensorcore.tabVector": "Python loop → vectorization",
+  "flow.tensorcore.tabHardware": "Hardware: FMA → Tensor Core",
+  "flow.tensorcore.intro": "Vectorization sends a batch of work to a compiled kernel. One level deeper, a Tensor Core groups matrix multiply–accumulate work into a hardware tile operation. Compare the same small matrix calculation at these two granularities.",
+  "flow.tensorcore.title": "One multiply–accumulate, or a whole matrix tile?",
+  "flow.tensorcore.s0": "A, B and C are 4×4 matrices. Each little cube is one product; each of the 16 output columns contains four products.",
+  "flow.tensorcore.s1": "Follow the left side: four scalar multiply–accumulates per output, or 64 FMA updates for the tile.",
+  "flow.tensorcore.s2": "Follow the right side: one 4×4×4 MMA mathematical operation combines the same 64 products and updates 16 outputs.",
+  "flow.tensorcore.s3": "Both paths compute D = AB + C. Select a green output cell to inspect the same entry on both sides.",
+  "flow.tensorcore.caption": "This Volta example uses FP16 inputs and FP32 accumulation. Pascal can also run many FMAs in parallel. The playback steps illustrate operation granularity, not clock cycles or a measured speed ratio.",
+  "flow.tensorcore.result": "Show the complete output D"
 }

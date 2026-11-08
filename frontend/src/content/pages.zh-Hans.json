@@ -1457,5 +1457,15 @@
   "maths.tensor.geometryTab": "拆开几何部件",
   "maths.topo.takeaway": "先系哪几根绳子，可能让工作缩短十倍。",
   "maths.topo.misconception": "**“矩阵怎么分组相乘都一样。”** 保持矩阵的先后次序不变，只改括号分组，精确的数学结果相同；但中间张量的大小与运算成本可能差很多。",
-  "maths.roof.misconception": "**“更快的 GPU 会让每个内核都变快。”** 只有受计算限制的才会。受内存限制的内核以内存的速度运行；再多的 FLOP/s 也帮不上忙，而融合或更好地复用数据才有用。"
+  "maths.roof.misconception": "**“更快的 GPU 会让每个内核都变快。”** 只有受计算限制的才会。受内存限制的内核以内存的速度运行；再多的 FLOP/s 也帮不上忙，而融合或更好地复用数据才有用。",
+  "flow.tensorcore.tabVector": "Python 循环 → 向量化",
+  "flow.tensorcore.tabHardware": "硬件：FMA → Tensor Core",
+  "flow.tensorcore.intro": "向量化把一批工作交给编译后的内核；再往下一层，Tensor Core 把矩阵块的乘加打包成硬件运算。用同一个小矩阵，看看这两种运算粒度。",
+  "flow.tensorcore.title": "逐项乘加，还是整块矩阵乘加？",
+  "flow.tensorcore.s0": "A、B、C 都是 4×4 矩阵。每个小方块是一个乘积，16 根输出柱各有四个乘积。",
+  "flow.tensorcore.s1": "先看左边：每个输出逐项做四次乘加，整块共 64 次 FMA 更新。",
+  "flow.tensorcore.s2": "再看右边：一个 4×4×4 MMA 数学操作，合并同样的 64 个乘积，更新 16 个输出。",
+  "flow.tensorcore.s3": "两条路都算 D = AB + C。点击绿色输出格，对照同一个结果分量。",
+  "flow.tensorcore.caption": "此 Volta 例子采用 FP16 输入、FP32 累加；Pascal 也能并行执行很多 FMA。播放步骤用于说明运算粒度，不代表时钟周期或实测倍速。",
+  "flow.tensorcore.result": "查看完整输出 D"
 }

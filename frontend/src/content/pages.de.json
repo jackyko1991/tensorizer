@@ -1457,5 +1457,15 @@
   "maths.tensor.geometryTab": "Geometrische Bausteine",
   "maths.topo.takeaway": "Welche Schnüre du zuerst verknotest, kann die Arbeit zehnmal kürzer machen.",
   "maths.topo.misconception": "**„Die Klammerung macht keinen Unterschied.“** Bei unveränderter Reihenfolge der Matrizen bleibt das exakte mathematische Ergebnis gleich; die Größe der Zwischenergebnisse und der Rechenaufwand können sich jedoch stark ändern.",
-  "maths.roof.misconception": "**„Eine schnellere GPU macht jeden Kernel schneller.“** Nur die rechengebundenen. Ein speichergebundener Kernel läuft mit der Geschwindigkeit des Speichers; mehr FLOP/s helfen ihm nicht, Fusion oder bessere Wiederverwendung der Daten dagegen schon."
+  "maths.roof.misconception": "**„Eine schnellere GPU macht jeden Kernel schneller.“** Nur die rechengebundenen. Ein speichergebundener Kernel läuft mit der Geschwindigkeit des Speichers; mehr FLOP/s helfen ihm nicht, Fusion oder bessere Wiederverwendung der Daten dagegen schon.",
+  "flow.tensorcore.tabVector": "Python-Schleife → Vektorisierung",
+  "flow.tensorcore.tabHardware": "Hardware: FMA → Tensor Core",
+  "flow.tensorcore.intro": "Vektorisierung übergibt ein Arbeitspaket an einen kompilierten Kernel. Eine Ebene tiefer fasst ein Tensor Core Matrix-Multiplikation und Akkumulation zu einer Hardware-Blockoperation zusammen. Vergleiche dieselbe kleine Rechnung auf beiden Ebenen.",
+  "flow.tensorcore.title": "Einzelne Multiplikation und Addition oder ganzer Matrixblock?",
+  "flow.tensorcore.s0": "A, B und C sind 4×4-Matrizen. Jeder Würfel ist ein Produkt; jede der 16 Ausgabespalten enthält vier Produkte.",
+  "flow.tensorcore.s1": "Links: vier skalare Multiplikations-Akkumulationen pro Ausgabe, insgesamt 64 FMA-Aktualisierungen für den Block.",
+  "flow.tensorcore.s2": "Rechts: Eine mathematische 4×4×4-MMA-Operation kombiniert dieselben 64 Produkte und aktualisiert 16 Ausgaben.",
+  "flow.tensorcore.s3": "Beide Wege berechnen D = AB + C. Wähle ein grünes Ausgabefeld, um denselben Eintrag zu vergleichen.",
+  "flow.tensorcore.caption": "Dieses Volta-Beispiel nutzt FP16-Eingaben und FP32-Akkumulation. Auch Pascal führt viele FMAs parallel aus. Die Schritte zeigen die Granularität, keine Taktzyklen oder gemessenen Geschwindigkeitsverhältnisse.",
+  "flow.tensorcore.result": "Vollständige Ausgabe D anzeigen"
 }
