@@ -174,20 +174,34 @@ function TensorGeometry() {
   const { lang } = useLang();
   const T = usePageText();
   const l = lang.startsWith("zh") ? 1 : 0;
+  const symbols = [String.raw`T^i{}_j`, String.raw`e_i,\;\varepsilon^j`, String.raw`T\leftrightarrow T'`, "(1,1)", "g", String.raw`\nabla`];
   return <div className="space-y-4" data-testid="tensor-geometric-view">
+    <div className="overflow-x-auto rounded-lg border border-gray-200" data-testid="tensor-components-table">
+      <table className="w-full text-left text-xs leading-relaxed">
+        <caption className="border-b border-gray-200 bg-gray-50 px-4 py-2 text-left text-sm font-semibold text-gray-900">{l?"先看全貌：張量與周邊工具":"The whole picture: a tensor and its supporting tools"}</caption>
+        <thead className="bg-gray-50 text-gray-500"><tr>
+          <th scope="col" className="px-3 py-2">{l?"要素":"Element"}</th>
+          <th scope="col" className="px-3 py-2">{l?"記號":"Notation"}</th>
+          <th scope="col" className="px-3 py-2">{l?"做什麼":"Its job"}</th>
+        </tr></thead>
+        <tbody>{geometry.parts.map(([name,role],i)=><tr key={name[0]} className="border-t border-gray-100 align-top">
+          <th scope="row" className="px-3 py-2 font-medium text-gray-800">{name[l]}</th>
+          <td className="px-3 py-2"><Tex tex={symbols[i]}/></td>
+          <td className="px-3 py-2 text-gray-600">{role[l]}</td>
+        </tr>)}</tbody>
+      </table>
+    </div>
+    <p className="text-xs text-gray-600">{geometry.note[l]}</p>
+    <figure className="overflow-hidden rounded-lg border border-gray-200 bg-gray-50" data-testid="tensor-assembled-equation">
+      <figcaption className="px-4 pt-3 text-sm font-semibold">{l?"把分量、方向和讀尺拼成一個張量":"Assemble the coefficients, directions and readers"}</figcaption>
+      <p className="px-4 pt-2 text-xs text-gray-600">{geometry.legend[l]}</p>
+      <div className="px-3 py-2"><Tex tex={String.raw`T=\sum_{i,j=1}^{2}T^i{}_j\,(e_i\otimes\varepsilon^j)`} display/></div>
+    </figure>
+    <h3 className="pt-1 text-sm font-semibold text-gray-900">{l?"再拆開：份量 × 輸出方向 ⊗ 輸入讀尺":"Break it down: amount × output direction ⊗ input reader"}</h3>
     {FEYNMAN.map(f=><div key={f} className="space-y-4">
       <Feynman kind={f} text={geometry[f][l]} label={T(`maths.label.${f}`)} />
       {f==="analogy" && <TensorPiecesDiagram/>}
     </div>)}
-    <figure className="overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
-      <figcaption className="px-4 pt-3 text-xs text-gray-600">{geometry.legend[l]}</figcaption>
-      <div className="px-3 py-2"><Tex tex={String.raw`T=\sum_{i,j=1}^{2}T^i{}_j\,(e_i\otimes\varepsilon^j),\qquad (e_i\otimes\varepsilon^j)(v)=\varepsilon^j(v)e_i`} display/></div>
-    </figure>
-    <details className="rounded-lg border border-gray-200 bg-gray-50/50 p-3">
-      <summary className="cursor-pointer text-sm font-medium text-blue-800">{geometry.partsTitle[l]}</summary>
-      <dl className="mt-3 grid gap-x-4 gap-y-2 text-xs sm:grid-cols-[auto_1fr]">{geometry.parts.map(([name,role])=><div key={name[0]} className="contents"><dt className="font-semibold">{name[l]}</dt><dd className="text-gray-600">{role[l]}</dd></div>)}</dl>
-      <p className="mt-3 text-xs text-gray-600">{geometry.note[l]}</p>
-    </details>
     <a className="text-xs text-blue-700 hover:underline" href="https://www.damtp.cam.ac.uk/user/tong/gr/grhtml/S2.html" target="_blank" rel="noreferrer">David Tong: Differential Geometry, tensors and dual bases ↗</a>
   </div>;
 }

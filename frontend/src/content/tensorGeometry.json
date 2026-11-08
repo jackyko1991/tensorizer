@@ -19,10 +19,6 @@
     "Here i chooses an output arrow, j an input reader; Σ adds all four rules. The reader-basis pairing εʲ(eᵢ)=δʲᵢ means “1 for a match, 0 otherwise”, not a metric assumption.",
     "i 選送出的箭頭，j 選讀取用的尺；Σ 把四條規則加起來。εʲ(eᵢ)=δʲᵢ 表示「配對為 1，否則為 0」，不是對長度或垂直性的假設。"
   ],
-  "partsTitle": [
-    "Where the other pieces fit",
-    "其他零件放在哪裡？"
-  ],
   "parts": [
     [
       [
@@ -60,8 +56,8 @@
         "型別／對稱性"
       ],
       [
-        "Which input and output slots? Some tensors have extra symmetries.",
-        "有哪些輸入、輸出位置？部分張量另有對稱條件。"
+        "One output-direction slot and one input-reader slot. Some tensors also obey symmetry rules.",
+        "本例有一個輸出方向位置、一個輸入讀尺位置；部分張量另有對稱規則。"
       ]
     ],
     [
