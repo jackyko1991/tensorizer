@@ -124,7 +124,10 @@ export default function MathsConcept() {
                         <>
                           <p>{R("maths.tensor.updown")}</p>
                           {animsAfter(s, "updown").map((id) => (
-                            <MathsAnim key={id} id={id} />
+                            <div key={id} className="space-y-4">
+                              {id === "metric" && <p>{R("maths.tensor.metricBridge")}</p>}
+                              <MathsAnim id={id} />
+                            </div>
                           ))}
                         </>
                       )}
