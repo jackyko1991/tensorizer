@@ -83,7 +83,7 @@ const ROWS: [string, string[]][] = [
 export default function DataflowConcept() {
   const T = usePageText();
   const R = (key: PageKey) => <RichText text={T(key)} />;
-  const has = (key: string) => Boolean(T(key as PageKey)); // sections 6 and 7 have one paragraph
+  const has = (key: string) => Boolean(T(key as PageKey)); // some cards have only one paragraph
 
   return (
     <div className="mx-auto flex max-w-6xl gap-8 px-5 pb-10">
