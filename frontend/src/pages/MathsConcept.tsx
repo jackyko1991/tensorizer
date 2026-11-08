@@ -196,7 +196,7 @@ function TensorGeometry() {
       </table>
     </div>
     <p className="text-xs text-gray-600">{geometry.note[l]}</p>
-    <figure className="overflow-hidden rounded-lg border border-gray-200 bg-gray-50" data-testid="tensor-assembled-equation">
+    <figure className="tensor-assembled-equation overflow-hidden rounded-lg border border-gray-200 bg-gray-50" data-testid="tensor-assembled-equation">
       <figcaption className="px-4 pt-3 text-sm font-semibold">{l?"把分量、方向和讀尺拼成一個張量":"Assemble the coefficients, directions and readers"}</figcaption>
       <p className="px-4 pt-2 text-xs text-gray-600"><RichText text={geometry.legend[l]}/></p>
       <div className="px-3 py-2"><Tex tex={String.raw`T=\sum_{i,j=1}^{2}\textcolor{#2563eb}{\underbrace{T^i{}_j\vphantom{T^i{}_j}}_{\substack{\text{${l?"分量":"Component"}}\\\text{${l?"份量":"amount"}}}}}\,\textcolor{#059669}{\underbrace{e_i\vphantom{T^i{}_j}}_{\substack{\text{${l?"基底":"Basis"}}\\\text{${l?"輸出方向":"output"}}}}}\otimes\textcolor{#d97706}{\underbrace{\varepsilon^j\vphantom{T^i{}_j}}_{\substack{\text{${l?"對偶基底":"Dual basis"}}\\\text{${l?"輸入讀尺":"reader"}}}}}`} display/></div>

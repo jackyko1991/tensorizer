@@ -70,9 +70,12 @@ export default function Tex({ tex, display = false }: { tex: string; display?: b
       });
     };
     fit();
+    // Labels may widen when the language's bundled font finishes loading.
+    let active = true;
+    void document.fonts.ready.then(() => { if (active) fit(); });
     const observer = new ResizeObserver(fit);
     observer.observe(container);
-    return () => observer.disconnect();
+    return () => { active = false; observer.disconnect(); };
   }, [pieces, display]);
 
   if (!display) return <span dangerouslySetInnerHTML={{ __html: inline }} />;

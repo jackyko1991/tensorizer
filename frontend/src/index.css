@@ -50,6 +50,14 @@ body {
   overflow-y: hidden;
 }
 
+/* Measure the complete annotated equation so Tex can fit it to the card. */
+.tensor-assembled-equation .katex-display > .katex {
+  display: inline-block;
+}
+.tensor-assembled-equation .katex-display {
+  overflow: visible;
+}
+
 /* Code font: Source Code Pro (SIL OFL, bundled via @fontsource). Named explicitly because the generic
    `monospace` is resolved per page language, so with
    lang="zh-Hant"/"ja"/"ko" browsers would switch the editor to a CJK font (e.g. MingLiU on Windows).
