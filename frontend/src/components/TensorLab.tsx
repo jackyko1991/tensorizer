@@ -328,16 +328,18 @@ function PairTensorDots({n}:{n:number}) {
     <div className="grid gap-3 sm:grid-cols-[1fr_2fr]">
       <div className="rounded-lg border border-blue-100 bg-white p-3 text-center">
         <p className="text-xs font-semibold text-blue-700">{T("lab.dotInput")} · X ({n.toLocaleString()}, 3)</p>
-        <svg viewBox={`0 0 70 ${shown*10+14}`} className="mx-auto my-2 h-36 max-w-full" role="img" aria-label={`X: ${3*n} ${T("lab.dotScalars")}`}>
+        <svg viewBox={`0 0 70 ${shown*10+(n>12?30:14)}`} className="mx-auto my-2 h-36 max-w-full" role="img" aria-label={`X: ${3*n} ${T("lab.dotScalars")}`}>
           {Array.from({length:shown*3},(_,q)=><circle key={q} cx={25+q%3*10} cy={12+Math.floor(q/3)*10} r="2.5" fill="#2563eb"/>)}
+          {n>12&&<text x="35" y={shown*10+18} textAnchor="middle" fontSize="15" fill="#2563eb">⋮</text>}
         </svg>
         <p className="font-mono text-xs text-blue-700">3N = {(3*n).toLocaleString()}</p>
       </div>
       <div className="min-w-0 rounded-lg border border-gray-200 bg-white p-3 text-center">
         <p className="text-xs font-semibold text-gray-700">{T("lab.dotOutput")} · D ({n.toLocaleString()}, {n.toLocaleString()}, 3)</p>
         <div className="my-2 grid grid-cols-3 gap-2">
-          {colors.map((color,k)=><div key={color} className="min-w-0"><p className="font-mono text-[11px]" style={{color}}>{["x","y","z"][k]}</p><svg viewBox={`0 0 ${shown*10+10} ${shown*10+10}`} className="mx-auto aspect-square w-full max-w-36" role="img" aria-label={`D[..., ${k}]: ${n*n} ${T("lab.dotScalars")}`}>
+          {colors.map((color,k)=><div key={color} className="min-w-0"><p className="font-mono text-[11px]" style={{color}}>{["x","y","z"][k]}</p><p className="mb-1 flex flex-wrap justify-center gap-x-0.5 font-mono text-[10px]" style={{color}}><span>{n.toLocaleString()}</span><span>×</span><span>{n.toLocaleString()}</span></p><svg viewBox={`0 0 ${shown*10+(n>12?30:10)} ${shown*10+(n>12?30:10)}`} className="mx-auto aspect-square w-full max-w-36" role="img" aria-label={`D[..., ${k}]: ${n*n} ${T("lab.dotScalars")}`}>
             {Array.from({length:shown*shown},(_,q)=><circle key={q} cx={10+q%shown*10} cy={10+Math.floor(q/shown)*10} r="2.5" fill={color}/>)}
+            {n>12&&<g fill={color} fontSize="15" textAnchor="middle"><text x={shown*10+15} y={shown*5+10}>⋯</text><text x={shown*5+5} y={shown*10+20}>⋮</text><text x={shown*10+15} y={shown*10+20}>⋱</text></g>}
           </svg></div>)}
         </div>
         <p className="font-mono text-xs text-gray-700">3N² = {(3*n*n).toLocaleString()}</p>
