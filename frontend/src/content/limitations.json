@@ -1,212 +1,289 @@
-[
-  {
-    "id": "scope",
-    "title": [
-      "A box of numbers needs a meaning",
-      "一盒數字，還需要一份說明書"
+{
+  "sections": [
+    {
+      "id": "scope",
+      "title": [
+        "Same numbers. Same thing?",
+        "同樣的數字，就是同一件事嗎？"
+      ]
+    },
+    {
+      "id": "spinors",
+      "title": [
+        "One full turn: what has actually returned?",
+        "轉完一圈，到底什麼回到了原位？"
+      ]
+    },
+    {
+      "id": "connections",
+      "title": [
+        "Two paths, one meeting point",
+        "兩條路，同一個會合點"
+      ]
+    },
+    {
+      "id": "topology",
+      "title": [
+        "Can you shrink both loops to a point?",
+        "兩個圈，都能縮成一點嗎？"
+      ]
+    },
+    {
+      "id": "entanglement",
+      "title": [
+        "Two half-and-half results need not make the same pair",
+        "各自都是一半，配在一起也相同嗎？"
+      ]
+    },
+    {
+      "id": "frontiers",
+      "title": [
+        "A possible mathematics, or a measured world?",
+        "數學上能寫，自然界就一定如此嗎？"
+      ]
+    },
+    {
+      "id": "bridge",
+      "title": [
+        "Keep the direction and the plane",
+        "把方向和它張成的面，一起留下"
+      ]
+    }
+  ],
+  "scope": {
+    "question": [
+      "Suppose the computer shows [1, 0]. Before calculating anything, what does that pair describe?",
+      "假設電腦只顯示 [1, 0]。還沒開始算以前，你得先知道：這兩個數字在記什麼？"
     ],
-    "plain": [
-      "A computer can store two numbers without knowing what they mean. They might describe a direction, two temperatures, or two parts of an electron’s state. The storage box is the same; the rule for using the numbers is different.",
-      "電腦可以存下兩個數字，卻不知道它們代表什麼。它們可能是方向、兩次測到的溫度，或電子狀態的兩個分量。盒子可以一樣，使用這些數字的規則卻不同。"
+    "arrowTitle": [
+      "A direction on the table",
+      "桌上的方向"
     ],
-    "analogy": [
-      "An arrow painted on a table stays put when you walk around it. But “one step to my right” becomes “one step behind me” when you turn your view by a quarter-turn. The arrow did not change; your description did. A list of temperatures would not change this way.",
-      "桌上畫著一支箭頭。你繞到桌子的另一邊看，箭頭沒有移動，但原本的「往我的右邊走一步」，可能變成「往我的後面走一步」。改變的是描述方式，不是箭頭。兩次測到的溫度，就沒有這條隨視角改寫的規則。"
+    "arrow": [
+      "One unit right, none up. Change the measuring axes and the coordinates must change.",
+      "向右一單位、向上一點也沒有。換一組量測方向，分量就得改寫。"
     ],
-    "precise": [
-      "For a geometric tensor, the numbers come with a rule describing how they change when we change our measuring axes. In PyTorch, tensor names the array that stores numbers; the program must supply their meaning and transformation rule. The same array type can therefore store an ordinary vector or a spinor, the kind of quantum-state record introduced next.",
-      "幾何上的張量，除了分量，還帶著「換一組量測方向時，分量應該怎麼改寫」的規則。PyTorch 的 tensor 則是儲存數字的陣列，意義與變換規則要由程式補上。所以同一種陣列，可以存普通向量，也可以存下一節要介紹的旋量。"
+    "temperatureTitle": [
+      "Two temperature readings",
+      "兩次溫度讀數"
     ],
-    "example": [
-      "The fixed arrow has coordinates (1, 0) in the original view. Turn the measuring axes 90° counterclockwise: it is now (0, −1). Drag the viewing-angle slider. Both pairs describe the same arrow.",
-      "原本的量測方向把箭頭寫成 (1, 0)。把量測方向逆時針轉 90°，同一支箭頭就寫成 (0, −1)。拖動視角滑桿，看看數字改了，箭頭卻沒有改。"
+    "temperature": [
+      "1 °C and 0 °C. Turning your head does not mix those two readings.",
+      "1 °C 和 0 °C。轉過頭看，不會把兩次讀數混在一起。"
     ],
-    "equation": "v_{\\mathrm{new}}=(\\cos\\theta,-\\sin\\theta)",
+    "try": [
+      "Turn the grey axes through 90°. The arrow stays still; its description changes from (1, 0) to (0, −1).",
+      "把灰色量測方向轉到 90°。箭頭不動，描述卻從 (1, 0) 變成 (0, −1)。"
+    ],
+    "insight": [
+      "The missing ingredient is the transformation rule. A geometric tensor includes that rule; a PyTorch tensor supplies storage, and our program supplies the interpretation. A spinor can use the same array storage with a different rotation rule.",
+      "差別就在變換規則。幾何張量連這條規則一起考慮；PyTorch 的 tensor 提供儲存空間，意義則由程式補上。旋量也能放進同一種陣列，只是旋轉規則不同。"
+    ],
+    "more": [
+      "See the coordinate calculation",
+      "看看這次換軸怎麼算"
+    ],
     "legend": [
-      "θ is the angle through which we turn the measuring axes. $v_{\\mathrm{new}}$ is the same unit arrow written using those new axes. cos and sin give its horizontal and vertical parts.",
-      "θ 是量測方向轉過的角度，$v_{\\mathrm{new}}$ 是同一支單位箭頭在新方向下的分量。cos 和 sin 算出它沿著兩個量測方向各有多少。"
-    ],
-    "code": "arrow = torch.tensor([1., 0.])\n# Same arrow, with the measuring axes turned 90 degrees:\narrow_in_new_axes = torch.tensor([0., -1.])",
-    "diagram": "scope"
+      "$\\theta$ is the angle through which the measuring axes turn; $v_{\\mathrm{new}}$ is the fixed unit arrow expressed in those axes.",
+      "$\\theta$ 是量測方向轉過的角度；$v_{\\mathrm{new}}$ 是同一支單位箭頭在新方向下的分量。"
+    ]
   },
-  {
-    "id": "spinors",
-    "title": [
-      "Why an electron needs a different record",
-      "為什麼電子需要另一種紀錄"
+  "spinors": {
+    "question": [
+      "An ordinary arrow comes back after 360°. Does an electron’s state keep any record of that turn? Try the two dials before looking at the answer.",
+      "普通箭頭轉 360° 就復原。電子的狀態，會不會還記得剛才那一圈？先試兩只錶盤，再看答案。"
     ],
-    "plain": [
-      "An ordinary arrow looks the same after one full turn. For an electron’s quantum state, one full turn introduces a minus sign; two full turns restore the starting state. A rule built only for ordinary arrows cannot keep track of that extra sign.",
-      "普通箭頭轉一圈就回到原樣。電子的量子態轉一圈，卻會多出一個負號；轉兩圈才恢復原來的態。只替普通箭頭設計的規則，記不住這個額外的符號。"
+    "try": [
+      "Press 360°, then 720°. Compare the direction hand with the half-speed phase hand. The right dial is a phase sketch, not a tiny spinning electron.",
+      "先按 360°，再按 720°。比較方向指針和半速的相位指針；右邊示意的是波的相位，不是電子裡有顆小球。"
     ],
-    "analogy": [
-      "Imagine a direction dial with a second dial that advances at half speed. After the direction dial makes a full turn, the second dial points the other way. After two turns, both return. The second dial is a picture of phase, the position within a wave cycle; it is not an electron rotating like a tiny ball.",
-      "想像方向盤旁邊還有一個只走一半速度的小錶盤。方向盤轉完一圈，小錶盤還指向反方向；轉完兩圈，兩個才一起復原。小錶盤示意的是相位，也就是波在一個週期裡走到哪裡，不是電子像小球一樣自轉。"
+    "stateIntro": [
+      "Write the state vector as $\\psi$. Its sign follows this sequence:",
+      "用 $\\psi$ 記錄態向量，它的符號會這樣走："
     ],
-    "precise": [
-      "The record that follows this half-angle rule is called a spinor. ψ (psi) stands for the quantum state. A minus sign on the entire state does not change measurement probabilities by itself. To detect the phase change, compare a rotated branch with an unrotated branch in an interference experiment. Spinors need a different rotation rule, but computers can still store and calculate them in tensor arrays.",
-      "遵守這種半角規則的狀態紀錄，叫做旋量（spinor）。用 ψ（psi）代表量子態。整個態一起多一個負號，本身不會改變測量機率；要在干涉實驗中，讓轉過的分支與沒轉過的分支比較，才看得見相對相位的影響。旋量需要不同的旋轉規則，但電腦仍能用 tensor 陣列儲存和計算它。"
+    "turnLabels": [
+      [
+        "Start",
+        "起點"
+      ],
+      [
+        "One turn",
+        "一圈"
+      ],
+      [
+        "Two turns",
+        "兩圈"
+      ]
     ],
-    "example": [
-      "Press 360°: the direction returns but the phase dial has moved halfway around. Press 720°: both return. Multiplying every amplitude by −1 leaves its squared magnitude unchanged, which is why a global sign alone is invisible.",
-      "按 360°：方向復原，相位盤只走到半圈。按 720°：兩個都復原。把每個振幅乘上 −1，它的絕對值平方仍相同，所以只有整體負號時看不出差別。"
+    "insight": [
+      "A spinor follows this rotation rule. An ordinary spacetime tensor returns under a full spatial turn; a spin-½ state vector changes sign. To describe the electron we need that extra mathematical structure, even though a computer can still store its components in an array.",
+      "遵守這種旋轉規則的紀錄叫旋量。普通時空張量轉一整圈會復原，自旋 ½ 的態向量卻會變號。描述電子時，要補上這種數學結構；電腦依然能用陣列儲存它的分量。"
     ],
-    "equation": "\\psi\\xrightarrow{360^\\circ}-\\psi\\xrightarrow{360^\\circ}\\psi",
-    "legend": [
-      "ψ is the state; −ψ means every amplitude has changed sign. Each arrow above means one more full spatial turn.",
-      "ψ 是量子態，−ψ 表示所有振幅一起變號。式子裡每一支箭頭，都代表再轉一整圈。"
+    "reveal": [
+      "If the sign changes, why do ordinary probabilities stay the same?",
+      "變號了，為什麼一般的測量機率沒變？"
     ],
-    "code": "psi = torch.tensor([1.+0.j, 0.+0.j])\nafter_one_turn = -psi\nafter_two_turns = -after_one_turn\n# These probabilities are unchanged:\nprobabilities = psi.abs() ** 2",
-    "diagram": "spinors"
+    "answer": [
+      "A global sign leaves every squared amplitude unchanged. A relative sign can become visible when a rotated branch interferes with an unrotated branch. A sign change is not a mirror reflection.",
+      "整體變號不改變振幅的絕對值平方，所以單看機率看不出來。讓轉過的分支與沒轉過的分支干涉，才可能看見相對符號的影響。變號也不等於鏡像反射。"
+    ]
   },
-  {
-    "id": "connections",
-    "title": [
-      "A round trip can leave a wave out of step",
-      "走回起點，波也可能沒對上"
+  "connections": {
+    "story": [
+      "Split an electron wave into two paths around an inaccessible magnetic flux, then bring them together. The magnetic field can vanish along both paths, yet the interference pattern can shift. Looking only at the field along the paths has missed something.",
+      "把電子波分成兩路，繞過無法進入的磁通區，再讓它們會合。兩條路上的磁場可以都為零，干涉條紋卻仍可能移動。只看沿路的場強，少記了什麼？"
     ],
-    "plain": [
-      "Two waves can arrive at the same place with their peaks lined up, or with one peak meeting the other’s trough. They then reinforce or cancel. To predict the result, we sometimes need to know the route taken, not just the local field at the destination.",
-      "兩列波到達同一位置時，波峰可能剛好對齊，也可能一列的波峰撞上另一列的波谷，於是互相加強或抵消。要預測結果，有時得知道走過哪條路，不能只看終點的局部場。"
+    "try": [
+      "Follow the two routes and watch the phase clock. This is a sketch of accumulated phase, not a calibrated simulation of the experiment.",
+      "沿著兩條路看相位小鐘：它示意一路累積的相位，不是這個實驗的定量模擬。"
     ],
-    "analogy": [
-      "Two runners leave together and take opposite sides of a fenced garden. A clock tracking the wave cycle comes back with a different reading on each path. Comparing the clocks reveals the mismatch. This is a picture of accumulated phase, not a hidden force pushing the runners.",
-      "兩位跑者一起出發，繞過圍起來的花園兩側。假設各自帶著記錄波週期的小鐘，回來後兩只鐘沒有對齊。比較讀數，就知道兩條路累積了多少差異。這只是累積相位的比喻，不是在說有一股隱藏的力推著跑者。"
+    "localTitle": [
+      "At a point",
+      "看一點"
     ],
-    "precise": [
-      "A connection is a rule for comparing directions or phases as we move from one place to the next. In the Aharonov–Bohm experiment, electron waves pass on opposite sides of excluded magnetic flux. Their relative phase can shift even though the magnetic field vanishes along their paths. The field strength and the information about transport around the loop answer different questions.",
-      "聯絡（connection）是「從一處走到下一處時，要怎麼比較方向或相位」的規則。阿哈羅諾夫與玻姆的實驗讓電子波從被排除磁通的兩側通過；即使兩條路上的磁場都為零，兩波的相對相位仍可能改變。場強與繞一圈的移動資訊，回答的是不同問題。"
+    "local": [
+      "Field strength describes the local electromagnetic field.",
+      "場強告訴你當地的電磁場。"
     ],
-    "example": [
-      "For two equal coherent paths, no phase mismatch can give a bright output. A half-cycle mismatch makes that same output dark. The dial below illustrates accumulation; its speed is illustrative, not a calibrated experiment.",
-      "兩條等強度、能相干的路徑，沒有相位差時可以在某個出口相加變亮；差半個週期時，同一出口就可能相消變暗。下圖用錶盤示意相位累積，轉速不代表實驗的定量比例。"
+    "routeTitle": [
+      "Around a route",
+      "沿一條路"
     ],
-    "equation": "P_{\\mathrm{bright}}=\\cos^2(\\Delta\\phi/2)",
-    "legend": [
-      "P_bright is the chance of detection at one output of an ideal balanced interferometer. Δφ is the phase difference: 0 means aligned, π means half a cycle apart.",
-      "P_bright 是理想對稱干涉儀某個出口的偵測機率。Δφ 是兩條路的相位差；0 表示對齊，π 表示相差半個週期。"
+    "route": [
+      "A comparison rule tells us how phase is carried and accumulated.",
+      "沿路比較的規則，告訴你相位怎麼帶過去、累積起來。"
     ],
-    "code": "from math import cos, pi\nphase_difference = pi  # half a wave cycle\nbright_probability = cos(phase_difference / 2) ** 2  # approximately 0",
-    "diagram": "connections"
+    "name": [
+      "That comparison rule is a connection; the net change around a closed route is called holonomy. The Aharonov–Bohm effect makes the distinction concrete: local field values and loop phase contain different information.",
+      "這條比較規則叫聯絡（connection），繞封閉路徑後的總變化叫 holonomy。阿哈羅諾夫與玻姆的實驗把差別變得可見：局部場值和繞路累積的相位，提供不同資訊。"
+    ]
   },
-  {
-    "id": "topology",
-    "title": [
-      "A tiny patch does not tell you about a hole",
-      "只看一小塊，看不出整體有沒有洞"
+  "topology": {
+    "challenge": [
+      "Here are two sheets. One has a hole. Predict which loop will get stuck, then try shrinking them together.",
+      "這裡有兩張紙，其中一張有洞。先猜哪個圈會被卡住，再把兩個圈一起縮小。"
     ],
-    "plain": [
-      "A small patch of a sheet can look like a small patch of a ring-shaped sheet. Yet a loop drawn around the ring’s hole cannot be tightened to a point without leaving the sheet. Local measurements and whole-shape information are different kinds of information.",
-      "一張紙上的小區域，和一張中央有洞的紙上的小區域，可能看起來一樣。但沿著洞畫一個圈，就不能不離開紙面、不穿過洞地把它縮成一點。局部量測和整體形狀，提供的是不同資訊。"
+    "try": [
+      "Drag “Shrink the loops”. Stay on the paper: no cutting, jumping over the hole or leaving the surface.",
+      "拖動「把圈縮小」。規則只有一條：一直留在紙面上，不能剪開、跳過洞或離開表面。"
     ],
-    "analogy": [
-      "Imagine an ant that can inspect only the few millimetres in front of it. The ground looks flat everywhere it walks. To discover the fence it cannot cross, it needs a map of the entire route, not a more precise description of one patch.",
-      "想像一隻螞蟻每次只能看前方幾毫米。走到哪裡，地面都像平的。要知道路線中間有沒有不能穿越的圍欄，它需要整條路的地圖，而不是把腳下那一小塊描寫得更精細。"
+    "localTitle": [
+      "Zoom in",
+      "放大看局部"
     ],
-    "precise": [
-      "Topology studies features such as holes that survive smooth stretching. Some quantum materials are distinguished by a whole-state topological number. Such a number can often be calculated by adding local geometric information over a whole surface. This calls for global information as well as local tensors; it does not make tensor calculus unusable.",
-      "拓撲研究平滑拉伸後仍保留的特徵，例如有沒有洞。有些量子材料也用整個狀態的拓撲數來區分；這個數常能由整片曲面上的局部幾何資訊累加得到。因此需要的是局部張量加上全局資訊，並不是張量微積分失效了。"
+    "local": [
+      "Both sheets can look equally flat near your feet.",
+      "腳邊的一小塊，兩張紙都可以一樣平。"
     ],
-    "example": [
-      "Try shrinking a loop on each surface in the picture. On the filled sheet it can collapse to a dot. Around the hole it cannot. This is a geometric analogy for global information, not a claim that a quantum material must contain a literal hole.",
-      "比較下圖兩張紙：完整紙上的圈可以縮成一點；繞著洞的圈做不到。這是在說明全局資訊，不是說量子材料一定有一個肉眼看得見的洞。"
+    "globalTitle": [
+      "Follow the whole loop",
+      "看完整一圈"
     ],
-    "equation": "",
-    "legend": [
-      "No new symbols are needed here: the question is whether the loop can shrink while staying on the surface.",
-      "這裡先不增加新符號，只問一件事：圈能不能始終留在表面上，慢慢縮成一點？"
+    "global": [
+      "Only one loop can collapse to a point. The hole is global information.",
+      "只有一個圈能縮成一點。有沒有洞，是整體資訊。"
     ],
-    "code": "",
-    "diagram": "topology"
+    "insight": [
+      "Topology records features that survive smooth stretching. Quantum materials can also have global topological distinctions, often calculated by accumulating local geometric data. The missing ingredient is global structure; local tensor calculus remains useful. The paper is an analogy, not a literal picture of the material.",
+      "拓撲記錄平滑拉伸後仍保留的特徵。量子材料也可能有整體的拓撲差異，常能由局部幾何資料累加算出。要補的是全局結構，局部張量微積分仍然有用。紙上的洞是比喻，不是說材料真的有一個肉眼可見的洞。"
+    ]
   },
-  {
-    "id": "entanglement",
-    "title": [
-      "Two particles need one shared record",
-      "兩顆粒子，可能需要一份共同紀錄"
+  "entanglement": {
+    "question": [
+      "Each particle gives 0 or 1 with equal probability. Is that enough to predict how the pair behaves? Switch between the two preparations below.",
+      "每顆粒子量到 0、1 的機會各一半。這樣就足夠知道整對粒子的結果嗎？切換下面兩種準備方式看看。"
     ],
-    "plain": [
-      "Knowing the separate chances for two particles does not always tell us how their results fit together. A pair can be described by one shared quantum state that cannot be split into an independent state for each particle. That is entanglement.",
-      "知道兩顆粒子各自的機率，不一定就知道兩者的結果怎麼配對。有時整對粒子要用同一份量子態描述，不能拆成彼此獨立的兩份。這就是糾纏。"
+    "independent": [
+      "Independent particles",
+      "彼此獨立"
     ],
-    "analogy": [
-      "Two envelopes containing matching cards illustrate shared results: opening one tells you what is in the other. But that analogy has a limit. Quantum experiments compare several measurement settings, and some correlations cannot be reproduced by cards whose answers were fixed in advance under the assumptions of Bell’s theorem.",
-      "兩個信封裡放著相同的卡片，可以幫你想像「一起配對的結果」：打開一個，就知道另一個。但這個比喻有界限。量子實驗會改變量測方向；在貝爾定理的假設下，有些關聯不能靠預先寫好所有答案的卡片重現。"
+    "paired": [
+      "Bell pair, same measurement basis",
+      "貝爾對，同基底量測"
     ],
-    "precise": [
-      "A tensor product is the bookkeeping rule that combines the possibilities of separate systems. Entangled states live in that combined space too. So entanglement is a reason to learn quantum states and correlations, not a reason to discard tensor products. It also does not let either observer choose a result and send a message faster than light.",
-      "張量積，就是把不同系統的可能性合在一起記帳的規則。糾纏態也寫在這個共同的狀態空間裡。所以糾纏提醒我們要學量子態與關聯，不是叫我們丟掉張量積；它也不讓任何一方挑選結果來超光速傳訊。"
+    "caption": [
+      "Joint probabilities: rows are A, columns are B",
+      "共同結果的機率：列是 A，欄是 B"
     ],
-    "example": [
-      "For the Bell pair in this example, measuring both particles along the same chosen basis gives 00 half the time and 11 half the time. The other two boxes are empty. This one table shows matching results; it is not by itself a test of Bell’s theorem.",
-      "這個貝爾對若用同一組方向量測，結果有一半是 00，另一半是 11，另外兩格為零。這張表展示配對結果，但單靠這一組量測，還不能檢驗貝爾定理。"
+    "marginal": [
+      "A alone: 50% / 50%. B alone: 50% / 50%. These separate probabilities are identical in both preparations.",
+      "單看 A：各 50%；單看 B：也各 50%。兩種準備方式的個別機率完全一樣。"
     ],
-    "equation": "P(00)=P(11)=\\tfrac12,\\qquad P(01)=P(10)=0",
-    "legend": [
-      "Each pair of digits is one joint result: the first digit belongs to particle A, the second to particle B. P means probability.",
-      "兩位數是一組共同結果：第一位是粒子 A，第二位是粒子 B。P 表示發生的機率。"
+    "insight": [
+      "The separate probabilities miss the relationship. A tensor product provides the shared space for the pair’s state, including entangled states that cannot be split into two independent states. Entanglement is therefore not a failure of tensor products.",
+      "個別機率少記了兩者的關係。張量積提供整對粒子的共同狀態空間，也能容納無法拆成兩份獨立狀態的糾纏態。所以糾纏不是張量積的失效。"
     ],
-    "code": "from math import sqrt\npsi = torch.tensor([[1., 0.], [0., 1.]]) / sqrt(2)\nprobabilities = psi.abs() ** 2\n# rows: A's result; columns: B's result\n# [[0.5, 0.0], [0.0, 0.5]]",
-    "diagram": "entanglement"
+    "caution": [
+      "Does this table prove entanglement?",
+      "這張表就能證明糾纏嗎？"
+    ],
+    "answer": [
+      "No. Matching prewritten cards can reproduce this one-basis table. Bell experiments compare several measurement settings to test stronger quantum correlations. Neither observer can choose an outcome to send a faster-than-light message.",
+      "不能。預先配好的卡片，也能重現單一基底下這張表。貝爾實驗要比較多組量測設定，才能檢驗更強的量子關聯。任何一方也不能挑選結果來超光速傳訊。"
+    ]
   },
-  {
-    "id": "frontiers",
-    "title": [
-      "A proposed model is not yet a measured fact",
-      "提出一種模型，還不等於已經量到"
+  "frontiers": {
+    "lead": [
+      "A beautiful mathematical rule can suggest a physical model. Whether nature follows it is another question. Keep three levels separate:",
+      "漂亮的數學規則，可以啟發一個物理模型；自然界是否採用它，還是另一個問題。先分開看三層："
     ],
-    "plain": [
-      "Physicists also explore mathematical rules that differ from the ones used so far. These can be useful research tools before we know whether nature uses them. We should keep a tested prediction separate from an interesting possibility.",
-      "物理學家也研究和前面不同的數學規則。在還不知道自然界是否採用之前，它們就可能是有用的研究工具。我們要分清楚：哪些已通過量測，哪些仍是值得探索的可能性。"
+    "statuses": [
+      {
+        "title": [
+          "A mathematical rule",
+          "數學規則"
+        ],
+        "body": [
+          "For ordinary numbers and Clifford algebra, moving brackets does not change a product: (2×3)×4 = 2×(3×4).",
+          "普通數與克利福德代數遵守結合律：(2×3)×4 = 2×(3×4)，移動括號不改答案。"
+        ]
+      },
+      {
+        "title": [
+          "A proposed physical model",
+          "候選物理模型"
+        ],
+        "body": [
+          "Some quantum-gravity and string-background models explore noncommutative or nonassociative rules.",
+          "部分量子引力、弦論背景模型，探索非對易或不滿足結合律的規則。"
+        ]
+      },
+      {
+        "title": [
+          "An experimental claim",
+          "量測證據"
+        ],
+        "body": [
+          "These proposals have not established that observed spacetime has those properties.",
+          "這些提案還沒有確立：已觀測的時空確實具有那些性質。"
+        ]
+      }
     ],
-    "analogy": [
-      "A map of a possible tunnel can help an engineer plan a survey. Drawing it does not establish that the tunnel exists. Likewise, an elegant formula can guide an experiment without already being an experimental result.",
-      "工程師畫出「可能有一條隧道」的地圖，可以據此安排探勘。地圖畫得漂亮，不代表隧道已經存在。物理公式也一樣：它可以指引實驗，但還不是實驗結果。"
-    ],
-    "precise": [
-      "For ordinary numbers and Clifford algebra, brackets may move without changing a product: this is associativity. Some proposed models instead use nonassociative multiplication, where brackets matter. Such models, and extra-dimensional proposals, are research directions rather than established properties of observed spacetime. They do not establish that all tensor methods fail.",
-      "普通數與克利福德代數的乘法，改變括號位置不改結果，叫做結合律。有些候選模型使用不滿足結合律的乘法，括號就會影響答案。這些模型和額外維度等提案，仍是研究方向，不是已觀測時空的定論，也不表示所有張量方法都失效。"
-    ],
-    "example": [
-      "With ordinary numbers, (2×3)×4 and 2×(3×4) both give 24. A theory that changes this familiar rule must explain its replacement and show how it connects to measurements.",
-      "普通數的 (2×3)×4 和 2×(3×4) 都等於 24。如果一個理論改變這條熟悉的規則，就必須交代新規則，以及它如何連到可量測的結果。"
-    ],
-    "equation": "(2\\times3)\\times4=2\\times(3\\times4)=24",
-    "legend": [
-      "The brackets show which multiplication is done first. This example defines associativity without needing a new algebra.",
-      "括號表示先做哪一次乘法。先用這個熟悉的小例子理解結合律，再去研究採用其他規則的代數。"
-    ],
-    "code": "",
-    "diagram": "frontiers"
+    "takeaway": [
+      "Clifford algebra is associative. It is not a universal replacement for every speculative algebra or for tensor methods. Ask what a model predicts and what observation could test it.",
+      "克利福德代數本身滿足結合律，不是替代所有候選代數或張量方法的萬用工具。接著該問的是：模型預測什麼，又能用什麼觀測檢驗？"
+    ]
   },
-  {
-    "id": "bridge",
-    "title": [
-      "The next tool: multiply arrows and keep the area",
-      "下一件工具：箭頭相乘，也把面積留下"
+  "bridge": {
+    "question": [
+      "What if multiplying two arrows kept both how much they align and the oriented patch they span?",
+      "如果兩支箭頭相乘，能同時留下「平行程度」和「張成的定向面積」呢？"
     ],
-    "plain": [
-      "We now have a more useful question than “do tensors fail?” Ask what information a problem needs: a direction, a wave phase, a shared state, or a rule for carrying information around a path. Geometric algebra helps connect several of these ideas by multiplying arrows in a way that keeps both alignment and oriented area.",
-      "現在可以問一個更有用的問題：這個問題需要記住什麼？是方向、波的相位、共同狀態，還是沿路比較的規則？幾何代數能連起其中幾個想法：讓箭頭相乘，同時保留平行程度與有方向的面積。"
+    "try": [
+      "Try 0°, 90° and 180°. When the arrows become perpendicular, alignment vanishes while area is largest. Parallel arrows do the opposite.",
+      "依序試 0°、90°、180°：兩支箭頭垂直時，平行部分消失，面積卻最大；平行時則相反。"
     ],
-    "analogy": [
-      "Lay two sticks on a table. They tell you two things at once: how much they point together, and how large a parallelogram they span. Ordinary dot products keep the first answer. The geometric product keeps both answers in one record.",
-      "把兩根棍子放在桌上，你同時看得出兩件事：它們朝同一方向的程度，以及它們張成的平行四邊形有多大。內積留下第一個答案；幾何積把兩個答案放在同一份紀錄裡。"
+    "explanation": [
+      "The dot $a\\cdot b$ keeps alignment. The wedge $a\\wedge b$ keeps oriented area, called a bivector. The geometric product $ab$ keeps both:",
+      "內積 $a\\cdot b$ 留下平行程度，外積 $a\\wedge b$ 留下定向面積，後者叫雙向量。幾何積 $ab$ 把兩者一起保留："
     ],
-    "precise": [
-      "The dot in a·b means alignment and produces an ordinary number. The wedge in a∧b means oriented area and produces a bivector, a record of a plane with a sense of turning. Their sum is the geometric product ab. The next site builds these pieces one at a time before using them for rotations and spinors.",
-      "a·b 裡的點表示平行程度，答案是一個普通數。a∧b 裡的楔號表示定向面積，答案叫雙向量：它記錄一個平面，還記得轉向。兩者合在一起，就是幾何積 ab。下一個網站會先把這些小零件建立起來，再拿來解釋旋轉與旋量。"
+    "closing": [
+      "This gives us a route into planes, rotations and spinors. It adds useful geometric structure; connections, topology and the quantum state still have their own jobs.",
+      "這給了我們一條走向平面、旋轉與旋量的路。它補上有用的幾何結構；聯絡、拓撲與量子態，也仍有各自要做的工作。"
     ],
-    "example": [
-      "Two perpendicular unit arrows have zero dot product and span one square unit of oriented area. So their product contains only the plane part. Parallel unit arrows instead have dot product one and span zero area.",
-      "兩支互相垂直的單位箭頭，內積為零，卻張成一個單位的定向面積，所以乘積只剩平面部分。兩支平行的單位箭頭剛好相反：內積是一，張成的面積為零。"
-    ],
-    "equation": "ab=\\underbrace{a\\cdot b}_{\\text{alignment}}+\\underbrace{a\\wedge b}_{\\text{oriented area}}",
-    "legend": [
-      "a and b are arrows. ab names their geometric product; · extracts alignment; ∧ extracts oriented area. These are geometric components, with physical units kept consistent in applications.",
-      "a、b 是箭頭，ab 是它們的幾何積；· 取出平行程度，∧ 取出定向面積。它們是不同的幾何分量；用在物理量時仍要保持單位一致。"
-    ],
-    "code": "",
-    "diagram": "bridge"
+    "link": [
+      "Continue with Clifford reading",
+      "到 Clifford 看延伸閱讀"
+    ]
   }
-]
+}

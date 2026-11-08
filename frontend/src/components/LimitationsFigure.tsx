@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { loopRadii } from "../limitationsModel";
 
-/** Each picture answers the concrete question in its preceding analogy. */
+/** Interactive illustrations embedded in each card’s own experiment or challenge. */
 export default function LimitationsFigure({ kind, l }: { kind: string; l: number }) {
   const [angle, setAngle] = useState(kind === "bridge" ? 90 : 0);
   const theta = angle * Math.PI / 180;
+  const radii = loopRadii(angle);
   const captions: Record<string, string[]> = {
     scope: ["The blue arrow stays fixed. The grey measuring axes turn; only the coordinate numbers change.", "藍色箭頭不動，灰色量測方向轉動；改變的是分量數字。"],
     spinors: ["Left: direction. Right: the half-angle phase of one spin component, shown schematically.", "左邊記方向，右邊示意一個自旋分量的半角相位。"],
@@ -41,9 +43,7 @@ export default function LimitationsFigure({ kind, l }: { kind: string; l: number
         {label(410,174,l ? "沿路累積的相位" : "Accumulated phase")}
       </>}
       {kind === "topology" && <>
-        {[125,375].map(x => <g key={x}><rect x={x-95} y="22" width="190" height="154" rx="18" fill="#dbeafe" stroke="#93c5fd"/><circle cx={x} cy="99" r="51" fill="none" stroke="#2563eb" strokeWidth="3" strokeDasharray="5 3"/></g>)}
-        <path d="M165 99H132m0 0 8-5m-8 5 8 5" stroke="#2563eb" fill="none"/>
-        <circle cx="125" cy="99" r="4" fill="#2563eb"/>
+        {[125,375].map((x,i) => <g key={x}><rect x={x-95} y="22" width="190" height="154" rx="18" fill="#dbeafe" stroke="#93c5fd"/><circle cx={x} cy="99" r={Math.max(2,radii[i])} fill={i===0&&radii[0]===0?"#2563eb":"none"} stroke="#2563eb" strokeWidth="3" strokeDasharray={i===0&&radii[0]===0?undefined:"5 3"}/></g>)}
         <circle cx="375" cy="99" r="28" fill="white" stroke="#93c5fd"/>
         {label(125,207,l ? "圈可以縮小到一點" : "Loop can shrink to a point")}
         {label(375,207,l ? "中間的洞擋住了" : "The hole gets in the way")}
@@ -72,6 +72,10 @@ export default function LimitationsFigure({ kind, l }: { kind: string; l: number
         {label(380,118,`${l ? '定向面積' : 'Oriented area'}: ${Math.sin(theta).toFixed(2)}`)}
       </>}
     </svg>
+    {kind === "topology" && <div className="mt-2 space-y-3">
+      <label className="flex items-center gap-3 text-xs text-blue-900">{l?"把圈縮小":"Shrink the loops"}<input type="range" min="0" max="100" value={angle} onChange={e=>setAngle(Number(e.target.value))} aria-label={l?"把圈縮小":"Shrink the loops"} className="min-w-0 flex-1 accent-blue-600"/></label>
+      <div className="flex gap-2">{[0,100].map(value=><button key={value} type="button" onClick={()=>setAngle(value)} className="rounded border border-blue-200 bg-white px-3 py-1 text-xs text-blue-800">{value===0?(l?"重新開始":"Reset"):(l?"縮到最小":"Shrink fully")}</button>)}</div>
+    </div>}
     {['scope','spinors','connections','bridge'].includes(kind) && <>
       <label className="mt-2 flex items-center gap-3 text-xs text-blue-900">{l ? "角度" : "Angle"}: {angle}°
         <input className="min-w-0 flex-1 accent-blue-600" aria-label={l ? "圖解角度" : "Diagram angle"} type="range" min="0" max={kind === 'spinors' ? 720 : kind === 'bridge' ? 180 : 360} value={angle} onChange={e=>setAngle(Number(e.target.value))}/>
