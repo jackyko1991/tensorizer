@@ -183,11 +183,11 @@ export function AnimControls({ clock }: { clock: ReturnType<typeof useAnimClock>
   const { playing, setPlaying, setG, speed, setSpeed, step, prev, g } = clock;
   return (
     <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
-      <button type="button" className={btn} onClick={() => setPlaying((p) => !p)} aria-pressed={playing}>
-        {playing ? `❚❚ ${T("loops.anim.pause")}` : `▶ ${T("loops.anim.play")}`}
-      </button>
       <button type="button" className={`${btn} disabled:cursor-default disabled:opacity-40`} onClick={prev} disabled={g === 0}>
         ‹ {T("loops.anim.prev")}
+      </button>
+      <button type="button" className={btn} onClick={() => setPlaying((p) => !p)} aria-pressed={playing}>
+        {playing ? `❚❚ ${T("loops.anim.pause")}` : `▶ ${T("loops.anim.play")}`}
       </button>
       <button type="button" className={btn} onClick={step}>
         {T("loops.anim.step")} ›
