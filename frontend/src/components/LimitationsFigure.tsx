@@ -1,16 +1,30 @@
-import { useState } from "react";
-import { loopRadii } from "../limitationsModel";
+import { useEffect, useState } from "react";
+import { loopRadii, magneticLoop } from "../limitationsModel";
+import Tex from "./Tex";
 import { Arrow } from "./MathsAnimPics";
 
 /** Interactive illustrations embedded in each card’s own experiment or challenge. */
 export default function LimitationsFigure({ kind, l }: { kind: string; l: number }) {
   const [angle, setAngle] = useState(kind === "bridge" ? 90 : 0);
+  const [playing, setPlaying] = useState(false);
+  useEffect(()=>{
+    if(kind!=="connections"||!playing)return;
+    let frame=0,last=0;
+    const tick=(now:number)=>{
+      if(last)setAngle(a=>Math.min(720,a+Math.min(now-last,60)*.035));
+      last=now;frame=requestAnimationFrame(tick);
+    };
+    frame=requestAnimationFrame(tick);
+    return()=>cancelAnimationFrame(frame);
+  },[kind,playing]);
+  useEffect(()=>{if(kind==="connections"&&angle>=720)setPlaying(false);},[kind,angle]);
+  const flux = magneticLoop(angle);
   const theta = angle * Math.PI / 180;
   const radii = loopRadii(angle);
   const captions: Record<string, string[]> = {
     scope: ["The blue arrow stays fixed. The grey measuring axes turn; only the coordinate numbers change.", "藍色箭頭不動，灰色量測方向轉動；改變的是分量數字。"],
     spinors: ["Left: direction. Right: the half-angle phase of one spin component, shown schematically.", "左邊記方向，右邊示意一個自旋分量的半角相位。"],
-    connections: ["Two paths around excluded flux. Compare their wave-cycle clocks after they meet.", "兩條路繞過被排除的磁通，會合後比較各自的波週期小鐘。"],
+    connections: ["The flux stays fixed while the electron travels. The partial-path phase uses a circularly symmetric gauge; the full-loop phase is gauge invariant. The loop represents the difference between the two paths in the experiment.", "電子移動時，磁通保持固定。沿途相位採圓對稱規範；繞完整圈的相位是規範不變的結果。這個封閉圈，代表實驗中兩條路徑的差別。"],
     topology: ["A loop can shrink on the filled sheet. A loop around the hole cannot shrink while staying on the sheet.", "完整紙上的圈能縮成一點；繞著洞的圈，不能一直留在紙面上縮成一點。"],
     entanglement: ["One row for A, one column for B: keep the pair’s outcomes in one table.", "列記錄 A、欄記錄 B，把兩者如何配對放進同一張表。"],
     frontiers: ["A proposed rule needs a prediction that can be checked against a measurement.", "提出規則以後，還要做出能和量測比較的預測。"],
@@ -35,13 +49,14 @@ export default function LimitationsFigure({ kind, l }: { kind: string; l: number
         {label(375,177,l ? "相位示意：轉兩圈復原" : "Phase schematic: two turns")}
       </>}
       {kind === "connections" && <>
-        <path d="M45 112C120 5 240 5 310 112C240 215 120 215 45 112" stroke="#93c5fd" fill="none" strokeWidth="3"/>
-        <circle cx="178" cy="112" r="30" fill="#dbeafe" stroke="#60a5fa"/>
-        {label(178,116,l ? "磁通" : "Flux")}
-        <circle cx={178 + 116*Math.cos(theta)} cy={112 - 76*Math.sin(theta)} r="6" fill="#2563eb"/>
-        <circle cx="410" cy="95" r="43" fill="white" stroke="#c4b5fd"/>
-        <g transform={`rotate(${-angle/2} 410 95)`}><path d="M410 95H445" stroke="#7c3aed" strokeWidth="3"/></g>
-        {label(410,174,l ? "沿路累積的相位" : "Accumulated phase")}
+        <circle cx="165" cy="105" r="72" fill="none" stroke="#c4b5fd" strokeWidth="2" strokeDasharray="5 4"/>
+        <circle cx="165" cy="105" r="29" fill="#ddd6fe"/>
+        {label(165,109,l ? "磁通" : "Flux")}
+        <circle cx={165+72*Math.cos(theta)} cy={105-72*Math.sin(theta)} r="7" fill="#0f766e"/>
+        <circle cx="380" cy="105" r="43" fill="white" stroke="#c4b5fd"/>
+        <Arrow x1={380} y1={105} x2={380+35*Math.cos(flux.phaseRadians)} y2={105-35*Math.sin(flux.phaseRadians)} color="#7c3aed" w={3} head={9}/>
+        {label(380,177,l ? "累積相位" : "Accumulated phase")}
+        {label(165,205,l ? "電子繞過磁通區" : "Electron around excluded flux")}
       </>}
       {kind === "topology" && <>
         {[125,375].map((x,i) => <g key={x}><rect x={x-95} y="22" width="190" height="154" rx="18" fill="#dbeafe" stroke="#93c5fd"/><circle cx={x} cy="99" r={Math.max(2,radii[i])} fill={i===0&&radii[0]===0?"#2563eb":"none"} stroke="#2563eb" strokeWidth="3" strokeDasharray={i===0&&radii[0]===0?undefined:"5 3"}/></g>)}
@@ -73,15 +88,19 @@ export default function LimitationsFigure({ kind, l }: { kind: string; l: number
         {label(380,118,`${l ? '定向面積' : 'Oriented area'}: ${Math.sin(theta).toFixed(2)}`)}
       </>}
     </svg>
+    {kind === "connections" && <div className="mb-4 grid gap-3 text-center text-xs sm:grid-cols-2">
+      <div className="rounded-lg border border-violet-100 bg-white px-3 py-2"><p className="mb-1 text-gray-500">{l?"固定磁通":"Fixed magnetic flux"}</p><Tex tex={String.raw`\Phi\simeq${(flux.fluxWebers/1e-15).toFixed(2)}\times10^{-15}\,\mathrm{Wb}`}/></div>
+      <div className="rounded-lg border border-violet-100 bg-white px-3 py-2"><p className="mb-1 text-gray-500">{l?"電子累積相位":"Electron phase"}</p><Tex tex={String.raw`\Delta\varphi=${flux.phaseDegrees.toFixed(1)}^\circ`}/></div>
+    </div>}
     {kind === "topology" && <div className="mt-2 space-y-3">
-      <label className="flex items-center gap-3 text-xs text-blue-900">{l?"把圈縮小":"Shrink the loops"}<input type="range" min="0" max="100" value={angle} onChange={e=>setAngle(Number(e.target.value))} aria-label={l?"把圈縮小":"Shrink the loops"} className="min-w-0 flex-1 accent-blue-600"/></label>
+      <label className="flex items-center gap-3 text-xs text-blue-900">{l?"把圈縮小":"Shrink the loops"}<input type="range" min="0" max="100" value={angle} onChange={e=>{setPlaying(false);setAngle(Number(e.target.value));}} aria-label={l?"把圈縮小":"Shrink the loops"} className="min-w-0 flex-1 accent-blue-600"/></label>
       <div className="flex gap-2">{[0,100].map(value=><button key={value} type="button" onClick={()=>setAngle(value)} className="rounded border border-blue-200 bg-white px-3 py-1 text-xs text-blue-800">{value===0?(l?"重新開始":"Reset"):(l?"縮到最小":"Shrink fully")}</button>)}</div>
     </div>}
     {['scope','spinors','connections','bridge'].includes(kind) && <>
       <label className="mt-2 flex items-center gap-3 text-xs text-blue-900">{l ? "角度" : "Angle"}: {angle}°
-        <input className="min-w-0 flex-1 accent-blue-600" aria-label={l ? "圖解角度" : "Diagram angle"} type="range" min="0" max={kind === 'spinors' ? 720 : kind === 'bridge' ? 180 : 360} value={angle} onChange={e=>setAngle(Number(e.target.value))}/>
+        <input className="min-w-0 flex-1 accent-blue-600" aria-label={l ? "圖解角度" : "Diagram angle"} type="range" min="0" max={kind === 'spinors' || kind === 'connections' ? 720 : kind === 'bridge' ? 180 : 360} value={angle} onChange={e=>{setPlaying(false);setAngle(Number(e.target.value));}}/>
       </label>
-      <div className="mt-3 flex gap-2">{(kind === 'spinors' ? [0,360,720] : kind === 'bridge' ? [0,90,180] : [0,90,180,360]).map(a=><button type="button" key={a} onClick={()=>setAngle(a)} className="rounded border border-blue-200 bg-white px-3 py-1 text-xs text-blue-800">{a}°</button>)}</div>
+      <div className="mt-3 flex flex-wrap gap-2">{kind==="connections"&&<button type="button" className="rounded border border-violet-200 bg-white px-3 py-1 text-xs text-violet-800" onClick={()=>{if(angle>=720)setAngle(0);setPlaying(p=>!p);}}>{playing?(l?"暫停":"Pause"):(l?"播放動畫":"Play animation")}</button>}{(kind === 'spinors' ? [0,360,720] : kind === 'connections' ? [0,90,360,720] : kind === 'bridge' ? [0,90,180] : [0,90,180,360]).map(a=><button type="button" key={a} onClick={()=>{setPlaying(false);setAngle(a);}} className="rounded border border-blue-200 bg-white px-3 py-1 text-xs text-blue-800">{a}°</button>)}</div>
     </>}
     <figcaption className="mt-3 text-xs leading-relaxed text-gray-600">{captions[kind]?.[l]}</figcaption>
   </figure>;

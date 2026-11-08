@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import katex from "katex";
-import { jointProbabilities, loopRadii, LIMITATION_EQUATIONS } from "../src/limitationsModel.ts";
+import { jointProbabilities, loopRadii, magneticLoop, LIMITATION_EQUATIONS } from "../src/limitationsModel.ts";
 
 const content = JSON.parse(readFileSync(new URL("../src/content/limitations.json", import.meta.url), "utf8"));
 test("limitations stories retain bilingual copy and valid optional mathematics", () => {
@@ -42,4 +42,16 @@ test("loop contraction reaches a point only on the unpunctured sheet",()=>{
     assert.ok(radius[0]<=previous[0] && radius[1]<=previous[1]);
     previous=radius;
   }
+});
+
+test("fixed enclosed flux gives the electron phase after each winding",()=>{
+ const start=magneticLoop(0),one=magneticLoop(360),two=magneticLoop(720);
+ assert.ok(Math.abs(start.fluxWebers-1.033916924e-15)<1e-24);
+ assert.equal(start.fluxWebers,one.fluxWebers);
+ assert.equal(start.fluxWebers,two.fluxWebers);
+ assert.equal(start.phaseDegrees,0);
+ assert.equal(one.phaseDegrees,-90);
+ assert.equal(one.phaseRadians,-Math.PI/2);
+ assert.equal(two.phaseDegrees,-180);
+ assert.equal(magneticLoop(90).phaseDegrees,-22.5);
 });

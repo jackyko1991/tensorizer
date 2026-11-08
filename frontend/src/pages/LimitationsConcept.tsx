@@ -50,7 +50,7 @@ export default function LimitationsConcept() {
 
 function Demo({ instruction, children }: { instruction: string; children: ReactNode }) {
   return <div className="space-y-3 rounded-lg border-l-4 border-emerald-300 bg-emerald-50/70 px-4 py-3 text-emerald-950" data-demo="true">
-    <p>{instruction}</p>{children}
+    <p><RichText text={instruction}/></p>{children}
   </div>;
 }
 function Reveal({ title, children }: { title: string; children: ReactNode }) {

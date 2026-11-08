@@ -142,8 +142,8 @@
       "把電子波分成兩路，繞過無法進入的磁通區，再讓它們會合。兩條路上的磁場可以都為零，干涉條紋卻仍可能移動。只看沿路的場強，少記了什麼？"
     ],
     "try": [
-      "Follow the two routes and watch the phase clock. This is a sketch of accumulated phase, not a calibrated simulation of the experiment.",
-      "沿著兩條路看相位小鐘：它示意一路累積的相位，不是這個實驗的定量模擬。"
+      "Press Play or move the slider. The loop stands for the two paths joined into one closed route. Flux stays at $0.25\\,h/e$: after one turn, the electron phase is $-90^\\circ$; after two, $-180^\\circ$.",
+      "按播放或拖動滑桿。把兩條路接成封閉圈來看：磁通固定為 $0.25\\,h/e$，電子繞一圈後相位為 $-90^\\circ$，兩圈後為 $-180^\\circ$。"
     ],
     "localTitle": [
       "At a point",
