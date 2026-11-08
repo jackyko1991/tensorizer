@@ -206,7 +206,7 @@ export const BOOKS: Book[] = [
     isbn10: "0443154066",
     isbn13: "9780443154065",
     source: "https://lehmanns.de/shop/mathematik-informatik/70726627-9780443154065-computer-architecture",
-    site: { href: "#/concept/maths/roof", label: "maths.tab" },
+    site: { href: "#/concept/dataflow/roof", label: "flow.tab" },
   },
   {
     id: "pytorch",

@@ -16,7 +16,7 @@ test("parse: page, tab and section; other routes are not tabbed pages", () => {
   assert.deepEqual(parsePageRoute("concept/dataflow"), { page: "concept", tab: "dataflow", section: null });
   assert.deepEqual(parsePageRoute("concept/"), { page: "concept", tab: null, section: null });
   assert.deepEqual(parsePageRoute("concept/maths"), { page: "concept", tab: "maths", section: null });
-  assert.deepEqual(parsePageRoute("concept/maths/roof"), { page: "concept", tab: "maths", section: "roof" });
+  assert.deepEqual(parsePageRoute("concept/maths/roof"), { page: "concept", tab: "dataflow", section: "roof" });
   assert.deepEqual(parsePageRoute("concept/history"), { page: "concept", tab: "history", section: null });
   assert.deepEqual(parsePageRoute("concept/history/riemann"), { page: "concept", tab: "history", section: "riemann" });
   assert.deepEqual(parsePageRoute("concept/feynman"), { page: "concept", tab: "feynman", section: null });

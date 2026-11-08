@@ -30,6 +30,8 @@ export function parsePageRoute(route: string | null): PageRoute | null {
   if (!route) return null;
   const [page, tab, section] = route.replace(/^\/+/, "").split("/");
   if (page !== "concept" && page !== "skills") return null;
+  if (page === "concept" && tab === "maths" && section === "roof")
+    return { page, tab: "dataflow", section: "roof" };
   return { page, tab: tab || null, section: section || null };
 }
 
