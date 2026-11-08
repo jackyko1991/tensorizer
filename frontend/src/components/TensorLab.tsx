@@ -273,8 +273,7 @@ function size(bytes: number): string {
 export function PairMemory() {
   const T = usePageText();
   const L = (k: string) => T(`lab.${k}` as PageKey);
-  const [exp, setExp] = useState(3); // N = 10^exp
-  const n = Math.round(10 ** exp);
+  const [n, setN] = useState(6);
   const f32 = 12 * n * n;
   const f64 = 24 * n * n;
   // bar on a log scale from 1 MB to 1 TB
@@ -286,15 +285,19 @@ export function PairMemory() {
         <span className="font-mono">N = {n.toLocaleString()}</span>
         <input
           type="range"
-          min={2}
+          min={Math.log10(2)}
           max={5}
-          step={0.05}
-          value={exp}
-          onChange={(e) => setExp(Number(e.target.value))}
+          step={0.01}
+          value={Math.log10(n)}
+          onChange={(e) => setN(Math.round(10 ** Number(e.target.value)))}
           className="flex-1 accent-blue-600"
           aria-label={L("particles")}
         />
       </label>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {[6,12,1000,10000,100000].map(count=><button key={count} type="button" aria-pressed={n===count} onClick={()=>setN(count)} className={`rounded border px-2 py-1 text-xs ${n===count?"border-blue-500 bg-blue-50 text-blue-700":"border-gray-200 bg-white text-gray-600"}`}>{count.toLocaleString()}</button>)}
+      </div>
+      <PairTensorDots n={n}/>
       <div className="relative mt-5 h-6 rounded bg-white ring-1 ring-gray-200">
         <div
           className="absolute inset-y-0 left-0 rounded bg-blue-500/80 transition-all duration-200"
@@ -316,4 +319,32 @@ export function PairMemory() {
       <figcaption className="mt-1 text-[11px] text-gray-500">{L("memCaption")}</figcaption>
     </figure>
   );
+}
+
+/** Each visible dot is one stored scalar, never a scaled area or a whole vector. */
+function PairTensorDots({n}:{n:number}) {
+  const T=usePageText(),shown=Math.min(n,12),colors=["#2563eb","#d97706","#059669"];
+  return <div className="my-4" data-testid="pair-tensor-dots" data-n={n}>
+    <div className="grid gap-3 sm:grid-cols-[1fr_2fr]">
+      <div className="rounded-lg border border-blue-100 bg-white p-3 text-center">
+        <p className="text-xs font-semibold text-blue-700">{T("lab.dotInput")} · X ({n.toLocaleString()}, 3)</p>
+        <svg viewBox={`0 0 70 ${shown*10+14}`} className="mx-auto my-2 h-36 max-w-full" role="img" aria-label={`X: ${3*n} ${T("lab.dotScalars")}`}>
+          {Array.from({length:shown*3},(_,q)=><circle key={q} cx={25+q%3*10} cy={12+Math.floor(q/3)*10} r="2.5" fill="#2563eb"/>)}
+        </svg>
+        <p className="font-mono text-xs text-blue-700">3N = {(3*n).toLocaleString()}</p>
+      </div>
+      <div className="min-w-0 rounded-lg border border-gray-200 bg-white p-3 text-center">
+        <p className="text-xs font-semibold text-gray-700">{T("lab.dotOutput")} · D ({n.toLocaleString()}, {n.toLocaleString()}, 3)</p>
+        <div className="my-2 grid grid-cols-3 gap-2">
+          {colors.map((color,k)=><div key={color} className="min-w-0"><p className="font-mono text-[11px]" style={{color}}>{["x","y","z"][k]}</p><svg viewBox={`0 0 ${shown*10+10} ${shown*10+10}`} className="mx-auto aspect-square w-full max-w-36" role="img" aria-label={`D[..., ${k}]: ${n*n} ${T("lab.dotScalars")}`}>
+            {Array.from({length:shown*shown},(_,q)=><circle key={q} cx={10+q%shown*10} cy={10+Math.floor(q/shown)*10} r="2.5" fill={color}/>)}
+          </svg></div>)}
+        </div>
+        <p className="font-mono text-xs text-gray-700">3N² = {(3*n*n).toLocaleString()}</p>
+      </div>
+    </div>
+    <p className="mt-2 text-xs text-gray-600">{T("lab.dotLegend")}</p>
+    {n>12&&<p className="mt-1 text-xs text-amber-700">{T("lab.dotSample")}</p>}
+    <p className="mt-2 rounded bg-blue-50 px-3 py-2 text-xs text-blue-900" aria-live="polite">{T("lab.dotWork")}: {(3*n*n).toLocaleString()}</p>
+  </div>;
 }

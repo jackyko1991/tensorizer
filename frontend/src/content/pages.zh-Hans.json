@@ -1467,5 +1467,11 @@
   "flow.tensorcore.s2": "再看右边：一个 4×4×4 MMA 数学操作，合并同样的 64 个乘积，更新 16 个输出。",
   "flow.tensorcore.s3": "两条路都算 D = AB + C。点击绿色输出格，对照同一个结果分量。",
   "flow.tensorcore.caption": "此 Volta 例子采用 FP16 输入、FP32 累加；Pascal 也能并行执行很多 FMA。播放步骤用于说明运算粒度，不代表时钟周期或实测倍速。",
-  "flow.tensorcore.result": "查看完整输出 D"
+  "flow.tensorcore.result": "查看完整输出 D",
+  "lab.dotInput": "输入",
+  "lab.dotOutput": "输出",
+  "lab.dotScalars": "个数值",
+  "lab.dotLegend": "每点是一个数值。两个广播视图共享左边的输入；右边每片记录所有粒子对在一个方向上的差值。",
+  "lab.dotSample": "仅绘出前 12 个粒子及其配对；上方总数与下方内存用量仍按完整 N 计算。",
+  "lab.dotWork": "计算完整 D 所需的标量减法次数"
 }

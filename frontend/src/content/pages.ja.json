@@ -1467,5 +1467,11 @@
   "flow.tensorcore.s2": "右側：一つの 4×4×4 MMA 数学演算で同じ 64 個の積をまとめ、16 個の出力を更新します。",
   "flow.tensorcore.s3": "両方とも D = AB + C を計算します。緑の出力セルを選んで同じ成分を比べましょう。",
   "flow.tensorcore.caption": "この Volta の例は FP16 入力と FP32 累積を使います。Pascal も多数の FMA を並列実行できます。再生ステップは演算の粒度を示し、クロック数や実測の速度比ではありません。",
-  "flow.tensorcore.result": "出力 D 全体を表示"
+  "flow.tensorcore.result": "出力 D 全体を表示",
+  "lab.dotInput": "入力",
+  "lab.dotOutput": "出力",
+  "lab.dotScalars": "個のスカラー",
+  "lab.dotLegend": "各点は1個の数値です。2つのブロードキャストのビューは左の入力を共有します。右の各面は、すべての粒子対について1方向の差を記録します。",
+  "lab.dotSample": "最初の12粒子とその組だけを描画しています。総数とメモリ使用量は完全な N で計算します。",
+  "lab.dotWork": "D 全体の計算に必要なスカラー減算回数"
 }

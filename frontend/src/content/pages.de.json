@@ -1467,5 +1467,11 @@
   "flow.tensorcore.s2": "Rechts: Eine mathematische 4×4×4-MMA-Operation kombiniert dieselben 64 Produkte und aktualisiert 16 Ausgaben.",
   "flow.tensorcore.s3": "Beide Wege berechnen D = AB + C. Wähle ein grünes Ausgabefeld, um denselben Eintrag zu vergleichen.",
   "flow.tensorcore.caption": "Dieses Volta-Beispiel nutzt FP16-Eingaben und FP32-Akkumulation. Auch Pascal führt viele FMAs parallel aus. Die Schritte zeigen die Granularität, keine Taktzyklen oder gemessenen Geschwindigkeitsverhältnisse.",
-  "flow.tensorcore.result": "Vollständige Ausgabe D anzeigen"
+  "flow.tensorcore.result": "Vollständige Ausgabe D anzeigen",
+  "lab.dotInput": "Eingabe",
+  "lab.dotOutput": "Ausgabe",
+  "lab.dotScalars": "Skalare",
+  "lab.dotLegend": "Jeder Punkt ist ein Skalar. Beide Broadcast-Ansichten teilen die Eingabe links; jede Ausgabeschicht zeigt die Differenzen aller Teilchenpaare entlang einer Achse.",
+  "lab.dotSample": "Gezeichnet sind nur die ersten 12 Teilchen und ihre Paare; Gesamtzahlen und Speicherbedarf verwenden weiterhin das volle N.",
+  "lab.dotWork": "Skalare Subtraktionen zur Berechnung des vollständigen D"
 }

@@ -1467,5 +1467,11 @@
   "flow.tensorcore.s2": "오른쪽: 하나의 4×4×4 MMA 수학 연산으로 같은 64개 곱을 결합하고 16개 출력을 갱신합니다.",
   "flow.tensorcore.s3": "두 경로 모두 D = AB + C를 계산합니다. 초록색 출력 셀을 선택해 같은 성분을 비교하세요.",
   "flow.tensorcore.caption": "이 Volta 예제는 FP16 입력과 FP32 누산을 사용합니다. Pascal도 많은 FMA를 병렬로 실행합니다. 재생 단계는 연산 단위를 나타내며 클록 수나 측정된 속도 비율이 아닙니다.",
-  "flow.tensorcore.result": "전체 출력 D 보기"
+  "flow.tensorcore.result": "전체 출력 D 보기",
+  "lab.dotInput": "입력",
+  "lab.dotOutput": "출력",
+  "lab.dotScalars": "스칼라",
+  "lab.dotLegend": "점 하나는 수 하나입니다. 두 브로드캐스트 뷰는 왼쪽 입력을 공유하며, 오른쪽 각 면은 모든 입자 쌍의 한 축 방향 차이를 기록합니다.",
+  "lab.dotSample": "처음 12개 입자와 그 쌍만 그립니다. 총수와 메모리 사용량은 전체 N으로 계산합니다.",
+  "lab.dotWork": "전체 D 계산에 필요한 스칼라 뺄셈 횟수"
 }
