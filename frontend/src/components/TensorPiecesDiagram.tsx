@@ -41,7 +41,7 @@ export default function TensorPiecesDiagram() {
             <button type="button" onClick={()=>{clock.setPlaying(false);clock.setG(32+index*4+3);}} aria-pressed={stage===2 && current===index}
               className={`w-full rounded-lg border p-2.5 text-left transition-colors ${stage>=2 && (stage===3 || current===index) ? "border-blue-200 bg-blue-50/60" : "border-gray-100 bg-gray-50/30"}`}>
               <span className="mr-2 inline-block h-2 w-2 rounded-full" style={{background:colours[index]}}/>
-              <span className="font-medium"><Tex tex={String.raw`${fmt(t.weight)}\,e_{${t.i+1}}\otimes\varepsilon^{${t.j+1}}`}/></span>
+              <span className="font-medium"><Tex tex={String.raw`\textcolor{#2563eb}{${fmt(t.weight)}}\,\textcolor{#059669}{e_{${t.i+1}}}\otimes\textcolor{#d97706}{\varepsilon^{${t.j+1}}}`}/></span>
               <span className="mt-1 block pl-4 text-gray-600">{stage>=1 ? `${l?"讀到":"Read"} ${fmt(t.measurement)}` : (l?"等待讀取輸入":"Waiting to read input")}
                 {stage>=2 && ` → ${l?"送出":"send"} ${pair(t.vector)}`}</span>
             </button>

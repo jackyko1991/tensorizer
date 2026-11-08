@@ -176,8 +176,11 @@ function TensorGeometry() {
   const { lang } = useLang();
   const T = usePageText();
   const l = lang.startsWith("zh") ? 1 : 0;
-  const symbols = [String.raw`T^i{}_j`, String.raw`e_i,\;\varepsilon^j`, String.raw`T\leftrightarrow T'`, "(1,1)", "g", String.raw`\nabla`];
+  const symbols = [String.raw`\textcolor{#2563eb}{T^i{}_j}`, String.raw`\textcolor{#059669}{e_i},\;\textcolor{#d97706}{\varepsilon^j}`, String.raw`T\leftrightarrow T'`, "(1,1)", "g", String.raw`\nabla`];
   return <div className="space-y-4" data-testid="tensor-geometric-view">
+    <h3 className="flex flex-wrap items-baseline gap-x-1.5 gap-y-1 text-sm font-semibold text-gray-900">
+      <span>Tensor</span><Tex tex="="/><span style={{color:"#2563eb"}}>{l?"份量":"amount"}</span><Tex tex={String.raw`\times`}/><span style={{color:"#059669"}}>{l?"輸出方向":"output direction"}</span><Tex tex={String.raw`\otimes`}/><span style={{color:"#d97706"}}>{l?"輸入讀尺":"input reader"}</span>
+    </h3>
     <div className="overflow-x-auto rounded-lg border border-gray-200" data-testid="tensor-components-table">
       <table className="w-full text-left text-xs leading-relaxed">
         <caption className="border-b border-gray-200 bg-gray-50 px-4 py-2 text-left text-sm font-semibold text-gray-900">{l?"先看全貌：張量與周邊工具":"The whole picture: a tensor and its supporting tools"}</caption>
@@ -197,9 +200,8 @@ function TensorGeometry() {
     <figure className="overflow-hidden rounded-lg border border-gray-200 bg-gray-50" data-testid="tensor-assembled-equation">
       <figcaption className="px-4 pt-3 text-sm font-semibold">{l?"把分量、方向和讀尺拼成一個張量":"Assemble the coefficients, directions and readers"}</figcaption>
       <p className="px-4 pt-2 text-xs text-gray-600"><RichText text={geometry.legend[l]}/></p>
-      <div className="px-3 py-2"><Tex tex={String.raw`T=\sum_{i,j=1}^{2}\underbrace{T^i{}_j\vphantom{T^i{}_j}}_{\substack{\text{${l?"分量":"Component"}}\\\text{${l?"份量":"amount"}}}}\,\underbrace{e_i\vphantom{T^i{}_j}}_{\substack{\text{${l?"基底":"Basis"}}\\\text{${l?"輸出方向":"output"}}}}\otimes\underbrace{\varepsilon^j\vphantom{T^i{}_j}}_{\substack{\text{${l?"對偶基底":"Dual basis"}}\\\text{${l?"輸入讀尺":"reader"}}}}`} display/></div>
+      <div className="px-3 py-2"><Tex tex={String.raw`T=\sum_{i,j=1}^{2}\textcolor{#2563eb}{\underbrace{T^i{}_j\vphantom{T^i{}_j}}_{\substack{\text{${l?"分量":"Component"}}\\\text{${l?"份量":"amount"}}}}}\,\textcolor{#059669}{\underbrace{e_i\vphantom{T^i{}_j}}_{\substack{\text{${l?"基底":"Basis"}}\\\text{${l?"輸出方向":"output"}}}}}\otimes\textcolor{#d97706}{\underbrace{\varepsilon^j\vphantom{T^i{}_j}}_{\substack{\text{${l?"對偶基底":"Dual basis"}}\\\text{${l?"輸入讀尺":"reader"}}}}}`} display/></div>
     </figure>
-    <h3 className="pt-1 text-sm font-semibold text-gray-900">{l?"再拆開：份量 × 輸出方向 ⊗ 輸入讀尺":"Break it down: amount × output direction ⊗ input reader"}</h3>
     {FEYNMAN.map(f=><div key={f} className="space-y-4">
       <Feynman kind={f} text={geometry[f][l]} label={T(`maths.label.${f}`)} illustration={f === "analogy" ? <AnalogyPicture kind="geometry" /> : undefined}>
         {f==="example" && <TensorPiecesDiagram/>}
