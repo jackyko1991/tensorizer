@@ -142,9 +142,8 @@ export default function FeynmanConcept() {
                   {/* "precise" is left out: the four numbered step cards already say it */}
                   {FEYNMAN.filter((f) => f !== "precise").map((f) => (
                     <div key={f} className="space-y-4">
-                      <Feynman kind={f} text={T(k(`steps.${f}`))} label={T(`maths.label.${f}` as PageKey)} />
+                      <Feynman kind={f} text={T(k(`steps.${f}`))} label={T(`maths.label.${f}` as PageKey)} illustration={f === "analogy" ? <BridgeFigure /> : undefined} />
                       {f === "plain" && <StepCycle />}
-                      {f === "analogy" && <BridgeFigure />}
                       {f === "example" && <SkyFigure />}
                     </div>
                   ))}

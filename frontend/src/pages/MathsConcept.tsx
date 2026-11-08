@@ -7,6 +7,7 @@ import { usePageText, type PageKey } from "../content/pages";
 import { attainable, bestChain, chainCost, intensity, kernelCost, orderText, ridge, type Order } from "../tensorMaths";
 import MathsAnim from "../components/MathsAnim";
 import TensorPiecesDiagram from "../components/TensorPiecesDiagram";
+import AnalogyPicture from "../components/AnalogyPicture";
 import geometry from "../content/tensorGeometry.json";
 import { useLang } from "../i18n";
 import { animsAfter, type MathsCase } from "../mathsAnim";
@@ -124,7 +125,8 @@ export default function MathsConcept() {
                 <>
                   {FEYNMAN.map((f) => (
                     <div key={f} className="space-y-4">
-                      <Feynman kind={f} text={T(k(`${s}.${f}`))} label={T(k(`label.${f}`))} />
+                      <Feynman kind={f} text={T(k(`${s}.${f}`))} label={T(k(`label.${f}`))}
+                        illustration={f === "analogy" ? <AnalogyPicture kind={s} /> : undefined} />
                       {animsAfter(s, f).map((id) => (
                         <MathsAnim key={id} id={id} />
                       ))}
@@ -199,7 +201,7 @@ function TensorGeometry() {
     </figure>
     <h3 className="pt-1 text-sm font-semibold text-gray-900">{l?"再拆開：份量 × 輸出方向 ⊗ 輸入讀尺":"Break it down: amount × output direction ⊗ input reader"}</h3>
     {FEYNMAN.map(f=><div key={f} className="space-y-4">
-      <Feynman kind={f} text={geometry[f][l]} label={T(`maths.label.${f}`)}>
+      <Feynman kind={f} text={geometry[f][l]} label={T(`maths.label.${f}`)} illustration={f === "analogy" ? <AnalogyPicture kind="geometry" /> : undefined}>
         {f==="example" && <TensorPiecesDiagram/>}
       </Feynman>
     </div>)}
@@ -214,9 +216,10 @@ const FEYNMAN_STYLE: Record<(typeof FEYNMAN)[number], string> = {
   example: "rounded-lg border-l-4 border-emerald-300 bg-emerald-50/70 px-4 py-2.5 text-emerald-950",
 };
 
-export function Feynman({ kind, text, label, children }: { kind: (typeof FEYNMAN)[number]; text: string; label: string; children?: ReactNode }) {
+export function Feynman({ kind, text, label, children, illustration }: { kind: (typeof FEYNMAN)[number]; text: string; label: string; children?: ReactNode; illustration?: ReactNode }) {
   return (
     <div className={FEYNMAN_STYLE[kind]} data-feynman={kind}>
+      {illustration && <div className="mb-3">{illustration}</div>}
       {label && <p className="mb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">{label}</p>}
       <ListOrText text={text} />
       {children && <div className="mt-3">{children}</div>}
