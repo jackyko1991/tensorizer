@@ -316,7 +316,9 @@ export function PairMemory() {
       <p className="mt-2 font-mono text-xs text-gray-700" data-testid="pair-bytes">
         D ({n.toLocaleString()}, {n.toLocaleString()}, 3): float32 {size(f32)} / float64 {size(f64)}
       </p>
-      <figcaption className="mt-1 text-[11px] text-gray-500">{L("memCaption")}</figcaption>
+      <figcaption className="mt-1 text-[11px] text-gray-500">
+        {L("memCaption").split(/([,，、.。।])/u).map((part,i)=><span key={i} className={i===0?"text-blue-600":i===2?"text-violet-600":i===4?"text-red-600":undefined}>{part}</span>)}
+      </figcaption>
     </figure>
   );
 }
