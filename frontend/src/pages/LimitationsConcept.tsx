@@ -83,6 +83,8 @@ function MeaningCard({ l }: { l: number }) {
 function RotationCard({ l }: { l: number }) {
   const c = content.spinors;
   return <>
+    <p className="border-l-2 border-blue-200 pl-4">{c.invariance[l]}</p>
+    <p>{c.rotationDistinction[l]}</p>
     <p>{c.question[l]}</p>
     <Demo instruction={c.try[l]}><LimitationsFigure kind="spinors" l={l} /></Demo>
     <p><RichText text={c.stateIntro[l]} /></p>

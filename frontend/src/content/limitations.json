@@ -89,6 +89,14 @@
     ]
   },
   "spinors": {
+    "invariance": [
+      "First recall the tensor promise: turn the measuring axes, and the numbers may change, but the physical quantity stays the same. Changing coordinates changes how we describe nature, not nature itself.",
+      "先記住張量的基本承諾：轉動量測座標，分量數字可以改變，但描述的物理量不變。換座標只是換一種說法，自然界並沒有因此改變。"
+    ],
+    "rotationDistinction": [
+      "Now ask a different question: keep the measuring axes fixed and actually rotate the system. Ordinary spatial tensors return after 360°; the electron’s spinor state vector needs a different rotation rule.",
+      "接下來換個問題：量測座標不動，實際旋轉系統。普通空間張量轉 360° 會復原；電子的旋量態向量，則需要另一套旋轉規則。"
+    ],
     "question": [
       "An ordinary arrow comes back after 360°. Does an electron’s state keep any record of that turn? Try the two dials before looking at the answer.",
       "普通箭頭轉 360° 就復原。電子的狀態，會不會還記得剛才那一圈？先試兩只錶盤，再看答案。"
