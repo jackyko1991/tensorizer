@@ -56,10 +56,10 @@ export default function ConceptPage({
 
   return (
     <div id="concept-scroll" className="h-full scroll-pt-16 scroll-smooth bg-gray-50/60 xl:overflow-y-auto">
-      <div className="sticky top-0 z-30 bg-gray-50" data-testid="concept-tabs-sticky">
-      <div className="mx-auto max-w-6xl px-5 pt-6">
+      <div className="sticky top-0 z-30 bg-gray-50/95 backdrop-blur" data-testid="concept-tabs-sticky">
+      <div className="w-full px-4 pt-3 sm:px-6">
         <div
-          className="flex gap-1 overflow-x-auto overflow-y-hidden border-b border-gray-200 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex gap-1 overflow-x-auto overflow-y-hidden border-b border-gray-200"
           role="tablist"
           data-testid="concept-tabs"
         >
@@ -69,8 +69,8 @@ export default function ConceptPage({
               role="tab"
               aria-selected={tab === k}
               onClick={() => k !== tab && onTab(k)}
-              className={`-mb-px shrink-0 whitespace-nowrap border-b-2 px-4 py-2 text-sm font-medium ${
-                tab === k ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-800"
+              className={`shrink-0 whitespace-nowrap border-b-2 px-4 py-2 text-sm font-medium ${
+                tab === k ? "border-blue-600 text-blue-800" : "border-transparent text-gray-500 hover:text-gray-800"
               }`}
             >
               {T(k === "laws" ? "flow.tab.law" : k === "maths" ? "maths.tab" : k === "limitations" ? "limitations.tab" : k === "history" ? "history.tab" : k === "feynman" ? "feynman.tab" : "flow.tab")}
