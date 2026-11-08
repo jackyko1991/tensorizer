@@ -197,7 +197,7 @@ function TensorGeometry() {
     <figure className="overflow-hidden rounded-lg border border-gray-200 bg-gray-50" data-testid="tensor-assembled-equation">
       <figcaption className="px-4 pt-3 text-sm font-semibold">{l?"把分量、方向和讀尺拼成一個張量":"Assemble the coefficients, directions and readers"}</figcaption>
       <p className="px-4 pt-2 text-xs text-gray-600">{geometry.legend[l]}</p>
-      <div className="px-3 py-2"><Tex tex={String.raw`T=\sum_{i,j=1}^{2}T^i{}_j\,(e_i\otimes\varepsilon^j)`} display/></div>
+      <div className="px-3 py-2"><Tex tex={String.raw`T=\sum_{i,j=1}^{2}\underbrace{T^i{}_j}_{\text{${l?"分量：份量":"Component: amount"}}}\,\bigl(\underbrace{e_i}_{\text{${l?"基底：輸出方向":"Basis: output direction"}}}\otimes\underbrace{\varepsilon^j}_{\text{${l?"對偶基底：輸入讀尺":"Dual basis: input reader"}}}\bigr)`} display/></div>
     </figure>
     <h3 className="pt-1 text-sm font-semibold text-gray-900">{l?"再拆開：份量 × 輸出方向 ⊗ 輸入讀尺":"Break it down: amount × output direction ⊗ input reader"}</h3>
     {FEYNMAN.map(f=><div key={f} className="space-y-4">
