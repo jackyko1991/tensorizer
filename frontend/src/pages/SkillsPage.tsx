@@ -162,7 +162,7 @@ export default function SkillsPage({
       <div className="sticky top-0 z-30 bg-gray-50/95 backdrop-blur" data-testid="skills-tabs-sticky">
       <div className="w-full px-4 pt-3 sm:px-6">
         <div
-          className="flex gap-1 overflow-x-auto overflow-y-hidden border-b border-gray-200"
+          className="flex gap-1 overflow-x-auto overflow-y-hidden border-b border-gray-200 [&>:first-child]:ml-auto [&>:last-child]:mr-auto"
           role="tablist"
           data-testid="skills-tabs"
         >
