@@ -40,7 +40,7 @@ export default function ConceptPage({
   const { t, lang } = useLang();
   const p = manifest.problems.find((x) => x.id === PENDULUM);
   useEffect(() => {
-    const el = section && document.getElementById(tab === "laws" ? `step-${section}` : tab === "maths" ? `maths-${section}` : tab === "dataflow" ? `flow-${section}` : tab === "history" ? `history-${section}` : tab === "feynman" ? `feynman-${section}` : section);
+    const el = section && document.getElementById(tab === "laws" ? `step-${section}` : tab === "maths" ? `maths-${section}` : tab === "dataflow" ? `flow-${section}` : tab === "history" ? `history-${section}` : tab === "feynman" ? `feynman-${section}` : tab === "limitations" ? `limits-${section}` : section);
     if (el) el.scrollIntoView({ block: "start", behavior: "instant" });
     else document.getElementById("concept-scroll")?.scrollTo({ top: 0 });
   }, [tab, section]);
