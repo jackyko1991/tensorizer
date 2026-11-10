@@ -25,8 +25,18 @@ test("parse: page, tab and section; other routes are not tabbed pages", () => {
   assert.deepEqual(parsePageRoute("concept/feynman/example"), { page: "concept", tab: "feynman", section: "example" });
   assert.deepEqual(parsePageRoute("concept/reading"), { page: "concept", tab: "reading", section: null });
   assert.deepEqual(parsePageRoute("concept/reading/gpu"), { page: "concept", tab: "reading", section: "gpu" });
-  for (const r of [null, "", "agents", "workspace", "mechanics/simple_pendulum", "skillsx", "workspace/a/nb/b"])
+  for (const r of [null, "", "workspace", "mechanics/simple_pendulum", "skillsx", "workspace/a/nb/b"])
     assert.equal(parsePageRoute(r), null, String(r));
+});
+
+test("AI agent has Skills and MCP routes, with legacy links and remembered tabs", () => {
+  assert.deepEqual(PAGE_TABS.agents, ["skills", "mcp"]);
+  assert.deepEqual(parsePageRoute("agents"), { page: "agents", tab: null, section: null });
+  assert.deepEqual(parsePageRoute("agents/mcp"), { page: "agents", tab: "mcp", section: null });
+  assert.equal(resolveTab("agents", null, null), "skills");
+  assert.equal(resolveTab("agents", null, "mcp"), "mcp");
+  assert.equal(resolveTab("agents", "unknown", "mcp"), "skills");
+  assert.equal(formatPageRoute("agents", "mcp"), "/agents/mcp");
 });
 
 test("resolve: the address wins, an unknown tab falls back to the first, no tab uses the remembered one", () => {

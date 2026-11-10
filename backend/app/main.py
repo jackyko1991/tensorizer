@@ -7,6 +7,7 @@ import json
 import mimetypes
 import os
 import sys
+import time
 from pathlib import Path
 from typing import Literal
 
@@ -124,7 +125,7 @@ def _nvidia_gpu() -> str | None:
     return name[:80] or None
 
 
-FEATURES = ["run", "jobs"]
+FEATURES = ["run", "jobs", "ws-jobs", "agent-turns"]
 
 
 @app.get("/api/health")
@@ -232,6 +233,53 @@ async def job_start(req: JobRequest, request: Request, x_visitor: str | None = H
         job = JOBS.start(visitor, _client(request), req.category, req.slug, params, req.files, req.verbose, req.device)
     except JobLimit as e:
         raise HTTPException(e.status, str(e)) from None
+    return {"job_id": job.id, **job.summary()}
+
+
+class WorkspaceJobRequest(BaseModel):
+    params: dict = Field(default_factory=dict)
+    verbose: bool = False
+    device: Literal["auto", "cpu", "cuda", "mps"] = "auto"
+    problem: str = Field(max_length=120)  # the page's id for this Workspace problem, e.g. "workspace/ab12cd34"
+
+
+@app.post("/api/ws/{session}/jobs")
+async def workspace_job_start(
+    session: str, req: WorkspaceJobRequest, request: Request, x_visitor: str | None = Header(None)
+) -> dict:
+    """Render a Workspace problem in its sandbox as a detached job (like POST /api/jobs): it keeps running when
+    the page closes or reloads, and the problem page reattaches to it. The sandbox is kept while the job runs."""
+    from . import workspace
+
+    visitor = _visitor(x_visitor)
+    if not agent.ENABLED:
+        raise HTTPException(403, "the Workspace is not enabled on this server")
+    if not limits.user_code_allowed():
+        raise HTTPException(403, "running your own code is off on this shared server: use Backend > Local")
+    try:
+        folder, category, slug = workspace._resolve(session)
+    except KeyError:
+        raise HTTPException(410, "this problem's sandbox has expired") from None
+    try:
+        params = resolve_params(load_meta(folder), req.params)
+    except (ValueError, TypeError) as e:
+        raise HTTPException(422, str(e)) from None
+    box = workspace._sandboxes.get(session)
+    try:
+        job = JOBS.start(
+            visitor, _client(request), category, slug, params, None, req.verbose, req.device,
+            root=folder.parents[2], label=req.problem,
+        )
+    except JobLimit as e:
+        raise HTTPException(e.status, str(e)) from None
+    if box is not None:  # keep the sandbox from being cleaned up until the job has ended
+        box.busy += 1
+
+        def release(_task) -> None:
+            box.busy -= 1
+            box.last_used = time.monotonic()
+
+        job.task.add_done_callback(release)
     return {"job_id": job.id, **job.summary()}
 
 

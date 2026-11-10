@@ -14,16 +14,20 @@ from __future__ import annotations
 import json
 import os
 
-from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi import APIRouter, HTTPException, Query, Request, Response
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
-from . import agent, mcp_server
-from .runner import problem_dir
+from tensorizer_physics.jobs import visitor_hash
+
+from . import agent, mcp_server, turns
+from .runner import CACHE, problem_dir
 
 router = APIRouter()
 LOOPBACK = {"127.0.0.1", "localhost", "::1"}
+TURNS = turns.TurnManager(CACHE / "_turns")
+VISITOR_CHARS = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_")
 
 
 def _client(request: Request) -> str:
@@ -82,38 +86,111 @@ class ChatRequest(BaseModel):
     provider: str = "anthropic"  # API: anthropic | openrouter
     # A Workspace problem (problem "workspace/<id>"): its sandbox, synced by the page just before (POST /api/ws/sync)
     sandbox: str | None = None
+    # The History entry this message continues (GET /api/agents/conversations): kept together even when the agent
+    # session behind it has to start again
+    conversation: str | None = Field(None, max_length=80)
+
+
+def _visitor(request: Request, required: bool = True) -> str:
+    """The hash of the browser's X-Visitor id (as for jobs); "" when absent and not required."""
+    v = (request.headers.get("x-visitor") or "").strip()
+    if not v and not required:
+        return ""
+    if not 16 <= len(v) <= 128 or set(v) - VISITOR_CHARS:
+        raise HTTPException(400, "missing or malformed X-Visitor header")
+    return visitor_hash(v)
+
+
+def _own_turn(turn_id: str, request: Request) -> turns.Turn:
+    turn = TURNS.get(turn_id, _visitor(request))
+    if turn is None:  # someone else's turn looks the same as no turn
+        raise HTTPException(404, "unknown turn")
+    return turn
+
+
+def _follow(turn: turns.Turn, start: int) -> StreamingResponse:
+    async def events():
+        async for event in TURNS.events(turn, max(0, start)):
+            yield json.dumps(event) + "\n"
+
+    return StreamingResponse(events(), media_type="application/x-ndjson", headers={"Cache-Control": "no-cache"})
 
 
 @router.post("/api/agents/chat")
 async def agents_chat(req: ChatRequest, request: Request) -> StreamingResponse:
-    """One chat turn with the chosen agent, streamed as newline-delimited JSON events (see agent.chat)."""
+    """One chat turn with the chosen agent, streamed as newline-delimited JSON events (see agent.chat).
+
+    The turn runs detached (turns.py): this response only follows its log, so closing or reloading the page does
+    not stop the agent. The first event is {"type": "turn", "id"}; GET /api/agents/turns/<id>/events?from=N
+    follows it again, POST /api/agents/turns/<id>/cancel stops it."""
     _enabled()
     try:
         if req.problem != "new" and not req.problem.startswith("workspace/"):
             problem_dir(*req.problem.split("/", 1))
     except (TypeError, ValueError, FileNotFoundError):
         raise HTTPException(404, "unknown problem") from None
+    visitor = _visitor(request, required=False)
     key = request.headers.get("x-agent-key") or request.headers.get("x-anthropic-key") or None
     client, base = _client(request), _local_base(request)
+    message = req.message
+    if req.conversation and visitor and not agent.known_session(req.session):
+        # Continuing an earlier chat whose agent session is gone: the new session starts with what was said.
+        if recap := TURNS.recap(visitor, req.conversation):
+            message = (
+                "[This continues an earlier conversation with the user. What was said so far (oldest first, "
+                f"possibly shortened):\n{recap}\n]\n\n{req.message}"
+            )
+    stream = agent.chat(
+        req.session,
+        req.problem,
+        message,
+        req.model,
+        key,
+        client,
+        req.context,
+        req.agent,
+        req.provider,
+        base,
+        sandbox=req.sandbox,
+    )
+    turn = TURNS.start(visitor, req.problem, req.agent, req.message, stream, req.conversation)
+    return _follow(turn, 0)
 
-    async def events():
-        stream = agent.chat(
-            req.session,
-            req.problem,
-            req.message,
-            req.model,
-            key,
-            client,
-            req.context,
-            req.agent,
-            req.provider,
-            base,
-            sandbox=req.sandbox,
-        )
-        async for event in stream:
-            yield json.dumps(event) + "\n"
 
-    return StreamingResponse(events(), media_type="application/x-ndjson", headers={"Cache-Control": "no-cache"})
+@router.get("/api/agents/turns/{turn_id}/events")
+async def turn_events(turn_id: str, request: Request, start: int = Query(0, alias="from")) -> StreamingResponse:
+    """A turn's events from number ?from=N (each with its "seq"), then live until it ends."""
+    return _follow(_own_turn(turn_id, request), start)
+
+
+@router.get("/api/agents/turns/{turn_id}")
+def turn_status(turn_id: str, request: Request) -> dict:
+    return _own_turn(turn_id, request).summary()
+
+
+@router.post("/api/agents/turns/{turn_id}/cancel")
+def turn_cancel(turn_id: str, request: Request) -> dict:
+    """The Stop button: ends the agent (and the render it started)."""
+    turn = _own_turn(turn_id, request)
+    return {"cancelled": TURNS.cancel(turn), **turn.summary()}
+
+
+@router.get("/api/agents/conversations")
+def conversations(request: Request, problem: str | None = None) -> dict:
+    """This browser's agent conversations (newest first), optionally for one problem: the panel's History."""
+    return {"conversations": TURNS.conversations(_visitor(request), problem)}
+
+
+@router.delete("/api/agents/conversations/{conversation_id}")
+def delete_conversation(conversation_id: str, request: Request) -> dict:
+    visitor = _visitor(request)
+    found = [c for c in TURNS.conversations(visitor) if c["id"] == conversation_id]
+    if not found:
+        raise HTTPException(404, "unknown conversation")
+    for turn_id in found[0]["turns"]:
+        if (turn := TURNS.get(turn_id, visitor)) is not None:
+            TURNS.delete(turn)
+    return {"deleted": len(found[0]["turns"])}
 
 
 # --- CLOUD ----------------------------------------------------------------------------------------------------------
@@ -140,6 +217,26 @@ def new_connector(req: ConnectorRequest, request: Request) -> dict:
 def _bearer(request: Request) -> str | None:
     auth = request.headers.get("authorization", "")
     return auth[7:].strip() if auth.lower().startswith("bearer ") else None
+
+
+def _cloud_connector(request: Request) -> mcp_server.Connector:
+    c = mcp_server.lookup(_bearer(request))
+    if c is None or c.session is not None:
+        raise HTTPException(401, "unknown or expired connector token")
+    return c
+
+
+@router.get("/api/agents/connector")
+def connection_status(request: Request) -> dict:
+    c = _cloud_connector(request)
+    return {"connected": c.last_seen is not None, "last_seen": c.last_seen}
+
+
+@router.delete("/api/agents/connector", status_code=204)
+def disconnect_connector(request: Request) -> Response:
+    _cloud_connector(request)
+    mcp_server.revoke(_bearer(request))
+    return Response(status_code=204)
 
 
 @router.get("/api/agents/connector/events")

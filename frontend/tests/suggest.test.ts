@@ -91,6 +91,45 @@ test("uploaded data adds a fitting prompt with the file name", () => {
   assert.deepEqual(out[0], { key: "agent.sg.fitData", vars: { title: "3D pipe flow", summary: "simulation of 3d pipeflow", file: "m.csv" } });
 });
 
-test("library problems keep the fixed prompts", () => {
+test("a library problem without content falls back to general prompts", () => {
   assert.deepEqual(keys({ ...blank, category: "mechanics" }), LIBRARY_PROMPTS);
+});
+
+const titration = {
+  ...blank,
+  id: "chemistry/acid_base_titration",
+  category: "chemistry",
+  title: "Acid-base titration curves",
+  animated: false,
+  index_form: "\\bar n = \\sum_j j\\,\\alpha_j",
+  translation: [{ symbol: "\\alpha_j", code: "alpha", shape: "(A, N)", meaning: "species fraction" }],
+  params: { c_acid: { default: 0.1, min: 0.01, max: 1, label: "acid concentration", unit: "mol/L" } },
+  files: [{ name: "test.py", code: "def test_x(): pass" }],
+  i18n: { "zh-Hant": { title: "酸鹼滴定曲線", labels: { c_acid: "酸濃度" } } },
+} as unknown as Problem;
+
+test("a library problem's prompts come from its own content, in the page's language", () => {
+  const out = suggestPrompts(titration, null);
+  assert.deepEqual(
+    out.map((s) => s.key),
+    ["agent.sg.libIndex", "agent.sg.libParam", "agent.sg.libTests", "agent.sg.libPlot"], // static: a plot, not motion
+  );
+  assert.deepEqual(out[1].vars, {
+    title: "Acid-base titration curves",
+    param: "acid concentration",
+    from: "0.1",
+    to: "1",
+    unit: " mol/L",
+  });
+  assert.ok(!out.some((s) => s.key === "agent.ex2")); // no "add damping" for chemistry
+  const zh = suggestPrompts(titration, null, "zh-Hant");
+  assert.equal(zh[0].vars.title, "酸鹼滴定曲線");
+  assert.equal(zh[1].vars.param, "酸濃度");
+  // no parameters: a symbol from the translation table instead; animated: the animation
+  const moving = suggestPrompts({ ...titration, params: {}, animated: true }, null);
+  assert.deepEqual(
+    moving.map((s) => s.key),
+    ["agent.sg.libIndex", "agent.sg.libSymbol", "agent.sg.libTests", "agent.sg.libAnim"],
+  );
+  assert.equal(moving[1].vars.symbol, "$\\alpha_j$");
 });

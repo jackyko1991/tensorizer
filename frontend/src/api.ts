@@ -114,6 +114,9 @@ export interface Health {
 
 export const hasJobs = (h: Health | null | undefined | "checking") =>
   !!h && h !== "checking" && !!h.features?.includes("jobs");
+/** Workspace problems can run as detached jobs too (newer backends). */
+export const hasWorkspaceJobs = (h: Health | null | undefined | "checking") =>
+  !!h && h !== "checking" && !!h.features?.includes("ws-jobs");
 
 /** Check a runner at an address without switching to it (the Backend panel's Test). */
 export async function probe(base: string): Promise<Health | null> {
@@ -281,8 +284,13 @@ export interface JobInfo {
 }
 export const jobActive = (j: JobInfo) => j.status === "queued" || j.status === "running";
 
+/** Which backend the visitor id belongs to: each server gets its own id (see visitorId). */
+export const backendScope = () => {
+  const server = backendChoice() === "remote" ? activeServer() : null;
+  return server ? `remote:${server.id}` : "local";
+};
 const visitorHeaders = (json = false): Record<string, string> => ({
-  "X-Visitor": visitorId(),
+  "X-Visitor": visitorId(undefined, backendScope()),
   ...(json ? { "Content-Type": "application/json" } : {}),
 });
 /** Tell the Jobs indicator to look again (a job was started or cancelled on this page). */
@@ -389,6 +397,39 @@ export async function runProblemJob(
   return jobEvents(jobId, 0, onLine, onQueued, onProgress, both);
 }
 
+/** A Workspace problem's run as a detached job in its sandbox (POST /api/ws/<session>/jobs): like runProblemJob,
+ *  it keeps going when the page closes or reloads, and reopening the problem reattaches to it. */
+export async function runWorkspaceJob(
+  session: string,
+  problemId: string,
+  params: Params,
+  verbose: boolean,
+  onLine: (line: LineEvent) => void,
+  onQueued: (position: number) => void = () => {},
+  onProgress: (fraction: number) => void = () => {},
+  onJob: (jobId: string) => void = () => {},
+  signal?: AbortSignal,
+): Promise<RunResult> {
+  let res: Response;
+  try {
+    res = await call(`${API}/api/ws/${session}/jobs`, {
+      method: "POST",
+      headers: visitorHeaders(true),
+      body: JSON.stringify({ params, verbose, device: runDevice(), problem: problemId }),
+    });
+  } catch {
+    throw new RunFailed(unreachable());
+  }
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new RunFailed(typeof body.detail === "string" ? body.detail : `request failed (${res.status})`);
+  jobsChanged();
+  onJob(body.job_id);
+  const controller = new AbortController();
+  current = controller;
+  const both = signal ? AbortSignal.any([signal, controller.signal]) : controller.signal;
+  return jobEvents(body.job_id, 0, onLine, onQueued, onProgress, both);
+}
+
 // The Jobs panel's "open": the problem page shows that job's output (now, or once it has opened).
 export const OPEN_JOB = "tensorizer:open-job";
 let openRequest: { id: string; problem: string } | null = null;
@@ -407,10 +448,11 @@ export function takeOpenRequest(problem: string): string | null {
 // Jobs whose outcome this browser already showed: a reopened problem page shows a job that finished while the page
 // was closed, but not every old one again.
 const SEEN_KEY = "tensorizer.jobsSeen";
-export const jobSeen = (id: string) => (stored(SEEN_KEY) ?? "").split(",").includes(id);
+const seenKey = () => (backendScope() === "local" ? SEEN_KEY : `${SEEN_KEY}.${backendScope()}`);
+export const jobSeen = (id: string) => (stored(seenKey()) ?? "").split(",").includes(id);
 export function markJobSeen(id: string) {
-  const ids = (stored(SEEN_KEY) ?? "").split(",").filter((x) => x && x !== id);
-  store(SEEN_KEY, [...ids.slice(-49), id].join(","));
+  const ids = (stored(seenKey()) ?? "").split(",").filter((x) => x && x !== id);
+  store(seenKey(), [...ids.slice(-49), id].join(","));
 }
 
 export async function runProblem(
@@ -516,7 +558,10 @@ export async function scanAgents(): Promise<FoundAgent[]> {
   return data.agents;
 }
 
-export type AgentEvent =
+export type AgentEvent = (
+  | { type: "turn"; id: string; message: string; problem: string; agent: string }
+  | { type: "waiting"; reason: string }
+  | { type: "question"; id: string; question: string; options: string[]; multi?: boolean }
   | { type: "session"; id: string }
   | { type: "text"; delta: string }
   | { type: "tool"; id: string; name: string; input: Record<string, unknown> }
@@ -532,7 +577,8 @@ export type AgentEvent =
   | { type: "run"; output: string | null; console: string; ok: boolean }
   | { type: "queued"; position: number }
   | { type: "done"; cost_usd?: number | null }
-  | { type: "error"; message: string };
+  | { type: "error"; message: string; interrupted?: boolean }
+) & { seq?: number };
 
 export interface AgentChatBody {
   session: string | null;
@@ -544,6 +590,8 @@ export interface AgentChatBody {
   context?: Record<string, unknown>;
   /** A Workspace problem: its sandbox, synced just before the message. */
   sandbox?: string;
+  /** The History entry this message continues (kept together when the agent session starts again). */
+  conversation?: string;
 }
 
 /** One user turn: streams the agent's events until "done" or "error". The API key, if any, goes in a header
@@ -554,9 +602,7 @@ export async function agentChat(
   onEvent: (e: AgentEvent) => void,
   signal: AbortSignal,
 ): Promise<void> {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
+  const headers: Record<string, string> = visitorHeaders(true);
   if (apiKey) headers["X-Agent-Key"] = apiKey;
   let res: Response;
   try {
@@ -576,20 +622,121 @@ export async function agentChat(
   }
   const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
   let buffer = "";
+  let turn: string | null = null;
+  let next = 0;
   for (;;) {
-    const { value, done } = await reader.read().catch((e) => {
-      if (signal.aborted) return { value: undefined, done: true as const }; // the user pressed stop
-      throw interrupted(AGENT_STRINGS["agent.streamCut"], e);
-    });
-    if (done) return;
-    buffer += value;
+    const read = await reader.read().catch(() => null); // null: the connection broke
+    if (signal.aborted) return; // stopped following (the turn itself is stopped with cancelTurn)
+    if (read === null) {
+      // The turn runs on the server regardless: pick it up again from the next event.
+      if (!turn) throw interrupted(AGENT_STRINGS["agent.streamCut"], new Error("stream cut"));
+      return followTurn(turn, next, onEvent, signal);
+    }
+    if (read.done) return;
+    buffer += read.value;
     let newline: number;
     while ((newline = buffer.indexOf("\n")) >= 0) {
-      const event = JSON.parse(buffer.slice(0, newline)) as AgentEvent;
+      const event = withBase(JSON.parse(buffer.slice(0, newline)) as AgentEvent);
       buffer = buffer.slice(newline + 1);
-      if (event.type === "run" && event.output) event.output = API + event.output;
+      if (event.type === "turn") turn = event.id;
+      if (typeof event.seq === "number") next = event.seq + 1;
       onEvent(event);
     }
+  }
+}
+
+const withBase = (event: AgentEvent): AgentEvent => {
+  if (event.type === "run" && event.output && event.output.startsWith("/")) event.output = API + event.output;
+  return event;
+};
+
+/** Follow an agent turn's events from `from` (0 = its whole log, which rebuilds the chat), reconnecting when the
+ *  stream breaks, until the turn has ended. Aborting `signal` stops following; the turn keeps running. */
+export async function followTurn(
+  turnId: string,
+  from: number,
+  onEvent: (e: AgentEvent) => void,
+  signal?: AbortSignal,
+): Promise<void> {
+  try {
+    await readJobEvents({
+      from,
+      signal,
+      open: (n, s) => call(`${API}/api/agents/turns/${turnId}/events?from=${n}`, { headers: visitorHeaders(), signal: s }),
+      onEvent: (e) => onEvent(withBase(e as unknown as AgentEvent)),
+      isFinal: () => false,
+      finished: async () => (await turnInfo(turnId))?.status !== "running",
+    });
+  } catch (e) {
+    if (signal?.aborted) return;
+    if (e instanceof JobGone) throw new RunFailed(inPageLang(AGENT_STRINGS["agent.turnGone"]));
+    throw interrupted(AGENT_STRINGS["agent.streamCut"], e);
+  }
+}
+
+export interface TurnInfo {
+  id: string;
+  session: string | null;
+  problem: string;
+  agent: string;
+  message: string;
+  status: "running" | "done" | "failed" | "cancelled" | "interrupted";
+  created: number;
+  finished: number | null;
+  error: string | null;
+  events: number;
+}
+
+/** A turn's status; null when it no longer exists (expired, or another browser's). Throws if unreachable. */
+export async function turnInfo(turnId: string): Promise<TurnInfo | null> {
+  const res = await call(`${API}/api/agents/turns/${turnId}`, { headers: visitorHeaders() });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`request failed (${res.status})`);
+  return res.json();
+}
+
+/** The Stop button: ends the agent (and the render it started) on the server. */
+export async function cancelTurn(turnId: string): Promise<boolean> {
+  try {
+    const res = await call(`${API}/api/agents/turns/${turnId}/cancel`, { method: "POST", headers: visitorHeaders() });
+    return res.ok && (await res.json()).cancelled;
+  } catch {
+    return false;
+  }
+}
+
+export interface Conversation {
+  id: string;
+  session: string | null;
+  problem: string;
+  agent: string;
+  title: string;
+  turns: string[];
+  created: number;
+  updated: number;
+  status: TurnInfo["status"];
+}
+
+/** This browser's agent conversations on the current backend, newest first (null: unreachable or no agent). */
+export async function listConversations(problem?: string): Promise<Conversation[] | null> {
+  try {
+    const q = problem ? `?problem=${encodeURIComponent(problem)}` : "";
+    const res = await call(`${API}/api/agents/conversations${q}`, { headers: visitorHeaders() });
+    return res.ok ? (await res.json()).conversations : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function deleteConversation(id: string): Promise<boolean> {
+  try {
+    const res = await call(`${API}/api/agents/conversations/${encodeURIComponent(id)}`, {
+      method: "DELETE",
+      headers: visitorHeaders(),
+    });
+    return res.ok;
+  } catch {
+    return false;
   }
 }
 
@@ -600,6 +747,9 @@ export interface Connector {
   url_with_token: string;
   local: boolean;
 }
+
+/** Connections are scoped to the exact server address, including changes to a saved server or local port. */
+export const mcpBackendKey = () => API;
 
 export async function createConnector(previous: string | null): Promise<Connector> {
   let res: Response;
@@ -614,6 +764,21 @@ export async function createConnector(previous: string | null): Promise<Connecto
   }
   if (!res.ok) throw new RunFailed(`request failed (${res.status})`);
   return res.json();
+}
+
+/** Browser connection controls use the connector's own bearer token, not the server pairing credential. */
+export async function mcpConnection(token: string): Promise<{ connected: boolean; last_seen: number | null } | null> {
+  const res = await call(`${API}/api/agents/connector`, { headers: { Authorization: `Bearer ${token}` } });
+  if (res.status === 401) return null;
+  if (!res.ok) throw new RunFailed(`request failed (${res.status})`);
+  return res.json();
+}
+
+export async function disconnectMcp(token: string): Promise<void> {
+  const res = await call(`${API}/api/agents/connector`, {
+    method: "DELETE", headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok && res.status !== 401) throw new RunFailed(`request failed (${res.status})`);
 }
 
 export type ConnectorEvent = AgentEvent & { seq: number };

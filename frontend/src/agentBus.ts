@@ -103,8 +103,24 @@ export interface AppliedNotebook {
 export const applyNotebook = (a: AppliedNotebook) => emit(NOTEBOOK, a);
 export const onApplyNotebook = (h: (a: AppliedNotebook) => void) => on(NOTEBOOK, h);
 /** Open the AI panel on one of its tabs. */
-export const openAgent = (tab: "current" | "new") => emit(OPEN, tab);
-export const onOpenAgent = (h: (tab: "current" | "new") => void) => on(OPEN, h);
+// The Ask AI panel lives on problem pages only: a request made elsewhere (e.g. the Workspace page's "Ask AI", which
+// first opens a problem page) waits here until the panel is mounted and subscribes.
+let pendingOpen: "current" | "new" | null = null;
+export const openAgent = (tab: "current" | "new") => {
+  pendingOpen = tab;
+  emit(OPEN, tab);
+};
+export const onOpenAgent = (h: (tab: "current" | "new") => void) => {
+  if (pendingOpen) {
+    const tab = pendingOpen;
+    pendingOpen = null;
+    queueMicrotask(() => h(tab));
+  }
+  return on(OPEN, (tab: "current" | "new") => {
+    pendingOpen = null;
+    h(tab);
+  });
+};
 
 /** A CodeMirror onUpdate handler that reports the highlighted text (null when nothing is highlighted). */
 export function selectionReporter(base: Omit<CodeSelection, "fromLine" | "toLine" | "text">) {

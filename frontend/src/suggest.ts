@@ -11,8 +11,8 @@ export interface Suggestion {
   vars: Record<string, string>;
 }
 
-/** The library's read-only problems keep these. */
-export const LIBRARY_PROMPTS = ["agent.ex1", "agent.ex2", "agent.ex3", "agent.ex4"];
+/** A library problem without enough metadata for its own prompts falls back to these. */
+export const LIBRARY_PROMPTS = ["agent.ex1", "agent.ex3"];
 const MAX = 4;
 
 /** A new problem's boilerplate (workspace.py BLANK_MAIN), an old empty canvas, or one with no real code. */
@@ -29,8 +29,53 @@ const short = (text: string, n: number) => {
   return flat.length > n ? `${flat.slice(0, n - 1)}…` : flat;
 };
 
-export function suggestPrompts(problem: Problem, view: ViewContext | null): Suggestion[] {
-  if (problem.category !== "workspace") return LIBRARY_PROMPTS.map((key) => ({ key, vars: {} }));
+/** A number as a person would write it in a prompt: 0.1, 25, 1.5e-3. */
+const num = (x: number) =>
+  Math.abs(x) >= 1e4 || (x !== 0 && Math.abs(x) < 1e-3) ? x.toExponential(1) : String(+x.toPrecision(3));
+
+/** One parameter worth experimenting with, and a value to try: the far end of its range (or a doubling). */
+export function paramExperiment(problem: Problem, lang?: string) {
+  const labels = (lang && problem.i18n?.[lang]?.labels) || {};
+  for (const [name, spec] of Object.entries(problem.params)) {
+    const label = short(labels[name] ?? spec.label ?? name, 40);
+    if (spec.type === "choice" || Array.isArray(spec.options)) {
+      const other = spec.options?.find((o) => o !== String(spec.default));
+      if (other) return { param: label, from: String(spec.default), to: other, unit: "" };
+      continue;
+    }
+    const d = Number(spec.default);
+    if (!Number.isFinite(d)) continue;
+    const to =
+      spec.max != null && spec.max !== d ? spec.max : spec.min != null && spec.min !== d ? spec.min : d === 0 ? 1 : d * 2;
+    return { param: label, from: num(d), to: num(to), unit: spec.unit ? ` ${spec.unit}` : "" };
+  }
+  return null;
+}
+
+/** Prompts made from a library problem's own content: its index form, a real parameter, its tests, its result. */
+function libraryPrompts(problem: Problem, title: string, lang?: string): Suggestion[] {
+  const out: Suggestion[] = [];
+  const add = (key: string, extra: Record<string, string> = {}) => out.push({ key, vars: { title, ...extra } });
+  if (problem.index_form.trim()) add("agent.sg.libIndex");
+  const experiment = paramExperiment(problem, lang);
+  const meanings = (lang && problem.i18n?.[lang]?.meanings) || [];
+  const rowAt = problem.translation.findIndex((r) => r.symbol.trim() && r.shape.trim());
+  if (experiment) add("agent.sg.libParam", experiment);
+  else if (rowAt >= 0) {
+    const row = problem.translation[rowAt];
+    const symbol = `$${row.symbol.replace(/\$/g, "")}$`;
+    add("agent.sg.libSymbol", { symbol, meaning: short(meanings[rowAt] ?? row.meaning, 50) });
+  }
+  if (problem.files.some((f) => f.name === "test.py")) add("agent.sg.libTests");
+  add(problem.animated ? "agent.sg.libAnim" : "agent.sg.libPlot");
+  if (out.length < 2) return LIBRARY_PROMPTS.map((key) => ({ key, vars: {} }));
+  return out.slice(0, MAX);
+}
+
+export function suggestPrompts(problem: Problem, view: ViewContext | null, lang?: string): Suggestion[] {
+  const localTitle = (lang && problem.i18n?.[lang]?.title) || problem.title;
+  if (problem.category !== "workspace")
+    return libraryPrompts(problem, short(localTitle.replace(/\$/g, ""), 60) || "this problem", lang);
   const title = short(problem.title.replace(/\$/g, ""), 60) || "this problem";
   const summary = short(problem.summary || problem.title, 160);
   const vars = { title, summary };

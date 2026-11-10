@@ -36,7 +36,7 @@ ACTIVE = ("queued", "running")
 FINISHED = ("done", "failed", "cancelled")
 # what job.json holds: no address and no visitor id, only its hash
 RECORD = ("id", "visitor", "category", "slug", "params", "device", "status", "created", "started", "finished")
-RECORD += ("error", "result", "events")
+RECORD += ("error", "result", "events", "label")
 PROGRESS_EVERY_S = 0.25  # progress events are thinned in the log (a render can send thousands)
 
 
@@ -61,6 +61,7 @@ class Job:
     result: dict | None = None  # {"output", "cached", "tests": {"passed", "failed", "ok"}}
     position: int | None = None  # place in the run queue while queued
     events: int = 0  # how many events the log holds
+    label: str | None = None  # the page's id for the problem when it isn't category/slug (a Workspace problem)
     # in memory only (live jobs)
     client: str = ""  # the address, for the per-visitor limit (not written to disk)
     ticket: object = None
@@ -72,7 +73,7 @@ class Job:
 
     @property
     def problem(self) -> str:
-        return f"{self.category}/{self.slug}"
+        return self.label or f"{self.category}/{self.slug}"
 
     def refresh(self) -> None:
         """queued → running once the run queue lets the run start."""
@@ -187,22 +188,26 @@ class JobManager:
         files: dict[str, str] | None = None,
         verbose: bool = False,
         device: str = "auto",
+        root: Path | None = None,
+        label: str | None = None,
     ) -> Job:
-        """Create a job and start it on the running event loop; raises JobLimit before anything starts."""
+        """Create a job and start it on the running event loop; raises JobLimit before anything starts.
+        `root`: run the problem from that folder's problems/ (a Workspace sandbox) instead of the library;
+        `label`: the problem id the page knows it by (listed as the job's "problem")."""
         self.prune()
         active = [j for j in self.jobs.values() if j.status in ACTIVE]
         if limits.PER_CLIENT and sum(j.client == client or j.visitor == visitor for j in active) >= limits.PER_CLIENT:
             raise JobLimit("you already have a run in progress — wait for it to finish")
         if sum(j.status == "queued" for j in active) >= limits.QUEUE_MAX:
             raise JobLimit("the server is busy — try again in a minute", 503)
-        job = Job(secrets.token_hex(8), visitor, category, slug, params, device, client=client)
+        job = Job(secrets.token_hex(8), visitor, category, slug, params, device, client=client, label=label)
         job._wake = asyncio.Event()
         self.jobs[job.id] = job
         self._save(job)
-        job.task = asyncio.get_running_loop().create_task(self._run(job, files, verbose))
+        job.task = asyncio.get_running_loop().create_task(self._run(job, files, verbose, root))
         return job
 
-    async def _run(self, job: Job, files: dict[str, str] | None, verbose: bool) -> None:
+    async def _run(self, job: Job, files: dict[str, str] | None, verbose: bool, root: Path | None = None) -> None:
         def keep(ticket) -> None:
             job.ticket = ticket
 
@@ -214,6 +219,7 @@ class JobManager:
                 files,
                 verbose,
                 job.client,
+                root,
                 device=job.device,
                 timeout=limits.JOB_TIMEOUT_S,
                 on_ticket=keep,

@@ -28,6 +28,7 @@ jobs:
       # Colab opens the committed notebooks/ — they must match the problem files
       - run: pixi run python scripts/notebooks.py --check
       - run: pixi run pytest -q tests/test_api.py
+      - run: pixi run pytest -q tests/test_agents_modes.py tests/test_codex.py tests/test_mcp_connection.py
 
   # Each problem's test.py (physics checks) + convention/diagram/render smoke tests, one job per topic in parallel.
   physics:
@@ -62,3 +63,4 @@ jobs:
           cache: true
       - run: pixi run python scripts/build_assets.py --manifest-only
       - run: pixi run web-build
+      - run: pixi run node --test frontend/tests/pageRoute.test.ts frontend/tests/skillsTabs.test.ts

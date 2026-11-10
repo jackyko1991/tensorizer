@@ -192,3 +192,30 @@ def test_uploaded_picture_is_kept_and_unsafe_svg_rejected():
     ):
         r = client.post("/api/ws/sync", json={"files": {**files, "diagram.svg": bad}})
         assert r.status_code == 422, bad
+
+
+def test_a_workspace_run_is_a_detached_job_listed_under_the_page_id(tmp_path, monkeypatch):
+    import time as _time
+
+    from tensorizer_physics.jobs import JobManager
+
+    me = {"X-Visitor": "me-0123456789abcdef"}
+    monkeypatch.setattr(api, "JOBS", JobManager(tmp_path / "runs" / "_jobs"))
+    with TestClient(api.app) as c:  # one event loop, so the job keeps running between requests
+        entry = c.post("/api/ws/blank").json()
+        body = {"params": {}, "problem": "workspace/mine-1"}
+        started = c.post(f"/api/ws/{entry['session']}/jobs", json=body, headers=me)
+        assert started.status_code == 200, started.text
+        job_id = started.json()["job_id"]
+        assert workspace._sandboxes[entry["session"]].busy == 1  # kept while the job runs
+        deadline = _time.monotonic() + 120
+        while (job := c.get(f"/api/jobs/{job_id}", headers=me).json())["status"] in ("queued", "running"):
+            assert _time.monotonic() < deadline, job
+            _time.sleep(0.2)
+        assert job["status"] == "done" and job["problem"] == "workspace/mine-1", job
+        assert job["result"]["tests"]["ok"] and c.get(job["result"]["output"]).status_code == 200
+        assert [j["problem"] for j in c.get("/api/jobs", headers=me).json()["jobs"]] == ["workspace/mine-1"]
+        _time.sleep(0.1)
+        assert workspace._sandboxes[entry["session"]].busy == 0
+        assert c.post("/api/ws/nope/jobs", json=body, headers=me).status_code == 410
+        assert c.post(f"/api/ws/{entry['session']}/jobs", json=body).status_code == 400  # no visitor id

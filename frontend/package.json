@@ -20,6 +20,7 @@
     "@fontsource/noto-sans-sc": "5.3.1",
     "@fontsource/noto-sans-tc": "5.3.1",
     "@fontsource/source-code-pro": "^5.3.1",
+    "@lezer/highlight": "^1.2.5",
     "@types/three": "^0.186.0",
     "@uiw/react-codemirror": "^4.25.12",
     "fflate": "^0.8.3",

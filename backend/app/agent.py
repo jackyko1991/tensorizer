@@ -37,7 +37,7 @@ ENABLED = os.environ.get("AGENT_ENABLED", "1" if limits.private_with_token() els
 # only ever uses the visitor's own API key.
 LOCAL_ALLOWED = os.environ.get("AGENT_AUTH") == "local"
 AGENTS = ("claude-code", "claude-api", "codex", "opencode", "gemini")
-LOCAL_CLIS = ("codex", "opencode", "gemini")  # experimental adapters, offered only after "Search this computer"
+LOCAL_CLIS = ("codex", "opencode", "gemini")  # offered only after "Search this computer"
 MODELS = ["claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5"]
 # OpenRouter through its Anthropic-compatible endpoint, as documented for Claude Code:
 # https://openrouter.ai/docs/guides/guides/claude-code-integration (ids from GET https://openrouter.ai/api/v1/models)
@@ -49,6 +49,9 @@ MAX_SCREENSHOT_BYTES = 3 * 1024 * 1024
 CONTEXT_DIR = "_context"  # screenshots etc. the user attached, inside the workspace so the agent can read them
 MAX_TURNS = int(os.environ.get("AGENT_MAX_TURNS", "24"))
 IDLE_S = 30 * 60
+# A conversation's folder outlives the idle session: History can reopen and continue it (Claude Code resumes a
+# conversation only from the folder it started in). Kept KEEP_S after its last use, then deleted.
+KEEP_S = float(os.environ.get("AGENT_KEEP_S", 7 * 24 * 3600))
 WORK_ROOT = Path(os.environ.get("AGENT_WORKSPACES", Path(tempfile.gettempdir()) / "tensorizer-agent"))
 _active = asyncio.Semaphore(int(os.environ.get("MAX_AGENT_SESSIONS", "2")))
 
@@ -67,6 +70,10 @@ Shared helpers live in ../../_common (read-only for you).
   states what must hold, as a physical law: conservation (energy, momentum, mass, probability), a limiting case
   against a known formula, a symmetry or invariant, or bounds. run_problem runs test.py after the render and reports
   "N passed / M failed"; aim for all green, and never weaken a test just to make it pass.
+- When a choice is really the user's (which of two approaches, which quantity to plot, how far to change the
+  problem), call the ask_user tool with the question and 2-4 short options (a few words each) instead of guessing,
+  then end your turn:
+  their answer arrives as the next message. Don't ask about things you can decide or check yourself.
 - You can only touch files in this folder. This is a free trial: one problem, nothing is saved after the visit."""
 
 NEW_PROBLEM = """
@@ -100,6 +107,41 @@ class Session:
 
 
 _sessions: dict[str, Session] = {}
+SESSION_FILE = "session.json"  # in WORK_ROOT/<id>/: what a restarted backend needs to continue the conversation
+
+
+def _persist(s: Session) -> None:
+    """Keep a library / new problem session's conversation ids on disk (a Workspace sandbox session is not kept:
+    its sandbox lives in memory only)."""
+    if s.sandbox is not None:
+        return
+    data = {"id": s.id, "problem": s.problem, "workspace": str(s.workspace), "claude_session": s.claude_session}
+    data |= {"cli_session": s.cli_session, "cli_agent": s.cli_agent}
+    try:
+        (WORK_ROOT / s.id / SESSION_FILE).write_text(json.dumps(data), encoding="utf-8")
+    except OSError:
+        pass
+
+
+def _restore(session_id: str) -> Session | None:
+    """A session from before a backend restart, if its folder is still there (it is deleted after IDLE_S idle)."""
+    if not re.fullmatch(r"[0-9a-f]{32}", session_id or ""):
+        return None
+    try:
+        data = json.loads((WORK_ROOT / session_id / SESSION_FILE).read_text(encoding="utf-8"))
+        workspace = Path(data["workspace"])
+        if data.get("id") != session_id or not workspace.is_dir() or not _inside(str(workspace), WORK_ROOT):
+            return None
+        s = Session(session_id, str(data["problem"]), workspace)
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+    s.claude_session, s.cli_session, s.cli_agent = (
+        data.get("claude_session"),
+        data.get("cli_session"),
+        data.get("cli_agent"),
+    )
+    _sessions[session_id] = s
+    return s
 
 
 def local_claude() -> dict:
@@ -146,12 +188,42 @@ def create_workspace() -> dict:
     return entry
 
 
+_swept = 0.0
+
+
 def _cleanup() -> None:
+    """Idle sessions leave memory after IDLE_S; their folders stay for KEEP_S when they hold a saved conversation
+    (session.json), so History can continue them. Folders unused for KEEP_S are deleted (checked hourly)."""
+    global _swept
     now = time.monotonic()
     for sid, s in list(_sessions.items()):
         if not s.busy and now - s.last_used > IDLE_S:
-            shutil.rmtree(WORK_ROOT / sid, ignore_errors=True)
+            if s.sandbox is not None or not (WORK_ROOT / sid / SESSION_FILE).is_file():
+                shutil.rmtree(WORK_ROOT / sid, ignore_errors=True)
             del _sessions[sid]
+    if now - _swept < 3600 and _swept:
+        return
+    _swept = now
+    cutoff = time.time() - KEEP_S
+    try:
+        folders = [d for d in WORK_ROOT.iterdir() if d.is_dir() and re.fullmatch(r"[0-9a-f]{32}", d.name)]
+    except OSError:
+        return
+    for d in folders:
+        marker = d / SESSION_FILE
+        try:
+            stale = (marker.stat().st_mtime if marker.is_file() else d.stat().st_mtime) < cutoff
+        except OSError:
+            continue
+        if stale and d.name not in _sessions:
+            shutil.rmtree(d, ignore_errors=True)
+
+
+def known_session(session_id: str | None) -> bool:
+    """Can the next message continue this conversation's agent session (in memory, or restorable from disk)?"""
+    if not session_id or not re.fullmatch(r"[0-9a-f]{32}", session_id):
+        return bool(session_id) and session_id in _sessions
+    return session_id in _sessions or (WORK_ROOT / session_id / SESSION_FILE).is_file()
 
 
 def _session(session_id: str | None, problem: str) -> Session:
@@ -159,6 +231,10 @@ def _session(session_id: str | None, problem: str) -> Session:
     _cleanup()
     if session_id and session_id in _sessions:
         return _sessions[session_id]
+    if session_id and (s := _restore(session_id)) is not None:
+        if problem in (s.problem, "new" if s.problem == NEW_ID else s.problem):
+            return s
+        del _sessions[session_id]  # another problem's conversation: start a fresh one
     if problem == "new":
         problem = NEW_ID
         src = problem_dir(*TEMPLATE.split("/"))
@@ -173,6 +249,7 @@ def _session(session_id: str | None, problem: str) -> Session:
     if problem == NEW_ID:
         shutil.copy(PROBLEMS.parent / "docs" / "adding-problems.md", s.workspace / "ADDING_PROBLEMS.md")
     _sessions[sid] = s
+    _persist(s)
     return s
 
 
@@ -585,6 +662,29 @@ async def run_in_session(s: Session, params: dict, client_id: str) -> tuple[str,
         return f"Run failed: {e}\n{console[-3000:]}", True
 
 
+MAX_QUESTION = 300
+MAX_OPTION = 120
+ASKED = (
+    "The question is now on the user's screen as clickable options (and a box for their own answer). End your turn "
+    "now without calling more tools, in at most one short sentence and without listing the options again; their "
+    "choice arrives as the next message."
+)
+
+
+def ask_in_session(s: Session, question: str, options: list, multi: bool = False) -> tuple[str, bool]:
+    """The `ask_user` tool: put a multiple-choice question in the chat. It doesn't wait: the turn ends and the user's
+    click comes back as the next message, so a question survives a reload like the rest of the chat."""
+    q = str(question or "").strip()[:MAX_QUESTION]
+    opts = [str(o).strip()[:MAX_OPTION] for o in (options if isinstance(options, list) else []) if str(o).strip()]
+    opts = list(dict.fromkeys(opts))[:6]  # no duplicates, at most six
+    if not q or len(opts) < 2:
+        return "ask_user needs a question and 2 to 6 short, distinct options.", True
+    event = {"type": "question", "id": uuid.uuid4().hex[:8], "question": q, "options": opts, "multi": bool(multi)}
+    if s.sink is not None:
+        s.sink.put_nowait(event)
+    return ASKED, False
+
+
 def _model_for(agent: str, provider: str, model: str | None) -> str | None:
     if agent == "claude-api":
         models = PROVIDERS.get(provider, MODELS)
@@ -660,6 +760,8 @@ async def chat(
     s.sink = asyncio.Queue()
     chosen = _model_for(agent, provider, model)
     try:
+        if _active.locked():  # every agent slot is answering someone: say so instead of waiting silently
+            yield {"type": "waiting", "reason": "agents"}
         async with _active:
             if agent in ("claude-code", "claude-api"):
                 env = {"CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1", "CLAUDE_CONFIG_DIR": str(WORK_ROOT / s.id / ".claude")}
@@ -709,6 +811,7 @@ async def chat(
         s.sink = None
         s.last_used = time.monotonic()
         _hold_sandbox(box, -1)
+        _persist(s)  # the agent's own conversation id, for the next message (also after a restart)
 
 
 def _hold_sandbox(sandbox: str | None, by: int) -> str | None:
@@ -755,7 +858,8 @@ def _cli_stream(
     extra = NEW_PROBLEM if s.problem == NEW_ID and not in_ws else ""
     rules = (
         f"{SYSTEM}{extra}\n\nTo render the problem, call the MCP tool "
-        "`run_problem` of the `tensorizer` server (shell commands are disabled).\n\n---\n\n"
+        "`run_problem` of the `tensorizer` server (shell commands are disabled); to ask the user a "
+        "multiple-choice question, call its `ask_user` tool.\n\n---\n\n"
     )
     prompt = (rules if first else "") + message
     ws = str(s.workspace)

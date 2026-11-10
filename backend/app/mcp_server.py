@@ -36,7 +36,9 @@ from .runner import CODE_FILES, PROBLEMS, problem_dir
 MAX_EVENTS = 300
 logging.getLogger("mcp").setLevel(logging.WARNING)  # the SDK logs every request at INFO
 MAX_FILE_BYTES = 200_000
-SESSION_TOKEN_TTL_S = 60 * 60
+SESSION_TOKEN_TTL_S = None  # a LOCAL chat's token lives as long as its turn (revoked when the turn ends)
+RUN_WAIT_S = 45.0  # run_problem answers within this; a longer render goes on and is collected with wait_render
+MAX_WAIT_S = 120.0
 
 
 @dataclass
@@ -48,7 +50,9 @@ class Connector:
     sessions: dict[str, str] = field(default_factory=dict)  # CLOUD: problem id → agent session id
     events: list[dict] = field(default_factory=list)
     seq: int = 0
+    last_seen: float | None = None  # actual MCP contact, never status polling from the browser
     base: str = ""  # where this backend was reached, for absolute output links
+    renders: dict[str, asyncio.Task] = field(default_factory=dict)  # render id → run_problem still rendering
 
     def emit(self, event: dict) -> None:
         self.seq += 1
@@ -105,9 +109,8 @@ def create_connector(client: str, previous: str | None = None) -> tuple[str, Con
 def session_token(session_id: str, client: str) -> str:
     """A token for one LOCAL chat's workspace (revoked when the turn ends)."""
     token = "tzs_" + secrets.token_urlsafe(32)
-    _connectors[_hash(token)] = Connector(
-        id=secrets.token_hex(6), client=client, session=session_id, expires=time.time() + SESSION_TOKEN_TTL_S
-    )
+    expires = time.time() + SESSION_TOKEN_TTL_S if SESSION_TOKEN_TTL_S else None
+    _connectors[_hash(token)] = Connector(id=secrets.token_hex(6), client=client, session=session_id, expires=expires)
     return token
 
 
@@ -219,7 +222,8 @@ def _build():
             "Tensorizer: physics problems written in index (tensor) notation and solved with PyTorch. "
             "Use list_problems / get_problem to find one, read_file / write_file to change its files (meta.yaml, "
             "test.py, main.py, equation.py, tensors.py, solve.py, plot.py) in a private copy, and run_problem to "
-            "render it (it then runs test.py: write the physics tests first, TDD). "
+            "render it (it then runs test.py: write the physics tests first, TDD). A render that takes longer than "
+            "about a minute answers with a render id: call wait_render with it until the result arrives. "
             "Problem id 'new' starts a brand-new problem from a template (ADDING_PROBLEMS.md explains the format)."
         ),
     )
@@ -279,23 +283,48 @@ def _build():
         c = _connector()
         call = _tool_call(c, "mcp__tensorizer__run_problem", {"problem": problem, "params": params or {}})
         s = _session_for(c, problem)
-        own_sink = s.sink is None  # a cloud run: collect the render events to mirror them to the browser
-        if own_sink:
-            s.sink = asyncio.Queue()
-        try:
-            text, is_error = await agent.run_in_session(s, params or {}, c.client)
-        finally:
-            if own_sink:
-                sink, s.sink = s.sink, None
-                while not sink.empty():
-                    if (e := sink.get_nowait()) and e.get("type") == "run":
-                        _mirror(c, e)
-        _mirror(c, {"type": "tool_result", "id": call, "ok": not is_error, "text": text[:2000]})
-        if c.base and s.output:
-            text = text.replace(s.output, c.base.rstrip("/") + s.output)
+        # The render runs as its own task: a long one outlives this request (an MCP client's tool timeout, a dropped
+        # connection) and is collected with wait_render instead of being killed.
+        task = asyncio.get_running_loop().create_task(_render(c, s, params or {}, call))
+        return await _collect(c, task, RUN_WAIT_S)
+
+    @server.tool(
+        description="Wait for a render that run_problem said is still going (give its render id); returns its result, "
+        f"or says it is still running after timeout_s seconds (at most {int(MAX_WAIT_S)})."
+    )
+    async def wait_render(render_id: str, timeout_s: float = 60) -> str:
+        c = _connector()
+        task = c.renders.get(render_id)
+        if task is None:
+            raise ToolError(f"no render {render_id!r} is running (it may have finished: run_problem again)")
+        return await _collect(c, task, max(1.0, min(float(timeout_s), MAX_WAIT_S)), render_id)
+
+    @server.tool(
+        description="Ask the user a multiple-choice question in their Tensorizer chat when a decision is theirs: "
+        "2-4 short options of a few words each (multi=true lets them pick several; they can also type their own). Then end your turn: "
+        "the answer arrives as the next message."
+    )
+    def ask_user(question: str, options: list[str], multi: bool = False, problem: str = "") -> str:
+        c = _connector()
+        s = _session_for(c, problem)
+        own_sink = s.sink is None  # a cloud agent: mirror the question to the browser instead
+        text, is_error = agent.ask_in_session(s, question, options, multi)
+        if own_sink and not is_error:
+            q = [o for o in (options or []) if str(o).strip()]
+            _mirror(c, {"type": "question", "id": secrets.token_hex(4), "question": str(question)[:300],
+                        "options": [str(o)[:120] for o in q][:6], "multi": bool(multi)})
         if is_error:
             raise ToolError(text)
         return text
+
+    @server.tool(description="Stop a render that is still going (give its render id from run_problem).")
+    def cancel_render(render_id: str) -> str:
+        c = _connector()
+        task = c.renders.pop(render_id, None)
+        if task is None or task.done():
+            return f"no render {render_id!r} is running"
+        task.cancel()
+        return f"render {render_id} stopped"
 
     @server.tool(
         description="The notebook the user has open in this chat (title and cells: id, type markdown|code, source, "
@@ -327,6 +356,50 @@ def _build():
         return f"The notebook now has {len(clean)} cells; the page applies them after this turn."
 
     return server
+
+
+async def _render(c: Connector, s: agent.Session, params: dict, call: str) -> tuple[str, bool]:
+    """One run_problem render (text for the agent, is_error); a cloud run's render events are mirrored."""
+    own_sink = s.sink is None  # a cloud run: collect the render events to mirror them to the browser
+    if own_sink:
+        s.sink = asyncio.Queue()
+    try:
+        text, is_error = await agent.run_in_session(s, params, c.client)
+    finally:
+        if own_sink:
+            sink, s.sink = s.sink, None
+            while not sink.empty():
+                if (e := sink.get_nowait()) and e.get("type") == "run":
+                    _mirror(c, e)
+    _mirror(c, {"type": "tool_result", "id": call, "ok": not is_error, "text": text[:2000]})
+    if c.base and s.output:
+        text = text.replace(s.output, c.base.rstrip("/") + s.output)
+    return text, is_error
+
+
+async def _collect(c: Connector, task: asyncio.Task, wait_s: float, render_id: str | None = None) -> str:
+    """The render's result if it ends within `wait_s`; otherwise its render id, to wait for it again."""
+    done, _ = await asyncio.wait({task}, timeout=wait_s)  # waiting is cancelled with the request, the render isn't
+    if not done:
+        if render_id is None:
+            render_id = secrets.token_hex(4)
+            c.renders[render_id] = task
+        return (
+            f"The render is still running (render id {render_id}). Call wait_render with render_id "
+            f'"{render_id}" to get its result, or cancel_render to stop it.'
+        )
+    if render_id is not None:
+        c.renders.pop(render_id, None)
+    else:
+        for key, t in list(c.renders.items()):
+            if t is task:
+                c.renders.pop(key, None)
+    if task.cancelled():
+        raise ToolError("the render was stopped")
+    text, is_error = task.result()
+    if is_error:
+        raise ToolError(text)
+    return text
 
 
 def _notebook_file(s: agent.Session) -> Path:
@@ -382,6 +455,7 @@ async def _session_manager():
 async def handle(scope, receive, send, connector: Connector) -> None:
     """Serve one MCP request (already authorised) for `connector`."""
     manager = await _session_manager()
+    connector.last_seen = time.time()
     token = _current.set(connector)
     try:
         await manager.handle_request(scope, receive, send)

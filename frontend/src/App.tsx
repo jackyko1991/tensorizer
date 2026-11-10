@@ -2,7 +2,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   assetUrl,
   backendChoice,
+  mcpBackendKey,
   hasJobs,
+  hasWorkspaceJobs,
   health,
   jobActive,
   jobEvents,
@@ -13,6 +15,7 @@ import {
   OPEN_JOB,
   RunFailed,
   runProblemJob,
+  runWorkspaceJob,
   runProblemStream,
   setBackendChoice,
   takeOpenRequest,
@@ -41,6 +44,7 @@ import TerminalPanel from "./components/TerminalPanel";
 import { LANGS, localize, useLang, type Key, type Lang } from "./i18n";
 import { emitContext, emitSelection, onApplyFiles, onApplyNotebook, openAgent, selectionReporter } from "./agentBus";
 import AgentPanel from "./components/AgentPanel";
+import { useAccount, workspaceRoom } from "./account";
 import ExportMenu from "./components/ExportMenu";
 import { REPO_URL } from "./notebook";
 import ConceptPage from "./pages/ConceptPage";
@@ -125,6 +129,21 @@ export default function App() {
   const [selected, setSelected] = useState<string | null>(currentHash);
   const [backend, setBackend] = useState<Health | null | "checking">("checking");
   const [backendOpen, setBackendOpen] = useState(false);
+  const [agentMenuOpen, setAgentMenuOpen] = useState(false);
+  // The AI agent tab's menu (Skills, MCP) opens as a vertical list right under the tab: measured from the button,
+  // because the tab row scrolls sideways on narrow screens and would clip it.
+  const agentTab = useRef<HTMLButtonElement>(null);
+  const [agentMenuAt, setAgentMenuAt] = useState<{ left: number; top: number } | null>(null);
+  useEffect(() => {
+    if (!agentMenuOpen) return;
+    const place = () => {
+      const r = agentTab.current?.getBoundingClientRect();
+      if (r) setAgentMenuAt({ left: r.left, top: r.bottom });
+    };
+    place();
+    window.addEventListener("resize", place);
+    return () => window.removeEventListener("resize", place);
+  }, [agentMenuOpen]);
   const [libraryOpen, setLibraryOpen] = useState(true);
   const [paramsOpen, setParamsOpen] = useState(true);
   // The Workspace (IndexedDB): problems made blank, copied from the library or created by the AI, with notebooks.
@@ -132,6 +151,7 @@ export default function App() {
   const wsRef = useRef(ws);
   wsRef.current = ws;
   const { lang, setLang, t } = useLang();
+  const account = useAccount(); // the demo sign-in: free tier = one Workspace problem
 
   useEffect(() => {
     loadManifest().then(setManifest, (e: Error) => setLoadError(e.message));
@@ -157,8 +177,8 @@ export default function App() {
     if (moved) window.location.replace(`#/${moved.id}`);
   }, [manifest, selected]);
 
-  // #/concept[/<tab>[/<section>]] and #/skills[/<tab>[/<section>]] are pages with sub-tabs, #/agents and #/workspace
-  // pages; any other hash is a problem id (category/slug), a workspace problem (workspace/<id>) or one of its
+  // #/concept, #/skills and #/agents have sub-tabs; #/workspace is its own page.
+  // Any other hash is a problem id (category/slug), a workspace problem (workspace/<id>) or one of its
   // notebooks (workspace/<id>/nb/<notebook>).
   // Further reading used to be a Concept tab: #/concept/reading… is not a concept route any more (redirected below).
   const oldReading = !!selected?.startsWith("concept/reading");
@@ -229,8 +249,16 @@ export default function App() {
     update((w) => ({ ...w, problems: [p, ...w.problems] }));
     select(p.entry.id);
   };
+  /** Free tier (not signed in): one Workspace problem; false (and a message) when there is no room for `n` more. */
+  const hasRoom = (n = 1) => {
+    if (workspaceRoom(wsRef.current?.problems.length ?? 0, account) >= n) return true;
+    alert(t("ag.freeLimit"));
+    return false;
+  };
   const create = (make: () => Promise<WsEntry>) =>
-    make().then(
+    !hasRoom()
+      ? Promise.resolve()
+      : make().then(
       (entry) => addProblem(toWsProblem(entry, entry.meta)),
       () => alert(t("workspace.unavailable")),
     );
@@ -455,6 +483,7 @@ export default function App() {
   /** The AI created (or changed) a problem: keep it in the workspace, matched by its agent session. */
   function onAiProblem(entry: Problem) {
     const existing = wsRef.current?.problems.find((p) => p.entry.session === entry.session);
+    if (!existing && !hasRoom()) return;
     const p = existing
       ? { ...existing, entry: { ...entry, id: existing.entry.id, category: "workspace", slug: existing.entry.slug } }
       : toWsProblem(entry, "");
@@ -470,6 +499,7 @@ export default function App() {
   async function importZip(file: File) {
     try {
       const problems = await importWorkspace(file);
+      if (!hasRoom(problems.length)) return;
       update((w) => ({ ...w, problems: [...problems, ...w.problems] }));
       if (problems[0]) select(problems[0].entry.id);
       // parse each meta.yaml on the server once the new problems are in the store
@@ -502,7 +532,12 @@ export default function App() {
 
   return (
     <div className="flex min-h-dvh flex-col bg-white xl:h-dvh xl:overflow-hidden">
-      <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1.5 bg-blue-700 px-4 py-2 text-white shadow-sm sm:px-6 lg:h-[52px] lg:flex-nowrap lg:py-0">
+      <header
+        className="relative flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1.5 bg-blue-700 px-4 py-2 text-white shadow-sm sm:px-6 lg:h-[52px] lg:flex-nowrap lg:py-0"
+        onMouseLeave={() => setAgentMenuOpen(false)}
+        onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setAgentMenuOpen(false); }}
+        onKeyDown={(e) => { if (e.key === "Escape") setAgentMenuOpen(false); }}
+      >
         <div className="flex min-w-0 items-center gap-3">
           <button
             onClick={() => (window.location.hash = "/workspace")}
@@ -526,7 +561,12 @@ export default function App() {
           {PAGES.map((target) => (
             <button
               key={target}
-              onClick={() => goTo(target)}
+              ref={target === "agents" ? agentTab : undefined}
+              onClick={() => { goTo(target); setAgentMenuOpen(target === "agents"); }}
+              onMouseEnter={() => setAgentMenuOpen(target === "agents")}
+              onFocus={() => setAgentMenuOpen(target === "agents")}
+              aria-expanded={target === "agents" ? agentMenuOpen : undefined}
+              aria-controls={target === "agents" ? "agent-subpages" : undefined}
               aria-current={page === target ? "page" : undefined}
               className={`h-8 shrink-0 rounded-md px-3 text-sm font-medium transition ${
                 page === target
@@ -538,6 +578,30 @@ export default function App() {
             </button>
           ))}
         </nav>
+        {agentMenuOpen && agentMenuAt && (
+          <nav
+            id="agent-subpages"
+            aria-label={t("tab.agents")}
+            style={{ left: agentMenuAt.left, top: agentMenuAt.top }}
+            className="fixed z-50 flex min-w-[10rem] flex-col pt-1 text-gray-700"
+            data-testid="agent-subpages"
+          >
+            {/* pt-1 keeps the gap under the tab inside the menu, so moving the mouse down does not close it */}
+            <div className="flex flex-col rounded-lg border border-gray-200 bg-white p-1 shadow-lg">
+              {(["skills", "mcp"] as const).map((id) => (
+                <a
+                  key={id}
+                  href={`#/agents/${id}`}
+                  onClick={() => setAgentMenuOpen(false)}
+                  aria-current={page === "agents" && subTab === id ? "page" : undefined}
+                  className={`rounded-md px-3 py-2 text-sm font-medium ${page === "agents" && subTab === id ? "bg-blue-50 text-blue-700" : "hover:bg-gray-100"}`}
+                >
+                  {id === "skills" ? t("ya.skills") : "MCP"}
+                </a>
+              ))}
+            </div>
+          </nav>
+        )}
         <div className="ml-auto flex items-center gap-4 lg:ml-0">
           {hasJobs(backend) && (
             <JobsButton
@@ -602,7 +666,7 @@ export default function App() {
       )}
       {page === "agents" && (
         <main className="min-h-0 flex-1">
-          <AgentsPage />
+          <AgentsPage tab={isTab("agents", subTab) ? subTab : "skills"} backendKey={mcpBackendKey()} />
         </main>
       )}
       {page === "reading" && (
@@ -623,7 +687,12 @@ export default function App() {
             }}
             onNewBlank={() => create(wsBlank)}
             onCopy={(id) => create(() => wsCopy(id))}
-            onAskAI={() => openAgent("new")}
+            onAskAI={() => {
+              // the assistant lives on problem pages: open the last problem, then its "new problem" chat
+              const target = lastProblemId ?? manifest.problems[0]?.id;
+              if (target) select(target);
+              openAgent("new");
+            }}
             onRename={renameProblem}
             onDelete={deleteProblem}
             onExport={() => ws && exportWorkspace(ws, manifest, ws.name || t("ws.default"))}
@@ -789,11 +858,13 @@ export default function App() {
 
       <SciCard />
 
-      {manifest && problem && (
+      {/* The AI Assistant is offered on problem pages only (for now) */}
+      {manifest && problem && page === "problems" && (
         <AgentPanel
           problem={problem}
           backendKey={`${backendChoice()}:${backend === "checking" ? "checking" : backend ? "up" : "down"}`}
           onWorkspaceProblem={onAiProblem}
+          workspaceFull={workspaceRoom(wsProblems.length, account) === 0}
           onSyncWorkspace={(entryId) => {
             const p = wsRef.current?.problems.find((q) => q.entry.id === entryId);
             return p ? syncProblem(p.id) : Promise.reject(new Error("unknown problem"));
@@ -990,9 +1061,10 @@ function ProblemView({
   const editable = inWorkspace;
   const hasEdits = Object.keys(edits).length > 0;
 
-  // Library runs go through detached jobs when the backend has them: the run keeps going if the page closes, and
-  // reopening the problem reattaches to it (or shows how it ended). `follow` stops watching, not the job.
-  const jobs = !ws && hasJobs(backend);
+  // Runs go through detached jobs when the backend has them (library problems; Workspace problems in their sandbox
+  // on newer backends): the run keeps going if the page closes, and reopening the problem reattaches to it (or shows
+  // how it ended). `follow` stops watching, not the job.
+  const jobs = ws ? hasWorkspaceJobs(backend) : hasJobs(backend);
   const follow = useRef<AbortController | null>(null);
   const runningRef = useRef(running);
   runningRef.current = running;
@@ -1056,7 +1128,13 @@ function ProblemView({
     const files = hasEdits ? edits : undefined;
     let jobId: string | undefined;
     const pending = ws
-      ? ws.sync().then((session) => wsRunStream(session, params, verbose, onLine, onQueued, setProgress))
+      ? ws
+          .sync()
+          .then((session) =>
+            jobs
+              ? runWorkspaceJob(session, problem.id, params, verbose, onLine, onQueued, setProgress, (id) => (jobId = id), signal)
+              : wsRunStream(session, params, verbose, onLine, onQueued, setProgress),
+          )
       : jobs
         ? runProblemJob(problem.id, params, files, verbose, onLine, onQueued, setProgress, (id) => (jobId = id), signal)
         : runProblemStream(problem.id, params, files, verbose, onLine, onQueued, setProgress);

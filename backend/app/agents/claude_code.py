@@ -71,6 +71,26 @@ async def run(
         text, is_error = await run_tool(args.get("params") or {})
         return {"content": [{"type": "text", "text": text}], **({"is_error": True} if is_error else {})}
 
+    @tool(
+        "ask_user",
+        "Ask the user a multiple-choice question in the chat when a decision is theirs. Give 2-4 short options (a few words each); "
+        "they can also type their own answer. Then end your turn: the answer arrives as the next message.",
+        {
+            "type": "object",
+            "properties": {
+                "question": {"type": "string"},
+                "options": {"type": "array", "items": {"type": "string"}},
+                "multi": {"type": "boolean", "description": "true: the user may pick several options"},
+            },
+            "required": ["question", "options"],
+        },
+    )
+    async def ask_user(args: dict) -> dict:
+        from ..agent import ask_in_session
+
+        text, is_error = ask_in_session(s, args.get("question", ""), args.get("options") or [], bool(args.get("multi")))
+        return {"content": [{"type": "text", "text": text}], **({"is_error": True} if is_error else {})}
+
     async def can_use_tool(name: str, data: dict, _context) -> PermissionResultAllow | PermissionResultDeny:
         path = data.get("file_path") or data.get("path") or data.get("notebook_path")
         if path is not None and not _inside(path, s.workspace):
@@ -81,8 +101,8 @@ async def run(
         cwd=str(s.workspace),
         tools=["Read", "Write", "Edit", "Glob", "Grep"],
         disallowed_tools=["Bash", "WebFetch", "WebSearch", "Task"],
-        allowed_tools=["mcp__tensorizer__run_problem"],
-        mcp_servers={"tensorizer": create_sdk_mcp_server("tensorizer", tools=[run_problem])},
+        allowed_tools=["mcp__tensorizer__run_problem", "mcp__tensorizer__ask_user"],
+        mcp_servers={"tensorizer": create_sdk_mcp_server("tensorizer", tools=[run_problem, ask_user])},
         can_use_tool=can_use_tool,
         permission_mode="default",
         system_prompt={"type": "preset", "preset": "claude_code", "append": system_prompt},

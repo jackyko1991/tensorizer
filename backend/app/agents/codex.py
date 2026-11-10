@@ -1,14 +1,21 @@
-"""OpenAI Codex CLI adapter (experimental: built from the docs, not tested against a live install here).
+"""OpenAI Codex CLI adapter, verified end to end with codex-cli 0.144.1.
 
 Command (flags as documented at https://learn.chatgpt.com/docs/non-interactive-mode and
 https://learn.chatgpt.com/docs/developer-commands?surface=cli, checked against codex-rs/exec/src/cli.rs):
 
     codex exec --json --cd <workspace> --sandbox workspace-write --skip-git-repo-check
+               --ignore-user-config --ignore-rules
+               -c features.shell_tool=false -c web_search="disabled"
                -c approval_policy="never" -c sandbox_workspace_write.network_access=false
-               -c mcp_servers.tensorizer.url="<mcp url with token>" [-m MODEL] [resume <thread id>] -
+               -c mcp_servers.tensorizer.url="<mcp url with token>"
+               -c mcp_servers.tensorizer.required=true
+               -c mcp_servers.tensorizer.default_tools_approval_mode="approve" [-m MODEL] [resume <thread id>] -
 
 `-` reads the prompt from stdin. workspace-write lets Codex write only inside --cd (plus temp dirs) and keeps the
-network off; `never` means it never stops to ask. Events (`--json`, codex-rs/exec/src/exec_events.rs):
+network off. Shell and web tools are disabled; scoped MCP tools handle reads, writes and renders. User config
+and command rules are ignored, while the existing login is retained, like Claude's setting_sources=[].
+The required MCP connection fails startup rather than silently losing render access. Only this server's tools
+are pre-approved for a noninteractive turn. Events (`--json`, codex-rs/exec/src/exec_events.rs):
 thread.started {thread_id}, turn.started, item.started / item.updated / item.completed {item: {id, type, ...}},
 turn.completed {usage}, turn.failed {error: {message}}, error {message}. Item types used here: agent_message {text},
 command_execution {command, aggregated_output, exit_code, status}, file_change {changes: [{path, kind}], status},
@@ -19,7 +26,7 @@ from __future__ import annotations
 
 import json
 
-from .cli import RUN_TOOL, tool_input
+from .cli import RUN_TOOL, tool_input, tool_name
 
 LABEL = "Codex"
 
@@ -34,12 +41,22 @@ def command(exe: str, workspace: str, model: str | None, resume: str | None, mcp
         "--sandbox",
         "workspace-write",
         "--skip-git-repo-check",
+        "--ignore-user-config",
+        "--ignore-rules",
+        "-c",
+        "features.shell_tool=false",
+        "-c",
+        'web_search="disabled"',
         "-c",
         'approval_policy="never"',
         "-c",
         "sandbox_workspace_write.network_access=false",
         "-c",
         f"mcp_servers.tensorizer.url={json.dumps(mcp_url)}",
+        "-c",
+        "mcp_servers.tensorizer.required=true",
+        "-c",
+        'mcp_servers.tensorizer.default_tools_approval_mode="approve"',
     ]
     if model:
         argv += ["-m", model]
@@ -92,6 +109,8 @@ class Mapper:
             return out
         if itype == "mcp_tool_call":
             name = RUN_TOOL if item.get("tool") == "run_problem" else f"mcp__{item.get('server')}__{item.get('tool')}"
+            if item.get("server") == "tensorizer":
+                name = tool_name(str(item.get("tool", "")))
             if started:
                 return [{"type": "tool", "id": iid, "name": name, "input": tool_input(item.get("arguments"))}]
             err = item.get("error")
@@ -101,7 +120,7 @@ class Mapper:
                 {
                     "type": "tool_result",
                     "id": iid,
-                    "ok": not err and item.get("status") != "failed",
+                    "ok": not err and not result.get("isError") and item.get("status") != "failed",
                     "text": (err or {}).get("message", "") if err else text[:2000],
                 }
             ]

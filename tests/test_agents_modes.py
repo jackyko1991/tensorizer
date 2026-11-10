@@ -52,7 +52,8 @@ def test_scan_returns_booleans_and_versions_only(monkeypatch, tmp_path):
     assert by_id["codex"]["installed"] and by_id["codex"]["version"] == "0.98.1" and by_id["codex"]["logged_in"]
     assert by_id["claude-code"]["logged_in"] is True  # ANTHROPIC_API_KEY is set (its value is never read out)
     assert not by_id["gemini"]["installed"] and by_id["gemini"]["logged_in"] is False
-    assert by_id["codex"]["experimental"] and not by_id["claude-code"]["experimental"]
+    assert not by_id["codex"]["experimental"] and not by_id["claude-code"]["experimental"]
+    assert by_id["opencode"]["experimental"] and by_id["gemini"]["experimental"]
     assert scan.executable("codex") == f"{fake}/codex"  # the path stays on the server
 
 
@@ -67,11 +68,18 @@ def test_scan_route_only_on_a_local_backend(client, monkeypatch):
 def test_local_agents_are_refused_on_a_shared_server(client, monkeypatch):
     monkeypatch.setattr(agent, "LOCAL_ALLOWED", False)
     body = {"problem": "mechanics/simple_pendulum", "message": "hi", "agent": "codex"}
-    lines = [json.loads(x) for x in client.post("/api/agents/chat", json=body).text.splitlines()]
+    lines = _turn_events(client.post("/api/agents/chat", json=body).text)
     assert lines == [{"type": "error", "message": "local agents only run on your own computer; use the API option"}]
     body = {**body, "agent": "claude-api", "provider": "openrouter"}
-    lines = [json.loads(x) for x in client.post("/api/agents/chat", json=body).text.splitlines()]
+    lines = _turn_events(client.post("/api/agents/chat", json=body).text)
     assert lines[0]["type"] == "error" and "OpenRouter API key" in lines[0]["message"]
+
+
+def _turn_events(text: str) -> list[dict]:
+    """A chat response's agent events: without the leading {"type": "turn"} event and each event's "seq"."""
+    events = [json.loads(x) for x in text.splitlines()]
+    assert events[0]["type"] == "turn"
+    return [{k: v for k, v in e.items() if k != "seq"} for e in events[1:]]
 
 
 # --- LOCAL: adapters, from sample output ----------------------------------------------------------------------------
@@ -260,6 +268,9 @@ def test_mcp_initialize_list_and_call_with_the_token(client):
         "read_file",
         "write_file",
         "run_problem",
+        "wait_render",
+        "cancel_render",
+        "ask_user",
         "read_notebook",
         "edit_notebook",
     }
@@ -339,3 +350,20 @@ def test_mcp_notebook_tools_edit_the_open_notebook_of_a_chat(client):
     event = agent.notebook_event(s, "workspace/x")
     assert event["notebook"] == "n1" and [c["type"] for c in event["cells"]] == ["code", "markdown"]
     mcp_server.revoke(token)
+
+
+def test_a_claude_code_subscription_login_is_detected(monkeypatch, tmp_path):
+    from backend.app.agents import scan
+
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.setenv("CLAUDE_CONFIG_DIR", str(tmp_path))
+    monkeypatch.setattr(scan, "_keychain_item", lambda service: False)
+    monkeypatch.setattr(scan.sys, "platform", "linux")
+    assert scan.logged_in("claude-code") is False
+    (tmp_path / ".claude.json").write_text('{"oauthAccount": {"emailAddress": "x"}}', encoding="utf-8")
+    assert scan.logged_in("claude-code") is True  # `claude` /login, token kept elsewhere (macOS: the Keychain)
+    (tmp_path / ".claude.json").write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(scan.sys, "platform", "darwin")
+    assert scan.logged_in("claude-code") is None  # nothing seen: unknown, simply tried
+    monkeypatch.setattr(scan, "_keychain_item", lambda service: service == "Claude Code-credentials")
+    assert scan.logged_in("claude-code") is True

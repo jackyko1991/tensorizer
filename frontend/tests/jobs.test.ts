@@ -101,3 +101,38 @@ test("reader gives up on 404 at once and after repeated failures", async () => {
   );
   assert.equal(tries, 4);
 });
+
+test("each backend gets its own visitor id, starting from the old single one", () => {
+  const store = memory();
+  const legacy = visitorId(store); // before ids were per backend
+  assert.equal(visitorId(store, "local"), legacy); // runs made earlier stay listed
+  assert.equal(visitorId(store, "remote:a"), legacy);
+  store.data.set("tensorizer.visitor.remote:b", "b".repeat(32));
+  assert.equal(visitorId(store, "remote:b"), "b".repeat(32));
+  const fresh = memory();
+  assert.notEqual(visitorId(fresh, "remote:x"), visitorId(memory(), "remote:x")); // no old id: a new random one
+  assert.ok(fresh.data.has("tensorizer.visitor.remote:x") && !fresh.data.has("tensorizer.visitor"));
+});
+
+test("an agent turn's log ends when its stream closes and the server says the turn is over", async () => {
+  const seen: JobEvent[] = [];
+  let opens = 0;
+  let over = false;
+  await readJobEvents({
+    open: async (from) => {
+      opens += 1;
+      if (opens === 1) return ndjson([{ type: "turn", seq: 0 }, { type: "error", message: "bad notebook", seq: 1 }]);
+      over = true;
+      return ndjson([{ type: "text", delta: "ok", seq: from }, { type: "done", seq: from + 1 }]);
+    },
+    onEvent: (e) => seen.push(e),
+    isFinal: () => false, // an error mid-turn does not end it
+    finished: async () => over,
+    sleep: noSleep,
+  });
+  assert.deepEqual(
+    seen.map((e) => e.type),
+    ["turn", "error", "text", "done"],
+  );
+  assert.equal(opens, 2);
+});

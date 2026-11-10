@@ -41,15 +41,18 @@ The app has three tabs:
 | **Problems** | The workspace: problem library, equations and setup sketch, five code files, parameters, terminal and plot/animation |
 | **Concept** | How every problem works, step by step, using the simple pendulum (its real code is shown) |
 | **Coding Skills** | The PyTorch techniques behind the library (broadcasting, einsum, RK4, eigh, FFT, autograd, …), each with an example and links to problems |
+| **AI agent** | **Skills** teaches your own agent the Tensorizer workflow; **MCP** connects it to problem files, notebook tools, rendering and physics tests |
 
 Every problem can also be taken to a notebook: **Open in Colab** opens it in Google Colab (switch the runtime to GPU and the code uses it automatically), and **Download .ipynb** saves your current version, including edited code and parameters. The notebooks live in [notebooks/](notebooks) and are regenerated from the problem files by `pixi run build-assets` or `pixi run notebooks`.
 
 **Ask AI**: the tensor-face button at the bottom right opens the AI Assistant. Tensorizer builds no agent of its own; you bring one, three ways:
-- **Local**: *Search this computer* finds agent CLIs on the machine running the backend (Claude Code, and experimental adapters for the OpenAI Codex CLI, OpenCode and the Gemini CLI) and uses that machine's own login.
+- **Local**: *Search this computer* finds agent CLIs on the machine running the backend (Claude Code, the OpenAI Codex CLI, and experimental adapters for OpenCode and the Gemini CLI) and uses that machine's own login.
 - **Cloud**: Tensorizer is also an MCP connector (`/mcp`, with a per-browser token), so any cloud agent that supports custom MCP connectors can open, edit and run problems here.
 - **API**: an Anthropic or OpenRouter key (or *Sign in with OpenRouter*), kept only in your browser tab.
 
 The assistant sees what you see: the open problem or notebook, your edited code and parameters, any text you highlight (code, equations, summary, notebook cells, terminal) and, if you click 📷, a screenshot. Its edits land straight back in the editors. Agents are confined to the problem's own folder plus a `run_problem` tool.
+
+The Codex adapter is verified with CLI **0.144.1** for workspace editing, MCP rendering with physics tests, and conversation resume. It uses the same test-first problem instructions and render queue as Claude Code. Shell and web tools are disabled; only the chat-scoped Tensorizer MCP tools are pre-approved, following the [official OpenAI MCP configuration](https://learn.chatgpt.com/docs/extend/mcp). Older CLI versions may need an upgrade for these launch options. Run the offline adapter checks with `pixi run pytest -q tests/test_codex.py tests/test_agents_modes.py`. To repeat the live check using your existing Codex login and a temporary local server, run `TENSORIZER_TEST_CODEX=1 ALLOW_CODE_EXEC=1 pixi run pytest -q tests/test_codex.py` (uses model quota; edits only a private problem copy).
 
 **Workspace**: next to the library (left-panel tabs *Problems | Workspace*, or click the Tensorizer logo for the workspace home) you can create your own problems: blank, copied from the library, or written by the AI. Each problem has its Source (five code files and `meta.yaml`, editable inline, as Markdown or as YAML), any number of notebooks (Markdown and Python cells with inline plots) and a Data folder for your own files (CSV, JSON, NumPy, images) that your code, notebooks and the AI can load. Everything is saved in your browser; export it as a zip (a ready-to-run pixi project) or push it to a new GitHub repository with your own token. Cloud save and GPU runs are planned for Tensorizer Pro.
 

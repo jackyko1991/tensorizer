@@ -101,3 +101,15 @@ pre {
 @media (prefers-reduced-motion: reduce) {
   .mascot-eyes, .mascot-dots circle { animation: none; }
 }
+
+/* Python highlighting in the AI Assistant's code blocks (@lezer/highlight classHighlighter tokens) */
+.agent-code .tok-keyword { color: #7c3aed; }
+.agent-code .tok-atom, .agent-code .tok-bool { color: #b45309; }
+.agent-code .tok-number { color: #c2410c; }
+.agent-code .tok-string { color: #047857; }
+.agent-code .tok-comment { color: #9ca3af; font-style: italic; }
+.agent-code .tok-definition { color: #1d4ed8; }
+.agent-code .tok-className, .agent-code .tok-typeName { color: #0e7490; }
+.agent-code .tok-propertyName { color: #374151; }
+.agent-code .tok-operator { color: #be185d; }
+.agent-code .tok-meta { color: #6b7280; }

@@ -1,6 +1,7 @@
 /** The home of "My workspace" (#/workspace): its problems as cards, the ways to start a new one, recently viewed
  *  library problems, and export / import. */
 import { useMemo, useRef, useState } from "react";
+import { signIn, signOut, useAccount, workspaceRoom } from "../account";
 import { assetUrl } from "../api";
 import { useLang, type Key } from "../i18n";
 import type { Manifest, Problem, Workspace } from "../types";
@@ -44,6 +45,8 @@ export default function WorkspaceHome(props: Props) {
   const [busy, setBusy] = useState(false);
   const file = useRef<HTMLInputElement>(null);
   const problems = [...(workspace?.problems ?? [])].sort((a, b) => (b.updated ?? 0) - (a.updated ?? 0));
+  const account = useAccount(); // demo sign-in (account.ts): not signed in = free tier, one problem
+  const full = workspaceRoom(problems.length, account) === 0;
   const title = (p: Problem) => plainText(p.i18n?.[lang]?.title ?? p.title);
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -69,16 +72,44 @@ export default function WorkspaceHome(props: Props) {
         label={t("ws.blank")}
         hint={t("ws.blankHint")}
         onClick={() => run(props.onNewBlank)}
-        disabled={busy}
+        disabled={busy || full}
       />
       <BigAction
         icon="📚"
         label={t("ws.fromLibrary")}
         hint={t("ws.fromLibraryHint")}
         onClick={() => setPicker((o) => !o)}
-        disabled={busy}
+        disabled={busy || full}
       />
-      <BigAction icon="✨" label={t("home.askAI")} hint={t("home.askAIHint")} onClick={props.onAskAI} />
+      <BigAction icon="✨" label={t("home.askAI")} hint={t("home.askAIHint")} onClick={props.onAskAI} disabled={full} />
+    </div>
+  );
+  const tier = (
+    <div className="flex flex-wrap items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs" data-testid="ws-tier">
+      <span
+        className={`rounded-full px-2 py-0.5 font-medium ${account ? "bg-blue-50 text-blue-700" : "bg-amber-50 text-amber-800"}`}
+      >
+        {account ? t("ag.tierMember") : t("ag.tierFree")}
+      </span>
+      <span className="min-w-0 flex-1 text-gray-600">
+        {account ? t("ag.signedInAs").replace("{name}", account.name) : t("ag.freeLimit")}
+      </span>
+      {account ? (
+        <button onClick={() => signOut()} className="rounded-md border border-gray-300 bg-white px-2.5 py-1 hover:bg-gray-50">
+          {t("ag.signOut")}
+        </button>
+      ) : (
+        <button
+          onClick={() => {
+            const name = prompt(t("ag.signInPrompt"), "Student")?.trim();
+            if (name) signIn(name);
+          }}
+          data-testid="ws-sign-in"
+          className="rounded-md bg-blue-600 px-2.5 py-1 font-medium text-white hover:bg-blue-700"
+        >
+          {t("ag.signIn")}
+        </button>
+      )}
     </div>
   );
 
@@ -143,6 +174,8 @@ export default function WorkspaceHome(props: Props) {
           />
         </div>
       </header>
+
+      {tier}
 
       {problems.length === 0 ? (
         <section className="space-y-4 rounded-2xl border border-dashed border-gray-300 bg-gray-50/60 p-6 text-center">

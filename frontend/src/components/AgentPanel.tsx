@@ -1,4 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { pythonLanguage } from "@codemirror/lang-python";
+import { classHighlighter, highlightCode } from "@lezer/highlight";
+import { copyText, isPython, parseAnswer } from "../agentMarkdown";
 import {
   applyFiles,
   applyNotebook,
@@ -12,10 +15,18 @@ import {
 import {
   agentChat,
   agentStatus,
+  backendChoice,
+  backendScope,
+  cancelTurn,
   connectorEvents,
+  deleteConversation,
+  followTurn,
+  listConversations,
   openRouterCallback,
   RunFailed,
+  turnInfo,
   type AgentEvent,
+  type Conversation,
   type AgentId,
   type AgentStatus,
   type Connector,
@@ -23,12 +34,13 @@ import {
 } from "../api";
 import { useLang, type Key } from "../i18n";
 import { suggestPrompts } from "../suggest";
+import { activeServer } from "../servers";
 import type { Problem } from "../types";
 import AgentMascot from "./AgentMascot";
 import { captureTab, CaptureError, MAX_SCREENSHOT_BYTES, pngBytes, ScreenshotPreview } from "./AgentScreenshot";
-import AgentSettings, { DEFAULT_CHOICE, type AgentChoice } from "./AgentSettings";
+import AgentSettings, { COMING_MODES, DEFAULT_CHOICE, type AgentChoice } from "./AgentSettings";
 import GearIcon from "./GearIcon";
-import { RichText } from "./Tex";
+import Tex, { RichText } from "./Tex";
 import DownloadIcon from "./DownloadIcon";
 
 type Block =
@@ -43,10 +55,14 @@ type Block =
     }
   | { kind: "run"; output: string | null; console: string; ok: boolean }
   | { kind: "files"; problem: string; files: Record<string, string> }
-  | { kind: "error"; text: string };
+  | { kind: "error"; text: string; resumable?: boolean }
+  /** The agent's ask_user tool: a multiple-choice question; the click is sent as the next message. */
+  | { kind: "question"; id: string; question: string; options: string[]; multi: boolean };
 interface Message {
   role: "user" | "assistant";
   blocks: Block[];
+  /** Which agent answered (shown above the answer). */
+  agent?: string;
   /** Mirrored from a cloud agent (CLOUD mode), not answered here. */
   cloud?: boolean;
 }
@@ -56,6 +72,63 @@ const KEY_STORE = "tensorizer.agent.key";
 const CHOICE_STORE = "tensorizer.agent.choice";
 const FOUND_STORE = "tensorizer.agent.found";
 const CLOUD_STORE = "tensorizer.agent.connector";
+// The header's buttons: one height, one grey, one hover (text buttons add padding, icon buttons are square)
+const HEAD_BTN =
+  "flex h-8 shrink-0 items-center justify-center rounded-md text-xs text-gray-500 hover:bg-gray-100 hover:text-gray-800 disabled:opacity-40";
+/** A 16 px stroke icon for the header (full screen, close), the same size as the gear. */
+function HeadIcon({ d, small = false }: { d: string; small?: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" className={small ? "h-3.5 w-3.5" : "h-4 w-4"} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d={d} />
+    </svg>
+  );
+}
+const SIZE_STORE = "tensorizer.agent.rect";
+const MIN_W = 360;
+const MIN_H = 420;
+const GAP = 8; // the panel never touches the window edge
+interface Rect {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+type Edge = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
+const EDGES: Edge[] = ["n", "s", "e", "w", "ne", "nw", "se", "sw"];
+// thin strips on the edges, small squares on the corners (double-click one: back to the default size and place)
+const EDGE_CLASS: Record<Edge, string> = {
+  n: "top-0 left-3 right-3 h-1.5 cursor-ns-resize",
+  s: "bottom-0 left-3 right-3 h-1.5 cursor-ns-resize",
+  e: "right-0 top-3 bottom-3 w-1.5 cursor-ew-resize",
+  w: "left-0 top-3 bottom-3 w-1.5 cursor-ew-resize",
+  ne: "top-0 right-0 h-3 w-3 cursor-nesw-resize",
+  nw: "top-0 left-0 h-3 w-3 cursor-nwse-resize",
+  se: "bottom-0 right-0 h-3 w-3 cursor-nwse-resize",
+  sw: "bottom-0 left-0 h-3 w-3 cursor-nesw-resize",
+};
+/** Keep a panel rectangle inside the window, at least MIN_W × MIN_H. */
+function fitRect(r: Rect): Rect {
+  const W = typeof window === "undefined" ? 1280 : window.innerWidth;
+  const H = typeof window === "undefined" ? 800 : window.innerHeight;
+  const w = Math.max(MIN_W, Math.min(r.w, W - 2 * GAP));
+  const h = Math.max(MIN_H, Math.min(r.h, H - 2 * GAP));
+  return { w, h, x: Math.min(Math.max(GAP, r.x), W - w - GAP), y: Math.min(Math.max(GAP, r.y), H - h - GAP) };
+}
+/** The rectangle after dragging `edge` by (dx, dy): the opposite edge stays where it is. */
+function resizeRect(r: Rect, edge: Edge, dx: number, dy: number): Rect {
+  let { x, y, w, h } = r;
+  if (edge.includes("e")) w = r.w + dx;
+  if (edge.includes("s")) h = r.h + dy;
+  if (edge.includes("w")) {
+    w = Math.max(MIN_W, r.w - dx);
+    x = r.x + r.w - w;
+  }
+  if (edge.includes("n")) {
+    h = Math.max(MIN_H, r.h - dy);
+    y = r.y + r.h - h;
+  }
+  return fitRect({ x, y, w, h });
+}
 // "Create a problem" ideas: a different three from the pool each time the panel opens.
 const NEW_IDEAS = Array.from({ length: 9 }, (_, i) => `agent.newEx${i + 1}` as Key);
 const pickIdeas = () => [...NEW_IDEAS].sort(() => Math.random() - 0.5).slice(0, 3);
@@ -126,8 +199,47 @@ type Mode = "current" | "new";
 interface Chat {
   messages: Message[];
   session: string | null;
+  /** the server-side turns (turns.py) of this conversation, oldest first: their logs rebuild the chat */
+  turns: string[];
+  /** its History entry (GET /api/agents/conversations), sent with each message so a continued chat stays one */
+  conversation?: string | null;
 }
-const EMPTY_CHAT: Chat = { messages: [], session: null };
+const EMPTY_CHAT: Chat = { messages: [], session: null, turns: [] };
+
+// Each chat's conversation (agent session + turn ids) per backend, so a reload or a closed tab can rebuild it from
+// the server's turn logs; and, per turn, the last event whose edits (files, notebook, new problem) this browser
+// already applied, so a rebuilt chat never re-applies old edits but does apply ones made while the page was closed.
+const CHATS_STORE = "tensorizer.agent.chats";
+const APPLIED_STORE = "tensorizer.agent.applied";
+interface SavedChat {
+  session: string | null;
+  turns: string[];
+  conversation?: string | null;
+}
+const chatsKey = () => `${CHATS_STORE}.${backendScope()}`;
+function savedChats(): Record<string, SavedChat> {
+  return loadJson<Record<string, SavedChat>>(chatsKey(), {});
+}
+function saveChat(key: string, chat: SavedChat | null) {
+  const all = savedChats();
+  if (chat && chat.turns.length)
+    all[key] = { session: chat.session, turns: chat.turns.slice(-40), conversation: chat.conversation ?? null };
+  else delete all[key];
+  save(chatsKey(), JSON.stringify(all), "local");
+}
+function appliedSeq(turn: string): number | undefined {
+  return loadJson<Record<string, number>>(APPLIED_STORE, {})[turn];
+}
+function setApplied(turn: string, seq: number) {
+  const all = loadJson<Record<string, number>>(APPLIED_STORE, {});
+  delete all[turn];
+  all[turn] = seq;
+  const keys = Object.keys(all);
+  for (const k of keys.slice(0, Math.max(0, keys.length - 200))) delete all[k];
+  save(APPLIED_STORE, JSON.stringify(all), "local");
+}
+/** live: this page sent the message; replay: rebuilt from the server's log; cloud: mirrored from a connector */
+type Source = "live" | "replay" | "cloud";
 
 /** Floating "Ask AI" button (bottom right) and the conversation drawer it opens. One conversation per problem
  *  ("This problem" follows the problem on screen) plus one for creating a new problem. */
@@ -136,8 +248,11 @@ export default function AgentPanel({
   onWorkspaceProblem,
   onSyncWorkspace,
   backendKey,
+  workspaceFull = false,
 }: {
   problem: Problem;
+  /** Free tier (demo accounts, account.ts): the Workspace already has its one problem, so no new one. */
+  workspaceFull?: boolean;
   /** A Workspace problem (by its id): push the browser's files to its sandbox; returns the live sandbox id. */
   onSyncWorkspace: (problem: string) => Promise<string>;
   /** A problem the agent created: shown in the left panel's Workspace section. */
@@ -145,10 +260,13 @@ export default function AgentPanel({
   /** Changes whenever the backend changes (picker or reconnect), so the panel re-detects what it can use. */
   backendKey: string;
 }) {
-  const { t } = useLang();
+  const { lang, t } = useLang();
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<AgentStatus | null | "checking">("checking");
-  const [choice, setChoiceState] = useState<AgentChoice>(() => loadJson(CHOICE_STORE, DEFAULT_CHOICE));
+  const [choice, setChoiceState] = useState<AgentChoice>(() => {
+    const saved = loadJson(CHOICE_STORE, DEFAULT_CHOICE);
+    return COMING_MODES.has(saved.mode) ? { ...saved, mode: "local" } : saved; // Cloud and API: coming
+  });
   const [apiKey, setApiKey] = useState<string | null>(() => load(keyStore(choice.provider)));
   const [found, setFoundState] = useState<FoundAgent[] | null>(() => {
     const raw = load(FOUND_STORE, "local");
@@ -165,6 +283,20 @@ export default function AgentPanel({
   const [chats, setChats] = useState<Record<string, Chat>>({});
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState<string | null>(null); // the chat that is answering
+  const [progress, setProgress] = useState<string | null>(null); // "waiting for a slot", "render queued", ...
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [full, setFull] = useState(false); // full screen, with a margin so it still reads as the top layer
+  // Where the panel is once the user has resized it (any edge or corner); null: the default spot, bottom right.
+  const [rect, setRect] = useState<Rect | null>(() => {
+    const r = loadJson<Partial<Rect>>(SIZE_STORE, {});
+    return r.x != null && r.y != null && r.w && r.h ? fitRect(r as Rect) : null;
+  });
+  const [startedAt, setStartedAt] = useState<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+  const [history, setHistory] = useState<Conversation[] | null | "loading">(null);
+  const turnOf = useRef<Record<string, string | null>>({}); // the turn each chat is answering (or last answered)
+  const restoring = useRef<Set<string>>(new Set());
+  const [scope, setScope] = useState(backendScope);
   const [mode, setMode] = useState<Mode>("current");
   const [selection, setSelection] = useState<CodeSelection | null>(null);
   const [pageSel, setPageSel] = useState<PageSelection | null>(null);
@@ -219,7 +351,7 @@ export default function AgentPanel({
         save(keyStore("openrouter"), key);
         const c = {
           ...loadJson(CHOICE_STORE, DEFAULT_CHOICE),
-          mode: "api" as const,
+          mode: COMING_MODES.has("api") ? ("local" as const) : ("api" as const), // API mode: coming
           provider: "openrouter",
         };
         setChoiceState(c);
@@ -243,7 +375,7 @@ export default function AgentPanel({
       // First visit: LOCAL when Claude Code is ready on this machine, otherwise API.
       if (s && load(CHOICE_STORE, "local") === null) {
         const localReady = s.modes?.local && s.default === "claude-code";
-        setChoiceState((c) => ({ ...c, mode: localReady ? "local" : "api" }));
+        setChoiceState((c) => ({ ...c, mode: localReady || COMING_MODES.has("api") ? "local" : "api" }));
       }
     });
   }, [open, status]);
@@ -266,7 +398,9 @@ export default function AgentPanel({
   const connected =
     !!st?.enabled &&
     (choice.mode === "local" ? localReady : choice.mode === "api" ? !!apiKey : !!cloudToken && !cloudExpired);
-  const canType = connected && choice.mode !== "cloud"; // in CLOUD mode the user's own agent does the talking
+  // in CLOUD mode the user's own agent does the talking; the free tier's Workspace holds one problem only
+  const tierBlocked = workProblem === "new" && workspaceFull;
+  const canType = connected && choice.mode !== "cloud" && !tierBlocked;
   const agentLabel =
     choice.mode === "cloud"
       ? `${t("ag.cloudAgent")} (${t("ag.modeCloud")})`
@@ -289,7 +423,7 @@ export default function AgentPanel({
         ? t("data.title")
         : `${t("ws.source")} (${wsView.mode === "yaml" ? "meta.yaml" : t(wsView.mode === "markdown" ? "edit.markdown" : "edit.inline")})`;
   // Suggested prompts that follow the problem's own state (a Workspace problem) or the fixed library ones.
-  const suggestions = suggestPrompts(problem, onScreen).map(({ key, vars }) =>
+  const suggestions = suggestPrompts(problem, onScreen, lang).map(({ key, vars }) =>
     Object.entries(vars).reduce((text, [k, v]) => text.split(`{${k}}`).join(v), t(key as Key)),
   );
 
@@ -378,7 +512,34 @@ export default function AgentPanel({
     setChats((cs) => ({ ...cs, [key]: fn(cs[key] ?? EMPTY_CHAT) }));
   }
 
-  function onEvent(m: string, e: AgentEvent) {
+  function onEvent(m: string, e: AgentEvent, source: Source = "live") {
+    if (e.type === "turn") {
+      turnOf.current[m] = e.id;
+      if (source === "live") setApplied(e.id, e.seq ?? 0); // this page will see (and apply) every event of it
+      edit(m, (c) => {
+        const turns = [...c.turns.filter((x) => x !== e.id), e.id];
+        saveChat(m, { session: c.session, turns, conversation: c.conversation });
+        return { ...c, turns };
+      });
+      return;
+    }
+    // Edits reach the editor once: live, or when a rebuilt chat shows events this browser never applied.
+    const turn = turnOf.current[m];
+    const fresh =
+      source === "cloud" ||
+      (turn != null && typeof e.seq === "number" && e.seq > (appliedSeq(turn) ?? Number.POSITIVE_INFINITY));
+    const applied = () => turn && typeof e.seq === "number" && setApplied(turn, e.seq);
+    if (e.type === "waiting") return setProgress(t("ag.waitingAgents"));
+    if (e.type === "question") {
+      const q = { kind: "question" as const, id: e.id, question: e.question, options: e.options, multi: !!e.multi };
+      return edit(m, (c) => {
+        const last = c.messages[c.messages.length - 1];
+        if (!last || last.blocks.some((b) => b.kind === "question" && b.id === e.id)) return c;
+        return { ...c, messages: [...c.messages.slice(0, -1), { ...last, blocks: [...last.blocks, q] }] };
+      });
+    }
+    if (e.type === "queued") return setProgress(t("ag.queued").replace("{n}", String(e.position)));
+    if (e.type !== "session") setProgress(null);
     const update = (fn: (blocks: Block[]) => Block[]) =>
       edit(m, (c) => {
         const last = c.messages[c.messages.length - 1];
@@ -387,8 +548,15 @@ export default function AgentPanel({
           messages: [...c.messages.slice(0, -1), { ...last, blocks: fn(last.blocks) }],
         };
       });
-    if (e.type === "session") edit(m, (c) => ({ ...c, session: e.id }));
-    else if (e.type === "problem") onWorkspaceProblem(e.entry);
+    if (e.type === "session")
+      edit(m, (c) => {
+        const conversation = c.conversation ?? e.id; // a new chat's History entry is its first session
+        saveChat(m, { session: e.id, turns: c.turns, conversation });
+        return { ...c, session: e.id, conversation };
+      });
+    else if (e.type === "problem") {
+      if (fresh) (onWorkspaceProblem(e.entry), applied());
+    }
     else if (e.type === "text")
       update((bs) => {
         const last = bs[bs.length - 1];
@@ -400,14 +568,165 @@ export default function AgentPanel({
     else if (e.type === "tool_result")
       update((bs) => bs.map((b) => (b.kind === "tool" && b.id === e.id ? { ...b, ok: e.ok, result: e.text } : b)));
     else if (e.type === "run") update((bs) => [...bs, { kind: "run", output: e.output, console: e.console, ok: e.ok }]);
-    else if (e.type === "notebook") applyNotebook(e);
-    else if (e.type === "files") {
+    else if (e.type === "notebook") {
+      if (fresh) (applyNotebook(e), applied());
+    } else if (e.type === "files") {
       // The agent's edits go straight into that problem's code panel, so the editor always shows the latest version
       // (a Workspace problem: also its Inline / Markdown view and meta.yaml, from the re-parsed entry).
-      if (!e.problem.startsWith("new/")) applyFiles(e.problem, e.files, e.entry);
+      if (fresh && !e.problem.startsWith("new/")) applyFiles(e.problem, e.files, e.entry);
+      if (fresh) applied();
       update((bs) => [...bs.filter((b) => b.kind !== "files"), { kind: "files", problem: e.problem, files: e.files }]);
-    } else if (e.type === "error") update((bs) => [...bs, { kind: "error", text: e.message }]);
+    } else if (e.type === "error") {
+      // A turn stopped by the user or cut by a restart can be picked up again ("Continue").
+      const stopped = e.message === "stopped";
+      const text = e.interrupted ? t("ag.interrupted") : stopped ? t("ag.stopped") : e.message;
+      update((bs) => [...bs, { kind: "error", text, resumable: !!e.interrupted || stopped }]);
+    }
   }
+
+  /** Rebuild a chat from its turns' logs on the server; a turn still running is followed live. */
+  async function restoreChat(m: string, saved: SavedChat) {
+    if (restoring.current.has(m)) return;
+    restoring.current.add(m);
+    const controller = new AbortController();
+    edit(m, () => ({ messages: [], session: saved.session, turns: saved.turns, conversation: saved.conversation }));
+    const kept: string[] = [];
+    try {
+      for (const id of saved.turns) {
+        let info;
+        try {
+          info = await turnInfo(id);
+        } catch {
+          return; // backend unreachable: try again when the panel next opens
+        }
+        if (info === null) continue; // expired on the server
+        kept.push(id);
+        turnOf.current[m] = id;
+        edit(m, (c) => ({
+          ...c,
+          messages: [
+            ...c.messages,
+            { role: "user", blocks: [{ kind: "text", text: info.message }] },
+            { role: "assistant", blocks: [], agent: AGENT_NAMES[info.agent as AgentId] ?? info.agent },
+          ],
+        }));
+        const live = info.status === "running";
+        if (live) {
+          setBusy(m);
+          abort.current = controller;
+          setNotice(t("ag.reconnected"));
+        }
+        try {
+          await followTurn(id, 1, (e) => onEvent(m, e, "replay"), controller.signal); // event 0 is the message
+        } catch (e) {
+          onEvent(m, { type: "error", message: e instanceof RunFailed ? e.message : String(e) }, "replay");
+        } finally {
+          if (live) {
+            setBusy(null);
+            abort.current = null;
+            setNotice(null);
+            setProgress(null);
+          }
+        }
+      }
+    } finally {
+      restoring.current.delete(m);
+      if (kept.length !== saved.turns.length) {
+        edit(m, (c) => ({ ...c, turns: kept }));
+        saveChat(m, { session: saved.session, turns: kept, conversation: saved.conversation });
+      }
+    }
+  }
+
+  // A different backend has its own conversations.
+  useEffect(() => {
+    const next = backendScope();
+    if (next !== scope) {
+      setScope(next);
+      setChats({});
+      setHistory(null);
+    }
+  }, [backendKey]);
+
+  // Opening the panel (or switching problem): rebuild that chat from the server if this page doesn't have it yet.
+  useEffect(() => {
+    if (!open || !st?.enabled) return;
+    const m = chatKey;
+    if ((chats[m]?.messages.length ?? 0) > 0 || busy === m) return;
+    const saved = savedChats()[m];
+    if (saved?.turns.length) void restoreChat(m, saved);
+  }, [open, st?.enabled, chatKey, scope]);
+
+  async function loadHistory() {
+    setHistory("loading");
+    setHistory(await listConversations(workProblem));
+  }
+  useEffect(() => {
+    if (historyOpen) void loadHistory();
+  }, [historyOpen, chatKey, scope]);
+  function openConversation(c: Conversation) {
+    if (busy) return;
+    const saved = { session: c.session, turns: c.turns, conversation: c.id };
+    saveChat(chatKey, saved);
+    setHistoryOpen(false);
+    void restoreChat(chatKey, saved);
+  }
+  async function removeConversation(c: Conversation) {
+    if (!(await deleteConversation(c.id))) return;
+    if (c.turns.some((id) => (chats[chatKey]?.turns ?? []).includes(id))) {
+      edit(chatKey, () => EMPTY_CHAT);
+      saveChat(chatKey, null);
+    }
+    void loadHistory();
+  }
+  function newChat() {
+    edit(chatKey, () => EMPTY_CHAT);
+    saveChat(chatKey, null);
+    turnOf.current[chatKey] = null;
+  }
+  async function stop() {
+    const id = busy ? turnOf.current[busy] : null;
+    // Stop the agent on the server; its stream then ends by itself with "stopped". Unreachable: stop following.
+    if (!id || !(await cancelTurn(id))) abort.current?.abort();
+  }
+  const runsOn = backendChoice() === "remote" ? (activeServer()?.name ?? "server") : t("ag.thisComputer");
+
+  // While an answer is coming: a ticking clock, so the wait is visibly alive.
+  useEffect(() => {
+    if (busy === null) return setStartedAt(null);
+    setStartedAt((s) => s ?? Date.now());
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [busy]);
+
+  /** Drag an edge or a corner to resize; the panel then keeps that place and size (remembered). */
+  function startResize(e: React.PointerEvent, edge: Edge) {
+    e.preventDefault();
+    const el = panelRef.current;
+    if (!el) return;
+    const b = el.getBoundingClientRect();
+    const start: Rect = { x: b.left, y: b.top, w: b.width, h: b.height };
+    const x0 = e.clientX;
+    const y0 = e.clientY;
+    let last = start;
+    const move = (ev: PointerEvent) => {
+      last = resizeRect(start, edge, ev.clientX - x0, ev.clientY - y0);
+      setRect(last);
+    };
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      save(SIZE_STORE, JSON.stringify(last), "local");
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+  }
+  // a smaller window: keep the panel on screen
+  useEffect(() => {
+    const onResize = () => setRect((r) => (r ? fitRect(r) : r));
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   // CLOUD: mirror what the user's own agent does through the connector into the chat on screen.
   const cloudSeq = useRef(0);
@@ -433,7 +752,7 @@ export default function AgentPanel({
                 messages: [...c.messages, { role: "assistant", blocks: [], cloud: true }],
               };
         });
-        res.events.forEach((e) => onEvent(m, e));
+        res.events.forEach((e) => onEvent(m, e, "cloud"));
       } catch {
         // backend restarting: try again on the next tick
       }
@@ -496,7 +815,7 @@ export default function AgentPanel({
             },
           ],
         },
-        { role: "assistant", blocks: [] },
+        { role: "assistant", blocks: [], agent: AGENT_NAMES[agentId] },
       ],
     }));
     abort.current = new AbortController();
@@ -547,11 +866,12 @@ export default function AgentPanel({
       agent: agentId,
       provider: choice.provider,
       sandbox: undefined as string | undefined,
+      conversation: (chats[m] ?? EMPTY_CHAT).conversation ?? undefined,
     };
     try {
       // A Workspace problem: the agent works in its sandbox, synced with the browser's files just before.
       if (target.startsWith("workspace/")) body.sandbox = await onSyncWorkspace(target);
-      await agentChat(body, choice.mode === "api" ? apiKey : null, (e) => onEvent(m, e), abort.current.signal);
+      await agentChat(body, choice.mode === "api" ? apiKey : null, (e) => onEvent(m, e, "live"), abort.current.signal);
     } catch (e) {
       onEvent(m, {
         type: "error",
@@ -559,6 +879,7 @@ export default function AgentPanel({
       });
     } finally {
       setBusy(null);
+      setProgress(null);
       abort.current = null;
     }
   }
@@ -579,11 +900,33 @@ export default function AgentPanel({
       </button>
 
       {open && (
+        <>
+        {full && <div className="fixed inset-0 z-40 bg-gray-900/20" onClick={() => setFull(false)} aria-hidden />}
         <section
           ref={panelRef}
           aria-label={t("agent.title")}
-          className="fixed right-4 bottom-28 z-40 flex h-[min(640px,calc(100dvh-9rem))] w-[min(440px,calc(100vw-2rem))] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl"
+          data-testid="agent-panel"
+          style={full || !rect ? undefined : { left: rect.x, top: rect.y, width: rect.w, height: rect.h }}
+          className={`fixed z-40 flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl ${
+            full
+              ? "inset-3 sm:inset-6"
+              : rect
+                ? ""
+                : "right-4 bottom-28 h-[min(640px,calc(100dvh-9rem))] w-[min(440px,calc(100vw-2rem))]"
+          }`}
         >
+          {!full &&
+            EDGES.map((edge) => (
+              <div
+                key={edge}
+                onPointerDown={(e) => startResize(e, edge)}
+                onDoubleClick={() => (setRect(null), save(SIZE_STORE, null, "local"))}
+                title={t("ag.resize")}
+                aria-hidden
+                data-testid={`agent-resize-${edge}`}
+                className={`absolute z-20 ${EDGE_CLASS[edge]}`}
+              />
+            ))}
           <header className="flex items-center gap-2 border-b border-gray-200 px-3 py-2">
             <AgentMascot thinking={busy !== null} className="h-7 w-7" />
             <div className="min-w-0 flex-1">
@@ -594,7 +937,7 @@ export default function AgentPanel({
                   : !st?.enabled
                     ? t("agent.unavailable")
                     : connected
-                      ? `${t("agent.agent")}: ${agentLabel}`
+                      ? `${t("agent.agent")}: ${agentLabel} · ${t("ag.runsOn").replace("{server}", runsOn)}`
                       : t("agent.chooseAgent")}
               </div>
             </div>
@@ -603,29 +946,52 @@ export default function AgentPanel({
                 onClick={() => setSettingsOpen((o) => !o)}
                 aria-expanded={settingsOpen}
                 title={t("agent.agent")}
-                className={`flex items-center gap-1 rounded px-2 py-1 text-[11px] hover:bg-gray-100 ${settingsOpen ? "bg-gray-100 text-gray-800" : "text-gray-500"}`}
+                className={`${HEAD_BTN} gap-1.5 px-2.5 ${settingsOpen ? "bg-gray-100 text-gray-800" : ""}`}
               >
                 <GearIcon className="h-4 w-4" /> {t("agent.agent")}
               </button>
             )}
             <button
-              onClick={() => edit(chatKey, () => EMPTY_CHAT)}
+              onClick={newChat}
               disabled={busy !== null}
-              className="rounded px-2 py-1 text-[11px] text-gray-500 hover:bg-gray-100 disabled:opacity-40"
+              className={`${HEAD_BTN} px-2.5`}
             >
               {t("agent.newChat")}
             </button>
             <button
-              onClick={() => setOpen(false)}
-              aria-label="close"
-              className="rounded px-2 py-1 text-gray-400 hover:bg-gray-100"
+              onClick={() => setFull((f) => !f)}
+              title={t(full ? "ag.exitFull" : "ag.full")}
+              aria-label={t(full ? "ag.exitFull" : "ag.full")}
+              aria-pressed={full}
+              data-testid="agent-full"
+              className={`${HEAD_BTN} w-8`}
             >
-              ✕
+              <HeadIcon d={full ? "M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" : "M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"} />
+            </button>
+            <button
+              onClick={() => (setOpen(false), setFull(false))}
+              aria-label="close"
+              title={t("ag.close")}
+              className={`${HEAD_BTN} w-8`}
+            >
+              <HeadIcon d="M6 6l12 12M18 6L6 18" />
             </button>
           </header>
 
           {settingsOpen && st?.enabled && (
             <div className="max-h-[55%] shrink-0 overflow-y-auto">
+              <div className="flex items-center border-b border-gray-200 bg-gray-50 px-3 pt-2 pb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
+                {t("agent.agent")}
+                <button
+                  onClick={() => setSettingsOpen(false)}
+                  aria-label={t("ag.closeSettings")}
+                  title={t("ag.closeSettings")}
+                  data-testid="agent-settings-close"
+                  className="ml-auto rounded px-1.5 text-sm font-normal text-gray-400 hover:bg-gray-200 hover:text-gray-700"
+                >
+                  ✕
+                </button>
+              </div>
               <AgentSettings
                 status={st}
                 choice={choice}
@@ -651,10 +1017,18 @@ export default function AgentPanel({
                 key={m}
                 role="tab"
                 aria-selected={mode === m}
-                onClick={() => setMode(m)}
-                className={`rounded-md px-2 py-1.5 ${mode === m ? "bg-white font-medium text-blue-700 shadow-sm" : "text-gray-600 hover:text-gray-900"}`}
+                onClick={() => (mode === m ? setHistoryOpen((o) => !o) : (setMode(m), setHistoryOpen(false)))}
+                aria-expanded={mode === m ? historyOpen : undefined}
+                title={mode === m ? t("ag.historyTitle") : undefined}
+                data-testid={`agent-tab-${m}`}
+                className={`flex items-center justify-center gap-1 rounded-md px-2 py-1.5 ${mode === m ? "bg-white font-medium text-blue-700 shadow-sm" : "text-gray-600 hover:text-gray-900"}`}
               >
                 {m === "current" ? t("agent.modeCurrent") : `✨ ${t("agent.modeNew")}`}
+                {mode === m && st?.enabled && (
+                  <span aria-hidden className={`text-[10px] text-gray-400 transition ${historyOpen ? "rotate-180" : ""}`}>
+                    ▾
+                  </span>
+                )}
                 {busy !== null && (busy === "new") === (m === "new") && (
                   <span className="ml-1 animate-pulse text-amber-500">●</span>
                 )}
@@ -662,22 +1036,50 @@ export default function AgentPanel({
             ))}
           </div>
 
-          <div className="flex items-center gap-2 border-b border-gray-100 px-3 py-1.5 text-[11px] text-gray-600">
-            <span className="shrink-0 text-gray-400">{t("agent.currentProblem")}:</span>
-            <span className="truncate font-medium text-gray-800">
-              {workProblem === "new" ? (
-                `✨ ${t("agent.modeNew")}`
+          {historyOpen && st?.enabled && (
+            <div className="max-h-[45%] shrink-0 overflow-y-auto border-b border-gray-200 bg-gray-50 px-3 py-2 text-xs" data-testid="agent-history-list">
+              <p className="mb-1.5 font-medium text-gray-700">{t("ag.historyTitle")}</p>
+              {history === "loading" ? (
+                <p className="text-gray-400">{t("backend.checking")}</p>
+              ) : !history?.length ? (
+                <p className="text-gray-500">{t("ag.historyEmpty")}</p>
               ) : (
-                <>
-                  <RichText text={problem.title} />
-                  {wsLabel && <span className="font-normal text-gray-500"> · {wsLabel}</span>}
-                </>
+                <ul className="space-y-1">
+                  {history.map((c) => {
+                    const current = c.turns.some((id) => (chats[chatKey]?.turns ?? []).includes(id));
+                    return (
+                      <li key={c.id} className="flex items-center gap-2 rounded-md bg-white px-2 py-1.5 ring-1 ring-gray-200">
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-gray-800">{c.title || "…"}</div>
+                          <div className="text-[10px] text-gray-400">
+                            {new Date(c.updated * 1000).toLocaleString()} · {t("ag.turns").replace("{n}", String(c.turns.length))}
+                            {c.status === "running" && <span className="ml-1 text-amber-600">● {t("agent.working")}</span>}
+                            {current && <span className="ml-1 text-blue-600">· {t("ag.historyCurrent")}</span>}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => openConversation(c)}
+                          disabled={busy !== null || current}
+                          className="rounded border border-gray-300 px-2 py-0.5 text-gray-700 hover:bg-gray-50 disabled:opacity-40"
+                        >
+                          {t("ag.historyOpen")}
+                        </button>
+                        <button
+                          onClick={() => void removeConversation(c)}
+                          disabled={c.status === "running"}
+                          title={t("ag.historyDelete")}
+                          aria-label={t("ag.historyDelete")}
+                          className="rounded px-1.5 py-0.5 text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-40"
+                        >
+                          ✕
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
               )}
-            </span>
-            <span className="ml-auto shrink-0 rounded-full bg-amber-50 px-2 py-0.5 text-amber-700">
-              {t("agent.trial")}
-            </span>
-          </div>
+            </div>
+          )}
 
           <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-3 py-3 text-sm">
             {status !== "checking" && !status?.enabled && (
@@ -686,6 +1088,11 @@ export default function AgentPanel({
 
             {messages.length === 0 && connected && choice.mode === "cloud" && (
               <p className="rounded-lg bg-gray-50 p-3 text-xs text-gray-600">☁ {t("ag.cloudChatHint")}</p>
+            )}
+            {tierBlocked && connected && (
+              <p className="rounded-lg bg-amber-50 p-3 text-xs text-amber-800" data-testid="agent-tier-limit">
+                {t("ag.freeLimit")}
+              </p>
             )}
             {messages.length === 0 && canType && (
               <div className="space-y-2">
@@ -709,16 +1116,58 @@ export default function AgentPanel({
                   {(m.blocks[0] as { text: string }).text}
                 </div>
               ) : (
-                <div key={i} className="space-y-2">
-                  {m.cloud && <div className="text-[11px] font-medium text-sky-700">☁ {t("ag.cloudAgent")}</div>}
-                  {m.blocks.map((b, j) => (
-                    <AgentBlock key={j} block={b} />
-                  ))}
-                  {busy === chatKey && i === messages.length - 1 && (
-                    <div className="text-xs text-gray-400">
-                      <span className="animate-pulse">●</span> {t("agent.working")}
+                <div key={i} className="group/answer space-y-2">
+                  {(m.cloud || m.agent) && (
+                    <div className="text-[11px] font-medium text-gray-600" data-testid="agent-answer-name">
+                      {m.cloud ? `☁ ${t("ag.cloudAgent")}` : m.agent}
                     </div>
                   )}
+                  {groupSteps(m.blocks).map((g, j) =>
+                    g.kind === "steps" ? (
+                      <Steps
+                        key={j}
+                        steps={g.steps}
+                        live={busy === chatKey && i === messages.length - 1 && j === groupSteps(m.blocks).length - 1}
+                      />
+                    ) : (
+                      g.block.kind === "question" ? (
+                        <QuestionCard
+                          key={j}
+                          block={g.block}
+                          // only the latest answer's question can be answered, and only when nothing is running
+                          active={i === messages.length - 1 && busy === null && canType}
+                          onAnswer={(answer) => send(answer, null)}
+                        />
+                      ) : (
+                        <AgentBlock key={j} block={g.block} />
+                      )
+                    ),
+                  )}
+                  {busy === chatKey && i === messages.length - 1 && (
+                    <div className="text-xs text-gray-400" data-testid="agent-working">
+                      <span className="animate-pulse">●</span> {progress ?? currentStep(m.blocks) ?? t("agent.working")}
+                      {startedAt && <span className="ml-1 tabular-nums">· {Math.max(0, Math.round((now - startedAt) / 1000))} s</span>}
+                    </div>
+                  )}
+                  {/* below a finished answer: copy its text (as Markdown) */}
+                  {!(busy === chatKey && i === messages.length - 1) && copyText(m.blocks) && (
+                    <div className="flex justify-start">
+                      <CopyButton text={copyText(m.blocks)} label={t("ag.copyAnswer")} />
+                    </div>
+                  )}
+                  {busy === null &&
+                    canType &&
+                    i === messages.length - 1 &&
+                    m.blocks[m.blocks.length - 1]?.kind === "error" &&
+                    (m.blocks[m.blocks.length - 1] as { resumable?: boolean }).resumable && (
+                      <button
+                        onClick={() => send(t("ag.continuePrompt"), null)}
+                        data-testid="agent-continue"
+                        className="rounded-md border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100"
+                      >
+                        ↻ {t("ag.continue")}
+                      </button>
+                    )}
                 </div>
               ),
             )}
@@ -726,8 +1175,24 @@ export default function AgentPanel({
           </div>
 
           <footer className="border-t border-gray-200 p-2">
-            {(shownSelection || pageSel || shot || notice) && (
-              <div className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[11px]">
+            {/* Context sent with the message: the problem (always), then what the user focuses on in it */}
+            <div className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[11px]" data-testid="agent-context">
+                <span className="shrink-0 text-gray-400">{t("ag.context")}:</span>
+                <span
+                  className="inline-flex max-w-[60%] items-center gap-1 truncate rounded-full bg-gray-100 px-2 py-0.5 font-medium text-gray-800"
+                  title={t("agent.currentProblem")}
+                  data-testid="agent-context-problem"
+                >
+                  {workProblem === "new" ? (
+                    `✨ ${t("agent.modeNew")}`
+                  ) : (
+                    <span className="truncate">
+                      <RichText text={problem.title} />
+                      {wsLabel && <span className="font-normal text-gray-500"> · {wsLabel}</span>}
+                    </span>
+                  )}
+                </span>
+                {(shownSelection || pageSel || shot) && <span className="shrink-0 text-gray-400">{t("ag.focus")}:</span>}
                 {shownSelection && (
                   <Pill
                     title={shownSelection.text}
@@ -761,8 +1226,10 @@ export default function AgentPanel({
                   </Pill>
                 )}
                 {notice && <span className="text-amber-700">{notice}</span>}
-              </div>
-            )}
+                <span className="ml-auto shrink-0 rounded-full bg-amber-50 px-2 py-0.5 text-amber-700">
+                  {t("agent.trial")}
+                </span>
+            </div>
             <div className="flex items-end gap-1.5 rounded-xl border border-gray-300 py-1.5 pr-1.5 pl-3 focus-within:border-blue-400">
               <textarea
                 ref={input}
@@ -800,7 +1267,7 @@ export default function AgentPanel({
               </button>
               {busy ? (
                 <button
-                  onClick={() => abort.current?.abort()}
+                  onClick={() => void stop()}
                   title={t("agent.stop")}
                   aria-label={t("agent.stop")}
                   className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-800 text-xs text-white hover:bg-gray-700"
@@ -820,7 +1287,9 @@ export default function AgentPanel({
               )}
             </div>
             <div className="mt-1.5 flex items-center justify-between gap-2 text-[10px] text-gray-400">
-              <span>{t("agent.hint")}</span>
+              <span data-testid="agent-footnote">
+                {busy ? t("ag.keepsRunning").replace("{server}", runsOn) : t("agent.hint")}
+              </span>
               <button
                 disabled
                 title={t("agent.proSoon")}
@@ -831,6 +1300,7 @@ export default function AgentPanel({
             </div>
           </footer>
         </section>
+        </>
       )}
       {shot && shotOpen && (
         <ScreenshotPreview
@@ -897,8 +1367,77 @@ const TOOL_LABEL: Record<string, string> = {
   mcp__tensorizer__run_problem: "Run",
 };
 
+/** The agent asked a question (ask_user): one click answers it (several, then Send, when it allows more than one),
+ *  or the user types their own. The answer goes out as the next message of the same conversation. */
+function QuestionCard({
+  block,
+  active,
+  onAnswer,
+}: {
+  block: Extract<Block, { kind: "question" }>;
+  active: boolean;
+  onAnswer: (answer: string) => void;
+}) {
+  const { t } = useLang();
+  const [picked, setPicked] = useState<string[]>([]);
+  const [own, setOwn] = useState("");
+  const toggle = (o: string) => setPicked((p) => (p.includes(o) ? p.filter((x) => x !== o) : [...p, o]));
+  const choose = (o: string) => (block.multi ? toggle(o) : onAnswer(o));
+  return (
+    <div className="rounded-lg border border-blue-200 bg-blue-50/60 p-3 text-sm" data-testid="agent-question">
+      <p className="mb-2 font-medium text-gray-900">
+        <RichText text={block.question} />
+      </p>
+      <div className="flex flex-col gap-1.5">
+        {block.options.map((o) => {
+          const on = picked.includes(o);
+          return (
+            <button
+              key={o}
+              type="button"
+              disabled={!active}
+              onClick={() => choose(o)}
+              aria-pressed={block.multi ? on : undefined}
+              className={`flex items-center gap-2 rounded-md border px-3 py-1.5 text-left text-xs transition disabled:cursor-default disabled:opacity-60 ${
+                on ? "border-blue-500 bg-white text-blue-800" : "border-gray-200 bg-white text-gray-800 hover:border-blue-300"
+              }`}
+            >
+              {block.multi && <span className={on ? "text-blue-600" : "text-gray-300"}>{on ? "☑" : "☐"}</span>}
+              <RichText text={o} />
+            </button>
+          );
+        })}
+      </div>
+      {active && (
+        <div className="mt-2 flex items-center gap-1.5">
+          <input
+            value={own}
+            onChange={(e) => setOwn(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && own.trim() && !e.nativeEvent.isComposing) onAnswer(own.trim());
+            }}
+            placeholder={t("ag.ownAnswer")}
+            className="min-w-0 flex-1 rounded-md border border-gray-200 bg-white px-2 py-1 text-xs outline-none focus:border-blue-400"
+          />
+          {(block.multi || own.trim()) && (
+            <button
+              type="button"
+              disabled={!own.trim() && !picked.length}
+              onClick={() => onAnswer([...picked, ...(own.trim() ? [own.trim()] : [])].join("; "))}
+              className="rounded-md bg-blue-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-40"
+            >
+              {t("agent.send")}
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function AgentBlock({ block }: { block: Block }) {
   const { t } = useLang();
+  if (block.kind === "question") return null; // drawn by QuestionCard, which can send the answer
   if (block.kind === "text") return <AgentText text={block.text} />;
   if (block.kind === "error")
     return <p className="rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">{block.text}</p>;
@@ -953,22 +1492,136 @@ function AgentBlock({ block }: { block: Block }) {
   );
 }
 
-/** Assistant text: paragraphs, ``` code fences and `inline code`. */
+/** Assistant text: Markdown, display maths ($$…$$ or \[…\]), inline maths ($…$ or \(…\)) and highlighted code. */
 function AgentText({ text }: { text: string }) {
-  // Markdown the model writes: ``` fences, # headings, - / 1. lists, --- rules, | tables |, **bold**, `code`, $math$.
-  const parts = text.replace(/\$\$([\s\S]+?)\$\$/g, (_, m) => `$${m.trim()}$`).split(/```[a-z]*\n?/);
+  const segments = useMemo(() => parseAnswer(text), [text]);
   return (
     <div className="space-y-2 text-gray-800">
-      {parts.map((part, i) =>
-        i % 2 ? (
-          <pre key={i} className="overflow-x-auto rounded-md bg-gray-50 p-2 text-[12px]">
-            {part.replace(/\n$/, "")}
-          </pre>
+      {segments.map((seg, i) =>
+        seg.kind === "code" ? (
+          <CodeView key={i} code={seg.code} lang={seg.lang} />
+        ) : seg.kind === "math" ? (
+          <div key={i} className="overflow-x-auto py-0.5">
+            <Tex tex={seg.tex} display />
+          </div>
         ) : (
-          <MarkdownBlocks key={i} text={part} />
+          <MarkdownBlocks key={i} text={seg.text} />
         ),
       )}
     </div>
+  );
+}
+
+/** A code block in an answer: Python highlighted (lezer, the parser CodeMirror uses), other languages plain. */
+function CodeView({ code, lang }: { code: string; lang: string }) {
+  const { t } = useLang();
+  const lines = useMemo(() => {
+    if (!isPython(lang)) return null;
+    const out: { text: string; cls: string }[][] = [[]];
+    try {
+      highlightCode(
+        code,
+        pythonLanguage.parser.parse(code),
+        classHighlighter,
+        (text, cls) => out[out.length - 1].push({ text, cls }),
+        () => out.push([]),
+      );
+    } catch {
+      return null;
+    }
+    return out;
+  }, [code, lang]);
+  return (
+    <div className="agent-code overflow-hidden rounded-md ring-1 ring-gray-200">
+      <div className="flex items-center border-b border-gray-200 bg-gray-100/70 px-2 py-0.5 font-mono text-[10px] text-gray-500">
+        <span>{lang || "code"}</span>
+        <span className="ml-auto">
+          <CopyButton text={code} label={t("ag.copyCode")} compact />
+        </span>
+      </div>
+      <pre className="overflow-x-auto bg-gray-50 p-2 font-mono text-[12px] leading-relaxed">
+        {lines
+          ? lines.map((line, k) => (
+              <div key={k}>
+                {line.length ? line.map((tok, j) => (tok.cls ? <span key={j} className={tok.cls}>{tok.text}</span> : tok.text)) : "\u200b"}
+              </div>
+            ))
+          : code}
+      </pre>
+    </div>
+  );
+}
+
+function CopyButton({ text, label, compact = false }: { text: string; label: string; compact?: boolean }) {
+  const [done, setDone] = useState(false);
+  return (
+    <button
+      onClick={() =>
+        void navigator.clipboard?.writeText(text).then(
+          () => (setDone(true), setTimeout(() => setDone(false), 1200)),
+          () => {},
+        )
+      }
+      title={label}
+      aria-label={label}
+      data-testid="agent-copy"
+      className={`${HEAD_BTN} ${compact ? "h-6 w-6" : "w-8"} ${done ? "text-green-600" : ""}`}
+    >
+      <HeadIcon
+        d={done ? "M5 12.5l4.5 4.5L19 7.5" : "M9 9h10v10H9zM5 15V5h10"}
+        small={compact}
+      />
+    </button>
+  );
+}
+
+type Grouped = { kind: "steps"; steps: Extract<Block, { kind: "tool" }>[] } | { kind: "block"; block: Block };
+
+/** Consecutive tool calls fold into one "steps" line (closed by default; open it to watch them live). */
+function groupSteps(blocks: Block[]): Grouped[] {
+  const out: Grouped[] = [];
+  for (const b of blocks) {
+    const last = out[out.length - 1];
+    if (b.kind === "tool" && last?.kind === "steps") last.steps.push(b);
+    else if (b.kind === "tool") out.push({ kind: "steps", steps: [b] });
+    else out.push({ kind: "block", block: b });
+  }
+  return out;
+}
+
+const stepTarget = (b: Extract<Block, { kind: "tool" }>) =>
+  String(b.input.file_path ?? b.input.pattern ?? b.input.path ?? b.input.command ?? "")
+    .split(/[\\/]/)
+    .pop();
+
+/** What the agent is doing right now: its last unfinished tool call, e.g. "Read solve.py". */
+function currentStep(blocks: Block[]): string | null {
+  const last = [...blocks].reverse().find((b) => b.kind === "tool");
+  if (!last || last.kind !== "tool" || last.ok !== undefined) return null;
+  return `${`${TOOL_LABEL[last.name] ?? last.name} ${stepTarget(last)}`.trim()}…`;
+}
+
+function Steps({ steps, live }: { steps: Extract<Block, { kind: "tool" }>[]; live: boolean }) {
+  const { t } = useLang();
+  const failed = steps.filter((s) => s.ok === false).length;
+  const pending = steps.some((s) => s.ok === undefined);
+  const last = steps[steps.length - 1];
+  return (
+    <details className="rounded-md bg-gray-50 px-2 py-1 text-xs ring-1 ring-gray-100" data-testid="agent-steps">
+      <summary className="flex cursor-pointer list-none items-center gap-2 text-gray-600">
+        <span className={pending && live ? "animate-pulse text-blue-500" : failed ? "text-red-500" : "text-green-600"}>●</span>
+        <span>{t("ag.stepCount").replace("{n}", String(steps.length))}</span>
+        <span className="truncate font-mono text-gray-400">
+          {TOOL_LABEL[last.name] ?? last.name} {stepTarget(last)}
+        </span>
+        <span className="ml-auto text-gray-400">▾</span>
+      </summary>
+      <div className="mt-1 space-y-1 border-t border-gray-200 pt-1">
+        {steps.map((b) => (
+          <AgentBlock key={b.id} block={b} />
+        ))}
+      </div>
+    </details>
   );
 }
 

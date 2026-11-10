@@ -9,6 +9,9 @@ import { generatedUrl } from "../api";
 import { useLang, type Key } from "../i18n";
 import DownloadIcon from "../components/DownloadIcon";
 import ShellCommand from "../components/ShellCommand";
+import McpSetup from "../components/McpSetup";
+import type { AgentsTab } from "../pageRoute";
+import AgentPicker, { type SetupAgent } from "../components/AgentPicker";
 
 /** Where the site serves the generated skill files (scripts/agent_skill.py), for commands run on any machine. */
 const PUBLIC = "https://jackyko1991.github.io/tensorizer/generated/agent/";
@@ -25,17 +28,7 @@ const PREVIEW_EXTENSIONS = [
   EditorView.lineWrapping,
 ];
 
-type Agent = "claude-code" | "claude-desktop" | "codex" | "opencode" | "gemini" | "other";
 type Os = "unix" | "windows";
-
-const AGENTS: { id: Agent; label: string }[] = [
-  { id: "claude-code", label: "Claude Code" },
-  { id: "claude-desktop", label: "Claude Desktop / claude.ai" },
-  { id: "codex", label: "Codex" },
-  { id: "opencode", label: "OpenCode" },
-  { id: "gemini", label: "Gemini CLI" },
-  { id: "other", label: "Other" },
-];
 
 /** Download `file` from the site into `dest` (a path relative to the current folder or the home folder). */
 function fetchTo(os: Os, file: string, dest: string): string {
@@ -53,9 +46,12 @@ function fetchTo(os: Os, file: string, dest: string): string {
  * Agent Skills: the Concept and Coding Skills pages as one skill for the visitor's own AI coding agent, with install
  * steps per agent (Claude Code plugin in one line, a zip for Claude Desktop / claude.ai, AGENTS.md / GEMINI.md).
  */
-export default function AgentsPage() {
+export default function AgentsPage({ tab, backendKey }: {
+  tab: AgentsTab;
+  backendKey: string;
+}) {
   const { t } = useLang();
-  const [agent, setAgent] = useState<Agent>("claude-code");
+  const [agent, setAgent] = useState<SetupAgent>("claude-code");
   const [os, setOs] = useState<Os>(() => (navigator.userAgent.toLowerCase().includes("win") ? "windows" : "unix"));
   const [skill, setSkill] = useState("");
   useEffect(() => {
@@ -82,11 +78,15 @@ export default function AgentsPage() {
     <div className="h-full overflow-y-auto bg-gray-50/60">
       <article className="mx-auto max-w-4xl space-y-8 px-5 py-10">
         <header>
-          <p className="text-sm font-medium text-blue-700">{t("ag.kicker")}</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight">{t("ag.title")}</h1>
-          <p className="mt-3 text-gray-600">{t("ag.intro")}</p>
+          <h1 className="text-3xl font-semibold tracking-tight">{t("tab.agents")}</h1>
+          <p className="mt-3 text-gray-600">{t("ya.intro")}</p>
         </header>
 
+        {tab === "mcp" ? <McpSetup key={backendKey} agent={agent} onAgent={setAgent} /> : <>
+        <div>
+          <h2 className="text-xl font-semibold">{t("ag.title")}</h2>
+          <p className="mt-2 text-sm text-gray-600">{t("ag.intro")}</p>
+        </div>
         <section className="rounded-xl border border-gray-200 bg-white p-6">
           <h2 className="text-lg font-semibold">{t("ag.teaches")}</h2>
           <div className="mt-3 grid gap-6 text-sm text-gray-700 md:grid-cols-2">
@@ -119,26 +119,7 @@ export default function AgentsPage() {
 
         <section className="rounded-xl border border-gray-200 bg-white p-6" data-testid="agent-install">
           <h2 className="text-lg font-semibold">{t("ag.install")}</h2>
-          <div className="mt-3 flex flex-wrap gap-1 border-b border-gray-200" role="tablist">
-            {AGENTS.map((a) => (
-              <button
-                key={a.id}
-                role="tab"
-                aria-selected={agent === a.id}
-                onClick={() => setAgent(a.id)}
-                className={`-mb-px border-b-2 px-3 py-1.5 text-sm font-medium ${
-                  agent === a.id
-                    ? "border-blue-600 text-blue-700"
-                    : "border-transparent text-gray-500 hover:text-gray-800"
-                }`}
-              >
-                {a.label}
-                {a.id === "claude-code" && (
-                  <span className="ml-1 text-[10px] font-normal text-green-700">{t("ag.recommended")}</span>
-                )}
-              </button>
-            ))}
-          </div>
+          <AgentPicker agent={agent} onAgent={setAgent} />
 
           <div className="mt-4 space-y-3 text-sm text-gray-700">
             {agent === "claude-code" && (
@@ -174,31 +155,31 @@ export default function AgentsPage() {
                 </a>
               </>
             )}
-            {(agent === "codex" || agent === "opencode" || agent === "gemini") && (
+            {(agent === "codex" || agent === "opencode") && (
               <>
                 <div className="flex items-center justify-between gap-3">
                   <p>{t("ag.project")}</p>
                   {osToggle}
                 </div>
-                <ShellCommand
-                  text={fetchTo(
-                    os,
-                    agent === "gemini" ? "GEMINI.md" : "AGENTS.md",
-                    agent === "gemini" ? "GEMINI.md" : "AGENTS.md",
-                  )}
-                />
+                <ShellCommand text={fetchTo(os, "AGENTS.md", "AGENTS.md")} />
                 <p>{t("ag.global")}</p>
                 <ShellCommand
-                  text={fetchTo(
-                    os,
-                    agent === "gemini" ? "GEMINI.md" : "AGENTS.md",
-                    agent === "codex"
-                      ? "~/.codex/AGENTS.md"
-                      : agent === "opencode"
-                        ? "~/.config/opencode/AGENTS.md"
-                        : "~/.gemini/GEMINI.md",
-                  )}
+                  text={fetchTo(os, "AGENTS.md", agent === "codex" ? "~/.codex/AGENTS.md" : "~/.config/opencode/AGENTS.md")}
                 />
+              </>
+            )}
+            {agent === "antigravity" && (
+              // Antigravity reads Agent Skills (SKILL.md with name/description), per workspace or for every project:
+              // https://antigravity.google/docs/skills/ (the CLI that replaced Gemini CLI)
+              <>
+                <div className="flex items-center justify-between gap-3">
+                  <p>{t("ag.project")}</p>
+                  {osToggle}
+                </div>
+                <ShellCommand text={fetchTo(os, "SKILL.md", ".agents/skills/tensorizer/SKILL.md")} />
+                <p>{t("ag.global")}</p>
+                <ShellCommand text={fetchTo(os, "SKILL.md", "~/.gemini/config/skills/tensorizer/SKILL.md")} />
+                <p className="text-xs text-gray-500">{t("ya.agyReload")}</p>
               </>
             )}
             {agent === "other" && (
@@ -248,6 +229,7 @@ export default function AgentsPage() {
             </a>
           </p>
         </details>
+        </>}
       </article>
     </div>
   );

@@ -22,6 +22,9 @@ export interface AgentChoice {
   apiModel: string;
 }
 
+/** Modes shown but not offered yet: only LOCAL (an agent on this computer) works for now. */
+export const COMING_MODES: ReadonlySet<AgentChoice["mode"]> = new Set(["cloud", "api"]);
+
 export const DEFAULT_CHOICE: AgentChoice = {
   mode: "local",
   local: "claude-code",
@@ -115,8 +118,11 @@ export default function AgentSettings({
             key={m}
             role="tab"
             aria-selected={choice.mode === m}
+            aria-disabled={COMING_MODES.has(m) || undefined}
+            disabled={COMING_MODES.has(m)}
+            title={COMING_MODES.has(m) ? t("ag.coming") : undefined}
             onClick={() => set({ mode: m })}
-            className={`rounded px-2 py-1 ${choice.mode === m ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"}`}
+            className={`rounded px-2 py-1 ${choice.mode === m ? "bg-blue-600 text-white" : COMING_MODES.has(m) ? "cursor-not-allowed text-gray-400" : "text-gray-700 hover:bg-gray-100"}`}
           >
             {t(
               m === "local"
@@ -125,6 +131,7 @@ export default function AgentSettings({
                   ? "ag.tabCloud"
                   : "ag.tabApi",
             )}
+            {COMING_MODES.has(m) && <span className="ml-1 text-[10px]">({t("ag.coming")})</span>}
           </button>
         ))}
       </div>

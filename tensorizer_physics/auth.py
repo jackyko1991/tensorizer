@@ -116,6 +116,8 @@ def output_url(run_id: str, name: str) -> str:
 def needs_token(method: str, path: str) -> bool:
     if method == "OPTIONS" or path in PUBLIC:
         return False
+    if path == "/api/agents/connector" and method in ("GET", "DELETE"):
+        return False  # the connector bearer is checked by the route; POST still needs server pairing
     if path == "/mcp" or path.startswith("/mcp/") or path in OWN_CREDENTIAL:
         return False
     return path.startswith(PROTECTED_PREFIXES)

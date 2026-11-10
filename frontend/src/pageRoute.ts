@@ -1,18 +1,21 @@
-// Hash routes of the pages with sub-tabs: #/concept[/<tab>[/<section>]] and #/skills[/<tab>[/<section>]].
+// Hash routes of the pages with sub-tabs: #/concept, #/skills and #/agents, followed by /<tab>[/<section>].
 // Pure helpers (no DOM), unit-tested in frontend/tests/pageRoute.test.ts.
 
 export const PAGE_TABS = {
   concept: ["laws", "feynman", "maths", "dataflow", "limitations", "history"],
   skills: ["techniques", "loops", "blas", "nvlink", "cpuml"],
+  agents: ["skills", "mcp"],
 } as const;
 export type TabbedPage = keyof typeof PAGE_TABS;
 export type ConceptTab = (typeof PAGE_TABS.concept)[number];
 export type SkillsTab = (typeof PAGE_TABS.skills)[number];
+export type AgentsTab = (typeof PAGE_TABS.agents)[number];
 
 /** localStorage keys remembering the last tab, used only when the address names none. */
 export const TAB_STORE: Record<TabbedPage, string> = {
   concept: "tensorizer.conceptTab",
   skills: "tensorizer.skillsTab",
+  agents: "tensorizer.agentsTab",
 };
 // Values stored before the tabs had URL ids.
 const LEGACY: Record<string, string> = { law: "laws", flow: "dataflow" };
@@ -29,7 +32,7 @@ export interface PageRoute {
 export function parsePageRoute(route: string | null): PageRoute | null {
   if (!route) return null;
   const [page, tab, section] = route.replace(/^\/+/, "").split("/");
-  if (page !== "concept" && page !== "skills") return null;
+  if (page !== "concept" && page !== "skills" && page !== "agents") return null;
   if (page === "concept" && tab === "maths" && (section === "roof" || section === "topo"))
     return { page, tab: "dataflow", section };
   return { page, tab: tab || null, section: section || null };
