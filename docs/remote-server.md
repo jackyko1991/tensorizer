@@ -315,9 +315,6 @@ entry on the Mac too. Remote runs use the server's default device, which on a Ma
 
 ## G. ARM64 device (Raspberry Pi 4/5, cloud ARM servers)
 
-> The ARM64 image is published with the next runner image build (the `Runner container image` workflow); until
-> then `docker pull` on ARM finds no matching image.
-
 Needs a **64-bit OS** (Raspberry Pi OS 64-bit, or Ubuntu 24.04 arm64; `uname -m` prints `aarch64`) and at least
 4 GB memory (8 GB is better). Everything runs on the CPU, so the heavy CFD and training problems are slow.
 

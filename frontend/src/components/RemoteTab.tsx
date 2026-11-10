@@ -432,9 +432,6 @@ function SetupGuide() {
         </ol>
       </Path>
       <Path title={t("be.g5.title")}>
-        <p className="rounded-md bg-amber-50 px-2 py-1.5 text-amber-900" data-testid="arm-pending">
-          {t("be.g5.pending")}
-        </p>
         <p className="text-gray-600">{t("be.g5.req")}</p>
         <ol className="list-decimal space-y-2 pl-4">
           <Step text={t("be.g5.s1")} commands={[`${INSTALL} --no-tls`]} />
