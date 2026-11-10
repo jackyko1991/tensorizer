@@ -244,7 +244,7 @@ function SectionBody({ s, t }: { s: Section; t: Text }) {
       {block("precise")}
       <div className="py-1"><Tex tex={LIMITATION_EQUATIONS.bridge[1]} display /></div>
       {p("closing")}
-      <a className="inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700" href="https://jackyko1991.github.io/clifford/#/reading/foundations" target="_blank" rel="noreferrer">{t("bridge.link")} →</a>
+      <a className="inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700" href="https://jackyko1991.github.io/clifford/" target="_blank" rel="noreferrer">{t("bridge.link")} →</a>
     </>;
   }
 }

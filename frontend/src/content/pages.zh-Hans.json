@@ -1595,7 +1595,7 @@
   "limitations.bridge.explanation": "内积 $a\\cdot b$ 留下平行程度，外积 $a\\wedge b$ 留下定向面积，后者叫双矢量。几何积 $ab$ 把两者一起保留：",
   "limitations.bridge.precise": "在克利福德代数中，于单位双矢量 $B$ 所在平面内的旋转写成 $v\\mapsto Rv\\tilde R$，转子 $R=e^{-B\\theta/2}$ 用的是半角。转一整圈得到 $R=-1$，$Rv\\tilde R$ 却不变：这正是第 2 节旋量的变号，只是多了几何图像。转子就是写出那些旋量的一种具体方式。",
   "limitations.bridge.closing": "这给了我们一条走向平面、旋转与旋量的路。它补上有用的几何结构；联络、拓扑与量子态，也仍有各自要做的工作。",
-  "limitations.bridge.link": "到 Clifford Algebra 看延伸阅读",
+  "limitations.bridge.link": "前往 Clifford Algebra 首页",
   "limitations.fig.angle": "角度",
   "limitations.fig.angleAria": "图解角度",
   "limitations.fig.scope.fixed": "桌上的箭头没有动",

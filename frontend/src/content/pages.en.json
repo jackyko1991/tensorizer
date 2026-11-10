@@ -1595,7 +1595,7 @@
   "limitations.bridge.explanation": "The dot $a\\cdot b$ keeps alignment. The wedge $a\\wedge b$ keeps oriented area, called a bivector. The geometric product $ab$ keeps both:",
   "limitations.bridge.precise": "In Clifford algebra a rotation in the plane of a unit bivector $B$ is $v\\mapsto Rv\\tilde R$ with the rotor $R=e^{-B\\theta/2}$, built from the half angle. A full turn gives $R=-1$, yet $Rv\\tilde R$ is unchanged: the same sign change as the spinor in section 2, now with a geometric picture. Rotors are one concrete way to write those spinors.",
   "limitations.bridge.closing": "This gives us a route into planes, rotations and spinors. It adds useful geometric structure; connections, topology and the quantum state still have their own jobs.",
-  "limitations.bridge.link": "Continue with Clifford Algebra reading",
+  "limitations.bridge.link": "Continue to Clifford Algebra home",
   "limitations.fig.angle": "Angle",
   "limitations.fig.angleAria": "Diagram angle",
   "limitations.fig.scope.fixed": "Arrow fixed on the table",

@@ -73,8 +73,9 @@ async def run(
 
     @tool(
         "ask_user",
-        "Ask the user a multiple-choice question in the chat when a decision is theirs. Give 2-4 short options (a few words each); "
-        "they can also type their own answer. Then end your turn: the answer arrives as the next message.",
+        "Ask the user a multiple-choice question in the chat when a decision is theirs. Give 2-4 short options "
+        "(a few words each); they can also type their own answer. Then end your turn: the answer arrives as the "
+        "next message.",
         {
             "type": "object",
             "properties": {

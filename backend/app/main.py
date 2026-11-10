@@ -267,8 +267,16 @@ async def workspace_job_start(
     box = workspace._sandboxes.get(session)
     try:
         job = JOBS.start(
-            visitor, _client(request), category, slug, params, None, req.verbose, req.device,
-            root=folder.parents[2], label=req.problem,
+            visitor,
+            _client(request),
+            category,
+            slug,
+            params,
+            None,
+            req.verbose,
+            req.device,
+            root=folder.parents[2],
+            label=req.problem,
         )
     except JobLimit as e:
         raise HTTPException(e.status, str(e)) from None

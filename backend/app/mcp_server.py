@@ -301,8 +301,8 @@ def _build():
 
     @server.tool(
         description="Ask the user a multiple-choice question in their Tensorizer chat when a decision is theirs: "
-        "2-4 short options of a few words each (multi=true lets them pick several; they can also type their own). Then end your turn: "
-        "the answer arrives as the next message."
+        "2-4 short options of a few words each (multi=true lets them pick several; they can also type their own). "
+        "Then end your turn: the answer arrives as the next message."
     )
     def ask_user(question: str, options: list[str], multi: bool = False, problem: str = "") -> str:
         c = _connector()
@@ -311,8 +311,16 @@ def _build():
         text, is_error = agent.ask_in_session(s, question, options, multi)
         if own_sink and not is_error:
             q = [o for o in (options or []) if str(o).strip()]
-            _mirror(c, {"type": "question", "id": secrets.token_hex(4), "question": str(question)[:300],
-                        "options": [str(o)[:120] for o in q][:6], "multi": bool(multi)})
+            _mirror(
+                c,
+                {
+                    "type": "question",
+                    "id": secrets.token_hex(4),
+                    "question": str(question)[:300],
+                    "options": [str(o)[:120] for o in q][:6],
+                    "multi": bool(multi),
+                },
+            )
         if is_error:
             raise ToolError(text)
         return text
