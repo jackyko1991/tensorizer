@@ -1,3 +1,4 @@
+import WhereChip from "./WhereChip";
 import { useEffect, useState } from "react";
 import {
   backendChoice,
@@ -64,9 +65,10 @@ export function BackendButton({ backend, onOpen }: { backend: Health | null | "c
       className="flex h-8 items-center gap-2 rounded-md border border-blue-400 bg-blue-600 px-2.5 text-xs text-white hover:bg-blue-500"
     >
       <span className={`h-2 w-2 rounded-full ${dot}`} />
+      <WhereChip where={local ? "local" : "server"} className="bg-white!" />
       <span className="hidden sm:inline">
-        {local ? t("be.tab.local") : (activeServer()?.name ?? t("be.tab.remote"))}
-        {device}
+        {local ? "" : (activeServer()?.name ?? t("be.tab.remote"))}
+        {device.replace(/^ \/ /, local ? "" : " / ")}
         {!backend && ` / ${t("be.offline")}`}
       </span>
       <GearIcon className="h-4 w-4" />

@@ -1,3 +1,4 @@
+import WhereChip, { backendWhere } from "./WhereChip";
 import { useState } from "react";
 import {
   createConnector,
@@ -132,6 +133,11 @@ export default function AgentSettings({
                   : "ag.tabApi",
             )}
             {COMING_MODES.has(m) && <span className="ml-1 text-[10px]">({t("ag.coming")})</span>}
+            {m !== "api" && (
+              <span className="mt-0.5 flex justify-center">
+                <WhereChip where={m === "cloud" ? "cloud" : backendWhere()} />
+              </span>
+            )}
           </button>
         ))}
       </div>

@@ -1,4 +1,5 @@
 import { useLang, type Key } from "../i18n";
+import WhereChip from "../components/WhereChip";
 import { formatPageRoute } from "../pageRoute";
 
 /** level, what you get, needs, available now (✓ in the table) */
@@ -85,6 +86,13 @@ export default function RoadmapSection() {
             <span className="text-blue-600">✓</span>
             <span>
               <b className="text-gray-900">{t(title)}</b> {t(body)}
+              {title === "rm.p2Title" && (
+                <span className="mt-1.5 flex flex-wrap gap-1.5">
+                  <WhereChip where="local" />
+                  <WhereChip where="server" />
+                  <WhereChip where="cloud" />
+                </span>
+              )}
             </span>
           </li>
         ))}

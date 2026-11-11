@@ -3,6 +3,7 @@ import type { TestTally } from "../api";
 import type { Problem } from "../types";
 import { useLang } from "../i18n";
 import { BIG_PANEL, ExpandButton, PanelBar, useBigPanel } from "./PlotPanel";
+import WhereChip, { backendWhere } from "./WhereChip";
 import QueueModal from "./QueueModal";
 import TestsModal from "./TestsModal";
 
@@ -74,6 +75,7 @@ export default function TerminalPanel({ problem, console, error, running, tests,
   return (
     <section data-ai-region="terminal" className={`flex min-w-0 flex-col bg-white ${className} ${big ? BIG_PANEL : ""}`}>
       <PanelBar title={t("terminal")}>
+        <WhereChip where={backendWhere()} />
         {tests && !running && (
           <button
             onClick={() => setTestsOpen(true)}

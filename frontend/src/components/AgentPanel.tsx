@@ -1,3 +1,4 @@
+import WhereChip, { backendWhere } from "./WhereChip";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { pythonLanguage } from "@codemirror/lang-python";
 import { classHighlighter, highlightCode } from "@lezer/highlight";
@@ -937,7 +938,14 @@ export default function AgentPanel({
                   : !st?.enabled
                     ? t("agent.unavailable")
                     : connected
-                      ? `${t("agent.agent")}: ${agentLabel} · ${t("ag.runsOn").replace("{server}", runsOn)}`
+                      ? (
+                          <span className="flex min-w-0 items-center gap-1.5">
+                            <WhereChip where={choice.mode === "cloud" ? "cloud" : backendWhere()} />
+                            <span className="truncate" title={t("ag.runsOn").replace("{server}", runsOn)}>
+                              {t("agent.agent")}: {agentLabel}
+                            </span>
+                          </span>
+                        )
                       : t("agent.chooseAgent")}
               </div>
             </div>

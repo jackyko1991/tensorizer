@@ -1,5 +1,11 @@
 /** UI strings for the Backend panel: one row per key, en, zh-Hant, zh-Hans, fr, de, es, ja, ru, ko, hi. */
 export const BACKEND_STRINGS = {
+  "where.local": ["Local", "本機", "本机", "Local", "Lokal", "Local", "ローカル", "Локально", "로컬", "लोकल"],
+  "where.server": ["Your server", "你的伺服器", "你的服务器", "Votre serveur", "Dein Server", "Tu servidor", "あなたのサーバー", "Ваш сервер", "내 서버", "आपका सर्वर"],
+  "where.cloud": ["Pro Cloud", "雲端託管", "云端托管", "Cloud Pro", "Pro Cloud", "Nube Pro", "Pro クラウド", "Облако Pro", "Pro 클라우드", "Pro क्लाउड"],
+  "where.localHint": ["Runs on this computer: nothing leaves it.", "在這台電腦上執行：沒有任何資料離開它。", "在这台电脑上运行：没有任何数据离开它。", "S'exécute sur cet ordinateur : rien n'en sort.", "Läuft auf diesem Computer: nichts verlässt ihn.", "Se ejecuta en este ordenador: nada sale de él.", "このコンピューターで実行：何も外に出ません。", "Работает на этом компьютере: ничего не покидает его.", "이 컴퓨터에서 실행: 아무것도 밖으로 나가지 않습니다.", "इसी कंप्यूटर पर चलता है: कुछ भी बाहर नहीं जाता।"],
+  "where.serverHint": ["Runs on your own server: your code goes there and nowhere else.", "在你自己的伺服器上執行：你的程式碼只會送到那裡。", "在你自己的服务器上运行：你的代码只会送到那里。", "S'exécute sur votre propre serveur : votre code n'est envoyé que là.", "Läuft auf deinem eigenen Server: dein Code geht nur dorthin.", "Se ejecuta en tu propio servidor: tu código va solo allí.", "あなた自身のサーバーで実行：コードはそこにだけ送られます。", "Работает на вашем сервере: код отправляется только туда.", "내 서버에서 실행: 코드는 그곳으로만 갑니다.", "आपके अपने सर्वर पर चलता है: आपका कोड केवल वहीं जाता है।"],
+  "where.cloudHint": ["Runs on Tensorizer's hosted service (Pro): your code is sent there, only when you use it.", "在 Tensorizer 的託管服務（Pro）上執行：只有在你使用時，程式碼才會送到那裡。", "在 Tensorizer 的托管服务（Pro）上运行：只有在你使用时，代码才会送到那里。", "S'exécute sur le service hébergé de Tensorizer (Pro) : votre code y est envoyé seulement quand vous l'utilisez.", "Läuft auf dem gehosteten Dienst von Tensorizer (Pro): dein Code wird nur dann dorthin gesendet, wenn du ihn nutzt.", "Se ejecuta en el servicio alojado de Tensorizer (Pro): tu código se envía allí solo cuando lo usas.", "Tensorizer のホスト型サービス（Pro）で実行：使うときだけコードが送られます。", "Работает в облачном сервисе Tensorizer (Pro): код отправляется туда только когда вы им пользуетесь.", "Tensorizer 호스팅 서비스(Pro)에서 실행: 사용할 때만 코드가 전송됩니다.", "Tensorizer की होस्टेड सेवा (Pro) पर चलता है: आपका कोड केवल उपयोग करने पर वहाँ भेजा जाता है।"],
   "be.title": [
     "Backend",
     "後端",
