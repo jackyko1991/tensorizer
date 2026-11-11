@@ -232,7 +232,7 @@ export default function HistoryConcept({ section }: { section: string | null }) 
     <div className="mx-auto flex max-w-6xl gap-8 px-4 pt-6 pb-16 sm:px-5" data-testid="history">
       <nav
         aria-label={T("history.nav")}
-        className="sticky top-24 hidden max-h-[calc(100vh-12rem)] w-60 shrink-0 self-start overflow-y-auto lg:block"
+        className="sticky top-6 hidden max-h-[calc(100vh-7.5rem)] w-60 shrink-0 self-start overflow-y-auto lg:block"
       >
         <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-gray-500">{T("history.nav")}</p>
         {navList(jump)}
@@ -248,7 +248,7 @@ export default function HistoryConcept({ section }: { section: string | null }) 
         </header>
 
         {/* phones and tablets: a folding bar that stays at the top of the page */}
-        <div className="sticky top-16 z-20 -mx-4 mt-5 border-b border-gray-200 bg-white/95 px-4 py-2 backdrop-blur sm:-mx-5 sm:px-5 lg:hidden">
+        <div className="sticky top-0 z-20 -mx-4 mt-5 border-b border-gray-200 bg-white/95 px-4 py-2 backdrop-blur sm:-mx-5 sm:px-5 lg:hidden">
           <button
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
@@ -405,7 +405,7 @@ function TimelineCard({
       </span>
       <article
         id={elId(card.id)}
-        className={`scroll-mt-24 overflow-hidden rounded-xl border bg-white shadow-sm lg:scroll-mt-10 ${
+        className={`scroll-mt-20 overflow-hidden rounded-xl border bg-white shadow-sm lg:scroll-mt-10 ${
           active ? "border-blue-300 ring-1 ring-blue-200" : "border-gray-200"
         }`}
       >

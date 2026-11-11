@@ -6,7 +6,7 @@ import PageToc from "../components/PageToc";
 import TranslationTable from "../components/TranslationTable";
 import { usePageText, type PageKey } from "../content/pages";
 import { localize, useLang } from "../i18n";
-import { PAGE_TABS, type ConceptTab } from "../pageRoute";
+import type { ConceptTab } from "../pageRoute";
 import type { Manifest } from "../types";
 import DataflowConcept from "./DataflowConcept";
 import MathsConcept from "./MathsConcept";
@@ -21,20 +21,18 @@ const STEPS = [0, 1, 2, 3, 4, 5, 6, 7] as const; // 0: tests first (TDD)
  * "How it works", told with one problem: the simple pendulum goes from a physical picture to
  * an equation, to tensors, to code, to numbers and a picture again. Code excerpts are pulled
  * from the problem's real files in the manifest, so the page always matches the library.
- * Text comes from content/pages.<lang>.json.
+ * Text comes from content/pages.<lang>.json. The sub-pages are chosen from the Concept menu in the header (App).
  */
 export default function ConceptPage({
   manifest,
   tab,
   section,
-  onTab,
 }: {
   manifest: Manifest;
   /** from the address: #/concept/<tab>[/<section>], parsed in App (which also remembers the last tab) */
   tab: ConceptTab;
   /** optional anchor in the laws tab: #/concept/laws/3 → step-3 */
   section: string | null;
-  onTab: (t: ConceptTab) => void;
 }) {
   const T = usePageText();
   const { t, lang } = useLang();
@@ -44,41 +42,12 @@ export default function ConceptPage({
     if (el) el.scrollIntoView({ block: "start", behavior: "instant" });
     else document.getElementById("concept-scroll")?.scrollTo({ top: 0 });
   }, [tab, section]);
-  // keep the selected tab visible in the tab bar on narrow screens (the last tabs sit past the right edge)
-  useEffect(() => {
-    const bar = document.querySelector<HTMLElement>("[data-testid=concept-tabs]");
-    const sel = bar?.querySelector<HTMLElement>("[aria-selected=true]");
-    if (bar && sel) bar.scrollLeft = Math.max(0, sel.offsetLeft - bar.offsetLeft - (bar.clientWidth - sel.offsetWidth) / 2);
-  }, [tab]);
   if (!p) return <p className="p-8 text-sm text-gray-500">{T("concept.missing")}</p>;
   const file = (name: string) => p.files.find((f) => f.name === name)?.code ?? "";
   const R = (key: PageKey) => <RichText text={T(key)} />;
 
   return (
-    <div id="concept-scroll" className="h-full scroll-pt-16 scroll-smooth bg-gray-50/60 xl:overflow-y-auto">
-      <div className="sticky top-0 z-30 bg-gray-50/95 backdrop-blur" data-testid="concept-tabs-sticky">
-      <div className="w-full px-4 pt-3 sm:px-6">
-        <div
-          className="flex gap-1 overflow-x-auto overflow-y-hidden border-b border-gray-200 [&>:first-child]:ml-auto [&>:last-child]:mr-auto"
-          role="tablist"
-          data-testid="concept-tabs"
-        >
-          {TABS.map((k) => (
-            <button
-              key={k}
-              role="tab"
-              aria-selected={tab === k}
-              onClick={() => k !== tab && onTab(k)}
-              className={`shrink-0 whitespace-nowrap border-b-2 px-4 py-2 text-sm font-medium ${
-                tab === k ? "border-blue-600 text-blue-800" : "border-transparent text-gray-500 hover:text-gray-800"
-              }`}
-            >
-              {T(k === "laws" ? "flow.tab.law" : k === "maths" ? "maths.tab" : k === "limitations" ? "limitations.tab" : k === "history" ? "history.tab" : k === "feynman" ? "feynman.tab" : "flow.tab")}
-            </button>
-          ))}
-        </div>
-      </div>
-      </div>
+    <div id="concept-scroll" className="h-full scroll-smooth bg-gray-50/60 xl:overflow-y-auto">
       {tab === "limitations" ? (
         <div className="pt-6"><LimitationsConcept /></div>
       ) : tab === "history" ? (
@@ -214,8 +183,6 @@ export default function ConceptPage({
     </div>
   );
 }
-
-const TABS = PAGE_TABS.concept;
 
 function Step({ n, title, file, children }: { n: number; title: string; file?: string; children: React.ReactNode }) {
   return (

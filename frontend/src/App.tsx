@@ -52,12 +52,15 @@ import {
   formatPageRoute,
   formatReadingRoute,
   isTab,
+  PAGE_TABS,
   parsePageRoute,
   parseReadingRoute,
   READING_TAB_IDS,
   resolveTab,
   TAB_STORE,
+  type ConceptTab,
 } from "./pageRoute";
+import { usePageText, type PageKey } from "./content/pages";
 import AgentsPage from "./pages/AgentsPage";
 import SkillsPage from "./pages/SkillsPage";
 import ReadingPage from "./pages/ReadingConcept";
@@ -127,11 +130,25 @@ const TAB_KEY: Record<(typeof PAGES)[number], Key> = {
   agents: "tab.agents",
   reading: "tab.reading",
 };
-/** Header tabs that open a menu of their sub-pages. */
-const MENU_PAGES = ["agents", "reading"] as const;
+/** Header tabs that open a menu of their sub-pages (the only way to reach a sub-page from the page itself). */
+const MENU_PAGES = ["concept", "skills", "agents", "reading"] as const;
 type MenuPage = (typeof MENU_PAGES)[number];
 const isMenuPage = (p: string): p is MenuPage => (MENU_PAGES as readonly string[]).includes(p);
-const MENU_ID: Record<MenuPage, string> = { agents: "agent-subpages", reading: "reading-subpages" };
+const MENU_ID: Record<MenuPage, string> = {
+  concept: "concept-subpages",
+  skills: "skills-subpages",
+  agents: "agent-subpages",
+  reading: "reading-subpages",
+};
+// The Concept sub-pages' labels in content/pages.<lang>.json.
+const CONCEPT_LABEL: Record<ConceptTab, PageKey> = {
+  laws: "flow.tab.law",
+  feynman: "feynman.tab",
+  maths: "maths.tab",
+  dataflow: "flow.tab",
+  limitations: "limitations.tab",
+  history: "history.tab",
+};
 
 /**
  * Layout (desktop): a full-height workspace with three columns that scroll independently —
@@ -145,7 +162,8 @@ export default function App() {
   const [selected, setSelected] = useState<string | null>(currentHash);
   const [backend, setBackend] = useState<Health | null | "checking">("checking");
   const [backendOpen, setBackendOpen] = useState(false);
-  // The header tabs with a menu (AI agent: Skills, MCP; Further reading: books, labs, explorables) open it as a
+  // The header tabs with a menu (Concept and Coding Skills: their sub-pages; AI agent: Skills, MCP; Further reading:
+  // books, labs, explorables) open it as a
   // vertical list right under the tab: measured from the button, because the tab row scrolls sideways on narrow
   // screens and would clip it. One menu at a time.
   const [menuOpen, setMenuOpen] = useState<MenuPage | null>(null);
@@ -168,6 +186,7 @@ export default function App() {
   const wsRef = useRef(ws);
   wsRef.current = ws;
   const { lang, setLang, t } = useLang();
+  const pageText = usePageText();
   const account = useAccount(); // the demo sign-in: free tier = one Workspace problem
 
   useEffect(() => {
@@ -220,7 +239,6 @@ export default function App() {
     store(TAB_STORE[pageRoute.page], subTab);
     if (pageRoute.tab !== subTab) window.location.replace(`#${formatPageRoute(pageRoute.page, subTab)}`);
   }, [pageRoute?.page, pageRoute?.tab, subTab]);
-  const openTab = (tab: string) => pageRoute && (window.location.hash = formatPageRoute(pageRoute.page, tab));
   // Left panel: the library (Problems) or the Workspace tree, remembered; opening a workspace problem shows it.
   const [leftTab, setLeftTabState] = useState<"problems" | "workspace">(() =>
     stored(LEFT_TAB) === "workspace" ? "workspace" : "problems",
@@ -264,12 +282,19 @@ export default function App() {
       target === "problems" ? `/${problem?.id ?? ""}` : target === "reading" ? formatReadingRoute("books") : `/${target}`);
   // The entries of a header tab's menu: label, address and whether it is the page being shown.
   const menuItems = (target: MenuPage): { id: string; label: string; href: string; current: boolean }[] =>
-    target === "agents"
-      ? (["skills", "mcp"] as const).map((id) => ({
+    target === "concept" || target === "skills" || target === "agents"
+      ? PAGE_TABS[target].map((id) => ({
           id,
-          label: id === "skills" ? t("ya.skills") : "MCP",
-          href: `#${formatPageRoute("agents", id)}`,
-          current: page === "agents" && subTab === id,
+          label:
+            target === "concept"
+              ? pageText(CONCEPT_LABEL[id as ConceptTab])
+              : target === "skills"
+                ? pageText(`skills.tab.${id}` as PageKey)
+                : id === "skills"
+                  ? t("ya.skills")
+                  : "MCP",
+          href: `#${formatPageRoute(target, id)}`,
+          current: page === target && subTab === id,
         }))
       : READING_TAB_IDS.map((id) => ({
           id,
@@ -685,7 +710,6 @@ export default function App() {
             manifest={manifest}
             tab={isTab("concept", subTab) ? subTab : "laws"}
             section={pageRoute?.section ?? null}
-            onTab={openTab}
           />
         </main>
       )}
@@ -695,7 +719,6 @@ export default function App() {
             manifest={manifest}
             tab={isTab("skills", subTab) ? subTab : "techniques"}
             section={pageRoute?.section ?? null}
-            onTab={openTab}
           />
         </main>
       )}

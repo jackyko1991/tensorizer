@@ -4,7 +4,7 @@ import PageToc from "../components/PageToc";
 import { RichText } from "../components/Tex";
 import { usePageText, type PageKey } from "../content/pages";
 import { useLang } from "../i18n";
-import { PAGE_TABS, type SkillsTab } from "../pageRoute";
+import type { SkillsTab } from "../pageRoute";
 import type { Manifest } from "../types";
 import BlasTab from "./BlasTab";
 import CpumlTab from "./CpumlTab";
@@ -13,8 +13,8 @@ import NvlinkTab from "./NvlinkTab";
 import TechniqueAnim from "../components/TechniqueAnim";
 import type { TechCase } from "../techAnim";
 
-// The tab comes from the address (#/skills/<tab>[/<section>], parsed in App); App remembers the last one.
-const TABS = PAGE_TABS.skills;
+// The tab comes from the address (#/skills/<tab>[/<section>], parsed in App), chosen from the Coding Skills menu in
+// the header; App remembers the last one.
 type Tab = SkillsTab;
 
 interface Skill {
@@ -126,13 +126,11 @@ export default function SkillsPage({
   manifest,
   tab,
   section,
-  onTab,
 }: {
   manifest: Manifest;
   tab: Tab;
   /** optional anchor inside the tab: #/skills/techniques/einsum → card skill-einsum, #/skills/loops/matmul → loops-matmul, #/skills/blas/repro → blas-repro */
   section: string | null;
-  onTab: (t: Tab) => void;
 }) {
   const T = usePageText();
   const { lang } = useLang();
@@ -141,48 +139,15 @@ export default function SkillsPage({
     return p && (p.i18n?.[lang]?.title ?? p.title);
   };
 
-  const choose = (t: Tab) => {
-    if (t === tab) return;
-    onTab(t);
-  };
   // New tab: start at the top, or at the section the address names.
   useEffect(() => {
     const el = section && document.getElementById(`${tab === "techniques" ? "skill" : tab}-${section}`);
     if (el) el.scrollIntoView({ block: "start", behavior: "instant" });
     else document.getElementById("skills-scroll")?.scrollTo({ top: 0 });
   }, [tab, section]);
-  useEffect(() => {
-    const bar = document.querySelector<HTMLElement>("[data-testid=skills-tabs]");
-    const selected = bar?.querySelector<HTMLElement>("[aria-selected=true]");
-    if (bar && selected) bar.scrollLeft = Math.max(0, selected.offsetLeft - bar.offsetLeft - (bar.clientWidth - selected.offsetWidth) / 2);
-  }, [tab]);
 
   return (
-    <div id="skills-scroll" className="h-full overflow-y-auto scroll-pt-16 scroll-smooth bg-gray-50/60">
-      <div className="sticky top-0 z-30 bg-gray-50/95 backdrop-blur" data-testid="skills-tabs-sticky">
-      <div className="w-full px-4 pt-3 sm:px-6">
-        <div
-          className="flex gap-1 overflow-x-auto overflow-y-hidden border-b border-gray-200 [&>:first-child]:ml-auto [&>:last-child]:mr-auto"
-          role="tablist"
-          data-testid="skills-tabs"
-        >
-          {TABS.map((t) => (
-            <button
-              key={t}
-              role="tab"
-              aria-selected={tab === t}
-              onClick={() => choose(t)}
-              data-testid={`skills-tab-${t}`}
-              className={`shrink-0 whitespace-nowrap border-b-2 px-4 py-2 text-sm font-medium ${
-                tab === t ? "border-blue-600 text-blue-800" : "border-transparent text-gray-500 hover:text-gray-800"
-              }`}
-            >
-              {T(`skills.tab.${t}`)}
-            </button>
-          ))}
-        </div>
-      </div>
-      </div>
+    <div id="skills-scroll" className="h-full overflow-y-auto scroll-smooth bg-gray-50/60">
       {tab === "loops" ? (
         <LoopsTab title={title} />
       ) : tab === "blas" ? (
