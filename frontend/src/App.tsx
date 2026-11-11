@@ -48,10 +48,21 @@ import { useAccount, workspaceRoom } from "./account";
 import ExportMenu from "./components/ExportMenu";
 import { REPO_URL } from "./notebook";
 import ConceptPage from "./pages/ConceptPage";
-import { formatPageRoute, isTab, parsePageRoute, resolveTab, TAB_STORE } from "./pageRoute";
+import {
+  formatPageRoute,
+  formatReadingRoute,
+  isTab,
+  parsePageRoute,
+  parseReadingRoute,
+  READING_TAB_IDS,
+  resolveTab,
+  TAB_STORE,
+} from "./pageRoute";
 import AgentsPage from "./pages/AgentsPage";
 import SkillsPage from "./pages/SkillsPage";
 import ReadingPage from "./pages/ReadingConcept";
+import SeriesPage from "./pages/SeriesPage";
+import { READING_TABS, seriesText } from "./series";
 import { plainText, RichText } from "./components/Tex";
 import NotebookView from "./components/NotebookView";
 import DataPanel from "./components/DataPanel";
@@ -116,6 +127,11 @@ const TAB_KEY: Record<(typeof PAGES)[number], Key> = {
   agents: "tab.agents",
   reading: "tab.reading",
 };
+/** Header tabs that open a menu of their sub-pages. */
+const MENU_PAGES = ["agents", "reading"] as const;
+type MenuPage = (typeof MENU_PAGES)[number];
+const isMenuPage = (p: string): p is MenuPage => (MENU_PAGES as readonly string[]).includes(p);
+const MENU_ID: Record<MenuPage, string> = { agents: "agent-subpages", reading: "reading-subpages" };
 
 /**
  * Layout (desktop): a full-height workspace with three columns that scroll independently —
@@ -129,21 +145,22 @@ export default function App() {
   const [selected, setSelected] = useState<string | null>(currentHash);
   const [backend, setBackend] = useState<Health | null | "checking">("checking");
   const [backendOpen, setBackendOpen] = useState(false);
-  const [agentMenuOpen, setAgentMenuOpen] = useState(false);
-  // The AI agent tab's menu (Skills, MCP) opens as a vertical list right under the tab: measured from the button,
-  // because the tab row scrolls sideways on narrow screens and would clip it.
-  const agentTab = useRef<HTMLButtonElement>(null);
-  const [agentMenuAt, setAgentMenuAt] = useState<{ left: number; top: number } | null>(null);
+  // The header tabs with a menu (AI agent: Skills, MCP; Further reading: books, labs, explorables) open it as a
+  // vertical list right under the tab: measured from the button, because the tab row scrolls sideways on narrow
+  // screens and would clip it. One menu at a time.
+  const [menuOpen, setMenuOpen] = useState<MenuPage | null>(null);
+  const menuTabs = useRef<Partial<Record<MenuPage, HTMLButtonElement | null>>>({});
+  const [menuAt, setMenuAt] = useState<{ page: MenuPage; left: number; top: number } | null>(null);
   useEffect(() => {
-    if (!agentMenuOpen) return;
+    if (!menuOpen) return;
     const place = () => {
-      const r = agentTab.current?.getBoundingClientRect();
-      if (r) setAgentMenuAt({ left: r.left, top: r.bottom });
+      const r = menuTabs.current[menuOpen]?.getBoundingClientRect();
+      if (r) setMenuAt({ page: menuOpen, left: r.left, top: r.bottom });
     };
     place();
     window.addEventListener("resize", place);
     return () => window.removeEventListener("resize", place);
-  }, [agentMenuOpen]);
+  }, [menuOpen]);
   const [libraryOpen, setLibraryOpen] = useState(true);
   const [paramsOpen, setParamsOpen] = useState(true);
   // The Workspace (IndexedDB): problems made blank, copied from the library or created by the AI, with notebooks.
@@ -180,20 +197,21 @@ export default function App() {
   // #/concept, #/skills and #/agents have sub-tabs; #/workspace is its own page.
   // Any other hash is a problem id (category/slug), a workspace problem (workspace/<id>) or one of its
   // notebooks (workspace/<id>/nb/<notebook>).
-  // Further reading used to be a Concept tab: #/concept/reading… is not a concept route any more (redirected below).
-  const oldReading = !!selected?.startsWith("concept/reading");
-  const pageRoute = oldReading ? null : parsePageRoute(selected);
+  // Further reading (#/reading/<tab>) has its own parser: it also takes #/concept/reading… (it used to be a Concept
+  // tab), which is therefore not a concept route any more.
+  const readingRoute = parseReadingRoute(selected);
+  const pageRoute = readingRoute ? null : parsePageRoute(selected);
   const page: Page = pageRoute
     ? pageRoute.page
-    : selected === "agents" || selected === "workspace"
-      ? selected
-      : oldReading || selected === "reading" || selected?.startsWith("reading/")
-        ? "reading"
+    : readingRoute
+      ? "reading"
+      : selected === "agents" || selected === "workspace"
+        ? selected
         : "problems";
-  // Further reading used to be a Concept tab: old links #/concept/reading[/<group>] move to #/reading[/<group>].
+  // #/reading, the old #/reading/<group> and #/concept/reading[/<group>] are rewritten in place to the books tab.
   useEffect(() => {
-    if (selected?.startsWith("concept/reading")) window.location.replace(`#/${selected.slice("concept/".length)}`);
-  }, [selected]);
+    if (readingRoute && selected !== readingRoute.canonical.slice(1)) window.location.replace(`#${readingRoute.canonical}`);
+  }, [selected, readingRoute?.canonical]);
   // The sub-tab: the address wins; #/skills alone opens the remembered tab. A missing or unknown tab is rewritten
   // in place (no new history entry) to the canonical #/<page>/<tab>, so back/forward always land on a tab.
   const subTab = pageRoute ? resolveTab(pageRoute.page, pageRoute.tab, stored(TAB_STORE[pageRoute.page])) : null;
@@ -240,8 +258,25 @@ export default function App() {
       return next;
     });
   }, [page, problem?.id]);
+  // The header's Further reading tab always opens the books (no remembered tab).
   const goTo = (target: Page) =>
-    (window.location.hash = target === "problems" ? `/${problem?.id ?? ""}` : `/${target}`);
+    (window.location.hash =
+      target === "problems" ? `/${problem?.id ?? ""}` : target === "reading" ? formatReadingRoute("books") : `/${target}`);
+  // The entries of a header tab's menu: label, address and whether it is the page being shown.
+  const menuItems = (target: MenuPage): { id: string; label: string; href: string; current: boolean }[] =>
+    target === "agents"
+      ? (["skills", "mcp"] as const).map((id) => ({
+          id,
+          label: id === "skills" ? t("ya.skills") : "MCP",
+          href: `#${formatPageRoute("agents", id)}`,
+          current: page === "agents" && subTab === id,
+        }))
+      : READING_TAB_IDS.map((id) => ({
+          id,
+          label: seriesText(READING_TABS[id], lang),
+          href: `#${formatReadingRoute(id)}`,
+          current: page === "reading" && readingRoute?.tab === id,
+        }));
 
   // --- Workspace actions (the browser holds the files; the server keeps a disposable sandbox per problem) ---
   const findWs = (id: string) => wsRef.current?.problems.find((p) => p.id === id);
@@ -534,9 +569,9 @@ export default function App() {
     <div className="flex min-h-dvh flex-col bg-white xl:h-dvh xl:overflow-hidden">
       <header
         className="relative flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1.5 bg-blue-700 px-4 py-2 text-white shadow-sm sm:px-6 lg:h-[52px] lg:flex-nowrap lg:py-0"
-        onMouseLeave={() => setAgentMenuOpen(false)}
-        onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setAgentMenuOpen(false); }}
-        onKeyDown={(e) => { if (e.key === "Escape") setAgentMenuOpen(false); }}
+        onMouseLeave={() => setMenuOpen(null)}
+        onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setMenuOpen(null); }}
+        onKeyDown={(e) => { if (e.key === "Escape") setMenuOpen(null); }}
       >
         <div className="flex min-w-0 items-center gap-3">
           <button
@@ -561,12 +596,12 @@ export default function App() {
           {PAGES.map((target) => (
             <button
               key={target}
-              ref={target === "agents" ? agentTab : undefined}
-              onClick={() => { goTo(target); setAgentMenuOpen(target === "agents"); }}
-              onMouseEnter={() => setAgentMenuOpen(target === "agents")}
-              onFocus={() => setAgentMenuOpen(target === "agents")}
-              aria-expanded={target === "agents" ? agentMenuOpen : undefined}
-              aria-controls={target === "agents" ? "agent-subpages" : undefined}
+              ref={isMenuPage(target) ? (el) => void (menuTabs.current[target] = el) : undefined}
+              onClick={() => { goTo(target); setMenuOpen(isMenuPage(target) ? target : null); }}
+              onMouseEnter={() => setMenuOpen(isMenuPage(target) ? target : null)}
+              onFocus={() => setMenuOpen(isMenuPage(target) ? target : null)}
+              aria-expanded={isMenuPage(target) ? menuOpen === target : undefined}
+              aria-controls={isMenuPage(target) ? MENU_ID[target] : undefined}
               aria-current={page === target ? "page" : undefined}
               className={`h-8 shrink-0 rounded-md px-3 text-sm font-medium transition ${
                 page === target
@@ -578,25 +613,25 @@ export default function App() {
             </button>
           ))}
         </nav>
-        {agentMenuOpen && agentMenuAt && (
+        {menuOpen && menuAt?.page === menuOpen && (
           <nav
-            id="agent-subpages"
-            aria-label={t("tab.agents")}
-            style={{ left: agentMenuAt.left, top: agentMenuAt.top }}
+            id={MENU_ID[menuOpen]}
+            aria-label={t(TAB_KEY[menuOpen])}
+            style={{ left: menuAt.left, top: menuAt.top }}
             className="fixed z-50 flex min-w-[10rem] flex-col pt-1 text-gray-700"
-            data-testid="agent-subpages"
+            data-testid={MENU_ID[menuOpen]}
           >
             {/* pt-1 keeps the gap under the tab inside the menu, so moving the mouse down does not close it */}
             <div className="flex flex-col rounded-lg border border-gray-200 bg-white p-1 shadow-lg">
-              {(["skills", "mcp"] as const).map((id) => (
+              {menuItems(menuOpen).map((item) => (
                 <a
-                  key={id}
-                  href={`#/agents/${id}`}
-                  onClick={() => setAgentMenuOpen(false)}
-                  aria-current={page === "agents" && subTab === id ? "page" : undefined}
-                  className={`rounded-md px-3 py-2 text-sm font-medium ${page === "agents" && subTab === id ? "bg-blue-50 text-blue-700" : "hover:bg-gray-100"}`}
+                  key={item.id}
+                  href={item.href}
+                  onClick={() => setMenuOpen(null)}
+                  aria-current={item.current ? "page" : undefined}
+                  className={`rounded-md px-3 py-2 text-sm font-medium ${item.current ? "bg-blue-50 text-blue-700" : "hover:bg-gray-100"}`}
                 >
-                  {id === "skills" ? t("ya.skills") : "MCP"}
+                  {item.label}
                 </a>
               ))}
             </div>
@@ -670,8 +705,19 @@ export default function App() {
         </main>
       )}
       {page === "reading" && (
-        <main id="reading-scroll" className="min-h-0 flex-1 scroll-smooth bg-gray-50/60 xl:overflow-y-auto">
-          <ReadingPage section={selected?.split("/")[1] ?? null} />
+        <main key={readingRoute?.tab} id="reading-scroll" className="min-h-0 flex-1 scroll-smooth bg-gray-50/60 xl:overflow-y-auto">
+          {readingRoute?.tab === "labs" || readingRoute?.tab === "explorables" ? (
+            <SeriesPage
+              kind={readingRoute.tab === "labs" ? "lab" : "explorable"}
+              current="tensorizer"
+              lang={lang}
+              onOther={() =>
+                (window.location.hash = formatReadingRoute(readingRoute.tab === "labs" ? "explorables" : "labs"))
+              }
+            />
+          ) : (
+            <ReadingPage section={readingRoute?.section ?? null} />
+          )}
         </main>
       )}
       {manifest && page === "workspace" && (

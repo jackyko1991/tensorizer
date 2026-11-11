@@ -1,7 +1,7 @@
 // Hash routes of the Concept and Coding Skills sub-tabs. Run: node --test frontend/tests
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { PAGE_TABS, formatPageRoute, parsePageRoute, resolveTab } from "../src/pageRoute.ts";
+import { PAGE_TABS, READING_TAB_IDS, formatPageRoute, formatReadingRoute, parsePageRoute, parseReadingRoute, resolveTab } from "../src/pageRoute.ts";
 
 test("parse: page, tab and section; other routes are not tabbed pages", () => {
   assert.deepEqual(parsePageRoute("skills"), { page: "skills", tab: null, section: null });
@@ -95,4 +95,25 @@ test("format round-trips through parse", () => {
 
 test("the concept tabs in order (Further reading is a top-level page, #/reading)", () => {
   assert.deepEqual([...PAGE_TABS.concept], ["laws", "feynman", "maths", "dataflow", "limitations", "history"]);
+});
+
+test("Further reading: books, labs and explorables tabs; bare and legacy addresses land on the books", () => {
+  assert.deepEqual([...READING_TAB_IDS], ["books", "labs", "explorables"]);
+  const r = (route: string | null) => parseReadingRoute(route);
+  assert.deepEqual(r("reading"), { tab: "books", section: null, canonical: "/reading/books" });
+  assert.deepEqual(r("reading/"), { tab: "books", section: null, canonical: "/reading/books" });
+  assert.deepEqual(r("reading/books"), { tab: "books", section: null, canonical: "/reading/books" });
+  assert.deepEqual(r("reading/books/gpu"), { tab: "books", section: "gpu", canonical: "/reading/books/gpu" });
+  assert.deepEqual(r("reading/labs"), { tab: "labs", section: null, canonical: "/reading/labs" });
+  assert.deepEqual(r("reading/explorables"), { tab: "explorables", section: null, canonical: "/reading/explorables" });
+  assert.deepEqual(r("reading/labs/x"), { tab: "labs", section: null, canonical: "/reading/labs" });
+  // before the tabs: #/reading/<group>
+  assert.deepEqual(r("reading/gpu"), { tab: "books", section: "gpu", canonical: "/reading/books/gpu" });
+  // when Further reading was a Concept tab
+  assert.deepEqual(r("concept/reading"), { tab: "books", section: null, canonical: "/reading/books" });
+  assert.deepEqual(r("concept/reading/history"), { tab: "books", section: "history", canonical: "/reading/books/history" });
+  for (const x of [null, "", "concept", "concept/laws", "readings", "mechanics/simple_pendulum", "agents/mcp"])
+    assert.equal(r(x), null, String(x));
+  assert.equal(formatReadingRoute("explorables"), "/reading/explorables");
+  assert.equal(formatReadingRoute("books", "maths"), "/reading/books/maths");
 });

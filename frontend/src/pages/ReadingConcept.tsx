@@ -5,11 +5,11 @@ import { usePageText, type PageKey } from "../content/pages";
 import { AFFILIATE_REL, BOOK_GROUPS, BOOKS, amazonUrl, type Book } from "../books";
 
 /**
- * Top-level page "Further reading" (#/reading, last in the header): books in four groups, top picks (★) first. Each card has the title, authors,
+ * Top-level page "Further reading", Books & papers tab (#/reading/books, last in the header): books in four groups, top picks (★) first. Each card has the title, authors,
  * publisher and year, a one-line reason, an affiliate link to Amazon UK, a link to a free official online edition
  * when one exists, and a link to the matching tab of this site. Affiliate disclosure at the bottom (Amazon Associates
  * Operating Agreement; ASA/CMA). No prices, ratings, covers or Amazon scripts. Book data: books.ts.
- * Deep links: #/reading/<group> scroll to the element id reading-<group>.
+ * Deep links: #/reading/books/<group> (or the older #/reading/<group>) scroll to the element id reading-<group>.
  */
 export default function ReadingConcept({ section = null }: { section?: string | null }) {
   const T = usePageText();
