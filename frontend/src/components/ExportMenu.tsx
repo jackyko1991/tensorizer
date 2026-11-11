@@ -20,13 +20,15 @@ interface Props {
   onWhole?: () => void;
   /** Workspace problems: their meta.yaml, written into the notebook built in the browser */
   wsMeta?: string;
+  /** Workspace problems: open as a folder in desktop VS Code through the backend, and pull the edits back */
+  folder?: { online: boolean; remote: boolean; path: string; onOpen: () => void; onPull: () => void };
 }
 
 /** "Export ▾": open in Colab or VS Code, download the notebook, or download the whole problem as a pixi project zip.
  *  Library and Workspace problems get the same menu. A Workspace problem has no copy in Tensorizer's repository, so
  *  its notebook is built in the browser (Colab: download, then upload) and VS Code opens the GitHub repository the
  *  workspace was last exported to. */
-export default function ExportMenu({ problem, edits, params, onWhole, wsMeta = "" }: Props) {
+export default function ExportMenu({ problem, edits, params, onWhole, wsMeta = "", folder }: Props) {
   const { t } = useLang();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -76,36 +78,38 @@ export default function ExportMenu({ problem, edits, params, onWhole, wsMeta = "
                 <span className="font-medium text-orange-600">{t("nb.colab")} ↗</span>
                 <span className="text-[11px] text-gray-500">{t("nb.colabWsHint")}</span>
               </button>
-              {repo ? (
+              {/* VS Code needs the files on disk: the backend writes them (only greyed while no backend is connected) */}
+              {folder?.online ? (
                 <>
-                  <a
-                    role="menuitem"
-                    href={`https://vscode.dev/github/${repo.owner}/${repo.repo}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={item}
-                    onClick={() => setOpen(false)}
-                  >
+                  <button role="menuitem" className={item} onClick={() => (setOpen(false), folder.onOpen())}>
                     <span className="font-medium text-blue-700">{t("nb.vscode")} ↗</span>
-                    <span className="text-[11px] text-gray-500">{t("nb.vscodeWsHint").replace("{repo}", repo.repo)}</span>
-                  </a>
-                  <a
-                    role="menuitem"
-                    href={`vscode://vscode.git/clone?url=${encodeURIComponent(`${repo.url}.git`)}`}
-                    className={item}
-                    onClick={() => setOpen(false)}
-                  >
-                    <span className="font-medium text-blue-700">{t("nb.vscodeClone")}</span>
-                    <span className="text-[11px] text-gray-500">{t("nb.vscodeWsHint").replace("{repo}", repo.repo)}</span>
-                  </a>
+                    <span className="text-[11px] text-gray-500">
+                      {folder.remote ? t("vs.openRemoteHint") : t("vs.openHint").replace("{path}", folder.path)}
+                    </span>
+                  </button>
+                  <button role="menuitem" className={item} onClick={() => (setOpen(false), folder.onPull())}>
+                    <span className="font-medium text-blue-700">⟲ {t("vs.pull")}</span>
+                    <span className="text-[11px] text-gray-500">{t("vs.pullHint")}</span>
+                  </button>
                 </>
               ) : (
-                (["nb.vscode", "nb.vscodeClone"] as const).map((key) => (
+                (["nb.vscode", "vs.pull"] as const).map((key) => (
                   <div key={key} role="menuitem" aria-disabled="true" className={`${item} cursor-default hover:bg-transparent`}>
                     <span className="font-medium text-gray-400">{t(key)}</span>
-                    <span className="text-[11px] text-gray-500">{t("nb.pushFirst")}</span>
+                    <span className="text-[11px] text-gray-500">{t("vs.noBackend")}</span>
                   </div>
                 ))
+              )}
+              {repo && (
+                <a
+                  role="menuitem"
+                  href={`vscode://vscode.git/clone?url=${encodeURIComponent(`${repo.url}.git`)}`}
+                  className={item}
+                  onClick={() => setOpen(false)}
+                >
+                  <span className="font-medium text-blue-700">{t("nb.vscodeClone")}</span>
+                  <span className="text-[11px] text-gray-500">{t("nb.vscodeWsHint").replace("{repo}", repo.repo)}</span>
+                </a>
               )}
             </>
           ) : (

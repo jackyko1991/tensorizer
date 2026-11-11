@@ -589,3 +589,119 @@ async def run_notebook(session: str, cells: list[str], capture_all: bool, client
         if s:
             s.busy -= 1
         shutil.rmtree(run_dir, ignore_errors=True)
+
+
+# ---------------------------------------------------------------- Export to a folder (VS Code)
+
+EXPORT_ROOT = Path(os.environ.get("TENSORIZER_EXPORT_DIR", Path.home() / "Tensorizer" / "workspace"))
+_EXPORT_NAME = re.compile(r"^[a-z0-9][a-z0-9_-]{0,63}$")
+_MANIFEST = ".tensorizer-export.json"  # hashes of the problem files as last written or pulled
+
+
+class ExportConflict(Exception):
+    """The folder's files were edited (in VS Code) since Tensorizer last wrote or read them."""
+
+    def __init__(self, changed: list[str]):
+        super().__init__(f"changed in the folder since the last export: {', '.join(changed)}")
+        self.changed = changed
+
+
+def _export_paths(name: str) -> tuple[Path, Path, str]:
+    """(project folder, problem folder, package name) for an export name; ValueError for an unsafe name."""
+    if not _EXPORT_NAME.match(name or ""):
+        raise ValueError("invalid folder name")
+    package = "p_" + name.replace("-", "_")  # a Python identifier, whatever the name starts with
+    root = EXPORT_ROOT / name
+    return root, root / "problems" / CATEGORY / package, package
+
+
+def _digest(text: str) -> str:
+    import hashlib
+
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _folder_files(problem: Path) -> dict[str, str]:
+    return {n: (problem / n).read_text(encoding="utf-8") for n in [*FILES, DIAGRAM] if (problem / n).is_file()}
+
+
+def _write_manifest(root: Path, files: dict[str, str]) -> None:
+    hashes = {n: _digest(c) for n, c in sorted(files.items())}
+    (root / _MANIFEST).write_text(json.dumps(hashes, indent=1), encoding="utf-8")
+
+
+def _edited_in_folder(root: Path, problem: Path) -> list[str]:
+    """Files that differ from what Tensorizer last wrote or pulled (empty for a new folder)."""
+    try:
+        known = json.loads((root / _MANIFEST).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+    now = {n: _digest(c) for n, c in _folder_files(problem).items()}
+    return sorted(n for n in set(known) | set(now) if known.get(n) != now.get(n))
+
+
+def _pixi_toml(name: str, package: str) -> str:
+    module = f"problems.{CATEGORY}.{package}"
+    return f"""[workspace]
+name = "tensorizer-{name}"
+description = "A Tensorizer Workspace problem (https://github.com/jackyko1991/tensorizer)"
+channels = ["conda-forge"]
+platforms = ["win-64", "osx-arm64", "osx-64", "linux-64", "linux-aarch64"]
+
+[dependencies]
+python = "3.12.*"
+pytorch = ">=2.4"
+numpy = ">=1.26"
+matplotlib = ">=3.8"
+pillow = ">=10"
+pyyaml = ">=6"
+tqdm = ">=4.66"
+pytest = ">=8"
+
+[tasks]
+# Render the result into out/ (parameters: params.json if present, else the defaults in meta.yaml)
+simulate = "python -m {module}.main --out out"
+verbose = "python -m {module}.main --out out --verbose"
+# The physics checks in test.py (written first: TDD)
+test = "pytest -q problems/{CATEGORY}/{package}/test.py"
+"""
+
+
+def export_folder(session: str, name: str, force: bool = False) -> dict:
+    """Write the problem as a complete pixi project to EXPORT_ROOT/<name> (shared helpers, the problem with its
+    data/, pixi.toml), for desktop VS Code. Refuses with ExportConflict when the folder was edited since the last
+    export or pull, unless `force`. KeyError when the sandbox expired, ValueError for a bad name."""
+    src = _resolve(session)[0]
+    root, problem, package = _export_paths(name)
+    if not force and problem.is_dir():
+        changed = _edited_in_folder(root, problem)
+        if changed:
+            raise ExportConflict(changed)
+    copy_core(root)
+    problem.mkdir(parents=True, exist_ok=True)
+    for pkg in (root / "problems", root / "problems" / CATEGORY, problem):
+        (pkg / "__init__.py").touch()
+    files = _folder_files(src)
+    for n, code in files.items():
+        (problem / n).write_text(code, encoding="utf-8")
+    for n in [*FILES, DIAGRAM]:  # a file removed in the browser goes from the folder too
+        if n not in files and (problem / n).is_file():
+            (problem / n).unlink()
+    if (src / DATA_DIR).is_dir():
+        shutil.copytree(src / DATA_DIR, problem / DATA_DIR, dirs_exist_ok=True)
+    if not (root / "pixi.toml").exists():
+        (root / "pixi.toml").write_text(_pixi_toml(name, package), encoding="utf-8")
+    _write_manifest(root, files)
+    return {"path": str(root), "problem": str(problem), "file": str(problem / "main.py")}
+
+
+def pull_folder(name: str) -> dict:
+    """The problem files as they are now in the exported folder (after editing in VS Code); FileNotFoundError when
+    it was never exported, ValueError when a file is not acceptable (unknown name, too large, unsafe picture)."""
+    root, problem, _ = _export_paths(name)
+    if not problem.is_dir():
+        raise FileNotFoundError(name)
+    files = _folder_files(problem)
+    _check_files(files)
+    _write_manifest(root, files)
+    return {"files": files}

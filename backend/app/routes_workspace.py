@@ -58,6 +58,15 @@ class NotebookRequest(BaseModel):
     all: bool = False  # capture every cell's output (Run all), not only the last one
 
 
+class ExportFolderRequest(BaseModel):
+    name: str = Field(max_length=64)
+    force: bool = False
+
+
+class PullFolderRequest(BaseModel):
+    name: str = Field(max_length=64)
+
+
 @router.post("/blank")
 def blank() -> dict:
     """A new, empty problem: a skeleton that runs and draws a placeholder figure."""
@@ -167,3 +176,30 @@ async def notebook(session: str, req: NotebookRequest, request: Request) -> dict
         raise HTTPException(422, str(e)) from None
     except RunError as e:
         raise HTTPException(400, {"message": str(e), "console": e.console}) from None
+
+
+@router.post("/{session}/export-folder")
+def export_folder(session: str, req: ExportFolderRequest) -> dict:
+    """Write the problem as a pixi project to ~/Tensorizer/workspace/<name> (on the backend's computer) for VS Code.
+    409 with the changed files when the folder was edited since the last export or pull (send force to overwrite)."""
+    _enabled()
+    try:
+        return workspace.export_folder(session, req.name, req.force)
+    except KeyError:
+        raise HTTPException(410, "expired") from None
+    except workspace.ExportConflict as e:
+        raise HTTPException(409, {"message": str(e), "changed": e.changed}) from None
+    except ValueError as e:
+        raise HTTPException(422, str(e)) from None
+
+
+@router.post("/pull-folder")
+def pull_folder(req: PullFolderRequest) -> dict:
+    """The problem files from the exported folder, as edited in VS Code (the page writes them into the Workspace)."""
+    _enabled()
+    try:
+        return workspace.pull_folder(req.name)
+    except FileNotFoundError:
+        raise HTTPException(404, "this problem has not been opened in VS Code yet") from None
+    except ValueError as e:
+        raise HTTPException(422, str(e)) from None

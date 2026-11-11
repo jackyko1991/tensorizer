@@ -22,7 +22,9 @@ import {
   wsBlank,
   wsCopy,
   wsDelete,
+  wsExportFolder,
   wsFiles,
+  wsPullFolder,
   wsNotebook,
   wsPutData,
   wsRunStream,
@@ -47,6 +49,7 @@ import AgentPanel from "./components/AgentPanel";
 import { useAccount, workspaceRoom } from "./account";
 import ExportMenu from "./components/ExportMenu";
 import { REPO_URL } from "./notebook";
+import { activeServer } from "./servers";
 import ConceptPage from "./pages/ConceptPage";
 import {
   formatPageRoute,
@@ -1065,6 +1068,59 @@ function ProblemView({
     }
   };
   const editing = !!ws && !locked;
+
+  // Export ▸ Open in VS Code (needs a backend): the problem as a pixi project in a stable folder on the backend's
+  // computer, opened in desktop VS Code (or over Remote-SSH on your own server); Pull changes brings edits back.
+  const folderKey = `tensorizer.wsFolder.${problem.id}`;
+  const folderName = () => {
+    try {
+      const saved = localStorage.getItem(folderKey);
+      if (saved) return saved;
+    } catch {
+      // no storage: a fresh name each time is still safe
+    }
+    const base = plainText(problem.title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+    const name = `${base || "problem"}-${problem.slug.slice(-6).toLowerCase().replace(/[^a-z0-9]/g, "") || "ws"}`;
+    try {
+      localStorage.setItem(folderKey, name);
+    } catch {
+      // as above
+    }
+    return name;
+  };
+  const remoteBackend = backendChoice() === "remote";
+  const openInVSCode = async () => {
+    if (!ws) return;
+    try {
+      const session = await ws.sync(); // the sandbox holds exactly what the page shows
+      let r;
+      try {
+        r = await wsExportFolder(session, folderName());
+      } catch (e) {
+        const message = e instanceof Error ? e.message : String(e);
+        if (!message.includes("changed in the folder")) throw e;
+        const files = message.split(": ").pop() ?? "";
+        if (!confirm(t("vs.conflict").replace("{files}", files))) return;
+        r = await wsExportFolder(session, folderName(), true);
+      }
+      const path = r.path.replace(/\\/g, "/").replace(/^(?!\/)/, "/");
+      const host = remoteBackend ? new URL(activeServer()?.url ?? location.href).hostname : "";
+      window.location.href = remoteBackend ? `vscode://vscode-remote/ssh-remote+${host}${path}` : `vscode://file${path}`;
+    } catch (e) {
+      alert(e instanceof Error ? e.message : String(e));
+    }
+  };
+  const pullFromVSCode = async () => {
+    if (!ws) return;
+    try {
+      const pulled = await wsPullFolder(folderName());
+      const files = Object.fromEntries(Object.entries(pulled).filter(([name]) => name !== "diagram.svg"));
+      ws.onFiles(files);
+      alert(t("vs.pulled").replace("{n}", String(Object.keys(files).length)));
+    } catch (e) {
+      alert(e instanceof Error ? e.message : String(e));
+    }
+  };
   useEffect(() => {
     if (!formulaBig) return;
     const key = (e: KeyboardEvent) => e.key === "Escape" && setFormulaBig(false);
@@ -1577,7 +1633,22 @@ function ProblemView({
           onEdit={edit}
           onReset={() => setEdits({})}
           onFork={onFork}
-          toolbar={<ExportMenu problem={problem} edits={edits} params={params} onWhole={ws?.onExport} wsMeta={ws?.meta} />}
+          toolbar={
+            <ExportMenu
+              problem={problem}
+              edits={edits}
+              params={params}
+              onWhole={ws?.onExport}
+              wsMeta={ws?.meta}
+              folder={{
+                online: !!backend,
+                remote: remoteBackend,
+                path: `~/Tensorizer/workspace/${ws ? folderName() : ""}`,
+                onOpen: () => void openInVSCode(),
+                onPull: () => void pullFromVSCode(),
+              }}
+            />
+          }
           side={
             // display: contents keeps CodePanel's layout; the wrapper only labels the region for the AI panel
             <div data-ai-region="params" className="contents">

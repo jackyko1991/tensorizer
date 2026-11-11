@@ -219,3 +219,42 @@ def test_a_workspace_run_is_a_detached_job_listed_under_the_page_id(tmp_path, mo
         assert workspace._sandboxes[entry["session"]].busy == 0
         assert c.post("/api/ws/nope/jobs", json=body, headers=me).status_code == 410
         assert c.post(f"/api/ws/{entry['session']}/jobs", json=body).status_code == 400  # no visitor id
+
+
+def test_export_folder_for_vscode_then_pull_back(tmp_path, monkeypatch):
+    """Open in VS Code: a complete pixi project in a stable folder; edits made there come back with pull, and an
+    export never silently overwrites edits that were not pulled."""
+    monkeypatch.setattr(workspace, "EXPORT_ROOT", tmp_path / "export")
+    entry = client.post("/api/ws/blank").json()
+    s = entry["session"]
+    r = client.post(f"/api/ws/{s}/export-folder", json={"name": "my-decay"})
+    assert r.status_code == 200, r.text
+    root = tmp_path / "export" / "my-decay"
+    problem = root / "problems" / "workspace" / "p_my_decay"
+    assert r.json()["path"] == str(root) and (problem / "main.py").is_file() and (problem / "meta.yaml").is_file()
+    assert (root / "pixi.toml").is_file() and "p_my_decay/test.py" in (root / "pixi.toml").read_text()
+    assert (root / "problems" / "_common").is_dir() and (root / "tensorizer_physics").is_dir()
+    assert all((d / "__init__.py").is_file() for d in (root / "problems", problem.parent, problem))
+
+    # the user edits main.py in VS Code: a second export refuses, naming the file; pull brings it back
+    (problem / "main.py").write_text("# edited in VS Code\n", encoding="utf-8")
+    r = client.post(f"/api/ws/{s}/export-folder", json={"name": "my-decay"})
+    assert r.status_code == 409 and r.json()["detail"]["changed"] == ["main.py"]
+    pulled = client.post("/api/ws/pull-folder", json={"name": "my-decay"}).json()["files"]
+    assert pulled["main.py"] == "# edited in VS Code\n" and "meta.yaml" in pulled
+    # once pulled (the page writes the files into the Workspace and syncs), exporting works again
+    client.post("/api/ws/sync", json={"session": s, "files": pulled})
+    assert client.post(f"/api/ws/{s}/export-folder", json={"name": "my-decay"}).status_code == 200
+    # or force overwrites
+    (problem / "main.py").write_text("# again\n", encoding="utf-8")
+    assert client.post(f"/api/ws/{s}/export-folder", json={"name": "my-decay", "force": True}).status_code == 200
+    assert (problem / "main.py").read_text() == pulled["main.py"]
+
+
+def test_export_folder_rejects_unsafe_names_and_unknown_folders(tmp_path, monkeypatch):
+    monkeypatch.setattr(workspace, "EXPORT_ROOT", tmp_path / "export")
+    s = client.post("/api/ws/blank").json()["session"]
+    for bad in ["../etc", "a/b", "", "A", ".hidden", "x" * 65]:
+        assert client.post(f"/api/ws/{s}/export-folder", json={"name": bad}).status_code == 422, bad
+    assert client.post("/api/ws/pull-folder", json={"name": "never-exported"}).status_code == 404
+    assert not (tmp_path / "export").exists() or not any((tmp_path / "export").iterdir())

@@ -977,3 +977,11 @@ export async function wsRunStream(
   }
   throw new RunFailed("the run ended without a result");
 }
+
+/** Open in VS Code: the problem as a pixi project in a stable folder on the backend's computer
+ *  (~/Tensorizer/workspace/<name>). Throws RunFailed; a conflict (folder edited since) mentions "changed in the folder". */
+export const wsExportFolder = (session: string, name: string, force = false) =>
+  wsPost<{ path: string; problem: string; file: string }>(`/${session}/export-folder`, { name, force });
+/** The files as edited in that folder (VS Code), to write back into the Workspace. */
+export const wsPullFolder = (name: string) =>
+  wsPost<{ files: Record<string, string> }>("/pull-folder", { name }).then((r) => r.files);
