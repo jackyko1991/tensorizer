@@ -157,7 +157,8 @@ export const SERIES_SITES: SeriesSite[] = [
     name: "Formalizer",
     kind: "lab",
     url: "https://jackyko1991.github.io/formalizer/",
-    logo: "https://jackyko1991.github.io/formalizer/favicon.svg",
+    // bundled here so the card shows the current logo without depending on that site's deploy
+    logo: "series/formalizer.svg",
     langs: ["en", "zh-Hant"],
     badge: "bg-teal-50 text-teal-800",
     border: "border-teal-200 hover:border-teal-400",

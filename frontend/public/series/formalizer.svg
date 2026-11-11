@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Formalizer: an F grown from the turnstile ⊢ ("proves"): the stem, a top branch and the ⊢ bar, each branch
+       ending in a node like a small proof tree -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#0f766e"/>
+  <path d="M20 14v36M20 16h22M20 33h14" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="44" cy="16" r="4.5" fill="#99f6e4"/>
+  <circle cx="36" cy="33" r="4.5" fill="#99f6e4"/>
+</svg>
