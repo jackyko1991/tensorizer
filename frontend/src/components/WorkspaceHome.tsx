@@ -1,7 +1,8 @@
 /** The home of "My workspace" (#/workspace): its problems as cards, the ways to start a new one, recently viewed
  *  library problems, and export / import. */
 import { useMemo, useRef, useState } from "react";
-import { signIn, signOut, useAccount, workspaceRoom } from "../account";
+import { hub, signIn, signOut, useAccount, workspaceRoom } from "../account";
+import SignInDialog from "./SignInDialog";
 import { assetUrl } from "../api";
 import { useLang, type Key } from "../i18n";
 import type { Manifest, Problem, Workspace } from "../types";
@@ -43,6 +44,7 @@ export default function WorkspaceHome(props: Props) {
   const [picker, setPicker] = useState(false);
   const [query, setQuery] = useState("");
   const [busy, setBusy] = useState(false);
+  const [signingIn, setSigningIn] = useState(false);
   const file = useRef<HTMLInputElement>(null);
   const problems = [...(workspace?.problems ?? [])].sort((a, b) => (b.updated ?? 0) - (a.updated ?? 0));
   const account = useAccount(); // demo sign-in (account.ts): not signed in = free tier, one problem
@@ -87,12 +89,20 @@ export default function WorkspaceHome(props: Props) {
   const tier = (
     <div className="flex flex-wrap items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs" data-testid="ws-tier">
       <span
-        className={`rounded-full px-2 py-0.5 font-medium ${account ? "bg-blue-50 text-blue-700" : "bg-amber-50 text-amber-800"}`}
+        className={`rounded-full px-2 py-0.5 font-medium ${
+          account?.tier === "pro" ? "bg-violet-50 text-violet-700" : account && !hub ? "bg-blue-50 text-blue-700" : "bg-amber-50 text-amber-800"
+        }`}
       >
-        {account ? t("ag.tierMember") : t("ag.tierFree")}
+        {account?.tier === "pro" ? t("acct.tierPro") : account && !hub ? t("ag.tierMember") : t("ag.tierFree")}
       </span>
       <span className="min-w-0 flex-1 text-gray-600">
-        {account ? t("ag.signedInAs").replace("{name}", account.name) : t("ag.freeLimit")}
+        {hub
+          ? account
+            ? t("acct.signedInAs").replace("{name}", account.email ?? account.name)
+            : t("acct.freeLimit")
+          : account
+            ? t("ag.signedInAs").replace("{name}", account.name)
+            : t("ag.freeLimit")}
       </span>
       {account ? (
         <button onClick={() => signOut()} className="rounded-md border border-gray-300 bg-white px-2.5 py-1 hover:bg-gray-50">
@@ -101,15 +111,17 @@ export default function WorkspaceHome(props: Props) {
       ) : (
         <button
           onClick={() => {
+            if (hub) return setSigningIn(true); // real accounts: sign in by email link
             const name = prompt(t("ag.signInPrompt"), "Student")?.trim();
             if (name) signIn(name);
           }}
           data-testid="ws-sign-in"
           className="rounded-md bg-blue-600 px-2.5 py-1 font-medium text-white hover:bg-blue-700"
         >
-          {t("ag.signIn")}
+          {t(hub ? "acct.signIn" : "ag.signIn")}
         </button>
       )}
+      {signingIn && <SignInDialog onClose={() => setSigningIn(false)} />}
     </div>
   );
 
@@ -130,7 +142,9 @@ export default function WorkspaceHome(props: Props) {
               ✎
             </button>
           </div>
-          <p className="text-sm text-gray-500">{t("home.subtitle")}</p>
+          <p className="text-sm text-gray-500">
+            {account?.tier === "pro" ? `${t("home.subtitle").split(" · ")[0]} · ${t("acct.tierPro")}` : t("home.subtitle")}
+          </p>
         </div>
         <div className="flex flex-wrap gap-2 text-xs">
           <button

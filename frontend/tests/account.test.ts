@@ -29,3 +29,10 @@ test("the free tier allows one Workspace problem; a demo sign-in lifts it", () =
   store.data.set("tensorizer.account", "not json");
   assert.equal(currentAccount(store), null);
 });
+
+test("a real account's Workspace limit comes from its plan (hub): Free 1, Pro 50", () => {
+  assert.equal(workspaceRoom(0, { name: "a", tier: "free", since: 0, limit: 1 }), 1);
+  assert.equal(workspaceRoom(3, { name: "a", tier: "pro", since: 0, limit: 50 }), 47);
+  assert.equal(workspaceRoom(60, { name: "a", tier: "pro", since: 0, limit: 50 }), 0);
+  assert.equal(workspaceRoom(3, { name: "a", tier: "pro", since: 0 }), 47); // no limit in the token: the tier's default
+});
