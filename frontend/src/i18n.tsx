@@ -11,6 +11,7 @@ import { BACKEND_STRINGS } from "./strings.backend";
 import { SKILLS_STRINGS } from "./strings.skills";
 import { WORKSPACE_STRINGS } from "./strings.workspace";
 import { YOUR_AGENT_STRINGS } from "./strings.yourAgent";
+import { ROADMAP_STRINGS } from "./strings.roadmap";
 
 export const LANGS = [
   { code: "en", name: "English" },
@@ -346,7 +347,7 @@ const BASE = {
   "plot.close": ["click or Esc to close", "點擊或按 Esc 關閉", "点击或按 Esc 关闭", "cliquez ou Échap pour fermer", "Klicken oder Esc zum Schließen", "haz clic o pulsa Esc para cerrar", "クリックまたは Esc で閉じる", "щелкните или Esc, чтобы закрыть", "클릭하거나 Esc로 닫기", "बंद करने के लिए क्लिक करें या Esc दबाएँ"],
 } satisfies Record<string, readonly string[]>;
 // Feature strings live in their own files (same row format) so parallel work doesn't collide here.
-const TABLE = { ...BASE, ...AGENT_STRINGS, ...WORKSPACE_STRINGS, ...BACKEND_STRINGS, ...SKILLS_STRINGS, ...YOUR_AGENT_STRINGS };
+const TABLE = { ...BASE, ...AGENT_STRINGS, ...WORKSPACE_STRINGS, ...BACKEND_STRINGS, ...SKILLS_STRINGS, ...YOUR_AGENT_STRINGS, ...ROADMAP_STRINGS };
 export type Key = keyof typeof TABLE;
 
 const STORAGE_KEY = "tensorizer.lang";

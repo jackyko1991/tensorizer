@@ -38,7 +38,7 @@ import JobsButton from "./components/JobsPanel";
 import CodePanel from "./components/CodePanel";
 import EquationPanel, { FormulationExport } from "./components/EquationPanel";
 import ParamsPanel from "./components/ParamsPanel";
-import PlotPanel from "./components/PlotPanel";
+import PlotPanel, { BIG_PANEL, ExpandButton } from "./components/PlotPanel";
 import Sidebar, { LEVEL_STYLE } from "./components/Sidebar";
 import TerminalPanel from "./components/TerminalPanel";
 import { LANGS, localize, useLang, type Key, type Lang } from "./i18n";
@@ -292,7 +292,9 @@ export default function App() {
                 ? pageText(`skills.tab.${id}` as PageKey)
                 : id === "skills"
                   ? t("ya.skills")
-                  : "MCP",
+                  : id === "roadmap"
+                    ? t("rm.tab")
+                    : "MCP",
           href: `#${formatPageRoute(target, id)}`,
           current: page === target && subTab === id,
         }))
@@ -1043,6 +1045,26 @@ function ProblemView({
   const [lowerTab, setLowerTab] = useState<"formulation" | "data">("formulation");
   // ⤢ the formulation over the whole page (larger maths, scrolls); Esc or ⤡ brings it back
   const [formulaBig, setFormulaBig] = useState(false);
+  // 🔒 a Workspace problem shown exactly like a library problem (no editing), remembered per problem in this browser
+  const lockKey = `tensorizer.wsLocked.${problem.id}`;
+  const [locked, setLocked] = useState(() => {
+    try {
+      return localStorage.getItem(lockKey) === "1";
+    } catch {
+      return false;
+    }
+  });
+  const lock = (on: boolean) => {
+    setLocked(on);
+    setFloating(null);
+    try {
+      if (on) localStorage.setItem(lockKey, "1");
+      else localStorage.removeItem(lockKey);
+    } catch {
+      // storage blocked: the lock lasts until the page is left
+    }
+  };
+  const editing = !!ws && !locked;
   useEffect(() => {
     if (!formulaBig) return;
     const key = (e: KeyboardEvent) => e.key === "Escape" && setFormulaBig(false);
@@ -1270,7 +1292,7 @@ function ProblemView({
       {/* 2. Problem body: title, tags and setup sketch pinned; equations scroll */}
       <main data-ws-inline className="flex min-w-0 flex-col border-r border-gray-200 xl:min-h-0 xl:flex-1">
         <div className={`shrink-0 border-b border-gray-200 bg-white px-5 py-4 ${onPhone("problem")}`}>
-          {ws ? (
+          {ws && editing ? (
             <div data-ai-region="summary">
               {/* Workspace problem: edited in place; Markdown / meta.yaml open a floating editor kept in sync */}
               <div className="flex items-start justify-between gap-3">
@@ -1287,7 +1309,10 @@ function ProblemView({
                   )}
                   onCommit={(title) => title.trim() && onMeta({ title: title.trim() })}
                 />
-                <EditorButtons open={floating} onOpen={setFloating} />
+                <span className="flex shrink-0 items-center gap-2">
+                  <LockButton locked={false} onChange={lock} />
+                  <EditorButtons open={floating} onOpen={setFloating} />
+                </span>
               </div>
               <div className="mt-1.5 flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
@@ -1362,6 +1387,7 @@ function ProblemView({
                     <ForkIcon /> {t("fork")}
                   </button>
                 )}
+                {ws && <LockButton locked onChange={lock} />}
               </div>
               <div className="mt-1.5 flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
@@ -1384,7 +1410,7 @@ function ProblemView({
               {manifest && <SeriesNav manifest={manifest} problemId={problem.id} onSelect={select} />}
             </div>
           )}
-          {ws && <PictureUpload hasPicture={!!problem.diagram} onPicture={ws.onDiagram} />}
+          {ws && editing && <PictureUpload hasPicture={!!problem.diagram} onPicture={ws.onDiagram} />}
           {problem.diagram && (
             <div className="group relative mx-auto mt-3 w-full max-w-xs">
               <img
@@ -1449,11 +1475,19 @@ function ProblemView({
 
         <div
           className={`bg-gray-50/60 p-5 xl:min-h-0 xl:flex-1 ${
-            !ws && lowerTab === "data" ? "flex flex-col gap-3 xl:flex! xl:overflow-hidden" : "space-y-5 xl:overflow-y-auto"
-          } ${onPhone("formulation")}`}
+            !editing && lowerTab === "data" ? "flex flex-col gap-3 xl:flex! xl:overflow-hidden" : "space-y-5 xl:overflow-y-auto"
+          } ${onPhone("formulation")} ${editing && formulaBig ? `${BIG_PANEL} overflow-y-auto bg-gray-50` : ""}`}
         >
-          {ws ? (
-            <InlineEquations problem={problem} onMeta={onMeta} />
+          {ws && editing ? (
+            <>
+              <div className="sticky -top-5 z-20 -mx-5 -mt-5 flex h-8 items-center border-b border-gray-200 bg-gray-50 px-3 text-xs">
+                <span className="font-medium text-gray-600">📐 {t("mtab.formulation")}</span>
+                <span className="ml-auto">
+                  <ExpandButton big={formulaBig} onChange={setFormulaBig} testId="ws-formula-expand" />
+                </span>
+              </div>
+              <InlineEquations problem={problem} onMeta={onMeta} />
+            </>
           ) : (
             <>
               <div
@@ -1585,6 +1619,23 @@ function ProblemView({
         </div>
       </section>
     </>
+  );
+}
+
+/** 🔒 / 🔓 for a Workspace problem: locked, it reads exactly like a library problem; unlocked, it is edited in place. */
+function LockButton({ locked, onChange }: { locked: boolean; onChange: (locked: boolean) => void }) {
+  const { t } = useLang();
+  return (
+    <button
+      onClick={() => onChange(!locked)}
+      title={t(locked ? "ws.unlock" : "ws.lock")}
+      aria-label={t(locked ? "ws.unlock" : "ws.lock")}
+      aria-pressed={locked}
+      data-testid="ws-lock"
+      className="flex shrink-0 items-center gap-1 rounded-md border border-gray-200 px-2 py-1 text-xs text-gray-600 hover:border-blue-300 hover:text-blue-700"
+    >
+      {locked ? "🔒" : "🔓"}
+    </button>
   );
 }
 

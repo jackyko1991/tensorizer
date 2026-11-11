@@ -12,6 +12,7 @@ import ShellCommand from "../components/ShellCommand";
 import McpSetup from "../components/McpSetup";
 import type { AgentsTab } from "../pageRoute";
 import AgentPicker, { type SetupAgent } from "../components/AgentPicker";
+import RoadmapSection from "./RoadmapSection";
 
 /** Where the site serves the generated skill files (scripts/agent_skill.py), for commands run on any machine. */
 const PUBLIC = "https://jackyko1991.github.io/tensorizer/generated/agent/";
@@ -82,7 +83,7 @@ export default function AgentsPage({ tab, backendKey }: {
           <p className="mt-3 text-gray-600">{t("ya.intro")}</p>
         </header>
 
-        {tab === "mcp" ? <McpSetup key={backendKey} agent={agent} onAgent={setAgent} /> : <>
+        {tab === "roadmap" ? <RoadmapSection /> : tab === "mcp" ? <McpSetup key={backendKey} agent={agent} onAgent={setAgent} /> : <>
         <div>
           <h2 className="text-xl font-semibold">{t("ag.title")}</h2>
           <p className="mt-2 text-sm text-gray-600">{t("ag.intro")}</p>

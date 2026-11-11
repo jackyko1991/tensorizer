@@ -1,0 +1,92 @@
+import { useLang, type Key } from "../i18n";
+import { formatPageRoute } from "../pageRoute";
+
+const FREE: [Key, Key, Key][] = [
+  ["rm.f1", "rm.f1What", "rm.f1Needs"],
+  ["rm.f2", "rm.f2What", "rm.f2Needs"],
+  ["rm.f3", "rm.f3What", "rm.f3Needs"],
+  ["rm.f4", "rm.f4What", "rm.f4Needs"],
+];
+
+/** AI agent ▸ Product roadmap (#/agents/roadmap): what is free now (community), and the planned Pro and Campus tiers.
+ *  Formalizer's AI agent page has the matching section. */
+export default function RoadmapSection() {
+  const { t } = useLang();
+  return (
+    <div className="space-y-6" data-testid="roadmap">
+      <div>
+        <h2 className="text-xl font-semibold">{t("rm.tab")}</h2>
+        <p className="mt-2 text-sm text-gray-600">{t("rm.intro")}</p>
+      </div>
+      <div className="rounded-xl border border-amber-200 bg-amber-50 px-5 py-3 text-sm text-amber-900">
+        <p className="font-semibold">{t("rm.pending")}</p>
+        <p className="mt-1">{t("rm.pendingBody")}</p>
+      </div>
+
+      <section className="rounded-xl border border-gray-200 bg-white p-6">
+        <h3 className="font-semibold text-gray-900">{t("rm.freeTitle")}</h3>
+        <p className="mt-2 text-sm text-gray-700">{t("rm.freeBody")}</p>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="border-b border-gray-200 text-xs uppercase tracking-wide text-gray-500">
+                <th className="py-2 pr-4 font-semibold">{t("rm.hLevel")}</th>
+                <th className="py-2 pr-4 font-semibold">{t("rm.hWhat")}</th>
+                <th className="py-2 font-semibold">{t("rm.hNeeds")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {FREE.map(([level, what, needs]) => (
+                <tr key={level} className="border-b border-gray-100 align-top last:border-0">
+                  <td className="py-2.5 pr-4 font-medium whitespace-nowrap text-gray-900">{t(level)}</td>
+                  <td className="py-2.5 pr-4 text-gray-700">{t(what)}</td>
+                  <td className="py-2.5 text-gray-600">{t(needs)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        {(
+          [
+            ["rm.proTitle", "rm.proBody"],
+            ["rm.campusTitle", "rm.campusBody"],
+          ] as [Key, Key][]
+        ).map(([title, body]) => (
+          <section key={title} className="rounded-xl border border-dashed border-gray-300 bg-white p-6">
+            <h3 className="font-semibold text-gray-900">{t(title)}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-gray-700">{t(body)}</p>
+          </section>
+        ))}
+      </div>
+
+      <ul className="space-y-2 text-sm text-gray-700">
+        {(
+          [
+            ["rm.p1Title", "rm.p1"],
+            ["rm.p2Title", "rm.p2"],
+            ["rm.p3Title", "rm.p3"],
+          ] as [Key, Key][]
+        ).map(([title, body]) => (
+          <li key={title} className="flex gap-2">
+            <span className="text-blue-600">✓</span>
+            <span>
+              <b className="text-gray-900">{t(title)}</b> {t(body)}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <p className="flex flex-wrap gap-4 text-sm">
+        <a href={`#${formatPageRoute("agents", "skills")}`} className="font-medium text-blue-700 hover:underline">
+          {t("ya.skills")} →
+        </a>
+        <a href={`#${formatPageRoute("agents", "mcp")}`} className="font-medium text-blue-700 hover:underline">
+          MCP →
+        </a>
+      </p>
+    </div>
+  );
+}

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { TestTally } from "../api";
 import type { Problem } from "../types";
 import { useLang } from "../i18n";
-import { PanelBar } from "./PlotPanel";
+import { BIG_PANEL, ExpandButton, PanelBar, useBigPanel } from "./PlotPanel";
 import QueueModal from "./QueueModal";
 import TestsModal from "./TestsModal";
 
@@ -59,6 +59,7 @@ export default function TerminalPanel({ problem, console, error, running, tests,
   const [cleared, setCleared] = useState<{ console: string; error: string | null } | null>(null);
   const [queueOpen, setQueueOpen] = useState(false);
   const [testsOpen, setTestsOpen] = useState(false);
+  const [big, setBig] = useBigPanel(); // ⤢ the terminal over the whole page
   const isCleared = !running && cleared !== null && cleared.console === console && cleared.error === error;
   useEffect(() => {
     if (running) setCleared(null);
@@ -71,7 +72,7 @@ export default function TerminalPanel({ problem, console, error, running, tests,
 
   const lines = isCleared || !console ? [] : console.split("\n");
   return (
-    <section data-ai-region="terminal" className={`flex min-w-0 flex-col bg-white ${className}`}>
+    <section data-ai-region="terminal" className={`flex min-w-0 flex-col bg-white ${className} ${big ? BIG_PANEL : ""}`}>
       <PanelBar title={t("terminal")}>
         {tests && !running && (
           <button
@@ -105,6 +106,7 @@ export default function TerminalPanel({ problem, console, error, running, tests,
         >
           ⌫ {t("terminal.clear")}
         </button>
+        <ExpandButton big={big} onChange={setBig} testId="terminal-expand" />
       </PanelBar>
       <pre
         ref={ref}

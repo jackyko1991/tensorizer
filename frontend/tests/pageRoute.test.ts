@@ -30,7 +30,7 @@ test("parse: page, tab and section; other routes are not tabbed pages", () => {
 });
 
 test("AI agent has Skills and MCP routes, with legacy links and remembered tabs", () => {
-  assert.deepEqual(PAGE_TABS.agents, ["skills", "mcp"]);
+  assert.deepEqual(PAGE_TABS.agents, ["skills", "mcp", "roadmap"]);
   assert.deepEqual(parsePageRoute("agents"), { page: "agents", tab: null, section: null });
   assert.deepEqual(parsePageRoute("agents/mcp"), { page: "agents", tab: "mcp", section: null });
   assert.equal(resolveTab("agents", null, null), "skills");

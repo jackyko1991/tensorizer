@@ -19,6 +19,7 @@ interface Props {
 export default function PlotPanel({ problem, src, running, progress = null, className = "" }: Props) {
   const { t } = useLang();
   const [zoomed, setZoomed] = useState(false);
+  const [big, setBig] = useBigPanel(); // ⤢ the results over the whole page
 
   useEffect(() => {
     if (!zoomed) return;
@@ -61,7 +62,7 @@ export default function PlotPanel({ problem, src, running, progress = null, clas
     : null;
 
   return (
-    <section className={`flex min-w-0 flex-col bg-white ${className}`}>
+    <section className={`flex min-w-0 flex-col bg-white ${className} ${big ? BIG_PANEL : ""}`}>
       <PanelBar title={t("results")}>
         {running && (
           <span className="text-blue-600" data-testid="plot-progress">
@@ -69,6 +70,7 @@ export default function PlotPanel({ problem, src, running, progress = null, clas
             {progress !== null && <span className="ml-1 tabular-nums">{Math.round(progress * 100)}%</span>}
           </span>
         )}
+        <ExpandButton big={big} onChange={setBig} testId="results-expand" />
       </PanelBar>
       {running && progress !== null && (
         <div className="h-0.5 shrink-0 bg-blue-100">
@@ -78,8 +80,8 @@ export default function PlotPanel({ problem, src, running, progress = null, clas
       {main && !running ? (
         <div
           ref={box}
-          style={fitH ? { height: fitH } : undefined}
-          className="h-[50vh] shrink-0 xl:h-auto xl:min-h-0 xl:flex-1 xl:shrink"
+          style={fitH && !big ? { height: fitH } : undefined}
+          className={big ? "min-h-0 flex-1" : "h-[50vh] shrink-0 xl:h-auto xl:min-h-0 xl:flex-1 xl:shrink"}
           data-testid="results-browser"
         >
           {/* a definite height on phones (the fill layout sizes to it); on desktop the panel's flex height */}
@@ -130,5 +132,36 @@ export function PanelBar({ title, children }: { title: string; children?: React.
       <span className="font-semibold uppercase tracking-wide text-gray-500">{title}</span>
       <span className="flex items-center gap-3">{children}</span>
     </div>
+  );
+}
+
+/** A panel shown over the whole page: the same element grows (its state and scroll are kept); Esc brings it back. */
+export const BIG_PANEL = "fixed! inset-3 z-50 h-auto! w-auto! rounded-lg border border-gray-200 shadow-2xl";
+
+export function useBigPanel(): [boolean, (big: boolean) => void] {
+  const [big, setBig] = useState(false);
+  useEffect(() => {
+    if (!big) return;
+    const key = (e: KeyboardEvent) => e.key === "Escape" && setBig(false);
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
+  }, [big]);
+  return [big, setBig];
+}
+
+/** ⤢ / ✕ at the right end of a PanelBar: the same place on every panel. */
+export function ExpandButton({ big, onChange, testId }: { big: boolean; onChange: (big: boolean) => void; testId?: string }) {
+  const { t } = useLang();
+  return (
+    <button
+      onClick={() => onChange(!big)}
+      title={t(big ? "mesh.shrink" : "mesh.expand")}
+      aria-label={t(big ? "mesh.shrink" : "mesh.expand")}
+      aria-pressed={big}
+      data-testid={testId}
+      className="rounded px-1 text-sm leading-none text-gray-500 hover:bg-gray-200 hover:text-gray-800"
+    >
+      {big ? "✕" : "⤢"}
+    </button>
   );
 }
