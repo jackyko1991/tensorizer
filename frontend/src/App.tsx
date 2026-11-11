@@ -1577,7 +1577,7 @@ function ProblemView({
           onEdit={edit}
           onReset={() => setEdits({})}
           onFork={onFork}
-          toolbar={<ExportMenu problem={problem} edits={edits} params={params} onWhole={ws?.onExport} />}
+          toolbar={<ExportMenu problem={problem} edits={edits} params={params} onWhole={ws?.onExport} wsMeta={ws?.meta} />}
           side={
             // display: contents keeps CodePanel's layout; the wrapper only labels the region for the AI panel
             <div data-ai-region="params" className="contents">

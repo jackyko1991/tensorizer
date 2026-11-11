@@ -2,6 +2,7 @@
  *  The token is kept in sessionStorage only and sent only to api.github.com (see github.ts). */
 import { useState } from "react";
 import { GitHubError, pushToGitHub, TOKEN_URL, validRepoName, type Progress } from "../github";
+import { rememberPushedRepo } from "../notebook";
 import { useLang, type Key } from "../i18n";
 
 const TOKEN_STORE = "tensorizer.github.token";
@@ -54,6 +55,7 @@ export default function GitHubDialog({
         onProgress: setProgress,
       });
       setUrl(link);
+      rememberPushedRepo(link); // Export ▸ VS Code opens this repository for Workspace problems
       setStage("done");
     } catch (e) {
       const code = e instanceof GitHubError ? e.code : "other";

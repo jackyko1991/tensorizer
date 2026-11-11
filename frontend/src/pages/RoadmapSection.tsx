@@ -1,11 +1,12 @@
 import { useLang, type Key } from "../i18n";
 import { formatPageRoute } from "../pageRoute";
 
-const FREE: [Key, Key, Key][] = [
-  ["rm.f1", "rm.f1What", "rm.f1Needs"],
-  ["rm.f2", "rm.f2What", "rm.f2Needs"],
-  ["rm.f3", "rm.f3What", "rm.f3Needs"],
-  ["rm.f4", "rm.f4What", "rm.f4Needs"],
+/** level, what you get, needs, available now (✓ in the table) */
+const FREE: [Key, Key, Key, boolean][] = [
+  ["rm.f1", "rm.f1What", "rm.f1Needs", true],
+  ["rm.f2", "rm.f2What", "rm.f2Needs", true],
+  ["rm.f3", "rm.f3What", "rm.f3Needs", true],
+  ["rm.f4", "rm.f4What", "rm.f4Needs", true],
 ];
 
 /** AI agent ▸ Product roadmap (#/agents/roadmap): what is free now (community), and the planned Pro and Campus tiers.
@@ -32,15 +33,25 @@ export default function RoadmapSection() {
               <tr className="border-b border-gray-200 text-xs uppercase tracking-wide text-gray-500">
                 <th className="py-2 pr-4 font-semibold">{t("rm.hLevel")}</th>
                 <th className="py-2 pr-4 font-semibold">{t("rm.hWhat")}</th>
-                <th className="py-2 font-semibold">{t("rm.hNeeds")}</th>
+                <th className="py-2 pr-4 font-semibold">{t("rm.hNeeds")}</th>
+                <th className="py-2 text-center font-semibold">{t("rm.hNow")}</th>
               </tr>
             </thead>
             <tbody>
-              {FREE.map(([level, what, needs]) => (
+              {FREE.map(([level, what, needs, now]) => (
                 <tr key={level} className="border-b border-gray-100 align-top last:border-0">
                   <td className="py-2.5 pr-4 font-medium whitespace-nowrap text-gray-900">{t(level)}</td>
                   <td className="py-2.5 pr-4 text-gray-700">{t(what)}</td>
-                  <td className="py-2.5 text-gray-600">{t(needs)}</td>
+                  <td className="py-2.5 pr-4 text-gray-600">{t(needs)}</td>
+                  <td className="py-2.5 text-center">
+                    {now ? (
+                      <span className="font-semibold text-emerald-600" aria-label={t("rm.hNow")}>
+                        ✓
+                      </span>
+                    ) : (
+                      <span className="text-gray-300">–</span>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

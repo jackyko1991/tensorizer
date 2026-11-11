@@ -1,6 +1,9 @@
 /** Jupyter notebook export: "Open in Colab" (the committed default) and "Download .ipynb" (your current version). */
 import { generatedUrl } from "./api";
 import type { Params, Problem } from "./types";
+import { workspaceNotebook } from "./workspaceNotebook";
+
+export { lastPushedRepo, rememberPushedRepo } from "./workspaceNotebook";
 
 export const REPO = "jackyko1991/tensorizer";
 export const REPO_URL = `https://github.com/${REPO}`;
@@ -62,3 +65,9 @@ function save(blob: Blob, filename: string) {
   a.click();
   URL.revokeObjectURL(a.href);
 }
+
+export function downloadWorkspaceNotebook(problem: Problem, meta: string, edits: Record<string, string>, params: Params) {
+  const nb = workspaceNotebook(problem, meta, edits, params);
+  save(new Blob([JSON.stringify(nb, null, 1) + "\n"], { type: "application/x-ipynb+json" }), `${problem.slug}.ipynb`);
+}
+

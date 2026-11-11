@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { useLang, type Key } from "../i18n";
-import { colabUrl, downloadNotebook, downloadPixiProject, vscodeCloneUrl, vscodeWebUrl } from "../notebook";
+import { useLang } from "../i18n";
+import {
+  colabUrl,
+  downloadNotebook,
+  downloadPixiProject,
+  downloadWorkspaceNotebook,
+  lastPushedRepo,
+  vscodeCloneUrl,
+  vscodeWebUrl,
+} from "../notebook";
 import type { Params, Problem } from "../types";
 import DownloadIcon from "./DownloadIcon";
 
@@ -10,11 +18,15 @@ interface Props {
   params: Params;
   /** Workspace problems: download the whole problem as one zip (the library links below point at GitHub files). */
   onWhole?: () => void;
+  /** Workspace problems: their meta.yaml, written into the notebook built in the browser */
+  wsMeta?: string;
 }
 
 /** "Export ▾": open in Colab or VS Code, download the notebook, or download the whole problem as a pixi project zip.
- *  Library and Workspace problems get the same menu; GitHub-backed items are greyed for Workspace problems. */
-export default function ExportMenu({ problem, edits, params, onWhole }: Props) {
+ *  Library and Workspace problems get the same menu. A Workspace problem has no copy in Tensorizer's repository, so
+ *  its notebook is built in the browser (Colab: download, then upload) and VS Code opens the GitHub repository the
+ *  workspace was last exported to. */
+export default function ExportMenu({ problem, edits, params, onWhole, wsMeta = "" }: Props) {
   const { t } = useLang();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -33,6 +45,7 @@ export default function ExportMenu({ problem, edits, params, onWhole }: Props) {
   }, [open]);
 
   const inWorkspace = !!onWhole;
+  const repo = open && inWorkspace ? lastPushedRepo() : null;
   const item = "flex w-full flex-col items-start rounded-md px-3 py-2 text-left hover:bg-blue-50";
   return (
     <div ref={ref} className="relative">
@@ -49,20 +62,51 @@ export default function ExportMenu({ problem, edits, params, onWhole }: Props) {
           role="menu"
           className="absolute right-0 z-30 mt-1 w-64 rounded-lg border border-gray-200 bg-white p-1 shadow-lg"
         >
-          {/* the same menu for library and Workspace problems; a Workspace problem lives only in this browser, so the
-              items that open files from GitHub are shown, greyed, with the reason */}
           {inWorkspace ? (
             <>
-              {[
-                ["nb.colab", "text-orange-600"],
-                ["nb.vscode", "text-blue-700"],
-                ["nb.vscodeClone", "text-blue-700"],
-              ].map(([key, color]) => (
-                <div key={key} role="menuitem" aria-disabled="true" className={`${item} cursor-not-allowed opacity-50 hover:bg-transparent`}>
-                  <span className={`font-medium ${color}`}>{t(key as Key)}</span>
-                  <span className="text-[11px] text-gray-500">{t("nb.libraryOnly")}</span>
-                </div>
-              ))}
+              <button
+                role="menuitem"
+                className={item}
+                onClick={() => {
+                  setOpen(false);
+                  downloadWorkspaceNotebook(problem, wsMeta, edits, params);
+                  window.open("https://colab.research.google.com/", "_blank", "noopener");
+                }}
+              >
+                <span className="font-medium text-orange-600">{t("nb.colab")} ↗</span>
+                <span className="text-[11px] text-gray-500">{t("nb.colabWsHint")}</span>
+              </button>
+              {repo ? (
+                <>
+                  <a
+                    role="menuitem"
+                    href={`https://vscode.dev/github/${repo.owner}/${repo.repo}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={item}
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className="font-medium text-blue-700">{t("nb.vscode")} ↗</span>
+                    <span className="text-[11px] text-gray-500">{t("nb.vscodeWsHint").replace("{repo}", repo.repo)}</span>
+                  </a>
+                  <a
+                    role="menuitem"
+                    href={`vscode://vscode.git/clone?url=${encodeURIComponent(`${repo.url}.git`)}`}
+                    className={item}
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className="font-medium text-blue-700">{t("nb.vscodeClone")}</span>
+                    <span className="text-[11px] text-gray-500">{t("nb.vscodeWsHint").replace("{repo}", repo.repo)}</span>
+                  </a>
+                </>
+              ) : (
+                (["nb.vscode", "nb.vscodeClone"] as const).map((key) => (
+                  <div key={key} role="menuitem" aria-disabled="true" className={`${item} cursor-default hover:bg-transparent`}>
+                    <span className="font-medium text-gray-400">{t(key)}</span>
+                    <span className="text-[11px] text-gray-500">{t("nb.pushFirst")}</span>
+                  </div>
+                ))
+              )}
             </>
           ) : (
             <>
@@ -96,12 +140,16 @@ export default function ExportMenu({ problem, edits, params, onWhole }: Props) {
           )}
           <div className="my-1 border-t border-gray-100" />
           {inWorkspace ? (
-            <div role="menuitem" aria-disabled="true" className={`${item} cursor-not-allowed opacity-50 hover:bg-transparent`}>
+            <button
+              role="menuitem"
+              className={item}
+              onClick={() => (setOpen(false), downloadWorkspaceNotebook(problem, wsMeta, edits, params))}
+            >
               <span className="flex items-center gap-1.5 font-medium text-gray-800">
                 <DownloadIcon /> {t("nb.download")}
               </span>
-              <span className="text-[11px] text-gray-500">{t("nb.libraryOnly")}</span>
-            </div>
+              <span className="text-[11px] text-gray-500">{t("nb.downloadWsHint")}</span>
+            </button>
           ) : (
             <button
               role="menuitem"
