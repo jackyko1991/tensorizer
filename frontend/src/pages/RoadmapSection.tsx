@@ -60,10 +60,11 @@ export default function RoadmapSection() {
         </div>
       </section>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {(
           [
             ["rm.proTitle", "rm.proBody"],
+            ["rm.researchTitle", "rm.researchBody"],
             ["rm.campusTitle", "rm.campusBody"],
           ] as [Key, Key][]
         ).map(([title, body]) => (
