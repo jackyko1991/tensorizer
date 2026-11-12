@@ -85,7 +85,7 @@ export default function PlotPanel({ problem, src, running, progress = null, clas
           data-testid="results-browser"
         >
           {/* a definite height on phones (the fill layout sizes to it); on desktop the panel's flex height */}
-          <DataSources datasets={[main, ...(problem.results ?? [])]} rail={["files"]} listTitle={t("results")} fill />
+          <DataSources datasets={[main, ...(problem.results ?? [])]} rail={["files"]} listTitle={t("results")} fill expandable={false} />
         </div>
       ) : (
         <div className="flex min-h-48 flex-1 items-center justify-center overflow-hidden p-2 xl:min-h-0">

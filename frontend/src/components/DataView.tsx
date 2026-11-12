@@ -72,8 +72,11 @@ export default function DataView({
   fill = false,
   expanded,
   onExpand,
+  expandable = true,
 }: {
   dataset: Dataset;
+  /** false: no ⤢ of its own (the panel around it already has one, e.g. Results) */
+  expandable?: boolean;
   /** Controlled ⤢: the parent (the data browser) enlarges itself, file list included, instead of this view. */
   expanded?: boolean;
   onExpand?: (big: boolean) => void;
@@ -154,16 +157,18 @@ export default function DataView({
           <DownloadIcon className="h-3.5 w-3.5" />
           {t("dataset.download")}
         </a>
-        <button
-          onClick={toggleBig}
-          title={t(big ? "mesh.shrink" : "mesh.expand")}
-          aria-label={t(big ? "mesh.shrink" : "mesh.expand")}
-          aria-pressed={big}
-          data-testid="data-expand"
-          className="shrink-0 rounded px-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
-        >
-          {big ? "✕" : "⤢"}
-        </button>
+        {expandable && (
+          <button
+            onClick={toggleBig}
+            title={t(big ? "mesh.shrink" : "mesh.expand")}
+            aria-label={t(big ? "mesh.shrink" : "mesh.expand")}
+            aria-pressed={big}
+            data-testid="data-expand"
+            className="shrink-0 rounded px-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+          >
+            {big ? "✕" : "⤢"}
+          </button>
+        )}
       </div>
       {(dataset.kind === "table" || dataset.kind === "text") && dataset.comments.length === 0 && (
         <p className="border-b border-amber-200 bg-amber-50 px-3 py-1.5 text-xs text-amber-800" data-testid="no-source">
@@ -393,8 +398,11 @@ export function DataSources({
   rail: railIds = ["files", "source"],
   listTitle = "data/",
   fill = false,
+  expandable = true,
 }: {
   datasets: Dataset[];
+  /** false: no ⤢ of its own (the Results panel's bar has the one ⤢) */
+  expandable?: boolean;
   /** Rail icons: the file list and/or the source & licence notes. */
   rail?: ("files" | "source")[];
   /** Heading of the file list (data/ for bundled data, results for run outputs). */
@@ -512,7 +520,7 @@ export function DataSources({
           </aside>
         )}
         <div className="flex min-w-0 flex-1 flex-col">
-          <DataView dataset={current} comments={false} bare fill={fill || big} expanded={big} onExpand={expand} />
+          <DataView dataset={current} comments={false} bare fill={fill || big} expanded={big} onExpand={expand} expandable={expandable} />
         </div>
       </section>
     </div>
