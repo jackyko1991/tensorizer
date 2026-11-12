@@ -1,4 +1,5 @@
 import katex from "katex";
+import { highlightCode } from "./highlight.ts";
 import { ALIAS_INDEX, ALIAS_RE } from "../scientists";
 import { useLayoutEffect, useMemo, useRef } from "react";
 
@@ -150,7 +151,8 @@ export function RichText({ text, people = false }: { text: string; people?: bool
           : escape(part.replace(/\\\$/g, "$"))
               .replace(
                 /`([^`]+)`/g,
-                '<code class="rounded bg-gray-100 px-1 py-0.5 font-mono text-[0.85em] text-gray-800">$1</code>',
+                (_, c: string) =>
+                  `<code class="rounded bg-gray-100 px-1 py-0.5 font-mono text-[0.85em] text-gray-800">${highlightCode(c)}</code>`,
               )
               .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>"),
       )
