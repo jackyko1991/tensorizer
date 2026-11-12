@@ -1048,6 +1048,8 @@ function ProblemView({
   const [lowerTab, setLowerTab] = useState<"formulation" | "data">("formulation");
   // ⤢ the formulation over the whole page (larger maths, scrolls); Esc or ⤡ brings it back
   const [formulaBig, setFormulaBig] = useState(false);
+  // Workspace: the floating Markdown / meta.yaml editor (null = closed; the inline view is always shown)
+  const [floating, setFloating] = useState<FloatMode | null>(null);
   // 🔒 a Workspace problem shown exactly like a library problem (no editing), remembered per problem in this browser
   const lockKey = `tensorizer.wsLocked.${problem.id}`;
   const [locked, setLocked] = useState(() => {
@@ -1122,11 +1124,11 @@ function ProblemView({
     }
   };
   useEffect(() => {
-    if (!formulaBig) return;
+    if (!formulaBig || floating) return; // with the editor open, Esc closes the editor first
     const key = (e: KeyboardEvent) => e.key === "Escape" && setFormulaBig(false);
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, [formulaBig]);
+  }, [formulaBig, floating]);
   // A workspace problem's meta.yaml may add or remove parameters: start again from the new defaults.
   const paramSpecs = JSON.stringify(problem.params);
   const lastSpecs = useRef(paramSpecs);
@@ -1136,8 +1138,6 @@ function ProblemView({
   }, [paramSpecs, problem]);
   // Editing meta.yaml re-parses it on the server after a pause (title, equations and parameters update).
   const [metaError, setMetaError] = useState<string | null>(null);
-  // Workspace: the floating Markdown / meta.yaml editor (null = closed; the inline view is always shown)
-  const [floating, setFloating] = useState<FloatMode | null>(null);
   const onMeta = (fields: Partial<MetaFields>) => {
     ws?.onMeta(fields);
     setMetaError(null); // meta.yaml is regenerated from the view, so it is valid again
@@ -1538,7 +1538,9 @@ function ProblemView({
             <>
               <div className="sticky -top-5 z-20 -mx-5 -mt-5 flex h-8 items-center border-b border-gray-200 bg-gray-50 px-3 text-xs">
                 <span className="font-medium text-gray-600">📐 {t("mtab.formulation")}</span>
-                <span className="ml-auto">
+                <span className="ml-auto flex items-center gap-2">
+                  {/* expanded: the same Markdown / meta.yaml editor as the header, to edit the script while reading */}
+                  {formulaBig && <EditorButtons open={floating} onOpen={setFloating} />}
                   <ExpandButton big={formulaBig} onChange={setFormulaBig} testId="ws-formula-expand" />
                 </span>
               </div>

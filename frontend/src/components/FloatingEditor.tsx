@@ -186,7 +186,7 @@ export default function FloatingEditor({
       data-testid="floating-editor"
       ref={frame}
       style={{ left: pos.x, top: pos.y, width: pos.w, height: pos.h, resize: "both", minWidth: 320, minHeight: 200 }}
-      className="fixed z-40 flex max-h-[calc(100dvh-1rem)] max-w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl"
+      className="fixed z-[60] flex max-h-[calc(100dvh-1rem)] max-w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl"
     >
       <div
         onPointerDown={(e) => {
