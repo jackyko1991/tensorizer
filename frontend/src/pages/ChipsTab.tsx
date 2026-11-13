@@ -691,7 +691,8 @@ function DesktopTable({ onSelect }: { onSelect: (id: string) => void }) {
             return (
               <tr key={c.id} className={c.id === "nvidia-rtx-5090" ? "bg-gray-50 text-gray-600" : ""}>
                 <td className="px-2 py-1.5">
-                  <span className="text-gray-500">{T(machine)}</span>{" "}
+                  <span className="text-gray-500">{T(machine)}</span>
+                  <span className="text-gray-400"> · </span>
                   <button className="font-semibold text-gray-900 hover:text-blue-700" onClick={() => onSelect(c.id)}>
                     {short(c.name)}
                   </button>
