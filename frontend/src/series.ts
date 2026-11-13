@@ -13,7 +13,7 @@ export type SeriesKind = "lab" | "explorable";
 export type Texts = { en: string } & Record<string, string>;
 
 export interface SeriesSite {
-  id: "tensorizer" | "formalizer" | "clifford";
+  id: "tensorizer" | "formalizer" | "clifford" | "polyphonizer";
   name: string;
   kind: SeriesKind;
   url: string;
@@ -185,6 +185,40 @@ export const SERIES_SITES: SeriesSite[] = [
       ru: "Доказательства · Lean 4",
       ko: "증명 · Lean 4",
       hi: "प्रमाण · Lean 4",
+    },
+  },
+  {
+    id: "polyphonizer",
+    name: "Polyphonizer",
+    kind: "lab",
+    url: "https://jackyko1991.github.io/polyphonizer/",
+    logo: "series/polyphonizer.svg",
+    langs: ["en", "zh-Hant"],
+    badge: "bg-rose-50 text-rose-800",
+    border: "border-rose-200 hover:border-rose-400",
+    pitch: {
+      en: "Music scores written as code: counterpoint and arranging graded by rules, played back, and laid out with page turns at rests. In your browser.",
+      "zh-Hant": "以程式碼寫樂譜：對位與編曲由規則評分，可播放，並在休止處翻頁排版。在瀏覽器中執行。",
+      "zh-Hans": "以代码写乐谱：对位与编曲由规则评分，可播放，并在休止处翻页排版。在浏览器中运行。",
+      fr: "Des partitions écrites en code : contrepoint et arrangement notés par des règles, joués, et mis en page avec les tournes sur les silences. Dans votre navigateur.",
+      de: "Noten als Code: Kontrapunkt und Arrangement nach Regeln bewertet, abgespielt und mit Seitenwechseln in Pausen gesetzt. Im Browser.",
+      es: "Partituras escritas como código: contrapunto y arreglos calificados por reglas, reproducidos y maquetados con los pases de página en los silencios. En tu navegador.",
+      ja: "コードで書く楽譜：対位法と編曲をルールで採点し、再生し、休符でページをめくれるようにレイアウト。ブラウザで動く。",
+      ru: "Ноты как код: контрапункт и аранжировка проверяются правилами, звучат и вёрстаются с перелистыванием на паузах. В браузере.",
+      ko: "코드로 쓰는 악보: 대위법과 편곡을 규칙으로 채점하고, 재생하고, 쉼표에서 페이지를 넘기도록 배치합니다. 브라우저에서 실행됩니다.",
+      hi: "कोड के रूप में लिखे संगीत स्कोर: काउंटरपॉइंट और अरेंजमेंट नियमों से जाँचे जाते हैं, बजाए जाते हैं, और विराम पर पन्ना पलटने के हिसाब से सजाए जाते हैं। आपके ब्राउज़र में।",
+    },
+    verb: {
+      en: "Scores · music21",
+      "zh-Hant": "樂譜 · music21",
+      "zh-Hans": "乐谱 · music21",
+      fr: "Partitions · music21",
+      de: "Noten · music21",
+      es: "Partituras · music21",
+      ja: "楽譜 · music21",
+      ru: "Ноты · music21",
+      ko: "악보 · music21",
+      hi: "स्कोर · music21",
     },
   },
   {
