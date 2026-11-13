@@ -1,0 +1,31 @@
+title: Measure your chip's roofline
+category: others
+level: beginner
+order: 9
+tags: []
+summary: >
+  How fast is the machine this runs on? Time one large memory copy to get the bandwidth $\beta$, and an $n\times n$
+  matrix product $C_{ij} = A_{ik}B_{kj}$ in FP64, FP32, TF32, BF16 and FP16 to get each precision's rate $\pi$; the
+  roofline $P(I) = \min(\pi, \beta I)$ then says which kernels your chip runs at full speed and which wait for memory.
+  Coding Skills ▸ Chips places your result next to the spec sheets of other chips.
+animated: false
+vector_form: 'P(I) = \min(\pi,\ \beta\, I),\qquad I_\text{ridge} = \pi / \beta'
+index_form: 'C_{ij} = A_{ik}\,B_{kj}:\quad 2n^3\ \text{FLOP over}\ 3n^2 b\ \text{bytes},\qquad I = \frac{2n}{3b}'
+translation:
+  - {symbol: '\beta', code: "measure_bandwidth(copy_mb)['gbs']", shape: '()', meaning: 'memory bandwidth from a large copy (read + write), GB/s'}
+  - {symbol: '\pi', code: "measure_matmul(p, n)['tflops']", shape: '()', meaning: 'achieved matrix-product rate in precision $p$, TFLOP/s'}
+  - {symbol: 'C_{ij} = A_{ik}B_{kj}', code: 'a @ b', shape: '(n, n)', meaning: 'repeated $k$ ⇒ summed: $n^3$ multiply-adds'}
+  - {symbol: 'I', code: 'intensity(n, b)', shape: '()', meaning: 'FLOP per byte moved: $2n/(3b)$ for $b$-byte elements'}
+  - {symbol: 'P(I)', code: 'roofline(pi, beta, I)', shape: '()', meaning: 'the most a kernel of intensity $I$ can reach'}
+notes: >
+  Spec sheets give peaks; a measurement gives what PyTorch actually gets on your machine, usually 50–90% of the peak
+  for a large matrix product. GPU work is asynchronous, so every timing waits for the device to finish
+  (synchronize) and takes the median of several runs after a warm-up. On NVIDIA GPUs the FP32 product is measured
+  twice: once in true FP32 and once with TF32 tensor cores (torch.set_float32_matmul_precision("high")), the setting
+  that silently trades mantissa bits for speed. Apple's GPU backend (MPS) has no float64, so FP64 is skipped there;
+  consumer GPUs run FP64 at a small fraction of their FP32 rate, which matters for physics. Try a bigger matrix
+  size: the rate climbs until the product is compute-bound, the memory copy stays at the bandwidth.
+params:
+  matrix_size: {default: 4096, min: 256, max: 16384, step: 256, type: int, label: 'Matrix size $n$'}
+  copy_mb: {default: 512, min: 16, max: 4096, step: 16, type: int, label: Copy size, unit: MB}
+  repeats: {default: 5, min: 2, max: 20, step: 1, type: int, label: Timed repeats}

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Roofline sketch: on log axes of arithmetic intensity and FLOP per second, a rising memory-bandwidth slope meets a flat compute ceiling at the ridge point; a matrix product sits right of the ridge, a memory copy left of it">
+  <defs>
+    <marker id="axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+  </defs>
+  <line x1="30" y1="135" x2="228" y2="135" stroke="#374151" stroke-width="1" marker-end="url(#axis)"/>
+  <line x1="30" y1="135" x2="30" y2="12" stroke="#374151" stroke-width="1" marker-end="url(#axis)"/>
+  <text x="128" y="152" font-size="9" text-anchor="middle" fill="#374151">intensity I (FLOP/byte)</text>
+  <text x="14" y="74" font-size="9" text-anchor="middle" fill="#374151" transform="rotate(-90 14 74)">FLOP/s</text>
+  <polyline points="34,128 120,42 220,42" fill="none" stroke="#2563eb" stroke-width="2.2"/>
+  <line x1="120" y1="42" x2="120" y2="135" stroke="#2563eb" stroke-width="0.8" stroke-dasharray="3 3"/>
+  <text x="120" y="35" font-size="9" text-anchor="middle" fill="#2563eb">ridge π/β</text>
+  <text x="62" y="80" font-size="9" fill="#6b7280" transform="rotate(-45 62 80)">β · I</text>
+  <text x="185" y="36" font-size="9" fill="#6b7280">π</text>
+  <circle cx="60" cy="102" r="4" fill="#f59e0b"/>
+  <text x="68" y="114" font-size="8" fill="#374151">copy</text>
+  <circle cx="190" cy="42" r="4" fill="#16a34a"/>
+  <text x="168" y="60" font-size="8" fill="#374151">matmul</text>
+</svg>
