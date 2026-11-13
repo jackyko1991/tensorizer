@@ -1,0 +1,529 @@
+{
+ "timeline": [
+  {
+   "id": "blas1",
+   "year": 1979,
+   "month": 9,
+   "title": "BLAS Level 1",
+   "text": "Lawson, Hanson, Kincaid and Krogh published a standard set of vector routines (dot product, axpy, norms) for Fortran. A shared interface meant vendors could tune the kernels once and every program would get faster.",
+   "vendor": "Lawson et al. / ACM TOMS",
+   "kind": "library",
+   "source": "https://doi.org/10.1145/355841.355847"
+  },
+  {
+   "id": "ieee754-1985",
+   "year": 1985,
+   "title": "IEEE 754 floating point",
+   "text": "IEEE 754-1985 fixed binary32 and binary64 formats, rounding and special values such as infinity and NaN. Results finally became portable across machines.",
+   "vendor": "IEEE",
+   "kind": "standard",
+   "source": "https://doi.org/10.1109/IEEESTD.1985.82928"
+  },
+  {
+   "id": "blas2",
+   "year": 1988,
+   "month": 3,
+   "title": "BLAS Level 2",
+   "text": "Dongarra, Du Croz, Hammarling and Hanson added matrix-vector routines such as GEMV. Vector supercomputers could now be fed larger units of work per call.",
+   "vendor": "Dongarra et al. / ACM TOMS",
+   "kind": "library",
+   "source": "https://doi.org/10.1145/42288.42291"
+  },
+  {
+   "id": "blas3",
+   "year": 1990,
+   "month": 3,
+   "title": "BLAS Level 3",
+   "text": "Matrix-matrix routines, GEMM above all, were standardised. GEMM does O(n^3) work on O(n^2) data, so it can reuse values held in cache, and nearly every later accelerator was designed around it.",
+   "vendor": "Dongarra, Du Croz, Duff, Hammarling / ACM TOMS",
+   "kind": "library",
+   "source": "https://doi.org/10.1145/77626.79170"
+  },
+  {
+   "id": "lapack",
+   "year": 1992,
+   "month": 2,
+   "title": "LAPACK 1.0",
+   "text": "LAPACK replaced LINPACK and EISPACK with solvers and eigenvalue routines written on top of Level 3 BLAS. That design lets the speed of a tuned BLAS carry over to the whole library.",
+   "vendor": "Univ. of Tennessee, UC Berkeley, NAG and others",
+   "kind": "library",
+   "source": "https://www.netlib.org/lapack/"
+  },
+  {
+   "id": "mkl",
+   "year": 1994,
+   "month": 11,
+   "title": "Intel Math Kernel Library",
+   "text": "Intel began shipping its own hand-tuned BLAS and, later, LAPACK, FFT and vector maths for its processors. It is now called oneMKL.",
+   "vendor": "Intel",
+   "kind": "library",
+   "source": "https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.html"
+  },
+  {
+   "id": "atlas",
+   "year": 1998,
+   "month": 11,
+   "title": "ATLAS auto-tuning",
+   "text": "Whaley and Dongarra's ATLAS searched block sizes and loop orders on each machine to generate a fast BLAS automatically. It showed that a portable library could be tuned empirically.",
+   "vendor": "Univ. of Tennessee",
+   "kind": "library",
+   "source": "https://doi.org/10.1109/SC.1998.10004"
+  },
+  {
+   "id": "cuda",
+   "year": 2007,
+   "month": 6,
+   "title": "CUDA 1.0 and CUBLAS",
+   "text": "NVIDIA released CUDA so GPUs could be programmed in C for general computing, and shipped CUBLAS, a GPU BLAS, in the same toolkit. Graphics hardware became a linear-algebra engine.",
+   "vendor": "NVIDIA",
+   "kind": "library",
+   "source": "https://developer.nvidia.com/cuda-toolkit-archive"
+  },
+  {
+   "id": "gotoblas",
+   "year": 2008,
+   "month": 5,
+   "title": "GotoBLAS",
+   "text": "Kazushige Goto's hand-written kernels became the fastest BLAS on many CPUs in the mid-2000s. The paper 'Anatomy of High-Performance Matrix Multiplication' explained the packing and blocking method, which BLIS and most modern CPU GEMMs still use.",
+   "vendor": "Goto & van de Geijn, UT Austin",
+   "kind": "library",
+   "source": "https://doi.org/10.1145/1356052.1356053"
+  },
+  {
+   "id": "ieee754-2008",
+   "year": 2008,
+   "month": 8,
+   "title": "IEEE 754-2008: binary16 and FMA",
+   "text": "The revision added the 16-bit half-precision format (binary16) and the fused multiply-add. It later became the storage format for the first tensor cores.",
+   "vendor": "IEEE",
+   "kind": "standard",
+   "source": "https://doi.org/10.1109/IEEESTD.2008.4610935"
+  },
+  {
+   "id": "fermi",
+   "year": 2010,
+   "month": 3,
+   "title": "Fermi: GPUs with real FP64",
+   "text": "NVIDIA's Fermi architecture (Tesla C2050/M2050, GeForce GTX 480) added full IEEE FP64 with FMA and ECC memory. On Tesla parts it ran FP64 at half the FP32 rate, which made GPUs usable for scientific computing.",
+   "vendor": "NVIDIA",
+   "kind": "chip",
+   "source": "https://www.nvidia.com/content/PDF/fermi_white_papers/NVIDIA_Fermi_Compute_Architecture_Whitepaper.pdf"
+  },
+  {
+   "id": "openblas",
+   "year": 2011,
+   "month": 3,
+   "title": "OpenBLAS",
+   "text": "Zhang Xianyi and colleagues forked the unmaintained GotoBLAS into OpenBLAS. It became the default open-source BLAS behind NumPy, R and many Linux distributions.",
+   "vendor": "OpenBLAS project (ISCAS, then community)",
+   "kind": "library",
+   "source": "https://github.com/OpenMathLib/OpenBLAS"
+  },
+  {
+   "id": "alexnet",
+   "year": 2012,
+   "month": 12,
+   "title": "AlexNet trained on two GPUs",
+   "text": "Krizhevsky, Sutskever and Hinton trained a large convolutional network on two GeForce GTX 580s and won ImageNet by a wide margin. Deep learning became a GPU workload.",
+   "vendor": "Univ. of Toronto",
+   "kind": "library",
+   "source": "https://papers.nips.cc/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html"
+  },
+  {
+   "id": "cudnn",
+   "year": 2014,
+   "month": 9,
+   "title": "cuDNN",
+   "text": "NVIDIA's deep neural network library provided tuned convolution and other primitives, so frameworks such as Caffe, Theano and Torch no longer wrote their own GPU kernels. It did for deep learning roughly what BLAS did for linear algebra.",
+   "vendor": "NVIDIA",
+   "kind": "library",
+   "source": "https://arxiv.org/abs/1410.0759"
+  },
+  {
+   "id": "tpu1",
+   "year": 2015,
+   "title": "Google TPU v1 deployed",
+   "text": "Google put an inference ASIC into its data centres in 2015: a 256x256 systolic array of 8-bit integer multiply-accumulate units. The ISCA 2017 paper reported 15 to 30 times the performance of contemporary CPUs and GPUs on its workloads.",
+   "vendor": "Google",
+   "kind": "chip",
+   "source": "https://arxiv.org/abs/1704.04760"
+  },
+  {
+   "id": "rocm",
+   "year": 2016,
+   "month": 4,
+   "title": "AMD ROCm 1.0",
+   "text": "AMD released ROCm, an open-source GPU compute stack that includes HIP, a CUDA-like language. Later rocBLAS and MIOpen added BLAS and deep-learning libraries for AMD GPUs.",
+   "vendor": "AMD",
+   "kind": "library",
+   "source": "https://insidehpc.com/2016/09/rocm/"
+  },
+  {
+   "id": "tpu2-bf16",
+   "year": 2017,
+   "month": 5,
+   "title": "TPU v2 and bfloat16",
+   "text": "Google's second TPU handled training as well as inference, using bfloat16, a 16-bit format from Google Brain that keeps FP32's 8-bit exponent. Models trained without loss scaling, and the format later spread to Intel, Arm, AMD and NVIDIA hardware.",
+   "vendor": "Google",
+   "kind": "chip",
+   "source": "https://cloud.google.com/blog/products/ai-machine-learning/bfloat16-the-secret-to-high-performance-on-cloud-tpus"
+  },
+  {
+   "id": "volta",
+   "year": 2017,
+   "month": 5,
+   "title": "Volta V100 Tensor Cores",
+   "text": "The V100 added Tensor Cores, units that compute a 4x4x4 matrix multiply-accumulate from FP16 inputs into FP32 sums every clock. It was rated at 125 TFLOPS for deep learning, against 15.7 TFLOPS for ordinary FP32.",
+   "vendor": "NVIDIA",
+   "kind": "chip",
+   "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+  },
+  {
+   "id": "a11",
+   "year": 2017,
+   "month": 9,
+   "title": "Apple A11 Bionic Neural Engine",
+   "text": "The iPhone X chip included a dual-core Neural Engine rated at 600 billion operations per second, used for Face ID and on-device machine learning. Dedicated NPUs became standard in phones.",
+   "vendor": "Apple",
+   "kind": "chip",
+   "source": "https://www.apple.com/newsroom/2017/09/the-future-is-here-iphone-x/"
+  },
+  {
+   "id": "mixed-precision",
+   "year": 2017,
+   "month": 10,
+   "title": "Mixed-precision training",
+   "text": "Micikevicius et al. (Baidu and NVIDIA) showed how to train in FP16: keep an FP32 master copy of the weights, scale the loss, and accumulate in FP32. This recipe is the standard way of using tensor cores for training.",
+   "vendor": "NVIDIA / Baidu",
+   "kind": "library",
+   "source": "https://arxiv.org/abs/1710.03740"
+  },
+  {
+   "id": "ascend910",
+   "year": 2019,
+   "month": 8,
+   "title": "Huawei Ascend 910 and CANN",
+   "text": "Huawei launched the Ascend 910 training chip, built on its Da Vinci cube cores, together with the MindSpore framework. CANN (Compute Architecture for Neural Networks) is the operator library and runtime layer for Ascend.",
+   "vendor": "Huawei",
+   "kind": "chip",
+   "source": "https://www.huawei.com/en/news/2019/8/huawei-ascend-910-most-powerful-ai-processor"
+  },
+  {
+   "id": "a100-tf32",
+   "year": 2020,
+   "month": 5,
+   "title": "A100 and TF32",
+   "text": "Ampere A100 tensor cores added TF32, which keeps FP32's 8-bit exponent with a 10-bit mantissa, so FP32 code could use tensor cores with no changes. They also added BF16, sparsity and FP64 tensor cores (19.5 TFLOPS).",
+   "vendor": "NVIDIA",
+   "kind": "chip",
+   "source": "https://blogs.nvidia.com/blog/tensorfloat-32-precision-format/"
+  },
+  {
+   "id": "m1",
+   "year": 2020,
+   "month": 11,
+   "title": "Apple M1 unified memory",
+   "text": "Apple's first Mac SoC put the CPU, GPU and a 16-core Neural Engine (11 TOPS) on one shared pool of memory. Data no longer had to be copied between CPU and GPU, and a laptop could hold large models in GPU-visible memory.",
+   "vendor": "Apple",
+   "kind": "chip",
+   "source": "https://www.apple.com/newsroom/2020/11/apple-unleashes-m1/"
+  },
+  {
+   "id": "triton",
+   "year": 2021,
+   "month": 7,
+   "title": "OpenAI Triton 1.0",
+   "text": "Triton is a Python-like language and compiler for writing GPU kernels in tiles, which can match hand-written CUDA for GEMM and attention. PyTorch 2's compiler later used it to generate its GPU kernels.",
+   "vendor": "OpenAI",
+   "kind": "library",
+   "source": "https://openai.com/index/triton/"
+  },
+  {
+   "id": "h100-fp8",
+   "year": 2022,
+   "month": 3,
+   "title": "H100, FP8 and Transformer Engine",
+   "text": "Hopper H100 added FP8 tensor cores in two formats, E4M3 and E5M2. The Transformer Engine library chooses per-tensor scaling and switches between FP8 and 16-bit layer by layer.",
+   "vendor": "NVIDIA",
+   "kind": "chip",
+   "source": "https://resources.nvidia.com/en-us-tensor-core/gtc22-whitepaper-hopper"
+  },
+  {
+   "id": "flashattention",
+   "year": 2022,
+   "month": 5,
+   "title": "FlashAttention",
+   "text": "Dao et al. reorganised attention into tiles that stay in on-chip SRAM and never write out the full attention matrix. It became standard because the bottleneck was memory traffic rather than arithmetic.",
+   "vendor": "Stanford",
+   "kind": "library",
+   "source": "https://arxiv.org/abs/2205.14135"
+  },
+  {
+   "id": "fp8-paper",
+   "year": 2022,
+   "month": 9,
+   "title": "FP8 Formats for Deep Learning",
+   "text": "NVIDIA, Arm and Intel jointly proposed the E4M3 and E5M2 encodings, with E4M3 giving up infinities to extend its range to 448. The proposal became the basis of the OCP OFP8 specification.",
+   "vendor": "NVIDIA, Arm, Intel",
+   "kind": "standard",
+   "source": "https://arxiv.org/abs/2209.05433"
+  },
+  {
+   "id": "us-export-2022",
+   "year": 2022,
+   "month": 10,
+   "title": "US export controls on advanced computing chips",
+   "text": "On 7 October 2022 the US Bureau of Industry and Security restricted exports to China of chips above set performance and interconnect-bandwidth thresholds, and of some chipmaking equipment. Vendors responded with lower-specification export parts such as the A800 and H800.",
+   "vendor": "US Department of Commerce (BIS)",
+   "kind": "policy",
+   "source": "https://www.federalregister.gov/documents/2022/10/13/2022-21658/implementation-of-additional-export-controls-certain-advanced-computing-and-semiconductor"
+  },
+  {
+   "id": "amx",
+   "year": 2023,
+   "month": 1,
+   "title": "Intel AMX in Sapphire Rapids",
+   "text": "4th Gen Xeon Scalable added Advanced Matrix Extensions: eight 1 KB tile registers and a TMUL unit for BF16 and INT8 matrix multiplies. It brought tensor-core-style hardware into a server CPU, and oneDNN and PyTorch use it.",
+   "vendor": "Intel",
+   "kind": "chip",
+   "source": "https://www.intel.com/content/www/us/en/products/docs/accelerator-engines/advanced-matrix-extensions/overview.html"
+  },
+  {
+   "id": "llamacpp",
+   "year": 2023,
+   "month": 3,
+   "title": "llama.cpp",
+   "text": "Georgi Gerganov's plain C/C++ inference engine (built on ggml) ran LLaMA on laptops using 4-bit block-quantised weights. Its GGUF file format and k-quants became widely used for local LLMs on CPUs, Apple silicon and consumer GPUs.",
+   "vendor": "ggml / G. Gerganov",
+   "kind": "library",
+   "source": "https://github.com/ggml-org/llama.cpp"
+  },
+  {
+   "id": "ofp8",
+   "year": 2023,
+   "month": 6,
+   "title": "OCP 8-bit Floating Point (OFP8) v1.0",
+   "text": "The Open Compute Project published E4M3 and E5M2 as an open, vendor-neutral specification, so FP8 data means the same thing on NVIDIA, AMD, Intel and Arm hardware.",
+   "vendor": "Open Compute Project",
+   "kind": "standard",
+   "source": "https://www.opencompute.org/documents/ocp-8-bit-floating-point-specification-ofp8-revision-1-0-2023-12-01-pdf-1"
+  },
+  {
+   "id": "uxl",
+   "year": 2023,
+   "month": 9,
+   "title": "UXL Foundation",
+   "text": "The Linux Foundation formed the Unified Acceleration Foundation to develop an open, multi-vendor accelerator software stack based on oneAPI (SYCL, oneDNN, oneMKL and others). The participants named at launch were Arm, Fujitsu, Google Cloud, Imagination Technologies, Intel, Qualcomm and Samsung; AMD and NVIDIA were not among them.",
+   "vendor": "Linux Foundation / JDF",
+   "kind": "standard",
+   "source": "https://www.linuxfoundation.org/press/announcing-unified-acceleration-foundation-uxl"
+  },
+  {
+   "id": "mx",
+   "year": 2023,
+   "month": 10,
+   "title": "OCP Microscaling (MX) formats v1.0",
+   "text": "AMD, Arm, Intel, Meta, Microsoft, NVIDIA and Qualcomm released MXFP8, MXFP6, MXFP4 and MXINT8 through OCP. In each format a block of 32 small elements shares one 8-bit power-of-two (E8M0) scale.",
+   "vendor": "Open Compute Project (MX Alliance)",
+   "kind": "standard",
+   "source": "https://www.opencompute.org/blog/amd-arm-intel-meta-microsoft-nvidia-and-qualcomm-standardize-next-generation-narrow-precision-data-formats-for-ai"
+  },
+  {
+   "id": "us-export-2023",
+   "year": 2023,
+   "month": 10,
+   "title": "US export controls updated",
+   "text": "On 17 October 2023 BIS revised the 2022 rules, replacing the interconnect test with thresholds based on total processing performance and performance density, and adding anti-circumvention measures. The update brought the A800 and H800 under control, and vendors released further cut-down parts.",
+   "vendor": "US Department of Commerce (BIS)",
+   "kind": "policy",
+   "source": "https://www.federalregister.gov/documents/2023/10/25/2023-23055/implementation-of-additional-export-controls-certain-advanced-computing-items-supercomputer-and-semiconductor"
+  },
+  {
+   "id": "mlx",
+   "year": 2023,
+   "month": 12,
+   "title": "Apple MLX",
+   "text": "Apple machine learning research released MLX, a NumPy-like array framework for Apple silicon with lazy evaluation and unified memory: arrays live in shared memory, and the CPU or GPU can run operations on them without copies.",
+   "vendor": "Apple",
+   "kind": "library",
+   "source": "https://github.com/ml-explore/mlx"
+  },
+  {
+   "id": "mi300x",
+   "year": 2023,
+   "month": 12,
+   "title": "AMD Instinct MI300X",
+   "text": "AMD's CDNA 3 accelerator, built from chiplets, carried 192 GB of HBM3. That was more memory than any competitor, so a single GPU could hold a large LLM, and it supported FP8 and sparsity.",
+   "vendor": "AMD",
+   "kind": "chip",
+   "source": "https://ir.amd.com/news-events/press-releases/detail/1173/amd-delivers-leadership-portfolio-of-data-center-ai-solutions-with-amd-instinct-mi300-series"
+  },
+  {
+   "id": "meteorlake",
+   "year": 2023,
+   "month": 12,
+   "title": "Intel Meteor Lake NPU",
+   "text": "Core Ultra (Meteor Lake) laptop chips included an integrated NPU for low-power AI inference alongside the CPU and GPU. This started the 'AI PC' category on x86.",
+   "vendor": "Intel",
+   "kind": "chip",
+   "source": "https://www.intel.com/content/www/us/en/newsroom/news/core-ultra-client-computing-news-1.html"
+  },
+  {
+   "id": "blackwell",
+   "year": 2024,
+   "month": 3,
+   "title": "Blackwell and FP4",
+   "text": "NVIDIA's Blackwell (B200, GB200) added FP4 and FP6 tensor cores and a second-generation Transformer Engine with microscaling. NVIDIA's own NVFP4 format scales each block of 16 values with an FP8 factor.",
+   "vendor": "NVIDIA",
+   "kind": "chip",
+   "source": "https://nvidianews.nvidia.com/news/nvidia-blackwell-platform-arrives-to-power-a-new-era-of-computing"
+  },
+  {
+   "id": "copilot-plus",
+   "year": 2024,
+   "month": 5,
+   "title": "Copilot+ PCs: 40 TOPS bar",
+   "text": "Microsoft defined Copilot+ PCs as Windows machines with an NPU of at least 40 TOPS. This set a concrete NPU performance target for laptop chips.",
+   "vendor": "Microsoft",
+   "kind": "policy",
+   "source": "https://blogs.microsoft.com/blog/2024/05/20/introducing-copilot-pcs/"
+  },
+  {
+   "id": "rpi-ai",
+   "year": 2024,
+   "month": 6,
+   "title": "Raspberry Pi AI Kit",
+   "text": "Raspberry Pi paired an M.2 HAT+ with a 13 TOPS Hailo-8L NPU for the Raspberry Pi 5. The AI HAT+ followed in October 2024 in 13 and 26 TOPS (Hailo-8) versions, bringing NPU inference to hobbyist boards.",
+   "vendor": "Raspberry Pi / Hailo",
+   "kind": "chip",
+   "source": "https://www.raspberrypi.com/news/raspberry-pi-ai-kit-available-now-at-70/"
+  },
+  {
+   "id": "snapdragon-x",
+   "year": 2024,
+   "month": 6,
+   "title": "Snapdragon X Elite laptops ship",
+   "text": "The first Copilot+ PCs shipped on 18 June 2024 with Qualcomm's Snapdragon X Elite and X Plus, whose Hexagon NPU is rated at 45 TOPS. The chip had been announced in October 2023.",
+   "vendor": "Qualcomm",
+   "kind": "chip",
+   "source": "https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat"
+  },
+  {
+   "id": "deepseek-fp8",
+   "year": 2024,
+   "month": 12,
+   "title": "FP8 training at frontier scale",
+   "text": "DeepSeek-V3's technical report described training a 671B-parameter mixture-of-experts model mostly in FP8. It used fine-grained block scaling and periodic promotion of partial sums to FP32 to make up for limited accumulation precision in the tensor cores.",
+   "vendor": "DeepSeek",
+   "kind": "library",
+   "source": "https://arxiv.org/abs/2412.19437"
+  },
+  {
+   "id": "ironwood",
+   "year": 2025,
+   "month": 4,
+   "title": "Google TPU Ironwood (v7)",
+   "text": "Google's seventh-generation TPU was designed mainly for inference, with FP8 support and 192 GB of HBM per chip, and scales to pods of 9,216 chips.",
+   "vendor": "Google",
+   "kind": "chip",
+   "source": "https://blog.google/products/google-cloud/ironwood-tpu-age-of-inference/"
+  },
+  {
+   "id": "nvfp4",
+   "year": 2025,
+   "month": 6,
+   "title": "NVFP4 described",
+   "text": "NVIDIA published the details of NVFP4: E2M1 values in blocks of 16 with an FP8 E4M3 scale per block and an FP32 scale per tensor. NVIDIA reports that this loses less accuracy than MXFP4's power-of-two scale on 32-value blocks.",
+   "vendor": "NVIDIA",
+   "kind": "standard",
+   "source": "https://developer.nvidia.com/blog/introducing-nvfp4-for-efficient-and-accurate-low-precision-inference/"
+  },
+  {
+   "id": "mi355x",
+   "year": 2025,
+   "month": 6,
+   "title": "AMD Instinct MI355X",
+   "text": "AMD's CDNA 4 MI350 series (MI350X and MI355X) added FP6 and FP4 (MX formats), with 288 GB of HBM3E and 8 TB/s. AMD runs FP6 at the same rate as FP4.",
+   "vendor": "AMD",
+   "kind": "chip",
+   "source": "https://ir.amd.com/news-events/press-releases/detail/1255/amd-unveils-vision-for-an-open-ai-ecosystem-detailing-new-silicon-software-and-systems-at-advancing-ai-2025"
+  },
+  {
+   "id": "amd-uxl",
+   "year": 2026,
+   "month": 10,
+   "title": "AMD joins UXL as steering member",
+   "text": "AMD and Intel agreed to make oneDNN the default open-source x86 CPU library in PyTorch, with AMD folding its ZenDNN optimisations into oneDNN. AMD also joined the UXL Foundation as a steering member.",
+   "vendor": "AMD / Intel / UXL Foundation",
+   "kind": "library",
+   "source": "https://newsroom.amd.com/news/amd-intel-collaborate-simplify-ai-development-on-x86-cpus-pytorch/"
+  }
+ ],
+ "facts": [
+  {
+   "id": "bf16-why",
+   "text": "bfloat16 keeps FP32's 8-bit exponent, so it covers the same dynamic range (about 1e-38 to 3e38). Google chose it because neural networks are more sensitive to the size of the exponent than of the mantissa, so it can replace FP32 without the loss scaling FP16 needs. Converting from FP32 just truncates or rounds away the low 16 bits.",
+   "source": "https://cloud.google.com/blog/products/ai-machine-learning/bfloat16-the-secret-to-high-performance-on-cloud-tpus"
+  },
+  {
+   "id": "tc-accumulate",
+   "text": "Volta Tensor Cores multiply FP16 inputs and accumulate the products in FP32. Later generations do the same for BF16 and FP8 inputs (FP16/BF16/FP8 in, FP32 accumulate), and integer inputs (INT8/INT4) accumulate in INT32.",
+   "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+  },
+  {
+   "id": "fp8-accumulate-caveat",
+   "text": "On H800 (Hopper), FP8 GEMM accumulation in the tensor cores keeps only about 14 bits of precision, which is less than full FP32. DeepSeek-V3 therefore copied partial sums into FP32 registers on CUDA cores every 128 elements along the K dimension.",
+   "source": "https://arxiv.org/abs/2412.19437"
+  },
+  {
+   "id": "mixed-precision",
+   "text": "The standard mixed-precision recipe has three parts: compute in FP16, keep an FP32 master copy of the weights, and multiply the loss by a scale factor so that small gradients do not underflow FP16 (smallest subnormal about 6e-8).",
+   "source": "https://arxiv.org/abs/1710.03740"
+  },
+  {
+   "id": "kahan",
+   "text": "Kahan (compensated) summation, described by W. Kahan in 1965, carries a running correction term for the low-order bits lost in each addition. Its error bound then does not grow with n, unlike naive summation, where the bound grows in proportion to n.",
+   "source": "https://doi.org/10.1145/363707.363723"
+  },
+  {
+   "id": "summation-analysis",
+   "text": "Higham's 1993 analysis compares recursive, pairwise and compensated summation. Pairwise (tree) summation, which parallel reductions and GEMM tiling effectively perform, has an error bound that grows with log2(n) instead of n.",
+   "source": "https://doi.org/10.1137/0914050"
+  },
+  {
+   "id": "fp64-turing",
+   "text": "GeForce Turing GPUs (e.g. TU102, RTX 2080 Ti) have 2 FP64 units per SM against 64 FP32 cores, so FP64 runs at 1/32 of the FP32 rate. GeForce Pascal had the same ratio.",
+   "source": "https://images.nvidia.com/aem-dam/en-zz/Solutions/design-visualization/technologies/turing-architecture/NVIDIA-Turing-Architecture-Whitepaper.pdf"
+  },
+  {
+   "id": "fp64-ampere",
+   "text": "On GA102 (RTX 3080/3090) the FP64 rate is 1/64 of the FP32 rate: 2 FP64 units per SM against 128 FP32 lanes. For example, the RTX 3090 delivers about 0.56 TFLOPS FP64 against about 35.6 TFLOPS FP32.",
+   "source": "https://images.nvidia.com/aem-dam/en-zz/Solutions/geforce/ampere/pdf/NVIDIA-ampere-GA102-GPU-Architecture-Whitepaper-V1.pdf"
+  },
+  {
+   "id": "fp64-ada",
+   "text": "Ada Lovelace (AD102, RTX 4090) keeps the 1/64 ratio: about 1.3 TFLOPS FP64 against about 82.6 TFLOPS FP32.",
+   "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/ada/nvidia-ada-gpu-architecture.pdf"
+  },
+  {
+   "id": "fp64-datacenter",
+   "text": "Data-centre GPUs, by contrast, run FP64 at 1/2 of the FP32 rate. The A100 does 9.7 TFLOPS FP64 (19.5 TFLOPS on FP64 tensor cores) against 19.5 TFLOPS FP32.",
+   "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+  },
+  {
+   "id": "tf32-speed",
+   "text": "On the A100, dense TF32 tensor-core throughput is 156 TFLOPS against 19.5 TFLOPS for standard FP32, about 8 times faster. Frameworks such as PyTorch let users switch TF32 on for FP32 matrix multiplies.",
+   "source": "https://blogs.nvidia.com/blog/tensorfloat-32-precision-format/"
+  },
+  {
+   "id": "fp8-roles",
+   "text": "The FP8 proposal recommends E4M3 for weights and activations in the forward pass and E5M2 for gradients in the backward pass, where a wider range matters more than precision.",
+   "source": "https://arxiv.org/abs/2209.05433"
+  },
+  {
+   "id": "gemm-intensity",
+   "text": "A Level 3 BLAS operation (GEMM) does 2n^3 flops on 3n^2 data, so its arithmetic intensity grows with n. That is why blocked GEMM can approach peak speed on CPUs, GPUs and systolic arrays while Level 1 and 2 BLAS are limited by memory bandwidth.",
+   "source": "https://doi.org/10.1145/77626.79170"
+  }
+ ]
+}

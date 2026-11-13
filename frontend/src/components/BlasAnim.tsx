@@ -120,7 +120,7 @@ export const logMap = (lo: number, hi: number, a: number, b: number) => (v: numb
  * and the shared play / step / restart / speed controls. Text: `<prefix>.anim.<id>.title / .s<k> / .caption`.
  */
 export function StepAnim({ prefix, id, plan, h, draw }: {
-  prefix: "blas" | "nvlink";
+  prefix: "blas" | "nvlink" | "chips" | "mixed";
   id: string;
   plan: StepPlan;
   h: number;

@@ -9,7 +9,7 @@ const root = new URL("../src/", import.meta.url);
 const DASH = /[—―]| – /;
 
 // Every key prefix in pages.<lang>.json belongs to the Concept or Coding Skills page
-const PREFIXES = ["concept.", "limitations.", "flow.", "lab.", "maths.", "history.", "skills.", "loops.", "blas.", "nvlink.", "cpuml.", "feynman.", "reading."];
+const PREFIXES = ["concept.", "limitations.", "flow.", "lab.", "maths.", "history.", "skills.", "loops.", "blas.", "nvlink.", "cpuml.", "chips.", "mixed.", "feynman.", "reading."];
 
 const SOURCES = [
   "pages/ConceptPage.tsx",
@@ -26,6 +26,8 @@ const SOURCES = [
   "pages/LoopsTab.tsx",
   "pages/BlasTab.tsx",
   "pages/NvlinkTab.tsx",
+  "pages/ChipsTab.tsx",
+  "components/ChipsAnim.tsx",
   "pages/CpumlTab.tsx",
   "pages/AgentsPage.tsx",
   "components/TechniqueAnim.tsx",

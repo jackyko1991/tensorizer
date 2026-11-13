@@ -1,0 +1,1644 @@
+{
+ "libraries": [
+  {
+   "id": "pytorch",
+   "name": "PyTorch",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "official",
+     "device": "torch.device(\"cuda\")",
+     "notes": "Linux + Windows wheels (CUDA builds); TF32 for matmul off by default, on for cuDNN conv; bf16 autocast needs Ampere+ (torch.cuda.is_bf16_supported())",
+     "source": "https://docs.pytorch.org/docs/2.15/notes/cuda.html",
+     "version": "PyTorch 2.15.0"
+    },
+    "amd-gpu": {
+     "level": "official",
+     "device": "torch.device(\"cuda\")  (ROCm/HIP build)",
+     "notes": "Linux ROCm wheels on pytorch.org; 'rocm'/'hip' are not valid device strings, ROCm reuses torch.cuda; check torch.version.hip. ROCm 10.1 lists PyTorch 2.12-2.14 for Instinct MI100-MI355X and Radeon RX 7000/9000. Windows: AMD-hosted PyTorch wheels (ROCm 7.2.1) for Radeon 9000/select 7000 and Ryzen AI APUs, not on pytorch.org's selector; TF32 only on MI300 (gfx942) via hipBLASLt",
+     "source": "https://docs.pytorch.org/docs/2.15/notes/hip.html",
+     "version": "PyTorch 2.15.0"
+    },
+    "intel-gpu": {
+     "level": "official",
+     "device": "torch.device(\"xpu\")",
+     "notes": "Arc A/B-Series, Core Ultra iGPU (Arc graphics) on Windows 11 / Ubuntu 24.04/26.04 / WSL2; Data Center GPU Max on Linux only. Arc A-Series has no native FP64 (disable GradScaler); Triton kernels via Intel's out-of-tree backend bundled in XPU wheels",
+     "source": "https://docs.pytorch.org/docs/2.15/notes/get_start_xpu.html",
+     "version": "PyTorch 2.15.0"
+    },
+    "x86-cpu": {
+     "level": "official",
+     "device": "torch.device(\"cpu\")",
+     "notes": "default; autocast to bfloat16 (AMX/AVX-512-BF16 helps); oneDNN + MKL/OpenBLAS underneath",
+     "source": "https://pytorch.org/get-started/locally/",
+     "version": "PyTorch 2.15.0"
+    },
+    "arm-cpu": {
+     "level": "official",
+     "device": "torch.device(\"cpu\")",
+     "notes": "Linux aarch64 (Graviton, Grace, Raspberry Pi 64-bit), macOS Apple silicon, and native Windows on Arm CPU wheels (since 2.7)",
+     "source": "https://blogs.windows.com/windowsdeveloper/2025/04/23/pytorch-arm-native-builds-now-available-for-windows/",
+     "version": "PyTorch 2.15.0"
+    },
+    "apple-gpu": {
+     "level": "official",
+     "device": "torch.device(\"mps\")",
+     "notes": "Metal Performance Shaders backend; NO float64 (MSL has no double, .to('mps') raises; PYTORCH_ENABLE_MPS_FALLBACK cannot help); availability check expects macOS 15.0+; some ops fall back to CPU with PYTORCH_ENABLE_MPS_FALLBACK=1",
+     "source": "https://docs.pytorch.org/docs/2.15/notes/mps.html",
+     "version": "PyTorch 2.15.0"
+    },
+    "apple-ane": {
+     "level": "none",
+     "notes": "not supported from PyTorch directly; export via Core ML (coremltools) or ExecuTorch Core ML backend"
+    },
+    "qualcomm": {
+     "level": "none",
+     "notes": "Adreno/Hexagon not targeted by PyTorch itself (Snapdragon CPU cores run the Windows-on-Arm CPU wheels); use ExecuTorch Qualcomm backend or ONNX Runtime QNN EP",
+     "source": "https://blogs.windows.com/windowsdeveloper/2025/04/23/pytorch-arm-native-builds-now-available-for-windows/",
+     "version": "PyTorch 2.15.0"
+    },
+    "google-tpu": {
+     "level": "preview",
+     "device": "torch.device(\"tpu\")  (TorchTPU)",
+     "notes": "TorchTPU: native PrivateUse1 backend from Google+Meta, open-sourced Oct 2026, eager + torch.compile, one process per TPU device (a v7 chip exposes 2 devices). PyTorch/XLA (device 'xla') is deprecated, repo to be archived 2026-11-15",
+     "source": "https://pytorch.org/blog/introducing-torchtpu/",
+     "version": "PyTorch 2.15.0 / TorchTPU (Oct 2026)"
+    },
+    "aws-trainium": {
+     "level": "preview",
+     "device": "torch.device(\"neuron\")  (TorchNeuron)",
+     "notes": "TorchNeuron native backend is public beta in Neuron 2.33 (Trn2/Trn3 only), torch.compile(backend='neuron'); autoloaded via torch-neuronx; older XLA-based torch-neuronx path still exists",
+     "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/frameworks/torch/index.html",
+     "version": "Neuron SDK 2.33.1"
+    },
+    "huawei-ascend": {
+     "level": "official",
+     "device": "torch.device(\"npu\")  (torch_npu)",
+     "notes": "via Huawei's vendor plugin torch_npu (PrivateUse1, auto-registered since 2.5.1); needs CANN 9.1.0 + NPU driver; Linux; torch_npu trails upstream (2.14.0 latest)",
+     "source": "https://github.com/Ascend/pytorch",
+     "version": "torch_npu 2.14.0"
+    },
+    "other-china": {
+     "level": "community",
+     "device": "\"musa\" (torch_musa), \"mlu\" (torch_mlu)",
+     "notes": "vendor plugins outside pytorch.org: Moore Threads torch_musa (MTT S80/S3000/S4000, MUSA SDK; MCCL only on S4000), Cambricon torch_mlu (needs Cambricon's own PyTorch wheels, versions lag e.g. torch 2.4). Hygon DCU (DTK, ROCm-like 'cuda') and MetaX: unknown, not checked",
+     "source": "https://github.com/MooreThreads/torch_musa"
+    },
+    "edge-npu": {
+     "level": "none",
+     "notes": "not supported for eager PyTorch; deploy via ExecuTorch (Arm Ethos-U, NXP, MediaTek, Samsung, OpenVINO NPU) or ONNX export"
+    }
+   }
+  },
+  {
+   "id": "jax",
+   "name": "JAX",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "official",
+     "device": "jax.devices(\"gpu\")  backend \"cuda\"  (pip install \"jax[cuda13]\")",
+     "notes": "Linux x86_64 and aarch64; Windows only via WSL2 (experimental); CUDA 12 needs SM 5.2+, CUDA 13 needs SM 7.5+",
+     "source": "https://docs.jax.dev/en/latest/installation.html",
+     "version": "JAX 0.12.0.1"
+    },
+    "amd-gpu": {
+     "level": "official",
+     "device": "backend \"rocm\"  (jax[rocm7-local] or TheRock wheels)",
+     "notes": "Linux x86_64 only, AMD-maintained plugin; plugin ROCm version must match installed ROCm; WSL2 experimental; ROCm 10.1 matrix lists JAX 0.10.2-0.11.1",
+     "source": "https://docs.jax.dev/en/latest/installation.html",
+     "version": "JAX 0.12.0.1"
+    },
+    "intel-gpu": {
+     "level": "preview",
+     "device": "pip install \"jax[oneapi]\"  (oneAPI PJRT plugin)",
+     "notes": "experimental; Linux x86_64 only; requires intel-gpu-compute + drivers",
+     "source": "https://docs.jax.dev/en/latest/installation.html",
+     "version": "JAX 0.12.0.1"
+    },
+    "x86-cpu": {
+     "level": "official",
+     "device": "backend \"cpu\"",
+     "notes": "Linux/macOS; Windows x86_64 wheels marked experimental in notes",
+     "source": "https://docs.jax.dev/en/latest/installation.html",
+     "version": "JAX 0.12.0.1"
+    },
+    "arm-cpu": {
+     "level": "official",
+     "device": "backend \"cpu\"",
+     "notes": "Linux aarch64 and macOS Apple silicon",
+     "source": "https://docs.jax.dev/en/latest/installation.html",
+     "version": "JAX 0.12.0.1"
+    },
+    "apple-gpu": {
+     "level": "preview",
+     "device": "jax-metal plugin (\"METAL\")",
+     "notes": "install docs conflict: table says experimental, Mac GPU section says 'JAX is not supported on Mac/OSX GPU'; jax-metal last released 0.1.1 (Oct 2024) - treat as effectively unmaintained",
+     "source": "https://docs.jax.dev/en/latest/installation.html",
+     "version": "JAX 0.12.0.1"
+    },
+    "apple-ane": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "qualcomm": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "google-tpu": {
+     "level": "official",
+     "device": "backend \"tpu\"  (pip install \"jax[tpu]\")",
+     "notes": "Cloud TPU VMs, Linux; installs matching libtpu",
+     "source": "https://docs.jax.dev/en/latest/installation.html",
+     "version": "JAX 0.12.0.1"
+    },
+    "aws-trainium": {
+     "level": "official",
+     "device": "JAX NeuronX PJRT plugin (jax-neuronx)",
+     "notes": "AWS vendor plugin, JAX 0.7.0-0.10.0 supported in Neuron 2.33.1 (lags upstream JAX)",
+     "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/release-notes/index.html",
+     "version": "Neuron SDK 2.33.1"
+    },
+    "huawei-ascend": {
+     "level": "none",
+     "notes": "unknown"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "unknown"
+    },
+    "edge-npu": {
+     "level": "none",
+     "notes": "not supported"
+    }
+   }
+  },
+  {
+   "id": "tensorflow",
+   "name": "TensorFlow",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "official",
+     "device": "tf.config.list_physical_devices('GPU')  ('/GPU:0')",
+     "notes": "pip install tensorflow[and-cuda]; Linux and WSL2 only; native-Windows GPU ended at TF 2.10",
+     "source": "https://www.tensorflow.org/install/pip",
+     "version": "TensorFlow 2.21.0"
+    },
+    "amd-gpu": {
+     "level": "official",
+     "device": "'/GPU:0'  (tensorflow-rocm, AMD build)",
+     "notes": "AMD-maintained ROCm build, Linux only; ROCm 10.1 matrix lists TF 2.20/2.21",
+     "source": "https://rocm.docs.amd.com/en/latest/compatibility/compatibility-matrix.html",
+     "version": "ROCm 10.1.0 matrix"
+    },
+    "intel-gpu": {
+     "level": "none",
+     "notes": "unknown (Intel Extension for TensorFlow status not verified); TensorFlow-DirectML-Plugin mentioned for Windows but legacy"
+    },
+    "x86-cpu": {
+     "level": "official",
+     "device": "'/CPU:0'",
+     "notes": "needs AVX; Windows x86 CPU builds are produced by Intel (tensorflow-intel); macOS x86 ended at TF 2.16",
+     "source": "https://www.tensorflow.org/install/pip",
+     "version": "TensorFlow 2.21.0"
+    },
+    "arm-cpu": {
+     "level": "official",
+     "device": "'/CPU:0'",
+     "notes": "Linux aarch64 builds produced by AWS (tensorflow-cpu-aws); macOS arm64 CPU wheels",
+     "source": "https://www.tensorflow.org/install/pip",
+     "version": "TensorFlow 2.21.0"
+    },
+    "apple-gpu": {
+     "level": "community",
+     "device": "tensorflow-metal PluggableDevice ('/GPU:0')",
+     "notes": "TF docs: 'no official GPU support for MacOS'; Apple's tensorflow-metal plugin last released 1.2.0 (Jan 2025)",
+     "source": "https://www.tensorflow.org/install/pip",
+     "version": "TensorFlow 2.21.0"
+    },
+    "apple-ane": {
+     "level": "none",
+     "notes": "not supported; convert to Core ML"
+    },
+    "qualcomm": {
+     "level": "none",
+     "notes": "not supported in TensorFlow; LiteRT (TFLite, a separate runtime) targets Qualcomm"
+    },
+    "google-tpu": {
+     "level": "official",
+     "device": "tf.distribute.TPUStrategy",
+     "notes": "Cloud TPU; Google now steers new TPU work to JAX",
+     "source": "https://www.tensorflow.org/guide/tpu",
+     "version": "TensorFlow 2.21.0"
+    },
+    "aws-trainium": {
+     "level": "none",
+     "notes": "unknown"
+    },
+    "huawei-ascend": {
+     "level": "none",
+     "notes": "unknown"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "unknown"
+    },
+    "edge-npu": {
+     "level": "none",
+     "notes": "not in TensorFlow; LiteRT/TFLite delegates (e.g. Coral Edge TPU) are a separate runtime"
+    }
+   }
+  },
+  {
+   "id": "mlx",
+   "name": "MLX",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "official",
+     "device": "mx.gpu  (pip install mlx[cuda12] / mlx[cuda13])",
+     "notes": "Linux only; SM 7.5+, driver 550.54.14+ (CUDA 13: 580+), glibc 2.35+",
+     "source": "https://ml-explore.github.io/mlx/build/html/install.html",
+     "version": "MLX 0.32.4"
+    },
+    "amd-gpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "intel-gpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "x86-cpu": {
+     "level": "official",
+     "device": "mx.cpu  (pip install mlx[cpu])",
+     "notes": "CPU-only Linux, glibc 2.35+",
+     "source": "https://ml-explore.github.io/mlx/build/html/install.html",
+     "version": "MLX 0.32.4"
+    },
+    "arm-cpu": {
+     "level": "official",
+     "device": "mx.cpu",
+     "notes": "Apple silicon CPU cores (macOS 14+); Linux arm64 via mlx[cpu] assumed but not stated explicitly",
+     "source": "https://ml-explore.github.io/mlx/build/html/install.html",
+     "version": "MLX 0.32.4"
+    },
+    "apple-gpu": {
+     "level": "official",
+     "device": "mx.gpu  (default device on Apple silicon)",
+     "notes": "macOS 14.0+, native arm64 Python 3.10+; unified memory, lazy evaluation; no float64 on GPU",
+     "source": "https://ml-explore.github.io/mlx/build/html/install.html",
+     "version": "MLX 0.32.4"
+    },
+    "apple-ane": {
+     "level": "none",
+     "notes": "not supported (GPU + CPU only)"
+    },
+    "qualcomm": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "google-tpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "aws-trainium": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "huawei-ascend": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "edge-npu": {
+     "level": "none",
+     "notes": "not supported"
+    }
+   }
+  },
+  {
+   "id": "onnxruntime",
+   "name": "ONNX Runtime",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "official",
+     "device": "CUDAExecutionProvider, TensorrtExecutionProvider, NvTensorRTRTXExecutionProvider",
+     "notes": "CUDA EP for general use; TensorRT EP for max inference speed; TensorRT-RTX EP for consumer RTX on Windows; DmlExecutionProvider also works (DX12)",
+     "source": "https://onnxruntime.ai/docs/execution-providers/",
+     "version": "ONNX Runtime 1.31.1"
+    },
+    "amd-gpu": {
+     "level": "official",
+     "device": "MIGraphXExecutionProvider",
+     "notes": "ROCMExecutionProvider is DEPRECATED - use MIGraphX (Linux); DmlExecutionProvider on Windows (DirectML is in sustained engineering, new work moved to WinML)",
+     "source": "https://onnxruntime.ai/docs/execution-providers/",
+     "version": "ONNX Runtime 1.31.1"
+    },
+    "intel-gpu": {
+     "level": "official",
+     "device": "OpenVINOExecutionProvider (device_type 'GPU')",
+     "notes": "also DmlExecutionProvider on Windows",
+     "source": "https://onnxruntime.ai/docs/execution-providers/",
+     "version": "ONNX Runtime 1.31.1"
+    },
+    "x86-cpu": {
+     "level": "official",
+     "device": "CPUExecutionProvider (default), DnnlExecutionProvider",
+     "notes": "oneDNN EP optional build",
+     "source": "https://onnxruntime.ai/docs/execution-providers/",
+     "version": "ONNX Runtime 1.31.1"
+    },
+    "arm-cpu": {
+     "level": "official",
+     "device": "CPUExecutionProvider, XnnpackExecutionProvider",
+     "notes": "ACL and ArmNN EPs are community-maintained previews",
+     "source": "https://onnxruntime.ai/docs/execution-providers/",
+     "version": "ONNX Runtime 1.31.1"
+    },
+    "apple-gpu": {
+     "level": "preview",
+     "device": "CoreMLExecutionProvider (MLComputeUnits CPUAndGPU)",
+     "notes": "Core ML EP is listed as preview; partitions unsupported ops to CPU",
+     "source": "https://onnxruntime.ai/docs/execution-providers/",
+     "version": "ONNX Runtime 1.31.1"
+    },
+    "apple-ane": {
+     "level": "preview",
+     "device": "CoreMLExecutionProvider (MLComputeUnits CPUAndNeuralEngine / ALL)",
+     "notes": "preview; ANE runs fp16 only",
+     "source": "https://onnxruntime.ai/docs/execution-providers/",
+     "version": "ONNX Runtime 1.31.1"
+    },
+    "qualcomm": {
+     "level": "official",
+     "device": "QNNExecutionProvider (backend_type 'htp' = Hexagon NPU, 'gpu' = Adreno)",
+     "notes": "Windows on Snapdragon (arm64; x64 only for quantizing), Android, Linux; HTP needs quantized (uint8/uint16) models unless enable_htp_fp16_precision; pip install onnxruntime-qnn",
+     "source": "https://onnxruntime.ai/docs/execution-providers/QNN-ExecutionProvider.html",
+     "version": "ONNX Runtime 1.31.1"
+    },
+    "google-tpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "aws-trainium": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "huawei-ascend": {
+     "level": "community",
+     "device": "CANNExecutionProvider",
+     "notes": "community-maintained, preview",
+     "source": "https://onnxruntime.ai/docs/execution-providers/",
+     "version": "ONNX Runtime 1.31.1"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "unknown"
+    },
+    "edge-npu": {
+     "level": "official",
+     "device": "OpenVINOExecutionProvider ('NPU'), VitisAIExecutionProvider, QNNExecutionProvider, RknpuExecutionProvider, NnapiExecutionProvider",
+     "notes": "Intel NPU via OpenVINO EP (official); AMD Ryzen AI NPU via Vitis AI EP (preview, INT8/BF16 models, Windows); Rockchip RKNPU EP is community preview; NNAPI deprecated by Android; Hailo/Coral: none",
+     "source": "https://onnxruntime.ai/docs/execution-providers/",
+     "version": "ONNX Runtime 1.31.1"
+    }
+   }
+  },
+  {
+   "id": "tensorrt",
+   "name": "TensorRT",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "official",
+     "device": "trtexec / tensorrt Python builder (engine per GPU arch)",
+     "notes": "inference only; SM 7.5+ (Turing T4 .. Blackwell); Linux x86-64, Windows x64, Windows on Arm64, Linux SBSA, Jetson/DRIVE; FP8/FP4 depend on architecture (Hopper/Blackwell)",
+     "source": "https://docs.nvidia.com/deeplearning/tensorrt/latest/getting-started/support-matrix.html",
+     "version": "TensorRT 11.4.1"
+    },
+    "amd-gpu": {
+     "level": "none",
+     "notes": "not supported (NVIDIA GPUs only)"
+    },
+    "intel-gpu": {
+     "level": "none",
+     "notes": "not supported (NVIDIA GPUs only)"
+    },
+    "x86-cpu": {
+     "level": "none",
+     "notes": "not supported (NVIDIA GPUs only)"
+    },
+    "arm-cpu": {
+     "level": "none",
+     "notes": "not supported (NVIDIA GPUs only)"
+    },
+    "apple-gpu": {
+     "level": "none",
+     "notes": "not supported (NVIDIA GPUs only)"
+    },
+    "apple-ane": {
+     "level": "none",
+     "notes": "not supported (NVIDIA GPUs only)"
+    },
+    "qualcomm": {
+     "level": "none",
+     "notes": "not supported (NVIDIA GPUs only)"
+    },
+    "google-tpu": {
+     "level": "none",
+     "notes": "not supported (NVIDIA GPUs only)"
+    },
+    "aws-trainium": {
+     "level": "none",
+     "notes": "not supported (NVIDIA GPUs only)"
+    },
+    "huawei-ascend": {
+     "level": "none",
+     "notes": "not supported (NVIDIA GPUs only)"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "not supported (NVIDIA GPUs only)"
+    },
+    "edge-npu": {
+     "level": "none",
+     "notes": "not supported (NVIDIA GPUs only)"
+    }
+   }
+  },
+  {
+   "id": "openvino",
+   "name": "OpenVINO",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "amd-gpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "intel-gpu": {
+     "level": "official",
+     "device": "core.compile_model(m, \"GPU\")",
+     "notes": "Arc, HD/UHD, Iris Xe, Data Center GPU Flex/Max; Windows 10/11, Ubuntu 22.04-26.04, RHEL 8/9",
+     "source": "https://docs.openvino.ai/2026/about-openvino/release-notes-openvino/system-requirements.html",
+     "version": "OpenVINO 2026.4.1"
+    },
+    "x86-cpu": {
+     "level": "official",
+     "device": "\"CPU\"",
+     "notes": "system requirements list Intel CPUs (Core, Core Ultra, Xeon, Atom); AMD x86 not listed",
+     "source": "https://docs.openvino.ai/2026/about-openvino/release-notes-openvino/system-requirements.html",
+     "version": "OpenVINO 2026.4.1"
+    },
+    "arm-cpu": {
+     "level": "official",
+     "device": "\"CPU\"",
+     "notes": "ARMv7-A+ and ARM64, Apple silicon Macs (macOS 12.6+), Ubuntu 22.04 ARM64",
+     "source": "https://docs.openvino.ai/2026/about-openvino/release-notes-openvino/system-requirements.html",
+     "version": "OpenVINO 2026.4.1"
+    },
+    "apple-gpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "apple-ane": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "qualcomm": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "google-tpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "aws-trainium": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "huawei-ascend": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "edge-npu": {
+     "level": "official",
+     "device": "\"NPU\"",
+     "notes": "Intel NPU (Core Ultra); Windows 11 22H2+, Ubuntu 22.04; Ubuntu 24.04 preview",
+     "source": "https://docs.openvino.ai/2026/about-openvino/release-notes-openvino/system-requirements.html",
+     "version": "OpenVINO 2026.4.1"
+    }
+   }
+  },
+  {
+   "id": "coreml",
+   "name": "Core ML",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "none",
+     "notes": "not supported (Apple platforms only)"
+    },
+    "amd-gpu": {
+     "level": "none",
+     "notes": "not supported (Apple platforms only)"
+    },
+    "intel-gpu": {
+     "level": "none",
+     "notes": "not supported (Apple platforms only)"
+    },
+    "x86-cpu": {
+     "level": "none",
+     "notes": "not supported (Apple platforms only)"
+    },
+    "arm-cpu": {
+     "level": "official",
+     "device": "ct.ComputeUnit.CPU_ONLY (.cpuOnly)",
+     "notes": "Apple silicon / A-series CPU only; only path that guarantees float32",
+     "source": "https://apple.github.io/coremltools/docs-guides/source/typed-execution.html",
+     "version": "coremltools 9.0"
+    },
+    "apple-gpu": {
+     "level": "official",
+     "device": "ct.ComputeUnit.CPU_AND_GPU",
+     "notes": "fp16 on GPU for neural networks; fp32-typed ML programs run fp32 on CPU/GPU",
+     "source": "https://apple.github.io/coremltools/docs-guides/source/typed-execution.html",
+     "version": "coremltools 9.0"
+    },
+    "apple-ane": {
+     "level": "official",
+     "device": "ct.ComputeUnit.CPU_AND_NE / ALL",
+     "notes": "Neural Engine is fp16 only; a float32-typed ML program bars the NE; scheduling is decided by Core ML (no guarantee a layer runs on ANE); inference only",
+     "source": "https://apple.github.io/coremltools/docs-guides/source/typed-execution.html",
+     "version": "coremltools 9.0"
+    },
+    "qualcomm": {
+     "level": "none",
+     "notes": "not supported (Apple platforms only)"
+    },
+    "google-tpu": {
+     "level": "none",
+     "notes": "not supported (Apple platforms only)"
+    },
+    "aws-trainium": {
+     "level": "none",
+     "notes": "not supported (Apple platforms only)"
+    },
+    "huawei-ascend": {
+     "level": "none",
+     "notes": "not supported (Apple platforms only)"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "not supported (Apple platforms only)"
+    },
+    "edge-npu": {
+     "level": "none",
+     "notes": "not supported (Apple platforms only)"
+    }
+   }
+  },
+  {
+   "id": "triton",
+   "name": "Triton (triton-lang)",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "official",
+     "device": "@triton.jit kernels on torch CUDA tensors",
+     "notes": "Linux only; compute capability 8.0+ (Ampere and newer)",
+     "source": "https://github.com/triton-lang/triton#compatibility",
+     "version": "Triton 3.9.0"
+    },
+    "amd-gpu": {
+     "level": "official",
+     "device": "@triton.jit on ROCm torch tensors",
+     "notes": "Linux, ROCm 6.2+",
+     "source": "https://github.com/triton-lang/triton#compatibility",
+     "version": "Triton 3.9.0"
+    },
+    "intel-gpu": {
+     "level": "preview",
+     "device": "Intel XPU backend (bundled with PyTorch XPU wheels)",
+     "notes": "out-of-tree Intel backend; Ubuntu 22.04/24.04, Windows experimental; Data Center Max/Flex, Arc A770/B580/Pro B",
+     "source": "https://github.com/intel/intel-xpu-backend-for-triton",
+     "version": "intel-xpu-backend-for-triton main"
+    },
+    "x86-cpu": {
+     "level": "none",
+     "notes": "CPU backend 'under development' per README"
+    },
+    "arm-cpu": {
+     "level": "none",
+     "notes": "CPU backend 'under development' per README"
+    },
+    "apple-gpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "apple-ane": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "qualcomm": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "google-tpu": {
+     "level": "none",
+     "notes": "not supported (TPU kernels use Pallas)"
+    },
+    "aws-trainium": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "huawei-ascend": {
+     "level": "none",
+     "notes": "unknown (vendor forks exist; not verified)"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "edge-npu": {
+     "level": "none",
+     "notes": "not supported"
+    }
+   }
+  },
+  {
+   "id": "cupy",
+   "name": "CuPy",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "official",
+     "device": "cupy.cuda.Device(0)",
+     "notes": "CUDA 12.0-13.2, compute capability 3.0+; Linux and Windows; NumPy/SciPy-compatible API (NumPy 2.3 / SciPy 1.16 based)",
+     "source": "https://docs.cupy.dev/en/stable/install.html",
+     "version": "CuPy 14.2.0"
+    },
+    "amd-gpu": {
+     "level": "preview",
+     "device": "cupy.cuda.Device(0)  (ROCm build)",
+     "notes": "experimental; ROCm 7.x; no binary wheels from CuPy since v13.4 (AMD hosts ROCm wheels); no cuTENSOR, sparse, cupy.linalg.eigh",
+     "source": "https://docs.cupy.dev/en/stable/install.html",
+     "version": "CuPy 14.2.0"
+    },
+    "intel-gpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "x86-cpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "arm-cpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "apple-gpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "apple-ane": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "qualcomm": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "google-tpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "aws-trainium": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "huawei-ascend": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "edge-npu": {
+     "level": "none",
+     "notes": "not supported"
+    }
+   }
+  },
+  {
+   "id": "llamacpp",
+   "name": "llama.cpp (ggml)",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "official",
+     "device": "CUDA  (-DGGML_CUDA=ON); also Vulkan",
+     "notes": "requires CUDA toolkit; layers offloaded with --n-gpu-layers",
+     "source": "https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md",
+     "version": "llama.cpp (ggml) master, 2026-11"
+    },
+    "amd-gpu": {
+     "level": "official",
+     "device": "HIP  (-DGGML_HIP=ON); also Vulkan",
+     "notes": "AMD GPUs supported by ROCm; Linux and Windows build steps; HSA_OVERRIDE_GFX_VERSION not supported on Windows",
+     "source": "https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md",
+     "version": "llama.cpp (ggml) master, 2026-11"
+    },
+    "intel-gpu": {
+     "level": "official",
+     "device": "SYCL  (-DGGML_SYCL=ON); also Vulkan; OpenVINO (in progress)",
+     "notes": "Data Center Max/Flex, Arc, iGPU",
+     "source": "https://github.com/ggml-org/llama.cpp#supported-backends",
+     "version": "llama.cpp (ggml) master, 2026-11"
+    },
+    "x86-cpu": {
+     "level": "official",
+     "device": "CPU (default) + BLAS (OpenBLAS/BLIS/oneMKL/AOCL), ZenDNN for AMD EPYC",
+     "notes": "BLAS mainly speeds prompt processing (batch>32), not token generation",
+     "source": "https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md",
+     "version": "llama.cpp (ggml) master, 2026-11"
+    },
+    "arm-cpu": {
+     "level": "official",
+     "device": "CPU + KleidiAI (-DGGML_CPU_KLEIDIAI=ON), Accelerate on macOS",
+     "notes": "KleidiAI: AArch64 Linux, Android arm64, Apple arm64, Windows arm64",
+     "source": "https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md",
+     "version": "llama.cpp (ggml) master, 2026-11"
+    },
+    "apple-gpu": {
+     "level": "official",
+     "device": "Metal (on by default on macOS)",
+     "notes": "disable with -DGGML_METAL=OFF or --n-gpu-layers 0",
+     "source": "https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md",
+     "version": "llama.cpp (ggml) master, 2026-11"
+    },
+    "apple-ane": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "qualcomm": {
+     "level": "preview",
+     "device": "OpenCL (Adreno GPU), Hexagon (NPU)",
+     "notes": "OpenCL for recent Adreno on Android / Windows on Arm; Hexagon backend prints 'experimental' (Android, Windows on Snapdragon, Linux; HTP v73-v81)",
+     "source": "https://github.com/ggml-org/llama.cpp/blob/master/docs/backend/snapdragon/README.md",
+     "version": "llama.cpp (ggml) master, 2026-11"
+    },
+    "google-tpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "aws-trainium": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "huawei-ascend": {
+     "level": "official",
+     "device": "CANN  (-DGGML_CANN=on)",
+     "notes": "Linux; verified Atlas 300I A2 (910B: FP16/BF16/Q4_0/Q8_0) and Atlas 300I Duo (310P: FP16, quant partial, no BF16)",
+     "source": "https://github.com/ggml-org/llama.cpp/blob/master/docs/backend/CANN.md",
+     "version": "llama.cpp (ggml) master, 2026-11"
+    },
+    "other-china": {
+     "level": "official",
+     "device": "MUSA  (-DGGML_MUSA=ON)",
+     "notes": "Moore Threads GPUs only; needs MUSA SDK; most CUDA options untested. Cambricon/Hygon/MetaX: none",
+     "source": "https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md",
+     "version": "llama.cpp (ggml) master, 2026-11"
+    },
+    "edge-npu": {
+     "level": "preview",
+     "device": "OpenVINO backend (Intel NPU)",
+     "notes": "marked 'In Progress' in README; Hailo/RKNN/Coral: none",
+     "source": "https://github.com/ggml-org/llama.cpp#supported-backends",
+     "version": "llama.cpp (ggml) master, 2026-11"
+    }
+   }
+  },
+  {
+   "id": "numpy",
+   "name": "NumPy / SciPy",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "none",
+     "notes": "CPU only; use CuPy / JAX / PyTorch (Array API) for accelerators"
+    },
+    "amd-gpu": {
+     "level": "none",
+     "notes": "CPU only; use CuPy / JAX / PyTorch (Array API) for accelerators"
+    },
+    "intel-gpu": {
+     "level": "none",
+     "notes": "CPU only; use CuPy / JAX / PyTorch (Array API) for accelerators"
+    },
+    "x86-cpu": {
+     "level": "official",
+     "device": "CPU (implicit)",
+     "notes": "float64 by default; matmul/linalg via BLAS/LAPACK (MKL, OpenBLAS, BLIS, FlexiBLAS...), SIMD dispatch at runtime",
+     "source": "https://numpy.org/doc/stable/building/blas_lapack.html",
+     "version": "NumPy 2.5.4 / SciPy 1.18.1"
+    },
+    "arm-cpu": {
+     "level": "official",
+     "device": "CPU (implicit)",
+     "notes": "aarch64 Linux, macOS arm64 (Accelerate supported as BLAS), Windows arm64; NEON/SVE SIMD dispatch",
+     "source": "https://numpy.org/doc/stable/building/blas_lapack.html",
+     "version": "NumPy 2.5.4 / SciPy 1.18.1"
+    },
+    "apple-gpu": {
+     "level": "none",
+     "notes": "CPU only; use CuPy / JAX / PyTorch (Array API) for accelerators"
+    },
+    "apple-ane": {
+     "level": "none",
+     "notes": "CPU only; use CuPy / JAX / PyTorch (Array API) for accelerators"
+    },
+    "qualcomm": {
+     "level": "none",
+     "notes": "CPU only; use CuPy / JAX / PyTorch (Array API) for accelerators"
+    },
+    "google-tpu": {
+     "level": "none",
+     "notes": "CPU only; use CuPy / JAX / PyTorch (Array API) for accelerators"
+    },
+    "aws-trainium": {
+     "level": "none",
+     "notes": "CPU only; use CuPy / JAX / PyTorch (Array API) for accelerators"
+    },
+    "huawei-ascend": {
+     "level": "none",
+     "notes": "CPU only; use CuPy / JAX / PyTorch (Array API) for accelerators"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "CPU only; use CuPy / JAX / PyTorch (Array API) for accelerators"
+    },
+    "edge-npu": {
+     "level": "none",
+     "notes": "CPU only; use CuPy / JAX / PyTorch (Array API) for accelerators"
+    }
+   }
+  },
+  {
+   "id": "eigen",
+   "name": "Eigen",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "preview",
+     "device": "fixed-size Eigen types inside CUDA kernels (nvcc)",
+     "notes": "only fixed-size matrices in device code; disable host SIMD in .cu; nvcc + MSVC does not work; not a GPU BLAS",
+     "source": "https://libeigen.gitlab.io/eigen/docs-nightly/TopicCUDA.html",
+     "version": "Eigen 5.0.1"
+    },
+    "amd-gpu": {
+     "level": "none",
+     "notes": "unknown (HIP not mentioned in the CUDA topic page)"
+    },
+    "intel-gpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "x86-cpu": {
+     "level": "official",
+     "device": "header-only C++ (Eigen::Matrix), compile with -march",
+     "notes": "explicit SIMD: SSE2-4, AVX, AVX2/FMA, AVX-512",
+     "source": "https://eigen.tuxfamily.org/",
+     "version": "Eigen 5.0.1"
+    },
+    "arm-cpu": {
+     "level": "official",
+     "device": "header-only C++",
+     "notes": "NEON (32/64-bit), SVE",
+     "source": "https://eigen.tuxfamily.org/",
+     "version": "Eigen 5.0.1"
+    },
+    "apple-gpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "apple-ane": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "qualcomm": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "google-tpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "aws-trainium": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "huawei-ascend": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "edge-npu": {
+     "level": "none",
+     "notes": "not supported"
+    }
+   }
+  },
+  {
+   "id": "onednn",
+   "name": "oneDNN",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "preview",
+     "device": "gpu engine via SYCL (DPC++ with CUDA)",
+     "notes": "experimental; needs cuBLAS/cuDNN",
+     "source": "https://github.com/uxlfoundation/oneDNN#system-requirements",
+     "version": "oneDNN 3.14.2"
+    },
+    "amd-gpu": {
+     "level": "preview",
+     "device": "gpu engine via SYCL (DPC++ with HIP)",
+     "notes": "experimental; needs ROCm 5.3+, MIOpen, rocBLAS",
+     "source": "https://github.com/uxlfoundation/oneDNN#system-requirements",
+     "version": "oneDNN 3.14.2"
+    },
+    "intel-gpu": {
+     "level": "official",
+     "device": "dnnl::engine::kind::gpu",
+     "notes": "Arc, Data Center GPU Flex/Max, integrated graphics via OpenCL or SYCL; GPU engine off in default build",
+     "source": "https://github.com/uxlfoundation/oneDNN#system-requirements",
+     "version": "oneDNN 3.14.2"
+    },
+    "x86-cpu": {
+     "level": "official",
+     "device": "dnnl::engine::kind::cpu",
+     "notes": "JIT kernels with runtime ISA detection (AVX2/AVX-512/AMX); backs PyTorch CPU and ORT DNNL EP",
+     "source": "https://github.com/uxlfoundation/oneDNN#system-requirements",
+     "version": "oneDNN 3.14.2"
+    },
+    "arm-cpu": {
+     "level": "official",
+     "device": "dnnl::engine::kind::cpu",
+     "notes": "AArch64 optimised for Neoverse N/V; optional Arm Compute Library (ACL 53.1+) integration",
+     "source": "https://github.com/uxlfoundation/oneDNN#system-requirements",
+     "version": "oneDNN 3.14.2"
+    },
+    "apple-gpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "apple-ane": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "qualcomm": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "google-tpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "aws-trainium": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "huawei-ascend": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "edge-npu": {
+     "level": "none",
+     "notes": "not supported"
+    }
+   }
+  },
+  {
+   "id": "tvm",
+   "name": "Apache TVM",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "official",
+     "device": "tvm.target.Target(\"cuda\")",
+     "notes": "maintained (0.27.0, Sep 2026); compiler, not a runtime library",
+     "source": "https://tvm.apache.org/docs/",
+     "version": "Apache TVM 0.27.0"
+    },
+    "amd-gpu": {
+     "level": "official",
+     "device": "Target(\"rocm\") / \"vulkan\"",
+     "notes": "listed backend (repo topics); not re-verified in docs",
+     "source": "https://github.com/apache/tvm",
+     "version": "Apache TVM 0.27.0"
+    },
+    "intel-gpu": {
+     "level": "none",
+     "notes": "unknown"
+    },
+    "x86-cpu": {
+     "level": "official",
+     "device": "Target(\"llvm\")",
+     "notes": "LLVM CPU codegen",
+     "source": "https://github.com/apache/tvm",
+     "version": "Apache TVM 0.27.0"
+    },
+    "arm-cpu": {
+     "level": "official",
+     "device": "Target(\"llvm -mtriple=aarch64-...\")",
+     "notes": "LLVM CPU codegen",
+     "source": "https://github.com/apache/tvm",
+     "version": "Apache TVM 0.27.0"
+    },
+    "apple-gpu": {
+     "level": "official",
+     "device": "Target(\"metal\")",
+     "notes": "listed backend (repo topics)",
+     "source": "https://github.com/apache/tvm",
+     "version": "Apache TVM 0.27.0"
+    },
+    "apple-ane": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "qualcomm": {
+     "level": "community",
+     "device": "Target(\"opencl\") (Adreno)",
+     "notes": "OpenCL backend; Hexagon support exists historically - not re-verified",
+     "source": "https://github.com/apache/tvm",
+     "version": "Apache TVM 0.27.0"
+    },
+    "google-tpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "aws-trainium": {
+     "level": "preview",
+     "device": "Trainium authoring APIs",
+     "notes": "docs list 'Trainium Authoring and Support APIs'",
+     "source": "https://tvm.apache.org/docs/",
+     "version": "Apache TVM 0.27.0"
+    },
+    "huawei-ascend": {
+     "level": "none",
+     "notes": "unknown"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "unknown"
+    },
+    "edge-npu": {
+     "level": "none",
+     "notes": "unknown"
+    }
+   }
+  },
+  {
+   "id": "executorch",
+   "name": "ExecuTorch",
+   "cells": {
+    "nvidia-gpu": {
+     "level": "official",
+     "device": "CUDA backend, TensorRT backend",
+     "notes": "Linux, Windows; on-device/edge inference runtime",
+     "source": "https://docs.pytorch.org/executorch/main/backends-overview.html",
+     "version": "ExecuTorch 1.6.0"
+    },
+    "amd-gpu": {
+     "level": "preview",
+     "device": "Vulkan backend",
+     "notes": "Vulkan is experimental on desktop (mature on Android)",
+     "source": "https://docs.pytorch.org/executorch/main/backends-overview.html",
+     "version": "ExecuTorch 1.6.0"
+    },
+    "intel-gpu": {
+     "level": "official",
+     "device": "OpenVINO backend (GPU)",
+     "notes": "Intel SoCs",
+     "source": "https://docs.pytorch.org/executorch/main/backends-overview.html",
+     "version": "ExecuTorch 1.6.0"
+    },
+    "x86-cpu": {
+     "level": "official",
+     "device": "XNNPACK backend",
+     "notes": "portable CPU",
+     "source": "https://docs.pytorch.org/executorch/main/backends-overview.html",
+     "version": "ExecuTorch 1.6.0"
+    },
+    "arm-cpu": {
+     "level": "official",
+     "device": "XNNPACK backend; Arm Cortex-M backend (embedded)",
+     "notes": "phones, Raspberry Pi, Apple CPU",
+     "source": "https://docs.pytorch.org/executorch/main/backends-overview.html",
+     "version": "ExecuTorch 1.6.0"
+    },
+    "apple-gpu": {
+     "level": "official",
+     "device": "Core ML backend (GPU); MLX backend (experimental on iOS)",
+     "notes": "Core ML backend: macOS 13+/iOS 16+",
+     "source": "https://docs.pytorch.org/executorch/main/backends/coreml/coreml-overview.html",
+     "version": "ExecuTorch 1.6.0"
+    },
+    "apple-ane": {
+     "level": "official",
+     "device": "Core ML backend (compute units incl. ANE)",
+     "notes": "fp16 on ANE; experimental 'Core AI' backend for OS 27",
+     "source": "https://docs.pytorch.org/executorch/main/backends/coreml/coreml-overview.html",
+     "version": "ExecuTorch 1.6.0"
+    },
+    "qualcomm": {
+     "level": "official",
+     "device": "Qualcomm (QNN/HTP) backend; Vulkan for Adreno",
+     "notes": "Android",
+     "source": "https://docs.pytorch.org/executorch/main/backends-overview.html",
+     "version": "ExecuTorch 1.6.0"
+    },
+    "google-tpu": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "aws-trainium": {
+     "level": "none",
+     "notes": "not supported"
+    },
+    "huawei-ascend": {
+     "level": "none",
+     "notes": "unknown"
+    },
+    "other-china": {
+     "level": "none",
+     "notes": "unknown"
+    },
+    "edge-npu": {
+     "level": "official",
+     "device": "Arm Ethos-U, NXP, MediaTek, Samsung Exynos, OpenVINO (NPU) backends",
+     "notes": "embedded/mobile NPUs; Hailo/RKNN/Coral not listed",
+     "source": "https://docs.pytorch.org/executorch/main/backends-overview.html",
+     "version": "ExecuTorch 1.6.0"
+    }
+   }
+  }
+ ],
+ "under": [
+  {
+   "family": "nvidia-gpu",
+   "blas": [
+    "cuBLAS / cuBLASLt",
+    "cuDNN",
+    "CUTLASS (templates, CuTe)",
+    "cuSPARSE, cuFFT, cuSOLVER",
+    "NCCL (collectives)"
+   ],
+   "kernelLangs": [
+    "CUDA C++ / PTX",
+    "Triton",
+    "CuTe DSL",
+    "Pallas (Triton lowering)"
+   ],
+   "compilers": [
+    "TorchInductor -> Triton",
+    "XLA (JAX/TF)",
+    "TensorRT",
+    "TVM",
+    "MLIR-based (Triton IR)"
+   ],
+   "bestFor": [
+    "large-scale LLM training (FP8/BF16 tensor cores, NVLink)",
+    "high-throughput inference with TensorRT / vLLM",
+    "anything needing the widest library support (FlashAttention, custom kernels)"
+   ],
+   "avoidFor": [
+    "fp64-heavy science on consumer GeForce (fp64 is 1/64 rate)",
+    "cost-sensitive edge devices"
+   ],
+   "sources": [
+    "https://docs.pytorch.org/docs/2.15/notes/cuda.html",
+    "https://docs.nvidia.com/deeplearning/tensorrt/latest/getting-started/support-matrix.html",
+    "https://docs.nvidia.com/cuda/cublas/"
+   ]
+  },
+  {
+   "family": "amd-gpu",
+   "blas": [
+    "rocBLAS",
+    "hipBLASLt",
+    "MIOpen",
+    "Composable Kernel (CK)",
+    "RCCL"
+   ],
+   "kernelLangs": [
+    "HIP C++",
+    "Triton (ROCm backend)"
+   ],
+   "compilers": [
+    "TorchInductor -> Triton",
+    "XLA (JAX ROCm plugin)",
+    "MIGraphX",
+    "LLVM AMDGPU"
+   ],
+   "bestFor": [
+    "large-memory LLM training/inference on Instinct MI300X/MI325X/MI355X (192-288 GB HBM)",
+    "PyTorch code written for CUDA (same torch.cuda API)"
+   ],
+   "avoidFor": [
+    "Windows-first workflows (Windows ROCm/PyTorch limited to Radeon 9000/select 7000 + Ryzen AI APUs)",
+    "libraries that ship CUDA-only kernels"
+   ],
+   "sources": [
+    "https://rocm.docs.amd.com/en/latest/compatibility/compatibility-matrix.html",
+    "https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/",
+    "https://docs.pytorch.org/docs/2.15/notes/hip.html"
+   ]
+  },
+  {
+   "family": "intel-gpu",
+   "blas": [
+    "oneMKL",
+    "oneDNN",
+    "oneCCL"
+   ],
+   "kernelLangs": [
+    "SYCL / DPC++",
+    "Triton (Intel XPU backend)",
+    "OpenCL"
+   ],
+   "compilers": [
+    "TorchInductor -> Triton (XPU)",
+    "OpenVINO",
+    "XLA via oneAPI PJRT (experimental)"
+   ],
+   "bestFor": [
+    "local inference on Arc / Core Ultra laptops (OpenVINO, llama.cpp SYCL)",
+    "PyTorch 'xpu' prototyping on Windows or Linux"
+   ],
+   "avoidFor": [
+    "fp64 work on Arc A-Series (no native FP64)",
+    "frontier-scale training"
+   ],
+   "sources": [
+    "https://docs.pytorch.org/docs/2.15/notes/get_start_xpu.html",
+    "https://github.com/uxlfoundation/oneDNN#system-requirements",
+    "https://docs.openvino.ai/2026/about-openvino/release-notes-openvino/system-requirements.html"
+   ]
+  },
+  {
+   "family": "x86-cpu",
+   "blas": [
+    "oneMKL",
+    "oneDNN",
+    "OpenBLAS",
+    "BLIS / AMD AOCL-BLAS",
+    "ZenDNN (AMD EPYC)"
+   ],
+   "kernelLangs": [
+    "C/C++ intrinsics (AVX2/AVX-512/AMX)",
+    "ISPC",
+    "Highway"
+   ],
+   "compilers": [
+    "TorchInductor (C++/OpenMP codegen)",
+    "XLA CPU",
+    "LLVM",
+    "OpenVINO CPU plugin"
+   ],
+   "bestFor": [
+    "fp64 numerics with NumPy/SciPy/Eigen",
+    "small-batch inference and preprocessing",
+    "bf16 inference on AMX-capable Xeons"
+   ],
+   "avoidFor": [
+    "training large networks"
+   ],
+   "sources": [
+    "https://numpy.org/doc/stable/building/blas_lapack.html",
+    "https://github.com/uxlfoundation/oneDNN#system-requirements",
+    "https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md"
+   ]
+  },
+  {
+   "family": "arm-cpu",
+   "blas": [
+    "OpenBLAS",
+    "Arm Performance Libraries",
+    "KleidiAI micro-kernels",
+    "Arm Compute Library",
+    "Accelerate (Apple CPU cores, AMX/SME)",
+    "XNNPACK"
+   ],
+   "kernelLangs": [
+    "NEON / SVE / SME intrinsics"
+   ],
+   "compilers": [
+    "TorchInductor (C++)",
+    "XLA CPU",
+    "LLVM",
+    "TVM"
+   ],
+   "bestFor": [
+    "cost-efficient cloud inference on Graviton / Grace / Axion",
+    "on-device inference on phones and Raspberry Pi (XNNPACK, llama.cpp + KleidiAI)"
+   ],
+   "avoidFor": [
+    "large-scale training"
+   ],
+   "sources": [
+    "https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md",
+    "https://github.com/uxlfoundation/oneDNN#system-requirements",
+    "https://docs.pytorch.org/executorch/main/backends-overview.html"
+   ]
+  },
+  {
+   "family": "apple-gpu",
+   "blas": [
+    "Metal Performance Shaders (MPS)",
+    "MPSGraph",
+    "Accelerate (CPU side)"
+   ],
+   "kernelLangs": [
+    "Metal Shading Language (no double type)",
+    "mx.fast.metal_kernel (MLX)"
+   ],
+   "compilers": [
+    "MPSGraph",
+    "Core ML compiler",
+    "MLX lazy graph"
+   ],
+   "bestFor": [
+    "local LLM inference using unified memory (MLX, llama.cpp Metal)",
+    "prototyping PyTorch models on a Mac ('mps')"
+   ],
+   "avoidFor": [
+    "float64 anything (unsupported on MPS)",
+    "multi-node training"
+   ],
+   "sources": [
+    "https://docs.pytorch.org/docs/2.15/notes/mps.html",
+    "https://ml-explore.github.io/mlx/build/html/install.html",
+    "https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md"
+   ]
+  },
+  {
+   "family": "apple-ane",
+   "blas": [
+    "Core ML runtime (private ANE compiler/driver)"
+   ],
+   "kernelLangs": [
+    "none public"
+   ],
+   "compilers": [
+    "coremltools (MIL) -> Core ML",
+    "ExecuTorch Core ML backend"
+   ],
+   "bestFor": [
+    "low-power on-device inference in iOS/macOS apps (vision, small transformers)"
+   ],
+   "avoidFor": [
+    "training",
+    "fp32-precision models (ANE is fp16-only)"
+   ],
+   "sources": [
+    "https://apple.github.io/coremltools/docs-guides/source/typed-execution.html",
+    "https://docs.pytorch.org/executorch/main/backends/coreml/coreml-overview.html"
+   ]
+  },
+  {
+   "family": "qualcomm",
+   "blas": [
+    "Qualcomm AI Engine Direct (QNN) SDK / HTP ops",
+    "Adreno OpenCL kernels"
+   ],
+   "kernelLangs": [
+    "OpenCL (Adreno)",
+    "Hexagon DSP C/HVX intrinsics"
+   ],
+   "compilers": [
+    "QNN context binaries",
+    "ONNX Runtime QNN EP",
+    "ExecuTorch Qualcomm backend"
+   ],
+   "bestFor": [
+    "quantized (INT8/INT16) on-device inference on Snapdragon phones and Copilot+ PCs",
+    "battery-efficient always-on models"
+   ],
+   "avoidFor": [
+    "training",
+    "unquantized fp32 models on the HTP"
+   ],
+   "sources": [
+    "https://onnxruntime.ai/docs/execution-providers/QNN-ExecutionProvider.html",
+    "https://github.com/ggml-org/llama.cpp/blob/master/docs/backend/snapdragon/README.md"
+   ]
+  },
+  {
+   "family": "google-tpu",
+   "blas": [
+    "libtpu (XLA TPU runtime); MXU matrix units"
+   ],
+   "kernelLangs": [
+    "Pallas (Mosaic TPU)"
+   ],
+   "compilers": [
+    "XLA",
+    "StableHLO",
+    "TorchTPU (torch.compile + eager)"
+   ],
+   "bestFor": [
+    "large-scale JAX training with sharding across pods",
+    "bf16 dense matmul-heavy workloads"
+   ],
+   "avoidFor": [
+    "dynamic-shape / control-flow-heavy code (recompilations)",
+    "fp64 numerics"
+   ],
+   "sources": [
+    "https://docs.jax.dev/en/latest/installation.html",
+    "https://pytorch.org/blog/introducing-torchtpu/"
+   ]
+  },
+  {
+   "family": "aws-trainium",
+   "blas": [
+    "Neuron runtime / NeuronCore engines"
+   ],
+   "kernelLangs": [
+    "NKI (Neuron Kernel Interface)"
+   ],
+   "compilers": [
+    "neuronx-cc (XLA/HLO based)",
+    "torch.compile backend 'neuron'"
+   ],
+   "bestFor": [
+    "cost-efficient LLM training/inference on AWS Trn2/Trn3"
+   ],
+   "avoidFor": [
+    "workloads that need to leave AWS",
+    "custom CUDA-kernel-dependent code"
+   ],
+   "sources": [
+    "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/frameworks/torch/index.html",
+    "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/release-notes/index.html"
+   ]
+  },
+  {
+   "family": "huawei-ascend",
+   "blas": [
+    "CANN aclnn operator library",
+    "HCCL (collectives)"
+   ],
+   "kernelLangs": [
+    "Ascend C"
+   ],
+   "compilers": [
+    "CANN graph engine (GE)",
+    "torch_npu NPUGraph / graph mode",
+    "MindSpore"
+   ],
+   "bestFor": [
+    "training/inference inside China's domestic compute ecosystem (Atlas 800/900)"
+   ],
+   "avoidFor": [
+    "code depending on the latest PyTorch release or CUDA-only kernels"
+   ],
+   "sources": [
+    "https://github.com/Ascend/pytorch",
+    "https://github.com/ggml-org/llama.cpp/blob/master/docs/backend/CANN.md"
+   ]
+  },
+  {
+   "family": "other-china",
+   "blas": [
+    "muBLAS / muDNN (Moore Threads MUSA)",
+    "CNNL (Cambricon)",
+    "Hygon DTK (ROCm-derived hipBLAS/MIOpen)"
+   ],
+   "kernelLangs": [
+    "MUSA C++",
+    "BANG C (Cambricon)",
+    "HIP (Hygon DCU)"
+   ],
+   "compilers": [
+    "vendor forks of PyTorch (torch_musa, torch_mlu)"
+   ],
+   "bestFor": [
+    "domestic-hardware deployments where NVIDIA export restrictions apply"
+   ],
+   "avoidFor": [
+    "projects needing the newest upstream framework releases"
+   ],
+   "sources": [
+    "https://github.com/MooreThreads/torch_musa",
+    "https://github.com/Cambricon/torch_mlu",
+    "https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md"
+   ]
+  },
+  {
+   "family": "edge-npu",
+   "blas": [
+    "vendor NPU runtimes: Intel NPU driver (OpenVINO), AMD Ryzen AI (Vitis AI), RKNN toolkit, Arm Ethos-U (Vela), Hailo/Coral SDKs"
+   ],
+   "kernelLangs": [
+    "none public (graph compilers only)"
+   ],
+   "compilers": [
+    "OpenVINO",
+    "Vitis AI / Quark",
+    "ExecuTorch backends",
+    "ONNX Runtime EPs"
+   ],
+   "bestFor": [
+    "quantized INT8 vision / small-model inference at milliwatt-to-few-watt power",
+    "background AI features on Copilot+ PCs"
+   ],
+   "avoidFor": [
+    "training",
+    "models with unsupported ops or dynamic shapes"
+   ],
+   "sources": [
+    "https://onnxruntime.ai/docs/execution-providers/",
+    "https://onnxruntime.ai/docs/execution-providers/Vitis-AI-ExecutionProvider.html",
+    "https://docs.openvino.ai/2026/about-openvino/release-notes-openvino/system-requirements.html",
+    "https://docs.pytorch.org/executorch/main/backends-overview.html"
+   ]
+  }
+ ],
+ "precisionDefaults": [
+  {
+   "text": "torch.backends.cuda.matmul.allow_tf32 defaults to False (since PyTorch 1.12): fp32 matmuls on Ampere+ do not use TF32 unless enabled.",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/cuda.html"
+  },
+  {
+   "text": "torch.backends.cudnn.allow_tf32 defaults to True: cuDNN convolutions may use TF32 on Ampere+.",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/cuda.html"
+  },
+  {
+   "text": "torch.set_float32_matmul_precision default is 'highest' (full fp32); 'high' allows TF32 or bf16x2 splitting, 'medium' allows bf16; the doc notes it currently affects CUDA only.",
+   "source": "https://docs.pytorch.org/docs/2.15/generated/torch.set_float32_matmul_precision.html"
+  },
+  {
+   "text": "Newer fp32_precision knobs (torch.backends.fp32_precision, torch.backends.cuda.matmul.fp32_precision, torch.backends.cudnn.conv/rnn.fp32_precision) take 'ieee' or 'tf32'; 'bfx9' is CUDA-matmul only, needs a CUDA 12.9+ build and errors on ROCm.",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/cuda.html"
+  },
+  {
+   "text": "On ROCm, TF32 is supported on Instinct MI300 (gfx942) via hipBLASLt through the same torch.backends.cuda.matmul controls, with hardware-level numerical differences from NVIDIA.",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/hip.html"
+  },
+  {
+   "text": "torch.autocast default dtype: torch.float16 for CUDA, torch.bfloat16 for CPU (from torch.get_autocast_dtype()).",
+   "source": "https://docs.pytorch.org/docs/2.15/amp.html"
+  },
+  {
+   "text": "XPU autocast has its own op lists ('XPU Ops that can autocast to float16'), marked experimental; gradient scaling notes float16 is the default on CUDA and XPU.",
+   "source": "https://docs.pytorch.org/docs/2.15/amp.html"
+  },
+  {
+   "text": "Built-in autocast devices (including 'mps') accept only torch.float16 or torch.bfloat16 as the autocast dtype; other dtypes disable autocast with a warning. The amp docs do not document MPS op lists or its default dtype.",
+   "source": "https://github.com/pytorch/pytorch/blob/v2.15.0/torch/amp/autocast_mode.py"
+  },
+  {
+   "text": "MPS does not support torch.float64 (Metal Shading Language has no double type); creating or moving a float64 tensor to 'mps' raises TypeError and PYTORCH_ENABLE_MPS_FALLBACK=1 does not help.",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/mps.html"
+  },
+  {
+   "text": "XPU float64: Intel Arc A-Series graphics has no native FP64; GradScaler requires FP64 hardware support, so disable it on Arc A-Series. Data Center GPU Max has FP64.",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/get_start_xpu.html"
+  },
+  {
+   "text": "bfloat16 autocast on CUDA requires torch.cuda.is_bf16_supported() (Ampere or newer); otherwise autocast raises and asks for float16.",
+   "source": "https://github.com/pytorch/pytorch/blob/v2.15.0/torch/amp/autocast_mode.py"
+  }
+ ],
+ "checked": "2026-11-13",
+ "versionsChecked": {
+  "pytorch": "PyTorch 2.15.0",
+  "jax": "JAX 0.12.0.1",
+  "tf": "TensorFlow 2.21.0",
+  "mlx": "MLX 0.32.4",
+  "ort": "ONNX Runtime 1.31.1",
+  "trt": "TensorRT 11.4.1",
+  "ov": "OpenVINO 2026.4.1",
+  "coreml": "coremltools 9.0",
+  "triton": "Triton 3.9.0",
+  "cupy": "CuPy 14.2.0",
+  "llama": "llama.cpp (ggml) master, 2026-11",
+  "numpy": "NumPy 2.5.4 / SciPy 1.18.1",
+  "eigen": "Eigen 5.0.1",
+  "onednn": "oneDNN 3.14.2",
+  "tvm": "Apache TVM 0.27.0",
+  "et": "ExecuTorch 1.6.0",
+  "rocm": "ROCm 10.1.0 matrix",
+  "neuron": "Neuron SDK 2.33.1",
+  "npu": "torch_npu 2.14.0"
+ }
+}
