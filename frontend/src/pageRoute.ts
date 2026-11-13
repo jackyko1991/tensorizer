@@ -4,7 +4,7 @@
 
 export const PAGE_TABS = {
   concept: ["laws", "feynman", "maths", "dataflow", "limitations", "history"],
-  skills: ["techniques", "loops", "blas", "chips", "nvlink", "cpuml"],
+  skills: ["techniques", "loops", "blas", "chips", "mixed", "nvlink", "cpuml"],
   agents: ["skills", "mcp", "roadmap"],
 } as const;
 export type TabbedPage = keyof typeof PAGE_TABS;

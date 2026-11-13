@@ -8,6 +8,7 @@ import type { SkillsTab } from "../pageRoute";
 import type { Manifest } from "../types";
 import BlasTab from "./BlasTab";
 import ChipsTab from "./ChipsTab";
+import MixedTab from "./MixedTab";
 import CpumlTab from "./CpumlTab";
 import LoopsTab from "./LoopsTab";
 import NvlinkTab from "./NvlinkTab";
@@ -159,6 +160,8 @@ export default function SkillsPage({
         <NvlinkTab />
       ) : tab === "chips" ? (
         <ChipsTab />
+      ) : tab === "mixed" ? (
+        <MixedTab />
       ) : (
       <div className="mx-auto flex max-w-6xl gap-8 px-5 pt-6 pb-10">
         <PageToc

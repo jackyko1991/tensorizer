@@ -3,6 +3,8 @@
  * Plans and numbers: ../chipsAnim.ts; number formats: ../chipsModel.ts.
  */
 import { COL, Txt } from "./animKit";
+import { RichText } from "./Tex";
+import { usePageText, type PageKey } from "../content/pages";
 import { Arrow, Box, StepAnim, W, fill, type DrawProps } from "./BlasAnim";
 import { BITS_STEPS, BITS_VALUE, BUDGETS, CHIPS_PLAN, FEED, MIXED_PLAN, MMA, SCALE_GRADS, bitsStep, busyFraction, lossScaling, scalarCycles, stallAt, sumCurves, type ChipsCase, type MixedCase } from "../chipsAnim";
 import { allValues, bitsOf, fmt } from "../chipsModel";
@@ -224,41 +226,72 @@ function Sum({ step, f, k }: DrawProps) {
 
 const BLOCK_COL = { cpu: [COL.blue, COL.blueLight], gpu: [COL.green, COL.greenLight], npu: [COL.violet, COL.violetLight], cache: [COL.cur, COL.curLight], io: ["#64748b", "#e2e8f0"] } as const;
 
-function Budget({ step, f, k }: DrawProps) {
-  const b = BUDGETS[step];
-  const x0 = 20;
-  const w = W - 40;
-  const h = 70;
-  let x = x0;
+/** Static figure: the three floorplans one above the other (keys chips.budget.*). */
+export function BudgetFigure() {
+  const T = usePageText();
+  const k = (s: string) => T(`chips.budget.${s}` as PageKey);
+  const x0 = 6;
+  const w = W - 12;
+  const rowH = 20;
+  const gap = 46; // title + note above each bar
+  const H = BUDGETS.length * gap + 24;
+  const kinds = ["cpu", "gpu", "npu", "cache", "io"] as const;
   return (
-    <g>
-      <Txt x={x0} y={16} size={8.5} weight={600}>
-        {k(`chip${step}`)}
-      </Txt>
-      <rect x={x0 - 2} y={24} width={w + 4} height={h + 4} rx={4} fill="#fff" stroke="#334155" strokeWidth={1} />
-      {b.blocks.map((bl) => {
-        const bw = bl.share * w * Math.min(1, f * 1.4);
-        const cx = x;
-        x += bl.share * w;
-        const [c, light] = BLOCK_COL[bl.kind];
-        return (
-          <g key={bl.kind}>
-            <rect x={cx} y={26} width={Math.max(0, bw - 1)} height={h} rx={2} fill={light} stroke={c} strokeWidth={0.7} />
-            {bl.share * w > 24 && f > 0.5 && (
-              <Txt x={cx + (bl.share * w) / 2} y={26 + h / 2 + 3} size={7} anchor="middle" color={c} weight={600}>
-                {k(bl.kind)}
+    <figure className="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white" data-testid="chips-budget">
+      <figcaption className="border-b border-gray-200 bg-gray-50 px-3 py-1.5 text-xs text-gray-600">{k("title")}</figcaption>
+      <svg viewBox={`0 0 ${W} ${H}`} className="mx-auto block h-auto w-full max-w-[640px] p-1" role="img" aria-label={k("caption")}>
+        {BUDGETS.map((b, r) => {
+          const y = 4 + r * gap;
+          let x = x0;
+          return (
+            <g key={b.id}>
+              <Txt x={x0} y={y + 7} size={6.5} weight={600}>
+                {k(`chip${r}`)}
               </Txt>
-            )}
-          </g>
-        );
-      })}
-      <Txt x={x0} y={112} size={7} color={COL.text}>
-        {k(`note${step}`)}
-      </Txt>
-      <Txt x={W - 20} y={122} size={6.5} anchor="end" color={COL.muted}>
-        {k("schematic")}
-      </Txt>
-    </g>
+              <Txt x={W - 6} y={y + 7} size={5.6} anchor="end" color={COL.muted}>
+                {k(`note${r}`)}
+              </Txt>
+              {b.blocks.map((bl) => {
+                const cx = x;
+                const bw = bl.share * w;
+                x += bw;
+                const [c, light] = BLOCK_COL[bl.kind];
+                const label = k(bl.kind);
+                return (
+                  <g key={bl.kind}>
+                    <rect x={cx} y={y + 11} width={bw - 1} height={rowH} rx={2} fill={light} stroke={c} strokeWidth={0.7} />
+                    {bw >= label.length * 4 + 6 && (
+                      <Txt x={cx + bw / 2} y={y + 11 + rowH / 2 + 2.2} size={6} anchor="middle" color={c} weight={600}>
+                        {label}
+                      </Txt>
+                    )}
+                  </g>
+                );
+              })}
+            </g>
+          );
+        })}
+        {/* legend, for the blocks too narrow to label */}
+        {kinds.map((kind, i) => {
+          const [c, light] = BLOCK_COL[kind];
+          const lx = x0 + i * 42;
+          return (
+            <g key={kind}>
+              <rect x={lx} y={H - 14} width={8} height={7} rx={1} fill={light} stroke={c} strokeWidth={0.6} />
+              <Txt x={lx + 11} y={H - 8.5} size={5.6}>
+                {k(kind)}
+              </Txt>
+            </g>
+          );
+        })}
+        <Txt x={W - 6} y={H - 8.5} size={5.6} anchor="end" color={COL.muted}>
+          {k("schematic")}
+        </Txt>
+      </svg>
+      <p className="border-t border-gray-100 px-3 py-2 text-xs leading-snug text-gray-600">
+        <RichText text={k("caption")} />
+      </p>
+    </figure>
   );
 }
 
@@ -443,7 +476,7 @@ function Scale({ step, f, k }: DrawProps) {
       {step === 1 && (
         <g>
           <line x1={x0} y1={Yg(65504)} x2={x1} y2={Yg(65504)} stroke={COL.red} strokeWidth={0.6} strokeDasharray="3 2" />
-          <Txt x={x0 + 2} y={Yg(65504) - 2} size={6} color={COL.red}>
+          <Txt x={x1} y={Yg(65504) - 2} size={6} anchor="end" color={COL.red}>
             {k("fp16max")}
           </Txt>
           <line x1={x0} y1={Yg(2 ** -24)} x2={x1} y2={Yg(2 ** -24)} stroke={COL.muted} strokeWidth={0.5} strokeDasharray="2 2" />
@@ -453,7 +486,7 @@ function Scale({ step, f, k }: DrawProps) {
               <circle cx={X(i)} cy={Yg(Math.min(g * 1e-4 * SCALES[i].scale, 2 ** 16))} r={1.8} fill={SCALES[i].overflow ? COL.red : COL.green} />
             </g>
           ))}
-          <Txt x={x0} y={70} size={7} color={COL.green}>
+          <Txt x={x0} y={64} size={6.5} color={COL.green}>
             {k("grads")}
           </Txt>
         </g>
@@ -466,7 +499,6 @@ function Scale({ step, f, k }: DrawProps) {
 }
 
 const CHIPS_PICTURES: Record<ChipsCase, { h: number; draw: (p: DrawProps) => React.ReactNode }> = {
-  budget: { h: 128, draw: Budget },
   feed: { h: 128, draw: Feed },
   mma: { h: 124, draw: Mma },
 };

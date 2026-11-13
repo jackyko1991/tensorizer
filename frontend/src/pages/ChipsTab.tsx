@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from "react";
-import ChipsAnim from "../components/ChipsAnim";
+import ChipsAnim, { BudgetFigure } from "../components/ChipsAnim";
 import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
 import { RichText } from "../components/Tex";
@@ -27,7 +27,7 @@ import {
 import { formatPageRoute } from "../pageRoute";
 
 /** Every section of the tab, in order: numbered 1..N in the table of contents and on the cards. */
-const SECTIONS = ["why", "history", "table", "precision", "under", "libs", "china", "arm", "measure", "choose"] as const;
+const SECTIONS = ["why", "history", "table", "precision", "under", "libs", "china", "arm", "desktop", "measure", "choose"] as const;
 const num = (key: (typeof SECTIONS)[number]) => SECTIONS.indexOf(key) + 1;
 const fill = (s: string, v: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (m, k) => String(v[k] ?? m));
 const P = "mt-3 text-sm leading-relaxed text-gray-700";
@@ -78,7 +78,7 @@ const fmtNum = (v: number | number[] | null | undefined, digits = 3): string => 
 
 // --- 3. the chip table ------------------------------------------------------------------------------------
 
-const PRECISIONS: Precision[] = ["fp64", "fp32", "bf16", "fp8", "fp4", "int8"];
+const PRECISIONS: Precision[] = ["int8", "fp4", "fp8", "bf16", "fp32", "fp64"];
 type SortKey = "name" | "year" | "bandwidthGBs" | "rate" | "ridge" | "memoryGB" | "powerW";
 
 function ChipTable({ selected, onSelect, precision, setPrecision, extra }: {
@@ -628,7 +628,71 @@ function LibraryTable({ highlight }: { highlight: Family | null }) {
   );
 }
 
-// --- 9. measure your chip ----------------------------------------------------------------------------------
+// --- 9. desktop tensor computers: Mac Studio, Ryzen AI Max, DGX Spark, RTX Spark ---------------------------
+
+/** the machines compared, with the chip each is built on; a graphics card last, for reference */
+const DESKTOPS: { id: string; machine: PageKey }[] = [
+  { id: "apple-m5-max", machine: "chips.desktop.macStudio" },
+  { id: "apple-m5-ultra", machine: "chips.desktop.macStudio" },
+  { id: "apple-m3-ultra", machine: "chips.desktop.macStudio" },
+  { id: "amd-ryzen-ai-max-plus-395", machine: "chips.desktop.miniPc" },
+  { id: "nvidia-dgx-spark-gb10", machine: "chips.desktop.dgxSpark" },
+  { id: "nvidia-rtx-spark", machine: "chips.desktop.rtxSpark" },
+  { id: "nvidia-rtx-5090", machine: "chips.desktop.card" },
+];
+const DESKTOP_SRC = [
+  "https://www.apple.com/mac-studio/",
+  "https://www.amd.com/en/products/processors/desktops/ryzen/ryzen-ai-halo/ryzen-ai-max-plus-395.html",
+  "https://www.nvidia.com/en-us/products/workstations/dgx-spark/",
+  "https://www.nvidia.com/en-us/products/rtx-spark/",
+];
+
+function DesktopTable({ onSelect }: { onSelect: (id: string) => void }) {
+  const T = usePageText();
+  const rows = DESKTOPS.flatMap((d) => {
+    const c = CHIPS.find((x) => x.id === d.id);
+    return c ? [{ c, machine: d.machine }] : [];
+  });
+  return (
+    <div className="mt-4 overflow-x-auto rounded-lg border border-gray-200" data-testid="chips-desktop-table">
+      <table className="w-full text-left text-xs">
+        <thead className="bg-gray-50 text-gray-600">
+          <tr>
+            {(["chip", "memory", "bandwidth", "fits", "decode", "power"] as const).map((h) => (
+              <th key={h} className="px-2 py-1.5 font-semibold">
+                {T(`chips.desktop.${h}` as PageKey)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100">
+          {rows.map(({ c, machine }) => {
+            const gb = Array.isArray(c.memoryGB) ? c.memoryGB[1] : (c.memoryGB ?? 0);
+            // largest model at 4 bits that fits, leaving 20% for the cache, activations and the system
+            const fitB = Math.floor((gb * 0.8) / 0.5);
+            return (
+              <tr key={c.id} className={c.id === "nvidia-rtx-5090" ? "bg-gray-50 text-gray-600" : ""}>
+                <td className="px-2 py-1.5">
+                  <span className="text-gray-500">{T(machine)}</span>{" "}
+                  <button className="font-semibold text-gray-900 hover:text-blue-700" onClick={() => onSelect(c.id)}>
+                    {short(c.name)}
+                  </button>
+                </td>
+                <td className="px-2 py-1.5 tabular-nums">{fmtNum(c.memoryGB)}</td>
+                <td className="px-2 py-1.5 tabular-nums">{fmtNum(c.bandwidthGBs)}</td>
+                <td className="px-2 py-1.5 tabular-nums">{gb ? fill(T("chips.desktop.fitsValue"), { b: fitB }) : "–"}</td>
+                <td className="px-2 py-1.5 tabular-nums">{c.bandwidthGBs ? fmtNum(decodeCeiling(c.bandwidthGBs, 70, 0.5), 2) : "–"}</td>
+                <td className="px-2 py-1.5 tabular-nums">{fmtNum(c.powerW)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// --- 10. measure your chip ----------------------------------------------------------------------------------
 
 interface Measured {
   device: string;
@@ -751,7 +815,7 @@ export default function ChipsTab() {
               </li>
             ))}
           </ul>
-          <ChipsAnim id="budget" />
+          <BudgetFigure />
           <ChipsAnim id="feed" />
         </Card>
 
@@ -867,6 +931,31 @@ export default function ChipsTab() {
             ))}
           </ul>
           <p className={P}>{text("chips.arm.tensorizer")}</p>
+        </Card>
+
+        <Card id="desktop">
+          <Heading n={num("desktop")} text={T("chips.desktop.title")} />
+          <p className={P}>{text("chips.desktop.text")}</p>
+          <ul className="mt-3 grid gap-3 text-sm leading-relaxed text-gray-700 md:grid-cols-2">
+            {(["mac", "amd", "dgx", "rtx"] as const).map((k) => (
+              <li key={k} className="rounded-lg bg-gray-50 p-3">
+                <RichText text={T(`chips.desktop.${k}` as PageKey)} />
+              </li>
+            ))}
+          </ul>
+          <DesktopTable onSelect={(id) => (setSelected(id), document.getElementById("chips-table")?.scrollIntoView({ behavior: "smooth" }))} />
+          <p className="mt-1 text-[11px] text-gray-500">
+            <RichText text={T("chips.desktop.legend")} />
+          </p>
+          <p className={P}>{text("chips.desktop.verdict")}</p>
+          <p className="mt-3 flex flex-wrap gap-x-3 text-xs">
+            <span className="text-gray-500">{T("chips.sources")}</span>
+            {DESKTOP_SRC.map((u) => (
+              <Ext key={u} href={u}>
+                {host(u)}
+              </Ext>
+            ))}
+          </p>
         </Card>
 
         <Card id="measure">

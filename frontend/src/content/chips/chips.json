@@ -606,13 +606,13 @@
    "blas": "rocBLAS/hipBLASLt, MIOpen",
    "kernelLangs": "HIP, Triton",
    "interconnect": "on-package (16 Zen 5 cores, GPU and NPU share LPDDR5X); PCIe 4.0 lanes for I/O",
-   "notes": "40 RDNA 3.5 CUs (gfx1151) at up to 2.9 GHz. GPU figures DERIVED (AMD does not print GPU TFLOPS): FP32 = 40 x 128 x 2 (dual-issue) x 2.9 GHz; WMMA FP16/BF16/INT8 = 512 ops/clk/CU; FP64 = 1/16 single-issue FP32. Bandwidth = 8000 MT/s x 256-bit = 256 GB/s. Up to 128 GB; up to 96 GB can be assigned to the GPU on Windows (more on Linux). NPU 50 TOPS; AMD's 126 TOPS is the whole SoC. cTDP 45-120 W (AMD test configs often use 55 W). ROCm supports gfx1151 in recent releases.",
+   "notes": "40 RDNA 3.5 CUs (gfx1151) at up to 2.9 GHz. GPU figures DERIVED (AMD does not print GPU TFLOPS): FP32 = 40 x 128 x 2 (dual-issue) x 2.9 GHz; WMMA FP16/BF16/INT8 = 512 ops/clk/CU; FP64 = 1/16 single-issue FP32. Bandwidth = 8000 MT/s x 256-bit = 256 GB/s. Up to 128 GB; up to 96 GB can be assigned to the GPU on Windows (more on Linux). NPU 50 TOPS; AMD's 126 TOPS is the whole SoC. cTDP 45-120 W (AMD test configs often use 55 W). ROCm supports gfx1151 in recent releases. Power: AMD lists a 120 W TDP on the product page; laptops configure it between 45 and 120 W.",
    "confidence": "mixed",
    "sources": {
     "memoryGB": "https://www.amd.com/en/products/processors/laptop/ryzen/ai-300-series/amd-ryzen-ai-max-plus-395.html",
     "bandwidthGBs": "https://www.amd.com/en/products/processors/laptop/ryzen/ai-300-series/amd-ryzen-ai-max-plus-395.html",
     "npuTOPS": "https://www.amd.com/en/products/processors/laptop/ryzen/ai-300-series/amd-ryzen-ai-max-plus-395.html",
-    "powerW": "https://www.amd.com/content/dam/amd/en/documents/partner-hub/ryzen/ryzen-ai-max-series-how-to-sell-guide-competitive.pdf"
+    "powerW": "https://www.amd.com/en/products/processors/desktops/ryzen/ryzen-ai-halo/ryzen-ai-max-plus-395.html"
    },
    "derived": [
     "fp32TF",
@@ -633,10 +633,7 @@
    "fp4TF": null,
    "int8TOPS": 59.4,
    "npuTOPS": 50,
-   "powerW": [
-    45,
-    120
-   ]
+   "powerW": 120
   },
   {
    "id": "amd-rx-7900-xtx",
@@ -1039,6 +1036,52 @@
    "int8TOPS": null,
    "npuTOPS": null,
    "powerW": 900
+  },
+  {
+   "id": "nvidia-rtx-spark",
+   "vendor": "NVIDIA",
+   "name": "RTX Spark (top configuration)",
+   "nameZh": null,
+   "group": "global",
+   "class": "soc",
+   "year": 2026,
+   "memoryType": "LPDDR5X (unified)",
+   "memoryGB": 128,
+   "matrixUnit": "5th-gen Tensor Core (Blackwell RTX GPU, up to 6,144 CUDA cores)",
+   "formats": [
+    "FP4",
+    "FP8",
+    "FP16",
+    "BF16",
+    "INT8"
+   ],
+   "pytorchDevice": "cuda",
+   "blas": "cuBLAS/cuBLASLt, cuDNN, CUTLASS",
+   "kernelLangs": "CUDA, Triton",
+   "interconnect": null,
+   "notes": "Windows-on-Arm superchip for laptops and small desktops, announced at Computex 2026, devices from fall 2026: Blackwell RTX GPU with up to 6,144 CUDA cores and a 20-core Grace CPU (built with MediaTek), up to 128 GB unified LPDDR5X; a smaller version has an 18-core CPU and up to 64 GB. NVIDIA quotes 'up to 1 petaflop FP4' without saying dense or sparse (DGX Spark's identical figure is with sparsity), so no FP4 rate is listed. NVIDIA publishes no memory bandwidth.",
+   "confidence": "vendor",
+   "sources": {
+    "memoryGB": "https://www.nvidia.com/en-us/products/rtx-spark/",
+    "powerW": "https://www.nvidia.com/en-us/products/rtx-spark/"
+   },
+   "derived": [],
+   "bandwidthGBs": null,
+   "fp64TF": null,
+   "fp64TensorTF": null,
+   "fp32TF": null,
+   "tf32TF": null,
+   "bf16TF": null,
+   "fp16TF": null,
+   "fp8TF": null,
+   "fp6TF": null,
+   "fp4TF": null,
+   "int8TOPS": null,
+   "npuTOPS": null,
+   "powerW": [
+    45,
+    80
+   ]
   },
   {
    "id": "apple-m4",

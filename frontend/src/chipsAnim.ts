@@ -15,7 +15,6 @@ export type MixedCase = keyof typeof MIXED_PLAN;
 
 /** Coding Skills ▸ Chips */
 export const CHIPS_PLAN = {
-  budget: { steps: [10, 10, 10], tick: 420, labels: ["chip0", "chip1", "chip2", "note0", "note1", "note2", "cpu", "gpu", "npu", "io", "cache", "schematic"] },
   feed: { steps: [12, 12, 12], tick: 300, labels: ["mem0", "mem1", "mem2", "alu", "busy", "gbs"] },
   mma: { steps: [12, 12, 10], tick: 380, labels: ["fma", "mma", "unit", "names", "names2", "per"] },
 } as const satisfies Record<string, StepPlan>;

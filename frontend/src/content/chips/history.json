@@ -156,7 +156,7 @@
    "text": "AMD released ROCm, an open-source GPU compute stack that includes HIP, a CUDA-like language. Later rocBLAS and MIOpen added BLAS and deep-learning libraries for AMD GPUs.",
    "vendor": "AMD",
    "kind": "library",
-   "source": "https://insidehpc.com/2016/09/rocm/"
+   "source": "https://en.wikipedia.org/wiki/ROCm"
   },
   {
    "id": "tpu2-bf16",
@@ -206,7 +206,7 @@
    "text": "Huawei launched the Ascend 910 training chip, built on its Da Vinci cube cores, together with the MindSpore framework. CANN (Compute Architecture for Neural Networks) is the operator library and runtime layer for Ascend.",
    "vendor": "Huawei",
    "kind": "chip",
-   "source": "https://www.huawei.com/en/news/2019/8/huawei-ascend-910-most-powerful-ai-processor"
+   "source": "https://www.huawei.com/us/press-events/news/2019/8/huawei-ascend-910-most-powerful-ai-processor"
   },
   {
    "id": "a100-tf32",

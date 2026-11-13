@@ -1,0 +1,462 @@
+{
+ "points": [
+  {
+   "id": "method-origin",
+   "topic": "method",
+   "text": "Mixed precision training was introduced by Micikevicius et al. (NVIDIA/Baidu, arXiv Oct 2017, ICLR 2018). Weights, activations and gradients are stored in IEEE half precision (FP16), while a single-precision (FP32) copy of the weights accumulates the updates, and the loss is scaled to keep small gradients from vanishing. The paper reports it works for CNNs, RNNs and GANs with over 100 million parameters and nearly halves memory use.",
+   "source": "https://arxiv.org/abs/1710.03740",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "method-master-weights",
+   "topic": "method",
+   "text": "Keep a master copy of the weights in FP32 and make an FP16 copy for each forward and backward pass; apply the optimizer update to the FP32 copy. The reason is that an update (learning rate times gradient) is often smaller than the gap between neighbouring FP16 numbers near the weight's value, so adding it directly in FP16 would round it away.",
+   "source": "https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/index.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "method-loss-scaling",
+   "topic": "method",
+   "text": "Loss scaling multiplies the loss by a factor S before backpropagation, so by the chain rule every gradient is also multiplied by S and small values move out of FP16's underflow zone; the weight gradients are multiplied by 1/S before the update. Without it, many activation gradients fall below FP16's smallest subnormal (about 6e-8) and become zero.",
+   "source": "https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/index.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "method-dynamic-scaling",
+   "topic": "method",
+   "text": "Dynamic loss scaling starts with a large S (NVIDIA's FAQ gives 2^24 as an example). Each step it checks the gradients for Inf/NaN: if any appear, it skips that weight update and reduces S; if none have appeared for N steps, it increases S. NVIDIA reports success with N = 2000, a growth factor of 2 and a backoff factor of 0.5, and notes that occasional skipped steps do not need a schedule change.",
+   "source": "https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/index.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "method-fp32-ops",
+   "topic": "method",
+   "text": "Not every operation runs in half precision. Large reductions (batch-norm mean and variance, sums), softmax, and losses such as cross-entropy and L1, plus exponentials, are kept in FP32. Matrix multiplies and convolutions run on FP16 tensor cores, which multiply in FP16 and can accumulate the products in FP32.",
+   "source": "https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/index.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "method-gains",
+   "topic": "method",
+   "text": "NVIDIA's guide cites up to 8x faster FP16 tensor-core matrix multiply and convolution compared with FP32, and up to 3x overall speedup on the most arithmetically intense models. Its measured end-to-end speedups range from 1.10x to 3.47x depending on the model, and it states there are no precise rules for the speedup. Halving bytes per value also speeds up memory-bound layers and allows larger models or batches.",
+   "source": "https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/index.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "pytorch-autocast",
+   "topic": "pytorch",
+   "text": "torch.autocast(device_type, dtype) is a context manager: inside it, eligible ops run in the lower precision dtype and the rest run in FP32. Wrap only the forward pass and the loss; call backward() outside, and backward ops run in the same dtype autocast chose for the forward op. If dtype is omitted the default is torch.float16 on CUDA and torch.bfloat16 on CPU. The documented device types are cuda, cpu, mtia, maia, xpu and hpu.",
+   "code": "with torch.autocast(device_type=\"cuda\", dtype=torch.float16):\n    out = model(x)\n    loss = loss_fn(out, y)",
+   "source": "https://docs.pytorch.org/docs/stable/amp.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "pytorch-gradscaler",
+   "topic": "pytorch",
+   "text": "torch.amp.GradScaler implements dynamic loss scaling. The defaults are init_scale=2**16, growth_factor=2.0, backoff_factor=0.5 and growth_interval=2000. scaler.step() skips optimizer.step() if the unscaled gradients contain Inf/NaN, and scaler.update() then shrinks or grows the scale. The device-specific torch.cuda.amp.GradScaler and torch.cuda.amp.autocast are deprecated in favour of torch.amp.GradScaler(\"cuda\") and torch.autocast(\"cuda\").",
+   "code": "scaler = torch.amp.GradScaler(\"cuda\")\nfor x, y in loader:\n    opt.zero_grad()\n    with torch.autocast(device_type=\"cuda\", dtype=torch.float16):\n        loss = loss_fn(model(x), y)\n    scaler.scale(loss).backward()\n    scaler.step(opt)\n    scaler.update()",
+   "source": "https://docs.pytorch.org/docs/stable/notes/amp_examples.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "pytorch-bf16-no-scaler",
+   "topic": "pytorch",
+   "text": "With dtype=torch.bfloat16, GradScaler is normally left out: bfloat16 has the same 8-bit exponent as FP32, so gradients do not underflow as they do in float16. The parameters stay in FP32 (autocast casts copies), so this is still mixed precision with FP32 master weights.",
+   "code": "with torch.autocast(device_type=\"cuda\", dtype=torch.bfloat16):\n    loss = loss_fn(model(x), y)\nloss.backward()\nopt.step()",
+   "source": "https://cloud.google.com/blog/products/ai-machine-learning/bfloat16-the-secret-to-high-performance-on-cloud-tpus",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "pytorch-op-lists",
+   "topic": "pytorch",
+   "text": "The AMP page lists which ops autocast changes. On CUDA, these run in float16: matmul, mm, bmm, addmm, baddbmm, linear, conv1d/2d/3d, conv_transpose, prelu and the RNN cells. These run in float32: exp, log, pow, softmax, log_softmax, layer_norm, group_norm, norm, sum, prod, cumsum, cross_entropy, mse_loss, nll_loss and other losses. Ops that combine tensors, such as cat and stack, use the widest input type. The CPU lists are similar, with linalg_* and fft_* ops kept in float32.",
+   "source": "https://docs.pytorch.org/docs/stable/amp.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "pytorch-cpu",
+   "topic": "pytorch",
+   "text": "On CPU, torch.autocast(\"cpu\") defaults to bfloat16. torch.float16 has been accepted as a CPU autocast dtype since PyTorch 2.2 (2.0 and 2.1 accepted only bfloat16). On Intel Xeon CPUs with AMX, the bfloat16 ops under autocast (conv, linear, matmul, bmm…) are dispatched to AMX through oneDNN automatically.",
+   "code": "with torch.autocast(device_type=\"cpu\", dtype=torch.bfloat16):\n    out = model(x)",
+   "source": "https://github.com/pytorch/pytorch/blob/v2.2.0/torch/amp/autocast_mode.py",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "pytorch-mps",
+   "topic": "pytorch",
+   "text": "Autocast on Apple's MPS backend arrived in PyTorch 2.5, with float16 only. PyTorch 2.6 added bfloat16, but only on macOS 14 or later (otherwise autocast warns and disables itself). The default MPS autocast dtype is float16, and the MPS op list mirrors CUDA's: conv, matmul, linear, bmm, addmm, einsum, scaled_dot_product_attention and others run in lower precision.",
+   "code": "with torch.autocast(device_type=\"mps\", dtype=torch.float16):\n    out = model(x.to(\"mps\"))",
+   "source": "https://github.com/pytorch/pytorch/blob/v2.6.0/torch/amp/autocast_mode.py",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "pytorch-xpu-defaults",
+   "topic": "pytorch",
+   "text": "PyTorch's per-device default autocast dtypes are float16 for CUDA, HIP, XPU (Intel GPU) and MPS, and bfloat16 for CPU, XLA/TPU and HPU (Gaudi). XPU is a native device in upstream PyTorch, and torch.autocast(\"xpu\") accepts float16 or bfloat16.",
+   "source": "https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/autocast_mode.cpp",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "bf16-format",
+   "topic": "bf16",
+   "text": "bfloat16 is FP32 with the low 16 mantissa bits cut off: 1 sign, 8 exponent and 7 mantissa bits. Google's TPU docs say its dynamic range is equivalent to FP32's, so it is close to a drop-in replacement for FP32 in training, while FP16 (5 exponent bits, max 65504) typically needs loss scaling. The cost is precision: about 3 significant decimal digits, against roughly 3.3 for FP16 and 7 for FP32.",
+   "source": "https://cloud.google.com/blog/products/ai-machine-learning/bfloat16-the-secret-to-high-performance-on-cloud-tpus",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "bf16-nvidia",
+   "topic": "bf16",
+   "text": "On NVIDIA GPUs, BF16 tensor cores need compute capability 8.0 or higher (Ampere: A100, RTX 30xx, and later). FP8 needs 8.9+ (Ada, Hopper). MXFP8 and full NVFP4 training are supported on data-centre Blackwell (10.x); on 12.0 (RTX Blackwell workstation) NVFP4 is partial and MXFP8 is not yet supported.",
+   "source": "https://nvidia.github.io/TransformerEngine/support_matrix.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "bf16-amd",
+   "topic": "bf16",
+   "text": "AMD's ROCm precision table lists FP16/BF16 matrix-core support on CDNA2 (MI200), CDNA3 (MI300), CDNA4 (MI350), RDNA3 and RDNA4. FP8 matrix cores are on CDNA3, CDNA4 and RDNA4, and FP6/FP4 on CDNA4 only.",
+   "source": "https://rocm.docs.amd.com/en/latest/reference/precision-support.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "bf16-arm",
+   "topic": "bf16",
+   "text": "Arm added four BF16 instructions (BFDOT, BFMMLA, BFMLAL, BFCVT) to SVE and Neon in a 2019 Armv8-A revision (FEAT_BF16, mandatory from Armv8.6-A). The multiplies take BF16 inputs and accumulate into an IEEE FP32 result, which is the same mixed-precision pattern used by GPU tensor cores.",
+   "source": "https://developer.arm.com/community/arm-community-blogs/b/ai-blog/posts/bfloat16-processing-for-neural-networks-on-armv8_2d00_a",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "tpu-mxu",
+   "topic": "tpu",
+   "text": "Cloud TPU v2 and v3 use bfloat16 in the MXU, a 128x128 systolic array: multiplications are done in bfloat16 and accumulations in full FP32. Google's docs say that, by default, TPUs do matrix multiplication with bfloat16 values and accumulate in IEEE float32. They also say the bfloat16 format needs no loss scaling.",
+   "source": "https://cloud.google.com/blog/products/ai-machine-learning/bfloat16-the-secret-to-high-performance-on-cloud-tpus",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "tpu-jax-precision",
+   "topic": "tpu",
+   "text": "In JAX, FP32 matmuls on TPU are by default computed in a single bfloat16 pass (Precision.DEFAULT). Precision.HIGH uses 3 bfloat16 passes and Precision.HIGHEST uses 6, which approximates full FP32. On GPU, DEFAULT and HIGH use TF32 where available, and HIGHEST uses FP32. jax.default_matmul_precision sets this globally ('bfloat16', 'tensorfloat32', 'float32'). Physics code on TPU that expects FP32 matmuls should ask for HIGHEST.",
+   "code": "import jax, jax.numpy as jnp\nfrom jax import lax\ny = jnp.dot(a, b, precision=lax.Precision.HIGHEST)\nwith jax.default_matmul_precision(\"float32\"):\n    y = a @ b",
+   "source": "https://docs.jax.dev/en/latest/jax.lax.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "tpu-flax",
+   "topic": "tpu",
+   "text": "JAX has no autocast. Mixed precision is set per layer: in Flax NNX, param_dtype (default float32) is the dtype the parameters are stored in, and dtype is the computation dtype. Setting dtype=jnp.bfloat16 keeps FP32 parameters, which the optimizer (e.g. Optax) updates in FP32, and computes in bfloat16.",
+   "code": "from flax import nnx\nimport jax.numpy as jnp\nlayer = nnx.Linear(512, 512, dtype=jnp.bfloat16, param_dtype=jnp.float32, rngs=nnx.Rngs(0))",
+   "source": "https://flax.readthedocs.io/en/latest/api_reference/flax.nnx/nn/linear.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "amd-pytorch",
+   "topic": "amd",
+   "text": "PyTorch on ROCm reuses the CUDA device API: an AMD GPU is torch.device(\"cuda\"), so torch.autocast(\"cuda\") and torch.amp.GradScaler(\"cuda\") work unchanged. AMD's 2024 ROCm blog post shows the standard autocast + GradScaler loop on an AMD GPU and reports about 46% faster training and about 50% lower peak memory on its toy example.",
+   "source": "https://rocm.blogs.amd.com/artificial-intelligence/automatic-mixed-precision/README.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "amd-fnuz",
+   "topic": "amd",
+   "text": "MI300 (CDNA3, gfx942) uses the FNUZ FP8 variants (E4M3FNUZ, E5M2FNUZ). They have no infinities and no negative zero, and NaN is encoded as the bit pattern for negative zero, which frees one more exponent value. MI350/MI355X (CDNA4, gfx950) and RDNA4 instead use the OCP FP8 formats (E4M3FN, E5M2), the same as NVIDIA. In PyTorch these are distinct dtypes: torch.float8_e4m3fnuz versus torch.float8_e4m3fn.",
+   "source": "https://rocm.docs.amd.com/projects/HIP/en/latest/reference/fp8_numbers.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "amd-ranges",
+   "topic": "amd",
+   "text": "Because the bit patterns are spent differently, E4M3FNUZ tops out at ±240, while OCP E4M3FN reaches ±448. CDNA3 and CDNA4 matrix cores (MFMA) store the output in FP32 to limit accumulation error even with FP8 inputs. CDNA4 adds MXFP8/MXFP6/MXFP4 block-scaled MFMA instructions, whose E8M0 scales are applied after the dot product and before accumulation.",
+   "source": "https://rocm.blogs.amd.com/software-tools-optimization/matrix-cores-cdna/README.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "amd-hipblaslt",
+   "topic": "amd",
+   "text": "hipBLASLt is the ROCm GEMM library behind low-precision matmuls. Its FNUZ FP8 types (hipblaslt_f8_fnuz, hipblaslt_bf8_fnuz) are supported only on gfx942 (MI300), and the non-FNUZ E4M3/E5M2 types (hipblaslt_f8, hipblaslt_bf8) only on gfx950 (MI350) and gfx12 (RDNA4). So the same FP8 model needs different dtypes on MI300 and MI350.",
+   "source": "https://rocm.docs.amd.com/projects/hipBLASLt/en/latest/reference/data-type-support.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "intel-amx",
+   "topic": "intel",
+   "text": "Intel AMX (Advanced Matrix Extensions, Xeon since 4th gen 'Sapphire Rapids') adds 2-D tile registers and a tile matrix-multiply unit. PyTorch uses it automatically for supported bfloat16 ops (conv, linear, matmul, bmm, addmm…) under torch.autocast(\"cpu\") or a bf16 model, with no extra package. You can check it is in use with ONEDNN_VERBOSE=1.",
+   "code": "with torch.no_grad(), torch.autocast(device_type=\"cpu\", dtype=torch.bfloat16):\n    out = model(x)",
+   "source": "https://docs.pytorch.org/tutorials/recipes/amx.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "intel-ipex-eol",
+   "topic": "intel",
+   "text": "Intel Extension for PyTorch (IPEX) has been retired. Releases ended after 2.8, support ran to the end of March 2026, and the repository was archived on 30 March 2026. Intel says most optimisations were upstreamed and recommends plain PyTorch, including the native \"xpu\" device for Intel GPUs.",
+   "source": "https://github.com/intel/intel-extension-for-pytorch",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "intel-gaudi",
+   "topic": "intel",
+   "text": "Intel Gaudi (device \"hpu\") supports mixed precision through native torch.autocast(device_type=\"hpu\", dtype=torch.bfloat16). Float16 is not supported. You can override which ops go to low precision or FP32 with the PT_HPU_AUTOCAST_LOWER_PRECISION_OPS_LIST and PT_HPU_AUTOCAST_FP32_OPS_LIST files. FP8 training on Gaudi 2 and later uses Intel's Gaudi Transformer Engine (fp8_autocast with a DelayedScaling recipe).",
+   "code": "with torch.autocast(device_type=\"hpu\", dtype=torch.bfloat16):\n    loss = loss_fn(model(x), y)\nloss.backward()",
+   "source": "https://docs.habana.ai/en/latest/PyTorch/PyTorch_Mixed_Precision/Autocast.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "apple-mlx-dtypes",
+   "topic": "apple",
+   "text": "MLX arrays support float16 (e5m10), bfloat16 (e8m7), float32 and float64; float32 is the default float type. float64 works only for CPU operations, and using it on the GPU raises an exception. That matters for physics code on Apple GPUs.",
+   "source": "https://ml-explore.github.io/mlx/build/html/python/data_types.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "apple-mlx-no-autocast",
+   "topic": "apple",
+   "text": "MLX has no autocast. A November 2025 feature request for one was closed by the maintainers as not planned. Mixed precision in MLX is manual: cast parameters with Module.set_dtype (which by default casts only floating-point parameters) or cast inputs with .astype, keeping the parts you want in FP32 yourself.",
+   "code": "import mlx.core as mx\nmodel.set_dtype(mx.bfloat16)   # all float params -> bf16\nx = x.astype(mx.bfloat16)",
+   "source": "https://github.com/ml-explore/mlx/issues/2834",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "ascend-torch-npu",
+   "topic": "ascend",
+   "text": "On Huawei Ascend, torch_npu (Ascend Extension for PyTorch) supports torch.autocast as-is. The CUDA-style classes map to torch_npu.npu.amp.autocast and torch_npu.npu.amp.GradScaler. The supported AMP dtypes are float16, plus bfloat16 when torch.npu.is_bf16_supported() is true (e.g. Atlas A2-class chips).",
+   "code": "import torch, torch_npu\nscaler = torch_npu.npu.amp.GradScaler()\nwith torch.autocast(device_type=\"npu\", dtype=torch.float16):\n    loss = loss_fn(model(x), y)\nscaler.scale(loss).backward(); scaler.step(opt); scaler.update()",
+   "source": "https://gitcode.com/Ascend/pytorch/blob/v2.7.1-7.3.0/docs/zh/native_apis/pytorch_2-8-0/torch-amp.md",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "ascend-precision-mode",
+   "topic": "ascend",
+   "text": "Underneath, CANN has an operator precision_mode. must_keep_origin_dtype keeps each op's original dtype. allow_fp32_to_fp16 runs cube (matrix) ops in FP16 and keeps vector ops in FP32 where supported. allow_mix_precision (or the _fp16/_bf16 variants) lowers some ops by a built-in list. force_fp16 and force_fp32 are the extremes, and allow_fp32_to_bf16 is the BF16 analogue. MindSpore exposes the same setting through mindspore.device_context.ascend.op_precision.precision_mode, and its framework default there is must_keep_origin_dtype.",
+   "source": "https://www.mindspore.cn/docs/en/master/api_python/device_context/mindspore.device_context.ascend.op_precision.precision_mode.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "ascend-mindspore-amp",
+   "topic": "ascend",
+   "text": "MindSpore's amp.auto_mixed_precision has amp_level O0 (no change, the default), O1 (whitelisted cells and ops to low precision), O2 (everything except blacklisted cells to low precision), O3 (whole network to low precision), and an experimental 'auto' (whitelist such as MatMul and Conv2D low; blacklist such as Pow, Exp and Softmax kept FP32). The low-precision dtype defaults to float16 and can be bfloat16.",
+   "code": "import mindspore as ms\nnet = ms.amp.auto_mixed_precision(net, amp_level=\"O2\", dtype=ms.float16)",
+   "source": "https://www.mindspore.cn/docs/en/master/api_python/amp/mindspore.amp.auto_mixed_precision.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "fp8-formats-hybrid",
+   "topic": "fp8",
+   "text": "FP8 comes in two OCP formats: E4M3 (max 448, more precision) and E5M2 (max 57344, more range). NVIDIA Transformer Engine's HYBRID format uses E4M3 for forward-pass tensors (weights, activations) and E5M2 for backward-pass gradients, and it is the default for its DelayedScaling recipe. FP8 needs a scale factor per tensor, because even E5M2's range is far smaller than BF16's.",
+   "source": "https://github.com/NVIDIA/TransformerEngine/blob/main/transformer_engine/common/recipe/__init__.py",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "fp8-delayed-scaling",
+   "topic": "fp8",
+   "text": "Delayed scaling picks each tensor's scale from the maximum |value| (amax) recorded over previous iterations (amax_history_len, default 1024, using the max of the history), so the scale is ready before the tensor is computed. TE also offers current (just-in-time) per-tensor scaling, FP8 block scaling, MXFP8 and NVFP4 recipes. Master weights stay in higher precision; recent TE versions use te.autocast(recipe=...) (formerly fp8_autocast) around the forward pass.",
+   "code": "import transformer_engine.pytorch as te\nfrom transformer_engine.common.recipe import DelayedScaling, Format\nrecipe = DelayedScaling(fp8_format=Format.HYBRID, amax_history_len=16, amax_compute_algo=\"max\")\nlayer = te.Linear(1024, 1024)\nwith te.autocast(enabled=True, recipe=recipe):\n    y = layer(x)\ny.sum().backward()",
+   "source": "https://nvidia.github.io/TransformerEngine/features/low_precision_training/introduction/introduction.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "fp8-deepseek",
+   "topic": "fp8",
+   "text": "DeepSeek-V3 (Dec 2024) trained a 671B MoE model in FP8 using E4M3 for all tensors with fine-grained scaling: 1x128 tiles for activations and 128x128 blocks for weights. H800 tensor cores keep only about 14 bits of accumulation precision, which gave up to about 2% relative error for K = 4096. DeepSeek therefore copies partial sums to CUDA cores and adds them in FP32 every 128 elements. Embedding, output head, MoE gating, normalisation and attention stayed in BF16/FP32, master weights and gradients in FP32, and the loss stayed within 0.25% of BF16.",
+   "source": "https://arxiv.org/abs/2412.19437",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "fp8-mx",
+   "topic": "fp8",
+   "text": "Microscaling (MX) formats, standardised by OCP, share one power-of-two scale (E8M0) per block of 32 consecutive values, with FP8, FP6, FP4 or INT8 elements. The 2023 MX paper reports training generative language models at sub-8-bit weights, activations and gradients with minimal accuracy loss. MXFP8 training runs on NVIDIA data-centre Blackwell (TE MXFP8BlockScaling; torchao's mxfp8 recipe on B200), and AMD CDNA4 (MI350/MI355X) has native MXFP8/6/4 matrix instructions.",
+   "source": "https://arxiv.org/abs/2310.10537",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "fp8-nvfp4",
+   "topic": "fp8",
+   "text": "NVFP4 is NVIDIA's 4-bit (E2M1, max 6) format for Blackwell. It uses two levels of scaling: an E4M3 scale per 16 values plus one FP32 scale per tensor. NVIDIA reports pretraining a 12B model on 10 trillion tokens in NVFP4, with loss and accuracy comparable to an FP8 baseline. The recipe uses random Hadamard transforms, 16x16 2-D weight scaling, stochastic rounding of gradients, and a few layers kept in higher precision.",
+   "source": "https://arxiv.org/abs/2509.25149",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "fp8-torchao",
+   "topic": "fp8",
+   "text": "In plain PyTorch, torchao's float8 training swaps nn.Linear for float8 versions (recipes 'tensorwise', 'rowwise', 'rowwise_with_gw_hp') and is meant to be used with torch.compile. It runs on both NVIDIA and AMD. torchao reports up to 1.5x speedup at 512 GPUs and 405B parameters, and a 25% gain over bf16 for Llama3-8B on 8xH100 (14.7% on 8xMI300X).",
+   "code": "from torchao.float8 import Float8LinearConfig, convert_to_float8_training\nconfig = Float8LinearConfig.from_recipe_name(\"tensorwise\")\nconvert_to_float8_training(model, config=config)\nmodel = torch.compile(model)",
+   "source": "https://docs.pytorch.org/ao/main/workflows/training.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "science-iterative-refinement",
+   "topic": "science",
+   "text": "Mixed-precision iterative refinement solves Ax = b to FP64 accuracy: factor A = LU once in low precision (the O(n^3) part), then repeatedly compute the residual r = b - Ax in FP64, solve for a correction with the cheap low-precision factors, and update x. Haidar, Tomov, Dongarra and Higham (SC18) used FP16 tensor cores this way, with GEMM accumulating in FP32, and reported up to 4x speedup and 5x better energy efficiency for FP64-accurate solutions.",
+   "source": "https://icl.utk.edu/node/1264",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "science-cusolver-irs",
+   "topic": "science",
+   "text": "cuSOLVER ships this as the IRS solvers: cusolverDn<t1><t2>gesv (e.g. DHgesv uses FP64 data with a half-precision factorisation; DBgesv uses bfloat16, DXgesv TF32) and the configurable cusolverDnIRSXgesv. NVIDIA calls TF32 the most robust lower precision, with up to 4x (real) and 5x (complex) speedup, and recommends GMRES refinement. If refinement does not converge, the solver can fall back to a full-precision factorisation. BF16 and TF32 options need compute capability 8.0+.",
+   "source": "https://docs.nvidia.com/cuda/cusolver/index.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "science-hpl-mxp",
+   "topic": "science",
+   "text": "HPL-MxP (formerly HPL-AI) is the mixed-precision companion to the TOP500's HPL. It does an LU factorisation in low precision (typically 16-bit), then GMRES refinement preconditioned by the L and U factors to recover a 64-bit-accurate solution.",
+   "source": "https://hpl-mxp.org/",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "science-ozaki",
+   "topic": "science",
+   "text": "The Ozaki scheme gets an exact FP64 matrix product out of low-precision units. It splits each FP64 matrix into several slices that share a scale per row or column, multiplies the slices on fast INT8 (or FP16) tensor cores, where integer products and sums are exact, and adds the partial products back up in high precision. Ootomo, Ozaki and Yokota ran it on integer tensor cores faster than cuBLAS DGEMM on consumer GPUs and sped up a quantum-circuit simulation 4.33x at FP64 accuracy.",
+   "source": "https://arxiv.org/abs/2306.11975",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "science-cublas-emulation",
+   "topic": "science",
+   "text": "cuBLAS (CUDA 13.0 Update 2 and later) can emulate FP64 GEMM with fixed-point Ozaki-I/II algorithms on integer tensor cores. It can also emulate FP32 with BF16x9 on Blackwell (CUDA 12.9 and later). An automatic dynamic precision mode picks the number of slices so accuracy is equal to or better than native FP64, and it falls back to native execution when emulation would not be faster. It can be turned on without code changes via CUBLAS_EMULATE_DOUBLE_PRECISION=1 and CUBLAS_EMULATION_STRATEGY=performant|eager.",
+   "code": "CUBLAS_EMULATE_DOUBLE_PRECISION=1 CUBLAS_EMULATION_STRATEGY=eager python sim.py",
+   "source": "https://docs.nvidia.com/cuda/cublas/index.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "science-cublas-results",
+   "topic": "science",
+   "text": "NVIDIA reports up to 2.3x for emulated FP64 GEMM on GB200 NVL72 and up to 13x on RTX PRO 6000 Blackwell Server Edition, whose native FP64 is weak. Quantum ESPRESSO ran 1.5x faster end to end at full accuracy, and nearly 3x with 39 mantissa bits while matching to 12 significant digits. That trade (fewer mantissa bits for more speed) is the scientific version of picking a precision.",
+   "source": "https://developer.nvidia.com/blog/unlocking-tensor-core-performance-with-floating-point-emulation-in-cublas/",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "science-md-gromacs",
+   "topic": "science",
+   "text": "GROMACS shows the classic split in physics codes. Its default 'mixed precision' build stores coordinates, velocities and forces in single precision but keeps critical accumulators such as the virial in double, because single precision for everything would significantly reduce accuracy. Double precision is 20 to 100% slower and is recommended for normal-mode analysis and for long-term energy conservation in large systems.",
+   "source": "https://manual.gromacs.org/current/reference-manual/definitions.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "science-weather-float16",
+   "topic": "science",
+   "text": "Reduced precision can work for physics if the numbers are rescaled into the format's range and rounding is controlled where it accumulates. Klöwer et al. (JAMES 2022) ran the ShallowWaters.jl fluid model entirely in Float16 on Fujitsu A64FX, rescaling the equations to use 97% of representable numbers. They added compensated (Kahan-style) summation to the time integration and got up to 3.6x speedup, as precise as, and faster than, mixed 16/32-bit.",
+   "source": "https://meetingorganizer.copernicus.org/EGU22/EGU22-3095.html",
+   "checked": "2026-11-13"
+  },
+  {
+   "id": "science-when-not",
+   "topic": "science",
+   "text": "Where low precision fails in physics, it is usually accumulation. Adding a small increment to a large running total (time integration x += v*dt over millions of steps, energy sums, long reductions) loses the increment once it falls below half the spacing between floats at the total's size. The fixes are the same ideas as in ML mixed precision: keep the state and accumulators in FP32/FP64 (like master weights), use compensated summation, rescale variables, or refine a low-precision result with a high-precision residual. Chaotic systems also diverge faster at lower precision (GROMACS notes this for MD), so trajectory-level reproducibility is lost even when statistics stay correct.",
+   "source": "https://manual.gromacs.org/current/reference-manual/definitions.html",
+   "checked": "2026-11-13"
+  }
+ ],
+ "table": [
+  {
+   "family": "NVIDIA GPU (Volta/Turing)",
+   "defaultLowPrecision": "float16",
+   "autocast": "torch.autocast(\"cuda\", dtype=torch.float16)",
+   "lossScaling": "Yes, torch.amp.GradScaler(\"cuda\") (dynamic: init 2^16, x2 every 2000 good steps, x0.5 and skip on Inf/NaN)",
+   "fp8": "No",
+   "notes": "No BF16 tensor cores (BF16 needs compute capability 8.0+).",
+   "source": "https://nvidia.github.io/TransformerEngine/support_matrix.html"
+  },
+  {
+   "family": "NVIDIA GPU (Ampere, Ada, Hopper, Blackwell)",
+   "defaultLowPrecision": "float16 (autocast default); bfloat16 usual choice",
+   "autocast": "torch.autocast(\"cuda\", dtype=torch.bfloat16 or torch.float16)",
+   "lossScaling": "Needed for float16; usually not needed for bfloat16",
+   "fp8": "FP8 E4M3/E5M2 on Ada/Hopper+ (Transformer Engine, torchao); MXFP8 and NVFP4 on data-centre Blackwell (CC 10.x)",
+   "notes": "TF32 for FP32 matmuls on Ampere+ (torch.backends.cuda.matmul.allow_tf32 / torch.set_float32_matmul_precision).",
+   "source": "https://nvidia.github.io/TransformerEngine/support_matrix.html"
+  },
+  {
+   "family": "AMD Instinct / Radeon (ROCm)",
+   "defaultLowPrecision": "float16 (autocast default); bfloat16 supported (CDNA2+, RDNA3+)",
+   "autocast": "Same as CUDA: torch.autocast(\"cuda\", ...) since ROCm PyTorch uses the cuda device",
+   "lossScaling": "torch.amp.GradScaler(\"cuda\") for float16; not usually for bfloat16",
+   "fp8": "MI300 (CDNA3): FNUZ FP8 (torch.float8_e4m3fnuz, max 240); MI350/MI355X (CDNA4) and RDNA4: OCP FP8, plus MXFP8/6/4 on CDNA4; via hipBLASLt, torchao, TE for ROCm",
+   "notes": "FNUZ: no Inf, no -0, NaN = 0x80.",
+   "source": "https://rocm.docs.amd.com/en/latest/reference/precision-support.html"
+  },
+  {
+   "family": "Google TPU (JAX)",
+   "defaultLowPrecision": "bfloat16 (MXU multiplies in bf16, accumulates in FP32; FP32 matmuls default to one bf16 pass)",
+   "autocast": "No autocast: per-layer dtype=jnp.bfloat16 with param_dtype=jnp.float32 (Flax); precision=lax.Precision.HIGHEST or jax.default_matmul_precision(\"float32\") for accurate FP32",
+   "lossScaling": "Not needed (bfloat16)",
+   "fp8": "Not covered here (see uncertain)",
+   "notes": "Precision.HIGH = 3 bf16 passes, HIGHEST = 6.",
+   "source": "https://docs.jax.dev/en/latest/jax.lax.html"
+  },
+  {
+   "family": "Intel Xeon CPU (AMX)",
+   "defaultLowPrecision": "bfloat16",
+   "autocast": "torch.autocast(\"cpu\", dtype=torch.bfloat16); float16 accepted since PyTorch 2.2",
+   "lossScaling": "Not for bfloat16",
+   "fp8": "No",
+   "notes": "AMX used automatically through oneDNN; IPEX retired (archived March 2026), use upstream PyTorch.",
+   "source": "https://docs.pytorch.org/tutorials/recipes/amx.html"
+  },
+  {
+   "family": "Intel GPU (XPU, Arc / Data Center GPU)",
+   "defaultLowPrecision": "float16 (autocast default); bfloat16 supported",
+   "autocast": "torch.autocast(\"xpu\", dtype=...)",
+   "lossScaling": "torch.amp.GradScaler(\"xpu\") for float16",
+   "fp8": "Not covered here",
+   "notes": "Native device in upstream PyTorch.",
+   "source": "https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/autocast_mode.cpp"
+  },
+  {
+   "family": "Intel Gaudi (HPU)",
+   "defaultLowPrecision": "bfloat16 (float16 not supported)",
+   "autocast": "torch.autocast(\"hpu\", dtype=torch.bfloat16); op lists via PT_HPU_AUTOCAST_*_OPS_LIST",
+   "lossScaling": "Not needed (bfloat16)",
+   "fp8": "Gaudi 2+: Intel Gaudi Transformer Engine (fp8_autocast, DelayedScaling) for training; Intel Neural Compressor for FP8 inference",
+   "notes": "Autocast cache permanently disabled on HPU.",
+   "source": "https://docs.habana.ai/en/latest/PyTorch/PyTorch_Mixed_Precision/Autocast.html"
+  },
+  {
+   "family": "Apple silicon (PyTorch MPS)",
+   "defaultLowPrecision": "float16",
+   "autocast": "torch.autocast(\"mps\", dtype=torch.float16) since PyTorch 2.5; bfloat16 since 2.6 on macOS 14+",
+   "lossScaling": "GradScaler for float16 training (see uncertain)",
+   "fp8": "No",
+   "notes": "No float64 on the GPU.",
+   "source": "https://github.com/pytorch/pytorch/blob/v2.6.0/torch/amp/autocast_mode.py"
+  },
+  {
+   "family": "Apple silicon (MLX)",
+   "defaultLowPrecision": "float32 default; float16/bfloat16 available",
+   "autocast": "None: model.set_dtype(mx.bfloat16) / x.astype(...) by hand",
+   "lossScaling": "Manual if using float16; not needed for bfloat16",
+   "fp8": "No (MLX quantization is a separate, integer feature)",
+   "notes": "float64 is CPU-only in MLX.",
+   "source": "https://ml-explore.github.io/mlx/build/html/python/data_types.html"
+  },
+  {
+   "family": "Huawei Ascend (torch_npu / MindSpore)",
+   "defaultLowPrecision": "float16; bfloat16 where torch.npu.is_bf16_supported()",
+   "autocast": "torch.autocast(\"npu\", ...) or torch_npu.npu.amp.autocast; MindSpore amp_level O1/O2/O3; CANN precision_mode",
+   "lossScaling": "torch_npu.npu.amp.GradScaler for float16; MindSpore DynamicLossScaleManager",
+   "fp8": "Not covered here (see uncertain)",
+   "notes": "precision_mode: must_keep_origin_dtype / allow_fp32_to_fp16 / allow_mix_precision(_fp16/_bf16) / force_fp16 / force_fp32 / allow_fp32_to_bf16.",
+   "source": "https://www.mindspore.cn/docs/en/master/api_python/device_context/mindspore.device_context.ascend.op_precision.precision_mode.html"
+  },
+  {
+   "family": "Arm CPU",
+   "defaultLowPrecision": "bfloat16 (FEAT_BF16, BF16 x BF16 -> FP32 accumulate)",
+   "autocast": "torch.autocast(\"cpu\", dtype=torch.bfloat16)",
+   "lossScaling": "Not for bfloat16",
+   "fp8": "Not covered here",
+   "notes": "BFDOT/BFMMLA/BFMLAL/BFCVT in SVE and Neon; mandatory from Armv8.6-A.",
+   "source": "https://developer.arm.com/community/arm-community-blogs/b/ai-blog/posts/bfloat16-processing-for-neural-networks-on-armv8_2d00_a"
+  }
+ ],
+ "uncertain": [
+  "PyTorch MPS autocast dates (2.5 float16-only; 2.6 adds bfloat16 on macOS 14+) come from reading the autocast_mode.py source at tags v2.5.0/v2.6.0, not release notes. In the current main branch the explicit macOS-14 check is gone (generic [bf16, fp16] list), probably because the minimum macOS was raised.",
+  "Whether GradScaler is needed with bfloat16: no PyTorch doc page states 'not needed' outright. The AMP pages frame scaling as a float16-underflow fix, and Google's TPU docs say bf16 needs no loss scaling. The 'no' is standard practice, not a quoted PyTorch rule. GradScaler support on MPS was not verified beyond its source mentioning an mps device.",
+  "Apple GPU native bfloat16 per M-generation (M1 vs M2 vs M3+) is not clearly documented. Apple's Metal tables list a bfloat type; the M2's BF16 instructions are on the CPU side (Armv8.6 BF16). I did not cite an 'M2+ GPU bf16' claim.",
+  "MLX: no official doc says whether float16/bfloat16 matmuls accumulate in FP32 internally, so I did not claim it.",
+  "Ascend: the hiascend.com pages render via JavaScript and could not be read directly. The CANN precision_mode values come from MindSpore's official doc plus hiascend search snippets. The default differs by context: MindSpore says must_keep_origin_dtype, while ACL/ATC snippets say allow_fp32_to_fp16, and A2-series defaults may differ. torch_npu AMP mapping comes from the Ascend/pytorch repo docs on gitcode. Ascend FP8 (e.g. Ascend 950 HiF8) was not researched.",
+  "Intel CPU float16 autocast: PyTorch accepts dtype=torch.float16 on CPU since 2.2. That it maps to AMX-FP16 on Xeon 6 (Granite Rapids) was not confirmed from an official source.",
+  "TPU FP8 / int8 on newer TPUs (v5p/v6e/Ironwood) and Optax-specific mixed-precision helpers were not researched; the Flax param_dtype/dtype pattern is the documented mechanism.",
+  "MX training on MI355X: CDNA4 hardware support for MXFP8/6/4 is sourced, but I did not find an official AMD page documenting end-to-end MX training recipes on MI355X.",
+  "FP16 decimal-digit figures in bf16-format (about 3.3 vs 3 vs 7 digits) are standard derived values, not from the cited page.",
+  "PyTorch latest stable at check time is 2.15.0 (released 2026-10-28); the stable docs URL redirects to /docs/2.15/. The GradScaler default device behaviour (falls back to the current accelerator when device=None) was read from main and may be newer than 2.15. Code samples pass the device explicitly to be safe.",
+  "TE amax_history_len=16 in the code sample is an illustrative value (default is 1024). The te.autocast name is current in TE 2.13+ (fp8_autocast is still exported for compatibility)."
+ ]
+}

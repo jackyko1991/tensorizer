@@ -9,7 +9,7 @@ const root = new URL("../src/", import.meta.url);
 const read = (p: string) => readFileSync(new URL(p, root), "utf-8");
 const SRC = read("pages/ChipsTab.tsx");
 const json = (p: string) => JSON.parse(read(p));
-const SECTIONS = ["why", "history", "table", "precision", "under", "libs", "china", "arm", "measure", "choose"];
+const SECTIONS = ["why", "history", "table", "precision", "under", "libs", "china", "arm", "desktop", "measure", "choose"];
 const FAMILIES = ["nvidia-gpu", "amd-gpu", "intel-gpu", "x86-cpu", "arm-cpu", "apple-gpu", "apple-ane", "qualcomm", "google-tpu", "aws-trainium", "huawei-ascend", "other-china", "edge-npu"];
 
 function usedKeys(): Set<string> {
@@ -25,6 +25,8 @@ function usedKeys(): Set<string> {
   for (const k of ["memoryType", "matrixUnit", "formats", "blas", "kernelLangs", "interconnect", "fp64", "fp32", "bf16", "fp8", "int8", "npu"]) keys.add(`chips.detail.${k}`);
   for (const k of ["family", "blas", "langs", "best", "avoid"]) keys.add(`chips.under.${k}`);
   for (const k of ["a", "b"]) keys.add(`chips.decode.${k}`);
+  for (const k of ["title", "caption", "chip0", "chip1", "chip2", "note0", "note1", "note2", "cpu", "gpu", "npu", "io", "cache", "schematic"]) keys.add(`chips.budget.${k}`);
+  for (const k of ["mac", "amd", "dgx", "rtx", "chip", "memory", "bandwidth", "fits", "decode", "power"]) keys.add(`chips.desktop.${k}`);
   for (const [id, plan] of Object.entries(CHIPS_PLAN)) {
     for (const k of ["title", "caption", ...plan.labels]) keys.add(`chips.anim.${id}.${k}`);
     plan.steps.forEach((_, i) => keys.add(`chips.anim.${id}.s${i}`));
