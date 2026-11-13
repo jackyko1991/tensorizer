@@ -1916,5 +1916,7 @@
   "chips.desktop.decode": "70B at 4 bits: tokens/s ceiling",
   "chips.desktop.power": "Power (W)",
   "chips.desktop.legend": "Largest model: 80% of the memory for 4-bit weights (half a byte each), the rest for the cache, activations and the system. Tokens/s ceiling for one user: bandwidth ÷ 35 GB. Numbers from the table in section 3; power is the chip's (DGX Spark's box has a 240 W supply).",
-  "chips.desktop.verdict": "In short, these machines trade bandwidth for capacity: they run models that don't fit on a graphics card, more slowly than a graphics card runs the models that do fit. Bandwidth sets the speed (a Mac Studio with M5 Ultra answers several times faster than a DGX Spark with the same model); the software stack sets what you can run (DGX Spark and RTX Spark have CUDA, so every library in section 6 works; Macs have MLX and `mps`; Strix Halo has ROCm)."
+  "chips.desktop.verdict": "In short, these machines trade bandwidth for capacity: they run models that don't fit on a graphics card, more slowly than a graphics card runs the models that do fit. Bandwidth sets the speed (a Mac Studio with M5 Ultra answers several times faster than a DGX Spark with the same model); the software stack sets what you can run (DGX Spark and RTX Spark have CUDA, so every library in section 6 works; Macs have MLX and `mps`; Strix Halo has ROCm).",
+  "chips.table.allDevices": "All PyTorch devices",
+  "chips.table.noDevice": "not listed"
 }

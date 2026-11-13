@@ -93,10 +93,12 @@ function ChipTable({ selected, onSelect, precision, setPrecision, extra }: {
   const [vendor, setVendor] = useState("all");
   const [cls, setCls] = useState("all");
   const [region, setRegion] = useState("all");
+  const [device, setDevice] = useState("all");
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "bandwidthGBs", dir: -1 });
   const all = useMemo(() => (extra ? [extra, ...CHIPS] : CHIPS), [extra]);
   const vendors = [...new Set(CHIPS.map((c) => c.vendor))].sort();
   const classes = [...new Set(CHIPS.map((c) => c.class))].sort();
+  const devices = [...new Set(CHIPS.map((c) => c.pytorchDevice ?? ""))].sort((a, b) => (a === "" ? 1 : b === "" ? -1 : a.localeCompare(b)));
   const value = (c: Chip, k: SortKey): number | string => {
     if (k === "name") return `${c.vendor} ${c.name}`;
     if (k === "rate") return rate(c, precision) ?? -1;
@@ -108,7 +110,13 @@ function ChipTable({ selected, onSelect, precision, setPrecision, extra }: {
     return Array.isArray(v) ? v[1] : (v ?? -1);
   };
   const rows = all
-    .filter((c) => (vendor === "all" || c.vendor === vendor) && (cls === "all" || c.class === cls) && (region === "all" || c.group === region))
+    .filter(
+      (c) =>
+        (vendor === "all" || c.vendor === vendor) &&
+        (cls === "all" || c.class === cls) &&
+        (region === "all" || c.group === region) &&
+        (device === "all" || (c.pytorchDevice ?? "") === device),
+    )
     .sort((a, b) => {
       const x = value(a, sort.key);
       const y = value(b, sort.key);
@@ -151,20 +159,30 @@ function ChipTable({ selected, onSelect, precision, setPrecision, extra }: {
           <option value="global">{T("chips.table.global")}</option>
           <option value="china">{T("chips.table.china")}</option>
         </select>
-        <span className="ml-2 text-gray-500">{T("chips.table.precision")}</span>
-        <div className="inline-flex rounded-md border border-gray-300 p-0.5" role="radiogroup" aria-label={T("chips.table.precision")}>
-          {PRECISIONS.map((p) => (
-            <button
-              key={p}
-              role="radio"
-              aria-checked={precision === p}
-              onClick={() => setPrecision(p)}
-              className={`rounded px-2 py-0.5 font-mono ${precision === p ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"}`}
-            >
-              {p.toUpperCase()}
-            </button>
+        <select className={select} value={device} onChange={(e) => setDevice(e.target.value)} aria-label={T("chips.table.device")}>
+          <option value="all">{T("chips.table.allDevices")}</option>
+          {devices.map((d) => (
+            <option key={d || "none"} value={d}>
+              {d || T("chips.table.noDevice")}
+            </option>
           ))}
-        </div>
+        </select>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="text-gray-500">{T("chips.table.precision")}</span>
+          <span className="inline-flex rounded-md border border-gray-300 p-0.5" role="radiogroup" aria-label={T("chips.table.precision")}>
+            {PRECISIONS.map((p) => (
+              <button
+                key={p}
+                role="radio"
+                aria-checked={precision === p}
+                onClick={() => setPrecision(p)}
+                className={`rounded px-2 py-0.5 font-mono ${precision === p ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"}`}
+              >
+                {p.toUpperCase()}
+              </button>
+            ))}
+          </span>
+        </span>
         <span className="ml-auto text-gray-500">{fill(T("chips.table.count"), { n: rows.length })}</span>
       </div>
       <div className="mt-2 max-h-[34rem] overflow-auto rounded-lg border border-gray-200">
