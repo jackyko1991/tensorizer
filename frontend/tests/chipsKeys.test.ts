@@ -24,7 +24,6 @@ function usedKeys(): Set<string> {
   for (const k of ["laptop", "mac", "board", "nvidia", "cloud", "china", "physics"]) keys.add(`chips.choose.${k}`);
   for (const k of ["memoryType", "matrixUnit", "formats", "blas", "kernelLangs", "interconnect", "fp64", "fp32", "bf16", "fp8", "int8", "npu"]) keys.add(`chips.detail.${k}`);
   for (const k of ["family", "blas", "langs", "best", "avoid"]) keys.add(`chips.under.${k}`);
-  for (const k of ["a", "b"]) keys.add(`chips.decode.${k}`);
   for (const k of ["title", "caption", "chip0", "chip1", "chip2", "note0", "note1", "note2", "cpu", "gpu", "npu", "io", "cache", "schematic"]) keys.add(`chips.budget.${k}`);
   for (const k of ["title", "vendor", "unit", "where", "via", "first", "note"]) keys.add(`chips.units.${k}`);
   for (const k of ["mac", "amd", "dgx", "rtx", "chip", "memory", "bandwidth", "fits", "decode", "power"]) keys.add(`chips.desktop.${k}`);

@@ -386,58 +386,6 @@ function RooflineMap({ precision, extra, selected, onSelect }: { precision: Prec
   );
 }
 
-// --- 3. decoding ceiling -----------------------------------------------------------------------------------
-
-const DECODE_IDS = ["raspberry-pi-5", "apple-m4", "amd-radeon-890m", "amd-ryzen-ai-max-plus-395", "nvidia-dgx-spark-gb10", "apple-m4-max", "nvidia-rtx-4090", "nvidia-rtx-5090", "apple-m3-ultra", "nvidia-h100-sxm", "amd-instinct-mi300x", "nvidia-b200"];
-
-function DecodeChart() {
-  const T = usePageText();
-  const rows = CHIPS.filter((c) => c.bandwidthGBs && DECODE_IDS.includes(c.id))
-    .sort((a, b) => (a.bandwidthGBs ?? 0) - (b.bandwidthGBs ?? 0))
-    .slice(0, 12);
-  const cases = [
-    { key: "a", params: 7, bytes: 2, color: "#2563eb" },
-    { key: "b", params: 70, bytes: 0.5, color: "#f59e0b" },
-  ];
-  const max = Math.max(...rows.map((c) => decodeCeiling(c.bandwidthGBs!, 7, 2)));
-  return (
-    <figure className="mt-5 rounded-lg border border-gray-200 bg-white p-3" data-testid="chips-decode">
-      <figcaption className="text-xs font-semibold text-gray-700">{T("chips.decode.title")}</figcaption>
-      <div className="mt-2 space-y-1.5">
-        {rows.map((c) => (
-          <div key={c.id} className="grid grid-cols-[9rem_1fr] items-center gap-2 text-xs">
-            <span className="truncate text-gray-700" title={`${c.vendor} ${c.name}`}>
-              {short(c.name)}
-            </span>
-            <div className="space-y-0.5">
-              {cases.map((k) => {
-                const v = decodeCeiling(c.bandwidthGBs!, k.params, k.bytes);
-                return (
-                  <div key={k.key} className="flex items-center gap-1.5">
-                    <div className="h-2.5 rounded-sm" style={{ width: `${Math.max(0.5, (Math.log10(1 + v) / Math.log10(1 + max)) * 85)}%`, background: k.color }} />
-                    <span className="tabular-nums text-gray-600">{fmtNum(v, 2)}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
-      <p className="mt-2 flex flex-wrap gap-4 text-[11px] text-gray-600">
-        {cases.map((k) => (
-          <span key={k.key} className="inline-flex items-center gap-1">
-            <span className="inline-block h-2.5 w-4 rounded-sm" style={{ background: k.color }} />
-            {T(`chips.decode.${k.key}` as PageKey)}
-          </span>
-        ))}
-      </p>
-      <p className="mt-1 text-xs leading-relaxed text-gray-600">
-        <RichText text={T("chips.decode.caption")} />
-      </p>
-    </figure>
-  );
-}
-
 // --- 2. history --------------------------------------------------------------------------------------------
 
 const KIND_COL = { library: "#2563eb", chip: "#16a34a", standard: "#7c3aed", policy: "#be123c" } as const;
@@ -1023,7 +971,6 @@ export default function ChipsTab() {
           <ChipTable selected={selected} onSelect={setSelected} precision={precision} setPrecision={setPrecision} extra={measured} />
           <RooflineMap precision={precision} extra={measured} selected={selected} onSelect={setSelected} />
           <ChipsAnim id="mma" />
-          <DecodeChart />
         </Card>
 
         <Card id="precision">
