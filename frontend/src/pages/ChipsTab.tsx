@@ -476,9 +476,57 @@ function History() {
     labelled.add(i);
     lastX = xAt(i);
   });
+  // wide screens: major events alternate above and below the line, each joined to its dot
+  const wide = width >= 640;
+  const top = majors.filter((_, i) => i % 2 === 0);
+  const bottom = majors.filter((_, i) => i % 2 === 1);
+  const cols = top.length;
+  const inset = bottom.length < cols; // one fewer below: the bottom row sits between the top cards
+  const slotX = (row: "top" | "bottom", k: number) => (row === "bottom" && inset ? (k + 1) / cols : (k + 0.5) / cols) * width;
+  const dotX = (id: string) => xAt(TIMELINE.findIndex((e) => e.id === id));
+  const majorCard = (e: (typeof TIMELINE)[number], extra = "") => (
+    <div
+      key={e.id}
+      id={`chips-major-${e.id}`}
+      className={`rounded-lg border bg-white p-2.5 text-sm transition-shadow ${e.id === current ? "border-blue-300 shadow-md" : "border-gray-200"} ${extra}`}
+      onMouseEnter={() => setHover(e.id)}
+      onMouseLeave={() => setHover(null)}
+    >
+            <div className="rounded-md bg-gray-50 px-2 py-1">
+        <TimelineArt id={e.id} />
+      </div>
+      <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
+        <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: KIND_COL[e.kind] }} />
+        <span className="font-mono tabular-nums">{e.year}</span>
+        <span>{T(`chips.history.${e.kind}` as PageKey)}</span>
+      </div>
+      <p className="mt-1 font-semibold text-gray-900">{D(`event.${e.id}.title`, e.title)}</p>
+      <p className="mt-1 text-xs leading-relaxed text-gray-700">
+        {D(`event.${e.id}.text`, e.text)} <Ext href={e.source}>{host(e.source)}</Ext>
+      </p>
+    </div>
+  );
+  const connectors = (row: "top" | "bottom") => (
+    <svg width={width} height={22} className="block" aria-hidden>
+      {(row === "top" ? top : bottom).map((e, k) => {
+        const x1 = slotX(row, k);
+        const x2 = dotX(e.id);
+        const [y1, y2] = row === "top" ? [0, 22] : [22, 0];
+        return <path key={e.id} d={`M${x1} ${y1} C${x1} 11, ${x2} 11, ${x2} ${y2}`} fill="none" stroke={e.id === current ? "#2563eb" : "#cbd5e1"} strokeWidth={1} />;
+      })}
+    </svg>
+  );
   return (
     <div className="mt-4" data-testid="chips-timeline">
-      <div ref={wrap} className="relative h-16" onMouseLeave={() => setHover(null)}>
+      {wide && (
+        <>
+          <div className="grid items-end gap-2" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }} data-testid="chips-major-events">
+            {top.map((e) => majorCard(e))}
+          </div>
+          {connectors("top")}
+        </>
+      )}
+      <div ref={wrap} className="relative h-12" onMouseLeave={() => setHover(null)}>
         <div className="absolute top-5 right-0 left-0 h-px bg-gray-300" />
         {width > 0 &&
           TIMELINE.map((e, i) => {
@@ -528,7 +576,17 @@ function History() {
           </div>
         )}
       </div>
-      <p className="mt-2 flex flex-wrap gap-3 text-[11px] text-gray-600">
+      {wide ? (
+        <>
+          {connectors("bottom")}
+          <div className="grid items-start gap-2" style={{ gridTemplateColumns: `repeat(${bottom.length}, minmax(0, 1fr))`, paddingLeft: inset ? `${50 / cols}%` : 0, paddingRight: inset ? `${50 / cols}%` : 0 }}>
+            {bottom.map((e) => majorCard(e))}
+          </div>
+        </>
+      ) : (
+        width > 0 && <div className="mt-4 grid gap-3" data-testid="chips-major-events">{majors.map((e) => majorCard(e))}</div>
+      )}
+      <p className="mt-3 flex flex-wrap gap-3 text-[11px] text-gray-600">
         {(Object.keys(KIND_COL) as (keyof typeof KIND_COL)[]).map((k) => (
           <span key={k} className="inline-flex items-center gap-1">
             <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: KIND_COL[k] }} />
@@ -536,30 +594,6 @@ function History() {
           </span>
         ))}
       </p>
-      <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-testid="chips-major-events">
-        {majors.map((e) => (
-          <li
-            key={e.id}
-            id={`chips-major-${e.id}`}
-            className={`rounded-lg border bg-white p-3 text-sm transition-shadow ${e.id === current ? "border-blue-300 shadow-md" : "border-gray-200"}`}
-            onMouseEnter={() => setHover(e.id)}
-            onMouseLeave={() => setHover(null)}
-          >
-            <div className="rounded-md bg-gray-50 px-2 py-1">
-              <TimelineArt id={e.id} />
-            </div>
-            <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
-              <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: KIND_COL[e.kind] }} />
-              <span className="font-mono tabular-nums">{e.year}</span>
-              <span>{T(`chips.history.${e.kind}` as PageKey)}</span>
-            </div>
-            <p className="mt-1 font-semibold text-gray-900">{D(`event.${e.id}.title`, e.title)}</p>
-            <p className="mt-1 text-[13px] leading-relaxed text-gray-700">
-              {D(`event.${e.id}.text`, e.text)} <Ext href={e.source}>{host(e.source)}</Ext>
-            </p>
-          </li>
-        ))}
-      </ol>
     </div>
   );
 }
