@@ -1968,5 +1968,6 @@
   "chips.choose.q.where": "要在什么上运行？",
   "chips.choose.yes": "需要",
   "chips.choose.no": "不需要",
-  "chips.choose.restart": "重新开始"
+  "chips.choose.restart": "重新开始",
+  "chips.choose.fp64": "**FP64 决定硬件。** 数据中心 GPU 有真正的 FP64：H100 67 TFLOP/s（Tensor Core）、MI300X 163.4（矩阵）、MI355X 78.6、B200 37。游戏显卡的 FP64 只有 FP32 的一小部分（RTX 5090：1.64 对 104.8 TFLOP/s；RX 7900 XTX：1.92）。Apple GPU（`mps`）完全没有 FP64，TPU 与 NPU 则是为低精度而设计。没有数据中心 GPU 时，就在 CPU 上跑 FP64：具有宽向量单元的多核 x86 或 Arm CPU 是可靠的 FP64 机器。在芯片表上方选 FP64 来比较。"
 }

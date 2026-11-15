@@ -1124,7 +1124,7 @@ export default function ChipsTab() {
  * bold lead of each answer (chips.choose.<leaf>), so the tree needs no separate translations for them.
  */
 const PLACES = ["laptop", "mac", "board", "nvidia", "cloud", "china"] as const;
-type Leaf = (typeof PLACES)[number] | "physics";
+type Leaf = (typeof PLACES)[number] | "fp64";
 
 function ChooseTree() {
   const T = usePageText();
@@ -1143,7 +1143,7 @@ function ChooseTree() {
         <div className={node(fp64 === null, fp64 !== null)}>{T("chips.choose.q.fp64")}</div>
         {stem(fp64 !== null)}
         <div className="flex gap-2">
-          <button type="button" className={choice(fp64 === true)} onClick={() => (setFp64(true), setLeaf("physics"))}>
+          <button type="button" className={choice(fp64 === true)} onClick={() => (setFp64(true), setLeaf("fp64"))}>
             {T("chips.choose.yes")}
           </button>
           <button type="button" className={choice(fp64 === false)} onClick={() => (setFp64(false), setLeaf(null))}>

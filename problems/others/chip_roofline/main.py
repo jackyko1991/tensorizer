@@ -1,7 +1,7 @@
 """Main loop: measure the memory bandwidth and the matmul rate in each precision, print them, draw the roofline.
 
-The last printed line is `CHIP_RESULT {...}` (JSON): the Coding Skills ▸ Acceleration chipsets tab reads it to place this machine
-on its roofline and in its comparison table.
+The last printed line is `CHIP_RESULT {...}` (JSON): a machine-readable summary of the measurements, to compare
+with the spec sheets in Coding Skills ▸ Acceleration chipsets.
 """
 
 import json

@@ -1820,5 +1820,6 @@
   "chips.choose.q.where": "Sur quoi va-t-il tourner ?",
   "chips.choose.yes": "Oui",
   "chips.choose.no": "Non",
-  "chips.choose.restart": "Recommencer"
+  "chips.choose.restart": "Recommencer",
+  "chips.choose.fp64": "**Le FP64 décide du matériel.** Les GPU de centre de données ont un vrai FP64 : H100 67 TFLOP/s (Tensor Core), MI300X 163,4 (matriciel), MI355X 78,6, B200 37. Les cartes de jeu exécutent le FP64 à une petite fraction du FP32 (RTX 5090 : 1,64 contre 104,8 TFLOP/s ; RX 7900 XTX : 1,92). Les GPU Apple (`mps`) n'ont pas de FP64 du tout, et les TPU et NPU sont conçus pour la basse précision. Sans GPU de centre de données, faites tourner le FP64 sur le CPU : un CPU x86 ou Arm à nombreux cœurs avec de larges unités vectorielles est une machine FP64 solide. Choisissez FP64 au-dessus du tableau des puces pour comparer."
 }

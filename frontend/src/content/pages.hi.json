@@ -1820,5 +1820,6 @@
   "chips.choose.q.where": "यह किस पर चलेगी?",
   "chips.choose.yes": "हाँ",
   "chips.choose.no": "नहीं",
-  "chips.choose.restart": "फिर से शुरू करें"
+  "chips.choose.restart": "फिर से शुरू करें",
+  "chips.choose.fp64": "**FP64 hardware तय करता है।** Data-centre GPU में असली FP64 होता है: H100 67 TFLOP/s (Tensor Core), MI300X 163.4 (matrix), MI355X 78.6, B200 37। Gaming cards FP64 को FP32 के एक छोटे हिस्से की दर से चलाते हैं (RTX 5090: 104.8 के मुकाबले 1.64 TFLOP/s; RX 7900 XTX: 1.92)। Apple GPU (`mps`) में FP64 बिल्कुल नहीं है, और TPU व NPU low precision के लिए बने हैं। Data-centre GPU न हो तो FP64 को CPU पर चलाएँ: चौड़ी vector units वाला many-core x86 या Arm CPU एक भरोसेमंद FP64 मशीन है। तुलना के लिए chip table के ऊपर FP64 चुनें।"
 }

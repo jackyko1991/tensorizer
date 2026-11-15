@@ -22,7 +22,7 @@ function usedKeys(): Set<string> {
   for (const k of ["library", "chip", "standard", "policy"]) keys.add(`chips.history.${k}`);
   for (const k of ["power", "bandwidth", "units", "ecosystem"]) keys.add(`chips.why.${k}`);
   for (const k of ["laptop", "mac", "board", "nvidia", "cloud", "china", "physics"]) keys.add(`chips.choose.${k}`);
-  for (const k of ["q.fp64", "q.where", "yes", "no", "restart"]) keys.add(`chips.choose.${k}`);
+  for (const k of ["q.fp64", "q.where", "yes", "no", "restart", "fp64"]) keys.add(`chips.choose.${k}`);
   for (const k of ["memoryType", "matrixUnit", "formats", "blas", "kernelLangs", "interconnect", "fp64", "fp32", "bf16", "fp8", "int8", "npu"]) keys.add(`chips.detail.${k}`);
   for (const k of ["family", "blas", "langs", "best", "avoid"]) keys.add(`chips.under.${k}`);
   for (const k of ["title", "caption", "chip0", "chip1", "chip2", "note0", "note1", "note2", "cpu", "gpu", "npu", "io", "cache", "schematic"]) keys.add(`chips.budget.${k}`);
