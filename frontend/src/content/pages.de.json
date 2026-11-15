@@ -1499,7 +1499,7 @@
   "chips.history.policy": "Politik",
   "chips.history.more": "Alle {n} Ereignisse anzeigen",
   "chips.table.title": "Die Chips im Vergleich",
-  "chips.table.text": "Spitzenwerte aus dem Datenblatt oder Whitepaper des jeweiligen Herstellers. Tensorraten sind **dicht** (Hersteller geben oft Werte „mit Sparsity“ an, die doppelt so hoch sind; diese sind hier halbiert). Die Bandbreite ist der Spitzenwert des Speichers; bei integrierten GPUs ist es der gemeinsam genutzte Systemspeicher.",
+  "chips.table.text": "Spitzenwerte aus dem Datenblatt oder Whitepaper des jeweiligen Herstellers. Tensorraten sind **dicht** (Hersteller geben oft Werte „[[mit Sparsity]]“ an, die doppelt so hoch sind; diese sind hier halbiert). Die Bandbreite ist der Spitzenwert des Speichers; bei integrierten GPUs ist es der gemeinsam genutzte Systemspeicher.",
   "chips.table.vendor": "Hersteller",
   "chips.table.allVendors": "Alle Hersteller",
   "chips.table.class": "Klasse",
@@ -1804,5 +1804,6 @@
   "chips.units.via": "Erreichbar über",
   "chips.units.first": "Erster Chip",
   "chips.units.note": "Jede berechnet pro Instruktion ein kleines Matrixprodukt, in einem schmalen Format mit breiterem Akkumulator: Die Namen unterscheiden sich, die Idee ist dieselbe. CPUs ohne solche Einheit (Raspberry Pi 5, Graviton, Grace) nutzen stattdessen SIMD-Instruktionen für Skalarprodukte und kleine Matrixmultiplikationen (NEON, SVE2).",
-  "chips.units.vendor": "Hersteller"
+  "chips.units.vendor": "Hersteller",
+  "chips.sparsity.tip": "Strukturierte Sparsity (2:4): In jeder Gruppe von vier Gewichten sind zwei null, und die Matrixeinheit überspringt sie, sodass dieselbe Hardware doppelt so viele Multiplikationen-Additionen pro Takt ausführt. Das hilft nur einem Modell, dessen Gewichte auf dieses Muster beschnitten wurden; gewöhnliche dichte Matrizen laufen mit der hier gezeigten dichten Rate."
 }

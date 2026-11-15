@@ -13,7 +13,7 @@ const SECTIONS = ["why", "history", "table", "precision", "under", "libs", "chin
 const FAMILIES = ["nvidia-gpu", "amd-gpu", "intel-gpu", "x86-cpu", "arm-cpu", "apple-gpu", "apple-ane", "qualcomm", "google-tpu", "aws-trainium", "huawei-ascend", "other-china", "edge-npu"];
 
 function usedKeys(): Set<string> {
-  const keys = new Set<string>(["skills.tab.chips"]);
+  const keys = new Set<string>(["skills.tab.chips", "chips.sparsity.tip"]);
   for (const m of SRC.matchAll(/["'`](chips\.[A-Za-z0-9_.-]+)["'`]/g)) keys.add(m[1]);
   for (const s of SECTIONS) keys.add(`chips.${s}.title`);
   for (const f of FAMILIES) keys.add(`chips.fam.${f}`);

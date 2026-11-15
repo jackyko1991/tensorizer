@@ -1647,7 +1647,7 @@
   "chips.history.policy": "政策",
   "chips.history.more": "顯示全部 {n} 個事件",
   "chips.table.title": "晶片並列比較",
-  "chips.table.text": "峰值數據取自各廠商的規格表或白皮書。張量運算速率為**密集**數值（廠商常列出「含稀疏性」的數字，是兩倍高；這裡已減半）。頻寬是記憶體的峰值；內顯則是它們共用的系統記憶體。",
+  "chips.table.text": "峰值數據取自各廠商的規格表或白皮書。張量運算速率為**密集**數值（廠商常列出「[[含稀疏性]]」的數字，是兩倍高；這裡已減半）。頻寬是記憶體的峰值；內顯則是它們共用的系統記憶體。",
   "chips.table.vendor": "廠商",
   "chips.table.allVendors": "所有廠商",
   "chips.table.class": "類別",
@@ -1952,5 +1952,6 @@
   "chips.units.via": "使用途徑",
   "chips.units.first": "首款晶片",
   "chips.units.note": "每種單元都以一道指令完成一個小矩陣乘積，採用窄格式並搭配較寬的累加器：名稱不同，概念相同。沒有這類單元的 CPU（Raspberry Pi 5、Graviton、Grace）則改用 SIMD 內積與小矩陣乘法指令（NEON、SVE2）。",
-  "chips.units.vendor": "廠商"
+  "chips.units.vendor": "廠商",
+  "chips.sparsity.tip": "結構化稀疏（2:4）：每四個權重中有兩個為零，矩陣單元會跳過它們，所以同樣的硬體每個時脈能做兩倍的乘加。只有權重已剪枝成這種模式的模型才受惠；一般的密集矩陣以這裡列出的密集速率執行。"
 }

@@ -1647,7 +1647,7 @@
   "chips.history.policy": "政策",
   "chips.history.more": "显示全部 {n} 个事件",
   "chips.table.title": "芯片横向对比",
-  "chips.table.text": "峰值数据取自各厂商的规格表或白皮书。张量运算速率为**稠密**数值（厂商常列出“含稀疏”的数字，是两倍高；这里已减半）。带宽是内存的峰值；集成显卡则是它们共用的系统内存。",
+  "chips.table.text": "峰值数据取自各厂商的规格表或白皮书。张量运算速率为**稠密**数值（厂商常列出“[[含稀疏]]”的数字，是两倍高；这里已减半）。带宽是内存的峰值；集成显卡则是它们共用的系统内存。",
   "chips.table.vendor": "厂商",
   "chips.table.allVendors": "所有厂商",
   "chips.table.class": "类别",
@@ -1952,5 +1952,6 @@
   "chips.units.via": "使用途径",
   "chips.units.first": "首款芯片",
   "chips.units.note": "每种单元都用一条指令完成一个小矩阵乘积，采用窄格式并配以更宽的累加器：名称不同，思路相同。没有这类单元的 CPU（Raspberry Pi 5、Graviton、Grace）则改用 SIMD 点积和小矩阵乘法指令（NEON、SVE2）。",
-  "chips.units.vendor": "厂商"
+  "chips.units.vendor": "厂商",
+  "chips.sparsity.tip": "结构化稀疏（2:4）：每四个权重中有两个为零，矩阵单元会跳过它们，所以同样的硬件每个时钟能做两倍的乘加。只有权重已剪枝成这种模式的模型才受益；普通的稠密矩阵以这里列出的稠密速率运行。"
 }

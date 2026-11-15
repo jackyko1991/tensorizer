@@ -967,7 +967,22 @@ export default function ChipsTab() {
 
         <Card id="table">
           <Heading n={num("table")} text={T("chips.table.title")} />
-          <p className={P}>{text("chips.table.text")}</p>
+          <p className={P}>
+            {T("chips.table.text")
+              .split(/\[\[(.+?)\]\]/)
+              .map((part, i) =>
+                i % 2 ? (
+                  <span key={i} tabIndex={0} className="group relative cursor-help border-b border-dotted border-gray-500 focus:outline-none" data-testid="chips-sparsity">
+                    {part}
+                    <span role="tooltip" className="pointer-events-none invisible absolute top-full left-1/2 z-30 mt-1.5 w-72 -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-3 text-xs leading-relaxed font-normal text-gray-700 opacity-0 shadow-lg transition-opacity group-hover:visible group-hover:opacity-100 group-focus:visible group-focus:opacity-100">
+                      {T("chips.sparsity.tip")}
+                    </span>
+                  </span>
+                ) : (
+                  <RichText key={i} text={part} />
+                ),
+              )}
+          </p>
           <ChipTable selected={selected} onSelect={setSelected} precision={precision} setPrecision={setPrecision} extra={measured} />
           <RooflineMap precision={precision} extra={measured} selected={selected} onSelect={setSelected} />
           <ChipsAnim id="mma" />

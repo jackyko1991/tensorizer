@@ -1499,7 +1499,7 @@
   "chips.history.policy": "नीति",
   "chips.history.more": "सभी {n} घटनाएँ दिखाएँ",
   "chips.table.title": "चिप्स आमने-सामने",
-  "chips.table.text": "हर वेंडर की स्पेक शीट या व्हाइटपेपर से अधिकतम (peak) आँकड़े। टेंसर दरें **dense** हैं (वेंडर अक्सर \"sparsity के साथ\" आँकड़े छापते हैं, जो दोगुने होते हैं; यहाँ उन्हें आधा किया गया है)। बैंडविड्थ मेमोरी का अधिकतम मान है; इंटीग्रेटेड GPU के लिए यह वह सिस्टम मेमोरी है जिसे वे साझा करते हैं।",
+  "chips.table.text": "हर वेंडर की स्पेक शीट या व्हाइटपेपर से अधिकतम (peak) आँकड़े। टेंसर दरें **dense** हैं (वेंडर अक्सर \"[[sparsity के साथ]]\" आँकड़े छापते हैं, जो दोगुने होते हैं; यहाँ उन्हें आधा किया गया है)। बैंडविड्थ मेमोरी का अधिकतम मान है; इंटीग्रेटेड GPU के लिए यह वह सिस्टम मेमोरी है जिसे वे साझा करते हैं।",
   "chips.table.vendor": "वेंडर",
   "chips.table.allVendors": "सभी वेंडर",
   "chips.table.class": "श्रेणी",
@@ -1804,5 +1804,6 @@
   "chips.units.via": "किसके ज़रिए",
   "chips.units.first": "पहली चिप",
   "chips.units.note": "हर एक प्रति instruction एक छोटा मैट्रिक्स गुणनफल करती है, संकरे फ़ॉर्मेट में और चौड़े accumulator के साथ: नाम अलग हैं, विचार एक ही है। जिन CPU में यह नहीं है (Raspberry Pi 5, Graviton, Grace) वे इसकी जगह SIMD dot-product और छोटे matrix-multiply instructions (NEON, SVE2) इस्तेमाल करते हैं।",
-  "chips.units.vendor": "वेंडर"
+  "chips.units.vendor": "वेंडर",
+  "chips.sparsity.tip": "Structured sparsity (2:4): हर चार weights में से दो शून्य होते हैं और matrix unit उन्हें छोड़ देता है, इसलिए वही hardware प्रति clock दोगुने multiply-add करता है। यह केवल उस model की मदद करता है जिसके weights इस pattern में prune किए गए हों; सामान्य dense matrices यहाँ दिखाई गई dense दर पर चलती हैं।"
 }

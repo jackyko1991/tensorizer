@@ -1460,7 +1460,7 @@
   "chips.history.policy": "823412d1eacb",
   "chips.history.more": "5c38071c0321",
   "chips.table.title": "a6099111e0df",
-  "chips.table.text": "23a9ff6125aa",
+  "chips.table.text": "7ce4719842ff",
   "chips.table.vendor": "f8aa82b42d07",
   "chips.table.allVendors": "4cf56cf513ee",
   "chips.table.class": "4f3a9bd00397",
@@ -1505,10 +1505,6 @@
   "chips.map.ridge": "772326cec578",
   "chips.map.x": "893b241d837c",
   "chips.map.y": "783322754c78",
-  "chips.decode.title": "5de764b2019a",
-  "chips.decode.a": "05c9c1059ec4",
-  "chips.decode.b": "d4a22dbf4f03",
-  "chips.decode.caption": "24fff7ebfddd",
   "chips.precision.title": "46dee8c4afd7",
   "chips.precision.text": "95d183de2d33",
   "chips.precision.more": "8245a5ef8108",
@@ -1769,5 +1765,6 @@
   "chips.units.via": "cda469e56549",
   "chips.units.first": "2364b2d42e49",
   "chips.units.note": "40fb7b1b8790",
-  "chips.units.vendor": "f8aa82b42d07"
+  "chips.units.vendor": "f8aa82b42d07",
+  "chips.sparsity.tip": "006ec9097678"
 }

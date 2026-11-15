@@ -1499,7 +1499,7 @@
   "chips.history.policy": "política",
   "chips.history.more": "Mostrar los {n} eventos",
   "chips.table.title": "Los chips lado a lado",
-  "chips.table.text": "Valores máximos tomados de la ficha técnica o el documento técnico de cada fabricante. Las tasas tensoriales son **densas** (los fabricantes suelen publicar cifras \"con dispersión\", el doble de altas; aquí se dividen entre dos). El ancho de banda es el máximo de la memoria; en las GPU integradas es la memoria del sistema que comparten.",
+  "chips.table.text": "Valores máximos tomados de la ficha técnica o el documento técnico de cada fabricante. Las tasas tensoriales son **densas** (los fabricantes suelen publicar cifras \"[[con dispersión]]\", el doble de altas; aquí se dividen entre dos). El ancho de banda es el máximo de la memoria; en las GPU integradas es la memoria del sistema que comparten.",
   "chips.table.vendor": "Fabricante",
   "chips.table.allVendors": "Todos los fabricantes",
   "chips.table.class": "Clase",
@@ -1804,5 +1804,6 @@
   "chips.units.via": "Se usa mediante",
   "chips.units.first": "Primer chip",
   "chips.units.note": "Cada una hace un pequeño producto de matrices por instrucción, en un formato estrecho con un acumulador más ancho: los nombres cambian, la idea es la misma. Las CPU sin una (Raspberry Pi 5, Graviton, Grace) usan en su lugar instrucciones SIMD de producto escalar y de pequeñas multiplicaciones de matrices (NEON, SVE2).",
-  "chips.units.vendor": "Fabricante"
+  "chips.units.vendor": "Fabricante",
+  "chips.sparsity.tip": "Dispersión estructurada (2:4): en cada grupo de cuatro pesos, dos son cero y la unidad matricial los salta, así que el mismo hardware hace el doble de multiplicaciones-sumas por ciclo. Solo ayuda a un modelo cuyos pesos se podaron con ese patrón; las matrices densas normales funcionan a la tasa densa que se muestra aquí."
 }

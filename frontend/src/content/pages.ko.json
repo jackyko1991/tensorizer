@@ -1499,7 +1499,7 @@
   "chips.history.policy": "정책",
   "chips.history.more": "사건 {n}개 모두 보기",
   "chips.table.title": "칩 나란히 보기",
-  "chips.table.text": "각 제조사의 사양서나 백서에 나온 최대치입니다. 텐서 연산 속도는 **밀집(dense)** 기준입니다(제조사는 흔히 두 배 높은 \"희소성 적용\" 수치를 싣는데, 여기서는 절반으로 나눴습니다). 대역폭은 메모리의 최대치이며, 내장 GPU의 경우 함께 쓰는 시스템 메모리의 값입니다.",
+  "chips.table.text": "각 제조사의 사양서나 백서에 나온 최대치입니다. 텐서 연산 속도는 **밀집(dense)** 기준입니다(제조사는 흔히 두 배 높은 \"[[희소성 적용]]\" 수치를 싣는데, 여기서는 절반으로 나눴습니다). 대역폭은 메모리의 최대치이며, 내장 GPU의 경우 함께 쓰는 시스템 메모리의 값입니다.",
   "chips.table.vendor": "제조사",
   "chips.table.allVendors": "모든 제조사",
   "chips.table.class": "종류",
@@ -1804,5 +1804,6 @@
   "chips.units.via": "사용 경로",
   "chips.units.first": "첫 칩",
   "chips.units.note": "모두 명령어마다 작은 행렬 곱을 좁은 형식과 더 넓은 누산기로 수행합니다. 이름은 달라도 아이디어는 같습니다. 이런 유닛이 없는 CPU(Raspberry Pi 5, Graviton, Grace)는 대신 SIMD 내적 및 소형 행렬 곱 명령어(NEON, SVE2)를 사용합니다.",
-  "chips.units.vendor": "제조사"
+  "chips.units.vendor": "제조사",
+  "chips.sparsity.tip": "구조적 희소성(2:4): 가중치 네 개마다 두 개가 0이고 행렬 유닛이 이를 건너뛰므로, 같은 하드웨어가 클럭당 두 배의 곱셈-덧셈을 합니다. 가중치를 이 패턴으로 가지치기한 모델에만 도움이 되며, 일반적인 밀집 행렬은 여기 표시된 밀집 속도로 실행됩니다."
 }

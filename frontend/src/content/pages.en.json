@@ -1647,7 +1647,7 @@
   "chips.history.policy": "policy",
   "chips.history.more": "Show all {n} events",
   "chips.table.title": "The chips side by side",
-  "chips.table.text": "Peak figures from each vendor's spec sheet or whitepaper. Tensor rates are **dense** (vendors often print figures \"with sparsity\", twice as high; those are halved here). Bandwidth is the memory's peak; for integrated GPUs it is the system memory they share.",
+  "chips.table.text": "Peak figures from each vendor's spec sheet or whitepaper. Tensor rates are **dense** (vendors often print figures \"[[with sparsity]]\", twice as high; those are halved here). Bandwidth is the memory's peak; for integrated GPUs it is the system memory they share.",
   "chips.table.vendor": "Vendor",
   "chips.table.allVendors": "All vendors",
   "chips.table.class": "Class",
@@ -1952,5 +1952,6 @@
   "chips.units.via": "Reached through",
   "chips.units.first": "First chip",
   "chips.units.note": "Each does a small matrix product per instruction, in a narrow format with a wider accumulator: the names differ, the idea is the same. CPUs without one (Raspberry Pi 5, Graviton, Grace) use SIMD dot-product and small matrix-multiply instructions (NEON, SVE2) instead.",
-  "chips.units.vendor": "Vendor"
+  "chips.units.vendor": "Vendor",
+  "chips.sparsity.tip": "Structured sparsity (2:4): in every group of four weights, two are zero, and the matrix unit skips them, so the same hardware does twice the multiply-adds per clock. It helps only a model whose weights were pruned to that pattern; ordinary dense matrices run at the dense rate shown here."
 }

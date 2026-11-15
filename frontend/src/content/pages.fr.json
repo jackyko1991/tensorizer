@@ -1499,7 +1499,7 @@
   "chips.history.policy": "politique",
   "chips.history.more": "Afficher les {n} événements",
   "chips.table.title": "Les puces côte à côte",
-  "chips.table.text": "Valeurs crêtes tirées de la fiche technique ou du livre blanc de chaque fabricant. Les débits tensoriels sont **denses** (les fabricants publient souvent des chiffres « avec parcimonie », deux fois plus élevés ; ils sont divisés par deux ici). La bande passante est le pic de la mémoire ; pour les GPU intégrés, c'est la mémoire système qu'ils partagent.",
+  "chips.table.text": "Valeurs crêtes tirées de la fiche technique ou du livre blanc de chaque fabricant. Les débits tensoriels sont **denses** (les fabricants publient souvent des chiffres « [[avec parcimonie]] », deux fois plus élevés ; ils sont divisés par deux ici). La bande passante est le pic de la mémoire ; pour les GPU intégrés, c'est la mémoire système qu'ils partagent.",
   "chips.table.vendor": "Fabricant",
   "chips.table.allVendors": "Tous les fabricants",
   "chips.table.class": "Catégorie",
@@ -1804,5 +1804,6 @@
   "chips.units.via": "Accès par",
   "chips.units.first": "Première puce",
   "chips.units.note": "Chacune fait un petit produit matriciel par instruction, dans un format étroit avec un accumulateur plus large : les noms diffèrent, l'idée est la même. Les CPU qui n'en ont pas (Raspberry Pi 5, Graviton, Grace) utilisent à la place des instructions SIMD de produit scalaire et de petite multiplication matricielle (NEON, SVE2).",
-  "chips.units.vendor": "Fabricant"
+  "chips.units.vendor": "Fabricant",
+  "chips.sparsity.tip": "Parcimonie structurée (2:4) : dans chaque groupe de quatre poids, deux sont nuls et l'unité matricielle les saute, donc le même matériel fait deux fois plus de multiplications-additions par cycle. Cela n'aide qu'un modèle dont les poids ont été élagués selon ce motif ; les matrices denses ordinaires tournent au débit dense indiqué ici."
 }
