@@ -623,30 +623,33 @@ function LibraryTable({ highlight }: { highlight: Family | null }) {
   return (
     <div className="mt-4" data-testid="chips-libs">
       <div className="overflow-x-auto rounded-lg border border-gray-200">
+        {/* hardware families down the side, libraries across the top (names written vertically) */}
         <table className="w-full text-center text-xs">
           <thead className="bg-gray-50 text-gray-600">
             <tr>
-              <th className="sticky left-0 bg-gray-50 px-2 py-1.5 text-left font-semibold">{T("chips.libs.library")}</th>
-              {FAMILIES.map((f) => (
-                <th key={f} className={`px-1 py-1.5 align-bottom font-semibold ${highlight === f ? "bg-blue-100 text-blue-900" : ""}`}>
-                  <span className="inline-block max-w-[5.5rem] leading-tight">{T(`chips.fam.${f}` as PageKey)}</span>
+              <th className="sticky left-0 bg-gray-50 px-2 py-1.5 text-left align-bottom font-semibold">{T("chips.under.family")}</th>
+              {LIBRARIES.map((lib) => (
+                <th key={lib.id} className="px-0.5 py-1.5 align-bottom font-semibold">
+                  <span className="inline-block max-h-32 whitespace-nowrap [writing-mode:vertical-rl] rotate-180">{lib.name}</span>
                 </th>
               ))}
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {LIBRARIES.map((lib) => (
-              <tr key={lib.id}>
-                <td className="sticky left-0 bg-white px-2 py-1 text-left font-semibold whitespace-nowrap text-gray-900">{lib.name}</td>
-                {FAMILIES.map((f) => {
+            {FAMILIES.map((f) => (
+              <tr key={f} className={highlight === f ? "bg-blue-50/60" : ""}>
+                <td className={`sticky left-0 px-2 py-1 text-left font-semibold whitespace-nowrap text-gray-900 ${highlight === f ? "bg-blue-100" : "bg-white"}`}>
+                  {T(`chips.fam.${f}` as PageKey)}
+                </td>
+                {LIBRARIES.map((lib) => {
                   const c = lib.cells[f] ?? { level: "none" as Level };
                   const s = LEVEL_STYLE[c.level];
                   const on = cell?.lib === lib.id && cell.fam === f;
                   return (
-                    <td key={f} className={`px-0.5 py-0.5 ${highlight === f ? "bg-blue-50/60" : ""}`}>
+                    <td key={lib.id} className="px-0.5 py-0.5">
                       <button
                         onClick={() => setCell(on ? null : { lib: lib.id, fam: f })}
-                        className={`h-6 w-full rounded font-semibold ${s.cls} ${on ? "ring-2 ring-blue-500" : ""}`}
+                        className={`h-6 w-full min-w-6 rounded font-semibold ${s.cls} ${on ? "ring-2 ring-blue-500" : ""}`}
                         title={`${lib.name} · ${T(`chips.fam.${f}` as PageKey)}: ${T(`chips.level.${c.level}` as PageKey)}`}
                         aria-label={`${lib.name}, ${T(`chips.fam.${f}` as PageKey)}: ${T(`chips.level.${c.level}` as PageKey)}`}
                       >
