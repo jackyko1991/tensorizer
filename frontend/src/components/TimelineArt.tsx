@@ -218,7 +218,7 @@ export default function TimelineArt({ id }: { id: string }) {
   const draw = ART[id];
   if (!draw) return null;
   return (
-    <svg viewBox="0 0 120 64" className="h-auto w-full" aria-hidden>
+    <svg viewBox="0 0 120 64" className="mx-auto block h-24 w-auto max-w-full" aria-hidden>
       <defs>
         <marker id="ta-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="4" markerHeight="4" orient="auto">
           <path d="M0,0 L6,3 L0,6 z" fill={BLUE} />
