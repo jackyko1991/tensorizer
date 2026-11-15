@@ -1969,5 +1969,15 @@
   "chips.choose.yes": "需要",
   "chips.choose.no": "不需要",
   "chips.choose.restart": "重新开始",
-  "chips.choose.fp64": "**FP64 决定硬件。** 数据中心 GPU 有真正的 FP64：H100 67 TFLOP/s（Tensor Core）、MI300X 163.4（矩阵）、MI355X 78.6、B200 37。游戏显卡的 FP64 只有 FP32 的一小部分（RTX 5090：1.64 对 104.8 TFLOP/s；RX 7900 XTX：1.92）。Apple GPU（`mps`）完全没有 FP64，TPU 与 NPU 则是为低精度而设计。没有数据中心 GPU 时，就在 CPU 上跑 FP64：具有宽向量单元的多核 x86 或 Arm CPU 是可靠的 FP64 机器。在芯片表上方选 FP64 来比较。"
+  "chips.choose.fp64": "**FP64 决定硬件。** 数据中心 GPU 有真正的 FP64：H100 67 TFLOP/s（Tensor Core）、MI300X 163.4（矩阵）、MI355X 78.6、B200 37。游戏显卡的 FP64 只有 FP32 的一小部分（RTX 5090：1.64 对 104.8 TFLOP/s；RX 7900 XTX：1.92）。Apple GPU（`mps`）完全没有 FP64，TPU 与 NPU 则是为低精度而设计。没有数据中心 GPU 时，就在 CPU 上跑 FP64：具有宽向量单元的多核 x86 或 Arm CPU 是可靠的 FP64 机器。在芯片表上方选 FP64 来比较。",
+  "mixed.cited": "出处与细节",
+  "mixed.cores.row.op": "一条指令",
+  "mixed.cores.row.in": "输入",
+  "mixed.cores.row.acc": "累加器",
+  "mixed.cores.row.h100": "H100",
+  "mixed.cores.row.geforce": "RTX 4090",
+  "mixed.cores.cuda.op": "一次标量乘加，$d = a \\cdot b + c$",
+  "mixed.cores.tensor.op": "整个分块，$D = A \\cdot B + C$",
+  "mixed.cores.cuda.acc": "与输入相同",
+  "mixed.cores.tensor.note": "混合精度只在 Tensor Core 上（大型矩阵乘法）才有大回报；其他地方降低精度主要是节省内存流量。"
 }

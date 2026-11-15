@@ -1821,5 +1821,15 @@
   "chips.choose.yes": "はい",
   "chips.choose.no": "いいえ",
   "chips.choose.restart": "最初から",
-  "chips.choose.fp64": "**FP64 がハードウェアを決めます。** データセンター GPU には本物の FP64 があります：H100 67 TFLOP/s（Tensor Core）、MI300X 163.4（行列）、MI355X 78.6、B200 37。ゲーム用カードの FP64 は FP32 のごく一部です（RTX 5090：104.8 TFLOP/s に対して 1.64、RX 7900 XTX：1.92）。Apple GPU（`mps`）には FP64 がまったくなく、TPU や NPU は低精度向けに作られています。データセンター GPU がなければ FP64 は CPU で動かしましょう。幅の広いベクトルユニットを持つ多コアの x86 や Arm CPU は堅実な FP64 マシンです。チップ表の上で FP64 を選ぶと比較できます。"
+  "chips.choose.fp64": "**FP64 がハードウェアを決めます。** データセンター GPU には本物の FP64 があります：H100 67 TFLOP/s（Tensor Core）、MI300X 163.4（行列）、MI355X 78.6、B200 37。ゲーム用カードの FP64 は FP32 のごく一部です（RTX 5090：104.8 TFLOP/s に対して 1.64、RX 7900 XTX：1.92）。Apple GPU（`mps`）には FP64 がまったくなく、TPU や NPU は低精度向けに作られています。データセンター GPU がなければ FP64 は CPU で動かしましょう。幅の広いベクトルユニットを持つ多コアの x86 や Arm CPU は堅実な FP64 マシンです。チップ表の上で FP64 を選ぶと比較できます。",
+  "mixed.cited": "出典と詳細",
+  "mixed.cores.row.op": "1 命令",
+  "mixed.cores.row.in": "入力",
+  "mixed.cores.row.acc": "累算器",
+  "mixed.cores.row.h100": "H100",
+  "mixed.cores.row.geforce": "RTX 4090",
+  "mixed.cores.cuda.op": "スカラーの積和 1 回、$d = a \\cdot b + c$",
+  "mixed.cores.tensor.op": "タイル全体、$D = A \\cdot B + C$",
+  "mixed.cores.cuda.acc": "入力と同じ",
+  "mixed.cores.tensor.note": "混合精度が大きく効くのは Tensor Core（大きな行列積）だけです。それ以外では低精度化の効果は主にメモリ転送の節約です。"
 }

@@ -1782,5 +1782,15 @@
   "chips.choose.yes": "85a39ab345d6",
   "chips.choose.no": "1ea442a134b2",
   "chips.choose.restart": "5eed7e9fc8f3",
-  "chips.choose.fp64": "82aa24868761"
+  "chips.choose.fp64": "82aa24868761",
+  "mixed.cited": "d0fb8555580d",
+  "mixed.cores.row.op": "e0cadf2f3807",
+  "mixed.cores.row.in": "7abc49dfa87b",
+  "mixed.cores.row.acc": "001016aed671",
+  "mixed.cores.row.h100": "380050795e8b",
+  "mixed.cores.row.geforce": "95911a9dc67d",
+  "mixed.cores.cuda.op": "62d50295e3ac",
+  "mixed.cores.tensor.op": "79ba110e3585",
+  "mixed.cores.cuda.acc": "0b389f7566b6",
+  "mixed.cores.tensor.note": "4781f82aa32e"
 }

@@ -1969,5 +1969,15 @@
   "chips.choose.yes": "Yes",
   "chips.choose.no": "No",
   "chips.choose.restart": "Start over",
-  "chips.choose.fp64": "**FP64 decides the hardware.** Data-centre GPUs have real FP64: H100 67 TFLOP/s (Tensor Core), MI300X 163.4 (matrix), MI355X 78.6, B200 37. Gaming cards run FP64 at a small fraction of FP32 (RTX 5090: 1.64 against 104.8 TFLOP/s; RX 7900 XTX: 1.92). Apple GPUs (`mps`) have no FP64 at all, and TPUs and NPUs are built for low precision. Without a data-centre GPU, run FP64 on the CPU: a many-core x86 or Arm CPU with wide vector units is a solid FP64 machine. Pick FP64 above the chip table to compare."
+  "chips.choose.fp64": "**FP64 decides the hardware.** Data-centre GPUs have real FP64: H100 67 TFLOP/s (Tensor Core), MI300X 163.4 (matrix), MI355X 78.6, B200 37. Gaming cards run FP64 at a small fraction of FP32 (RTX 5090: 1.64 against 104.8 TFLOP/s; RX 7900 XTX: 1.92). Apple GPUs (`mps`) have no FP64 at all, and TPUs and NPUs are built for low precision. Without a data-centre GPU, run FP64 on the CPU: a many-core x86 or Arm CPU with wide vector units is a solid FP64 machine. Pick FP64 above the chip table to compare.",
+  "mixed.cited": "Sources and details",
+  "mixed.cores.row.op": "One instruction",
+  "mixed.cores.row.in": "Inputs",
+  "mixed.cores.row.acc": "Accumulator",
+  "mixed.cores.row.h100": "H100",
+  "mixed.cores.row.geforce": "RTX 4090",
+  "mixed.cores.cuda.op": "one scalar multiply-add, $d = a \\cdot b + c$",
+  "mixed.cores.tensor.op": "a whole tile, $D = A \\cdot B + C$",
+  "mixed.cores.cuda.acc": "same as the inputs",
+  "mixed.cores.tensor.note": "Mixed precision pays only on Tensor Cores: the big matrix products. Elsewhere lower precision mainly saves memory traffic."
 }

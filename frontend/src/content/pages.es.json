@@ -1821,5 +1821,15 @@
   "chips.choose.yes": "Sí",
   "chips.choose.no": "No",
   "chips.choose.restart": "Empezar de nuevo",
-  "chips.choose.fp64": "**El FP64 decide el hardware.** Las GPU de centro de datos tienen FP64 de verdad: H100 67 TFLOP/s (Tensor Core), MI300X 163,4 (matricial), MI355X 78,6, B200 37. Las tarjetas para juegos ejecutan FP64 a una pequeña fracción del FP32 (RTX 5090: 1,64 frente a 104,8 TFLOP/s; RX 7900 XTX: 1,92). Las GPU de Apple (`mps`) no tienen FP64, y las TPU y NPU están hechas para baja precisión. Sin una GPU de centro de datos, ejecuta FP64 en la CPU: una CPU x86 o Arm de muchos núcleos con unidades vectoriales anchas es una máquina FP64 sólida. Elige FP64 encima de la tabla de chips para comparar."
+  "chips.choose.fp64": "**El FP64 decide el hardware.** Las GPU de centro de datos tienen FP64 de verdad: H100 67 TFLOP/s (Tensor Core), MI300X 163,4 (matricial), MI355X 78,6, B200 37. Las tarjetas para juegos ejecutan FP64 a una pequeña fracción del FP32 (RTX 5090: 1,64 frente a 104,8 TFLOP/s; RX 7900 XTX: 1,92). Las GPU de Apple (`mps`) no tienen FP64, y las TPU y NPU están hechas para baja precisión. Sin una GPU de centro de datos, ejecuta FP64 en la CPU: una CPU x86 o Arm de muchos núcleos con unidades vectoriales anchas es una máquina FP64 sólida. Elige FP64 encima de la tabla de chips para comparar.",
+  "mixed.cited": "Fuentes y detalles",
+  "mixed.cores.row.op": "Una instrucción",
+  "mixed.cores.row.in": "Entradas",
+  "mixed.cores.row.acc": "Acumulador",
+  "mixed.cores.row.h100": "H100",
+  "mixed.cores.row.geforce": "RTX 4090",
+  "mixed.cores.cuda.op": "una multiplicación-suma escalar, $d = a \\cdot b + c$",
+  "mixed.cores.tensor.op": "un bloque entero, $D = A \\cdot B + C$",
+  "mixed.cores.cuda.acc": "igual que las entradas",
+  "mixed.cores.tensor.note": "La precisión mixta solo rinde de verdad en los Tensor Cores, en los grandes productos de matrices; en el resto, bajar la precisión ahorra sobre todo tráfico de memoria."
 }

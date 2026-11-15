@@ -1821,5 +1821,15 @@
   "chips.choose.yes": "예",
   "chips.choose.no": "아니요",
   "chips.choose.restart": "처음부터",
-  "chips.choose.fp64": "**FP64가 하드웨어를 결정합니다.** 데이터센터 GPU에는 진짜 FP64가 있습니다: H100 67 TFLOP/s(Tensor Core), MI300X 163.4(행렬), MI355X 78.6, B200 37. 게이밍 카드의 FP64는 FP32의 일부에 불과합니다(RTX 5090: 104.8 TFLOP/s 대비 1.64, RX 7900 XTX: 1.92). Apple GPU(`mps`)에는 FP64가 아예 없고, TPU와 NPU는 저정밀용으로 만들어졌습니다. 데이터센터 GPU가 없다면 FP64는 CPU에서 돌리세요. 넓은 벡터 유닛을 가진 멀티코어 x86이나 Arm CPU는 믿을 만한 FP64 기계입니다. 칩 표 위에서 FP64를 골라 비교해 보세요."
+  "chips.choose.fp64": "**FP64가 하드웨어를 결정합니다.** 데이터센터 GPU에는 진짜 FP64가 있습니다: H100 67 TFLOP/s(Tensor Core), MI300X 163.4(행렬), MI355X 78.6, B200 37. 게이밍 카드의 FP64는 FP32의 일부에 불과합니다(RTX 5090: 104.8 TFLOP/s 대비 1.64, RX 7900 XTX: 1.92). Apple GPU(`mps`)에는 FP64가 아예 없고, TPU와 NPU는 저정밀용으로 만들어졌습니다. 데이터센터 GPU가 없다면 FP64는 CPU에서 돌리세요. 넓은 벡터 유닛을 가진 멀티코어 x86이나 Arm CPU는 믿을 만한 FP64 기계입니다. 칩 표 위에서 FP64를 골라 비교해 보세요.",
+  "mixed.cited": "출처와 세부 사항",
+  "mixed.cores.row.op": "명령 하나",
+  "mixed.cores.row.in": "입력",
+  "mixed.cores.row.acc": "누산기",
+  "mixed.cores.row.h100": "H100",
+  "mixed.cores.row.geforce": "RTX 4090",
+  "mixed.cores.cuda.op": "스칼라 곱셈-덧셈 1회, $d = a \\cdot b + c$",
+  "mixed.cores.tensor.op": "타일 전체, $D = A \\cdot B + C$",
+  "mixed.cores.cuda.acc": "입력과 같음",
+  "mixed.cores.tensor.note": "혼합 정밀도가 크게 이득인 곳은 Tensor Core(큰 행렬 곱)뿐입니다. 그 밖에서는 정밀도를 낮추면 주로 메모리 트래픽이 줄어듭니다."
 }

@@ -1821,5 +1821,15 @@
   "chips.choose.yes": "Ja",
   "chips.choose.no": "Nein",
   "chips.choose.restart": "Neu beginnen",
-  "chips.choose.fp64": "**FP64 entscheidet über die Hardware.** Rechenzentrums-GPUs haben echtes FP64: H100 67 TFLOP/s (Tensor Core), MI300X 163,4 (Matrix), MI355X 78,6, B200 37. Gaming-Karten rechnen FP64 nur mit einem kleinen Bruchteil der FP32-Rate (RTX 5090: 1,64 gegenüber 104,8 TFLOP/s; RX 7900 XTX: 1,92). Apple-GPUs (`mps`) haben gar kein FP64, und TPUs und NPUs sind für niedrige Präzision gebaut. Ohne Rechenzentrums-GPU rechnen Sie FP64 auf der CPU: Eine x86- oder Arm-CPU mit vielen Kernen und breiten Vektoreinheiten ist eine solide FP64-Maschine. Wählen Sie über der Chiptabelle FP64, um zu vergleichen."
+  "chips.choose.fp64": "**FP64 entscheidet über die Hardware.** Rechenzentrums-GPUs haben echtes FP64: H100 67 TFLOP/s (Tensor Core), MI300X 163,4 (Matrix), MI355X 78,6, B200 37. Gaming-Karten rechnen FP64 nur mit einem kleinen Bruchteil der FP32-Rate (RTX 5090: 1,64 gegenüber 104,8 TFLOP/s; RX 7900 XTX: 1,92). Apple-GPUs (`mps`) haben gar kein FP64, und TPUs und NPUs sind für niedrige Präzision gebaut. Ohne Rechenzentrums-GPU rechnen Sie FP64 auf der CPU: Eine x86- oder Arm-CPU mit vielen Kernen und breiten Vektoreinheiten ist eine solide FP64-Maschine. Wählen Sie über der Chiptabelle FP64, um zu vergleichen.",
+  "mixed.cited": "Quellen und Details",
+  "mixed.cores.row.op": "Eine Instruktion",
+  "mixed.cores.row.in": "Eingaben",
+  "mixed.cores.row.acc": "Akkumulator",
+  "mixed.cores.row.h100": "H100",
+  "mixed.cores.row.geforce": "RTX 4090",
+  "mixed.cores.cuda.op": "eine skalare Multiplikation-Addition, $d = a \\cdot b + c$",
+  "mixed.cores.tensor.op": "eine ganze Kachel, $D = A \\cdot B + C$",
+  "mixed.cores.cuda.acc": "wie die Eingaben",
+  "mixed.cores.tensor.note": "Gemischte Präzision lohnt sich nur auf Tensor Cores, bei den großen Matrixprodukten; anderswo spart geringere Präzision vor allem Speicherverkehr."
 }

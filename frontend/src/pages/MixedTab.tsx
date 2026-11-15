@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Fragment, useState, type ReactNode } from "react";
 import { MixedAnim } from "../components/ChipsAnim";
 import { GradientHistogram, LossCurves, MacGraph, MmaFigure } from "../components/MixedFigures";
 import CodeBlock from "../components/CodeBlock";
@@ -93,22 +93,52 @@ function Ext({ href }: { href: string }) {
   );
 }
 
-/** sourced points of the research, each a short paragraph (translated through the data overlay), code when it has some */
-function Points({ topics }: { topics: string[] }) {
-  const D = useDataText();
+/**
+ * Quoted material stays out of the reading flow: each section keeps its own explanation, figures and tables, and
+ * the sourced points fold into one closed "Sources and details (N)" box. Code samples stay visible, as they are the
+ * lesson itself.
+ */
+function Cited({ n, children }: { n: number; children: ReactNode }) {
+  const T = usePageText();
+  if (!n) return null;
   return (
-    <ul className="mt-3 space-y-3 text-sm leading-relaxed text-gray-700">
-      {points(topics).map((p) => (
-        <li key={p.id} className="rounded-lg bg-gray-50 p-3" data-testid="mixed-point">
-          <RichText text={D(`point.${p.id}`, p.text)} /> <Ext href={p.source} />
-          {p.code && (
-            <div className="mt-2">
-              <CodeBlock code={p.code} />
-            </div>
-          )}
-        </li>
+    <details className="group mt-4 rounded-lg border border-gray-200 bg-gray-50/60" data-testid="mixed-cited">
+      <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2 text-xs font-medium text-gray-600 select-none hover:text-gray-900">
+        <span className="inline-block text-gray-400 transition-transform group-open:rotate-90">▸</span>
+        {T("mixed.cited")} · {n}
+      </summary>
+      <ul className="space-y-2 px-4 pb-3 text-[13px] leading-relaxed text-gray-700">{children}</ul>
+    </details>
+  );
+}
+
+const CitedItem = ({ text, href }: { text: string; href: string }) => (
+  <li className="border-l-2 border-gray-200 pl-3" data-testid="mixed-point">
+    <RichText text={text} /> <Ext href={href} />
+  </li>
+);
+
+function Points({ topics, extra }: { topics: string[]; extra?: { key: string; text: string; source: string }[] }) {
+  const D = useDataText();
+  const ps = points(topics);
+  const codes = ps.filter((p) => p.code);
+  const more = extra ?? [];
+  return (
+    <>
+      {codes.map((p) => (
+        <div key={p.id} className="mt-3">
+          <CodeBlock code={p.code!} />
+        </div>
       ))}
-    </ul>
+      <Cited n={ps.length + more.length}>
+        {ps.map((p) => (
+          <CitedItem key={p.id} text={D(`point.${p.id}`, p.text)} href={p.source} />
+        ))}
+        {more.map((m) => (
+          <CitedItem key={m.key} text={D(m.key, m.text)} href={m.source} />
+        ))}
+      </Cited>
+    </>
   );
 }
 
@@ -122,12 +152,13 @@ const sci = (v: number | null | undefined) => {
 function FormatTable() {
   const T = usePageText();
   const D = useDataText();
+  const [open, setOpen] = useState<string | null>(null);
   return (
     <div className="mt-4 overflow-x-auto rounded-lg border border-gray-200" data-testid="mixed-format-table">
       <table className="w-full text-left text-xs">
         <thead className="bg-gray-50 text-gray-600">
           <tr>
-            {(["format", "bits", "layout", "max", "minNormal", "eps", "digits", "notes"] as const).map((h) => (
+            {(["format", "bits", "layout", "max", "minNormal", "eps", "digits"] as const).map((h) => (
               <th key={h} className="px-2 py-1.5 font-semibold whitespace-nowrap">
                 {T(`mixed.formats.${h}` as PageKey)}
               </th>
@@ -136,8 +167,12 @@ function FormatTable() {
         </thead>
         <tbody className="divide-y divide-gray-100 align-top">
           {FORMAT_INFO.map((f) => (
-            <tr key={f.id}>
-              <td className="px-2 py-1.5 font-semibold whitespace-nowrap text-gray-900">{f.name}</td>
+            <Fragment key={f.id}>
+            <tr className={`cursor-pointer hover:bg-gray-50 ${open === f.id ? "bg-blue-50/40" : ""}`} onClick={() => setOpen(open === f.id ? null : f.id)} aria-expanded={open === f.id}>
+              <td className="px-2 py-1.5 font-semibold whitespace-nowrap text-gray-900">
+                <span className={`mr-1 inline-block text-gray-400 transition-transform ${open === f.id ? "rotate-90" : ""}`}>▸</span>
+                {f.name}
+              </td>
               <td className="px-2 py-1.5 tabular-nums">{f.bits}</td>
               <td className="px-2 py-1.5 font-mono whitespace-nowrap">
                 {f.exponent || f.mantissa ? (
@@ -152,10 +187,15 @@ function FormatTable() {
               <td className="px-2 py-1.5 tabular-nums">{sci(f.minNormal)}</td>
               <td className="px-2 py-1.5 tabular-nums">{sci(f.machineEpsilon)}</td>
               <td className="px-2 py-1.5 tabular-nums">{f.decimalDigits ?? "–"}</td>
-              <td className="px-2 py-1.5 text-gray-700">
-                {D(`format.${f.id}.notes`, f.notes)} <Ext href={f.source} />
-              </td>
             </tr>
+            {open === f.id && (
+              <tr className="bg-gray-50/70">
+                <td colSpan={7} className="px-4 py-2 leading-relaxed text-gray-700">
+                  {D(`format.${f.id}.notes`, f.notes)} <Ext href={f.source} />
+                </td>
+              </tr>
+            )}
+            </Fragment>
           ))}
         </tbody>
       </table>
@@ -166,12 +206,13 @@ function FormatTable() {
 function ChipTable() {
   const T = usePageText();
   const D = useDataText();
+  const [open, setOpen] = useState<number | null>(null);
   return (
     <div className="mt-4 overflow-x-auto rounded-lg border border-gray-200" data-testid="mixed-chip-table">
       <table className="w-full text-left text-xs">
         <thead className="bg-gray-50 text-gray-600">
           <tr>
-            {(["family", "low", "autocast", "scaling", "fp8", "notes"] as const).map((h) => (
+            {(["family", "low", "scaling", "fp8"] as const).map((h) => (
               <th key={h} className="px-2 py-1.5 font-semibold">
                 {T(`mixed.chips.${h}` as PageKey)}
               </th>
@@ -180,16 +221,34 @@ function ChipTable() {
         </thead>
         <tbody className="divide-y divide-gray-100 align-top">
           {MIXED.table.map((r, i) => (
-            <tr key={r.family}>
-              <td className="px-2 py-1.5 font-semibold text-gray-900">{r.family}</td>
-              <td className="px-2 py-1.5 font-mono">{r.defaultLowPrecision}</td>
-              <td className="px-2 py-1.5 font-mono text-[11px] break-words">{r.autocast}</td>
-              <td className="px-2 py-1.5">{D(`mixtable.${i}.lossScaling`, r.lossScaling)}</td>
-              <td className="px-2 py-1.5">{D(`mixtable.${i}.fp8`, r.fp8)}</td>
-              <td className="px-2 py-1.5 text-gray-700">
-                {D(`mixtable.${i}.notes`, r.notes)} <Ext href={r.source} />
-              </td>
-            </tr>
+            <Fragment key={r.family}>
+              <tr className={`cursor-pointer hover:bg-gray-50 ${open === i ? "bg-blue-50/40" : ""}`} onClick={() => setOpen(open === i ? null : i)} aria-expanded={open === i}>
+                <td className="px-2 py-1.5 font-semibold text-gray-900">
+                  <span className={`mr-1 inline-block text-gray-400 transition-transform ${open === i ? "rotate-90" : ""}`}>▸</span>
+                  {r.family}
+                </td>
+                <td className="px-2 py-1.5 font-mono text-[11px]">{r.defaultLowPrecision.split(/[;(]/)[0].trim()}</td>
+                <td className="px-2 py-1.5">{D(`mixtable.${i}.lossScaling`, r.lossScaling)}</td>
+                <td className="px-2 py-1.5">{D(`mixtable.${i}.fp8`, r.fp8)}</td>
+              </tr>
+              {open === i && (
+                <tr className="bg-gray-50/70">
+                  <td colSpan={4} className="px-4 py-2 leading-relaxed text-gray-700">
+                    <p>
+                      <span className="font-semibold text-gray-600">{T("mixed.chips.low")}: </span>
+                      <code className="font-mono text-[11px]">{r.defaultLowPrecision}</code>
+                    </p>
+                    <p className="mt-1">
+                      <span className="font-semibold text-gray-600">{T("mixed.chips.autocast")}: </span>
+                      <code className="font-mono text-[11px] break-words">{r.autocast}</code>
+                    </p>
+                    <p className="mt-1">
+                      {D(`mixtable.${i}.notes`, r.notes)} <Ext href={r.source} />
+                    </p>
+                  </td>
+                </tr>
+              )}
+            </Fragment>
           ))}
         </tbody>
       </table>
@@ -202,10 +261,15 @@ function FlagTable() {
   const T = usePageText();
   const D = useDataText();
   return (
-    <div className="mt-5" data-testid="mixed-flags">
-      <h3 className="text-sm font-semibold text-gray-900">{T("mixed.flags.title")}</h3>
-      <p className="mt-1 text-xs text-gray-600">{T("mixed.flags.text")}</p>
-      <div className="mt-2 divide-y divide-gray-200 rounded-lg border border-gray-200">
+    <details className="group mt-4 rounded-lg border border-gray-200" data-testid="mixed-flags">
+      <summary className="cursor-pointer list-none px-3 py-2 select-none">
+        <span className="text-sm font-semibold text-gray-900">
+          <span className="mr-1.5 inline-block text-gray-400 transition-transform group-open:rotate-90">▸</span>
+          {T("mixed.flags.title")} · {FLAGS.length}
+        </span>
+        <span className="mt-0.5 block pl-5 text-xs text-gray-600">{T("mixed.flags.text")}</span>
+      </summary>
+      <div className="divide-y divide-gray-200 border-t border-gray-200">
         {[...new Set(FLAGS.map((f) => f.package))].map((pkg) => (
           <section key={pkg} className="px-3 py-2">
             <h4 className="text-xs font-semibold text-gray-900">{pkg}</h4>
@@ -236,13 +300,90 @@ function FlagTable() {
           </section>
         ))}
       </div>
+    </details>
+  );
+}
+
+/** CUDA cores against Tensor Cores, side by side (rates from the chip table: H100 SXM, RTX 4090) */
+function CoresTable() {
+  const T = usePageText();
+  const k = (key: string) => <RichText text={T(`mixed.cores.${key}` as PageKey)} />;
+  const rows: [string, ReactNode, ReactNode][] = [
+    ["op", k("cuda.op"), k("tensor.op")],
+    ["in", "FP64, FP32, FP16 / BF16 ×2", "FP16, BF16, TF32, FP8, FP4, INT8"],
+    ["acc", k("cuda.acc"), "FP32 · INT8 → INT32"],
+    ["h100", "67 TFLOP/s FP32", "989.5 TFLOP/s BF16"],
+    ["geforce", "82.6 TFLOP/s FP32", "165.2 TFLOP/s FP16 → FP32"],
+  ];
+  return (
+    <div className="mt-4" data-testid="mixed-cores">
+      <div className="overflow-x-auto rounded-lg border border-gray-200">
+        <table className="w-full text-left text-xs">
+          <thead className="bg-gray-50 text-gray-600">
+            <tr>
+              <th className="px-3 py-1.5" />
+              <th className="px-3 py-1.5 font-semibold text-gray-900">CUDA core</th>
+              <th className="px-3 py-1.5 font-semibold text-green-800">Tensor Core</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {rows.map(([row, a, b]) => (
+              <tr key={row}>
+                <th className="px-3 py-1.5 font-medium whitespace-nowrap text-gray-600">{T(`mixed.cores.row.${row}` as PageKey)}</th>
+                <td className="px-3 py-1.5 text-gray-700">{a}</td>
+                <td className="bg-green-50/50 px-3 py-1.5 text-gray-900">{b}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-2 text-xs text-gray-600">{T("mixed.cores.tensor.note")}</p>
     </div>
+  );
+}
+
+/** the checklist as ticks the reader can set (remembered in this browser) */
+function Checklist() {
+  const T = usePageText();
+  const KEYS = ["measure", "bf16", "fp16", "keep", "check", "physics", "fp8"] as const;
+  const [done, setDone] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem("tensorizer.mixedChecklist") ?? "[]");
+    } catch {
+      return [];
+    }
+  });
+  const toggle = (key: string) => {
+    const next = done.includes(key) ? done.filter((x) => x !== key) : [...done, key];
+    setDone(next);
+    try {
+      localStorage.setItem("tensorizer.mixedChecklist", JSON.stringify(next));
+    } catch {
+      /* private window */
+    }
+  };
+  return (
+    <ol className="mt-3 space-y-1.5 text-sm leading-relaxed" data-testid="mixed-checklist">
+      {KEYS.map((key, i) => {
+        const on = done.includes(key);
+        return (
+          <li key={key}>
+            <label className={`flex cursor-pointer gap-3 rounded-lg px-3 py-2 transition-colors ${on ? "bg-green-50 text-gray-500" : "bg-gray-50 text-gray-800 hover:bg-gray-100"}`}>
+              <input type="checkbox" className="mt-1 h-4 w-4 shrink-0 accent-green-600" checked={on} onChange={() => toggle(key)} />
+              <span className="font-mono text-xs text-gray-400 tabular-nums">{i + 1}</span>
+              <span className={on ? "line-through decoration-gray-300" : ""}>
+                <RichText text={T(`mixed.checklist.${key}` as PageKey)} />
+              </span>
+            </label>
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
 export default function MixedTab() {
   const T = usePageText();
-  const D = useDataText();
   const text = (key: string) => <RichText text={T(key as PageKey)} />;
   const facts = (ids: string[]) => FACTS.filter((f) => ids.some((id) => f.id.startsWith(id)));
   return (
@@ -272,30 +413,20 @@ export default function MixedTab() {
         <Card id="accumulate">
           <Heading n={num("accumulate")} text={T("mixed.accumulate.title")} />
           <p className={P}>{text("mixed.accumulate.text")}</p>
-          <div className="mt-3 grid gap-3 text-sm leading-relaxed text-gray-700 md:grid-cols-2" data-testid="mixed-cores">
-            {(["cuda", "tensor"] as const).map((c) => (
-              <p key={c} className="rounded-lg bg-gray-50 p-3">
-                <RichText text={T(`mixed.cores.${c}` as PageKey)} />
-              </p>
-            ))}
-          </div>
+          <CoresTable />
           <MmaFigure />
           <MacGraph />
           <MixedAnim id="sum" />
-          <ul className="mt-3 space-y-2 text-sm leading-relaxed text-gray-700">
-            {facts(["tc-accumulate", "fp8-accumulate", "kahan", "summation"]).map((f) => (
-              <li key={f.id} className="rounded-lg bg-gray-50 p-3">
-                <RichText text={D(`fact.${f.id}`, f.text)} /> <Ext href={f.source} />
-              </li>
-            ))}
-          </ul>
+          <Points topics={[]} extra={facts(["tc-accumulate", "fp8-accumulate", "kahan", "summation"]).map((f) => ({ key: `fact.${f.id}`, text: f.text, source: f.source }))} />
         </Card>
 
         <Card id="recipe">
           <Heading n={num("recipe")} text={T("mixed.recipe.title")} />
           <p className={P}>{text("mixed.recipe.text")}</p>
-          <GradientHistogram />
-          <LossCurves />
+          <div className="grid items-start gap-x-4 lg:grid-cols-2">
+            <GradientHistogram />
+            <LossCurves />
+          </div>
           <MixedAnim id="amp" />
           <MixedAnim id="scale" />
         </Card>
@@ -303,15 +434,7 @@ export default function MixedTab() {
         <Card id="pytorch">
           <Heading n={num("pytorch")} text={T("mixed.pytorch.title")} />
           <p className={P}>{text("mixed.pytorch.text")}</p>
-          <Points topics={["pytorch"]} />
-          <h3 className="mt-5 text-sm font-semibold text-gray-900">{T("mixed.pytorch.defaults")}</h3>
-          <ul className="mt-2 space-y-2 text-sm leading-relaxed text-gray-700">
-            {PRECISION_DEFAULTS.map((d, i) => (
-              <li key={i} className="rounded-lg bg-gray-50 p-3">
-                {D(`default.${i}`, d.text)} <Ext href={d.source} />
-              </li>
-            ))}
-          </ul>
+          <Points topics={["pytorch"]} extra={PRECISION_DEFAULTS.map((d, i) => ({ key: `default.${i}`, text: d.text, source: d.source }))} />
         </Card>
 
         <Card id="chips">
@@ -336,13 +459,7 @@ export default function MixedTab() {
 
         <Card id="checklist">
           <Heading n={num("checklist")} text={T("mixed.checklist.title")} />
-          <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-gray-700">
-            {(["measure", "bf16", "fp16", "keep", "check", "physics", "fp8"] as const).map((k) => (
-              <li key={k}>
-                <RichText text={T(`mixed.checklist.${k}` as PageKey)} />
-              </li>
-            ))}
-          </ol>
+          <Checklist />
         </Card>
       </article>
     </div>
