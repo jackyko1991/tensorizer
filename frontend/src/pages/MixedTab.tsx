@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
 import { MixedAnim } from "../components/ChipsAnim";
+import { GradientHistogram, LossCurves, MacGraph, MmaFigure } from "../components/MixedFigures";
 import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
 import { RichText } from "../components/Tex";
 import { usePageText, type PageKey } from "../content/pages";
-import { FACTS, FORMAT_INFO, PRECISION_DEFAULTS, useDataText } from "../content/chips/data";
+import { FACTS, FORMAT_INFO, PRECISION_DEFAULTS, setShowOriginal, useDataText, useShowOriginal } from "../content/chips/data";
 import mixedJson from "../content/chips/mixed.json";
-import { formatPageRoute } from "../pageRoute";
+import { useLang } from "../i18n";
 
 /** Every section of the tab, in order: numbered 1..N in the table of contents and on the cards. */
 const SECTIONS = ["why", "formats", "accumulate", "recipe", "pytorch", "chips", "fp8", "science", "checklist"] as const;
@@ -41,9 +42,35 @@ function Heading({ n, text }: { n: number; text: string }) {
   );
 }
 
+/** cards whose cited text comes from the data overlay: these get the "English original" switch */
+const CITED = new Set(["why", "formats", "accumulate", "pytorch", "chips", "fp8", "science"]);
+
+/** top-right switch between the translated cited text and the English original (one setting for the whole tab) */
+function OriginalSwitch() {
+  const T = usePageText();
+  const { lang } = useLang();
+  const on = useShowOriginal();
+  if (lang === "en") return null;
+  return (
+    <label className="absolute top-3 right-4 inline-flex cursor-pointer items-center gap-1.5 text-xs text-gray-500 select-none" data-testid="mixed-original">
+      <span>{T("mixed.original")}</span>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={on}
+        onClick={() => setShowOriginal(!on)}
+        className={`relative h-4 w-7 rounded-full transition-colors ${on ? "bg-blue-600" : "bg-gray-300"}`}
+      >
+        <span className={`absolute top-0.5 left-0.5 h-3 w-3 rounded-full bg-white shadow transition-transform ${on ? "translate-x-3" : ""}`} />
+      </button>
+    </label>
+  );
+}
+
 function Card({ id, children }: { id: string; children: ReactNode }) {
   return (
-    <section id={`mixed-${id}`} className="scroll-mt-6 rounded-xl border border-gray-200 bg-white p-6" data-testid={`mixed-${id}`}>
+    <section id={`mixed-${id}`} className="relative scroll-mt-6 rounded-xl border border-gray-200 bg-white p-6" data-testid={`mixed-${id}`}>
+      {CITED.has(id) && <OriginalSwitch />}
       {children}
     </section>
   );
@@ -182,12 +209,6 @@ export default function MixedTab() {
         <header>
           <h1 className="text-3xl font-semibold tracking-tight">{T("mixed.title")}</h1>
           <p className="mt-3 text-gray-600">{text("mixed.intro")}</p>
-          <p className="mt-3 rounded-lg border border-blue-100 bg-blue-50/60 px-4 py-2.5 text-sm text-blue-900">
-            {text("mixed.howto")}{" "}
-            <a className="font-medium text-blue-700 hover:underline" href={`#${formatPageRoute("skills", "chips")}`}>
-              {T("mixed.toChips")} →
-            </a>
-          </p>
         </header>
 
         <Card id="why">
@@ -208,6 +229,15 @@ export default function MixedTab() {
         <Card id="accumulate">
           <Heading n={num("accumulate")} text={T("mixed.accumulate.title")} />
           <p className={P}>{text("mixed.accumulate.text")}</p>
+          <div className="mt-3 grid gap-3 text-sm leading-relaxed text-gray-700 md:grid-cols-2" data-testid="mixed-cores">
+            {(["cuda", "tensor"] as const).map((c) => (
+              <p key={c} className="rounded-lg bg-gray-50 p-3">
+                <RichText text={T(`mixed.cores.${c}` as PageKey)} />
+              </p>
+            ))}
+          </div>
+          <MmaFigure />
+          <MacGraph />
           <MixedAnim id="sum" />
           <ul className="mt-3 space-y-2 text-sm leading-relaxed text-gray-700">
             {facts(["tc-accumulate", "fp8-accumulate", "kahan", "summation"]).map((f) => (
@@ -221,6 +251,8 @@ export default function MixedTab() {
         <Card id="recipe">
           <Heading n={num("recipe")} text={T("mixed.recipe.title")} />
           <p className={P}>{text("mixed.recipe.text")}</p>
+          <GradientHistogram />
+          <LossCurves />
           <MixedAnim id="amp" />
           <MixedAnim id="scale" />
         </Card>

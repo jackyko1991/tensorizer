@@ -5,6 +5,7 @@
  * URLs) are language-neutral; the explanatory sentences have translations in i18n/<lang>.json, keyed as listed
  * below, falling back to English.
  */
+import { useSyncExternalStore } from "react";
 import { useLang } from "../../i18n";
 import chipsJson from "./chips.json";
 import formatsJson from "./formats.json";
@@ -177,10 +178,41 @@ export function rate(c: Chip, p: Precision): number | null {
 }
 
 const overlays = import.meta.glob<Record<string, string>>("./i18n/*.json", { eager: true, import: "default" });
-/** translated explanatory text of the data: t(key, english) */
+
+/** "show the sources' English original" switch, shared by every data table and remembered in the browser */
+const ORIGINAL_KEY = "tensorizer.chipsOriginal";
+let original = (() => {
+  try {
+    return localStorage.getItem(ORIGINAL_KEY) === "1";
+  } catch {
+    return false;
+  }
+})();
+const listeners = new Set<() => void>();
+export function setShowOriginal(on: boolean) {
+  original = on;
+  try {
+    localStorage.setItem(ORIGINAL_KEY, on ? "1" : "0");
+  } catch {
+    /* private window: keep it for this visit only */
+  }
+  listeners.forEach((l) => l());
+}
+export function useShowOriginal(): boolean {
+  return useSyncExternalStore(
+    (l) => {
+      listeners.add(l);
+      return () => listeners.delete(l);
+    },
+    () => original,
+  );
+}
+
+/** translated explanatory text of the data: t(key, english); English when the switch asks for the original */
 export function useDataText(): (key: string, english: string) => string {
   const { lang } = useLang();
-  const tr = overlays[`./i18n/${lang}.json`] ?? {};
+  const showOriginal = useShowOriginal();
+  const tr = showOriginal ? {} : (overlays[`./i18n/${lang}.json`] ?? {});
   return (key, english) => tr[key] || english;
 }
 

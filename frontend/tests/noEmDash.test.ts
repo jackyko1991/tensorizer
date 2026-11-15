@@ -29,6 +29,7 @@ const SOURCES = [
   "pages/ChipsTab.tsx",
   "pages/MixedTab.tsx",
   "components/ChipsAnim.tsx",
+  "components/MixedFigures.tsx",
   "pages/CpumlTab.tsx",
   "pages/AgentsPage.tsx",
   "components/TechniqueAnim.tsx",

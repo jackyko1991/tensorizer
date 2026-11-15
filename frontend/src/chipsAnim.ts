@@ -100,3 +100,67 @@ export const busyFraction = (gbs: number, tflops: number, intensity = DECODE_INT
 /** "mma": multiply-adds per step for scalar lanes vs one 4×4×4 matrix-unit operation */
 export const MMA = { n: 4, scalarPerCycle: 4 };
 export const scalarCycles = (n: number, lanes: number) => Math.ceil(n ** 3 / lanes);
+
+// --- Mixed precision figures (components/MixedFigures.tsx) --------------------------------------------------------
+
+/**
+ * Schematic histogram of activation-gradient magnitudes, after Micikevicius et al. 2018 (Fig. 3, Multibox SSD):
+ * about two thirds exact zeros, the rest spread over 2^-60 … 2^-11 with a peak near 2^-29. Bin k holds the share (%)
+ * of all values with magnitude in [2^k, 2^(k+1)). The shape is illustrative, not the paper's data.
+ */
+export const HIST_ZERO = 67;
+export function gradHistogram(): { k: number; p: number }[] {
+  const raw: { k: number; p: number }[] = [];
+  for (let k = -60; k <= -11; k++) {
+    const d = k + 29;
+    const sigma = d < 0 ? 4.6 : 5.2;
+    raw.push({ k, p: Math.exp(-(d * d) / (2 * sigma * sigma)) });
+  }
+  const total = raw.reduce((a, b) => a + b.p, 0);
+  return raw.map((b) => ({ k: b.k, p: (b.p / total) * (100 - HIST_ZERO) }));
+}
+
+/** FP16 thresholds: below 2^-24 a value rounds to zero, below 2^-14 it is subnormal, from 2^16 it overflows */
+export const FP16_ZERO = -24;
+export const FP16_SUBNORMAL = -14;
+export const FP16_OVERFLOW = 16;
+
+/**
+ * Where the nonzero values land after multiplying by a loss scale 2^s, as percentages of the nonzero values:
+ * lost (become zero), sub (subnormal: fewer significant bits), over (beyond FP16's largest value).
+ */
+export function histogramSplit(bins: { k: number; p: number }[], s: number) {
+  const nonzero = bins.reduce((a, b) => a + b.p, 0);
+  const share = (f: (u: number) => boolean) => (100 * bins.filter((b) => f(b.k + s)).reduce((a, b) => a + b.p, 0)) / nonzero;
+  return {
+    zero: HIST_ZERO,
+    lost: share((u) => u < FP16_ZERO),
+    sub: share((u) => u >= FP16_ZERO && u < FP16_SUBNORMAL),
+    over: share((u) => u >= FP16_OVERFLOW),
+  };
+}
+
+/** deterministic noise in [-1, 1] */
+const noise = (i: number, seed: number) => {
+  const x = Math.sin(i * 12.9898 + seed * 78.233) * 43758.5453;
+  return 2 * (x - Math.floor(x)) - 1;
+};
+
+/**
+ * Schematic training-loss curves after NVIDIA's mixed-precision guide (bigLSTM): FP32, mixed precision with no loss
+ * scaling (diverges once gradients underflow), and with a loss scale of 128 (tracks FP32). Iterations in thousands.
+ */
+export function lossCurves() {
+  const base = (t: number) => 2.75 + 0.75 * Math.exp(-t / 700) + 2.25 * Math.exp(-t / 35);
+  const pts = (end: number, seed: number, extra: (t: number) => number = () => 0) => {
+    const out: [number, number][] = [];
+    for (let i = 0, t = 0; t <= end; i++, t += 4) out.push([t, base(t) + extra(t) + 0.035 * noise(i, seed)]);
+    return out;
+  };
+  const drift = (t: number) => (t < 380 ? 0 : 1.15 * ((t - 380) / 520) ** 1.4);
+  return {
+    fp32: pts(1800, 1),
+    scale1: pts(900, 2, (t) => drift(t) * (1 + 0.12 * noise(Math.round(t), 5))),
+    scale128: pts(2000, 3),
+  };
+}

@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import ChipsAnim, { BudgetFigure } from "../components/ChipsAnim";
 import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
@@ -25,6 +25,7 @@ import {
   type Precision,
 } from "../content/chips/data";
 import { formatPageRoute } from "../pageRoute";
+import TimelineArt, { MAJOR_EVENTS } from "../components/TimelineArt";
 
 /** Every section of the tab, in order: numbered 1..N in the table of contents and on the cards. */
 const SECTIONS = ["why", "history", "table", "precision", "under", "libs", "china", "arm", "desktop", "measure", "choose"] as const;
@@ -444,38 +445,90 @@ const KIND_COL = { library: "#2563eb", chip: "#16a34a", standard: "#7c3aed", pol
 function History() {
   const T = usePageText();
   const D = useDataText();
-  const [open, setOpen] = useState<string | null>(null);
-  const [all, setAll] = useState(false);
-  const years = TIMELINE.map((e) => e.year);
-  const lo = Math.min(...years);
-  const hi = Math.max(...years);
-  const W = 560;
-  const X = (y: number) => 16 + ((y - lo) / (hi - lo)) * (W - 32);
-  const shown = all ? TIMELINE : TIMELINE.slice(-14);
+  const [hover, setHover] = useState<string | null>(null);
+  const [pinned, setPinned] = useState<string | null>(null);
+  const [width, setWidth] = useState(0);
+  const wrap = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setWidth(el.clientWidth));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const n = TIMELINE.length;
+  const pad = 10;
+  const xAt = (i: number) => pad + (n === 1 ? 0 : (i / (n - 1)) * (width - 2 * pad));
+  const current = hover ?? pinned;
+  const isMajor = (id: string) => MAJOR_EVENTS.includes(id);
+  const idx = TIMELINE.findIndex((e) => e.id === current);
+  const ev = idx >= 0 && !isMajor(TIMELINE[idx].id) ? TIMELINE[idx] : null;
+  const majors = TIMELINE.filter((e) => isMajor(e.id));
+  const cardW = Math.min(320, width);
+  const cardLeft = ev ? Math.max(0, Math.min(width - cardW, xAt(idx) - cardW / 2)) : 0;
+  const decade = (y: number) => Math.floor(y / 10) * 10;
+  // a decade label at the first event of each decade, skipped when it would touch the previous label
+  const labelled = new Set<number>();
+  let lastX = -Infinity;
+  TIMELINE.forEach((e, i) => {
+    if (i > 0 && decade(e.year) === decade(TIMELINE[i - 1].year)) return;
+    if (xAt(i) - lastX < 40) return;
+    labelled.add(i);
+    lastX = xAt(i);
+  });
   return (
     <div className="mt-4" data-testid="chips-timeline">
-      <svg viewBox={`0 0 ${W} 56`} className="w-full" role="img" aria-label={T("chips.history.strip")}>
-        <line x1={16} y1={30} x2={W - 16} y2={30} stroke="#cbd5e1" />
-        {TIMELINE.map((e, i) => (
-          <circle
-            key={e.id}
-            cx={X(e.year + ((e.month ?? 6) - 6) / 12)}
-            cy={30 + ((i % 3) - 1) * 7}
-            r={open === e.id ? 5 : 3.2}
-            fill={KIND_COL[e.kind]}
-            className="cursor-pointer"
-            onClick={() => (setAll(true), setOpen(e.id))}
+      <div ref={wrap} className="relative h-16" onMouseLeave={() => setHover(null)}>
+        <div className="absolute top-5 right-0 left-0 h-px bg-gray-300" />
+        {width > 0 &&
+          TIMELINE.map((e, i) => {
+            const label = labelled.has(i);
+            const on = e.id === current;
+            const major = isMajor(e.id);
+            return (
+              <div key={e.id} className="absolute top-0" style={{ left: xAt(i), transform: "translateX(-50%)" }}>
+                <button
+                  type="button"
+                  aria-label={`${e.year} ${D(`event.${e.id}.title`, e.title)}`}
+                  aria-pressed={pinned === e.id}
+                  data-testid="chips-event-dot"
+                  className="flex h-10 w-4 items-center justify-center focus:outline-none"
+                  onMouseEnter={() => setHover(e.id)}
+                  onFocus={() => setHover(e.id)}
+                  onBlur={() => setHover(null)}
+                  onClick={() => (major ? document.getElementById(`chips-major-${e.id}`)?.scrollIntoView({ block: "nearest", behavior: "smooth" }) : setPinned(pinned === e.id ? null : e.id))}
+                >
+                  <span
+                    className={`block rounded-full ring-white transition-all ${on || major ? "h-3.5 w-3.5 ring-2" : "h-2.5 w-2.5"}`}
+                    style={{ background: KIND_COL[e.kind], boxShadow: on ? `0 0 0 3px ${KIND_COL[e.kind]}55` : undefined }}
+                  />
+                </button>
+                {label && <span className="absolute top-10 left-1/2 -translate-x-1/2 font-mono text-[10px] text-gray-500 tabular-nums">{decade(e.year)}s</span>}
+              </div>
+            );
+          })}
+        {ev && (
+          <div
+            className="absolute top-14 z-20 rounded-lg border border-gray-200 bg-white p-3 text-sm shadow-lg"
+            style={{ left: cardLeft, width: cardW }}
+            data-testid="chips-event-card"
           >
-            <title>{`${e.year} ${D(`event.${e.id}.title`, e.title)}`}</title>
-          </circle>
-        ))}
-        {[lo, 1990, 2000, 2010, 2020, hi].filter((y, i, a) => a.indexOf(y) === i && y >= lo && y <= hi).map((y) => (
-          <text key={y} x={X(y)} y={54} fontSize={10} textAnchor="middle" fill="#6b7280">
-            {y}
-          </text>
-        ))}
-      </svg>
-      <p className="flex flex-wrap gap-3 text-[11px] text-gray-600">
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: KIND_COL[ev.kind] }} />
+              <span className="font-mono tabular-nums">
+                {ev.year}
+                {ev.month ? `-${String(ev.month).padStart(2, "0")}` : ""}
+              </span>
+              <span>{T(`chips.history.${ev.kind}` as PageKey)}</span>
+            </div>
+            <p className="mt-1 font-semibold text-gray-900">{D(`event.${ev.id}.title`, ev.title)}</p>
+            <p className="mt-1 leading-relaxed text-gray-700">
+              {D(`event.${ev.id}.text`, ev.text)} <Ext href={ev.source}>{host(ev.source)}</Ext>
+            </p>
+          </div>
+        )}
+      </div>
+      <p className="mt-2 flex flex-wrap gap-3 text-[11px] text-gray-600">
         {(Object.keys(KIND_COL) as (keyof typeof KIND_COL)[]).map((k) => (
           <span key={k} className="inline-flex items-center gap-1">
             <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: KIND_COL[k] }} />
@@ -483,27 +536,30 @@ function History() {
           </span>
         ))}
       </p>
-      <ol className="mt-3 space-y-1.5 border-l-2 border-gray-200 pl-4">
-        {shown.map((e) => (
-          <li key={e.id} id={`chips-event-${e.id}`} className="relative text-sm">
-            <span className="absolute top-1.5 -left-[21px] h-2.5 w-2.5 rounded-full" style={{ background: KIND_COL[e.kind] }} />
-            <button className="text-left" onClick={() => setOpen(open === e.id ? null : e.id)} aria-expanded={open === e.id}>
-              <span className="font-mono text-xs text-gray-500 tabular-nums">{e.year}</span>{" "}
-              <b className="font-semibold text-gray-900">{D(`event.${e.id}.title`, e.title)}</b>
-            </button>
-            {open === e.id && (
-              <p className="mt-1 text-sm leading-relaxed text-gray-700">
-                {D(`event.${e.id}.text`, e.text)} <Ext href={e.source}>{host(e.source)}</Ext>
-              </p>
-            )}
+      <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-testid="chips-major-events">
+        {majors.map((e) => (
+          <li
+            key={e.id}
+            id={`chips-major-${e.id}`}
+            className={`rounded-lg border bg-white p-3 text-sm transition-shadow ${e.id === current ? "border-blue-300 shadow-md" : "border-gray-200"}`}
+            onMouseEnter={() => setHover(e.id)}
+            onMouseLeave={() => setHover(null)}
+          >
+            <div className="rounded-md bg-gray-50 px-2 py-1">
+              <TimelineArt id={e.id} />
+            </div>
+            <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
+              <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: KIND_COL[e.kind] }} />
+              <span className="font-mono tabular-nums">{e.year}</span>
+              <span>{T(`chips.history.${e.kind}` as PageKey)}</span>
+            </div>
+            <p className="mt-1 font-semibold text-gray-900">{D(`event.${e.id}.title`, e.title)}</p>
+            <p className="mt-1 text-[13px] leading-relaxed text-gray-700">
+              {D(`event.${e.id}.text`, e.text)} <Ext href={e.source}>{host(e.source)}</Ext>
+            </p>
           </li>
         ))}
       </ol>
-      {!all && (
-        <button className="mt-2 text-sm text-blue-700 hover:underline" onClick={() => setAll(true)}>
-          {fill(T("chips.history.more"), { n: TIMELINE.length })}
-        </button>
-      )}
     </div>
   );
 }
@@ -665,6 +721,69 @@ const DESKTOP_SRC = [
   "https://www.nvidia.com/en-us/products/rtx-spark/",
 ];
 
+/** NVIDIA's Tensor Core and its equivalents: names, where they sit, how code reaches them, first chip with one */
+const MATRIX_UNITS: { vendor: string; unit: string; where: string; via: string; first: string; source: string }[] = [
+  { vendor: "NVIDIA", unit: "Tensor Core", where: "NVIDIA GPUs", via: "PTX mma, wgmma (Hopper), tcgen05 (Blackwell); cuBLAS, cuDNN", first: "V100 (2017)", source: "https://www.nvidia.com/en-us/data-center/tensor-cores/" },
+  { vendor: "AMD", unit: "Matrix Core", where: "AMD Instinct (CDNA)", via: "MFMA instructions; rocBLAS, hipBLASLt", first: "MI100 (2020)", source: "https://gpuopen.com/learn/amd-lab-notes/amd-lab-notes-matrix-cores-readme/" },
+  { vendor: "AMD", unit: "AI Accelerator", where: "AMD Radeon (RDNA 3, RDNA 4)", via: "WMMA instructions", first: "RX 7900 (2022)", source: "https://gpuopen.com/learn/wmma_on_rdna3/" },
+  { vendor: "Intel", unit: "XMX", where: "Intel Arc and Data Center GPUs", via: "DPAS instruction; oneDNN, oneMKL", first: "Arc A-series (2022)", source: "https://www.intel.com/content/www/us/en/developer/articles/technical/introduction-to-the-xe-hpg-architecture.html" },
+  { vendor: "Intel", unit: "AMX (TMUL)", where: "Intel Xeon CPUs", via: "AMX tile instructions; oneDNN", first: "Xeon Sapphire Rapids (2023)", source: "https://www.intel.com/content/www/us/en/products/docs/accelerator-engines/advanced-matrix-extensions/overview.html" },
+  { vendor: "Arm", unit: "SME / SME2", where: "Arm CPUs (Apple M4 and later)", via: "outer-product instructions into the ZA tile; Accelerate, KleidiAI", first: "Apple M4 (2024)", source: "https://developer.arm.com/documentation/109246/latest/" },
+  { vendor: "Apple", unit: "Neural Accelerator", where: "Apple GPU cores (M5 and later)", via: "Metal 4 tensor APIs; MLX", first: "Apple M5 (2025)", source: "https://www.apple.com/newsroom/2025/10/apple-unleashes-m5-the-next-big-leap-in-ai-performance-for-apple-silicon/" },
+  { vendor: "Apple", unit: "Neural Engine", where: "Apple NPU", via: "Core ML", first: "A11 Bionic (2017)", source: "https://developer.apple.com/machine-learning/core-ml/" },
+  { vendor: "Google", unit: "MXU (systolic array)", where: "Google TPU TensorCores", via: "XLA (JAX, PyTorch/XLA)", first: "TPU v1 (2015)", source: "https://cloud.google.com/tpu/docs/system-architecture-tpu-vm" },
+  { vendor: "AWS", unit: "Tensor Engine (systolic)", where: "AWS NeuronCores (Trainium, Inferentia)", via: "Neuron compiler; NKI", first: "Inferentia (2019)", source: "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html" },
+  { vendor: "Huawei", unit: "Cube Unit", where: "Huawei Ascend (Da Vinci cores)", via: "CANN, Ascend C", first: "Ascend 910 (2019)", source: "https://www.huawei.com/us/press-events/news/2019/8/huawei-ascend-910-most-powerful-ai-processor" },
+  { vendor: "Qualcomm", unit: "Hexagon tensor accelerator", where: "Qualcomm Hexagon NPU", via: "Qualcomm AI Engine Direct (QNN)", first: "Snapdragon", source: "https://www.qualcomm.com/products/technology/processors/hexagon" },
+];
+
+/** the table in order of the first chip's year (rows without a year last) */
+const yearOf = (first: string) => Number(first.match(/\((\d{4})\)/)?.[1] ?? 9999);
+const BY_YEAR = [...MATRIX_UNITS].sort((a, b) => yearOf(a.first) - yearOf(b.first));
+
+function MatrixUnits() {
+  const T = usePageText();
+  return (
+    <details className="group mt-4 rounded-lg border border-gray-200" data-testid="chips-units">
+      <summary className="cursor-pointer list-none px-3 py-2 text-sm font-semibold text-gray-900 select-none">
+        <span className="mr-1.5 inline-block text-gray-400 transition-transform group-open:rotate-90">▸</span>
+        {T("chips.units.title")}
+      </summary>
+      <div className="px-3 pb-3">
+      <div className="mt-2 overflow-x-auto rounded-lg border border-gray-200">
+        <table className="w-full text-left text-xs">
+          <thead className="bg-gray-50 text-gray-600">
+            <tr>
+              {(["vendor", "unit", "where", "via", "first"] as const).map((h) => (
+                <th key={h} className="px-2 py-1.5 font-semibold whitespace-nowrap">
+                  {T(`chips.units.${h}` as PageKey)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100 align-top">
+            {BY_YEAR.map((u) => (
+              <tr key={u.unit}>
+                <td className="px-2 py-1.5 whitespace-nowrap text-gray-700">{u.vendor}</td>
+                <td className="px-2 py-1.5 font-semibold whitespace-nowrap text-gray-900">{u.unit}</td>
+                <td className="px-2 py-1.5">{u.where}</td>
+                <td className="px-2 py-1.5 text-gray-700">{u.via}</td>
+                <td className="px-2 py-1.5 whitespace-nowrap">
+                  {u.first} <Ext href={u.source}>↗</Ext>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-2 text-xs leading-relaxed text-gray-600">
+        <RichText text={T("chips.units.note")} />
+      </p>
+      </div>
+    </details>
+  );
+}
+
 function DesktopTable({ onSelect }: { onSelect: (id: string) => void }) {
   const T = usePageText();
   const rows = DESKTOPS.flatMap((d) => {
@@ -821,7 +940,6 @@ export default function ChipsTab() {
         <header>
           <h1 className="text-3xl font-semibold tracking-tight">{T("chips.title")}</h1>
           <p className="mt-3 text-gray-600">{text("chips.intro")}</p>
-          <p className="mt-3 rounded-lg border border-blue-100 bg-blue-50/60 px-4 py-2.5 text-sm text-blue-900">{text("chips.howto")}</p>
         </header>
 
         <Card id="why">
@@ -835,12 +953,33 @@ export default function ChipsTab() {
             ))}
           </ul>
           <BudgetFigure />
+          <MatrixUnits />
           <ChipsAnim id="feed" />
+          <p className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm" data-testid="chips-roofline-links">
+            <a className="text-blue-700 hover:underline" href={`#${formatPageRoute("concept", "dataflow", "roof")}`}>
+              → {T("maths.roof.title")}
+            </a>
+            <a className="text-blue-700 hover:underline" href="#/problem/others/chip_roofline">
+              → {T("chips.measure.title")}
+            </a>
+          </p>
         </Card>
 
         <Card id="history">
           <Heading n={num("history")} text={T("chips.history.title")} />
-          <p className={P}>{text("chips.history.text")}</p>
+          <p className={P}>
+            {T("chips.history.text")
+              .split(/\[\[(.+?)\]\]/)
+              .map((part, i) =>
+                i % 2 ? (
+                  <a key={i} className="text-blue-700 hover:underline" href={`#${formatPageRoute("concept", "history")}`}>
+                    {part}
+                  </a>
+                ) : (
+                  <RichText key={i} text={part} />
+                ),
+              )}
+          </p>
           <History />
         </Card>
 

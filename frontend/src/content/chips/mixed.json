@@ -378,7 +378,7 @@
    "defaultLowPrecision": "bfloat16 (MXU multiplies in bf16, accumulates in FP32; FP32 matmuls default to one bf16 pass)",
    "autocast": "No autocast: per-layer dtype=jnp.bfloat16 with param_dtype=jnp.float32 (Flax); precision=lax.Precision.HIGHEST or jax.default_matmul_precision(\"float32\") for accurate FP32",
    "lossScaling": "Not needed (bfloat16)",
-   "fp8": "Not covered here (see uncertain)",
+   "fp8": "Not researched here",
    "notes": "Precision.HIGH = 3 bf16 passes, HIGHEST = 6.",
    "source": "https://docs.jax.dev/en/latest/jax.lax.html"
   },
@@ -413,7 +413,7 @@
    "family": "Apple silicon (PyTorch MPS)",
    "defaultLowPrecision": "float16",
    "autocast": "torch.autocast(\"mps\", dtype=torch.float16) since PyTorch 2.5; bfloat16 since 2.6 on macOS 14+",
-   "lossScaling": "GradScaler for float16 training (see uncertain)",
+   "lossScaling": "GradScaler for float16 training (support on MPS not verified)",
    "fp8": "No",
    "notes": "No float64 on the GPU.",
    "source": "https://github.com/pytorch/pytorch/blob/v2.6.0/torch/amp/autocast_mode.py"
@@ -432,7 +432,7 @@
    "defaultLowPrecision": "float16; bfloat16 where torch.npu.is_bf16_supported()",
    "autocast": "torch.autocast(\"npu\", ...) or torch_npu.npu.amp.autocast; MindSpore amp_level O1/O2/O3; CANN precision_mode",
    "lossScaling": "torch_npu.npu.amp.GradScaler for float16; MindSpore DynamicLossScaleManager",
-   "fp8": "Not covered here (see uncertain)",
+   "fp8": "Not researched here",
    "notes": "precision_mode: must_keep_origin_dtype / allow_fp32_to_fp16 / allow_mix_precision(_fp16/_bf16) / force_fp16 / force_fp32 / allow_fp32_to_bf16.",
    "source": "https://www.mindspore.cn/docs/en/master/api_python/device_context/mindspore.device_context.ascend.op_precision.precision_mode.html"
   },

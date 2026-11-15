@@ -7,7 +7,7 @@ summary: >
   How fast is the machine this runs on? Time one large memory copy to get the bandwidth $\beta$, and an $n\times n$
   matrix product $C_{ij} = A_{ik}B_{kj}$ in FP64, FP32, TF32, BF16 and FP16 to get each precision's rate $\pi$; the
   roofline $P(I) = \min(\pi, \beta I)$ then says which kernels your chip runs at full speed and which wait for memory.
-  Coding Skills ▸ Chips places your result next to the spec sheets of other chips.
+  Coding Skills ▸ Acceleration chipsets places your result next to the spec sheets of other chips.
 animated: false
 vector_form: 'P(I) = \min(\pi,\ \beta\, I),\qquad I_\text{ridge} = \pi / \beta'
 index_form: 'C_{ij} = A_{ik}\,B_{kj}:\quad 2n^3\ \text{FLOP over}\ 3n^2 b\ \text{bytes},\qquad I = \frac{2n}{3b}'
