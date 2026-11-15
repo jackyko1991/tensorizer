@@ -2,10 +2,11 @@ import { Fragment, useState, type ReactNode } from "react";
 import { MixedAnim } from "../components/ChipsAnim";
 import { GradientHistogram, LossCurves, MacGraph, MmaFigure } from "../components/MixedFigures";
 import CodeBlock from "../components/CodeBlock";
+import { highlightCode } from "../components/highlight";
 import PageToc from "../components/PageToc";
 import { RichText } from "../components/Tex";
 import { usePageText, type PageKey } from "../content/pages";
-import { FACTS, FLAGS, FORMAT_INFO, PRECISION_DEFAULTS, setShowOriginal, useDataText, useShowOriginal } from "../content/chips/data";
+import { FACTS, FLAGS, FORMAT_INFO, PRECISION_DEFAULTS, type PrecisionFlag, setShowOriginal, useDataText, useShowOriginal } from "../content/chips/data";
 import mixedJson from "../content/chips/mixed.json";
 import { useLang } from "../i18n";
 
@@ -256,51 +257,80 @@ function ChipTable() {
   );
 }
 
-/** every package's precision switches: grouped by package, with default and a translated line on what it does */
+/** a switch, highlighted in its own language: Python calls, shell variables (export NAME=value), C API constants */
+const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const LANG_OF = { python: "Python", config: "Python", env: "shell", "c-api": "C" } as const;
+function flagHtml(f: PrecisionFlag): string {
+  if (f.kind === "env")
+    return f.flag
+      .split(/\s*\/\s*/)
+      .map((part) => {
+        const [name, ...value] = part.split("=");
+        return `<span class="text-violet-700">export</span> <span class="text-sky-700">${esc(name)}</span>=<span class="text-emerald-700">${esc(value.join("="))}</span>`;
+      })
+      .join("\n");
+  const html = highlightCode(esc(f.flag));
+  return f.kind === "c-api" ? html.replace(/\b(CUBLAS_[A-Z0-9_]+)\b/g, '<span class="text-sky-700">$1</span>') : html;
+}
+
+/** every package's precision switches, each package folded on its own */
 function FlagTable() {
   const T = usePageText();
   const D = useDataText();
+  const packages = [...new Set(FLAGS.map((f) => f.package))];
   return (
-    <details className="group mt-4 rounded-lg border border-gray-200" data-testid="mixed-flags">
-      <summary className="cursor-pointer list-none px-3 py-2 select-none">
-        <span className="text-sm font-semibold text-gray-900">
-          <span className="mr-1.5 inline-block text-gray-400 transition-transform group-open:rotate-90">▸</span>
-          {T("mixed.flags.title")} · {FLAGS.length}
-        </span>
-        <span className="mt-0.5 block pl-5 text-xs text-gray-600">{T("mixed.flags.text")}</span>
-      </summary>
-      <div className="divide-y divide-gray-200 border-t border-gray-200">
-        {[...new Set(FLAGS.map((f) => f.package))].map((pkg) => (
-          <section key={pkg} className="px-3 py-2">
-            <h4 className="text-xs font-semibold text-gray-900">{pkg}</h4>
-            <ul className="mt-1 space-y-1.5">
-              {FLAGS.map((f, i) =>
-                f.package !== pkg ? null : (
+    <div className="mt-5" data-testid="mixed-flags">
+      <h3 className="text-sm font-semibold text-gray-900">
+        {T("mixed.flags.title")} · {FLAGS.length}
+      </h3>
+      <p className="mt-0.5 text-xs text-gray-600">{T("mixed.flags.text")}</p>
+      <div className="mt-2 divide-y divide-gray-200 rounded-lg border border-gray-200">
+        {packages.map((pkg) => {
+          const rows = FLAGS.map((f, i) => ({ f, i })).filter(({ f }) => f.package === pkg);
+          return (
+            <details key={pkg} className="group" data-testid="mixed-flag-package">
+              <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2 text-sm select-none hover:bg-gray-50">
+                <span className="inline-block text-gray-400 transition-transform group-open:rotate-90">▸</span>
+                <span className="font-semibold text-gray-900">{pkg}</span>
+                <span className="text-xs text-gray-500">{rows.length}</span>
+                <span className="ml-auto flex gap-1">
+                  {[...new Set(rows.map(({ f }) => LANG_OF[f.kind]))].map((l) => (
+                    <span key={l} className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[10px] text-gray-600">
+                      {l}
+                    </span>
+                  ))}
+                </span>
+              </summary>
+              <ul className="space-y-2.5 px-3 pt-1 pb-3">
+                {rows.map(({ f, i }) => (
                   <li key={i} className="text-xs">
-                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                      <code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[11px] break-all text-gray-900">{f.flag}</code>
-                      {f.default && (
-                        <span className="text-[11px] text-gray-500">
-                          {T("mixed.flags.default")}: <code className="font-mono">{f.default}</code>
-                        </span>
-                      )}
-                      {f.status !== "current" && (
-                        <span className={`rounded px-1 py-0.5 text-[10px] font-medium ${f.status === "deprecated" ? "bg-amber-100 text-amber-800" : "bg-blue-100 text-blue-800"}`}>
-                          {T(`mixed.flags.${f.status}` as PageKey)}
-                        </span>
-                      )}
+                    <div className="overflow-hidden rounded-md border border-gray-200">
+                      <div className="flex items-center gap-2 border-b border-gray-100 bg-gray-50 px-2 py-0.5 text-[10px] text-gray-500">
+                        <span className="font-mono">{LANG_OF[f.kind]}</span>
+                        {f.default && (
+                          <span className="ml-auto">
+                            {T("mixed.flags.default")}: <code className="font-mono text-gray-700">{f.default}</code>
+                          </span>
+                        )}
+                        {f.status !== "current" && (
+                          <span className={`rounded px-1 font-medium ${f.default ? "" : "ml-auto"} ${f.status === "deprecated" ? "bg-amber-100 text-amber-800" : "bg-blue-100 text-blue-800"}`}>
+                            {T(`mixed.flags.${f.status}` as PageKey)}
+                          </span>
+                        )}
+                      </div>
+                      <pre className="overflow-x-auto bg-white px-2.5 py-1.5 font-mono text-[12px] leading-relaxed whitespace-pre-wrap break-words text-gray-900" dangerouslySetInnerHTML={{ __html: flagHtml(f) }} />
                     </div>
-                    <p className="mt-0.5 leading-relaxed text-gray-700">
+                    <p className="mt-1 leading-relaxed text-gray-700">
                       {D(`flag.${i}`, f.what)} <Ext href={f.source} />
                     </p>
                   </li>
-                ),
-              )}
-            </ul>
-          </section>
-        ))}
+                ))}
+              </ul>
+            </details>
+          );
+        })}
       </div>
-    </details>
+    </div>
   );
 }
 
@@ -342,42 +372,19 @@ function CoresTable() {
   );
 }
 
-/** the checklist as ticks the reader can set (remembered in this browser) */
+/** the checklist: numbered, static */
 function Checklist() {
   const T = usePageText();
-  const KEYS = ["measure", "bf16", "fp16", "keep", "check", "physics", "fp8"] as const;
-  const [done, setDone] = useState<string[]>(() => {
-    try {
-      return JSON.parse(localStorage.getItem("tensorizer.mixedChecklist") ?? "[]");
-    } catch {
-      return [];
-    }
-  });
-  const toggle = (key: string) => {
-    const next = done.includes(key) ? done.filter((x) => x !== key) : [...done, key];
-    setDone(next);
-    try {
-      localStorage.setItem("tensorizer.mixedChecklist", JSON.stringify(next));
-    } catch {
-      /* private window */
-    }
-  };
   return (
     <ol className="mt-3 space-y-1.5 text-sm leading-relaxed" data-testid="mixed-checklist">
-      {KEYS.map((key, i) => {
-        const on = done.includes(key);
-        return (
-          <li key={key}>
-            <label className={`flex cursor-pointer gap-3 rounded-lg px-3 py-2 transition-colors ${on ? "bg-green-50 text-gray-500" : "bg-gray-50 text-gray-800 hover:bg-gray-100"}`}>
-              <input type="checkbox" className="mt-1 h-4 w-4 shrink-0 accent-green-600" checked={on} onChange={() => toggle(key)} />
-              <span className="font-mono text-xs text-gray-400 tabular-nums">{i + 1}</span>
-              <span className={on ? "line-through decoration-gray-300" : ""}>
-                <RichText text={T(`mixed.checklist.${key}` as PageKey)} />
-              </span>
-            </label>
-          </li>
-        );
-      })}
+      {(["measure", "bf16", "fp16", "keep", "check", "physics", "fp8"] as const).map((key, i) => (
+        <li key={key} className="flex gap-3 rounded-lg bg-gray-50 px-3 py-2 text-gray-800">
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[11px] font-semibold text-white">{i + 1}</span>
+          <span>
+            <RichText text={T(`mixed.checklist.${key}` as PageKey)} />
+          </span>
+        </li>
+      ))}
     </ol>
   );
 }
