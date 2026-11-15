@@ -1831,5 +1831,7 @@
   "mixed.cores.cuda.op": "une multiplication-addition scalaire, $d = a \\cdot b + c$",
   "mixed.cores.tensor.op": "une tuile entière, $D = A \\cdot B + C$",
   "mixed.cores.cuda.acc": "comme les entrées",
-  "mixed.cores.tensor.note": "La précision mixte ne rapporte gros que sur les Tensor Cores, dans les grands produits matriciels ; ailleurs, baisser la précision économise surtout du trafic mémoire."
+  "mixed.cores.tensor.note": "La précision mixte ne rapporte gros que sur les Tensor Cores, dans les grands produits matriciels ; ailleurs, baisser la précision économise surtout du trafic mémoire.",
+  "mixed.platforms.title": "Comment fait chaque plateforme",
+  "mixed.platforms.text": "La précision mixte hors NVIDIA : la méthode documentée et le code de chaque plateforme."
 }

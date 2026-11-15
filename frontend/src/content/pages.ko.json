@@ -1831,5 +1831,7 @@
   "mixed.cores.cuda.op": "스칼라 곱셈-덧셈 1회, $d = a \\cdot b + c$",
   "mixed.cores.tensor.op": "타일 전체, $D = A \\cdot B + C$",
   "mixed.cores.cuda.acc": "입력과 같음",
-  "mixed.cores.tensor.note": "혼합 정밀도가 크게 이득인 곳은 Tensor Core(큰 행렬 곱)뿐입니다. 그 밖에서는 정밀도를 낮추면 주로 메모리 트래픽이 줄어듭니다."
+  "mixed.cores.tensor.note": "혼합 정밀도가 크게 이득인 곳은 Tensor Core(큰 행렬 곱)뿐입니다. 그 밖에서는 정밀도를 낮추면 주로 메모리 트래픽이 줄어듭니다.",
+  "mixed.platforms.title": "플랫폼별 방법",
+  "mixed.platforms.text": "NVIDIA가 아닌 하드웨어에서의 혼합 정밀도: 플랫폼마다 문서화된 방법과 코드."
 }

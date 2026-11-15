@@ -1831,5 +1831,7 @@
   "mixed.cores.cuda.op": "スカラーの積和 1 回、$d = a \\cdot b + c$",
   "mixed.cores.tensor.op": "タイル全体、$D = A \\cdot B + C$",
   "mixed.cores.cuda.acc": "入力と同じ",
-  "mixed.cores.tensor.note": "混合精度が大きく効くのは Tensor Core（大きな行列積）だけです。それ以外では低精度化の効果は主にメモリ転送の節約です。"
+  "mixed.cores.tensor.note": "混合精度が大きく効くのは Tensor Core（大きな行列積）だけです。それ以外では低精度化の効果は主にメモリ転送の節約です。",
+  "mixed.platforms.title": "プラットフォームごとのやり方",
+  "mixed.platforms.text": "NVIDIA 以外のハードウェアでの混合精度：各プラットフォームの公式な手順とコード。"
 }

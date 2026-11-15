@@ -1831,5 +1831,7 @@
   "mixed.cores.cuda.op": "una multiplicación-suma escalar, $d = a \\cdot b + c$",
   "mixed.cores.tensor.op": "un bloque entero, $D = A \\cdot B + C$",
   "mixed.cores.cuda.acc": "igual que las entradas",
-  "mixed.cores.tensor.note": "La precisión mixta solo rinde de verdad en los Tensor Cores, en los grandes productos de matrices; en el resto, bajar la precisión ahorra sobre todo tráfico de memoria."
+  "mixed.cores.tensor.note": "La precisión mixta solo rinde de verdad en los Tensor Cores, en los grandes productos de matrices; en el resto, bajar la precisión ahorra sobre todo tráfico de memoria.",
+  "mixed.platforms.title": "Cómo lo hace cada plataforma",
+  "mixed.platforms.text": "La precisión mixta fuera de NVIDIA: el método documentado y el código de cada plataforma."
 }

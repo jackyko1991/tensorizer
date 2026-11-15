@@ -1979,5 +1979,7 @@
   "mixed.cores.cuda.op": "one scalar multiply-add, $d = a \\cdot b + c$",
   "mixed.cores.tensor.op": "a whole tile, $D = A \\cdot B + C$",
   "mixed.cores.cuda.acc": "same as the inputs",
-  "mixed.cores.tensor.note": "Mixed precision pays only on Tensor Cores: the big matrix products. Elsewhere lower precision mainly saves memory traffic."
+  "mixed.cores.tensor.note": "Mixed precision pays only on Tensor Cores: the big matrix products. Elsewhere lower precision mainly saves memory traffic.",
+  "mixed.platforms.title": "How each platform does it",
+  "mixed.platforms.text": "Mixed precision on non-NVIDIA hardware: the documented recipe and code for each platform."
 }

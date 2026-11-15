@@ -113,27 +113,72 @@ function Cited({ n, children }: { n: number; children: ReactNode }) {
   );
 }
 
-const CitedItem = ({ text, href }: { text: string; href: string }) => (
-  <li className="border-l-2 border-gray-200 pl-3" data-testid="mixed-point">
-    <RichText text={text} /> <Ext href={href} />
+const CitedItem = ({ text, href, code }: { text: string; href: string; code?: string }) => (
+  <li data-testid="mixed-point">
+    <p className="border-l-2 border-gray-200 pl-3">
+      <RichText text={text} /> <Ext href={href} />
+    </p>
+    {code && (
+      <div className="mt-1.5">
+        <CodeBlock code={code} />
+      </div>
+    )}
   </li>
 );
 
-function Points({ topics, extra }: { topics: string[]; extra?: { key: string; text: string; source: string }[] }) {
+/** the cross-chip section: one fold per platform, holding its code samples and cited points together */
+const PLATFORM: Record<string, string> = { tpu: "Google TPU (JAX)", amd: "AMD (ROCm)", intel: "Intel (Gaudi, CPU)", apple: "Apple (MPS, MLX)", ascend: "Huawei Ascend (CANN)" };
+
+function PlatformPoints({ topics }: { topics: string[] }) {
+  const T = usePageText();
+  const D = useDataText();
+  return (
+    <div className="mt-5">
+    <h3 className="text-sm font-semibold text-gray-900">{T("mixed.platforms.title")}</h3>
+    <p className="mt-0.5 text-xs text-gray-600">{T("mixed.platforms.text")}</p>
+    <div className="mt-2 divide-y divide-gray-200 rounded-lg border border-gray-200" data-testid="mixed-platforms">
+      {topics.map((t) => {
+        const ps = points([t]);
+        if (!ps.length) return null;
+        return (
+          <details key={t} className="group">
+            <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2 text-sm select-none hover:bg-gray-50">
+              <span className="inline-block text-gray-400 transition-transform group-open:rotate-90">▸</span>
+              <span className="font-semibold text-gray-900">{PLATFORM[t] ?? t}</span>
+              <span className="text-xs text-gray-500">{ps.length}</span>
+            </summary>
+            <ul className="space-y-3 px-3 pt-1 pb-3 text-[13px] leading-relaxed text-gray-700">
+              {ps.map((p) => (
+                <CitedItem key={p.id} text={D(`point.${p.id}`, p.text)} href={p.source} code={p.code} />
+              ))}
+            </ul>
+          </details>
+        );
+      })}
+    </div>
+    </div>
+  );
+}
+
+/** a section's cited points in one fold; code samples go inside with their point, or stay visible (showCode) where
+ * the code is the section's lesson */
+function Points({ topics, extra, showCode }: { topics: string[]; extra?: { key: string; text: string; source: string }[]; showCode?: boolean }) {
   const D = useDataText();
   const ps = points(topics);
-  const codes = ps.filter((p) => p.code);
   const more = extra ?? [];
   return (
     <>
-      {codes.map((p) => (
-        <div key={p.id} className="mt-3">
-          <CodeBlock code={p.code!} />
-        </div>
-      ))}
+      {showCode &&
+        ps
+          .filter((p) => p.code)
+          .map((p) => (
+            <div key={p.id} className="mt-3">
+              <CodeBlock code={p.code!} />
+            </div>
+          ))}
       <Cited n={ps.length + more.length}>
         {ps.map((p) => (
-          <CitedItem key={p.id} text={D(`point.${p.id}`, p.text)} href={p.source} />
+          <CitedItem key={p.id} text={D(`point.${p.id}`, p.text)} href={p.source} code={showCode ? undefined : p.code} />
         ))}
         {more.map((m) => (
           <CitedItem key={m.key} text={D(m.key, m.text)} href={m.source} />
@@ -441,7 +486,7 @@ export default function MixedTab() {
         <Card id="pytorch">
           <Heading n={num("pytorch")} text={T("mixed.pytorch.title")} />
           <p className={P}>{text("mixed.pytorch.text")}</p>
-          <Points topics={["pytorch"]} extra={PRECISION_DEFAULTS.map((d, i) => ({ key: `default.${i}`, text: d.text, source: d.source }))} />
+          <Points topics={["pytorch"]} showCode extra={PRECISION_DEFAULTS.map((d, i) => ({ key: `default.${i}`, text: d.text, source: d.source }))} />
         </Card>
 
         <Card id="chips">
@@ -449,7 +494,7 @@ export default function MixedTab() {
           <p className={P}>{text("mixed.chips.text")}</p>
           <ChipTable />
           <FlagTable />
-          <Points topics={["tpu", "amd", "intel", "apple", "ascend"]} />
+          <PlatformPoints topics={["tpu", "amd", "intel", "apple", "ascend"]} />
         </Card>
 
         <Card id="fp8">

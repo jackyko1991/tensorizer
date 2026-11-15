@@ -1979,5 +1979,7 @@
   "mixed.cores.cuda.op": "一次标量乘加，$d = a \\cdot b + c$",
   "mixed.cores.tensor.op": "整个分块，$D = A \\cdot B + C$",
   "mixed.cores.cuda.acc": "与输入相同",
-  "mixed.cores.tensor.note": "混合精度只在 Tensor Core 上（大型矩阵乘法）才有大回报；其他地方降低精度主要是节省内存流量。"
+  "mixed.cores.tensor.note": "混合精度只在 Tensor Core 上（大型矩阵乘法）才有大回报；其他地方降低精度主要是节省内存流量。",
+  "mixed.platforms.title": "各平台的做法",
+  "mixed.platforms.text": "非 NVIDIA 硬件上的混合精度：每个平台的官方做法与代码。"
 }
