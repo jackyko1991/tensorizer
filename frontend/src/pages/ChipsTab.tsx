@@ -3,7 +3,6 @@ import ChipsAnim, { BudgetFigure } from "../components/ChipsAnim";
 import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
 import { RichText } from "../components/Tex";
-import { runProblemStream } from "../api";
 import { decodeCeiling, ridgePoint } from "../chipsModel";
 import { usePageText, type PageKey } from "../content/pages";
 import {
@@ -28,7 +27,7 @@ import { formatPageRoute } from "../pageRoute";
 import TimelineArt, { MAJOR_EVENTS } from "../components/TimelineArt";
 
 /** Every section of the tab, in order: numbered 1..N in the table of contents and on the cards. */
-const SECTIONS = ["why", "history", "table", "precision", "under", "libs", "china", "arm", "desktop", "measure", "choose"] as const;
+const SECTIONS = ["why", "history", "table", "precision", "under", "libs", "china", "arm", "desktop", "choose"] as const;
 const num = (key: (typeof SECTIONS)[number]) => SECTIONS.indexOf(key) + 1;
 const fill = (s: string, v: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (m, k) => String(v[k] ?? m));
 const P = "mt-3 text-sm leading-relaxed text-gray-700";
@@ -540,6 +539,151 @@ function History() {
 
 // --- 5. what runs underneath -------------------------------------------------------------------------------
 
+/** the Chinese software stacks: vendor, stack, kernel language and PyTorch device; a click unfolds the rest */
+const shortName = (v: string | null) => (v ? v.replace(/\s*\(.*?\)/g, "").split(/[:;]/)[0].trim() : "–");
+const deviceOf = (v: string | null) => v?.match(/device '([^']+)'/)?.[1] ?? null;
+
+function StackTable() {
+  const T = usePageText();
+  const D = useDataText();
+  const [open, setOpen] = useState<string | null>(null);
+  return (
+    <div className="mt-3 overflow-x-auto rounded-lg border border-gray-200" data-testid="chips-stacks">
+      <table className="w-full text-left text-xs">
+        <thead className="bg-gray-50 text-gray-600">
+          <tr>
+            <th className="px-2 py-1.5 font-semibold">{T("chips.table.vendor")}</th>
+            <th className="px-2 py-1.5 font-semibold">{T("chips.stack.sdk")}</th>
+            <th className="px-2 py-1.5 font-semibold">{T("chips.stack.kernelLanguage")}</th>
+            <th className="px-2 py-1.5 font-semibold">{T("chips.table.device")}</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100 align-top">
+          {STACKS.map((st) => {
+            const on = open === st.vendor;
+            const dev = deviceOf(st.pytorch);
+            const rows = (
+              [
+                ["sdk", st.sdk],
+                ["kernelLanguage", st.kernelLanguage],
+                ["mathLibraries", st.mathLibraries],
+                ["collectives", st.collectives],
+                ["frameworks", st.frameworks],
+              ] as [string, string | null][]
+            ).filter(([, v]) => v);
+            return (
+              <Fragment key={st.vendor}>
+                <tr className={`cursor-pointer hover:bg-gray-50 ${on ? "bg-blue-50/40" : ""}`} onClick={() => setOpen(on ? null : st.vendor)} aria-expanded={on} data-testid="chips-stack">
+                  <td className="px-2 py-1.5 font-semibold whitespace-nowrap text-gray-900">
+                    <span className={`mr-1 inline-block text-gray-400 transition-transform ${on ? "rotate-90" : ""}`}>▸</span>
+                    {st.vendor}
+                  </td>
+                  <td className="px-2 py-1.5 text-gray-700">{shortName(st.sdk)}</td>
+                  <td className="px-2 py-1.5 text-gray-700">{shortName(st.kernelLanguage)}</td>
+                  <td className="px-2 py-1.5">{dev ? <code className="font-mono text-[11px]">{dev}</code> : <span className="text-gray-400">–</span>}</td>
+                </tr>
+                {on && (
+                  <tr className="bg-gray-50/70">
+                    <td colSpan={4} className="px-4 py-2 text-gray-700">
+                      <dl className="grid gap-x-4 gap-y-1.5 sm:grid-cols-[8rem_1fr]">
+                        {rows.map(([k, v]) => (
+                          <Fragment key={k}>
+                            <dt className="font-semibold text-gray-600">{T(`chips.stack.${k}` as PageKey)}</dt>
+                            <dd>{D(`stack.${st.vendor}.${k}`, v!)}</dd>
+                          </Fragment>
+                        ))}
+                        {st.pytorch && (
+                          <>
+                            <dt className="font-semibold text-gray-600">PyTorch</dt>
+                            <dd>
+                              {D(`stack.${st.vendor}.pytorch`, st.pytorch)} {st.pytorchRepo && <Ext href={st.pytorchRepo}>{host(st.pytorchRepo)}</Ext>}
+                            </dd>
+                          </>
+                        )}
+                        {st.opensource && (
+                          <>
+                            <dt className="font-semibold text-gray-600">{T("chips.stack.opensource")}</dt>
+                            <dd>
+                              {D(`stack.${st.vendor}.opensource`, st.opensource)} {st.opensourceLink && <Ext href={st.opensourceLink}>{host(st.opensourceLink)}</Ext>}
+                            </dd>
+                          </>
+                        )}
+                        {st.source && (
+                          <dd className="sm:col-start-2">
+                            <Ext href={st.source}>{host(st.source)}</Ext>
+                          </dd>
+                        )}
+                      </dl>
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/** small boards: chip, accelerator, INT8 TOPS, memory, power, PyTorch device; a click unfolds the notes */
+const span = (v: number | number[] | null) => (v == null ? "–" : Array.isArray(v) ? `${v[0]}–${v[v.length - 1]}` : String(v));
+
+function BoardTable({ boards, onSelect }: { boards: Chip[]; onSelect: (id: string) => void }) {
+  const T = usePageText();
+  const D = useDataText();
+  const [open, setOpen] = useState<string | null>(null);
+  return (
+    <div className="mt-3 overflow-x-auto rounded-lg border border-gray-200" data-testid="chips-boards">
+      <table className="w-full text-left text-xs">
+        <thead className="bg-gray-50 text-gray-600">
+          <tr>
+            {(["chips.table.chip", "chips.detail.matrixUnit", "chips.detail.int8", "chips.table.memory", "chips.table.power", "chips.table.device"] as const).map((h) => (
+              <th key={h} className="px-2 py-1.5 font-semibold whitespace-nowrap">
+                {T(h as PageKey)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100 align-top">
+          {boards.map((c) => {
+            const on = open === c.id;
+            const tops = c.npuTOPS ?? c.int8TOPS;
+            return (
+              <Fragment key={c.id}>
+                <tr className={`cursor-pointer hover:bg-gray-50 ${on ? "bg-blue-50/40" : ""}`} onClick={() => setOpen(on ? null : c.id)} aria-expanded={on}>
+                  <td className="px-2 py-1.5 font-semibold text-gray-900">
+                    <span className={`mr-1 inline-block text-gray-400 transition-transform ${on ? "rotate-90" : ""}`}>▸</span>
+                    {short(c.name)}
+                  </td>
+                  <td className="px-2 py-1.5 text-gray-700">{c.matrixUnit ? c.matrixUnit.split(/[;(]/)[0].trim() : "–"}</td>
+                  <td className="px-2 py-1.5 tabular-nums">{tops ?? "–"}</td>
+                  <td className="px-2 py-1.5 tabular-nums">{span(c.memoryGB)}</td>
+                  <td className="px-2 py-1.5 tabular-nums">{span(c.powerW)}</td>
+                  <td className="px-2 py-1.5">{c.pytorchDevice && !c.pytorchDevice.startsWith("none") ? <code className="font-mono text-[11px]">{c.pytorchDevice}</code> : <span className="text-gray-400">–</span>}</td>
+                </tr>
+                {on && (
+                  <tr className="bg-gray-50/70">
+                    <td colSpan={6} className="px-4 py-2 text-gray-700">
+                      <p className="text-gray-500">
+                        {c.vendor} · {c.matrixUnit}
+                      </p>
+                      <p className="mt-1 leading-relaxed">{D(`chip.${c.id}.notes`, c.notes)}</p>
+                      <button className="mt-1 text-blue-700 hover:underline" onClick={() => onSelect(c.id)}>
+                        → {T("chips.table.title")}
+                      </button>
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function UnderTable() {
   const T = usePageText();
   const D = useDataText();
@@ -820,107 +964,12 @@ function DesktopTable({ onSelect }: { onSelect: (id: string) => void }) {
   );
 }
 
-// --- 10. measure your chip ----------------------------------------------------------------------------------
-
-interface Measured {
-  device: string;
-  deviceType: string;
-  bandwidth: { gbs: number };
-  matmul: { precision: string; tflops?: number; skipped?: string; slow?: string; n?: number }[];
-}
-
-function toChip(m: Measured): Chip {
-  const r = (p: string) => m.matmul.find((x) => x.precision === p && x.tflops && !x.slow)?.tflops ?? null;
-  return {
-    id: "measured",
-    vendor: "",
-    name: m.device,
-    group: "global",
-    class: m.deviceType === "cpu" ? "cpu" : "dgpu",
-    year: null,
-    memoryType: null,
-    memoryGB: null,
-    bandwidthGBs: m.bandwidth.gbs,
-    fp64TF: r("fp64"),
-    fp32TF: r("fp32"),
-    tf32TF: r("tf32"),
-    bf16TF: r("bf16"),
-    fp16TF: r("fp16"),
-    fp8TF: null,
-    int8TOPS: null,
-    npuTOPS: null,
-    powerW: null,
-    matrixUnit: null,
-    formats: [],
-    pytorchDevice: m.deviceType,
-    blas: "",
-    kernelLangs: "",
-    notes: "",
-    confidence: "",
-    sources: {},
-  };
-}
-
-function Measure({ onResult }: { onResult: (c: Chip) => void }) {
-  const T = usePageText();
-  const [state, setState] = useState<"idle" | "running" | "done" | "error">("idle");
-  const [lines, setLines] = useState<string[]>([]);
-  const [error, setError] = useState("");
-  const run = async () => {
-    setState("running");
-    setLines([]);
-    setError("");
-    let result: Measured | null = null;
-    try {
-      await runProblemStream("others/chip_roofline", { matrix_size: 4096, copy_mb: 512, repeats: 5 }, undefined, false, ({ text }) => {
-        if (text.startsWith("CHIP_RESULT ")) result = JSON.parse(text.slice("CHIP_RESULT ".length)) as Measured;
-        else setLines((l) => [...l, text]);
-      });
-      if (!result) throw new Error(T("chips.measure.noResult"));
-      onResult(toChip(result));
-      setState("done");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
-      setState("error");
-    }
-  };
-  return (
-    <div className="mt-4 rounded-lg border border-gray-200 bg-gray-50/60 p-4" data-testid="chips-measure-card">
-      <div className="flex flex-wrap items-center gap-3">
-        <button
-          onClick={() => void run()}
-          disabled={state === "running"}
-          className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-          data-testid="chips-measure"
-        >
-          {state === "running" ? T("chips.measure.running") : T("chips.measure.run")}
-        </button>
-        <a className="text-sm text-blue-700 hover:underline" href="#/problem/others/chip_roofline">
-          {T("chips.measure.open")}
-        </a>
-      </div>
-      {lines.length > 0 && <pre className="mt-3 max-h-48 overflow-auto rounded bg-white p-2 font-mono text-xs text-gray-800">{lines.join("\n")}</pre>}
-      {state === "done" && <p className="mt-2 text-sm text-green-800">{T("chips.measure.done")}</p>}
-      {state === "error" && (
-        <p className="mt-2 text-sm text-red-700">
-          {T("chips.measure.error")} {error}
-        </p>
-      )}
-    </div>
-  );
-}
-
-// --- the tab -----------------------------------------------------------------------------------------------
-
 export default function ChipsTab() {
   const T = usePageText();
-  const D = useDataText();
   const [selected, setSelected] = useState<string | null>(null);
   const [precision, setPrecision] = useState<Precision>("bf16");
-  const [measured, setMeasured] = useState<Chip | null>(null);
-  const selChip = (measured && selected === "measured" ? measured : CHIPS.find((c) => c.id === selected)) ?? null;
+  const selChip = CHIPS.find((c) => c.id === selected) ?? null;
   const family = selChip ? familyOf(selChip) : null;
-  const china = CHIPS.filter((c) => c.group === "china");
   const boards = CHIPS.filter((c) => c.class === "board" || c.class === "npu" || /raspberry|rk3588|coral|hailo|jetson/i.test(`${c.vendor} ${c.name}`));
   const text = (key: string) => <RichText text={T(key as PageKey)} />;
   return (
@@ -991,8 +1040,8 @@ export default function ChipsTab() {
                 ),
               )}
           </p>
-          <ChipTable selected={selected} onSelect={setSelected} precision={precision} setPrecision={setPrecision} extra={measured} />
-          <RooflineMap precision={precision} extra={measured} selected={selected} onSelect={setSelected} />
+          <ChipTable selected={selected} onSelect={setSelected} precision={precision} setPrecision={setPrecision} extra={null} />
+          <RooflineMap precision={precision} extra={null} selected={selected} onSelect={setSelected} />
           <ChipsAnim id="mma" />
         </Card>
 
@@ -1025,68 +1074,13 @@ export default function ChipsTab() {
         <Card id="china">
           <Heading n={num("china")} text={T("chips.china.title")} />
           <p className={P}>{text("chips.china.text")}</p>
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
-            {STACKS.map((s) => (
-              <div key={s.vendor} className="rounded-lg bg-gray-50 p-3 text-sm" data-testid="chips-stack">
-                <b className="text-gray-900">{s.vendor}</b>
-                <dl className="mt-1 space-y-0.5 text-xs text-gray-700">
-                  {(
-                    [
-                      ["sdk", s.sdk],
-                      ["kernelLanguage", s.kernelLanguage],
-                      ["mathLibraries", s.mathLibraries],
-                      ["collectives", s.collectives],
-                      ["frameworks", s.frameworks],
-                    ] as [string, string | null][]
-                  )
-                    .filter(([, v]) => v)
-                    .map(([k, v]) => (
-                      <div key={k}>
-                        <dt className="inline text-gray-500">{T(`chips.stack.${k}` as PageKey)}: </dt>
-                        <dd className="inline">{D(`stack.${s.vendor}.${k}`, v!)}</dd>
-                      </div>
-                    ))}
-                  {s.pytorch && (
-                    <div>
-                      <dt className="inline text-gray-500">PyTorch: </dt>
-                      <dd className="inline">
-                        {D(`stack.${s.vendor}.pytorch`, s.pytorch)} {s.pytorchRepo && <Ext href={s.pytorchRepo}>{host(s.pytorchRepo)}</Ext>}
-                      </dd>
-                    </div>
-                  )}
-                  {s.opensource && (
-                    <div>
-                      <dt className="inline text-gray-500">{T("chips.stack.opensource")}: </dt>
-                      <dd className="inline">
-                        {D(`stack.${s.vendor}.opensource`, s.opensource)} {s.opensourceLink && <Ext href={s.opensourceLink}>{host(s.opensourceLink)}</Ext>}
-                      </dd>
-                    </div>
-                  )}
-                </dl>
-                {s.source && (
-                  <p className="mt-1 text-xs">
-                    <Ext href={s.source}>{host(s.source)}</Ext>
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-          <p className={P}>{fill(T("chips.china.inTable"), { n: china.length })}</p>
+          <StackTable />
         </Card>
 
         <Card id="arm">
           <Heading n={num("arm")} text={T("chips.arm.title")} />
           <p className={P}>{text("chips.arm.text")}</p>
-          <ul className="mt-3 grid gap-3 text-sm md:grid-cols-2">
-            {boards.map((c) => (
-              <li key={c.id} className="rounded-lg bg-gray-50 p-3">
-                <button className="text-left font-semibold text-gray-900 hover:text-blue-700" onClick={() => (setSelected(c.id), document.getElementById("chips-table")?.scrollIntoView({ behavior: "smooth" }))}>
-                  {c.vendor} {c.name}
-                </button>
-                <p className="mt-1 text-xs text-gray-700">{D(`chip.${c.id}.notes`, c.notes)}</p>
-              </li>
-            ))}
-          </ul>
+          <BoardTable boards={boards} onSelect={(id) => (setSelected(id), document.getElementById("chips-table")?.scrollIntoView({ behavior: "smooth" }))} />
           <p className={P}>{text("chips.arm.tensorizer")}</p>
         </Card>
 
@@ -1115,23 +1109,78 @@ export default function ChipsTab() {
           </p>
         </Card>
 
-        <Card id="measure">
-          <Heading n={num("measure")} text={T("chips.measure.title")} />
-          <p className={P}>{text("chips.measure.text")}</p>
-          <Measure onResult={(c) => (setMeasured(c), setSelected("measured"))} />
-        </Card>
 
         <Card id="choose">
           <Heading n={num("choose")} text={T("chips.choose.title")} />
-          <ul className="mt-3 space-y-2 text-sm leading-relaxed text-gray-700">
-            {(["laptop", "mac", "board", "nvidia", "cloud", "china", "physics"] as const).map((k) => (
-              <li key={k} className="rounded-lg bg-gray-50 p-3">
-                <RichText text={T(`chips.choose.${k}` as PageKey)} />
-              </li>
-            ))}
-          </ul>
+          <ChooseTree />
         </Card>
       </article>
+    </div>
+  );
+}
+
+/**
+ * "Which should I use?" as a decision tree: FP64 first (physics), then what it runs on. The branch labels are the
+ * bold lead of each answer (chips.choose.<leaf>), so the tree needs no separate translations for them.
+ */
+const PLACES = ["laptop", "mac", "board", "nvidia", "cloud", "china"] as const;
+type Leaf = (typeof PLACES)[number] | "physics";
+
+function ChooseTree() {
+  const T = usePageText();
+  const [fp64, setFp64] = useState<boolean | null>(null);
+  const [leaf, setLeaf] = useState<Leaf | null>(null);
+  const lead = (k: Leaf) => (T(`chips.choose.${k}` as PageKey).match(/^\*\*(.+?)\*\*/)?.[1] ?? k).replace(/[.。:：]$/, "");
+  const body = (k: Leaf) => T(`chips.choose.${k}` as PageKey).replace(/^\*\*.+?\*\*\s*/, "");
+  const node = (active: boolean, done: boolean) =>
+    `rounded-lg border px-3 py-1.5 text-sm transition-colors ${active ? "border-blue-500 bg-blue-50 text-blue-900" : done ? "border-gray-300 bg-white text-gray-800" : "border-gray-200 bg-white text-gray-500"}`;
+  const choice = (on: boolean) =>
+    `rounded-full border px-3 py-1 text-xs font-medium transition-colors ${on ? "border-blue-600 bg-blue-600 text-white" : "border-gray-300 bg-white text-gray-700 hover:border-blue-400 hover:text-blue-700"}`;
+  const stem = (on: boolean) => <div aria-hidden className={`mx-auto h-4 w-0.5 ${on ? "bg-blue-500" : "bg-gray-200"}`} />;
+  return (
+    <div className="mt-4" data-testid="chips-choose-tree">
+      <div className="flex flex-col items-center">
+        <div className={node(fp64 === null, fp64 !== null)}>{T("chips.choose.q.fp64")}</div>
+        {stem(fp64 !== null)}
+        <div className="flex gap-2">
+          <button type="button" className={choice(fp64 === true)} onClick={() => (setFp64(true), setLeaf("physics"))}>
+            {T("chips.choose.yes")}
+          </button>
+          <button type="button" className={choice(fp64 === false)} onClick={() => (setFp64(false), setLeaf(null))}>
+            {T("chips.choose.no")}
+          </button>
+        </div>
+        {fp64 === false && (
+          <>
+            {stem(true)}
+            <div className={node(leaf === null, leaf !== null)}>{T("chips.choose.q.where")}</div>
+            {stem(leaf !== null)}
+            <div className="flex flex-wrap justify-center gap-2">
+              {PLACES.map((k) => (
+                <button key={k} type="button" className={choice(leaf === k)} onClick={() => setLeaf(k)}>
+                  {lead(k)}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+        {leaf && (
+          <>
+            {stem(true)}
+            <div className="w-full max-w-2xl rounded-xl border border-blue-200 bg-blue-50/50 p-4 text-sm leading-relaxed text-gray-800" data-testid="chips-choose-answer">
+              <p className="font-semibold text-gray-900">{lead(leaf)}</p>
+              <p className="mt-1">
+                <RichText text={body(leaf)} />
+              </p>
+            </div>
+          </>
+        )}
+        {fp64 !== null && (
+          <button type="button" className="mt-3 text-xs text-gray-500 hover:text-blue-700" onClick={() => (setFp64(null), setLeaf(null))}>
+            ↺ {T("chips.choose.restart")}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

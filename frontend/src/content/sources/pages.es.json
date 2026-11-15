@@ -1558,7 +1558,7 @@
   "chips.choose.nvidia": "7d9efbf5528a",
   "chips.choose.cloud": "5be9e69c60d6",
   "chips.choose.china": "f6636474e61d",
-  "chips.choose.physics": "07f207b8d648",
+  "chips.choose.physics": "ff39e8554485",
   "chips.budget.title": "ca725d0e80b6",
   "chips.budget.caption": "6f7f1e0168d7",
   "chips.budget.chip0": "9837d16be1f4",
@@ -1784,5 +1784,10 @@
   "mixed.flags.default": "21b111cbfe6e",
   "mixed.flags.what": "c74ea9dc9cd2",
   "mixed.flags.deprecated": "f5e65825147c",
-  "mixed.flags.preview": "5975cf1bba43"
+  "mixed.flags.preview": "5975cf1bba43",
+  "chips.choose.q.fp64": "3511ea73659e",
+  "chips.choose.q.where": "a7c8c7581e7b",
+  "chips.choose.yes": "85a39ab345d6",
+  "chips.choose.no": "1ea442a134b2",
+  "chips.choose.restart": "5eed7e9fc8f3"
 }

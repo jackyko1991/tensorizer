@@ -9,7 +9,7 @@ const root = new URL("../src/", import.meta.url);
 const read = (p: string) => readFileSync(new URL(p, root), "utf-8");
 const SRC = read("pages/ChipsTab.tsx");
 const json = (p: string) => JSON.parse(read(p));
-const SECTIONS = ["why", "history", "table", "precision", "under", "libs", "china", "arm", "desktop", "measure", "choose"];
+const SECTIONS = ["why", "history", "table", "precision", "under", "libs", "china", "arm", "desktop", "choose"];
 const FAMILIES = ["nvidia-gpu", "amd-gpu", "intel-gpu", "x86-cpu", "arm-cpu", "apple-gpu", "apple-ane", "qualcomm", "google-tpu", "aws-trainium", "huawei-ascend", "other-china", "edge-npu"];
 
 function usedKeys(): Set<string> {
@@ -22,6 +22,7 @@ function usedKeys(): Set<string> {
   for (const k of ["library", "chip", "standard", "policy"]) keys.add(`chips.history.${k}`);
   for (const k of ["power", "bandwidth", "units", "ecosystem"]) keys.add(`chips.why.${k}`);
   for (const k of ["laptop", "mac", "board", "nvidia", "cloud", "china", "physics"]) keys.add(`chips.choose.${k}`);
+  for (const k of ["q.fp64", "q.where", "yes", "no", "restart"]) keys.add(`chips.choose.${k}`);
   for (const k of ["memoryType", "matrixUnit", "formats", "blas", "kernelLangs", "interconnect", "fp64", "fp32", "bf16", "fp8", "int8", "npu"]) keys.add(`chips.detail.${k}`);
   for (const k of ["family", "blas", "langs", "best", "avoid"]) keys.add(`chips.under.${k}`);
   for (const k of ["title", "caption", "chip0", "chip1", "chip2", "note0", "note1", "note2", "cpu", "gpu", "npu", "io", "cache", "schematic"]) keys.add(`chips.budget.${k}`);
