@@ -1805,5 +1805,14 @@
   "chips.units.first": "最初のチップ",
   "chips.units.note": "いずれも 1 命令で小さな行列積を、狭いフォーマットとより広いアキュムレータで計算します。名前は違っても考え方は同じです。これを持たない CPU（Raspberry Pi 5、Graviton、Grace）は代わりに SIMD の内積命令や小さな行列積命令（NEON、SVE2）を使います。",
   "chips.units.vendor": "ベンダー",
-  "chips.sparsity.tip": "構造化スパース性（2:4）：重み 4 つごとに 2 つがゼロで、行列ユニットはそれを飛ばすため、同じハードウェアでクロックあたり 2 倍の積和を行えます。重みをこのパターンに枝刈りしたモデルにしか効かず、通常の密な行列はここに示す密の性能で動きます。"
+  "chips.sparsity.tip": "構造化スパース性（2:4）：重み 4 つごとに 2 つがゼロで、行列ユニットはそれを飛ばすため、同じハードウェアでクロックあたり 2 倍の積和を行えます。重みをこのパターンに枝刈りしたモデルにしか効かず、通常の密な行列はここに示す密の性能で動きます。",
+  "chips.precision.setting": "設定",
+  "chips.precision.default": "既定値",
+  "chips.precision.effect": "効果",
+  "chips.precision.e0": "Ampere 以降の FP32 行列積は、有効にしない限り完全な FP32 のまま（PyTorch 1.12 以降）",
+  "chips.precision.e1": "Ampere 以降の cuDNN 畳み込みは TF32 を使う場合がある",
+  "chips.precision.e2": "\"high\" は TF32 または BF16 の 2 分割を、\"medium\" は BF16 を許可。現在は CUDA のみ",
+  "chips.precision.e3": "同じスイッチの新しい書き方：\"ieee\" または \"tf32\"。\"bfx9\" は CUDA の行列積専用で CUDA 12.9 以上のビルドが必要",
+  "chips.precision.e4": "ROCm では同じスイッチで hipBLASLt 経由で Instinct MI300 の TF32 が有効になり、NVIDIA とは数値がわずかに異なる",
+  "chips.precision.e5": "dtype を指定しないときに autocast が使う低精度型"
 }

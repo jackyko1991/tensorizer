@@ -1766,5 +1766,14 @@
   "chips.units.first": "2364b2d42e49",
   "chips.units.note": "40fb7b1b8790",
   "chips.units.vendor": "f8aa82b42d07",
-  "chips.sparsity.tip": "006ec9097678"
+  "chips.sparsity.tip": "006ec9097678",
+  "chips.precision.setting": "818cd8d91aea",
+  "chips.precision.default": "21b111cbfe6e",
+  "chips.precision.effect": "2252d5cf9376",
+  "chips.precision.e0": "93fc7bb2a8dc",
+  "chips.precision.e1": "0a410a6e657f",
+  "chips.precision.e2": "86ccf9fd6583",
+  "chips.precision.e3": "12a8b0052b12",
+  "chips.precision.e4": "e9370a4ace77",
+  "chips.precision.e5": "7482a587da79"
 }

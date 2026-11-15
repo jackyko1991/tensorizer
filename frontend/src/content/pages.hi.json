@@ -1805,5 +1805,14 @@
   "chips.units.first": "पहली चिप",
   "chips.units.note": "हर एक प्रति instruction एक छोटा मैट्रिक्स गुणनफल करती है, संकरे फ़ॉर्मेट में और चौड़े accumulator के साथ: नाम अलग हैं, विचार एक ही है। जिन CPU में यह नहीं है (Raspberry Pi 5, Graviton, Grace) वे इसकी जगह SIMD dot-product और छोटे matrix-multiply instructions (NEON, SVE2) इस्तेमाल करते हैं।",
   "chips.units.vendor": "वेंडर",
-  "chips.sparsity.tip": "Structured sparsity (2:4): हर चार weights में से दो शून्य होते हैं और matrix unit उन्हें छोड़ देता है, इसलिए वही hardware प्रति clock दोगुने multiply-add करता है। यह केवल उस model की मदद करता है जिसके weights इस pattern में prune किए गए हों; सामान्य dense matrices यहाँ दिखाई गई dense दर पर चलती हैं।"
+  "chips.sparsity.tip": "Structured sparsity (2:4): हर चार weights में से दो शून्य होते हैं और matrix unit उन्हें छोड़ देता है, इसलिए वही hardware प्रति clock दोगुने multiply-add करता है। यह केवल उस model की मदद करता है जिसके weights इस pattern में prune किए गए हों; सामान्य dense matrices यहाँ दिखाई गई dense दर पर चलती हैं।",
+  "chips.precision.setting": "सेटिंग",
+  "chips.precision.default": "डिफ़ॉल्ट",
+  "chips.precision.effect": "असर",
+  "chips.precision.e0": "Ampere और नए GPU पर FP32 matmul पूरा FP32 रहता है, जब तक आप इसे चालू न करें (PyTorch 1.12 से)",
+  "chips.precision.e1": "Ampere और नए GPU पर cuDNN convolutions TF32 इस्तेमाल कर सकते हैं",
+  "chips.precision.e2": "\"high\" TF32 या दो-भाग BF16 split की अनुमति देता है, \"medium\" BF16 की; अभी केवल CUDA पर असर",
+  "chips.precision.e3": "उन्हीं switches का नया रूप: \"ieee\" या \"tf32\"; \"bfx9\" केवल CUDA matmul के लिए है और CUDA 12.9+ build चाहिए",
+  "chips.precision.e4": "ROCm पर वही switch hipBLASLt के ज़रिए Instinct MI300 पर TF32 देता है, NVIDIA से थोड़े संख्यात्मक अंतर के साथ",
+  "chips.precision.e5": "dtype न देने पर autocast जो low-precision type चुनता है"
 }

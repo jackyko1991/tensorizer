@@ -1805,5 +1805,14 @@
   "chips.units.first": "첫 칩",
   "chips.units.note": "모두 명령어마다 작은 행렬 곱을 좁은 형식과 더 넓은 누산기로 수행합니다. 이름은 달라도 아이디어는 같습니다. 이런 유닛이 없는 CPU(Raspberry Pi 5, Graviton, Grace)는 대신 SIMD 내적 및 소형 행렬 곱 명령어(NEON, SVE2)를 사용합니다.",
   "chips.units.vendor": "제조사",
-  "chips.sparsity.tip": "구조적 희소성(2:4): 가중치 네 개마다 두 개가 0이고 행렬 유닛이 이를 건너뛰므로, 같은 하드웨어가 클럭당 두 배의 곱셈-덧셈을 합니다. 가중치를 이 패턴으로 가지치기한 모델에만 도움이 되며, 일반적인 밀집 행렬은 여기 표시된 밀집 속도로 실행됩니다."
+  "chips.sparsity.tip": "구조적 희소성(2:4): 가중치 네 개마다 두 개가 0이고 행렬 유닛이 이를 건너뛰므로, 같은 하드웨어가 클럭당 두 배의 곱셈-덧셈을 합니다. 가중치를 이 패턴으로 가지치기한 모델에만 도움이 되며, 일반적인 밀집 행렬은 여기 표시된 밀집 속도로 실행됩니다.",
+  "chips.precision.setting": "설정",
+  "chips.precision.default": "기본값",
+  "chips.precision.effect": "효과",
+  "chips.precision.e0": "Ampere 이후의 FP32 행렬 곱은 켜지 않는 한 완전한 FP32로 유지(PyTorch 1.12부터)",
+  "chips.precision.e1": "Ampere 이후의 cuDNN 합성곱은 TF32를 쓸 수 있음",
+  "chips.precision.e2": "\"high\"는 TF32 또는 BF16 2분할을, \"medium\"은 BF16을 허용; 현재는 CUDA에만 적용",
+  "chips.precision.e3": "같은 스위치의 새 형식: \"ieee\" 또는 \"tf32\"; \"bfx9\"는 CUDA 행렬 곱 전용이며 CUDA 12.9 이상 빌드 필요",
+  "chips.precision.e4": "ROCm에서는 같은 스위치로 hipBLASLt를 통해 Instinct MI300에서 TF32를 쓰며, NVIDIA와 수치가 조금 다름",
+  "chips.precision.e5": "dtype을 주지 않을 때 autocast가 고르는 저정밀 타입"
 }

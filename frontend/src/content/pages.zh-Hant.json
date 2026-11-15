@@ -1953,5 +1953,14 @@
   "chips.units.first": "首款晶片",
   "chips.units.note": "每種單元都以一道指令完成一個小矩陣乘積，採用窄格式並搭配較寬的累加器：名稱不同，概念相同。沒有這類單元的 CPU（Raspberry Pi 5、Graviton、Grace）則改用 SIMD 內積與小矩陣乘法指令（NEON、SVE2）。",
   "chips.units.vendor": "廠商",
-  "chips.sparsity.tip": "結構化稀疏（2:4）：每四個權重中有兩個為零，矩陣單元會跳過它們，所以同樣的硬體每個時脈能做兩倍的乘加。只有權重已剪枝成這種模式的模型才受惠；一般的密集矩陣以這裡列出的密集速率執行。"
+  "chips.sparsity.tip": "結構化稀疏（2:4）：每四個權重中有兩個為零，矩陣單元會跳過它們，所以同樣的硬體每個時脈能做兩倍的乘加。只有權重已剪枝成這種模式的模型才受惠；一般的密集矩陣以這裡列出的密集速率執行。",
+  "chips.precision.setting": "設定",
+  "chips.precision.default": "預設值",
+  "chips.precision.effect": "作用",
+  "chips.precision.e0": "Ampere 以後的 FP32 矩陣乘法維持完整 FP32，除非開啟（PyTorch 1.12 起）",
+  "chips.precision.e1": "Ampere 以後的 cuDNN 卷積可以使用 TF32",
+  "chips.precision.e2": "\"high\" 允許 TF32 或兩段 BF16 拆分，\"medium\" 允許 BF16；目前只影響 CUDA",
+  "chips.precision.e3": "同一組開關的新寫法：\"ieee\" 或 \"tf32\"；\"bfx9\" 只用於 CUDA 矩陣乘法，需要 CUDA 12.9 以上的版本",
+  "chips.precision.e4": "在 ROCm 上，同一開關透過 hipBLASLt 在 Instinct MI300 上啟用 TF32，數值與 NVIDIA 略有差異",
+  "chips.precision.e5": "未指定 dtype 時 autocast 採用的低精度型別"
 }

@@ -1805,5 +1805,14 @@
   "chips.units.first": "Primer chip",
   "chips.units.note": "Cada una hace un pequeño producto de matrices por instrucción, en un formato estrecho con un acumulador más ancho: los nombres cambian, la idea es la misma. Las CPU sin una (Raspberry Pi 5, Graviton, Grace) usan en su lugar instrucciones SIMD de producto escalar y de pequeñas multiplicaciones de matrices (NEON, SVE2).",
   "chips.units.vendor": "Fabricante",
-  "chips.sparsity.tip": "Dispersión estructurada (2:4): en cada grupo de cuatro pesos, dos son cero y la unidad matricial los salta, así que el mismo hardware hace el doble de multiplicaciones-sumas por ciclo. Solo ayuda a un modelo cuyos pesos se podaron con ese patrón; las matrices densas normales funcionan a la tasa densa que se muestra aquí."
+  "chips.sparsity.tip": "Dispersión estructurada (2:4): en cada grupo de cuatro pesos, dos son cero y la unidad matricial los salta, así que el mismo hardware hace el doble de multiplicaciones-sumas por ciclo. Solo ayuda a un modelo cuyos pesos se podaron con ese patrón; las matrices densas normales funcionan a la tasa densa que se muestra aquí.",
+  "chips.precision.setting": "Ajuste",
+  "chips.precision.default": "Por defecto",
+  "chips.precision.effect": "Efecto",
+  "chips.precision.e0": "Los productos de matrices FP32 en Ampere y posteriores siguen en FP32 completo salvo que lo actives (desde PyTorch 1.12)",
+  "chips.precision.e1": "Las convoluciones de cuDNN pueden usar TF32 en Ampere y posteriores",
+  "chips.precision.e2": "\"high\" permite TF32 o una división BF16 en dos pasadas, \"medium\" permite BF16; por ahora solo afecta a CUDA",
+  "chips.precision.e3": "Forma nueva de los mismos ajustes: \"ieee\" o \"tf32\"; \"bfx9\" es solo para productos de matrices CUDA y requiere una versión con CUDA 12.9+",
+  "chips.precision.e4": "En ROCm, el mismo ajuste activa TF32 en Instinct MI300 mediante hipBLASLt, con pequeñas diferencias numéricas respecto a NVIDIA",
+  "chips.precision.e5": "El tipo de baja precisión que autocast elige si no pasas dtype"
 }

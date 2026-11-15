@@ -1805,5 +1805,14 @@
   "chips.units.first": "Erster Chip",
   "chips.units.note": "Jede berechnet pro Instruktion ein kleines Matrixprodukt, in einem schmalen Format mit breiterem Akkumulator: Die Namen unterscheiden sich, die Idee ist dieselbe. CPUs ohne solche Einheit (Raspberry Pi 5, Graviton, Grace) nutzen stattdessen SIMD-Instruktionen für Skalarprodukte und kleine Matrixmultiplikationen (NEON, SVE2).",
   "chips.units.vendor": "Hersteller",
-  "chips.sparsity.tip": "Strukturierte Sparsity (2:4): In jeder Gruppe von vier Gewichten sind zwei null, und die Matrixeinheit überspringt sie, sodass dieselbe Hardware doppelt so viele Multiplikationen-Additionen pro Takt ausführt. Das hilft nur einem Modell, dessen Gewichte auf dieses Muster beschnitten wurden; gewöhnliche dichte Matrizen laufen mit der hier gezeigten dichten Rate."
+  "chips.sparsity.tip": "Strukturierte Sparsity (2:4): In jeder Gruppe von vier Gewichten sind zwei null, und die Matrixeinheit überspringt sie, sodass dieselbe Hardware doppelt so viele Multiplikationen-Additionen pro Takt ausführt. Das hilft nur einem Modell, dessen Gewichte auf dieses Muster beschnitten wurden; gewöhnliche dichte Matrizen laufen mit der hier gezeigten dichten Rate.",
+  "chips.precision.setting": "Einstellung",
+  "chips.precision.default": "Standard",
+  "chips.precision.effect": "Wirkung",
+  "chips.precision.e0": "FP32-Matrixprodukte auf Ampere und neuer bleiben volles FP32, solange Sie dies nicht einschalten (seit PyTorch 1.12)",
+  "chips.precision.e1": "cuDNN-Faltungen dürfen auf Ampere und neuer TF32 nutzen",
+  "chips.precision.e2": "\"high\" erlaubt TF32 oder eine zweistufige BF16-Aufteilung, \"medium\" erlaubt BF16; wirkt derzeit nur auf CUDA",
+  "chips.precision.e3": "Neuere Form derselben Schalter: \"ieee\" oder \"tf32\"; \"bfx9\" gilt nur für CUDA-Matrixprodukte und braucht einen Build mit CUDA 12.9+",
+  "chips.precision.e4": "Unter ROCm schaltet derselbe Schalter TF32 auf Instinct MI300 über hipBLASLt ein, mit kleinen numerischen Unterschieden zu NVIDIA",
+  "chips.precision.e5": "Der Typ niedriger Präzision, den autocast ohne Angabe von dtype wählt"
 }

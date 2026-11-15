@@ -1805,5 +1805,14 @@
   "chips.units.first": "Première puce",
   "chips.units.note": "Chacune fait un petit produit matriciel par instruction, dans un format étroit avec un accumulateur plus large : les noms diffèrent, l'idée est la même. Les CPU qui n'en ont pas (Raspberry Pi 5, Graviton, Grace) utilisent à la place des instructions SIMD de produit scalaire et de petite multiplication matricielle (NEON, SVE2).",
   "chips.units.vendor": "Fabricant",
-  "chips.sparsity.tip": "Parcimonie structurée (2:4) : dans chaque groupe de quatre poids, deux sont nuls et l'unité matricielle les saute, donc le même matériel fait deux fois plus de multiplications-additions par cycle. Cela n'aide qu'un modèle dont les poids ont été élagués selon ce motif ; les matrices denses ordinaires tournent au débit dense indiqué ici."
+  "chips.sparsity.tip": "Parcimonie structurée (2:4) : dans chaque groupe de quatre poids, deux sont nuls et l'unité matricielle les saute, donc le même matériel fait deux fois plus de multiplications-additions par cycle. Cela n'aide qu'un modèle dont les poids ont été élagués selon ce motif ; les matrices denses ordinaires tournent au débit dense indiqué ici.",
+  "chips.precision.setting": "Réglage",
+  "chips.precision.default": "Par défaut",
+  "chips.precision.effect": "Effet",
+  "chips.precision.e0": "Les produits matriciels FP32 sur Ampere et plus récent restent en FP32 complet, sauf si vous l'activez (depuis PyTorch 1.12)",
+  "chips.precision.e1": "Les convolutions cuDNN peuvent utiliser le TF32 sur Ampere et plus récent",
+  "chips.precision.e2": "\"high\" autorise le TF32 ou un découpage BF16 en deux passes, \"medium\" autorise le BF16 ; ne concerne que CUDA pour l'instant",
+  "chips.precision.e3": "Forme récente des mêmes réglages : \"ieee\" ou \"tf32\" ; \"bfx9\" ne vaut que pour les produits matriciels CUDA et exige une version CUDA 12.9+",
+  "chips.precision.e4": "Sous ROCm, le même réglage active le TF32 sur Instinct MI300 via hipBLASLt, avec de petites différences numériques par rapport à NVIDIA",
+  "chips.precision.e5": "Le type basse précision qu'autocast choisit si vous ne donnez pas de dtype"
 }

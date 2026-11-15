@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useMemo, useRef, useState, type ReactNode } from "react";
 import ChipsAnim, { BudgetFigure } from "../components/ChipsAnim";
 import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
@@ -386,6 +386,47 @@ function RooflineMap({ precision, extra, selected, onSelect }: { precision: Prec
   );
 }
 
+// --- 4. precision: PyTorch's switches and their defaults (sources: libraries.json precisionDefaults 0-5) -------
+
+const SWITCHES: { setting: string; def: string }[] = [
+  { setting: "torch.backends.cuda.matmul.allow_tf32", def: "False" },
+  { setting: "torch.backends.cudnn.allow_tf32", def: "True" },
+  { setting: "torch.set_float32_matmul_precision(…)", def: '"highest"' },
+  { setting: "torch.backends.cuda.matmul.fp32_precision\ntorch.backends.cudnn.conv.fp32_precision", def: "–" },
+  { setting: "torch.backends.cuda.matmul.* (ROCm)", def: "–" },
+  { setting: "torch.autocast(device_type)", def: "float16 (CUDA)\nbfloat16 (CPU)" },
+];
+
+function PrecisionSwitches() {
+  const T = usePageText();
+  return (
+    <div className="mt-3 overflow-x-auto rounded-lg border border-gray-200" data-testid="chips-precision-switches">
+      <table className="w-full text-left text-xs">
+        <thead className="bg-gray-50 text-gray-600">
+          <tr>
+            {(["setting", "default", "effect"] as const).map((h) => (
+              <th key={h} className="px-2 py-1.5 font-semibold whitespace-nowrap">
+                {T(`chips.precision.${h}` as PageKey)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100 align-top">
+          {SWITCHES.map((r, i) => (
+            <tr key={i}>
+              <td className="px-2 py-1.5 font-mono text-[11px] whitespace-pre text-gray-900">{r.setting}</td>
+              <td className="px-2 py-1.5 font-mono text-[11px] whitespace-pre">{r.def}</td>
+              <td className="px-2 py-1.5 text-gray-700">
+                {T(`chips.precision.e${i}` as PageKey)} <Ext href={PRECISION_DEFAULTS[i].source}>{host(PRECISION_DEFAULTS[i].source)}</Ext>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 // --- 2. history --------------------------------------------------------------------------------------------
 
 const KIND_COL = { library: "#2563eb", chip: "#16a34a", standard: "#7c3aed", policy: "#be123c" } as const;
@@ -396,13 +437,15 @@ function History() {
   const [hover, setHover] = useState<string | null>(null);
   const [pinned, setPinned] = useState<string | null>(null);
   const [width, setWidth] = useState(0);
-  const wrap = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = wrap.current;
+  // measured through a callback ref, so the width is set as soon as the track mounts (and again after a remount)
+  const observer = useRef<ResizeObserver | null>(null);
+  const wrap = useCallback((el: HTMLDivElement | null) => {
+    observer.current?.disconnect();
+    observer.current = null;
     if (!el) return;
-    const ro = new ResizeObserver(() => setWidth(el.clientWidth));
-    ro.observe(el);
-    return () => ro.disconnect();
+    setWidth(el.clientWidth);
+    observer.current = new ResizeObserver(() => setWidth(el.clientWidth));
+    observer.current.observe(el);
   }, []);
   const n = TIMELINE.length;
   const pad = 10;
@@ -751,7 +794,7 @@ function MatrixUnits() {
                 <td className="px-2 py-1.5">{u.where}</td>
                 <td className="px-2 py-1.5 text-gray-700">{u.via}</td>
                 <td className="px-2 py-1.5 whitespace-nowrap">
-                  {u.first} <Ext href={u.source}>↗</Ext>
+                  {u.first} <Ext href={u.source}>{host(u.source)}</Ext>
                 </td>
               </tr>
             ))}
@@ -991,13 +1034,7 @@ export default function ChipsTab() {
         <Card id="precision">
           <Heading n={num("precision")} text={T("chips.precision.title")} />
           <p className={P}>{text("chips.precision.text")}</p>
-          <ul className="mt-3 space-y-2 text-sm leading-relaxed text-gray-700">
-            {PRECISION_DEFAULTS.slice(0, 6).map((d, i) => (
-              <li key={i} className="rounded-lg bg-gray-50 p-3">
-                {D(`default.${i}`, d.text)} <Ext href={d.source}>{host(d.source)}</Ext>
-              </li>
-            ))}
-          </ul>
+          <PrecisionSwitches />
           <CodeBlock code={DEVICE_CODE} />
           <p className={P}>
             <a className="font-medium text-blue-700 hover:underline" href={`#${formatPageRoute("skills", "mixed")}`}>
