@@ -5,7 +5,7 @@ import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
 import { RichText } from "../components/Tex";
 import { usePageText, type PageKey } from "../content/pages";
-import { FACTS, FORMAT_INFO, PRECISION_DEFAULTS, setShowOriginal, useDataText, useShowOriginal } from "../content/chips/data";
+import { FACTS, FLAGS, FORMAT_INFO, PRECISION_DEFAULTS, setShowOriginal, useDataText, useShowOriginal } from "../content/chips/data";
 import mixedJson from "../content/chips/mixed.json";
 import { useLang } from "../i18n";
 
@@ -197,6 +197,49 @@ function ChipTable() {
   );
 }
 
+/** every package's precision switches: grouped by package, with default and a translated line on what it does */
+function FlagTable() {
+  const T = usePageText();
+  const D = useDataText();
+  return (
+    <div className="mt-5" data-testid="mixed-flags">
+      <h3 className="text-sm font-semibold text-gray-900">{T("mixed.flags.title")}</h3>
+      <p className="mt-1 text-xs text-gray-600">{T("mixed.flags.text")}</p>
+      <div className="mt-2 divide-y divide-gray-200 rounded-lg border border-gray-200">
+        {[...new Set(FLAGS.map((f) => f.package))].map((pkg) => (
+          <section key={pkg} className="px-3 py-2">
+            <h4 className="text-xs font-semibold text-gray-900">{pkg}</h4>
+            <ul className="mt-1 space-y-1.5">
+              {FLAGS.map((f, i) =>
+                f.package !== pkg ? null : (
+                  <li key={i} className="text-xs">
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                      <code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[11px] break-all text-gray-900">{f.flag}</code>
+                      {f.default && (
+                        <span className="text-[11px] text-gray-500">
+                          {T("mixed.flags.default")}: <code className="font-mono">{f.default}</code>
+                        </span>
+                      )}
+                      {f.status !== "current" && (
+                        <span className={`rounded px-1 py-0.5 text-[10px] font-medium ${f.status === "deprecated" ? "bg-amber-100 text-amber-800" : "bg-blue-100 text-blue-800"}`}>
+                          {T(`mixed.flags.${f.status}` as PageKey)}
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-0.5 leading-relaxed text-gray-700">
+                      {D(`flag.${i}`, f.what)} <Ext href={f.source} />
+                    </p>
+                  </li>
+                ),
+              )}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function MixedTab() {
   const T = usePageText();
   const D = useDataText();
@@ -275,6 +318,7 @@ export default function MixedTab() {
           <Heading n={num("chips")} text={T("mixed.chips.title")} />
           <p className={P}>{text("mixed.chips.text")}</p>
           <ChipTable />
+          <FlagTable />
           <Points topics={["tpu", "amd", "intel", "apple", "ascend"]} />
         </Card>
 

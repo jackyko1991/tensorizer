@@ -1,0 +1,321 @@
+{
+ "flags": [
+  {
+   "package": "PyTorch",
+   "kind": "python",
+   "flag": "torch.autocast(device_type, dtype=None)",
+   "what": "Runs eligible ops in a lower precision dtype inside the context; the dtype defaults per device.",
+   "default": "torch.float16 on cuda, torch.bfloat16 on cpu",
+   "scope": "CUDA, ROCm, CPU, XPU, HPU, MTIA, MAIA",
+   "source": "https://docs.pytorch.org/docs/2.15/amp.html",
+   "status": "current"
+  },
+  {
+   "package": "PyTorch",
+   "kind": "python",
+   "flag": "torch.amp.GradScaler(\"cuda\")",
+   "what": "Scales the loss so small FP16 gradients do not underflow; replaces the deprecated torch.cuda.amp.GradScaler (likewise torch.cuda.amp.autocast is deprecated).",
+   "default": "init_scale=65536.0, growth_interval=2000",
+   "scope": "CUDA, ROCm, CPU",
+   "source": "https://docs.pytorch.org/docs/2.15/amp.html",
+   "status": "current"
+  },
+  {
+   "package": "PyTorch",
+   "kind": "python",
+   "flag": "torch.set_float32_matmul_precision(\"high\")",
+   "what": "Lets FP32 matmuls use TF32 or a bfloat16x3 split (\"high\") or bfloat16 (\"medium\"); \"highest\" keeps full FP32.",
+   "default": "\"highest\"",
+   "scope": "CUDA",
+   "source": "https://docs.pytorch.org/docs/2.15/generated/torch.set_float32_matmul_precision.html",
+   "status": "current"
+  },
+  {
+   "package": "PyTorch",
+   "kind": "python",
+   "flag": "torch.backends.cuda.matmul.fp32_precision = \"tf32\"",
+   "what": "Newer (after 2.9) switch for FP32 matmuls: \"ieee\", \"tf32\", or \"bfx9\" (BF16x9 emulation, CUDA 12.9+ build).",
+   "default": null,
+   "scope": "CUDA (bfx9 emulation only on compute capability 10.0 / 10.3)",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/cuda.html",
+   "status": "current"
+  },
+  {
+   "package": "PyTorch",
+   "kind": "python",
+   "flag": "torch.backends.cudnn.conv.fp32_precision = \"tf32\"",
+   "what": "Newer switch for FP32 cuDNN convolutions; siblings are torch.backends.cudnn.rnn.fp32_precision and torch.backends.cudnn.fp32_precision.",
+   "default": null,
+   "scope": "CUDA (cuDNN)",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/cuda.html",
+   "status": "current"
+  },
+  {
+   "package": "PyTorch",
+   "kind": "python",
+   "flag": "torch.backends.fp32_precision = \"tf32\"",
+   "what": "Global setting that the backend-specific fp32_precision settings follow unless they are set explicitly.",
+   "default": null,
+   "scope": "all backends",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/cuda.html",
+   "status": "current"
+  },
+  {
+   "package": "PyTorch",
+   "kind": "python",
+   "flag": "torch.backends.cuda.matmul.allow_tf32 = True",
+   "what": "Older switch allowing TF32 in FP32 matmuls; the docs say it is going to be deprecated in favour of fp32_precision.",
+   "default": "False (PyTorch 1.12 and later)",
+   "scope": "CUDA (Ampere and newer)",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/cuda.html",
+   "status": "deprecated"
+  },
+  {
+   "package": "PyTorch",
+   "kind": "python",
+   "flag": "torch.backends.cudnn.allow_tf32 = True",
+   "what": "Older switch allowing TF32 in cuDNN convolutions; going to be deprecated in favour of fp32_precision.",
+   "default": "True",
+   "scope": "CUDA (cuDNN, Ampere and newer)",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/cuda.html",
+   "status": "deprecated"
+  },
+  {
+   "package": "PyTorch",
+   "kind": "python",
+   "flag": "torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = False",
+   "what": "Set False to force full precision (not FP16) intermediate reductions inside FP16 GEMMs.",
+   "default": null,
+   "scope": "CUDA",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/cuda.html",
+   "status": "current"
+  },
+  {
+   "package": "PyTorch",
+   "kind": "python",
+   "flag": "torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction = False",
+   "what": "Set False to force full precision intermediate reductions inside BF16 GEMMs.",
+   "default": "True",
+   "scope": "CUDA",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/cuda.html",
+   "status": "current"
+  },
+  {
+   "package": "PyTorch",
+   "kind": "python",
+   "flag": "torch.backends.cuda.matmul.allow_fp16_accumulation = True",
+   "what": "Lets FP16 GEMMs accumulate entirely in FP16 for speed, at a cost in precision and overflow risk.",
+   "default": null,
+   "scope": "CUDA, compute capability 7.0 (Volta) or newer",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/cuda.html",
+   "status": "current"
+  },
+  {
+   "package": "PyTorch",
+   "kind": "python",
+   "flag": "torch.backends.mkldnn.matmul.fp32_precision = \"bf16\"",
+   "what": "Lets FP32 matmuls on the oneDNN (mkldnn) backend compute internally in bf16 or tf32; conv and rnn have matching settings.",
+   "default": "\"ieee\"",
+   "scope": "CPU (oneDNN), e.g. Intel Sapphire Rapids",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/mkldnn.html",
+   "status": "current"
+  },
+  {
+   "package": "PyTorch (XPU)",
+   "kind": "python",
+   "flag": "torch.autocast(device_type=\"xpu\", dtype=torch.float16)",
+   "what": "Mixed precision on Intel GPUs; use torch.amp.GradScaler(device=\"xpu\") for FP16 training (needs FP64 hardware support).",
+   "default": null,
+   "scope": "Intel GPU (XPU)",
+   "source": "https://docs.pytorch.org/docs/2.15/notes/get_start_xpu.html",
+   "status": "current"
+  },
+  {
+   "package": "torch_npu (Ascend)",
+   "kind": "python",
+   "flag": "torch_npu.npu.matmul.allow_hf32 = True",
+   "what": "Lets matmul-type operators use the HF32 format, like torch.backends.cuda.matmul.allow_tf32.",
+   "default": "False",
+   "scope": "Huawei Ascend NPU (Atlas training and inference series)",
+   "source": "https://gitcode.com/Ascend/op-plugin/blob/7.3.0/docs/context/torch_npu-npu-matmul-allow_hf32.md",
+   "status": "current"
+  },
+  {
+   "package": "torch_npu (Ascend)",
+   "kind": "python",
+   "flag": "torch_npu.npu.conv.allow_hf32 = True",
+   "what": "Lets convolution operators use the HF32 format, like torch.backends.cudnn.allow_tf32.",
+   "default": "True",
+   "scope": "Huawei Ascend NPU (Atlas training and inference series)",
+   "source": "https://gitcode.com/Ascend/op-plugin/blob/7.3.0/docs/context/torch_npu-npu-conv-allow_hf32.md",
+   "status": "current"
+  },
+  {
+   "package": "torch_xla",
+   "kind": "env",
+   "flag": "XLA_USE_BF16=1 / XLA_DOWNCAST_BF16=1",
+   "what": "Old switches that cast float tensors to bf16 on XLA devices; warn from Torch-XLA 2.5, to be removed (Torch-XLA 2.8). Use torch.autocast(dtype=torch.bfloat16, device_type='xla') or model.to(torch.bfloat16).",
+   "default": null,
+   "scope": "TPU, AWS Trainium/Inferentia (XLA devices)",
+   "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/archive/appnotes/torch-neuronx/migration-from-xla-downcast-bf16.html",
+   "status": "deprecated"
+  },
+  {
+   "package": "TensorFlow",
+   "kind": "python",
+   "flag": "tf.config.experimental.enable_tensor_float_32_execution(False)",
+   "what": "Turns TF32 off so FP32 matmuls and convolutions run at full FP32; on TPU it also stops bfloat16 use for FP32 ops.",
+   "default": "True (TF32 enabled)",
+   "scope": "NVIDIA Ampere and newer, TPU",
+   "source": "https://www.tensorflow.org/api_docs/python/tf/config/experimental/enable_tensor_float_32_execution",
+   "status": "current"
+  },
+  {
+   "package": "Keras 3",
+   "kind": "python",
+   "flag": "keras.config.set_dtype_policy(\"mixed_float16\")",
+   "what": "Sets the global dtype policy: \"mixed_float16\" or \"mixed_bfloat16\" compute in 16 bits with float32 variables.",
+   "default": "\"float32\"",
+   "scope": "all backends (TensorFlow, JAX, PyTorch)",
+   "source": "https://keras.io/api/mixed_precision/policy/",
+   "status": "current"
+  },
+  {
+   "package": "TensorFlow / Keras",
+   "kind": "python",
+   "flag": "tf.keras.mixed_precision.set_global_policy(\"mixed_float16\")",
+   "what": "Keras 2 name; in current TensorFlow docs it is an alias of tf.keras.config.set_dtype_policy (Keras 3).",
+   "default": null,
+   "scope": "GPU, TPU, CPU",
+   "source": "https://www.tensorflow.org/api_docs/python/tf/keras/mixed_precision/set_global_policy",
+   "status": "current"
+  },
+  {
+   "package": "JAX",
+   "kind": "config",
+   "flag": "jax.config.update(\"jax_default_matmul_precision\", \"float32\")",
+   "what": "Default precision of matmuls and convolutions on 32-bit inputs: e.g. \"bfloat16\", \"tensorfloat32\", \"float32\", or an algorithm preset like \"BF16_BF16_F32_X3\". Env var JAX_DEFAULT_MATMUL_PRECISION.",
+   "default": "None (backend default)",
+   "scope": "GPU, TPU, CPU",
+   "source": "https://docs.jax.dev/en/latest/config_options.html",
+   "status": "current"
+  },
+  {
+   "package": "JAX",
+   "kind": "python",
+   "flag": "precision=jax.lax.Precision.HIGHEST",
+   "what": "Per-call precision: DEFAULT (bf16 on TPU, TF32 on GPU if available), HIGH (3 bf16 passes on TPU), HIGHEST (6 bf16 passes on TPU, FP32 on GPU).",
+   "default": "DEFAULT",
+   "scope": "GPU, TPU",
+   "source": "https://docs.jax.dev/en/latest/jax.lax.html",
+   "status": "current"
+  },
+  {
+   "package": "Flax (NNX)",
+   "kind": "python",
+   "flag": "nnx.Linear(..., dtype=jnp.bfloat16, param_dtype=jnp.float32)",
+   "what": "dtype sets the computation dtype and param_dtype the stored parameter dtype; precision passes a jax.lax.Precision.",
+   "default": "dtype=None (inferred), param_dtype=float32",
+   "scope": "GPU, TPU, CPU",
+   "source": "https://flax.readthedocs.io/en/latest/api_reference/flax.nnx/nn/linear.html",
+   "status": "current"
+  },
+  {
+   "package": "NVIDIA CUDA libraries",
+   "kind": "env",
+   "flag": "NVIDIA_TF32_OVERRIDE=0",
+   "what": "Overrides defaults and code settings so cuBLAS does not use TF32 Tensor Cores for single precision.",
+   "default": null,
+   "scope": "NVIDIA Ampere and newer",
+   "source": "https://docs.nvidia.com/cuda/cublas/index.html",
+   "status": "current"
+  },
+  {
+   "package": "cuBLAS",
+   "kind": "c-api",
+   "flag": "cublasSetMathMode(handle, CUBLAS_TF32_TENSOR_OP_MATH)",
+   "what": "Math mode per handle: CUBLAS_DEFAULT_MATH, CUBLAS_PEDANTIC_MATH, CUBLAS_TF32_TENSOR_OP_MATH, CUBLAS_FP32_EMULATED_BF16X9_MATH, CUBLAS_FP64_EMULATED_FIXEDPOINT_MATH; OR in CUBLAS_MATH_DISALLOW_REDUCED_PRECISION_REDUCTION. CUBLAS_TENSOR_OP_MATH is deprecated.",
+   "default": "CUBLAS_DEFAULT_MATH",
+   "scope": "NVIDIA GPUs",
+   "source": "https://docs.nvidia.com/cuda/cublas/index.html",
+   "status": "current"
+  },
+  {
+   "package": "cuBLAS",
+   "kind": "c-api",
+   "flag": "computeType = CUBLAS_COMPUTE_32F_FAST_TF32",
+   "what": "Compute type for cublasGemmEx / cuBLASLt; FP32 alternatives are CUBLAS_COMPUTE_32F_FAST_16F, CUBLAS_COMPUTE_32F_FAST_16BF, CUBLAS_COMPUTE_32F_EMULATED_16BFX9.",
+   "default": null,
+   "scope": "NVIDIA GPUs",
+   "source": "https://docs.nvidia.com/cuda/cublas/index.html",
+   "status": "current"
+  },
+  {
+   "package": "Transformer Engine",
+   "kind": "python",
+   "flag": "with te.autocast(enabled=True, recipe=recipe.DelayedScaling()):",
+   "what": "Runs TE layers in FP8/FP4 under a recipe (DelayedScaling, Float8CurrentScaling, Float8BlockScaling, MXFP8BlockScaling, NVFP4BlockScaling). Replaces te.fp8_autocast(fp8_recipe=...), deprecated in 2.9.",
+   "default": null,
+   "scope": "NVIDIA GPUs with FP8 Tensor Cores",
+   "source": "https://archive.docs.nvidia.com/deeplearning/transformer-engine-releases/release-2.9/release-notes/index.html",
+   "status": "current"
+  },
+  {
+   "package": "hipBLASLt (ROCm)",
+   "kind": "env",
+   "flag": "HIPBLASLT_OVERRIDE_COMPUTE_TYPE_XF32=1",
+   "what": "Overrides the compute type of GEMMs that request XF32: -1 off, 0 F32, 1 XF32, 2 F32_BF16.",
+   "default": "-1 (off)",
+   "scope": "AMD Instinct GPUs",
+   "source": "https://rocm.docs.amd.com/projects/hipBLASLt/en/latest/reference/env-variables.html",
+   "status": "current"
+  },
+  {
+   "package": "CuPy",
+   "kind": "env",
+   "flag": "CUPY_TF32=1",
+   "what": "Lets CUDA libraries used by CuPy compute 32-bit float operations with TF32 Tensor Cores.",
+   "default": "0",
+   "scope": "NVIDIA Ampere and newer",
+   "source": "https://docs.cupy.dev/en/stable/reference/environment.html",
+   "status": "current"
+  },
+  {
+   "package": "oneDNN",
+   "kind": "env",
+   "flag": "ONEDNN_DEFAULT_FPMATH_MODE=BF16",
+   "what": "Default fpmath mode allowing implicit f32 down-conversion: strict, bf16, f16, tf32 (accelerated on Intel GPUs only) or any. C API: dnnl_set_default_fpmath_mode; per primitive dnnl::primitive_attr::set_fpmath_mode.",
+   "default": "strict",
+   "scope": "Intel CPU/GPU, Arm (via Arm Compute Library)",
+   "source": "https://uxlfoundation.github.io/oneDNN/dev_guide_attributes_fpmath_mode.html",
+   "status": "current"
+  },
+  {
+   "package": "MLX",
+   "kind": "python",
+   "flag": "x.astype(mx.bfloat16)",
+   "what": "No global matmul precision switch on the data types page; precision is chosen by array dtype (float16, bfloat16, float32; float64 CPU only).",
+   "default": "float32",
+   "scope": "Apple silicon",
+   "source": "https://ml-explore.github.io/mlx/build/html/python/data_types.html",
+   "status": "current"
+  }
+ ],
+ "notes": [
+  "PyTorch stable docs redirect to 2.15 (Nov 2026); all PyTorch URLs are pinned to 2.15.",
+  "PyTorch docs give no explicit default for the new fp32_precision settings (CUDA) or for allow_fp16_reduced_precision_reduction; the FP16 text implies reduced precision reductions are allowed by default, but this is not stated.",
+  "torch.backends.cuda.matmul.fp32_precision bfx9: backends.html says BF16x9 emulation only applies on compute capability 10.0 or 10.3; other architectures use native FP32. Using bfx9 for the generic, cuDNN or mkldnn settings raises an error.",
+  "torch.backends.mkldnn.matmul.fp32_precision: the 2.15 mkldnn notes show values ieee, bf16 and tf32 but do not list the full set or name the hardware beyond a benchmark on SPR (Sapphire Rapids). backends.html does not document mkldnn fp32_precision.",
+  "torch.backends.cuda.preferred_blas_library (\"cublas\", \"cublaslt\", \"ck\" on ROCm; env TORCH_BLAS_PREFER_CUBLASLT=1) is experimental and picks the library, not the precision; left out.",
+  "MPS: PyTorch 2.15 MPS notes state MPS does not support torch.float64 or torch.complex128; the amp page lists no MPS autocast default and backends.html has no MPS precision setting. MPS autocast support not confirmed on a fetched page.",
+  "XPU autocast default dtype not stated on the fetched page (examples pass float16 explicitly). GradScaler on XPU requires FP64 hardware; disable it on Arc A-Series.",
+  "torch_xla: no current pytorch/xla page found stating XLA_USE_BF16 status (docs.pytorch.org/xla dtype pages returned 404). Row sourced from AWS Neuron official migration guide; a pytorch/xla PR #7582 'remove XLA_USE_BF16 and other variants' was merged (not fetched).",
+  "torch_npu: also torch_npu.npu.aclnn.allow_hf32 exists per search results (not fetched). Ascend docs pages on hiascend.com are JS-rendered; rows come from Ascend's op-plugin 7.3.0 docs on gitcode (Chinese).",
+  "Keras 3 policy page mentions keras.mixed_precision.set_dtype_policy in a docstring; TF API page lists tf.keras.mixed_precision.set_dtype_policy and set_global_policy as aliases of tf.keras.config.set_dtype_policy (Keras 3.15.1 source). Default global policy float32 is from the policy page reset example, not a stated default.",
+  "cuBLAS: CUBLAS_EMULATION_STRATEGY env var (performant or eager) overrides the emulation strategy for BF16x9 / fixed-point emulation; not given its own row.",
+  "Transformer Engine: current API page (2.18) lists fp8_autocast and fp8_model_init under 'Deprecated functions' and recipe classes DelayedScaling, MXFP8BlockScaling, NVFP4BlockScaling, Float8CurrentScaling, Float8BlockScaling, CustomRecipe; the exact autocast signature (enabled=True, calibrating=False, recipe=None, amax_reduction_group=None) came from a search snippet of the 2.16 API page, not a full fetch. Per-recipe GPU requirements not confirmed. fp8_model_init is deprecated in favour of quantized_model_init.",
+  "ROCm: hipBLASLt documents HIPBLASLT_OVERRIDE_COMPUTE_TYPE_XF32 only; rocBLAS env vars not checked. HIPBLASLT_ALLOW_TF32 (seen in PyTorch ROCm code) is not on the hipBLASLt env var page.",
+  "JAX: jax.default_matmul_precision context manager not confirmed on a fetched page. Ascend ENABLE_HF32_EXECUTION env var is for TensorFlow 1.15 on CANN (search result only).",
+  "MLX: data types page has no mixed precision or matmul precision setting; float64 arrays on the GPU raise an exception."
+ ]
+}

@@ -1814,5 +1814,14 @@
   "chips.precision.e2": "\"high\" erlaubt TF32 oder eine zweistufige BF16-Aufteilung, \"medium\" erlaubt BF16; wirkt derzeit nur auf CUDA",
   "chips.precision.e3": "Neuere Form derselben Schalter: \"ieee\" oder \"tf32\"; \"bfx9\" gilt nur für CUDA-Matrixprodukte und braucht einen Build mit CUDA 12.9+",
   "chips.precision.e4": "Unter ROCm schaltet derselbe Schalter TF32 auf Instinct MI300 über hipBLASLt ein, mit kleinen numerischen Unterschieden zu NVIDIA",
-  "chips.precision.e5": "Der Typ niedriger Präzision, den autocast ohne Angabe von dtype wählt"
+  "chips.precision.e5": "Der Typ niedriger Präzision, den autocast ohne Angabe von dtype wählt",
+  "chips.precision.code": "Kurzer Code: das Gerät wählen und prüfen, welche Präzision es ausführen kann.",
+  "mixed.flags.title": "Präzisionsschalter nach Paket",
+  "mixed.flags.text": "Die Aufrufe, Einstellungen und Umgebungsvariablen, mit denen jede Bibliothek ihr Zahlenformat wählt, mit ihren Standardwerten; jede Zeile ist in der offiziellen Dokumentation des Pakets geprüft.",
+  "mixed.flags.package": "Paket",
+  "mixed.flags.flag": "Schalter",
+  "mixed.flags.default": "Standard",
+  "mixed.flags.what": "Wirkung",
+  "mixed.flags.deprecated": "veraltet",
+  "mixed.flags.preview": "Vorschau"
 }

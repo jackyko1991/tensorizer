@@ -1962,5 +1962,14 @@
   "chips.precision.e2": "\"high\" 允许 TF32 或两段 BF16 拆分，\"medium\" 允许 BF16；目前只影响 CUDA",
   "chips.precision.e3": "同一组开关的新写法：\"ieee\" 或 \"tf32\"；\"bfx9\" 只用于 CUDA 矩阵乘法，需要 CUDA 12.9 以上的版本",
   "chips.precision.e4": "在 ROCm 上，同一开关通过 hipBLASLt 在 Instinct MI300 上启用 TF32，数值与 NVIDIA 略有差异",
-  "chips.precision.e5": "未指定 dtype 时 autocast 采用的低精度类型"
+  "chips.precision.e5": "未指定 dtype 时 autocast 采用的低精度类型",
+  "chips.precision.code": "快速代码：选择设备，并检查它能运行哪种精度。",
+  "mixed.flags.title": "各软件包的精度开关",
+  "mixed.flags.text": "每个库用来选择数字格式的调用、设置与环境变量，以及它们的默认值；每一行都对照过该软件包的官方文档。",
+  "mixed.flags.package": "软件包",
+  "mixed.flags.flag": "开关",
+  "mixed.flags.default": "默认值",
+  "mixed.flags.what": "作用",
+  "mixed.flags.deprecated": "已弃用",
+  "mixed.flags.preview": "预览"
 }

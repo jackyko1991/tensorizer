@@ -1814,5 +1814,14 @@
   "chips.precision.e2": "\"high\" TF32 या दो-भाग BF16 split की अनुमति देता है, \"medium\" BF16 की; अभी केवल CUDA पर असर",
   "chips.precision.e3": "उन्हीं switches का नया रूप: \"ieee\" या \"tf32\"; \"bfx9\" केवल CUDA matmul के लिए है और CUDA 12.9+ build चाहिए",
   "chips.precision.e4": "ROCm पर वही switch hipBLASLt के ज़रिए Instinct MI300 पर TF32 देता है, NVIDIA से थोड़े संख्यात्मक अंतर के साथ",
-  "chips.precision.e5": "dtype न देने पर autocast जो low-precision type चुनता है"
+  "chips.precision.e5": "dtype न देने पर autocast जो low-precision type चुनता है",
+  "chips.precision.code": "झटपट कोड: device चुनें और देखें कि वह कौन-सी precision चला सकता है।",
+  "mixed.flags.title": "पैकेज के अनुसार precision switches",
+  "mixed.flags.text": "हर library अपना number format चुनने के लिए जिन calls, settings और environment variables का उपयोग करती है, उनके डिफ़ॉल्ट के साथ; हर पंक्ति पैकेज के आधिकारिक दस्तावेज़ से जाँची गई है।",
+  "mixed.flags.package": "पैकेज",
+  "mixed.flags.flag": "Switch",
+  "mixed.flags.default": "डिफ़ॉल्ट",
+  "mixed.flags.what": "असर",
+  "mixed.flags.deprecated": "deprecated",
+  "mixed.flags.preview": "preview"
 }

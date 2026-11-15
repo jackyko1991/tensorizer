@@ -18,6 +18,7 @@ function usedKeys(): Set<string> {
   for (const k of ["family", "low", "autocast", "scaling", "fp8", "notes"]) keys.add(`mixed.chips.${k}`);
   for (const k of ["measure", "bf16", "fp16", "keep", "check", "physics", "fp8"]) keys.add(`mixed.checklist.${k}`);
   for (const k of ["cuda", "tensor"]) keys.add(`mixed.cores.${k}`);
+  for (const k of ["default", "deprecated", "preview"]) keys.add(`mixed.flags.${k}`);
   for (const k of ["in", "mul", "add", "out"]) keys.add(`mixed.fig.mac.${k}`);
   for (const k of ["fp32", "s1", "s128"]) keys.add(`mixed.fig.loss.${k}`);
   for (const [id, plan] of Object.entries(MIXED_PLAN)) {

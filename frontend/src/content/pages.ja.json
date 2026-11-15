@@ -1814,5 +1814,14 @@
   "chips.precision.e2": "\"high\" は TF32 または BF16 の 2 分割を、\"medium\" は BF16 を許可。現在は CUDA のみ",
   "chips.precision.e3": "同じスイッチの新しい書き方：\"ieee\" または \"tf32\"。\"bfx9\" は CUDA の行列積専用で CUDA 12.9 以上のビルドが必要",
   "chips.precision.e4": "ROCm では同じスイッチで hipBLASLt 経由で Instinct MI300 の TF32 が有効になり、NVIDIA とは数値がわずかに異なる",
-  "chips.precision.e5": "dtype を指定しないときに autocast が使う低精度型"
+  "chips.precision.e5": "dtype を指定しないときに autocast が使う低精度型",
+  "chips.precision.code": "クイックコード：デバイスを選び、どの精度で動かせるかを確認します。",
+  "mixed.flags.title": "パッケージ別の精度スイッチ",
+  "mixed.flags.text": "各ライブラリが数値フォーマットを選ぶための呼び出し、設定、環境変数とその既定値。各行はパッケージの公式ドキュメントで確認しています。",
+  "mixed.flags.package": "パッケージ",
+  "mixed.flags.flag": "スイッチ",
+  "mixed.flags.default": "既定値",
+  "mixed.flags.what": "効果",
+  "mixed.flags.deprecated": "非推奨",
+  "mixed.flags.preview": "プレビュー"
 }

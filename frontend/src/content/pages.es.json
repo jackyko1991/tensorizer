@@ -1814,5 +1814,14 @@
   "chips.precision.e2": "\"high\" permite TF32 o una división BF16 en dos pasadas, \"medium\" permite BF16; por ahora solo afecta a CUDA",
   "chips.precision.e3": "Forma nueva de los mismos ajustes: \"ieee\" o \"tf32\"; \"bfx9\" es solo para productos de matrices CUDA y requiere una versión con CUDA 12.9+",
   "chips.precision.e4": "En ROCm, el mismo ajuste activa TF32 en Instinct MI300 mediante hipBLASLt, con pequeñas diferencias numéricas respecto a NVIDIA",
-  "chips.precision.e5": "El tipo de baja precisión que autocast elige si no pasas dtype"
+  "chips.precision.e5": "El tipo de baja precisión que autocast elige si no pasas dtype",
+  "chips.precision.code": "Código rápido: elige el dispositivo y comprueba qué precisión puede ejecutar.",
+  "mixed.flags.title": "Ajustes de precisión por paquete",
+  "mixed.flags.text": "Las llamadas, ajustes y variables de entorno que cada biblioteca usa para elegir su formato numérico, con sus valores por defecto; cada fila está comprobada en la documentación oficial del paquete.",
+  "mixed.flags.package": "Paquete",
+  "mixed.flags.flag": "Ajuste",
+  "mixed.flags.default": "Por defecto",
+  "mixed.flags.what": "Qué hace",
+  "mixed.flags.deprecated": "obsoleto",
+  "mixed.flags.preview": "vista previa"
 }

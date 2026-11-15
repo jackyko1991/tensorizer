@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { Fragment, useCallback, useMemo, useRef, useState, type ReactNode } from "react";
 import ChipsAnim, { BudgetFigure } from "../components/ChipsAnim";
 import CodeBlock from "../components/CodeBlock";
 import PageToc from "../components/PageToc";
@@ -434,14 +434,99 @@ const KIND_COL = { library: "#2563eb", chip: "#16a34a", standard: "#7c3aed", pol
 function History() {
   const T = usePageText();
   const D = useDataText();
-  const [open, setOpen] = useState<string | null>(null);
   const [hover, setHover] = useState<string | null>(null);
+  const [pinned, setPinned] = useState<string | null>(null);
+  const [width, setWidth] = useState(0);
+  // measured through a callback ref, so the width is set as soon as the track mounts (and again after a remount)
+  const observer = useRef<ResizeObserver | null>(null);
+  const wrap = useCallback((el: HTMLDivElement | null) => {
+    observer.current?.disconnect();
+    observer.current = null;
+    if (!el) return;
+    setWidth(el.clientWidth);
+    observer.current = new ResizeObserver(() => setWidth(el.clientWidth));
+    observer.current.observe(el);
+  }, []);
   const isMajor = (id: string) => MAJOR_EVENTS.includes(id);
-  // A vertical timeline like Concept ▸ History: the line runs down the middle on wide screens (left on phones),
-  // events alternate sides; major events are full cards with a drawing, the others compact rows that unfold.
+  const n = TIMELINE.length;
+  const pad = 10;
+  const xAt = (i: number) => pad + (n === 1 ? 0 : (i / (n - 1)) * (width - 2 * pad));
+  const current = hover ?? pinned;
+  const idx = TIMELINE.findIndex((e) => e.id === current);
+  const ev = idx >= 0 ? TIMELINE[idx] : null;
+  const major = ev ? isMajor(ev.id) : false;
+  const cardW = Math.min(major ? 360 : 320, width);
+  const cardLeft = ev ? Math.max(0, Math.min(width - cardW, xAt(idx) - cardW / 2)) : 0;
+  const decade = (y: number) => Math.floor(y / 10) * 10;
+  // a decade label at the first event of each decade, skipped when it would touch the previous label
+  const labelled = new Set<number>();
+  let lastX = -Infinity;
+  TIMELINE.forEach((e, i) => {
+    if (i > 0 && decade(e.year) === decade(TIMELINE[i - 1].year)) return;
+    if (xAt(i) - lastX < 40) return;
+    labelled.add(i);
+    lastX = xAt(i);
+  });
+  // One horizontal line, every event a dot (major events larger); a card appears below on hover, focus or tap.
   return (
-    <div className="mt-6" data-testid="chips-timeline">
-      <p className="mb-4 flex flex-wrap gap-3 text-[11px] text-gray-600">
+    <div className="mt-4" data-testid="chips-timeline">
+      <div ref={wrap} className="relative h-14" onMouseLeave={() => setHover(null)}>
+        <div className="absolute top-5 right-0 left-0 h-px bg-gray-300" />
+        {width > 0 &&
+          TIMELINE.map((e, i) => {
+            const on = e.id === current;
+            const big = isMajor(e.id);
+            return (
+              <div key={e.id} className="absolute top-0" style={{ left: xAt(i), transform: "translateX(-50%)" }}>
+                <button
+                  type="button"
+                  aria-label={`${e.year} ${D(`event.${e.id}.title`, e.title)}`}
+                  aria-pressed={pinned === e.id}
+                  data-testid={big ? "chips-major-event" : "chips-event-dot"}
+                  className="flex h-10 w-4 items-center justify-center focus:outline-none"
+                  onMouseEnter={() => setHover(e.id)}
+                  onFocus={() => setHover(e.id)}
+                  onBlur={() => setHover(null)}
+                  onClick={() => setPinned(pinned === e.id ? null : e.id)}
+                >
+                  <span
+                    className={`block rounded-full ring-white transition-all ${on ? "h-4 w-4 ring-2" : big ? "h-3.5 w-3.5 ring-2" : "h-2.5 w-2.5"}`}
+                    style={{ background: KIND_COL[e.kind], boxShadow: on ? `0 0 0 3px ${KIND_COL[e.kind]}55` : undefined }}
+                  />
+                </button>
+                {labelled.has(i) && <span className="absolute top-10 left-1/2 -translate-x-1/2 font-mono text-[10px] text-gray-500 tabular-nums">{decade(e.year)}s</span>}
+              </div>
+            );
+          })}
+        {ev && (
+          <div
+            className="absolute top-14 z-20 overflow-hidden rounded-lg border border-gray-200 bg-white text-sm shadow-lg"
+            style={{ left: cardLeft, width: cardW }}
+            data-testid="chips-event-card"
+          >
+            {major && (
+              <div className="border-b border-gray-100 bg-gray-50 px-4 py-1.5">
+                <TimelineArt id={ev.id} />
+              </div>
+            )}
+            <div className="p-3">
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: KIND_COL[ev.kind] }} />
+                <span className="font-mono tabular-nums">
+                  {ev.year}
+                  {ev.month ? `-${String(ev.month).padStart(2, "0")}` : ""}
+                </span>
+                <span>{T(`chips.history.${ev.kind}` as PageKey)}</span>
+              </div>
+              <p className="mt-1 font-semibold text-gray-900">{D(`event.${ev.id}.title`, ev.title)}</p>
+              <p className="mt-1 text-[13px] leading-relaxed text-gray-700">
+                {D(`event.${ev.id}.text`, ev.text)} <Ext href={ev.source}>{host(ev.source)}</Ext>
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+      <p className="mt-2 flex flex-wrap gap-3 text-[11px] text-gray-600">
         {(Object.keys(KIND_COL) as (keyof typeof KIND_COL)[]).map((k) => (
           <span key={k} className="inline-flex items-center gap-1">
             <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: KIND_COL[k] }} />
@@ -449,70 +534,6 @@ function History() {
           </span>
         ))}
       </p>
-      <div className="relative">
-        <div aria-hidden className="absolute top-0 bottom-0 left-3 w-0.5 -translate-x-1/2 bg-gray-200 md:left-1/2" />
-        <ol className="relative space-y-3">
-          {TIMELINE.map((e, i) => {
-            const major = isMajor(e.id);
-            const left = i % 2 === 0;
-            const unfolded = major || open === e.id || hover === e.id;
-            const col = KIND_COL[e.kind];
-            return (
-              <li key={e.id} id={major ? `chips-major-${e.id}` : undefined} className="relative pl-8 md:grid md:grid-cols-[1fr_5rem_1fr] md:pl-0" data-testid={major ? "chips-major-event" : "chips-event"}>
-                {/* the dot and year on the line */}
-                <span
-                  aria-hidden
-                  className={`absolute top-3 left-3 z-10 -translate-x-1/2 rounded-full ring-4 ring-white md:left-1/2 ${major ? "h-4 w-4" : "h-2.5 w-2.5"}`}
-                  style={{ background: col }}
-                />
-                <span
-                  className={`hidden pt-1.5 text-center font-mono tabular-nums md:col-start-2 md:row-start-1 md:block ${major ? "text-sm font-bold" : "text-[11px]"}`}
-                  style={{ color: major ? col : "#6b7280" }}
-                >
-                  <span className="relative top-5 bg-white px-1">{e.year}</span>
-                </span>
-                <div className={`md:row-start-1 ${left ? "md:col-start-1" : "md:col-start-3"}`}>
-                  {major ? (
-                    <article className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                      <div className="border-b border-gray-100 bg-gray-50 px-6 py-2">
-                        <TimelineArt id={e.id} />
-                      </div>
-                      <div className="p-3 text-sm">
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <span className="font-mono font-semibold tabular-nums md:hidden" style={{ color: col }}>
-                            {e.year}
-                          </span>
-                          <span>{T(`chips.history.${e.kind}` as PageKey)}</span>
-                        </div>
-                        <h3 className="mt-0.5 font-semibold text-gray-900">{D(`event.${e.id}.title`, e.title)}</h3>
-                        <p className="mt-1 text-[13px] leading-relaxed text-gray-700">
-                          {D(`event.${e.id}.text`, e.text)} <Ext href={e.source}>{host(e.source)}</Ext>
-                        </p>
-                      </div>
-                    </article>
-                  ) : (
-                    <div
-                      className={`rounded-lg border bg-white px-3 py-1.5 text-sm transition-colors ${unfolded ? "border-gray-300 shadow-sm" : "border-gray-200"} ${left ? "md:ml-auto" : ""} md:max-w-md`}
-                      onMouseEnter={() => setHover(e.id)}
-                      onMouseLeave={() => setHover(null)}
-                    >
-                      <button type="button" className="w-full text-left" aria-expanded={unfolded} onClick={() => setOpen(open === e.id ? null : e.id)}>
-                        <span className="font-mono text-[11px] text-gray-500 tabular-nums md:hidden">{e.year} </span>
-                        <span className="font-medium text-gray-900">{D(`event.${e.id}.title`, e.title)}</span>
-                      </button>
-                      {unfolded && (
-                        <p className="mt-1 text-[13px] leading-relaxed text-gray-700">
-                          {D(`event.${e.id}.text`, e.text)} <Ext href={e.source}>{host(e.source)}</Ext>
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
     </div>
   );
 }
@@ -522,12 +543,14 @@ function History() {
 function UnderTable() {
   const T = usePageText();
   const D = useDataText();
+  const [open, setOpen] = useState<string | null>(null);
+  // compact: the main library, the main kernel language and the first best use; a click unfolds the rest
   return (
     <div className="mt-4 overflow-x-auto rounded-lg border border-gray-200" data-testid="chips-under">
       <table className="w-full text-left text-xs">
         <thead className="bg-gray-50 text-gray-600">
           <tr>
-            {(["family", "blas", "langs", "best", "avoid"] as const).map((h) => (
+            {(["family", "blas", "langs", "best"] as const).map((h) => (
               <th key={h} className="px-2 py-1.5 font-semibold">
                 {T(`chips.under.${h}` as PageKey)}
               </th>
@@ -535,37 +558,48 @@ function UnderTable() {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 align-top">
-          {UNDER.map((u) => (
-            <tr key={u.family}>
-              <td className="px-2 py-1.5 font-semibold whitespace-nowrap text-gray-900">{T(`chips.fam.${u.family}` as PageKey)}</td>
-              <td className="px-2 py-1.5 text-gray-700">{u.blas.join(", ")}</td>
-              <td className="px-2 py-1.5 text-gray-700">
-                {u.kernelLangs.join(", ")}
-                <div className="text-gray-500">{u.compilers.join(", ")}</div>
-              </td>
-              <td className="px-2 py-1.5 text-gray-700">
-                <ul className="list-disc pl-3">
-                  {u.bestFor.map((b, i) => (
-                    <li key={i}>{D(`under.${u.family}.best.${i}`, b)}</li>
-                  ))}
-                </ul>
-              </td>
-              <td className="px-2 py-1.5 text-gray-700">
-                <ul className="list-disc pl-3">
-                  {u.avoidFor.map((b, i) => (
-                    <li key={i}>{D(`under.${u.family}.avoid.${i}`, b)}</li>
-                  ))}
-                </ul>
-                <div className="mt-1 flex flex-wrap gap-x-2 break-all">
-                  {u.sources.slice(0, 3).map((s) => (
-                    <Ext key={s} href={s}>
-                      {host(s)}
-                    </Ext>
-                  ))}
-                </div>
-              </td>
-            </tr>
-          ))}
+          {UNDER.map((u) => {
+            const on = open === u.family;
+            return (
+              <Fragment key={u.family}>
+                <tr className={`cursor-pointer hover:bg-gray-50 ${on ? "bg-blue-50/40" : ""}`} onClick={() => setOpen(on ? null : u.family)} aria-expanded={on}>
+                  <td className="px-2 py-1.5 font-semibold whitespace-nowrap text-gray-900">
+                    <span className={`mr-1 inline-block text-gray-400 transition-transform ${on ? "rotate-90" : ""}`}>▸</span>
+                    {T(`chips.fam.${u.family}` as PageKey)}
+                  </td>
+                  <td className="px-2 py-1.5 text-gray-700">{u.blas[0]}</td>
+                  <td className="px-2 py-1.5 text-gray-700">{u.kernelLangs.slice(0, 2).join(", ")}</td>
+                  <td className="px-2 py-1.5 text-gray-700">{u.bestFor[0] ? D(`under.${u.family}.best.0`, u.bestFor[0]) : "–"}</td>
+                </tr>
+                {on && (
+                  <tr className="bg-gray-50/70">
+                    <td colSpan={4} className="px-4 py-2 text-gray-700">
+                      <dl className="grid gap-x-4 gap-y-1.5 sm:grid-cols-[8rem_1fr]">
+                        <dt className="font-semibold text-gray-600">{T("chips.under.blas")}</dt>
+                        <dd>{u.blas.join(", ")}</dd>
+                        <dt className="font-semibold text-gray-600">{T("chips.under.langs")}</dt>
+                        <dd>
+                          {u.kernelLangs.join(", ")}
+                          <span className="text-gray-500"> · {u.compilers.join(", ")}</span>
+                        </dd>
+                        <dt className="font-semibold text-gray-600">{T("chips.under.best")}</dt>
+                        <dd>{u.bestFor.map((x, i) => D(`under.${u.family}.best.${i}`, x)).join("; ")}</dd>
+                        <dt className="font-semibold text-gray-600">{T("chips.under.avoid")}</dt>
+                        <dd>{u.avoidFor.map((x, i) => D(`under.${u.family}.avoid.${i}`, x)).join("; ")}</dd>
+                        <dd className="flex flex-wrap gap-x-3 sm:col-start-2">
+                          {u.sources.slice(0, 3).map((x) => (
+                            <Ext key={x} href={x}>
+                              {host(x)}
+                            </Ext>
+                          ))}
+                        </dd>
+                      </dl>
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            );
+          })}
         </tbody>
       </table>
     </div>
@@ -963,6 +997,7 @@ export default function ChipsTab() {
           <Heading n={num("precision")} text={T("chips.precision.title")} />
           <p className={P}>{text("chips.precision.text")}</p>
           <PrecisionSwitches />
+          <p className="mt-4 text-sm font-medium text-gray-800">{T("chips.precision.code")}</p>
           <CodeBlock code={DEVICE_CODE} />
           <p className={P}>
             <a className="font-medium text-blue-700 hover:underline" href={`#${formatPageRoute("skills", "mixed")}`}>

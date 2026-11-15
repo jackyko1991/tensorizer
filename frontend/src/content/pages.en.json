@@ -1962,5 +1962,14 @@
   "chips.precision.e2": "\"high\" allows TF32 or a two-pass BF16 split, \"medium\" allows BF16; affects CUDA only for now",
   "chips.precision.e3": "Newer form of the same switches: \"ieee\" or \"tf32\"; \"bfx9\" is CUDA-matmul only and needs a CUDA 12.9+ build",
   "chips.precision.e4": "On ROCm the same switch gives TF32 on Instinct MI300 through hipBLASLt, with small numerical differences from NVIDIA",
-  "chips.precision.e5": "The low-precision type autocast picks when you do not pass dtype"
+  "chips.precision.e5": "The low-precision type autocast picks when you do not pass dtype",
+  "chips.precision.code": "Quick code: pick the device and check which precision it can run.",
+  "mixed.flags.title": "Precision switches by package",
+  "mixed.flags.text": "The calls, settings and environment variables each library uses to choose its number format, with their defaults; every row is checked on the package's own documentation.",
+  "mixed.flags.package": "Package",
+  "mixed.flags.flag": "Switch",
+  "mixed.flags.default": "Default",
+  "mixed.flags.what": "What it does",
+  "mixed.flags.deprecated": "deprecated",
+  "mixed.flags.preview": "preview"
 }

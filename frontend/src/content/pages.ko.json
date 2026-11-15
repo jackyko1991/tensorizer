@@ -1814,5 +1814,14 @@
   "chips.precision.e2": "\"high\"는 TF32 또는 BF16 2분할을, \"medium\"은 BF16을 허용; 현재는 CUDA에만 적용",
   "chips.precision.e3": "같은 스위치의 새 형식: \"ieee\" 또는 \"tf32\"; \"bfx9\"는 CUDA 행렬 곱 전용이며 CUDA 12.9 이상 빌드 필요",
   "chips.precision.e4": "ROCm에서는 같은 스위치로 hipBLASLt를 통해 Instinct MI300에서 TF32를 쓰며, NVIDIA와 수치가 조금 다름",
-  "chips.precision.e5": "dtype을 주지 않을 때 autocast가 고르는 저정밀 타입"
+  "chips.precision.e5": "dtype을 주지 않을 때 autocast가 고르는 저정밀 타입",
+  "chips.precision.code": "빠른 코드: 장치를 고르고 어떤 정밀도로 실행할 수 있는지 확인합니다.",
+  "mixed.flags.title": "패키지별 정밀도 스위치",
+  "mixed.flags.text": "각 라이브러리가 숫자 형식을 고를 때 쓰는 호출, 설정, 환경 변수와 그 기본값입니다. 모든 행은 해당 패키지의 공식 문서로 확인했습니다.",
+  "mixed.flags.package": "패키지",
+  "mixed.flags.flag": "스위치",
+  "mixed.flags.default": "기본값",
+  "mixed.flags.what": "효과",
+  "mixed.flags.deprecated": "지원 중단 예정",
+  "mixed.flags.preview": "미리 보기"
 }

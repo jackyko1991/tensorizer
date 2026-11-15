@@ -8,6 +8,7 @@
 import { useSyncExternalStore } from "react";
 import { useLang } from "../../i18n";
 import chipsJson from "./chips.json";
+import flagsJson from "./flags.json";
 import formatsJson from "./formats.json";
 import historyJson from "./history.json";
 import librariesJson from "./libraries.json";
@@ -124,6 +125,19 @@ const hist = historyJson as unknown as { timeline: TimelineEvent[]; facts: { id:
 export const TIMELINE = [...hist.timeline].sort((a, b) => a.year - b.year || (a.month ?? 0) - (b.month ?? 0));
 export const FACTS = hist.facts;
 export const FORMAT_INFO = formatsJson as unknown as FormatInfo[];
+
+/** the switches each package uses to choose precision, each checked on its official page (flag.<i> translated) */
+export interface PrecisionFlag {
+  package: string;
+  kind: "python" | "env" | "config" | "c-api";
+  flag: string;
+  what: string;
+  default: string | null;
+  scope: string;
+  source: string;
+  status: "current" | "deprecated" | "preview";
+}
+export const FLAGS = (flagsJson as unknown as { flags: PrecisionFlag[] }).flags;
 
 /** the hardware families of the library table, in column order */
 export const FAMILIES = [

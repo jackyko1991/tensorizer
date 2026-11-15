@@ -1775,5 +1775,14 @@
   "chips.precision.e2": "86ccf9fd6583",
   "chips.precision.e3": "12a8b0052b12",
   "chips.precision.e4": "e9370a4ace77",
-  "chips.precision.e5": "7482a587da79"
+  "chips.precision.e5": "7482a587da79",
+  "chips.precision.code": "7f464e9ffe19",
+  "mixed.flags.title": "4707ce499219",
+  "mixed.flags.text": "6b8dfa6eef14",
+  "mixed.flags.package": "59de121db1b8",
+  "mixed.flags.flag": "39921a740bf2",
+  "mixed.flags.default": "21b111cbfe6e",
+  "mixed.flags.what": "c74ea9dc9cd2",
+  "mixed.flags.deprecated": "f5e65825147c",
+  "mixed.flags.preview": "5975cf1bba43"
 }
