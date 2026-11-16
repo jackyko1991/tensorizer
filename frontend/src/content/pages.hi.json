@@ -1840,5 +1840,8 @@
   "mixed.why.p2.text": "Weight update (learning rate × gradient) अक्सर पास-पास की FP16 संख्याओं के अंतर से छोटा होता है, इसलिए उसे FP16 weight में जोड़ने से कुछ नहीं बदलता।",
   "mixed.why.p3.title": "Overflow और लंबे योग",
   "mixed.why.p3.text": "FP16 65504 से ऊपर overflow करता है, और लंबा योग तब बढ़ना बंद कर देता है जब कुल हर नए पद से बहुत बड़ा हो जाता है: reductions, softmax और loss गलत हो जाते हैं।",
-  "mixed.why.solution": "समाधान"
+  "mixed.why.solution": "समाधान",
+  "mixed.why.fig.range": "FP16 range",
+  "mixed.why.fig.exact": "सटीक",
+  "mixed.why.fig.steps": "steps"
 }

@@ -1,6 +1,6 @@
 import { Fragment, useState, type ReactNode } from "react";
 import { MixedAnim } from "../components/ChipsAnim";
-import { GradientHistogram, LossCurves, MacGraph, MmaFigure } from "../components/MixedFigures";
+import { GradientHistogram, LossCurves, MacGraph, MmaFigure, ProblemFig } from "../components/MixedFigures";
 import CodeBlock from "../components/CodeBlock";
 import { highlightCode } from "../components/highlight";
 import PageToc from "../components/PageToc";
@@ -455,12 +455,16 @@ function ProblemCards() {
           <p className="mt-1 flex-1 leading-relaxed text-gray-700">
             <RichText text={T(`mixed.why.p${n}.text` as PageKey)} />
           </p>
+          <ProblemFig n={n} solved={false} />
           <details className="group mt-2 rounded-md border border-green-200 bg-white">
             <summary className="flex cursor-pointer list-none items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-green-800 select-none">
               <span className="inline-block transition-transform group-open:rotate-90">▸</span>
               {T("mixed.why.solution")}
             </summary>
-            <ul className="space-y-2 px-2.5 pb-2.5 text-[13px] leading-relaxed text-gray-700">
+            <div className="px-2.5">
+              <ProblemFig n={n} solved />
+            </div>
+            <ul className="space-y-2 px-2.5 pt-1 pb-2.5 text-[13px] leading-relaxed text-gray-700">
               {ids.map((id) => (
                 <CitedItem key={id} text={D(`point.${id}`, pointText(id))} href={pointSource(id)} />
               ))}

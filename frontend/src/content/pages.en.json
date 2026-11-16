@@ -1988,5 +1988,8 @@
   "mixed.why.p2.text": "A weight update (learning rate × gradient) is often smaller than the gap between neighbouring FP16 numbers, so adding it to an FP16 weight changes nothing.",
   "mixed.why.p3.title": "Overflow and long sums",
   "mixed.why.p3.text": "FP16 overflows above 65504, and a long sum stops growing once the total dwarfs each new term: reductions, softmax and the loss go wrong.",
-  "mixed.why.solution": "Solution"
+  "mixed.why.solution": "Solution",
+  "mixed.why.fig.range": "FP16 range",
+  "mixed.why.fig.exact": "exact",
+  "mixed.why.fig.steps": "steps"
 }

@@ -1988,5 +1988,8 @@
   "mixed.why.p2.text": "权重更新（学习率 × 梯度）往往比相邻 FP16 数之间的间距还小，加到 FP16 权重上什么也不会改变。",
   "mixed.why.p3.title": "溢出与长求和",
   "mixed.why.p3.text": "FP16 超过 65504 就溢出；长求和在总和远大于每个新项时就不再增长：归约、softmax 与损失都会出错。",
-  "mixed.why.solution": "解法"
+  "mixed.why.solution": "解法",
+  "mixed.why.fig.range": "FP16 范围",
+  "mixed.why.fig.exact": "精确值",
+  "mixed.why.fig.steps": "步数"
 }

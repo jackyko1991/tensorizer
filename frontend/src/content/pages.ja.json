@@ -1840,5 +1840,8 @@
   "mixed.why.p2.text": "重みの更新（学習率 × 勾配）は隣り合う FP16 数の間隔より小さいことが多く、FP16 の重みに足しても何も変わりません。",
   "mixed.why.p3.title": "オーバーフローと長い総和",
   "mixed.why.p3.text": "FP16 は 65504 を超えるとオーバーフローし、長い総和は合計が新しい項よりはるかに大きくなると増えなくなります：縮約、softmax、損失がおかしくなります。",
-  "mixed.why.solution": "解決策"
+  "mixed.why.solution": "解決策",
+  "mixed.why.fig.range": "FP16 の範囲",
+  "mixed.why.fig.exact": "厳密値",
+  "mixed.why.fig.steps": "ステップ"
 }

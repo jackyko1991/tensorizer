@@ -1840,5 +1840,8 @@
   "mixed.why.p2.text": "Una actualización de pesos (tasa de aprendizaje × gradiente) suele ser menor que la distancia entre números FP16 vecinos, así que sumarla a un peso FP16 no cambia nada.",
   "mixed.why.p3.title": "Desbordamiento y sumas largas",
   "mixed.why.p3.text": "FP16 desborda por encima de 65504, y una suma larga deja de crecer cuando el total supera con creces cada término nuevo: reducciones, softmax y pérdida salen mal.",
-  "mixed.why.solution": "Solución"
+  "mixed.why.solution": "Solución",
+  "mixed.why.fig.range": "Rango de FP16",
+  "mixed.why.fig.exact": "exacto",
+  "mixed.why.fig.steps": "pasos"
 }

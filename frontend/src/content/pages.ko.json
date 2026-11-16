@@ -1840,5 +1840,8 @@
   "mixed.why.p2.text": "가중치 업데이트(학습률 × 기울기)는 이웃한 FP16 수 사이의 간격보다 작은 경우가 많아, FP16 가중치에 더해도 아무것도 바뀌지 않습니다.",
   "mixed.why.p3.title": "오버플로와 긴 합",
   "mixed.why.p3.text": "FP16은 65504를 넘으면 오버플로하고, 긴 합은 합계가 새 항보다 훨씬 커지면 더 이상 늘지 않습니다: 축약, softmax, 손실이 틀어집니다.",
-  "mixed.why.solution": "해결책"
+  "mixed.why.solution": "해결책",
+  "mixed.why.fig.range": "FP16 범위",
+  "mixed.why.fig.exact": "정확한 값",
+  "mixed.why.fig.steps": "단계"
 }

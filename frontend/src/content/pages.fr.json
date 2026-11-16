@@ -1840,5 +1840,8 @@
   "mixed.why.p2.text": "Une mise à jour de poids (taux d'apprentissage × gradient) est souvent plus petite que l'écart entre deux nombres FP16 voisins : l'ajouter à un poids FP16 ne change rien.",
   "mixed.why.p3.title": "Débordement et longues sommes",
   "mixed.why.p3.text": "Le FP16 déborde au-delà de 65504, et une longue somme cesse de croître quand le total écrase chaque nouveau terme : réductions, softmax et perte deviennent fausses.",
-  "mixed.why.solution": "Solution"
+  "mixed.why.solution": "Solution",
+  "mixed.why.fig.range": "Plage du FP16",
+  "mixed.why.fig.exact": "exact",
+  "mixed.why.fig.steps": "pas"
 }

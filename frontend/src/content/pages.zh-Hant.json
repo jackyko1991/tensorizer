@@ -1988,5 +1988,8 @@
   "mixed.why.p2.text": "權重更新（學習率 × 梯度）往往比相鄰 FP16 數之間的間距還小，加到 FP16 權重上什麼也不會改變。",
   "mixed.why.p3.title": "溢位與長加總",
   "mixed.why.p3.text": "FP16 超過 65504 就溢位；長加總在總和遠大於每一個新項時就不再增長：歸約、softmax 與損失都會出錯。",
-  "mixed.why.solution": "解法"
+  "mixed.why.solution": "解法",
+  "mixed.why.fig.range": "FP16 範圍",
+  "mixed.why.fig.exact": "精確值",
+  "mixed.why.fig.steps": "步數"
 }

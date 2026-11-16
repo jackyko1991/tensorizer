@@ -9,6 +9,7 @@ import { COL, Txt } from "./animKit";
 import { RichText } from "./Tex";
 import { usePageText, type PageKey } from "../content/pages";
 import { gradHistogram, histogramSplit, lossCurves } from "../chipsAnim";
+import { fmt, roundTo, runningSum } from "../chipsModel";
 
 const GUIDE = "https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/index.html";
 const PAPER = "https://arxiv.org/abs/1710.03740";
@@ -365,5 +366,145 @@ export function MacGraph() {
         <Reg x={273} y={41.5} label="F32" color={brown} />
       </svg>
     </Frame>
+  );
+}
+
+// --- 5. the three problems of half precision, and their fixes (Mixed precision ▸ Why) --------------------------
+// Every number is computed with the site's own rounding (chipsModel.roundTo / runningSum), not drawn by hand.
+
+const PW = 320;
+const F16 = fmt("fp16");
+const F32 = fmt("fp32");
+
+/** gradients on a log2 axis against FP16's range; solved: the same gradients times the loss scale S = 2^10 */
+function UnderflowFig({ solved, k }: { solved: boolean; k: (s: string) => string }) {
+  const grads = [-31, -28, -26, -22, -18, -14, -11].map((e) => 1.3 * 2 ** e);
+  const S = solved ? 2 ** 10 : 1;
+  const L = 14;
+  const R = PW - 10;
+  const lo = -34;
+  const hi = 17;
+  const xs = (e: number) => L + ((e - lo) / (hi - lo)) * (R - L);
+  return (
+    <svg viewBox={`0 0 ${PW} 64`} className="mx-auto mt-2 block h-auto w-full max-w-[520px]" aria-hidden>
+      <rect x={xs(-24)} y={16} width={xs(16) - xs(-24)} height={18} rx={2} fill={COL.greenLight} />
+      <rect x={L} y={16} width={xs(-24) - L} height={18} rx={2} fill={COL.redLight} />
+      <Txt x={(xs(-24) + xs(16)) / 2} y={12} size={6} anchor="middle" color={COL.green}>
+        {k("mixed.why.fig.range")}
+      </Txt>
+      <Txt x={(L + xs(-24)) / 2} y={12} size={6} anchor="middle" color={COL.red}>
+        → 0
+      </Txt>
+      {grads.map((g, i) => {
+        const v = g * S;
+        const lost = roundTo(v, F16) === 0;
+        const x = xs(Math.log2(v));
+        return (
+          <g key={i}>
+            {solved && <line x1={xs(Math.log2(g))} x2={x - 3} y1={25} y2={25} stroke={COL.idleLine} strokeWidth={0.6} />}
+            <circle cx={x} cy={25} r={3.2} fill={lost ? "#fff" : COL.green} stroke={lost ? COL.red : COL.green} strokeWidth={1} />
+            {lost && <path d={`M${x - 2} ${23} l4 4 M${x + 2} ${23} l-4 4`} stroke={COL.red} strokeWidth={0.9} />}
+          </g>
+        );
+      })}
+      {[-32, -24, -16, -8, 0, 8, 16].map((e) => (
+        <Txt key={e} x={xs(e)} y={46} size={5.2} anchor="middle" color={COL.muted}>
+          {`2^${e}`}
+        </Txt>
+      ))}
+      <Txt x={R} y={58} size={6} anchor="end" color={solved ? COL.green : COL.red} weight={600}>
+        {solved ? `× S = 2^10: ${grads.filter((g) => roundTo(g * S, F16) !== 0).length}/${grads.length} ✓` : `${grads.filter((g) => roundTo(g, F16) === 0).length}/${grads.length} → 0`}
+      </Txt>
+    </svg>
+  );
+}
+
+/** the FP16 numbers next to 1 (0.000977 apart): w + 0.0001 rounds back to w; solved: an FP32 master weight keeps it */
+function UpdateFig({ solved }: { solved: boolean }) {
+  const f = solved ? F32 : F16;
+  const w = 1;
+  const u = 0.0001;
+  const got = roundTo(w + u, f);
+  const L = 20;
+  const R = PW - 20;
+  const span = 2 ** -10 * 1.15; // a little more than one FP16 step
+  const xs = (v: number) => L + ((v - w + 0.06 * span) / span) * (R - L) * 0.92;
+  const ticks = solved ? Array.from({ length: 12 }, (_, i) => w + (i * span) / 11) : [w, w + 2 ** -10];
+  return (
+    <svg viewBox={`0 0 ${PW} 58`} className="mx-auto mt-2 block h-auto w-full max-w-[520px]" aria-hidden>
+      <line x1={L} x2={R} y1={24} y2={24} stroke={COL.idleLine} strokeWidth={0.8} />
+      {ticks.map((t, i) => (
+        <line key={i} x1={xs(t)} x2={xs(t)} y1={solved ? 20 : 17} y2={solved ? 28 : 31} stroke={solved ? COL.blue : COL.text} strokeWidth={solved ? 0.5 : 1} />
+      ))}
+      {!solved && (
+        <>
+          <Txt x={xs(w)} y={41} size={6} anchor="middle">
+            1
+          </Txt>
+          <Txt x={xs(w + 2 ** -10)} y={41} size={6} anchor="middle">
+            1.000977
+          </Txt>
+        </>
+      )}
+      <circle cx={xs(w + u)} cy={24} r={2.6} fill="#fff" stroke={COL.cur} strokeWidth={1} />
+      <path d={`M${xs(w + u)} 13 L${xs(got)} 21`} stroke={solved ? COL.green : COL.red} strokeWidth={0.8} markerEnd="" />
+      <circle cx={xs(got)} cy={24} r={3} fill={solved ? COL.green : COL.red} />
+      <Txt x={xs(w + u) + 4} y={11} size={6} color={COL.cur}>
+        1 + 0.0001
+      </Txt>
+      <Txt x={R} y={54} size={6.5} anchor="end" color={solved ? COL.green : COL.red} weight={600}>
+        {`${f.name}: 1 + 0.0001 → ${got === 1 ? "1" : got.toFixed(4)}`}
+      </Txt>
+    </svg>
+  );
+}
+
+/** a running sum of 0.1: FP16 stalls at 256 (steps there are 0.25 wide); solved: the FP32 accumulator keeps going */
+function SumFig({ solved, k }: { solved: boolean; k: (s: string) => string }) {
+  const n = 4000;
+  const values = Array.from({ length: n }, () => 0.1);
+  const got = runningSum(values, solved ? F32 : F16, solved ? "wide" : "naive");
+  const L = 26;
+  const R = PW - 10;
+  const top = 6;
+  const bot = 46;
+  const xs = (i: number) => L + (i / n) * (R - L);
+  const ys = (v: number) => bot - (v / 420) * (bot - top);
+  const path = (f: (i: number) => number) =>
+    Array.from({ length: 81 }, (_, j) => Math.min(n - 1, j * 50)).map((i, j) => `${j ? "L" : "M"}${xs(i).toFixed(1)},${ys(f(i)).toFixed(1)}`).join("");
+  const last = got[n - 1];
+  return (
+    <svg viewBox={`0 0 ${PW} 62`} className="mx-auto mt-2 block h-auto w-full max-w-[520px]" aria-hidden>
+      {[0, 256, 400].map((v) => (
+        <g key={v}>
+          <line x1={L} x2={R} y1={ys(v)} y2={ys(v)} stroke="#eef0f3" strokeWidth={0.5} />
+          <Txt x={L - 3} y={ys(v) + 1.8} size={5} anchor="end" color={COL.muted}>
+            {v}
+          </Txt>
+        </g>
+      ))}
+      <path d={path((i) => 0.1 * (i + 1))} fill="none" stroke={COL.idleLine} strokeWidth={1.4} strokeDasharray="3 2" />
+      <path d={path((i) => got[i])} fill="none" stroke={solved ? COL.green : COL.red} strokeWidth={1.3} />
+      <Txt x={R} y={ys(400) - 1.5} size={5.5} anchor="end" color={COL.muted}>
+        {k("mixed.why.fig.exact")}
+      </Txt>
+      <Txt x={(L + R) / 2} y={bot + 8} size={5.5} anchor="middle" color={COL.muted}>
+        {`${k("mixed.why.fig.steps")}: + 0.1 × ${n}`}
+      </Txt>
+      <Txt x={R} y={bot + 15} size={6.5} anchor="end" color={solved ? COL.green : COL.red} weight={600}>
+        {`${solved ? "FP32" : "FP16"}: ${Number(last.toFixed(1))}`}
+      </Txt>
+    </svg>
+  );
+}
+
+/** the figure for problem n of Mixed precision ▸ Why, before (problem) or after (solution) the fix */
+export function ProblemFig({ n, solved }: { n: 1 | 2 | 3; solved: boolean }) {
+  const T = usePageText();
+  const k = (s: string) => T(s as PageKey);
+  return (
+    <div data-testid={`mixed-problem-fig-${n}${solved ? "-solved" : ""}`}>
+      {n === 1 ? <UnderflowFig solved={solved} k={k} /> : n === 2 ? <UpdateFig solved={solved} /> : <SumFig solved={solved} k={k} />}
+    </div>
   );
 }
