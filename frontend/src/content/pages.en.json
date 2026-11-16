@@ -1981,5 +1981,12 @@
   "mixed.cores.cuda.acc": "same as the inputs",
   "mixed.cores.tensor.note": "Mixed precision pays only on Tensor Cores: the big matrix products. Elsewhere lower precision mainly saves memory traffic.",
   "mixed.platforms.title": "How each platform does it",
-  "mixed.platforms.text": "Mixed precision on non-NVIDIA hardware: the documented recipe and code for each platform."
+  "mixed.platforms.text": "Mixed precision on non-NVIDIA hardware: the documented recipe and code for each platform.",
+  "mixed.why.p1.title": "Gradients too small",
+  "mixed.why.p1.text": "Many activation gradients are below FP16's smallest value, $2^{-24}$, and become zero: those parts of the network stop learning.",
+  "mixed.why.p2.title": "Updates too small",
+  "mixed.why.p2.text": "A weight update (learning rate × gradient) is often smaller than the gap between neighbouring FP16 numbers, so adding it to an FP16 weight changes nothing.",
+  "mixed.why.p3.title": "Overflow and long sums",
+  "mixed.why.p3.text": "FP16 overflows above 65504, and a long sum stops growing once the total dwarfs each new term: reductions, softmax and the loss go wrong.",
+  "mixed.why.solution": "Solution"
 }

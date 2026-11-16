@@ -17,6 +17,7 @@ function usedKeys(): Set<string> {
   for (const k of ["format", "bits", "layout", "max", "minNormal", "eps", "digits", "notes"]) keys.add(`mixed.formats.${k}`);
   for (const k of ["family", "low", "autocast", "scaling", "fp8", "notes"]) keys.add(`mixed.chips.${k}`);
   for (const k of ["measure", "bf16", "fp16", "keep", "check", "physics", "fp8"]) keys.add(`mixed.checklist.${k}`);
+  for (const n of [1, 2, 3]) for (const k of ["title", "text"]) keys.add(`mixed.why.p${n}.${k}`);
   for (const k of ["op", "in", "acc", "h100", "geforce"]) keys.add(`mixed.cores.row.${k}`);
   for (const k of ["cuda.op", "tensor.op", "cuda.acc"]) keys.add(`mixed.cores.${k}`);
   for (const k of ["default", "deprecated", "preview"]) keys.add(`mixed.flags.${k}`);

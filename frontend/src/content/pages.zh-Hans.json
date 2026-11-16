@@ -1981,5 +1981,12 @@
   "mixed.cores.cuda.acc": "与输入相同",
   "mixed.cores.tensor.note": "混合精度只在 Tensor Core 上（大型矩阵乘法）才有大回报；其他地方降低精度主要是节省内存流量。",
   "mixed.platforms.title": "各平台的做法",
-  "mixed.platforms.text": "非 NVIDIA 硬件上的混合精度：每个平台的官方做法与代码。"
+  "mixed.platforms.text": "非 NVIDIA 硬件上的混合精度：每个平台的官方做法与代码。",
+  "mixed.why.p1.title": "梯度太小",
+  "mixed.why.p1.text": "许多激活梯度小于 FP16 的最小值 $2^{-24}$ 而变成零：网络的那些部分就停止学习。",
+  "mixed.why.p2.title": "更新太小",
+  "mixed.why.p2.text": "权重更新（学习率 × 梯度）往往比相邻 FP16 数之间的间距还小，加到 FP16 权重上什么也不会改变。",
+  "mixed.why.p3.title": "溢出与长求和",
+  "mixed.why.p3.text": "FP16 超过 65504 就溢出；长求和在总和远大于每个新项时就不再增长：归约、softmax 与损失都会出错。",
+  "mixed.why.solution": "解法"
 }

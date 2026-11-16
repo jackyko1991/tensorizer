@@ -1833,5 +1833,12 @@
   "mixed.cores.cuda.acc": "comme les entrées",
   "mixed.cores.tensor.note": "La précision mixte ne rapporte gros que sur les Tensor Cores, dans les grands produits matriciels ; ailleurs, baisser la précision économise surtout du trafic mémoire.",
   "mixed.platforms.title": "Comment fait chaque plateforme",
-  "mixed.platforms.text": "La précision mixte hors NVIDIA : la méthode documentée et le code de chaque plateforme."
+  "mixed.platforms.text": "La précision mixte hors NVIDIA : la méthode documentée et le code de chaque plateforme.",
+  "mixed.why.p1.title": "Gradients trop petits",
+  "mixed.why.p1.text": "Beaucoup de gradients d'activation sont sous la plus petite valeur du FP16, $2^{-24}$, et deviennent nuls : ces parties du réseau cessent d'apprendre.",
+  "mixed.why.p2.title": "Mises à jour trop petites",
+  "mixed.why.p2.text": "Une mise à jour de poids (taux d'apprentissage × gradient) est souvent plus petite que l'écart entre deux nombres FP16 voisins : l'ajouter à un poids FP16 ne change rien.",
+  "mixed.why.p3.title": "Débordement et longues sommes",
+  "mixed.why.p3.text": "Le FP16 déborde au-delà de 65504, et une longue somme cesse de croître quand le total écrase chaque nouveau terme : réductions, softmax et perte deviennent fausses.",
+  "mixed.why.solution": "Solution"
 }

@@ -1833,5 +1833,12 @@
   "mixed.cores.cuda.acc": "入力と同じ",
   "mixed.cores.tensor.note": "混合精度が大きく効くのは Tensor Core（大きな行列積）だけです。それ以外では低精度化の効果は主にメモリ転送の節約です。",
   "mixed.platforms.title": "プラットフォームごとのやり方",
-  "mixed.platforms.text": "NVIDIA 以外のハードウェアでの混合精度：各プラットフォームの公式な手順とコード。"
+  "mixed.platforms.text": "NVIDIA 以外のハードウェアでの混合精度：各プラットフォームの公式な手順とコード。",
+  "mixed.why.p1.title": "勾配が小さすぎる",
+  "mixed.why.p1.text": "多くの活性化勾配は FP16 の最小値 $2^{-24}$ より小さく、ゼロになります：ネットワークのその部分は学習しなくなります。",
+  "mixed.why.p2.title": "更新が小さすぎる",
+  "mixed.why.p2.text": "重みの更新（学習率 × 勾配）は隣り合う FP16 数の間隔より小さいことが多く、FP16 の重みに足しても何も変わりません。",
+  "mixed.why.p3.title": "オーバーフローと長い総和",
+  "mixed.why.p3.text": "FP16 は 65504 を超えるとオーバーフローし、長い総和は合計が新しい項よりはるかに大きくなると増えなくなります：縮約、softmax、損失がおかしくなります。",
+  "mixed.why.solution": "解決策"
 }

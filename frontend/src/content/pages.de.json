@@ -1833,5 +1833,12 @@
   "mixed.cores.cuda.acc": "wie die Eingaben",
   "mixed.cores.tensor.note": "Gemischte Präzision lohnt sich nur auf Tensor Cores, bei den großen Matrixprodukten; anderswo spart geringere Präzision vor allem Speicherverkehr.",
   "mixed.platforms.title": "Wie jede Plattform es macht",
-  "mixed.platforms.text": "Gemischte Präzision auf Hardware außer NVIDIA: das dokumentierte Vorgehen und der Code jeder Plattform."
+  "mixed.platforms.text": "Gemischte Präzision auf Hardware außer NVIDIA: das dokumentierte Vorgehen und der Code jeder Plattform.",
+  "mixed.why.p1.title": "Zu kleine Gradienten",
+  "mixed.why.p1.text": "Viele Aktivierungsgradienten liegen unter dem kleinsten FP16-Wert, $2^{-24}$, und werden zu null: Diese Teile des Netzes lernen nicht mehr.",
+  "mixed.why.p2.title": "Zu kleine Updates",
+  "mixed.why.p2.text": "Ein Gewichtsupdate (Lernrate × Gradient) ist oft kleiner als der Abstand benachbarter FP16-Zahlen; zu einem FP16-Gewicht addiert, ändert es nichts.",
+  "mixed.why.p3.title": "Überlauf und lange Summen",
+  "mixed.why.p3.text": "FP16 läuft über 65504 über, und eine lange Summe wächst nicht mehr, sobald die Summe jeden neuen Term weit übertrifft: Reduktionen, Softmax und Loss werden falsch.",
+  "mixed.why.solution": "Lösung"
 }

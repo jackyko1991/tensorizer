@@ -1833,5 +1833,12 @@
   "mixed.cores.cuda.acc": "inputs जैसा",
   "mixed.cores.tensor.note": "Mixed precision का बड़ा फ़ायदा केवल Tensor Cores पर (बड़े matrix products में) है; बाकी जगह कम precision मुख्यतः memory traffic बचाता है।",
   "mixed.platforms.title": "हर platform का तरीका",
-  "mixed.platforms.text": "NVIDIA के अलावा hardware पर mixed precision: हर platform का documented तरीका और code।"
+  "mixed.platforms.text": "NVIDIA के अलावा hardware पर mixed precision: हर platform का documented तरीका और code।",
+  "mixed.why.p1.title": "Gradients बहुत छोटे",
+  "mixed.why.p1.text": "कई activation gradients FP16 के सबसे छोटे मान $2^{-24}$ से छोटे होते हैं और शून्य हो जाते हैं: network के वे हिस्से सीखना बंद कर देते हैं।",
+  "mixed.why.p2.title": "Updates बहुत छोटे",
+  "mixed.why.p2.text": "Weight update (learning rate × gradient) अक्सर पास-पास की FP16 संख्याओं के अंतर से छोटा होता है, इसलिए उसे FP16 weight में जोड़ने से कुछ नहीं बदलता।",
+  "mixed.why.p3.title": "Overflow और लंबे योग",
+  "mixed.why.p3.text": "FP16 65504 से ऊपर overflow करता है, और लंबा योग तब बढ़ना बंद कर देता है जब कुल हर नए पद से बहुत बड़ा हो जाता है: reductions, softmax और loss गलत हो जाते हैं।",
+  "mixed.why.solution": "समाधान"
 }

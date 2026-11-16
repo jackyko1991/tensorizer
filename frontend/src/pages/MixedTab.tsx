@@ -434,6 +434,44 @@ function Checklist() {
   );
 }
 
+const pointText = (id: string) => MIXED.points.find((p) => p.id === id)?.text ?? "";
+const pointSource = (id: string) => MIXED.points.find((p) => p.id === id)?.source ?? "";
+
+/** the three problems of half precision, each with its solution folded underneath (the cited method points) */
+const PROBLEMS: { n: 1 | 2 | 3; points: string[] }[] = [
+  { n: 1, points: ["method-loss-scaling", "method-dynamic-scaling"] },
+  { n: 2, points: ["method-master-weights"] },
+  { n: 3, points: ["method-fp32-ops"] },
+];
+
+function ProblemCards() {
+  const T = usePageText();
+  const D = useDataText();
+  return (
+    <div className="mt-4 grid gap-3" data-testid="mixed-problems">
+      {PROBLEMS.map(({ n, points: ids }) => (
+        <div key={n} className="flex flex-col rounded-lg border border-red-100 bg-red-50/40 p-3 text-sm">
+          <p className="font-semibold text-red-800">{T(`mixed.why.p${n}.title` as PageKey)}</p>
+          <p className="mt-1 flex-1 leading-relaxed text-gray-700">
+            <RichText text={T(`mixed.why.p${n}.text` as PageKey)} />
+          </p>
+          <details className="group mt-2 rounded-md border border-green-200 bg-white">
+            <summary className="flex cursor-pointer list-none items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-green-800 select-none">
+              <span className="inline-block transition-transform group-open:rotate-90">▸</span>
+              {T("mixed.why.solution")}
+            </summary>
+            <ul className="space-y-2 px-2.5 pb-2.5 text-[13px] leading-relaxed text-gray-700">
+              {ids.map((id) => (
+                <CitedItem key={id} text={D(`point.${id}`, pointText(id))} href={pointSource(id)} />
+              ))}
+            </ul>
+          </details>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function MixedTab() {
   const T = usePageText();
   const text = (key: string) => <RichText text={T(key as PageKey)} />;
@@ -450,7 +488,8 @@ export default function MixedTab() {
         <Card id="why">
           <Heading n={num("why")} text={T("mixed.why.title")} />
           <p className={P}>{text("mixed.why.text")}</p>
-          <Points topics={["method"]} />
+          <ProblemCards />
+          <Points topics={[]} extra={["method-origin", "method-gains"].map((id) => ({ key: `point.${id}`, text: pointText(id), source: pointSource(id) }))} />
         </Card>
 
         <Card id="formats">
