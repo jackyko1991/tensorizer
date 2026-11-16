@@ -2163,6 +2163,12 @@
   },
   "wikidata": "Q1875447"
  },
+ "others/chip_roofline": {
+  "titles": {
+   "en": "Roofline model"
+  },
+  "wikidata": "Q24702811"
+ },
  "others/enigma_solver": {
   "titles": {
    "en": "Enigma machine",
