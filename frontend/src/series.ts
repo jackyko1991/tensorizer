@@ -13,7 +13,7 @@ export type SeriesKind = "lab" | "explorable";
 export type Texts = { en: string } & Record<string, string>;
 
 export interface SeriesSite {
-  id: "tensorizer" | "formalizer" | "clifford" | "polyphonizer";
+  id: "tensorizer" | "formalizer" | "clifford" | "polyphonizer" | "world-models";
   name: string;
   kind: SeriesKind;
   url: string;
@@ -253,6 +253,41 @@ export const SERIES_SITES: SeriesSite[] = [
       ru: "Геометрическая алгебра",
       ko: "기하 대수",
       hi: "ज्यामितीय बीजगणित",
+    },
+  },
+  {
+    id: "world-models",
+    name: "World Models",
+    kind: "explorable",
+    url: "https://jackyko1991.github.io/world-models/",
+    // bundled here so the card shows the logo before that site is deployed
+    logo: "series/world-models.svg",
+    langs: ["en", "zh-Hant"],
+    badge: "bg-amber-50 text-amber-800",
+    border: "border-amber-200 hover:border-amber-400",
+    pitch: {
+      en: "World models through diagrams, animation, equations and code: predict, imagine and plan, from Dyna and Dreamer to Genie, NeRF and Gaussian splatting.",
+      "zh-Hant": "用圖、動畫、方程式與程式碼學世界模型：預測、想像與規劃，從 Dyna、Dreamer 到 Genie、NeRF 與高斯潑濺。",
+      "zh-Hans": "用图、动画、方程与代码学世界模型：预测、想象与规划，从 Dyna、Dreamer 到 Genie、NeRF 与高斯泼溅。",
+      fr: "Les modèles du monde par les diagrammes, l'animation, les équations et le code : prédire, imaginer et planifier, de Dyna et Dreamer à Genie, NeRF et au Gaussian splatting.",
+      de: "Weltmodelle mit Diagrammen, Animationen, Gleichungen und Code: vorhersagen, sich vorstellen und planen, von Dyna und Dreamer bis Genie, NeRF und Gaussian Splatting.",
+      es: "Modelos del mundo con diagramas, animación, ecuaciones y código: predecir, imaginar y planificar, de Dyna y Dreamer a Genie, NeRF y el Gaussian splatting.",
+      ja: "図・アニメーション・数式・コードで学ぶ世界モデル：予測し、想像し、計画する。Dyna や Dreamer から Genie、NeRF、ガウシアン・スプラッティングまで。",
+      ru: "Модели мира в диаграммах, анимации, формулах и коде: предсказывать, воображать и планировать, от Dyna и Dreamer до Genie, NeRF и гауссова сплаттинга.",
+      ko: "도형, 애니메이션, 수식, 코드로 배우는 월드 모델: 예측하고, 상상하고, 계획하기. Dyna와 Dreamer부터 Genie, NeRF, 가우시안 스플래팅까지.",
+      hi: "आरेख, एनिमेशन, समीकरण और कोड से वर्ल्ड मॉडल: भविष्यवाणी, कल्पना और योजना, Dyna और Dreamer से Genie, NeRF और गॉसियन स्प्लैटिंग तक।",
+    },
+    verb: {
+      en: "World models",
+      "zh-Hant": "世界模型",
+      "zh-Hans": "世界模型",
+      fr: "Modèles du monde",
+      de: "Weltmodelle",
+      es: "Modelos del mundo",
+      ja: "世界モデル",
+      ru: "Модели мира",
+      ko: "월드 모델",
+      hi: "वर्ल्ड मॉडल",
     },
   },
 ];
